@@ -105,15 +105,15 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         return $this->declaration->getParcelles();
     }
-    
+
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
-    
+
             return false;
         }
-    
+
         $this->add('etape', $etape);
-    
+
         return true;
     }
 
@@ -152,7 +152,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 	public function isValidee(){
 		return $this->validation;
 	}
-    
+
     public function getDgc($onlyAffectes = false) {
       $lieux = array();
       $configuration = $this->getConfiguration();
@@ -175,7 +175,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       ksort($lieux);
       return $lieux;
     }
-    
+
     public function getDgcLibelle($dgc) {
         $dgcs = $this->getDgc();
         return (isset($dgcs[$dgc]))? $dgcs[$dgc] : null;
@@ -190,6 +190,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
         }
         return $find;
+    }
+
+    public function isMultiApporteur(){
+        return count($this->getCaveCooperatives()) > 1;
+    }
+
+    public function getCaveCooperatives(){
+        return $this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE);
     }
 
   /*** DECLARATION DOCUMENT ***/
