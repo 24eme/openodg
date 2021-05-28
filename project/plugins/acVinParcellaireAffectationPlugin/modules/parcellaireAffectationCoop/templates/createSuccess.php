@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $periode.'-'.($periode+1))); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
-  <li class="active"><a href="">Affectations parcellaires des apporteurs <?php echo $periode.'-'.($periode+1); ?></a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $periode - 1)); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <li class="active"><a href="">Affectations parcellaires des apporteurs <?php echo $periode; ?></a></li>
 </ol>
 
 <div class="page-header no-border">
