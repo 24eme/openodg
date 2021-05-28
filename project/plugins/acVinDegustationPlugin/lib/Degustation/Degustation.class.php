@@ -1476,11 +1476,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $volumes_operateurs[$lot->declarant_identifiant] += $lot->volume;
             }
             foreach ($volumes_operateurs as $operateur => $volume) {
+                $minimum = null;
+                if ($cotisation->getConfigCollection()->exist('minimum') && $cotisation->getConfigCollection()->minimum) {
+                    $minimum = $cotisation->getConfigCollection()->minimum;
+                }
+
                 $mvtFacture = DegustationMouvementFactures::freeInstance($this);
                 $mvtFacture->createFromCotisationAndDoc($cotisation, $this);
                 $mvtFacture->date = $this->getDateFormat();
                 $mvtFacture->date_version = $this->getDateFormat();
                 $mvtFacture->quantite = $volume;
+                if ($minimum && $minimum > $volume * $cotisation->getPrix()) {
+                    $mvtFacture->quantite = 1;
+                    $mvtFacture->taux = $minimum;
+                }
                 $mouvements[$operateur][$detailKey] = $mvtFacture;
             }
 
