@@ -469,6 +469,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $lots;
     }
 
+		public function AreAllLotsSaisis(){
+
+			foreach ($this->getLots() as $lot) {
+				if ($lot->statut !== Lot::STATUT_CONFORME || $lot->statut !== Lot::STATUT_NONCONFORME) {
+						return false;
+				}
+			}
+			return true;
+		}
+
     public function getLotsConformes($identifiant = null)
     {
         $all_lots = $this->getLotsByOperateurs($identifiant);
