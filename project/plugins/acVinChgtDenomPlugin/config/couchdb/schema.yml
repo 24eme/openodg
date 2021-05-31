@@ -6,6 +6,8 @@ ChgtDenom:
       _rev: {  }
       type: {  }
       date: {  }
+      type_archive:  { required: false }
+      numero_archive: {  }
       campagne: { }
       etape: {  }
       validation: {  }

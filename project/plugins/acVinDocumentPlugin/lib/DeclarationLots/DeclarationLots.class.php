@@ -394,19 +394,20 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           DeclarationClient::getInstance()->clearCache();
       }
 
-      public function getPourcentagesCepages($cepages) {
-        $total = 0;
-        $result = array();
-        foreach($cepages as $pc) {
-          $total += $pc;
+      public function getPourcentagesCepages() {
+        $volume_total = 0;
+        $cepages = array();
+        foreach($this->cepages as $volume) {
+          $volume_total += $volume;
         }
-        foreach($cepages as $cep => $pc) {
-          if (!isset($result[$cep])) {
-            $result[$cep] = 0;
+        foreach($this->cepages as $cep => $volume) {
+          if (!isset($cepages[$cep])) {
+              $cepages[$cep] = 0;
           }
-          $result[$cep] += round(($pc/$total) * 100);
+          $vol = ($volume_total>0)? round(($volume/$volume_total) * 100) : 0;
+          $cepages[$cep] += $vol;
         }
-        return $result;
+        return $cepages;
       }
 
       public function generatePieces() {

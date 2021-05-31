@@ -1,12 +1,13 @@
 <?php
 
-class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument {
+class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument, InterfaceArchivageDocument {
 
     const DEFAULT_KEY = 'DEFAUT';
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
     protected $piece_document = null;
+    protected $archivage_document = null;
   	protected $cm = null;
     protected $docToSave = array();
 
@@ -33,6 +34,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->piece_document = new PieceDocument($this);
+        $this->archivage_document = new ArchivageDocument($this);
     }
 
         public function getDateFormat($format = 'Y-m-d') {
@@ -112,17 +114,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function isApprouve() {
       return ($this->validation_odg);
-    }
-
-    public function validateOdg($date = null) {
-        if(is_null($date)) {
-            $date = date('c');
-        }
-        $this->validation_odg = $date;
-        if(!$this->isFactures()){
-            $this->clearMouvementsFactures();
-            $this->generateMouvementsFactures();
-        }
     }
 
     public function getEtablissementObject() {
@@ -275,6 +266,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function save($saveDependants = true) {
+        $this->archiver();
         $this->generateMouvementsLots();
 
         parent::save();
@@ -367,19 +359,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       if (!$this->isTotal()) {
         $lotOrig = clone $lot;
         $lotOrig->volume -= $this->changement_volume;
-        $lotOrig->numero_archive .= 'a';
-        $lotOrig->unique_id .= 'a';
 
         if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
             $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
         }
 
         $lots[] = $lotOrig;
-        $lot->numero_archive .= 'b';
-        $lot->unique_id .= 'b';
-      }else{
-          $lot->numero_archive .= 'a';
-          $lot->unique_id .= 'a';
+        $lot->numero_archive = null;
+        $lot->unique_id = null;
+        $lot->document_ordre = '01';
       }
 
       $lot->volume = $this->changement_volume;
@@ -413,7 +401,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lots[] = $lot;
 
       foreach($lots as $l) {
-        $lot = $this->lots->add(null, $l);
+        $lot = $this->_get('lots')->add(null, $l);
         $lot->id_document = $this->_id;
         $lot->updateDocumentDependances();
       }
@@ -497,18 +485,18 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         if($this->isTotal()) {
             if ($this->isDeclassement()) {
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total", null, true));
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
             }else{
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle(), null, true));
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
             }
 
         }else{
             if ($this->isDeclassement()) {
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl", null, true));
-                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé pour ".$this->lots[1]->volume." hl", null, true));
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl"));
+                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé pour ".$this->lots[1]->volume." hl"));
             }else{
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non changée de ".$this->lots[0]->volume." hl", null, true));
-                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changé pour : ".$this->lots[1]->getLibelle().", ".$this->lots[1]->volume." hl", null, true));
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non changée de ".$this->lots[0]->volume." hl"));
+                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changé pour : ".$this->lots[1]->getLibelle().", ".$this->lots[1]->volume." hl"));
 
             }
         }

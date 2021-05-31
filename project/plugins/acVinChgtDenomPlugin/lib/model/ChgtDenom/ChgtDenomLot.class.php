@@ -22,11 +22,6 @@ class ChgtDenomLot extends BaseChgtDenomLot
         return ChgtDenomMouvementLots::freeInstance($this->getDocument());
     }
 
-    public function getLotProvenance()
-    {
-        return $this->getLotDocumentOrdre(intval($this->document_ordre) - 1, true);
-    }
-
     public function isLogementEditable()
     {
         $chgt = $this->getDocument();
