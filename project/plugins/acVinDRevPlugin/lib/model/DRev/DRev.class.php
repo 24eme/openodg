@@ -1347,7 +1347,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getLotsByAdresse(){
       $lotsAdresse = array();
       foreach ($this->getLotsByNumeroDossier() as $lot){
-        $lotsAdresse[$this->getAdresseLogement($lot)][] = $lot;
+        $lotsAdresse[$lot->adresse_logement][] = $lot;
       }
       return $lotsAdresse;
     }
