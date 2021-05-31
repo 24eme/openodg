@@ -3,6 +3,7 @@
 
 # default values
 all:
+  routing_context_production_host: drome.igp.vins.24eme.fr
   organisme:
     nom: "Fédération Drômoise des Indications géographiques Viticoles"
   float:

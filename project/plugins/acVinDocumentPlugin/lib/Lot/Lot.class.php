@@ -227,6 +227,9 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == DegustationClient::DEGUSTATION_TRI_MILLESIME) {
             return ($this->millesime) ? $this->millesime : 'XXXX';
          }
+         if ($type == DegustationClient::DEGUSTATION_TRI_MANUEL) {
+             return $this->position;
+         }
          if (!$this->getConfig()||$type == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT) {
            $numero= intval(substr($this->numero_anonymat, 1));
            return $numero;
@@ -245,9 +248,6 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         if ($type == DegustationClient::DEGUSTATION_TRI_PRODUIT) {
             return $this->_get('produit_hash').$this->_get('details');
-        }
-        if ($type == DegustationClient::DEGUSTATION_TRI_MANUEL) {
-            return $this->position;
         }
         throw new sfException('unknown type of value : '.$type);
     }
@@ -458,25 +458,35 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function setNumeroTable($numero) {
-        $lastLot = $this->getLotInLastPosition($numero);
-        if ($lastLot) {
-          $this->position = $lastLot->getPosition() + 1;
+        $ret = $this->_set('numero_table', $numero);
+        $this->position = '999999';
+        $this->generateAndSetPosition();
+        return $ret;
+    }
+
+    public function generateAndSetPosition() {
+        $table = ($this->numero_table) ? $this->numero_table : 99;
+        $i = 0;
+        if ($position === null) {
+            foreach($this->getDocument()->getLotsTableOrFreeLotsCustomSort($table) as $lot) {
+                $i++;
+                if ($lot == $this) {
+                    $position = $i;
+                    break;
+                }
+            }
         }
-        return $this->_set('numero_table', $numero);
+        if ($position === null) {
+            $lastLot = $this->getLotInLastPosition($numero);
+            throw new sfException('Lot non trouvé');
+        }
+        $this->position = sprintf("%02d%03d0", $table, $position);
     }
 
     public function getPosition()
     {
-      if (!$this->_get('position')) {
-        $recalcul = true;
-      } elseif(!$this->numero_table||substr($this->_get('position'), 0, 2) == '99') {
-        $recalcul = true;
-      } else {
-        $recalcul = false;
-      }
-      if ($recalcul) {
-          $table = ($this->numero_table) ? $this->numero_table : 99;
-          $this->position =  sprintf("%02d%03d", $table, $this->getKey());
+      if (!$this->_get('position') || !$this->numero_table) {
+          $this->generateAndSetPosition();
       }
       return $this->_get('position');
     }

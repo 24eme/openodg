@@ -3,6 +3,7 @@
 
 # default values
 all:
+  routing_context_production_host: var.igp.vins.24eme.fr
   organisme:
     nom: "Syndicat des Vignerons du Var"
   float:

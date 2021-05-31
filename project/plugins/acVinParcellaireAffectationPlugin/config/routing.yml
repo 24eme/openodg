@@ -57,7 +57,7 @@ parcellaireaffectation_devalidation:
     type:     object
   requirements:
     sf_method: [get]
-    
+
 parcellaireaffectation_exploitation:
   url: /parcellaire-affectation/exploitation/:id
   param: { module: parcellaireAffectation, action: exploitation }
@@ -67,7 +67,7 @@ parcellaireaffectation_exploitation:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 parcellaireaffectation_affectations:
   url: /parcellaire-affectation/affectations/:id
   param: { module: parcellaireAffectation, action: affectations }
@@ -97,13 +97,94 @@ parcellaireaffectation_visualisation:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 parcellaireaffectation_export_pdf:
   url: /parcellaire-affectation/pdf/:id
   param: { module: parcellaireAffectation, action: PDF }
   class: ParcellaireAffectationRoute
   options:
     model:    ParcellaireAffectation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectationcoop_edit:
+  url: /parcellaire-affectation-coop/edit/:identifiant/:periode
+  param: { module: parcellaireAffectationCoop, action: edit }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireaffectationcoop_create:
+  url: /parcellaire-affectation-coop/create/:identifiant/:periode
+  param: { module: parcellaireAffectationCoop, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireaffectationcoop_apporteurs:
+  url: /parcellaire-affectation-coop/apporteurs/:id
+  param: { module: parcellaireAffectationCoop, action: apporteurs }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireaffectationcoop_liste:
+  url: /parcellaire-affectation-coop/liste/:id
+  param: { module: parcellaireAffectationCoop, action: liste }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectationcoop_saisie:
+  url: /parcellaire-affectation-coop/saisie/:id/:apporteur
+  param: { module: parcellaireAffectationCoop, action: saisie }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireaffectationcoop_visualisation:
+  url: /parcellaire-affectation-coop/visualisation/:id/:id_document
+  param: { module: parcellaireAffectationCoop, action: visualisation }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectationcoop_recap:
+  url: /parcellaire-affectation-coop/recap/:id
+  param: { module: parcellaireAffectationCoop, action: recap }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
+parcellaireaffectationcoop_exportcsv:
+  url: /parcellaire-affectation-coop/exportcsv/:id
+  param: { module: parcellaireAffectationCoop, action: exportcsv }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
     type:     object
   requirements:
     sf_method: [get]

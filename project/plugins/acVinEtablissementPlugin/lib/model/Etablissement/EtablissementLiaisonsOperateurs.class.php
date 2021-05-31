@@ -22,6 +22,11 @@ class EtablissementLiaisonsOperateurs extends BaseEtablissementLiaisonsOperateur
         return $etablissement->get($this->hash_chai);
     }
 
+    public function getEtablissementIdentifiant() {
+
+        return str_replace("ETABLISSEMENT-", "", $this->id_etablissement);
+    }
+
     public function getEtablissement() {
 
         return EtablissementClient::getInstance()->find($this->id_etablissement);

@@ -14,7 +14,7 @@ $t = $b->test();
 
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null));
 
-$t->comment("Création d'une société");
+$t->comment("Création de 2 sociétés opérateurs");
 
 $b->post('/societe-creation', array('societe-creation' => array("raison_sociale" => 'Societe TESTFUNCTIONNAL '.uniqid())))->followRedirect()->followRedirect()->followRedirect();
 $t->is($b->getResponse()->getStatuscode(), '200', 'Société créé');
@@ -47,6 +47,8 @@ $compteSociete2->addTag('test', 'test_functionnal');
 $compteSociete2->addTag('test', 'test_functionnal_societe_2');
 $compteSociete2->save();
 
+$t->comment("Création d'une société autre");
+
 $b->post('/societe-creation', array('societe-creation' => array("raison_sociale" => 'Societe TESTFUNCTIONNAL '.uniqid())))->followRedirect()->followRedirect()->followRedirect()->click('button#btn_valider')->followRedirect();
 preg_match("|/societe/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
 
@@ -55,6 +57,18 @@ $compteSocieteAutre = $societeAutre->getMasterCompte();
 $compteSocieteAutre->addTag('test', 'test_functionnal');
 $compteSocieteAutre->addTag('test', 'test_functionnal_societe_autre');
 $compteSocieteAutre->save();
+
+$t->comment("Création d'une société cave coop");
+
+$b->post('/societe-creation', array('societe-creation' => array("raison_sociale" => 'Societe TESTFUNCTIONNAL Coop'.uniqid())))->followRedirect()->followRedirect()->followRedirect()->click('button#btn_valider')->followRedirect();
+preg_match("|/societe/([^/]+)/visualisation|", $b->getRequest()->getUri(), $matches);
+
+$societeAnnexe = SocieteClient::getInstance()->find($matches[1]);
+
+$compteSocieteCoop = $societeAnnexe->getMasterCompte();
+$compteSocieteCoop->addTag('test', 'test_functionnal');
+$compteSocieteCoop->addTag('test', 'test_functionnal_societe_coop');
+$compteSocieteCoop->save();
 
 $t->comment('En mode stalker');
 
