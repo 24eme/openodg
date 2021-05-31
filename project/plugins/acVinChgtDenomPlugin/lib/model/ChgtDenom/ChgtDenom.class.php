@@ -392,7 +392,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
               $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
           }
       } else {
-          $lot->produit_hash = $this->origine_produit_hash;
+          $lot->produit_hash = null;
           $lot->produit_libelle = $this->origine_produit_libelle;
           $lot->cepages = $this->origine_cepages;
           $lot->specificite .= " DECLASSÉ en VSIG";

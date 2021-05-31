@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(149);
+$t = new lime_test(151);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -353,6 +353,9 @@ $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "la prove
 $t->is($chgtDenom->lots[1]->id_document_provenance, null, "le lot 2 perd sa provenance");
 $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement operateur d'origine a changé");
 $t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->getLotOrigine()->numero_logement_operateur, "L'autre partie du chgt denom n'a pas bougé de logement");
+$t->is($chgtDenom->lots[0]->produit_hash, $chgtdenom->origine_produit_hash, "Le 1er lot a bien conservé son produit");
+$t->is($chgtDenom->lots[1]->produit_hash, null, "Pour le déclassement partiel, le 2d lot n'a pas de produit");
+
 
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "le mouvement du lot d'origine a un statut changé dest");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGEABLE), "le mouvement du lot d'origine reste changeable");
