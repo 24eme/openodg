@@ -14,9 +14,10 @@ class chgtdenomActions extends sfActions
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
 
-        $this->form = new ChgtDenomNewLotForm($this->lot);
         $this->chgtDenom = ChgtDenomClient::getInstance()->createDoc($this->etablissement->identifiant,null, $papier);
         $this->chgtDenom->constructId();
+
+        $this->form = new ChgtDenomNewLotForm($this->lot, $this->chgtDenom);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -29,19 +30,7 @@ class chgtdenomActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        $hash = $this->form->getValue('produit_hash');
-
-        foreach($this->form->getProduits() as $key => $cepage) {
-            if($hash == $key) {
-                $this->lot->produit_libelle = $cepage;
-            }
-        }
-
         $this->form->save();
-
-        $this->chgtDenom->setLotOrigine($this->lot);
-        $this->chgtDenom->changement_origine_id_document = null;
-        $this->chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', array('id' => $this->chgtDenom->_id));
     }

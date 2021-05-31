@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(151);
+$t = new lime_test(157);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -416,3 +416,43 @@ $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d
 $chgtDenom->validate();
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
+
+
+$t->comment("ajout d'un lot sans origine");
+
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
+$drev->addLot();
+$lot = $drev->lots[0] ;
+$lot->getUniqueId();
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, null, $papier);
+$chgtDenom->constructId();
+$chgtdenom_sanslot_id = $chgtDenom->_id;
+$t->comment($chgtdenom_sanslot_id);
+
+$form = new ChgtDenomNewLotForm($lot, $chgtDenom);
+$valuesRev = array(
+    '_revision' => $chgtDenom->_rev,
+    'volume' => 12,
+    'millesime' => $periode,
+    'numero_logement_operateur' => 'C2',
+    'destination_date' => '01/07/'.$periode,
+    'produit_hash' => $autreLot->produit_hash,
+    'destination_type' => DRevClient::LOT_DESTINATION_VRAC_EXPORT,
+    'specificite' => 'HVE'
+);
+$form->bind($valuesRev);
+$t->ok($form->isValid(), "Le formulaire de création de lot est valide");
+$form->save();
+$chgtDenom = ChgtDenomClient::getInstance()->find($chgtdenom_sanslot_id);
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
+$chgtDenom->changement_volume = 12;
+$chgtDenom->validate($periode.'-05-01');
+$chgtDenom->validateOdg($periode.'-05-01');
+$chgtDenom->save();
+
+$t->ok($chgtDenom->isValidee(), "Le changement est validé");
+$t->is($chgtDenom->numero_archive, '00004', "le changement de dénomination a bien un numero d'archive");
+$t->is($chgtDenom->lots[0]->numero_archive, '00005', "Le lot déclassé a le bon numéro d'archive");
+$t->is($chgtDenom->lots[0]->numero_dossier, '00004', "Le lot déclassé a le bon numéro de dossier");
+$t->is($chgtDenom->lots[0]->unique_id, $periode.'-'.($periode + 1 ).'-00004-00005', "Le lot déclassé a le bon unique_id");
