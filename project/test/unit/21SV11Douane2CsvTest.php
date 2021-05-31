@@ -11,7 +11,7 @@ foreach($config->getProduits() as $produit) {
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv11_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg');
-file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%"), array("7523700100", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%cvi_1%", "%code_inao_1%", "%libelle_produit_1%"), array("7523700100", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
 
 $csv = new SV11DouaneCsvFile($csvTmpFile);
 $csvConvert = $csv->convert();

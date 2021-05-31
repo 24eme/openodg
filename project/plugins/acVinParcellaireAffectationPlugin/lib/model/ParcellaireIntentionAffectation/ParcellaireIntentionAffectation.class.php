@@ -46,8 +46,20 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
     }
     $this->addParcellesFromParcellaire($lieuxArr);
   	if ($parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant, $this->campagne)) {
-  		foreach ($this->getParcelles() as $hash => $parcelle) {
-  		    if ($parcellaireIntentionAffectation->exist($hash) && $parcellaireIntentionAffectation->get($hash)->affectation) {
+ 		foreach ($this->getParcelles() as $hash => $parcelle) {
+			            $hashWithoutNumeroOrdre = preg_replace("/(-[0-9]+)-[0-9]{2}(-?)/", '\1\2', $hash);
+			                   $parcellesMatch = array();
+				                   foreach($parcellaireIntentionAffectation->getParcelles() as $h => $p) {
+					                if($hashWithoutNumeroOrdre != preg_replace("/(-[0-9]+)-[0-9]{2}/", '\1', $h)) {
+					                         continue;
+					                 }
+			                       $parcellesMatch[] = $h;
+			            }
+                
+            if(count($parcellesMatch) == 1) {
+                $hash = $parcellesMatch[0];
+            }		
+			if ($parcellaireIntentionAffectation->exist($hash) && $parcellaireIntentionAffectation->get($hash)->affectation) {
   		        $parcelle->affectation = 1;
   		        $parcelle->date_affectation = $parcellaireIntentionAffectation->get($hash)->date_affectation;
   		        $parcelle->superficie_affectation = $parcellaireIntentionAffectation->get($hash)->superficie_affectation;

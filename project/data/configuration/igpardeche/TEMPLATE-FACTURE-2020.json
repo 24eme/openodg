@@ -87,29 +87,15 @@
                     ]
                 },
                 "lots": {
-                    "modele": "CotisationVariable",
-                    "prix": 8,
-                    "tva": 0.2,
-                    "libelle": "Nombre de lots presentés - N° %detail_identifiant%",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": "getNbLotsPreleves",
-                    "callback_parameters": [
-                    ]
-                },
-                "redegustation": {
                     "modele": "Cotisation",
                     "prix": 8,
                     "tva": 0.2,
-                    "unite": "",
-                    "libelle": "Second passage non conformité - N° %detail_identifiant%",
+                    "libelle": "Nombre de lots presentés",
                     "complement_libelle": "",
                     "docs": [
                         "Degustation"
                     ],
-                    "callback": "getFacturationLotRedeguste",
+                    "callback": "buildMouvementsNbLotsDegustes",
                     "callback_parameters": [
                     ]
                 }
