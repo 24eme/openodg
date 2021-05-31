@@ -68,7 +68,7 @@ class parcellaireAffectationCoopActions extends sfActions {
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        
+
         if($this->parcellaireAffectationCoop->storeEtape($this->getEtape($this->parcellaireAffectationCoop, ParcellaireAffectationCoopEtapes::ETAPE_SAISIES))) {
             $this->parcellaireAffectationCoop->save();
     	}
@@ -114,6 +114,13 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($request->getParameter('id_document'));
     }
 
+    public function executeRecap(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->apporteursWithDiff = $this->parcellaireAffectationCoop->getApporteursDiffFromLiaison();
+    }
+
     public function executeExportcsv(sfWebRequest $request) {
         $parcellaireAffectationCoop = $this->getRoute()->getObject();
         $etablissement = $this->getRoute()->getEtablissement();
@@ -138,7 +145,7 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         return sfView::NONE;
     }
-    
+
     protected function getEtape($parcellaireAffectationCoop, $etape) {
         $parcellaireAffectationCoopEtapes = ParcellaireAffectationCoopEtapes::getInstance();
         if (!$parcellaireAffectationCoopEtapes->exist('etape')) {

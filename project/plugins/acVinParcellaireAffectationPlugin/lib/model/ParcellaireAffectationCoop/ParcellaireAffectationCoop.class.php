@@ -102,6 +102,28 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         }
     }
 
+
+    public function getApporteursDiffFromLiaison(){
+      $apporteursLiaisonArray = array();
+
+      foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
+          $apporteursLiaisonArray[$liaison->id_etablissement] = $liaison->libelle_etablissement;
+      }
+
+      $apporteursWithDiff = array();
+      foreach ($this->getApporteurs() as $id => $apporteur) {
+        $apporteursWithDiff[$id] = new stdClass();
+        $apporteursWithDiff[$id]->apporteur = $apporteur;
+
+        $apporteursWithDiff[$id]->remove = (array_key_exists($id,$apporteursLiaisonArray) && !$apporteur->apporteur);
+        $apporteursWithDiff[$id]->add = (!array_key_exists($id,$apporteursLiaisonArray) && $apporteur->apporteur);
+        
+      }
+
+      return $apporteursWithDiff;
+    }
+
+
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
 
