@@ -401,7 +401,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lots[] = $lot;
 
       foreach($lots as $l) {
-        $lot = $this->_get('lots')->add(null, $l);
+        $lot = $this->lots->add(null, $l);
         $lot->id_document = $this->_id;
         $lot->updateDocumentDependances();
       }

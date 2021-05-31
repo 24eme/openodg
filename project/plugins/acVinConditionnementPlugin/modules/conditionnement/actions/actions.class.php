@@ -132,7 +132,7 @@ class conditionnementActions extends sfActions {
             $this->conditionnement->save();
         }
 
-        if (count($this->conditionnement->getLots()) == 0 || current(array_reverse($this->conditionnement->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        if (count($this->conditionnement->getLots()) == 0 || current(array_reverse($this->conditionnement->getSortedLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
             $this->conditionnement->addLot();
         }
         $this->form = new ConditionnementLotsForm($this->conditionnement);

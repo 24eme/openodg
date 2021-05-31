@@ -87,7 +87,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           $this->add('mouvements_lots');
       }
 
-      public function getLots(){
+      public function getSortedLots(){
           if(!$this->exist('lots')) {
               return array();
           }
@@ -112,7 +112,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
       public function getLotsByCouleur($visualisation = true) {
           $couleurs = array();
-          foreach ($this->getLots() as $lot) {
+          foreach ($this->getSortedLots() as $lot) {
              if($visualisation && !$lot->hasVolumeAndHashProduit()){
                continue;
              }
@@ -211,7 +211,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             return $this->validateOdgByRegion($date, $region);
         }
 
-        foreach($this->lots as $lot) {
+        foreach($this->getSortedLots() as $lot) {
           if($lot->hasBeenEdited()) {
               continue;
           }
@@ -372,7 +372,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
       public function archiverLot($numeroDossier) {
           $lots = array();
-          foreach($this->lots as $lot) {
+          foreach($this->getSortedLots() as $lot) {
             if ($lot->numero_archive) {
                 continue;
             }
@@ -513,7 +513,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             return;
           }
 
-          foreach ($this->lots as $lot) {
+          foreach ($this->getSortedLots() as $lot) {
               if($lot->hasBeenEdited()) {
                   continue;
               }
