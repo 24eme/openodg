@@ -7,7 +7,7 @@ class ExportLotsCSV {
     protected $withHistorique = false;
 
     public static function getHeaderCsv() {
-        return "Campagne;Identifiant;Col vide;Col vide;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Col vide;Statut de lot;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepages;Col vide;Col vide;Produit;Col vide;Col vide;Col vide;Col vide;Volume revendiqué;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Num logement Opérateur;Date lot;Produit (millesime);Destination;Col vide;Col vide;Doc ID;Lot unique ID;Num dossier;Num lot;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Conformité en appel;\n";
+        return "Application;Declarant Id;Declarant Nom;Date;Campagne;Num Dossier;Num Archive;Provenance Doc Ordre;Provenance Doc Type;Provenance Doc Id;Lot Id;Libelle;Redegustation;Volume;Statut;Detail\n";
     }
 
     public function __construct($header = true, $appName = null, $withHistorique = false) {
@@ -25,77 +25,53 @@ class ExportLotsCSV {
         return str_replace(".", ",", $value);
     }
 
+    protected function getLots() {
+      if ($this->withHistorique) {
+        return MouvementLotHistoryView::getInstance()->getAllLotsWithHistorique()->rows;
+      } else {
+        return MouvementLotHistoryView::getInstance()->getAllLotsByLevel()->rows;
+      }
+    }
+
     public function exportAll() {
         $csv = "";
+        $lots = $this->getLots();
         if ($this->header) {
             $csv .= $this->getHeaderCsv();
         }
-        foreach(MouvementLotView::getInstance()->getByStatut(null)->rows as $lot) {
+        foreach($lots as $lot) {
           $values = (array)$lot->value;
-
-          if (isset($values['leurre']) && $values['leurre']) {
+          if (!isset(Lot::$libellesStatuts[$values['statut']])) {
             continue;
           }
-
-          $adresse = explode(' — ', $values['adresse_logement']);
-          $produit = explode('/', str_replace('DEFAUT', '', $values['produit_hash']));
-          $cepages = ($values['cepages'])? implode(',', array_keys((array)$values['cepages'])) : '';
-          $date = explode('T', explode(' ',$values['date'])[0])[0];
-          $statut = $lot->key[MouvementLotView::KEY_STATUT];
-
-          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-              $values['campagne'],
+          // Suppression de doublon
+          $tabUniqueId = explode('-', $values['lot_unique_id']);
+          $IdFromUniqueId = $tabUniqueId[count($tabUniqueId)-1];
+          if ($IdFromUniqueId != $values['numero_archive']) {
+            continue;
+          }
+          $statut = Lot::$libellesStatuts[$values['statut']];
+          $date = preg_split('/( |T)/', $values['date'], -1, PREG_SPLIT_NO_EMPTY);
+          $redegustation = (preg_match("/ème dégustation/", $values['libelle']))? 'oui' : null;
+          $volume = str_replace('.', ',', $values['volume']);
+          $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+              $this->appName,
               $values['declarant_identifiant'],
-              null,
-              null,
               $values['declarant_nom'],
-              $this->protectStr($adresse[1]),
-              $adresse[2],
-              $this->protectStr($adresse[3]),
-              null,
-              $statut,
-              $produit[3],
-              $produit[5],
-              $produit[7],
-              $produit[9],
-              $produit[11],
-              $produit[13],
-              $cepages,
-              null,
-              null,
-              trim($values['produit_libelle']),
-              null,
-              null,
-              null,
-              null,
-              $this->formatFloat($values['volume']),
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              $this->protectStr($values['numero_logement_operateur']),
-              $date,
-              $this->protectStr($values['millesime']),
-              $values['destination_type'],
-              null,
-              null,
-              $values['id_document'],
-              $values['unique_id'],
+              $date[0],
+              $values['campagne'],
               $values['numero_dossier'],
               $values['numero_archive'],
-              (isset($values['elevage']) && $values['elevage'])? 1 : '',
-              (isset($values['details']))? $values['details'] : '',
-              (isset($values['specificite']))? $values['specificite'] : '',
-              (isset($values['centilisation']))? $values['centilisation'] : '',
-              (isset($values['preleve']))? $values['preleve'] : '',
-              (isset($values['conformite']))? $values['conformite'] : '',
-              (isset($values['conforme_appel']))? $values['conforme_appel'] : ''
-          ));
+              $values['document_ordre'],
+              $values['document_type'],
+              $values['document_id'],
+              $values['lot_unique_id'],
+              $values['libelle'],
+              $redegustation,
+              $volume,
+              $statut,
+              $values['detail']
+          );
         }
         return $csv;
     }
