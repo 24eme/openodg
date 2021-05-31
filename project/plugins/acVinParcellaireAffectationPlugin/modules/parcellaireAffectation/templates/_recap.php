@@ -42,7 +42,7 @@
         </tr>
     <?php endif; endforeach; ?>
         <tr class="vertical-center">
-            <td colspan="5" style="text-align: right; font-weight: bold;">Surface affectable totale des <?php echo ($nbParcelles > 1 )? "$nbParcelles parcelles sélectionnées" : "$nbParcelle parcelle sélectionnée"; ?></td>
+            <td colspan="5" style="text-align: right; font-weight: bold;">Surface affectable totale <?php echo ($nbParcelles > 1 )? "des $nbParcelles parcelles sélectionnées" : " de la parcelle sélectionnée"; ?></td>
             <td style="text-align: right; font-weight: bold;"><?php echo number_format($totalSurface,4); ?></td>
             <td></td>
         </tr>

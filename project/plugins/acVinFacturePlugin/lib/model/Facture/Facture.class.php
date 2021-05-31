@@ -734,4 +734,14 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->date_paiement = $date;
     }
 
+    public function updateDatePaiementFromPaiements() {
+        $date = null;
+        foreach($this->paiements as $p) {
+            if ($p->date > $date) {
+                $date = $p->date;
+            }
+        }
+        return $this->date_paiement = $date;
+    }
+
 }

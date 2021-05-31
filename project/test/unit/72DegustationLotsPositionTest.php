@@ -27,38 +27,58 @@ $l11_t2 = $degustation->addLeurre(null, 'Leurre 11 table 2', 2);
 $t->is($degustation->tri, "Couleur|Appellation|Cépage", "La dégustation a un tri par defaut Couleur|Appellation|Cépage");
 
 $t->is(count($degustation->lots), 11, '11 lots dans la degustation');
-$t->is($l1_t1->getPosition(), '01000', 'l1_t1 position 01000');
-$t->is($l2_t1->getPosition(), '01001', 'l2_t1 position 01001');
-$t->is($l3_t1->getPosition(), '01002', 'l3_t1 position 01002');
-$t->is($l4_t1->getPosition(), '01003', 'l4_t1 position 01003');
-$t->is($l5_t1->getPosition(), '01004', 'l5_t1 position 01004');
-$t->is($l6_t1->getPosition(), '01005', 'l6_t1 position 01005');
-$t->is($l7_t1->getPosition(), '01006', 'l7_t1 position 01006');
-$t->is($l8_t2->getPosition(), '02007', 'l1_t1 position 02007');
-$t->is($l9_t2->getPosition(), '02008', 'l2_t1 position 02008');
-$t->is($l10_t2->getPosition(), '02009', 'l3_t1 position 02009');
-$t->is($l11_t2->getPosition(), '02010', 'l4_t1 position 02010');
+$t->is($l1_t1->getPosition(), '010010', 'l1_t1 position 010010');
+$t->is($l2_t1->getPosition(), '010020', 'l2_t1 position 010020');
+$t->is($l3_t1->getPosition(), '010030', 'l3_t1 position 010030');
+$t->is($l4_t1->getPosition(), '010040', 'l4_t1 position 010040');
+$t->is($l5_t1->getPosition(), '010050', 'l5_t1 position 010050');
+$t->is($l6_t1->getPosition(), '010060', 'l6_t1 position 010060');
+$t->is($l7_t1->getPosition(), '010070', 'l7_t1 position 010070');
+$t->is($l8_t2->getPosition(), '020010', 'l8_t2 position 020010');
+$t->is($l9_t2->getPosition(), '020020', 'l9_t2 position 020020');
+$t->is($l10_t2->getPosition(), '020030', 'l10_t2 position 020030');
+$t->is($l11_t2->getPosition(), '020040', 'l11_t2 position 020040');
 
-$t->comment('Test du up');
+$t->comment('Test du up sur l4_t1');
 $l4_t1->changePosition(1);
-$t->is($l3_t1->getPosition(), '01003', 'l3_t1 nouvelle position 01003');
-$t->is($l4_t1->getPosition(), '01002', 'l4_t1 nouvelle position 01002');
-$t->is($degustation->tri, "Manuel", "Après un changement de position, le tri de la dégustation est Manuel");
+$t->is($l3_t1->getPosition(), '010040', 'l3_t1 a pris comme position celle de l4_t1');
+$t->is($l4_t1->getPosition(), '010030', 'l4_t1 a pris comme position celle de l3_t1');
+$t->is($degustation->tri, DegustationClient::DEGUSTATION_TRI_MANUEL, "Après un changement de position, le tri de la dégustation est Manuel");
 
 
-$t->comment('Test du down');
+$t->comment('Test du down sur l4_t1');
 $l4_t1->changePosition(-1);
-$t->is($l3_t1->getPosition(), '01002', 'l3_t1 nouvelle position 01002');
-$t->is($l4_t1->getPosition(), '01003', 'l4_t1 nouvelle position 01003');
+$t->is($l3_t1->getPosition(), '010030', "l3_t1 a repris sa position d'originie");
+$t->is($l4_t1->getPosition(), '010040', "l4_t1 a repris sa position d'originie");
 
 $t->comment('Test des bornes');
 $l1_t1->changePosition(1);
-$t->is($l1_t1->getPosition(), '01000', 'l1_t1 non bougé');
+$t->is($l1_t1->getPosition(), '010010', 'up sur l1_t1 ne le fait pas bouger');
 $l7_t1->changePosition(-1);
-$t->is($l7_t1->getPosition(), '01006', 'l7_t1 non bougé');
+$t->is($l7_t1->getPosition(), '010070', 'down sur l7_t1 ne le fait pas bouger');
 
 $t->comment('Test deplacement table');
 $l4_t1->numero_table = null;
-$t->is($l4_t1->getPosition(), '99003', 'l4_t1 en attente d\'attribution de table');
+$t->is($l4_t1->getPosition(), '990010', 'l4_t1 en attente d\'attribution de table');
 $l4_t1->numero_table = 2;
-$t->is($l4_t1->getPosition(), '02011', 'l4_t1 attribué a la table 2');
+$t->is($l4_t1->getPosition(), '020050', 'l4_t1 attribué a la table 2');
+$t->is($l8_t2->getPosition(), '020010', "l8_t2 qui est sur la table 2 n'a pas changé de position");
+$t->is($l9_t2->getPosition(), '020020', "l9_t2 qui est sur la table 2 n'a pas changé de position");
+$t->is($l10_t2->getPosition(), '020030', "l10_t2 qui est sur la table 2 n'a pas changé de position");
+$t->is($l11_t2->getPosition(), '020040', "l11_t2 qui est sur la table 2 n'a pas changé de position");
+
+$t->comment('Changement de tri');
+$degustation->setTri("Cépage|Appellation|Couleur");
+$t->is($degustation->tri, "Cépage|Appellation|Couleur", "La dégustation a un tri par defaut Couleur|Appellation|Cépage");
+$t->is($l1_t1->getPosition(), '010010', 'l1_t1 position 010010');
+$t->is($l2_t1->getPosition(), '010020', 'l2_t1 position 010020');
+$t->is($l3_t1->getPosition(), '010030', 'l3_t1 position 010030');
+$t->is($l4_t1->getPosition(), '020010', 'l4_t1 position 010040');
+$t->is($l5_t1->getPosition(), '010040', 'l5_t1 position 010050');
+$t->is($l6_t1->getPosition(), '010050', 'l6_t1 position 010060');
+$t->is($l7_t1->getPosition(), '010060', 'l7_t1 position 010070');
+$t->is($l8_t2->getPosition(), '020020', 'l1_t1 position 020080');
+$t->is($l9_t2->getPosition(), '020030', 'l2_t1 position 020090');
+$t->is($l10_t2->getPosition(), '020040', 'l3_t1 position 020100');
+$t->is($l11_t2->getPosition(), '020050', 'l4_t1 position 020110');
+
