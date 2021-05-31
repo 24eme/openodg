@@ -118,6 +118,11 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
 
+        if (!$this->getUser()->isAdmin()) {
+          throw new sfException("La page de recap des liaisons n'est disponible qu'en admin");
+
+        }
+
         $this->apporteursWithDiff = $this->parcellaireAffectationCoop->getApporteursDiffFromLiaison();
     }
 
