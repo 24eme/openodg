@@ -3,6 +3,7 @@
 
 # default values
 all:
+  routing_context_production_host: med.igp.vins.24eme.fr
   organisme:
     nom: "INTERMED"
   float:
