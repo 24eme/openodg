@@ -38,21 +38,20 @@ EOF;
             return;
         }
 
-        if(!$drev->validation) {
-
-            //return;
-        }
-
         $drev->calculateVolumeRevendiqueVCI();
-        if($drev->validation) {
-            $drev->cleanDoc();
-        }
+        
         $jsonFinal = new acCouchdbJsonNative($drev->getData());
         if($jsonOriginal->equal($jsonFinal)) {
             return;
         }
+        
+        foreach($jsonOriginal->diff($jsonFinal) as $hash => $value) {
+            echo $drev->_id.";".$hash.";before;".$value."\n";
+        }
+        foreach($jsonFinal->diff($jsonOriginal) as $hash => $value) {
+            echo $drev->_id.";".$hash.";after;".$value."\n";
+        }
 
-        echo $drev->_id.";".$drev->declaration->getTotalSuperficieVinifiee()." ares".";".(($drev->isNonRecoltant()) ? "non_recoltant" : "")."\n";
         //print_r($jsonOriginal->diff($jsonFinal));
         //print_r($jsonFinal->diff($jsonOriginal));
     }

@@ -288,11 +288,15 @@ class DRevCouleur extends BaseDRevCouleur
         return false;
     }
 
-		public function setVolumeRevendiqueVCI($v) {
+		public function setVolumeRevendiqueVCI($v, $vciStockageNegoce = 0) {
 			parent::_set('volume_revendique_vci', $v);
+
+			$v = $v - $vciStockageNegoce;
+			
 			if (!$this->exist('volume_revendique_recolte')){
-				return $this->setVolumeRevendique( $v);
+				return $this->setVolumeRevendique($v);
 			}
+
 			return $this->setVolumeRevendique( $v + $this->get('volume_revendique_recolte'));
 		}
 
