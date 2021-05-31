@@ -132,29 +132,45 @@ Les produits déclarés sont du millésime du VCI
 </table>
 <?php endif; ?>
 
-<?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
     <br/><br/>
-    <span class="h3">&nbsp;Logement du vin&nbsp;</span><br/>
+    <span class="h3">&nbsp;Prélèvement&nbsp;</span><br/>
     <table class="tableAlt" border="0" cellspacing=0 cellpadding=0 style="text-align: right;" >
       <thead>
         <tr style="line-height:20em;">
+          <?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
           <th class="th" style="text-align: center; width: 20%">Num. Dossier</th>
+          <?php endif; ?>
           <th class="th" style="text-align: center; width: 80%">Détails du chais</th>
         </tr>
       </thead>
       <tbody>
-      <?php foreach ($drev->getLotsByNumeroDossier() as $lot) : ?>
+      <?php if($drev->isAllDossiersHaveSameAddress()): ?>
         <tr>
-          <td class="td" style="text-align: center; width: 20%"><?php echo $lot->numero_dossier; ?></td>
+          <td style="vertical-align : middle;" class="text-left">
+            <?php echo $drev->constructAdresseLogement(); ?>
+          </td>
+        </tr>
+      <?php else:
+        foreach ($drev->getLotsByAdresse() as $address => $lots) : ?>
+        <tr>
+          <td class="td" style="text-align: center; width: 20%">
+            <?php
+            $dossiers = array();
+            foreach($lots as $lot){
+              $dossiers[] = $lot->numero_dossier;
+            }
+            echo join(' ; ', $dossiers);
+            ?>
+          </td>
           <td class="td" style="text-align: left; width: 80%">
-            <?php echo $lot->adresse_logement;
+            <?php echo $address;
             ?>
           </td>
         </tr>
-      <?php endforeach; ?>
-    </tbody>
+        <?php endforeach;
+      endif; ?>
+      </tbody>
     </table>
-<?php endif; ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) && DRevConfiguration::getInstance()->hasEngagementsPdf()): ?>
     <br />
