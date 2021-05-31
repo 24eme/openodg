@@ -59,7 +59,7 @@ class ExportComptesCsv
 
         foreach (CompteAllView::getInstance()->getAll() as $json_doc) {
             $compte = $compteclient->find($json_doc->id);
-
+            $domaine = sfConfig::get('app_routing_context_production_host');
             $data = [
                 $compte->getCodeComptable(),
                 $compte->nom_a_afficher,
@@ -78,7 +78,7 @@ class ExportComptesCsv
                 ($compte->telephone_bureau) ?: $compte->telephone_mobile,
                 $compte->fax,
                 $compte->email,
-                "https://declaration.syndicat-cotesdurhone.com/societe/$compte->identifiant/visualisation",
+                "https://$domaine/societe/$compte->identifiant/visualisation",
                 $compte->compte_type,
                 $compte->_id
             ];
