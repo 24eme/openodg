@@ -3,6 +3,7 @@
 
 # default values
 all:
+  routing_context_production_host: arles.igp.vins.24eme.fr
   organisme:
     nom: "Syndicat des Producteurs de Vins de Pays des Bouches-du-Rhône"
   float:

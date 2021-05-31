@@ -320,6 +320,12 @@ class degustationActions extends sfActions {
     public function executeNotificationsEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
+
+        if (!$this->degustation->AreAllLotsSaisis()) {
+            $this->getUser()->setFlash('error', "Il reste des lots sans résultats (conformes/non-conformes). Merci de les saisir !");
+            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_RESULTATS), $this->degustation);
+        }
+
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }

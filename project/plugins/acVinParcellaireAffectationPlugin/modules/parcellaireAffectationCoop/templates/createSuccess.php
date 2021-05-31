@@ -1,3 +1,9 @@
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $periode - 1)); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <li class="active"><a href="">Affectations parcellaires des apporteurs <?php echo $periode; ?></a></li>
+</ol>
+
 <div class="page-header no-border">
     <h2>Récupération des apporteurs depuis votre SV11</h2>
 </div>

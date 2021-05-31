@@ -2,6 +2,27 @@
 
 class parcellaireAffectationCoopActions extends sfActions {
 
+    public function executeEdit(sfWebRequest $request) {
+
+        $etablissement = $this->getRoute()->getObject();
+        $periode = $request->getParameter('periode');
+
+        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->find(ParcellaireAffectationCoopClient::getInstance()->buildId($etablissement->identifiant, $periode));
+
+        if(!$parcellaireAffectationCoop) {
+
+            return $this->redirect('parcellaireaffectationcoop_create', array('identifiant' => $etablissement->identifiant, 'periode' => $periode));
+        }
+
+
+        if (!$parcellaireAffectationCoop->exist('etape') || !$parcellaireAffectationCoop->etape) {
+
+            return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
+        }
+
+        return $this->redirect(ParcellaireAffectationCoopEtapes::getInstance()->getRouteLink($parcellaireAffectationCoop->etape), $parcellaireAffectationCoop);
+    }
+
     public function executeCreate(sfWebRequest $request) {
 
         $this->etablissement = $this->getRoute()->getObject();
@@ -21,6 +42,10 @@ class parcellaireAffectationCoopActions extends sfActions {
     public function executeApporteurs(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
+
+        if($this->parcellaireAffectationCoop->storeEtape($this->getEtape($this->parcellaireAffectationCoop, ParcellaireAffectationCoopEtapes::ETAPE_APPORTEURS))) {
+            $this->parcellaireAffectationCoop->save();
+    	}
 
         $this->form = new ParcellaireAffectationCoopApporteursForm($this->parcellaireAffectationCoop);
 
@@ -43,6 +68,10 @@ class parcellaireAffectationCoopActions extends sfActions {
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
+
+        if($this->parcellaireAffectationCoop->storeEtape($this->getEtape($this->parcellaireAffectationCoop, ParcellaireAffectationCoopEtapes::ETAPE_SAISIES))) {
+            $this->parcellaireAffectationCoop->save();
+    	}
     }
 
     public function executeSaisie(sfWebRequest $request) {
@@ -85,6 +114,18 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($request->getParameter('id_document'));
     }
 
+    public function executeRecap(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        if (!$this->getUser()->isAdmin()) {
+          throw new sfException("La page de recap des liaisons n'est disponible qu'en admin");
+
+        }
+
+        $this->apporteursWithDiff = $this->parcellaireAffectationCoop->getApporteursDiffFromLiaison();
+    }
+
     public function executeExportcsv(sfWebRequest $request) {
         $parcellaireAffectationCoop = $this->getRoute()->getObject();
         $etablissement = $this->getRoute()->getEtablissement();
@@ -108,6 +149,14 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->response->setHttpHeader('Content-Disposition',$attachement );
 
         return sfView::NONE;
+    }
+
+    protected function getEtape($parcellaireAffectationCoop, $etape) {
+        $parcellaireAffectationCoopEtapes = ParcellaireAffectationCoopEtapes::getInstance();
+        if (!$parcellaireAffectationCoopEtapes->exist('etape')) {
+            return $etape;
+        }
+        return ($parcellaireAffectationCoopEtapes->isLt($parcellaireAffectationCoopEtapes->etape, $etape)) ? $etape : $parcellaireAffectationCoopEtapes->etape;
     }
 
 }
