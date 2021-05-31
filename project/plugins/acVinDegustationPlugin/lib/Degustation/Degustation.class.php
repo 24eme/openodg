@@ -472,7 +472,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function AreAllLotsSaisis(){
 
 			foreach ($this->getLots() as $lot) {
-				if ($lot->statut !== Lot::STATUT_CONFORME || $lot->statut !== Lot::STATUT_NONCONFORME) {
+
+				if ($lot->statut !== Lot::STATUT_CONFORME && $lot->statut !== Lot::STATUT_NONCONFORME) {					
 						return false;
 				}
 			}
