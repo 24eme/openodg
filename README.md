@@ -71,11 +71,13 @@ COUCHTEST=http://localhost:5984/openodg_test
 
 Pour lancer les tests :
 
+Librairie nécessaire : libjson-perl
+
 ```
 cd project
-bash bin run_test.sh <application> # Pour lancer les tests d'une application
-bash bin run_test.sh <application> <specifique_test> # Pour lancer les tests d'un jeu de test en particulier d'une application
-bash bin run_test.sh all # Pour lancer les tests sur toutes les applications
+bash bin/run_test.sh <application> # Pour lancer les tests d'une application
+bash bin/run_test.sh <application> <specifique_test> # Pour lancer les tests d'un jeu de test en particulier d'une application
+bash bin/run_test.sh all # Pour lancer les tests sur toutes les applications
 ```
 
 Aperçu de l'application pour l'Association des Viticulteurs d'Alsace
