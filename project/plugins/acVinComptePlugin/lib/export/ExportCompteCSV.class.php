@@ -33,7 +33,9 @@ class ExportComptesCsv
             "Téléphone",
             "Fax",
             "Email",
-            "Site"
+            "Site",
+            "Compte Type",
+            "N° Compte Type"
         ];
     }
 
@@ -76,7 +78,9 @@ class ExportComptesCsv
                 ($compte->telephone_bureau) ?: $compte->telephone_mobile,
                 $compte->fax,
                 $compte->email,
-                "https://declaration.syndicat-cotesdurhone.com/societe/$compte->identifiant/visualisation"
+                "https://declaration.syndicat-cotesdurhone.com/societe/$compte->identifiant/visualisation",
+                $compte->compte_type,
+                $compte->_id
             ];
 
             fputcsv($this->csv, $data, self::$delimiter);
