@@ -3,13 +3,17 @@
 class ExportLotsCSV {
 
     protected $header = false;
+    protected $appName = null;
+    protected $withHistorique = false;
 
     public static function getHeaderCsv() {
         return "Campagne;Identifiant;Col vide;Col vide;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Col vide;Statut de lot;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepages;Col vide;Col vide;Produit;Col vide;Col vide;Col vide;Col vide;Volume revendiqué;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Col vide;Num logement Opérateur;Date lot;Produit (millesime);Destination;Col vide;Col vide;Doc ID;Lot unique ID;Num dossier;Num lot;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Conformité en appel;\n";
     }
 
-    public function __construct($header = true) {
+    public function __construct($header = true, $appName = null, $withHistorique = false) {
         $this->header = $header;
+        $this->appName = $appName;
+        $this->withHistorique = $withHistorique;
     }
 
     public function protectStr($str) {
