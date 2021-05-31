@@ -17,7 +17,7 @@ class DegustationAffectionLotForm extends BaseForm
         $this->setWidget('preleve',new WidgetFormInputCheckbox());
         $this->setValidator('preleve', new ValidatorBoolean(array('required' => true)));
 
-        $tables = array(1 => "Table A",2 => "Table B",3 => "Table C",4 => "Table D",5 => "Table E",6 => "Table F");
+        $tables = array(1 => "Table A",2 => "Table B",3 => "Table C",4 => "Table D",5 => "Table E",6 => "Table F",7 =>"Table G",8 =>"Table H",9 =>"Table I",10 =>"Table J");
         $this->setWidget('numero_table' ,new bsWidgetFormChoice(array('choices' => $tables )) );
         $this->setValidator('numero_table', new sfValidatorPass(array('required' => false)));
 
