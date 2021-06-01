@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(157);
+$t = new lime_test(158);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -341,6 +341,7 @@ $t->is($chgtDenom->changement_origine_id_document, $degustation->_id, "changemen
 $t->is($chgtDenom->changement_produit_hash, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
+$t->is($chgtDenom->origine_produit_hash, $lotFromDegust->produit_hash, "l'origine du produit est bien conservée");
 
 $t->is(count($chgtDenom->lots), 2, "Pour un déclassement partiel il y a 2 lot généré");
 $t->is($chgtDenom->lots[0]->numero_archive, '00001', "Pour le déclassement, le 1er lot n'a pas changé de numéro d'archive");
@@ -353,7 +354,7 @@ $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "la prove
 $t->is($chgtDenom->lots[1]->id_document_provenance, null, "le lot 2 perd sa provenance");
 $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement operateur d'origine a changé");
 $t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->getLotOrigine()->numero_logement_operateur, "L'autre partie du chgt denom n'a pas bougé de logement");
-$t->is($chgtDenom->lots[0]->produit_hash, $chgtdenom->origine_produit_hash, "Le 1er lot a bien conservé son produit");
+$t->is($chgtDenom->lots[0]->produit_hash, $lotFromDegust->produit_hash, "Le 1er lot a bien conservé son produit");
 $t->is($chgtDenom->lots[1]->produit_hash, null, "Pour le déclassement partiel, le 2d lot n'a pas de produit");
 
 
