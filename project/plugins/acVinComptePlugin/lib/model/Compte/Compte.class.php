@@ -110,23 +110,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function addInGroupes($grp,$fct){
-        $grpt = str_replace(array('.', ')', '('), array('','',''), $grp);
-        $grpn = str_replace(array( ')', '('), array('',''), $grp);
         $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
         $allGrps = $this->getOrAdd('groupes');
         $grpNode = $allGrps->add();
-        $grpNode->nom = $grpn;
+        $grpNode->nom = $grp;
         $grpNode->fonction = $fct;
-        $this->addTag('groupes', $grpt);
+        $this->addTag('groupes', $grp);
     }
 
     public function removeGroupes($grp){
-        $grpt = str_replace(array( ')', '('), array('',''), $grp);
-        $grpt = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
+        $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
         $allGrps = $this->getOrAdd('groupes');
         $grp_to_keep = array();
         foreach ($allGrps as $oldGrp) {
-          if(str_replace('.','!',$oldGrp->nom) != $grp){
+          if($oldGrp->nom != $grp){
             $grp_to_keep[] = $oldGrp;
           }
         }
@@ -135,9 +132,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->get('tags')->remove('groupes');
         foreach ($grp_to_keep as $newgrp) {
           $this->groupes->add(null,$newgrp);
-          $newgrpNom = str_replace(array( ')', '('), array('',''), $newgrp->nom);
-          $newgrpNom = preg_replace('/^ */', '', preg_replace('/ *$/', '', $newgrpNom));
-          $this->addTag('groupes', $newgrpNom);
+          $this->addTag('groupes', $newgrp->nom);
         }
 
     }
