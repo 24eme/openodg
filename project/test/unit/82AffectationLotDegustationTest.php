@@ -93,33 +93,37 @@ $form = new DegustationAffectionLotForm($lot);
 $nom = "Degustation du ".$degustationTeste->date." au ".$degustationTeste->lieu;
 $t->is($form->getDegustationChoices(),array($degustationTeste->_id => $nom),"Exemple : Degustation n°2021102 du 21/05/2021 à 10h30 au Syndicat des Vignerons");
 
+$t->comment('On ajoute un leurre');
+$leurre = $degustationTeste->addLeurre($produitLeurreHash, 'Cepage leurre', 1);
+
+$t->is($leurre->leurre, true, 'C\'est un leurre');
+$t->is($leurre->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
+$t->is($leurre->numero_table, 1, 'Le numéro de table est le 1');
+$t->is($leurre->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
+
+$degustationTeste->save();
+
 $values = array();
 $values['degustation'] = $degustationTeste->_id;
+//Checkbox
 $values['preleve'] = 1;
 $values['numero_table'] = 1;
 
 $form->bind($values);
 $t->ok($form->isValid(),"Le formulaire est valide");
 
+$t->comment('Sauvegarde du formulaire');
 $form->save();
 
 $degustation = DegustationClient::getInstance()->find($degustationTeste->_id);
-$t->is(count($degustation->getLots()),1,"La dégustation a un lot");
-$t->is($lot->unique_id,$degustation->lots->getFirst()->unique_id,"Le lot de la dégustation correspond au lot crée");
-$lotAjoutee = $degustation->lots->getFirst();
+$t->is(count($degustation->getLots()),2,"La dégustation a un lot");
+$t->is($lot->unique_id,$degustation->lots->get(1)->unique_id,"Le lot de la dégustation correspond au lot crée");
+$lotAjoutee = $degustation->lots->get(1);
 $t->is($lotAjoutee->preleve,date('Y-m-d'),"Le lot a une date de prelevement");
-$t->is($lotAjoutee->numero_table,1,"Le lot est bien assigné à la table 2");
+$t->is($lotAjoutee->numero_table,1,"Le lot est bien assigné à une table ");
 $t->is($lotAjoutee->statut, Lot::STATUT_ATTABLE, "Le 1er lot est attablé");
 
 $degustationAnonyme = DegustationClient::getInstance()->find($degustation->_id);
 $degustationAnonyme->anonymize();
 $degustationAnonyme->save();
 $t->ok($degustationAnonyme->isAnonymized(),"La dégustation a été anonymisé");
-
-$t->comment('On ajoute un leurre');
-$leurre = $degustationAnonyme->addLeurre($produitLeurreHash, 'Cepage leurre', 1);
-
-$t->is($leurre->leurre, true, 'C\'est un leurre');
-$t->is($leurre->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
-$t->is($leurre->numero_table, 1, 'Le numéro de table est le 1');
-$t->is($leurre->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
