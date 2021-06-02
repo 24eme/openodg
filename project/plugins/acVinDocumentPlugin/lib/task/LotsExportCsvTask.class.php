@@ -9,6 +9,7 @@ class LotsExportCsvTask extends sfBaseTask
       new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
       new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+      new sfCommandOption('with-historique', null, sfCommandOption::PARAMETER_REQUIRED, 'Export avec l\'historique', 0),
       // add your own options here
     ));
 
@@ -26,7 +27,7 @@ EOF;
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
     $context = sfContext::createInstance($this->configuration);
 
-    $e = new ExportLotsCSV();
+    $e = new ExportLotsCSV(true, $this->configuration->getApplication(), $options['with-historique']);
     print $e->exportAll();
   }
 }

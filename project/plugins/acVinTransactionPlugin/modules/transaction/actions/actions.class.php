@@ -128,7 +128,7 @@ class transactionActions extends sfActions {
             $this->transaction->save();
         }
 
-        if (count($this->transaction->getLots()) == 0 || current(array_reverse($this->transaction->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        if (count($this->transaction->getLots()) == 0 || current(array_reverse($this->transaction->getSortedLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
             $this->transaction->addLot();
         }
         $this->form = new TransactionLotsForm($this->transaction);

@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(147);
+$t = new lime_test(158);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -111,7 +111,7 @@ $t->comment("Changement de dénom sur DREV");
 
 $date = $year.'-10-10 10:10:10';
 $chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
-
+$chgtDenomFromDrev->constructId();
 $chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 $t->comment($chgtDenomFromDrev->_id);
@@ -120,6 +120,7 @@ $idChgtDenomFromDrev = "CHGTDENOM-".$viti->identifiant."-".preg_replace("/[-\ :]
 $t->is($chgtDenomFromDrev->_id, $idChgtDenomFromDrev, "id du document");
 $t->is($chgtDenomFromDrev->campagne, $campagne, "le chgt de denom a la bonne campagne à $campagne");
 $t->is($chgtDenomFromDrev->periode, $year, "le chgt de denom a la bonne periode à $year");
+$t->is($chgtDenomFromDrev->numero_archive, '00002', "le chgt de denom a bien un numero d'archive'");
 
 $lotFromDrev = array_shift($lots);
 $chgtDenomFromDrev->setLotOrigine($lotFromDrev);
@@ -140,6 +141,7 @@ $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le ch
 $t->isnt($chgtDenomFromDrev->changement_produit_hash, $lotFromDrev->produit_hash, "Le changement a bien un produit différent");
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Le lot ");
 $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le changement a bien le millesime de son origine : ".$drev->lots[2]->millesime);
+$t->is($chgtDenomFromDrev->lots[0]->numero_archive, "00003", "Le lot du chgt a le même numéro d'archive que dans la drev");
 
 $t->is(count($chgtDenomFromDrev->lots), 1, "Le changement étant total, on a un seul lot");
 $t->is($chgtDenomFromDrev->lots[0]->id_document, $idChgtDenomFromDrev, "Le lot du chgt a bien id_document ".$idChgtDenomFromDrev);
@@ -242,7 +244,7 @@ $t->is($chgtDenom->origine_numero_logement_operateur, $lotFromDegust->numero_log
 $t->ok($chgtDenom->isTotal(), "Le changement est bien indiqué comme total");
 
 $lotFromChgmt = $chgtDenom->lots->get(0);
-$t->is($lotFromChgmt->numero_archive, $lotFromDegust->numero_archive.'a', "Le numéro d'archive n'a pas changé");
+$t->is($lotFromChgmt->numero_archive, $lotFromDegust->numero_archive, "Le numéro d'archive n'a pas changé");
 $t->is($lotFromChgmt->numero_dossier, $lotFromDegust->numero_dossier, "Le numéro de dossier n'a pas changé");
 $t->is($lotFromChgmt->produit_hash, $chgtDenom->changement_produit_hash, "Le produit est bien le nouveau dans le lot");
 $t->is($lotFromChgmt->volume, $chgtDenom->changement_volume, "Le volume est bien le nouveau dans le lot");
@@ -279,12 +281,12 @@ $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libe
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
-$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive.'a', "numeros d'archive correctement postfixés : ".$lotFromDegust->numero_archive.'a');
-$t->is($chgtDenom->lots[1]->numero_archive, $lotFromDegust->numero_archive.'b', "numeros d'archive correctement postfixés : ".$lotFromDegust->numero_archive.'b');
+$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive, "numero d'archive correctement du lot 1 conservé : ".$lotFromDegust->numero_archive);
+$t->is($chgtDenom->lots[1]->numero_archive, '00004', "numeros d'archive du lot 2 changé pour le suivant");
 $t->is($chgtDenom->lots[0]->document_ordre, '03', "Le lot 1 a bien 03 comme numéro d'ordre");
-$t->is($chgtDenom->lots[1]->document_ordre, '03', "Le lot 1 a bien 03 comme numéro d'ordre");
+$t->is($chgtDenom->lots[1]->document_ordre, '01', "Le lot 2 a bien 01 comme numéro d'ordre");
 $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "Le lot 1 généré provient bien de la dégustation ".$degustation->_id);
-$t->is($chgtDenom->lots[1]->id_document_provenance, $degustation->_id, "Le lot 2 généré provient bien de la dégustation ".$degustation->_id);
+$t->is($chgtDenom->lots[1]->id_document_provenance, null, "Le lot 2 perd sa provenance de ".$degustation->_id);
 $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement opérateur n'a pas changé pour le lot origine");
 $t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur, "Le logement lot 2 a changé");
 $t->is($chgtDenom->lots[0]->affectable, $chgtDenom->origine_affectable, "L'affectation du lot origine n'a pas changé");
@@ -311,7 +313,7 @@ $chgtDenom->validate();
 $t->ok($chgtDenom->isTotal(), "Le changement qui a un volume identique est bien un changement total");
 $t->is(count($chgtDenom->lots), 1, "Ce changement total ne génère plus que 1 lot");
 $chgtDenom->generateMouvementsLots(1);
-$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive.'a', "Un chgm total ne change pas le numero d'archive");
+$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive, "Un chgm total ne change pas le numero d'archive");
 $t->is($chgtDenom->changement_produit_hash, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
@@ -328,29 +330,33 @@ $chgtDenom->clearLots();
 $t->comment("Création d'un Declassement Partiel");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
-$chgtDenom->changement_volume = round($volume / 2, 2);
+$chgtDenom->changement_volume = round($volume / 3, 2);
 $chgtDenom->origine_numero_logement_operateur = "(ex1)";
 $chgtDenom->validate();
 $chgtDenom->save();
 
-$t->ok(!$chgtDenom->isTotal(), "Le changement est bien partiel vu qu'il porte sur ".round($volume / 2, 2)." hl");
+$t->ok(!$chgtDenom->isTotal(), "Le changement est bien partiel vu qu'il porte sur ".round($volume / 3, 2)." hl");
 
 $t->is($chgtDenom->changement_origine_id_document, $degustation->_id, "changement_origine_id_document est bien ".$degustation->_id);
 $t->is($chgtDenom->changement_produit_hash, null, "Pas de produit");
 $t->is($chgtDenom->changement_produit_libelle, null, "Pas de produit libelle");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT, "Type de changement à DECLASSEMENT");
+$t->is($chgtDenom->origine_produit_hash, $lotFromDegust->produit_hash, "l'origine du produit est bien conservée");
 
 $t->is(count($chgtDenom->lots), 2, "Pour un déclassement partiel il y a 2 lot généré");
-$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive.'a', "Pour le déclassement, le 1er lot est postfixé par a");
-$t->is($chgtDenom->lots[1]->numero_archive, $lotFromDegust->numero_archive.'b', "Pour le déclassement, le 2d lot est postfixé par b");
+$t->is($chgtDenom->lots[0]->numero_archive, '00001', "Pour le déclassement, le 1er lot n'a pas changé de numéro d'archive");
+$t->is($chgtDenom->lots[1]->numero_archive, '00005', "Pour le déclassement, le 2d lot a un nouveau numéro d'archive");
 $t->is($chgtDenom->lots[0]->document_ordre, '03', "Le numéro d'ordre du lot 1 est bien 03");
-$t->is($chgtDenom->lots[1]->document_ordre, '03', "Le numéro d'ordre du lot 2 est bien 03");
-$t->is($chgtDenom->lots[0]->volume, $volume - round($volume / 2, 2), "le volume du lot originel a bien changé également");
-$t->is($chgtDenom->lots[1]->volume, round($volume / 2, 2), "volume du lot changé est bon");
+$t->is($chgtDenom->lots[1]->document_ordre, '01', "Le numéro d'ordre du lot 2 est bien 01");
+$t->is($chgtDenom->lots[0]->volume, $volume - round($volume / 3, 2), "le volume du lot originel a bien changé également");
+$t->is($chgtDenom->lots[1]->volume, round($volume/ 3, 2), "volume du lot changé est bon");
 $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "la provenance du lot 1 est bien ".$degustation->_id);
-$t->is($chgtDenom->lots[1]->id_document_provenance, $degustation->_id, "la provenance du lot 2 est bien ".$degustation->_id);
+$t->is($chgtDenom->lots[1]->id_document_provenance, null, "le lot 2 perd sa provenance");
 $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement operateur d'origine a changé");
 $t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->getLotOrigine()->numero_logement_operateur, "L'autre partie du chgt denom n'a pas bougé de logement");
+$t->is($chgtDenom->lots[0]->produit_hash, $lotFromDegust->produit_hash, "Le 1er lot a bien conservé son produit");
+$t->is($chgtDenom->lots[1]->produit_hash, null, "Pour le déclassement partiel, le 2d lot n'a pas de produit");
+
 
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "le mouvement du lot d'origine a un statut changé dest");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGEABLE), "le mouvement du lot d'origine reste changeable");
@@ -411,3 +417,43 @@ $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d
 $chgtDenom->validate();
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
+
+
+$t->comment("ajout d'un lot sans origine");
+
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
+$drev->addLot();
+$lot = $drev->lots[0] ;
+$lot->getUniqueId();
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, null, $papier);
+$chgtDenom->constructId();
+$chgtdenom_sanslot_id = $chgtDenom->_id;
+$t->comment($chgtdenom_sanslot_id);
+
+$form = new ChgtDenomNewLotForm($lot, $chgtDenom);
+$valuesRev = array(
+    '_revision' => $chgtDenom->_rev,
+    'volume' => 12,
+    'millesime' => $periode,
+    'numero_logement_operateur' => 'C2',
+    'destination_date' => '01/07/'.$periode,
+    'produit_hash' => $autreLot->produit_hash,
+    'destination_type' => DRevClient::LOT_DESTINATION_VRAC_EXPORT,
+    'specificite' => 'HVE'
+);
+$form->bind($valuesRev);
+$t->ok($form->isValid(), "Le formulaire de création de lot est valide");
+$form->save();
+$chgtDenom = ChgtDenomClient::getInstance()->find($chgtdenom_sanslot_id);
+$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
+$chgtDenom->changement_volume = 12;
+$chgtDenom->validate($periode.'-05-01');
+$chgtDenom->validateOdg($periode.'-05-01');
+$chgtDenom->save();
+
+$t->ok($chgtDenom->isValidee(), "Le changement est validé");
+$t->is($chgtDenom->numero_archive, '00004', "le changement de dénomination a bien un numero d'archive");
+$t->is($chgtDenom->lots[0]->numero_archive, '00005', "Le lot déclassé a le bon numéro d'archive");
+$t->is($chgtDenom->lots[0]->numero_dossier, '00004', "Le lot déclassé a le bon numéro de dossier");
+$t->is($chgtDenom->lots[0]->unique_id, $periode.'-'.($periode + 1 ).'-00004-00005', "Le lot déclassé a le bon unique_id");

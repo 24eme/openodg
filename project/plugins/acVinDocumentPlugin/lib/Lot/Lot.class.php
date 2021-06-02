@@ -396,7 +396,8 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isRedegustationDejaConforme() {
-        foreach(MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($lot->declarant_identifiant, $lot->unique_id, null, LotClient::STATUT_CONFORME) as $mvt){
+        foreach(MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, null, Lot::STATUT_CONFORME)->rows as $mvt){
+            print_r($mvt);
             if ($mvt->keys[MouvementLotHistoryView::KEY_ORIGINE_DOCUMENT_ID] != $this->getDocument()->_id) {
                 return true;
             }
@@ -467,25 +468,22 @@ abstract class Lot extends acCouchdbDocumentTree
     public function generateAndSetPosition() {
         $table = ($this->numero_table) ? $this->numero_table : 99;
         $i = 0;
-        if ($position === null) {
-            foreach($this->getDocument()->getLotsTableOrFreeLotsCustomSort($table) as $lot) {
-                $i++;
-                if ($lot == $this) {
-                    $position = $i;
-                    break;
-                }
+        $position = 0;
+        foreach($this->getDocument()->getLotsTableOrFreeLotsCustomSort($table, !($this->numero_table)) as $lot) {
+            $i++;
+            if ($lot == $this) {
+                $position = $i;
+                break;
             }
         }
-        if ($position === null) {
-            $lastLot = $this->getLotInLastPosition($numero);
-            throw new sfException('Lot non trouvé');
+        if ($position) {
+            $this->position = sprintf("%02d%03d0", $table, $position);
         }
-        $this->position = sprintf("%02d%03d0", $table, $position);
     }
 
     public function getPosition()
     {
-      if (!$this->_get('position') || !$this->numero_table) {
+      if (!$this->_get('position')) {
           $this->generateAndSetPosition();
       }
       return $this->_get('position');

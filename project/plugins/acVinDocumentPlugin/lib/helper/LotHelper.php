@@ -128,7 +128,7 @@ function showLotStatusCartouche($statut, $detail = null, $secondPassage = false)
     }
     $text .= '</span>';
     if($detail) {
-        $text .= "<span style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
+        $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
     }
     return $text;
 }

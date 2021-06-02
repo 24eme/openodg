@@ -469,6 +469,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $lots;
     }
 
+		public function AreAllLotsSaisis(){
+			$etapeInf = array(
+				Lot::STATUT_AFFECTE_DEST,
+				Lot::STATUT_ATTENTE_PRELEVEMENT,
+				Lot::STATUT_PRELEVE,
+				Lot::STATUT_ATTABLE,
+				Lot::STATUT_ANONYMISE,
+				Lot::STATUT_DEGUSTE
+			);
+
+			foreach ($this->getLotsAnonymized() as $lot) {
+
+				if (in_array($lot->statut, $etapeInf)) {
+						return false;
+				}
+			}
+			return true;
+		}
+
     public function getLotsConformes($identifiant = null)
     {
         $all_lots = $this->getLotsByOperateurs($identifiant);
@@ -801,6 +820,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			uasort($lots, array($this, 'sortLotsByThisTri'));
 			return $lots;
 		}
+
+        public function getLotsTableCustomSort($numero_table){
+            return $this->getLotsTableOrFreeLotsCustomSort($numero_table, false);
+        }
 
 		public function setTri($t) {
 			$this->_set('tri', $t);

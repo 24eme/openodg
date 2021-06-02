@@ -6,7 +6,9 @@ class LotForm extends acCouchdbObjectForm
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
 
-        $this->setDefault('destination_date', $this->getObject()->getDestinationDateFr());
+        if (method_exists($this->getObject(), 'getDestinationDateFr')) {
+            $this->setDefault('destination_date', $this->getObject()->getDestinationDateFr());
+        }
         $cepages = array();
         $i=0;
         foreach($this->getObject()->cepages as $cepage => $repartition) {

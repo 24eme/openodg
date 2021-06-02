@@ -71,7 +71,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueNumeroDossier",
           "callback_parameters": [
             "/appellations/CDG"
           ]
@@ -94,7 +94,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueNumeroDossier",
           "callback_parameters": [
             "/appellations/GER"
           ]
@@ -117,7 +117,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueNumeroDossier",
           "callback_parameters": [
             "/appellations/COT"
           ]
@@ -140,7 +140,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },

@@ -46,7 +46,11 @@
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for("parcellaireaffectationcoop_exportcsv", $parcellaireAffectationCoop) ?>" class="btn btn-primary">Export CSV</a>
         </div>
-        <div class="col-xs-4 text-right"></div>
+        <div class="col-xs-4 text-right">
+          <?php if($sf_user->isAdmin()): ?>
+          <a href="<?php echo url_for("parcellaireaffectationcoop_recap", $parcellaireAffectationCoop) ?>" class="btn btn-default">Gérer les liaisons</a>
+        <?php endif; ?>
+        </div>
     </div>
 </form>
 

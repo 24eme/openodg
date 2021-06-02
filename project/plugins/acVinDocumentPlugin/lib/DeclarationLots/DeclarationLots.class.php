@@ -87,7 +87,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           $this->add('mouvements_lots');
       }
 
-      public function getLots(){
+      public function getSortedLots(){
           if(!$this->exist('lots')) {
               return array();
           }
@@ -112,7 +112,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
       public function getLotsByCouleur($visualisation = true) {
           $couleurs = array();
-          foreach ($this->getLots() as $lot) {
+          foreach ($this->getSortedLots() as $lot) {
              if($visualisation && !$lot->hasVolumeAndHashProduit()){
                continue;
              }
@@ -211,7 +211,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             return $this->validateOdgByRegion($date, $region);
         }
 
-        foreach($this->lots as $lot) {
+        foreach($this->getSortedLots() as $lot) {
           if($lot->hasBeenEdited()) {
               continue;
           }
@@ -372,7 +372,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
       public function archiverLot($numeroDossier) {
           $lots = array();
-          foreach($this->lots as $lot) {
+          foreach($this->getSortedLots() as $lot) {
             if ($lot->numero_archive) {
                 continue;
             }
@@ -394,19 +394,20 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           DeclarationClient::getInstance()->clearCache();
       }
 
-      public function getPourcentagesCepages($cepages) {
-        $total = 0;
-        $result = array();
-        foreach($cepages as $pc) {
-          $total += $pc;
+      public function getPourcentagesCepages() {
+        $volume_total = 0;
+        $cepages = array();
+        foreach($this->cepages as $volume) {
+          $volume_total += $volume;
         }
-        foreach($cepages as $cep => $pc) {
-          if (!isset($result[$cep])) {
-            $result[$cep] = 0;
+        foreach($this->cepages as $cep => $volume) {
+          if (!isset($cepages[$cep])) {
+              $cepages[$cep] = 0;
           }
-          $result[$cep] += round(($pc/$total) * 100);
+          $vol = ($volume_total>0)? round(($volume/$volume_total) * 100) : 0;
+          $cepages[$cep] += $vol;
         }
-        return $result;
+        return $cepages;
       }
 
       public function generatePieces() {
@@ -512,7 +513,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             return;
           }
 
-          foreach ($this->lots as $lot) {
+          foreach ($this->getSortedLots() as $lot) {
               if($lot->hasBeenEdited()) {
                   continue;
               }

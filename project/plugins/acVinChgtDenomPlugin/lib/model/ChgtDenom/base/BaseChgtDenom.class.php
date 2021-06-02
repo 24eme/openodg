@@ -67,8 +67,8 @@
  * @method acCouchdbJson setPieces()
  
  */
- 
-abstract class BaseChgtDenom extends acCouchdbDocument {
+
+abstract class BaseChgtDenom extends  DeclarationLots {
 
     public function getDocumentDefinitionModel() {
         return 'ChgtDenom';
