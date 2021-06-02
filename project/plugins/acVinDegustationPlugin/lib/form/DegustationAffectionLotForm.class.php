@@ -17,9 +17,9 @@ class DegustationAffectionLotForm extends BaseForm
         $this->setWidget('preleve',new WidgetFormInputCheckbox());
         $this->setValidator('preleve', new ValidatorBoolean(array('required' => true)));
 
-        $tables = array(1 => "Table A",2 => "Table B",3 => "Table C",4 => "Table D",5 => "Table E",6 => "Table F",7 =>"Table G",8 =>"Table H",9 =>"Table I",10 =>"Table J");
+        $tables = array(1=>"Table A",2=>"Table B",3=>"Table C",4=>"Table D",5=>"Table E",6=>"Table F",7=>"Table G",8=>"Table H",9 => "Table I",10=> "Table J");
         $this->setWidget('numero_table' ,new bsWidgetFormChoice(array('choices' => $tables )) );
-        $this->setValidator('numero_table', new sfValidatorPass(array('required' => false)));
+        $this->setValidator('numero_table', new sfValidatorPass(array('required' => true)));
 
         $this->validatorSchema->setPostValidator(new DegustationAffectationValidator($this));
 
@@ -31,7 +31,6 @@ class DegustationAffectionLotForm extends BaseForm
         $degustationsEnCours = DegustationClient::getInstance()->getHistoryEncours();
 
         foreach ($degustationsEnCours as $degustation_id => $degustation) {
-          // "Dégustation du ".format_date($degustation->date, "EEEE d MMMM yyyy", "fr_FR")." à ".format_date($degustation->date, 'HH')."h".format_date($degustation->date, 'mm')." au ".$degustation->lieu
           $degustations[$degustation_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
         }
         return $degustations;
@@ -41,7 +40,6 @@ class DegustationAffectionLotForm extends BaseForm
         $values = $this->getValues();
         $lot = $this->lot;
         $degustation = DegustationClient::getInstance()->find($values['degustation']);
-        $lotsArray = $degustation->getLots();
 
         if (!$lot->getMouvement(Lot::STATUT_AFFECTABLE)) {
 
@@ -54,10 +52,12 @@ class DegustationAffectionLotForm extends BaseForm
         $lot = $degustation->getLot($lot->unique_id);
 
         if ($values['preleve']){
-          $lot->setIsPreleve();
+           $lot->setIsPreleve();
         }
 
-        $lot->setNumeroTable($values['numero_table']);
+        if ($values['numero_table']) {
+          $lot->setNumeroTable($values['numero_table']);
+        }
 
         $degustation->save();
         return $degustation;
