@@ -670,16 +670,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $tables;
 		}
 
-		public function setFirstTable()
-		{ 
-			if (empty($this->getTablesWithFreeLots())) {
-				$tables = array();
-				$tables[1] = new stdClass();
-				return $tables;
-			}
-			return sprintf('Première table déjà existante');
-		}
-
 		public function getLotsWithoutLeurre(){
 			$lots = array();
 			foreach ($this->lots as $lot) {
