@@ -725,6 +725,36 @@ class degustationActions extends sfActions {
         return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
+    public function executeLotAffectation(sfWebRequest $request){
+      $identifiant = $request->getParameter('id');
+      $unique_id = $request->getParameter('unique_id');
+      $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $unique_id);
+      $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
+
+      $this->degustations = DegustationClient::getInstance()->getHistoryEncours();
+
+      $this->form = new DegustationAffectionLotForm($this->lot);
+
+      if (!$request->isMethod(sfWebRequest::POST)) {
+
+          return sfView::SUCCESS;
+      }
+
+      $this->form->bind($request->getParameter($this->form->getName()));
+
+      if (!$this->form->isValid()) {
+
+          return sfView::SUCCESS;
+
+      }
+
+      $this->form->save();
+
+      $degustation = $this->form->getValues()['degustation'];
+
+      return $this->redirect("degustation_visualisation",array('id'=>$degustation));
+ 
+    }
 
     public function executeAnonymize(sfWebRequest $request){
       $degustation = $this->getRoute()->getDegustation();

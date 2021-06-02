@@ -599,8 +599,8 @@ degustation_convocation_auth:
     sf_method: [get, post]
 
 degustation_affectation_lot:
-  url: /historique/:id/:unique_id/affectation/
-  param: {module: degustation, action: affectationLot}
+  url: /historique/:id/:unique_id/affectation
+  param: {module: degustation, action: lotAffectation}
   class: DegustationRoute
   options:
     model: Degustation

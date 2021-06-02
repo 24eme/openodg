@@ -51,7 +51,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
                 continue;
             }
 
-            $degustations[] = $degustation;
+            $degustations[$degustation->_id] = $degustation;
         }
 
         return $degustations;
