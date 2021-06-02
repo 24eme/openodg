@@ -154,6 +154,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-offset-8 col-md-3 ">
+                            <?php echo $lot['elevage']->render() ?>
+                            <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
