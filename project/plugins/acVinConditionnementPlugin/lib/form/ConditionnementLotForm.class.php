@@ -75,6 +75,8 @@ class ConditionnementLotForm extends acCouchdbObjectForm
             $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
+        $this->setWidget('elevage', new sfWidgetFormInputCheckbox());
+        $this->setValidator('elevage', new sfValidatorBoolean(['required' => false]));
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
@@ -92,6 +94,11 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
+
+        if (!empty($values['elevage'])) {
+          $this->getObject()->statut = Lot::STATUT_ELEVAGE;
+        }
+        
         $this->getObject()->set("affectable",true);
     }
 

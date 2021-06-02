@@ -297,6 +297,11 @@
               $('#'+input_volume_id).blur()
 
               vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
+              if(vol_total.readOnly){
+                let target_link = $('div.checkboxlots input[type="checkbox"]').attr('data-target');
+                $('#'+input_volume_id).attr('data-target', target_link);
+                $('#'+input_volume_id).attr('data-toggle', "modal");
+              }
             })
         }
 
