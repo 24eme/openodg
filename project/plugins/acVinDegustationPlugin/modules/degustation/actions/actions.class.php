@@ -747,8 +747,7 @@ class degustationActions extends sfActions {
       $degustation = $this->form->getValues()['degustation'];
 
       return $this->redirect("degustation_visualisation",array('id'=>$degustation));
-
-      // return $this->redirect("degustation_affectable",array('lot' => $lot , 'unique_id' => $lot->unique_id));
+ 
     }
 
     public function executeAnonymize(sfWebRequest $request){
