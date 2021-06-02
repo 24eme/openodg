@@ -166,20 +166,47 @@
                         <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
                     </div>
                     <div class="modal-body">
-                        <?php for($i=0; $i < ConditionnementLotForm::NBCEPAGES; $i++): ?>
-                            <div class="form-group ligne_lot_cepage">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-7">
-                                    <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                              <div class="form-group">
+                                <div class="col-sm-2 col-sm-offset-10">
+                                  <div class="form-group">
+                                      <label class="checkbox-inline checbox-switch">
+                                          hl
+                                          <input class="form-check-input switch_hl_to_pc" type="checkbox" name="" />
+                                          <span></span>
+                                          %
+                                      </label>
+                                  </div>
                                 </div>
-                                <div class="col-sm-3">
-                                    <div class="input-group">
-                                        <?php echo $lot['repartition_'.$i]->render(); ?>
-                                        <div class="input-group-addon">hl</div>
+                              </div>
+                        <?php for($i=0; $i < ConditionnementLotForm::NBCEPAGES; $i++): ?>
+                                    <div class="form-group ligne_lot_cepage ">
+                                        <div class="col-sm-8">
+                                            <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="input-group input-group-pc" style='display:none;'>
+                                                <input class='form-control text-right input-pc'></input>
+                                                <div class="input-group-addon">%</div>
+                                            </div>
+                                            <div class="input-group input-group-hl" >
+                                                <?php echo $lot['repartition_'.$i]->render(); ?>
+                                                <div class="input-group-addon">hl</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endfor; ?>
+                                <div class="form-group ligne_volume_total">
+                                    <div class="col-sm-4"></div>
+                                    <div class="col-sm-4 text-right">
+                                      <label class='control-label'> Volume total</label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group volume-total">
+                                          <input class='form-control text-right input-total'></input>
+                                          <div class="input-group-addon">hl</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        <?php endfor; ?>
                     </div>
                     <div class="modal-footer">
                         <a class="btn btn-default btn pull-left" data-dismiss="modal">Fermer</a>
