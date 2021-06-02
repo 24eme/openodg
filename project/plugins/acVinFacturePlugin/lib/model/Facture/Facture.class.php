@@ -341,7 +341,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function storeTemplates($template) {
-        $this->templates->add($template->_id, $template->_id);
+        if ($template) {
+            $this->templates->add($template->_id, $template->_id);
+        }
     }
 
     public function updateTotaux() {
