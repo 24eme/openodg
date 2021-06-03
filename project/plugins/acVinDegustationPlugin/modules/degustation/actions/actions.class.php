@@ -731,8 +731,6 @@ class degustationActions extends sfActions {
       $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $unique_id);
       $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
 
-      $this->degustations = DegustationClient::getInstance()->getHistoryEncours();
-
       $this->form = new DegustationAffectionLotForm($this->lot);
 
       if (!$request->isMethod(sfWebRequest::POST)) {
