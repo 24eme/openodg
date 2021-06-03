@@ -10,9 +10,7 @@
     </h2>
 </div>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
+<?php include_partial('global/flash'); ?>
 
 <form id="validation-form" action="<?php echo url_for("parcellaireirrigue_edit", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>

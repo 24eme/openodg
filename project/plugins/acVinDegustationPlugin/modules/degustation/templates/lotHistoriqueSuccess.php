@@ -11,12 +11,7 @@
 
 <h2><?php echo $etablissement->getNom(); ?> - Historique du lot n° <?php echo $lot->numero_archive; ?></h2>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
-<?php if ($sf_user->hasFlash('error')): ?>
-    <div class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></div>
-<?php endif; ?>
+<?php include_partial('global/flash'); ?>
 
 <div class="row">
     <div class="col-xs-5" style="padding-top: 30px;">

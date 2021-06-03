@@ -19,14 +19,7 @@
     <h4 class="mt-5 mb-0"><?php echo $conditionnement->declarant->nom; ?><span class="text-muted"> (<?php echo $conditionnement->declarant->famille; ?>)</span></h4>
 </div>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
-
-<?php if ($sf_user->hasFlash('warning')): ?>
-    <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
-<?php endif; ?>
-
+<?php include_partial('global/flash'); ?>
 
 <?php if(!$conditionnement->validation): ?>
 <div class="alert alert-warning">

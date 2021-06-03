@@ -13,9 +13,7 @@
     </h2>
 </div>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
+<?php include_partial('global/flash'); ?>
 
 <?php if(!$parcellaireIrrigable->validation): ?>
 <div class="alert alert-warning">

@@ -34,12 +34,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php endif; ?>
     <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte, SV11 ou SV12, lorsque nous avons pu déduire vos volumes sur place.
     <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
-    <?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-    <?php endif; ?>
-    <?php if ($sf_user->hasFlash('error')): ?>
-    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
-    <?php endif; ?>
+    <?php include_partial('global/flash'); ?>
     <table class="table table-bordered table-striped table-condensed" id="table-revendication">
         <thead>
             <tr>

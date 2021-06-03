@@ -5,10 +5,6 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-  <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
-
 <div class="page-header no-border">
   <h2>Présence des dégustateurs</h2>
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
