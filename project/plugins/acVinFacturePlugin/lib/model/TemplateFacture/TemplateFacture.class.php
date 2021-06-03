@@ -21,7 +21,10 @@ class TemplateFacture extends BaseTemplateFacture
 				if($config->exist('fallback') && $config->fallback){
 					continue;
 				}
-                $cle = str_replace('%detail_identifiant%', $document->numero_archive, $cotisation->getHash());
+                $cle = $cotisation->getHash();
+                if ((strpos('%detail_identifiant%', $cle) !== null) && $document->exist('numero_archive')) {
+                    $cle = str_replace('%detail_identifiant%', $document->numero_archive, $cle);
+                }
 				$cotisations[$cle] = $cotisation;
 			}
 		}
