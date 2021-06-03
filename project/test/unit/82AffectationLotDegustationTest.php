@@ -120,7 +120,7 @@ $t->is(count($degustation->getLots()),2,"La dégustation a un lot");
 $t->is($lot->unique_id,$degustation->lots->get(1)->unique_id,"Le lot de la dégustation correspond au lot crée");
 $lotAjoutee = $degustation->lots->get(1);
 $t->is($lotAjoutee->preleve,date('Y-m-d'),"Le lot a une date de prelevement");
-$t->is($lotAjoutee->numero_table,1,"Le lot est bien assigné à une table ");
+$t->is($lotAjoutee->numero_table,1,"Le lot est bien assigné à une table seulement si la dégustation est à l'étape ETAPE_TABLES");
 $t->is($lotAjoutee->statut, Lot::STATUT_ATTABLE, "Le 1er lot est attablé");
 
 $degustationAnonyme = DegustationClient::getInstance()->find($degustation->_id);
