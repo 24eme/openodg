@@ -9,7 +9,7 @@ class DegustationAffectationValidator extends sfValidatorSchema {
       }
 
   		public function configure($options = array(), $messages = array()) {
-          $this->addMessage('impossible_table', "La table n'existe pas ".$table);
+          $this->addMessage('impossible_table', "La table selectionnée n'existe pas dans cette dégustation");
       }
 
       protected function doClean($values) {
@@ -18,7 +18,8 @@ class DegustationAffectationValidator extends sfValidatorSchema {
 
         $degustation = DegustationClient::getInstance()->find($values['degustation']);
         $infos = $degustation->getInfosDegustation();
-      	if ($values['numero_table'] > $infos['nbTables']) {
+
+      	if ($values['numero_table'] > $infos['nbTables'] +1) {
       	    $errorSchema->addError(new sfValidatorError($this, 'impossible_table'), 'numero_table');
       	    $hasError = true;
       	}

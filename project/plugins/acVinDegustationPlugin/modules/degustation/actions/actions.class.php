@@ -752,8 +752,18 @@ class degustationActions extends sfActions {
 
       $degustation = $this->form->getValues()['degustation'];
 
+      $degust = DegustationClient::getInstance()->find($degustation);
+
+      if ($degust->etape == DegustationEtapes::ETAPE_PRELEVEMENTS ) {
+        $this->getUser()->setFlash("notice", "La dégustation est à l'étape du prélevement, votre numéro de table ne sera pas pris en compte.");
+      }
+
+      if ($degust->etape == DegustationEtapes::ETAPE_LOTS ) {
+        $this->getUser()->setFlash("notice", "La dégustation est à l'étape de l'enregistrement des lots, votre statut de prélevement et numéro de table ne sera pas pris en compte.");
+      }
+
       return $this->redirect("degustation_visualisation",array('id'=>$degustation));
- 
+
     }
 
     public function executeAnonymize(sfWebRequest $request){

@@ -42,21 +42,24 @@ class DegustationAffectionLotForm extends BaseForm
         $degustation = DegustationClient::getInstance()->find($values['degustation']);
 
         if (!$lot->getMouvement(Lot::STATUT_AFFECTABLE)) {
-
           throw new \Exception("Erreur : Ce lot n'est plus affectable.Numéro lot :".$lot->unique_id, 1);
-
         }
 
         $degustation->addLot($lot,true);
 
         $lot = $degustation->getLot($lot->unique_id);
 
-        if ($values['preleve']){
+        if ($values['preleve']  && in_array($degustation->etape,array(DegustationEtapes::ETAPE_PRELEVEMENTS,DegustationEtapes::ETAPE_TABLES,DegustationEtapes::ETAPE_ANONYMATS,DegustationEtapes::ETAPE_COMMISSION)) ){
            $lot->setIsPreleve();
         }
 
-        if ($values['numero_table']) {
+        if ($values['numero_table'] && in_array($degustation->etape, array(DegustationEtapes::ETAPE_TABLES,DegustationEtapes::ETAPE_ANONYMATS,DegustationEtapes::ETAPE_COMMISSION)) ) {
           $lot->setNumeroTable($values['numero_table']);
+        }
+
+        if (  in_array($degustation->etape, array(DegustationEtapes::ETAPE_COMMISSION,DegustationEtapes::ETAPE_ANONYMATS)) ) {
+            $key = count($degustation->getNbLotsPreleves()) + 1;
+            $lot->anonymize($key);
         }
 
         $degustation->save();
