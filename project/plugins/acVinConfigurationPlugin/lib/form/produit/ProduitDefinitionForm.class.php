@@ -67,7 +67,7 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
                     'attributs', new ProduitRendementsForm($this->getObject()->getOrAdd('attributs'))
             );
         }
-        
+
         if ($this->getObject()->hasCepagesAutorises()) {
             $this->setWidget('cepages_autorises', new bsWidgetFormTextarea());
             $this->widgetSchema->setLabel('cepages_autorises', 'Cepages autorisés : ');
@@ -153,14 +153,16 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
 
     }
 
+    public function doUpdateObject($values) {
+      $this->getObject()->setCepagesAutorises($values['cepages_autorises']);
+       unset($values['cepages_autorises']);
+       parent::doUpdateObject($values);
+     }
+
     public function save($con = null) {
-        $object = parent::save($con);
         $values = $this->getValues();
-        
-        if($this->getObject()->hasCepagesAutorises()){
-          $this->getObject()->setCepagesAutorises($this->values['cepages_autorises']);
-        }
-        unset($this->values['cepages_autorises']);
+
+        $object = parent::save($con);
 
         if ($object->hasDepartements()) {
             $object->remove('departements');
@@ -219,7 +221,7 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
     }
 
     public function initDefault($param) {
-        
+
     }
 
 }
