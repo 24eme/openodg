@@ -731,8 +731,6 @@ class degustationActions extends sfActions {
       $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $unique_id);
       $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
 
-      $this->degustations = DegustationClient::getInstance()->getHistoryEncours();
-
       $this->form = new DegustationAffectionLotForm($this->lot);
 
       if (!$request->isMethod(sfWebRequest::POST)) {
@@ -750,19 +748,17 @@ class degustationActions extends sfActions {
 
       $this->form->save();
 
-      $degustation = $this->form->getValues()['degustation'];
-
-      $degust = DegustationClient::getInstance()->find($degustation);
+      $degust = $this->form->getDegustation();
 
       if ($degust->etape == DegustationEtapes::ETAPE_PRELEVEMENTS ) {
-        $this->getUser()->setFlash("notice", "La dégustation est à l'étape du prélevement, votre numéro de table ne sera pas pris en compte.");
+        $this->getUser()->setFlash("notice", "La dégustation est à l'étape du prélèvement, votre numéro de table ne sera pas pris en compte.");
       }
 
-      if ($degust->etape == DegustationEtapes::ETAPE_LOTS ) {
-        $this->getUser()->setFlash("notice", "La dégustation est à l'étape de l'enregistrement des lots, votre statut de prélevement et numéro de table ne sera pas pris en compte.");
+      if (in_array($degust->etape,array(DegustationEtapes::ETAPE_CONVOCATIONS,DegustationEtapes::ETAPE_DEGUSTATEURS,DegustationEtapes::ETAPE_LOTS)) ) {
+        $this->getUser()->setFlash("notice", "La dégustation est à l'étape de l'enregistrement des lots, votre statut de prélèvement et numéro de table ne sera pas pris en compte.");
       }
 
-      return $this->redirect("degustation_visualisation",array('id'=>$degustation));
+       return $this->redirect("degustation_lot_historique",array('identifiant' => $identifiant, 'unique_id'=> $unique_id));
 
     }
 
