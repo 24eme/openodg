@@ -64,7 +64,7 @@ class DegustationAffectionLotForm extends BaseForm
         }
 
         if (in_array($degustation->etape, array(DegustationEtapes::ETAPE_COMMISSION,DegustationEtapes::ETAPE_ANONYMATS)) ) {
-            $key = count($degustation->getNbLotsPreleves()) + 1;
+            $key = $degustation->getNbLotsPreleves() + 1;
             $lot->anonymize($key);
         }
 
