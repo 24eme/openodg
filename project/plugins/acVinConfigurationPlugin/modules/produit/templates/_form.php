@@ -197,7 +197,7 @@
                 </div>
             </div>
         <?php endif; ?>
-        <?php if($form->getObject()->exist('cepages_autorises') && count($form->getObject()->cepages_autorises)): ?>
+        <?php if($form->getObject()->exist('cepages_autorises') && count($form->getObject()->cepages_autorises) && isset($form['cepages_autorises'])): ?>
             <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
