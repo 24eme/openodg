@@ -207,16 +207,18 @@ class FactureClient extends acCouchdbClient {
         $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
 
         $lignes = array();
+        $lignes_originaux = array();
         foreach ($mouvements as $identifiant => $mvt) {
             $cle = $mvt->value->categorie.$mvt->value->detail_libelle;
+            $lignes_originaux[$cle][] = $mvt;
             if (isset($lignes[$cle])) {
                 $lignes[$cle]->value->quantite += $mvt->value->quantite;
             }else{
                 $lignes[$cle] = $mvt;
             }
         }
-        foreach($lignes as $ligne) {
-            $facture->storeLignesByMouvementsView($ligne);
+        foreach($lignes as $cle => $ligne) {
+            $facture->storeLignesByMouvementsView($ligne, $lignes_originaux[$cle]);
         }
 
         $facture->orderLignesByCotisationsKeys();
