@@ -751,11 +751,11 @@ class degustationActions extends sfActions {
       $degust = $this->form->getDegustation();
 
       if ($degust->etape == DegustationEtapes::ETAPE_PRELEVEMENTS ) {
-        $this->getUser()->setFlash("notice", "La dégustation est à l'étape du prélèvement, votre numéro de table ne sera pas pris en compte.");
+        $this->getUser()->setFlash("warning", "La dégustation est à l'étape du prélèvement, votre numéro de table ne sera pas pris en compte.");
       }
 
       if (in_array($degust->etape,array(DegustationEtapes::ETAPE_CONVOCATIONS,DegustationEtapes::ETAPE_DEGUSTATEURS,DegustationEtapes::ETAPE_LOTS)) ) {
-        $this->getUser()->setFlash("notice", "La dégustation est à l'étape de l'enregistrement des lots, votre statut de prélèvement et numéro de table ne sera pas pris en compte.");
+        $this->getUser()->setFlash("warning", "La dégustation est à l'étape de l'enregistrement des lots, votre statut de prélèvement et numéro de table ne sera pas pris en compte.");
       }
 
        return $this->redirect("degustation_lot_historique",array('identifiant' => $identifiant, 'unique_id'=> $unique_id));
