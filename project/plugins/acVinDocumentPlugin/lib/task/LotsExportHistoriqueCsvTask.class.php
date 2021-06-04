@@ -1,6 +1,6 @@
 <?php
 
-class LotsExportCsvTask extends sfBaseTask
+class LotsExportHistoriqueCsvTask extends sfBaseTask
 {
   protected function configure()
   {
@@ -13,7 +13,7 @@ class LotsExportCsvTask extends sfBaseTask
     ));
 
     $this->namespace        = 'lots';
-    $this->name             = 'export-csv';
+    $this->name             = 'export-historique-csv';
     $this->briefDescription = '';
     $this->detailedDescription = <<<EOF
 EOF;
@@ -26,7 +26,7 @@ EOF;
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
     $context = sfContext::createInstance($this->configuration);
 
-    $e = new ExportLotsCSV(true, $this->configuration->getApplication());
+    $e = new ExportHistoriqueLotsCSV(true, $this->configuration->getApplication());
     print $e->exportAll();
   }
 }

@@ -62,14 +62,6 @@ class MouvementLotHistoryView extends acCouchdbView
                     ->getView($this->design, $this->view);
     }
 
-    public function getAllLotsByLevel($level = 4)
-    {
-        return $this->client
-                    ->reduce(true)->group_level($level)
-                    ->descending(true)
-                    ->getView($this->design, $this->view);
-    }
-
     public function getAllLotsWithHistorique()
     {
       return $this->client
