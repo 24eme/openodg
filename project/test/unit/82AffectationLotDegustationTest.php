@@ -66,7 +66,7 @@ $lotDrev = $drev->lots[0];
 $dateDegustation = new DateTime();
 $dateDegustation = $dateDegustation->modify('+5 days')->format('Y-m-d');
 $degustation = DegustationClient::getInstance()->createDoc($dateDegustation.' 09:24:00');
-$degustation->etape = DegustationEtapes::ETAPE_LOTS;
+$degustation->etape = DegustationEtapes::ETAPE_TABLES;
 $degustation->numero_archive = 2021102;
 $degustation->lieu = "Syndicat des Vignerons";
 $degustation->save();
