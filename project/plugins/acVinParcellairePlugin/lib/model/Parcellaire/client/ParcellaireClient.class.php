@@ -148,7 +148,7 @@ class ParcellaireClient extends acCouchdbClient {
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
         
-        $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$cvi.'-parcelles.json';
+        $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
         if($scrapping) {
             $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
         }
