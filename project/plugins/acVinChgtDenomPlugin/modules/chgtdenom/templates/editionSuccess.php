@@ -1,7 +1,6 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
 
-<?php use_javascript("chgtDenom.js", "last") ?>
 <?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $chgtDenom )); ?>
 <?php include_partial('chgtdenom/step', array('step' => 'edition', 'chgtDenom' => $chgtDenom)) ?>
 
@@ -52,9 +51,9 @@
                   <div class="checkbox checkboxlots">
                     <label>
                       <input type="checkbox" <?php echo (count($chgtDenom->changement_cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
-                             id="lien_changement_cepages" data-toggle="modal"
-                             data-target="#changement_cepages" />
-                      <span class="checkboxtext_changement_cepages"><?php echo (count($chgtDenom->changement_cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
+                             id="lien_chgt_denom_changement_cepages" data-toggle="modal"
+                             data-target="#chgt_denom_changement_cepages" />
+                      <span class="checkboxtext_chgt_denom_changement_cepages"><?php echo (count($chgtDenom->changement_cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
                     </div>
                   </div>
               </div>
@@ -101,7 +100,7 @@
         </div>
 
 
-        <div class="modal fade modal_lot_cepages" id="changement_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
+        <div class="modal fade modal_lot_cepages" id="chgt_denom_changement_cepages" data-inputvolumeid="<?php echo $form['changement_volume']->renderId() ?>" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -109,21 +108,48 @@
                         <h4 class="modal-title" id="myModalLabel">Mention de cépages</h4>
                         <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
                     </div>
-                    <div class="modal-body form-horizontal">
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <div class="col-sm-2 col-sm-offset-10">
+                          <div class="form-group">
+                              <label class="checkbox-inline checbox-switch">
+                                  hl
+                                  <input class="form-check-input switch_hl_to_pc" type="checkbox" name="" />
+                                  <span></span>
+                                  %
+                              </label>
+                          </div>
+                        </div>
+                      </div>
                         <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage">
-                                <div class="col-sm-1"></div>
-                                <div class="col-sm-7">
-                                    <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                                <div class="col-sm-8">
+                                    <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
                                 </div>
-                                <div class="col-sm-3">
-                                    <div class="input-group">
-                                        <?php echo $form['repartition_'.$i]->render(); ?>
-                                        <div class="input-group-addon">hl</div>
-                                    </div>
+                                <div class="col-sm-4">
+                                  <div class="input-group input-group-pc" style='display:none;'>
+                                      <input class='form-control text-right input-pc'></input>
+                                      <div class="input-group-addon">%</div>
+                                  </div>
+                                  <div class="input-group input-group-hl" >
+                                      <?php echo $form['repartition_'.$i]->render(); ?>
+                                      <div class="input-group-addon">hl</div>
+                                  </div>
                                 </div>
                             </div>
                         <?php endfor; ?>
+                        <div class="form-group ligne_volume_total">
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4 text-right">
+                              <label class='control-label'> Volume total</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="input-group volume-total">
+                                  <input class='form-control text-right input-total'></input>
+                                  <div class="input-group-addon">hl</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <a class="btn btn-default btn pull-left" data-dismiss="modal">Fermer</a>
