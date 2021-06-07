@@ -135,10 +135,15 @@ class ParcellaireClient extends acCouchdbClient {
      *
      * @return bool
      */
-    public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null)
+    public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
-        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
+        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
+        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
+        if($scrapping) {
+            $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
+        }
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
+
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
         $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
@@ -149,14 +154,14 @@ class ParcellaireClient extends acCouchdbClient {
         $file_name = "import-cadastre-".$cvi."-parcelles.json";
 
         $parcellaire = $this->getLast($identifiant);
-        
+
         $uri = $parcellaire->getAttachmentUri($file_name);
-        
+
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $uri);
 
-    
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $import = curl_exec($ch);
@@ -209,7 +214,7 @@ class ParcellaireClient extends acCouchdbClient {
     public function saveParcellairePDF(Etablissement $etablissement, $file, &$error, $contextInstance = null) {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
 
-        if (empty($file)) {
+        if (!is_file($file) || empty($file)) {
             $message = "Le fichier PDF des parcelles ($file) n'existe pas ou est vide.";
             $contextInstance->getLogger()->info("saveParcellairePDF: error: ".$message);
             throw new Exception($message);
@@ -256,7 +261,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (!$parcellaire || $parcellaire->date != $date) {
             $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
-        
+
         if($path){
             $parcellaire->storeAttachment($path, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
             $parcellaire->save();
@@ -274,12 +279,12 @@ class ParcellaireClient extends acCouchdbClient {
         if (!$parcellaire || $parcellaire->date != $date) {
             $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
-        
+
         if($path){
             $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
             $parcellaire->save();
         }
-        return $parcellaire;    
+        return $parcellaire;
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
