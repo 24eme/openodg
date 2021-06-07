@@ -139,6 +139,7 @@ class ParcellaireClient extends acCouchdbClient {
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
+        
         if($scrapping) {
             $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
         }
