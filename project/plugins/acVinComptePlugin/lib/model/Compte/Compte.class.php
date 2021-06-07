@@ -109,13 +109,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     	return $adresses;
     }
 
+    public function updateTagsGroupes() {
+        $this->tags->remove('groupes');
+        $this->tags->add('groupes');
+        foreach($this->groupes as $groupe_obj) {
+            $this->addTag('groupes', $groupe_obj->nom);
+        }
+    }
+
     public function addInGroupes($grp,$fct){
         $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
         $allGrps = $this->getOrAdd('groupes');
         $grpNode = $allGrps->add();
         $grpNode->nom = $grp;
         $grpNode->fonction = $fct;
-        $this->addTag('groupes', $grp);
     }
 
     public function removeGroupes($grp){
@@ -129,10 +136,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         $this->remove("groupes");
         $this->getOrAdd('groupes');
-        $this->get('tags')->remove('groupes');
         foreach ($grp_to_keep as $newgrp) {
           $this->groupes->add(null,$newgrp);
-          $this->addTag('groupes', $newgrp->nom);
         }
 
     }
@@ -291,6 +296,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', preg_replace('/:.*/', '', $droit));
             }
         }
+
+        $this->updateTagsGroupes();
 
         parent::save();
 
