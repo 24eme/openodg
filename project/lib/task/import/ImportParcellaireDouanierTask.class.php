@@ -38,6 +38,7 @@ EOF;
 
         if(!$etablissement) {
             echo $arguments['identifiant'] . ";ERREUR;Etablissement non trouvé\n";
+            return;
         }
 
         try {
