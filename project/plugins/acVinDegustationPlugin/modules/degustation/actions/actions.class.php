@@ -278,6 +278,10 @@ class degustationActions extends sfActions {
         if (count($this->degustation->getLotsPreleves()) < 1) {
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
         }
+        if (!$this->degustation->haveAllDegustateursSet()) {
+            $this->getUser()->setFlash('error', "Il reste des dégustateurs à statuer (présent/absent). Merci de les saisir !");
+            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
+        }
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
             $this->degustation->save(false);
