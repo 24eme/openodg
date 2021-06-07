@@ -6,7 +6,7 @@ class ExportLotsCSV {
     protected $lots = array();
 
     public static function getHeaderCsv() {
-        return "Application;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Doc Id;Lot unique Id;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Redegustation;Conformité;Date de conformité en appel;\n";
+        return "Application;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Doc Id;Lot unique Id;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -67,10 +67,6 @@ class ExportLotsCSV {
             $lot['conformite'] = '';
           }
           $conformite = (isset(Lot::$libellesConformites[$lot['conformite']]))? Lot::$libellesConformites[$lot['conformite']] : $lot['conformite'];
-          $redegustation = null;
-          if (isset($lot['specificite']) && preg_match("/ème dégustation/", $lot['specificite'])) {
-            $redegustation = 'oui';
-          }
           $destination = null;
           if (isset($lot['destination_type'])) {
             $destination = isset(DRevClient::$lotDestinationsType[$lot['destination_type']])? DRevClient::$lotDestinationsType[$lot['destination_type']] : $lot['destination_type'];
@@ -80,7 +76,7 @@ class ExportLotsCSV {
           if (isset($lot['centilisation'])) {
             $centilisation = isset($contenances[$lot['centilisation']])? $contenances[$lot['centilisation']] : $lot['centilisation'];
           }
-          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
               $this->appName,
               $lot['declarant_identifiant'],
               $lot['declarant_nom'],
@@ -112,7 +108,6 @@ class ExportLotsCSV {
               (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
               $centilisation,
               (isset($lot['preleve']))? $lot['preleve'] : '',
-              $redegustation,
               $conformite,
               (isset($lot['conforme_appel']))? $lot['conforme_appel'] : ''
           ));
