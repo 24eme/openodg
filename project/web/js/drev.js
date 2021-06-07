@@ -203,6 +203,15 @@
           e.preventDefault();
         });
 
+        //on recupere le vol-total dans la popup
+        $('input.input-float').on('change', function(){
+          if($(this).val() > 0){
+            let id_modal = $(this).attr('id').replace('volume', 'cepages');
+            $('#'+id_modal).find(".input-total").val($(this).val());
+          }
+        });
+        $('input.input-float').trigger('change');
+
         var checkBlocsLotCepages = function() {
             $('#form_'+type+'_lots .ligne_lot_cepage').each(function() {
                 var saisi = true;
@@ -292,16 +301,14 @@
 
               vol_total.value = total;
 
-              $('#'+modal.id).find('.input-total').val(total.toFixed(2));
-
-              $('#'+input_volume_id).blur()
-
-              vol_total.readOnly = (parseFloat(vol_total.value) > 0) ? true : false
-              if(vol_total.readOnly){
-                let target_link = $('div.checkboxlots input[type="checkbox"]').attr('data-target');
-                $('#'+input_volume_id).attr('data-target', target_link);
+              if(parseFloat(vol_total.value) > 0){
+                $('#'+modal.id).find('.input-total').val(total.toFixed(2));
+                vol_total.readOnly = true;
+                let target_link = vol_total.id.replace('volume', 'cepages')
+                $('#'+input_volume_id).attr('data-target', '#'+target_link);
                 $('#'+input_volume_id).attr('data-toggle', "modal");
               }
+              $('#'+input_volume_id).blur()
             })
         }
 
@@ -363,7 +370,6 @@
           });
           var i = 0;
           var sumpc = 0;
-          console.log("nbligneaveccepageetpcouhl "+nbligneaveccepageetpcouhl);
           if (!nbligneaveccepageetpcouhl) {
             $(this).parents('.modal-dialog').find('.input-pc').each(function(){
               if (!$(this).parents('.ligne_lot_cepage').find('select.selectCepage').val()) {
@@ -421,13 +427,9 @@
 
         };
 
+
         $('.switch_hl_to_pc').on('change', set_switch);
         $('.input-total').on('change', set_switch);
-
-        //on recupere le vol-total dans la popup
-        $('input.input-float').on('change',function(){
-          $('.input-total').val($(this).val());
-        });
 
         $('#form_'+type+'_lots input.input-float').on('click', function(e) {
             if (! e.target.readOnly) {

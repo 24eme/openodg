@@ -20,9 +20,7 @@
     <h4 class="mt-5 mb-0"><?php echo $transaction->declarant->nom; ?><span class="text-muted"> (<?php echo $transaction->declarant->famille; ?>)</span></h4>
 </div>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
+<?php include_partial('global/flash'); ?>
 
 <?php if(!$transaction->validation): ?>
 <div class="alert alert-warning">

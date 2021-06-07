@@ -278,6 +278,10 @@ class degustationActions extends sfActions {
         if (count($this->degustation->getLotsPreleves()) < 1) {
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
         }
+        if (!$this->degustation->haveAllDegustateursSet()) {
+            $this->getUser()->setFlash('error', "Il reste des dégustateurs à statuer (présent/absent). Merci de les saisir !");
+            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
+        }
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
             $this->degustation->save(false);
@@ -731,8 +735,6 @@ class degustationActions extends sfActions {
       $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $unique_id);
       $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
 
-      $this->degustations = DegustationClient::getInstance()->getHistoryEncours();
-
       $this->form = new DegustationAffectionLotForm($this->lot);
 
       if (!$request->isMethod(sfWebRequest::POST)) {
@@ -750,10 +752,18 @@ class degustationActions extends sfActions {
 
       $this->form->save();
 
-      $degustation = $this->form->getValues()['degustation'];
+      $degust = $this->form->getDegustation();
 
-      return $this->redirect("degustation_visualisation",array('id'=>$degustation));
- 
+      if ($degust->etape == DegustationEtapes::ETAPE_PRELEVEMENTS ) {
+        $this->getUser()->setFlash("warning", "La dégustation est à l'étape du prélèvement, votre numéro de table ne sera pas pris en compte.");
+      }
+
+      if (in_array($degust->etape,array(DegustationEtapes::ETAPE_CONVOCATIONS,DegustationEtapes::ETAPE_DEGUSTATEURS,DegustationEtapes::ETAPE_LOTS)) ) {
+        $this->getUser()->setFlash("warning", "La dégustation est à l'étape de l'enregistrement des lots, votre statut de prélèvement et numéro de table ne sera pas pris en compte.");
+      }
+
+       return $this->redirect("degustation_lot_historique",array('identifiant' => $identifiant, 'unique_id'=> $unique_id));
+
     }
 
     public function executeAnonymize(sfWebRequest $request){

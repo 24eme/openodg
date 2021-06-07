@@ -1,8 +1,5 @@
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, "options" => array("nom" => "Tables des échantillons"))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TABLES)); ?>
-<?php if ($sf_user->hasFlash('notice')): ?>
-  <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
 
 <div class="page-header no-border">
   <h2>Attribution des échantillons aux tables</h2>

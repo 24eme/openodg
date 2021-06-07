@@ -9,13 +9,6 @@
     </div>
 
     <?php echo include_partial('global/flash'); ?>
-    <?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-    <?php endif; ?>
-    <?php if ($sf_user->hasFlash('error')): ?>
-    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></p>
-    <?php endif; ?>
-
 
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('chgtdenom/pointsAttentions', array('chgtDenom' => $chgtDenom, 'validation' => $validation)); ?>

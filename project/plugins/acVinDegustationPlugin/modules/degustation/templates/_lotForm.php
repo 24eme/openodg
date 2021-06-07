@@ -17,9 +17,9 @@
                         <div class="checkbox checkboxlots">
                             <label>
                                 <input type="checkbox" <?php echo (count($lot->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
-                                id="lien_<?php echo $lotHtmlId ?>_cepages" data-toggle="modal"
-                                data-target="#<?php echo $lotHtmlId ?>_cepages" />
-                                <span class="checkboxtext_<?php echo $lotHtmlId ?>_cepages"><?php echo (count($lot->cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span>
+                                id="lien_<?php echo $lotHtmlId ?>cepages" data-toggle="modal"
+                                data-target="#<?php echo $lotHtmlId ?>cepages" />
+                                <span class="checkboxtext_<?php echo $lotHtmlId ?>cepages"><?php echo (count($lot->cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span>
                             </label>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $form['volume']->renderId() ?>" id="<?php echo $lotHtmlId ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
+<div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $form['volume']->renderId() ?>" id="<?php echo $lotHtmlId ?>cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

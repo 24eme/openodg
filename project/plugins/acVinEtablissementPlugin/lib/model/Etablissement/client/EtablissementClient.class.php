@@ -174,6 +174,26 @@ class EtablissementClient extends acCouchdbClient {
         return parent::find($this->getId($id_or_identifiant), $hydrate, $force_return_ls);
     }
 
+
+    /**
+     * Rechercher un établissment par id, identifiant, cvi, no accices, ppm
+     *
+     * @param string $anyIdentifiant Id, identifiant, cvi, no accices, ppm
+     * @param bool $withSuspendu Inclure les établissements suspendu
+     *
+     * @return Etablissement
+     */
+    public function findAny($anyIdentifiant, $withSuspendu = false) {
+        $etablissement = $this->find($this->getId($anyIdentifiant));
+
+        if($etablissement) {
+
+            return $etablissement;
+        }
+
+        return $this->findByCvi($anyIdentifiant, $withSuspendu);
+    }
+
     public function findByAccises($no_accises, $with_suspendu = false) {
         return $this->findByCvi($no_accises, $with_suspendu);
     }

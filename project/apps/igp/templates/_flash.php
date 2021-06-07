@@ -15,3 +15,9 @@
     <span class="glyphicon glyphicon-check-ok"></span> <?php echo $sf_user->getFlash('success'); ?>
 </p>
 <?php endif; ?>
+
+<?php if ($sf_user->hasFlash('notice')): ?>
+    <p class="alert alert-success">
+        <span class="glyphicon glyphicon-check-ok"></span> <?php echo $sf_user->getFlash('notice'); ?>
+    </p>
+<?php endif; ?>

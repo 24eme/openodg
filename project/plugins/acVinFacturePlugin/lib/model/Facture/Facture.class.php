@@ -244,18 +244,23 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
 
     /** facturation par mvts **/
-    public function storeLignesByMouvementsView($mouvement) {
-            $keyLigne = str_replace("%detail_identifiant%",$mouvement->value->detail_identifiant,$mouvement->value->categorie);
+    public function storeLignesByMouvementsView($mouvement_agreges, $mouvements_originaux = null) {
+            $keyLigne = str_replace("%detail_identifiant%",$mouvement_agreges->value->detail_identifiant,$mouvement_agreges->value->categorie);
             $ligne = $this->lignes->add($keyLigne);
-            $ligne->libelle = $mouvement->value->type_libelle;
-            $ligne->origine_mouvements->add($mouvement->id)->add(null, $mouvement->key[MouvementFactureView::KEY_ORIGIN]);
+            $ligne->libelle = $mouvement_agreges->value->type_libelle;
+            if (!$mouvements_originaux) {
+                $mouvements_originaux = array($mouvement_agreges);
+            }
+            foreach($mouvements_originaux as $mouvement) {
+                $ligne->origine_mouvements->add($mouvement->id)->add(null, $mouvement->key[MouvementFactureView::KEY_ORIGIN]);
+            }
 
             $detail = null;
             $quantite = 0;
             $template = $this->getTemplate();
             if ($template) {
                 foreach ($template->getCotisations() as $cotisName => $cotis) {
-                    if($cotis->code_comptable && $mouvement->value->categorie == $cotisName){
+                    if($cotis->code_comptable && $mouvement_agreges->value->categorie == $cotisName){
                         $ligne->produit_identifiant_analytique = $cotis->code_comptable;
                         break;
                     }
@@ -263,21 +268,21 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             }
 
             foreach ($ligne->details as $d) {
-                if($d->libelle == $mouvement->value->detail_libelle && $detail->prix_unitaire == $mouvement->value->taux && $detail->taux_tva == $mouvement->value->tva && $mouvement->value->unite){
+                if($d->libelle == $mouvement_agreges->value->detail_libelle && $detail->prix_unitaire == $mouvement_agreges->value->taux && $detail->taux_tva == $mouvement_agreges->value->tva && $mouvement_agreges->value->unite){
                     $detail = $d;
                 }
             }
             if(!$detail){
                 $detail = $ligne->details->add();
-                $detail->prix_unitaire = $mouvement->value->taux;
-                $detail->taux_tva = $mouvement->value->tva;
-                $detail->libelle = $mouvement->value->detail_libelle;
-                if(isset($mouvement->value->unite) && $mouvement->value->unite) {
-                    $detail->add('unite', $mouvement->value->unite);
+                $detail->prix_unitaire = $mouvement_agreges->value->taux;
+                $detail->taux_tva = $mouvement_agreges->value->tva;
+                $detail->libelle = $mouvement_agreges->value->detail_libelle;
+                if(isset($mouvement_agreges->value->unite) && $mouvement_agreges->value->unite) {
+                    $detail->add('unite', $mouvement_agreges->value->unite);
                 }
             }
 
-            $detail->quantite += $mouvement->value->quantite;
+            $detail->quantite += $mouvement_agreges->value->quantite;
             $ligne->updateTotaux();
 
     }
@@ -341,7 +346,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function storeTemplates($template) {
-        $this->templates->add($template->_id, $template->_id);
+        if ($template) {
+            $this->templates->add($template->_id, $template->_id);
+        }
     }
 
     public function updateTotaux() {
@@ -469,10 +476,13 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         if (!$this->versement_comptable) {
             $this->versement_comptable = 0;
         }
-
         if (!$this->versement_comptable_paiement) {
             $this->versement_comptable_paiement = 0;
         }
+        if (!$this->exist('paiements') || !count($this->paiements)) {
+            $this->versement_comptable_paiement = 1;
+        }
+
 
         $this->archivage_document->preSave();
         $this->numero_odg = $this->getNumeroOdg();

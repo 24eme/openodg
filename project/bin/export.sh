@@ -115,7 +115,7 @@ php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
 rm $EXPORTDIR/lots.csv.part
 
-php symfony lots:export-csv $SYMFONYTASKOPTIONS --with-historique="1" > $EXPORTDIR/lots-historique.csv.part
+php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.part > $EXPORTDIR/lots-historique.csv
 rm $EXPORTDIR/lots-historique.csv.part
 
