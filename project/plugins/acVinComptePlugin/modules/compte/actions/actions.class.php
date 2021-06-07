@@ -370,7 +370,7 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeRemovegroupe(sfWebRequest $request) {
-      $groupeName = str_replace('.','!',$request->getParameter('groupeName'));
+      $groupeName = str_replace('!','.',$request->getParameter('groupeName'));
       $identifiant = $request->getParameter('identifiant');
       $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
       $compte->removeGroupes($groupeName);
