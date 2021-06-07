@@ -6,7 +6,7 @@ class ExportLotsCSV {
     protected $lots = array();
 
     public static function getHeaderCsv() {
-        return "Application;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Doc Id;Lot unique Id;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;\n";
+        return "Application;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Doc Id;Lot unique Id;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Hash produit\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -109,7 +109,8 @@ class ExportLotsCSV {
               $centilisation,
               (isset($lot['preleve']))? $lot['preleve'] : '',
               $conformite,
-              (isset($lot['conforme_appel']))? $lot['conforme_appel'] : ''
+              (isset($lot['conforme_appel']))? $lot['conforme_appel'] : '',
+              $lot['produit_hash']
           ));
         }
         return $csv;
