@@ -87,6 +87,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return preg_replace('/[^a-z0-9éàùèêëïç]+/', '_', $tag);
     }
 
+    public function updateTagsGroupes() {
+        $this->tags->remove('groupes');
+        $this->tags->add('groupes');
+        foreach($this->groupes as $groupe_obj) {
+            $this->addTag('groupes', $groupe_obj->nom);
+        }
+    }
+
     public function addInGroupes($grp,$fct){
         $grpt = str_replace(array('.', ')', '('), array('','',''), $grp);
         $grpn = str_replace(array( ')', '('), array('',''), $grp);
@@ -95,7 +103,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $grpNode = $allGrps->add();
         $grpNode->nom = $grpn;
         $grpNode->fonction = $fct;
-        $this->addTag('groupes', $grpt);
     }
 
     public function removeGroupes($grp){
@@ -110,12 +117,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         $this->remove("groupes");
         $this->getOrAdd('groupes');
-        $this->get('tags')->remove('groupes');
         foreach ($grp_to_keep as $newgrp) {
           $this->groupes->add(null,$newgrp);
-          $newgrpNom = str_replace(array( ')', '('), array('',''), $newgrp->nom);
-          $newgrpNom = preg_replace('/^ */', '', preg_replace('/ *$/', '', $newgrpNom));
-          $this->addTag('groupes', $newgrpNom);
         }
 
     }
@@ -274,6 +277,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', preg_replace('/:.*/', '', $droit));
             }
         }
+
+        $this->updateTagsGroupes();
 
         parent::save();
 
