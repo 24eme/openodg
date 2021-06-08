@@ -35,6 +35,7 @@ class ExportComptesCsv
             "Email",
             "Site",
             "Compte Type",
+            "Tags",
             "N° Compte Type"
         ];
     }
@@ -61,6 +62,13 @@ class ExportComptesCsv
             $compte = $compteclient->find($json_doc->id);
             $domaine = sfConfig::get('app_routing_context_production_host');
             $type = strtolower($compte->type);
+            $tagsArray = array();
+            foreach ($compte->tags as $keys => $json) {
+                foreach ($json as $key => $value) {
+                  $tagsArray[] = $keys.":".$value;
+                }
+            }
+
             $data = [
                 $compte->getCodeComptable(),
                 $compte->nom_a_afficher,
@@ -81,16 +89,17 @@ class ExportComptesCsv
                 $compte->email,
                 "https://$domaine/$type/$compte->identifiant/visualisation",
                 $compte->compte_type,
+                implode(',',$tagsArray),
                 $compte->_id
             ];
 
             fputcsv($this->csv, $data, self::$delimiter);
         }
-            
+
         fclose($this->csv);
     }
-    /**        
-            
+    /**
+
             sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
             $this->compte->getCodeComptable(),
             $this->compte->nom_a_afficher,

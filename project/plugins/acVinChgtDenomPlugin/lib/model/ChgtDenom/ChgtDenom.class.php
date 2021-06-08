@@ -90,8 +90,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function devalidate() {
+        if ($this->isFactures()){
+            throw new sfException("dévalisation impossible : le document est déjà facturé");
+        }
         $this->validation = null;
         $this->validation_odg = null;
+        $this->clearMouvementsFactures();
         if($this->exist('etape')) {
             $this->etape = null;
         }
@@ -114,6 +118,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function isApprouve() {
       return ($this->validation_odg);
+    }
+
+    public function validateOdg($date = null, $region = NULL) {
+        if(is_null($date)) {
+            $date = date('c');
+        }
+        $this->validation_odg = $date;
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
     }
 
     public function getEtablissementObject() {
