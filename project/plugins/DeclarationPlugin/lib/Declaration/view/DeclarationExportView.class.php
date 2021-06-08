@@ -8,7 +8,16 @@ class DeclarationExportView extends acCouchdbView
 
     public static function getInstance() {
 
-        return acCouchdbManager::getView('declaration', 'export', 'Declaration');
+        return acCouchdbManager::getView('declaration', 'export');
+    }
+
+    public function getDeclarations($type, $campagne = null) {
+      $keys = ($campagne)? array($type, $campagne) : array($type);
+      return $this->client
+            ->startkey($keys)
+            ->endkey(array_merge($keys, array(array())))
+            ->reduce(false)
+            ->getView($this->design, $this->view);
     }
 
 }
