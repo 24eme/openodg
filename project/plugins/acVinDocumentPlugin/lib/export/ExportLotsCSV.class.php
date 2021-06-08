@@ -58,7 +58,19 @@ class ExportLotsCSV {
         }
         $lots = $this->getUniqueLotsLastStatut();
         foreach($lots as $lot) {
-          $adresse = explode(' — ', $lot['adresse_logement']);
+          $adresse = null;
+          $code_postal = null;
+          $commune = null;
+          $adresseTab = explode(' — ', $lot['adresse_logement']);
+          if (preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
+              $adresse = $adresseTab[1];
+              $code_postal = $adresseTab[2];
+              $commune = $adresseTab[3];
+          } elseif (preg_match('/^(.+)([0-9]{5})(.+)$/', $adresseTab[1], $m)) {
+            $adresse = trim($m[1]);
+            $code_postal = $m[2];
+            $commune = trim($m[3]);
+          }
           $produit = explode('/', str_replace('DEFAUT', '', $lot['produit_hash']));
           $cepages = ($lot['cepages'])? implode(',', array_keys((array)$lot['cepages'])) : '';
           $date = preg_split('/( |T)/', $lot['date'], -1, PREG_SPLIT_NO_EMPTY);
@@ -84,9 +96,9 @@ class ExportLotsCSV {
               $this->appName,
               $lot['declarant_identifiant'],
               $lot['declarant_nom'],
-              $this->protectStr($adresse[1]),
-              $adresse[2],
-              $this->protectStr($adresse[3]),
+              $this->protectStr($adresse),
+              $code_postal,
+              $this->protectStr($commune),
               $lot['campagne'],
               $lot['id_document'],
               $lot['unique_id'],
