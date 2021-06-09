@@ -66,7 +66,7 @@ $drev->save();
 
 $lot = $drev->lots[0];
 
-$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Doc Id;Lot unique Id;Hash produit\n", "Entête de csv");
+$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n", "Entête de csv");
 
 $export = new ExportDeclarationLotsCSV($drev, false);
 $t->is($export->export(),
@@ -111,6 +111,7 @@ $t->is($export->export(),
     $drev->validation_odg.";".
     $drev->date_degustation_voulue.";".
     $drev->envoi_oi.";".
+    $application.";".
     $drev->_id.";".
     $lot->unique_id.";".
     $lot->produit_hash."\n"
