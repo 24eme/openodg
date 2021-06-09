@@ -6,37 +6,9 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
     protected $header = false;
     protected $region = null;
 
-    const CSV_CAMPAGNE = 0;
-    const CSV_CVI = 2;
-    const CSV_PRODUIT_CERTIFICATION = 10;
-    const CSV_PRODUIT_GENRE = 11;
-    const CSV_PRODUIT_APPELLATION = 12;
-    const CSV_PRODUIT_MENTION = 13;
-    const CSV_PRODUIT_LIEU = 14;
-    const CSV_PRODUIT_COULEUR = 15;
-    const CSV_PRODUIT_CEPAGE = 16;
-    const CSV_PRODUIT_INAO = 17;
-    const CSV_PRODUIT_DENOMINATION_COMPLEMENTAIRE = 18;
-    const CSV_SUPERFICIE_REVENDIQUE = 20;
-    const CSV_VOLUME_REVENDIQUE_ISSU_RECOLTE = 21;
-    const CSV_VOLUME_REVENDIQUE_ISSU_VCI = 22;
-    const CSV_VOLUME_REVENDIQUE_ISSU_MUTAGE = 23;
-    const CSV_VOLUME_REVENDIQUE = 24;
-    const CSV_VCI_STOCK_PRECEDENT = 25;
-    const CSV_VCI_STOCK_DESTRUCTION= 26;
-    const CSV_VCI_STOCK_COMPLEMENT = 27;
-    const CSV_VCI_STOCK_SUBSTITUTION = 28;
-    const CSV_VCI_STOCK_RAFRAICHI = 29;
-    const CSV_VCI_STOCK_CONSTITUE = 30;
-    const CSV_TYPE_DREV = 32;
-    const CSV_LOT_NUMERO_CUVE = 34;
-    const CSV_LOT_DESTINATION = 37;
-    const CSV_DATE_VALIDATION_DECLARANT = 38;
-    const CSV_DATE_VALIDATION_ODG = 39;
-
     public static function getHeaderCsv() {
 
-        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Doc Id;Lot unique Id;Hash produit\n";
+        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($document, $header = true, $region = null) {
@@ -96,6 +68,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $this->formatFloat($lot->volume).";".
             $lot->destination_type.";".
             $lot->destination_date.";".
+            $lot->pays.";".
             $lot->centilisation.";".
             $lot->elevage.";".
             $lot->eleve.";".

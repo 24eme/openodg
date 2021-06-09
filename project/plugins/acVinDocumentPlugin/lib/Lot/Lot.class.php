@@ -205,6 +205,15 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->_get("destination_type");
     }
 
+    public function getPays() {
+        if(!$this->exist('pays')) {
+
+            return null;
+        }
+
+        return $this->_get('pays');
+    }
+
     public function getCentilisation() {
         if(!$this->exist('centilisation')) {
 
