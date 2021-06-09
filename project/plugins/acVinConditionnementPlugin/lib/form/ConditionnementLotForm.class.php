@@ -37,10 +37,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
 
         $this->setWidget('millesime', new bsWidgetFormInput());
-        $this->setValidator('millesime', new sfValidatorOr(array(
-            new sfValidatorInteger(array('required' => false)),
-            new sfValidatorChoice(array('required' => false, 'choices' => array('NM', 'nm')))
-        )));
+        $this->setValidator('millesime', new sfValidatorChoice(array('required' => false, 'choices' => $this->getMillesimes())));
 
         $this->setWidget('destination_date', new bsWidgetFormInput());
         $this->setValidator('destination_date', new sfValidatorDate(
@@ -128,6 +125,14 @@ class ConditionnementLotForm extends acCouchdbObjectForm
     public function getCepages()
     {
         return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
+    }
+
+    public function getMillesimes() {
+        $m = array('NM', 'nm');
+        for($i = 0 ; $i < 10 ; $i++) {
+            $m[] = date('Y') - $i;
+        }
+        return $m;
     }
 
 }
