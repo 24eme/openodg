@@ -6,7 +6,7 @@ class ExportHistoriqueLotsCSV {
     protected $appName = null;
 
     public static function getHeaderCsv() {
-        return "Application;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Doc Id;Lot unique Id;Produit;Volume;Statut;Details;\n";
+        return "Application;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Doc Id;Lot unique Id;Produit;Volume;Statut;Details\n";
     }
 
     public function __construct($header = true, $appName = null) {
