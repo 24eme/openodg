@@ -83,7 +83,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             ($this->document->exist('envoi_oi') ? $this->document->envoi_oi : null).";".
             $this->document->_id.";".
             $lot->unique_id.";".
-            $lot->produit_hash;
+            $lot->produit_hash."\n";
         }
 
         return $csv;

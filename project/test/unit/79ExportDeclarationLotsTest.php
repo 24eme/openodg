@@ -113,7 +113,7 @@ $t->is($export->export(),
     $drev->envoi_oi.";".
     $drev->_id.";".
     $lot->unique_id.";".
-    $lot->produit_hash
+    $lot->produit_hash."\n"
     , "Export csv du lot de la $drev");
 
 $conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
@@ -127,7 +127,7 @@ $conditionnement->validateOdg();
 $conditionnement->save();
 
 $export = new ExportDeclarationLotsCSV($conditionnement, false);
-$t->is(count(explode("\n", $export->export())), 1, "Export csv du lot de $conditionnement");
+$t->is(count(explode("\n", $export->export())), 2, "Export csv du lot de $conditionnement");
 
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
 $lotT = $transaction->addLot();
@@ -140,4 +140,4 @@ $transaction->validateOdg();
 $transaction->save();
 
 $export = new ExportDeclarationLotsCSV($transaction, false);
-$t->is(count(explode("\n", $export->export())), 1, "Export csv du lot de $transaction");
+$t->is(count(explode("\n", $export->export())), 2, "Export csv du lot de $transaction");
