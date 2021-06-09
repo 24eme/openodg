@@ -56,10 +56,12 @@
               <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-
                             <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-3 control-label")); ?>
                             <div class="col-sm-9">
                                   <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                            </div>
+                            <div class="col-sm-12 text-danger">
+                            <?php echo $lot['produit_hash']->renderError(); ?>
                             </div>
                         </div>
                     </div>
@@ -98,7 +100,9 @@
                                   <?php echo $lot['millesime']->render(); ?>
                               </div>
                           </div>
-                          <?php echo $lot['millesime']->renderError(); ?>
+                          <div class="col-sm-6 text-danger">
+                              <?php echo $lot['millesime']->renderError(); ?>
+                          </div>
                       </div>
                     </div>
                 </div>
@@ -153,12 +157,16 @@
                                     <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
                                 </div>
                             </div>
+                            <div class="col-sm-12 text-danger">
+                            <?php echo $lot['destination_date']->renderError(); ?>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-offset-8 col-md-3 ">
                             <?php echo $lot['elevage']->render() ?>
                             <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
+                            <?php echo $lot['elevage']->renderError() ?>
                         </div>
                     </div>
                 </div>
