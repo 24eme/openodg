@@ -2,7 +2,6 @@
 
 class degustationComponents extends sfComponents {
 
-    // Permet de construire l'uri mailto avec le sujet, le body etc...
     public function executeMailTo(sfWebRequest $request)
     {
         // degustation
