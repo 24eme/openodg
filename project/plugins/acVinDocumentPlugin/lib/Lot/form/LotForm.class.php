@@ -115,5 +115,4 @@ class LotForm extends acCouchdbObjectForm
     {
         return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
     }
-
 }

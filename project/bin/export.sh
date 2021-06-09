@@ -113,11 +113,14 @@ rm $EXPORTDIR/factures.csv.part
 
 php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
+cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 9,34 | sort | uniq | sort -t ";" -k 1,1 > $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
 
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
+
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.part > $EXPORTDIR/lots-historique.csv
 rm $EXPORTDIR/lots-historique.csv.part
+rm $EXPORTDIR/lots_hash.csv
 
 bash bin/export_docs.sh Degustation 30 $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
