@@ -1,4 +1,4 @@
 all:
   configuration:
     configuration:
-      effervescent_vindebase: true
+      effervescent_vindebase: false
