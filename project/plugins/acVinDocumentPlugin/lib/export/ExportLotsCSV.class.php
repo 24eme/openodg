@@ -6,7 +6,7 @@ class ExportLotsCSV {
     protected $lots = array();
 
     public static function getHeaderCsv() {
-        return "Application;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Doc Id;Lot unique Id;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Redegustation;Conformité;Date de conformité en appel;\n";
+        return "Application;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Doc Id;Lot unique Id;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Hash produit\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -58,7 +58,19 @@ class ExportLotsCSV {
         }
         $lots = $this->getUniqueLotsLastStatut();
         foreach($lots as $lot) {
-          $adresse = explode(' — ', $lot['adresse_logement']);
+          $adresse = null;
+          $code_postal = null;
+          $commune = null;
+          $adresseTab = explode(' — ', $lot['adresse_logement']);
+          if (preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
+              $adresse = $adresseTab[1];
+              $code_postal = $adresseTab[2];
+              $commune = $adresseTab[3];
+          } elseif (preg_match('/^(.+)([0-9]{5})(.+)$/', $adresseTab[1], $m)) {
+            $adresse = trim($m[1]);
+            $code_postal = $m[2];
+            $commune = trim($m[3]);
+          }
           $produit = explode('/', str_replace('DEFAUT', '', $lot['produit_hash']));
           $cepages = ($lot['cepages'])? implode(',', array_keys((array)$lot['cepages'])) : '';
           $date = preg_split('/( |T)/', $lot['date'], -1, PREG_SPLIT_NO_EMPTY);
@@ -67,10 +79,6 @@ class ExportLotsCSV {
             $lot['conformite'] = '';
           }
           $conformite = (isset(Lot::$libellesConformites[$lot['conformite']]))? Lot::$libellesConformites[$lot['conformite']] : $lot['conformite'];
-          $redegustation = null;
-          if (isset($lot['specificite']) && preg_match("/ème dégustation/", $lot['specificite'])) {
-            $redegustation = 'oui';
-          }
           $destination = null;
           if (isset($lot['destination_type'])) {
             $destination = isset(DRevClient::$lotDestinationsType[$lot['destination_type']])? DRevClient::$lotDestinationsType[$lot['destination_type']] : $lot['destination_type'];
@@ -80,13 +88,13 @@ class ExportLotsCSV {
           if (isset($lot['centilisation'])) {
             $centilisation = isset($contenances[$lot['centilisation']])? $contenances[$lot['centilisation']] : $lot['centilisation'];
           }
-          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
               $this->appName,
               $lot['declarant_identifiant'],
               $lot['declarant_nom'],
-              $this->protectStr($adresse[1]),
-              $adresse[2],
-              $this->protectStr($adresse[3]),
+              $this->protectStr($adresse),
+              $code_postal,
+              $this->protectStr($commune),
               $lot['campagne'],
               $lot['id_document'],
               $lot['unique_id'],
@@ -112,9 +120,9 @@ class ExportLotsCSV {
               (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
               $centilisation,
               (isset($lot['preleve']))? $lot['preleve'] : '',
-              $redegustation,
               $conformite,
-              (isset($lot['conforme_appel']))? $lot['conforme_appel'] : ''
+              (isset($lot['conforme_appel']))? $lot['conforme_appel'] : '',
+              $lot['produit_hash']
           ));
         }
         return $csv;
