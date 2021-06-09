@@ -114,6 +114,11 @@ class DeclarationClient
             return 'ExportParcellaireIntentionAffectationCSV';
         }
 
+        if(class_exists("DegustationClient") && $type == DegustationClient::TYPE_MODEL) {
+
+            return 'ExportDegustationCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 

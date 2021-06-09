@@ -72,7 +72,7 @@
                     <div class="col-xs-7" style="margin-right: 10px;">
                       <div class="form-group <?php if($form['id_compte']->hasError()): ?> has-error<?php endif; ?>">
                           <?php echo $form['id_compte']->renderError(); ?>
-                          <?php echo $form['id_compte']->render(array('class' => 'form-control select2autocompleteAjax', 'placeholder' => 'Rechercher', "autofocus" => "autofocus")); ?>
+                          <?php echo $form['id_compte']->render(array('class' => 'form-control select2autocompleteAjax', 'placeholder' => 'Rechercher')); ?>
                       </div>
                     </div>
                     <div class="col-xs-2">

@@ -119,6 +119,14 @@ php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-his
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.part > $EXPORTDIR/lots-historique.csv
 rm $EXPORTDIR/lots-historique.csv.part
 
+bash bin/export_docs.sh Degustation 30 $1 > $EXPORTDIR/degustations.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
+rm $EXPORTDIR/degustations.csv.part
+
+php symfony degustations:export-degustateurs-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/degustateurs.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustateurs.csv.part > $EXPORTDIR/degustateurs.csv
+rm $EXPORTDIR/degustateurs.csv.part
+
 find $EXPORTDIR -type f -empty -delete
 
 if test "$METABASE_SQLITE"; then

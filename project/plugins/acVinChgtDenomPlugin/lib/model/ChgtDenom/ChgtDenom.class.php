@@ -561,7 +561,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function generateUrlPiece($source = null) {
-    	return null;
+    	return sfContext::getInstance()->getRouting()->generate('chgtdenom_pdf', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {

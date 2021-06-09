@@ -28,7 +28,7 @@ class LotForm extends acCouchdbObjectForm
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
 
         $this->setWidget('millesime', new bsWidgetFormInput());
-        $this->setValidator('millesime', new sfValidatorInteger(array('required' => false)));
+        $this->setValidator('millesime', new sfValidatorChoice(array('required' => false, 'choices' => $this->getMillesimes())));
 
         $this->setWidget('numero_logement_operateur', new bsWidgetFormInput());
         $this->setValidator('numero_logement_operateur', new sfValidatorString(array('required' => false)));
@@ -116,4 +116,11 @@ class LotForm extends acCouchdbObjectForm
         return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
     }
 
+    public function getMillesimes() {
+        $m = array('NM', 'nm');
+        for($i = 0 ; $i < 10 ; $i++) {
+            $m[] = date('Y') - $i;
+        }
+        return $m;
+    }
 }

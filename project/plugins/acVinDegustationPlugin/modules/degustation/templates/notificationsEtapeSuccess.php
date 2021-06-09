@@ -102,8 +102,10 @@
   <?php if ($mailto): ?>
   <script>
       var mailto = document.createElement('a');
-      mailto.href = "<?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $mailto, 'lots' => $degustation->getLotsByOperateurs($mailto)[$mailto], 'notemplate' => true]); ?>";
-      mailto.click();
+      var uri = "<?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $mailto, 'lots' => $degustation->getLotsByOperateurs($mailto)[$mailto], 'notemplate' => true]); ?>"
+      mailto.href = "#";
+      mailto.addEventListener("click", function(){window.open(uri, '_blank')}, false);
+      mailto.click()
   </script>
   <?php endif ?>
 
