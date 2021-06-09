@@ -93,7 +93,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $lot->getCepagesToStr().";".
             $lot->millesime.";".
             $lot->specificite.";".
-            $lot->volume.";".
+            $this->formatFloat($lot->volume).";".
             $lot->destination_type.";".
             $lot->destination_date.";".
             $lot->centilisation.";".

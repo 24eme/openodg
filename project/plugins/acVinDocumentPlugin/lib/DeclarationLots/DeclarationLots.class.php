@@ -142,6 +142,17 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $lot;
       }
 
+      public function getCurrentLots() {
+        $lots = array();
+        foreach($this->getLots() as $lot) {
+          if ($lot->numero_dossier != $this->numero_archive) {
+            continue;
+          }
+          $lots[] = $lot;
+        }
+        return $lots;
+      }
+
       public function hasLotsUtilises() {
           foreach($this->lots as $lot) {
               if($lot->hasBeenEdited()) {

@@ -11,6 +11,8 @@ if ($application != 'igp13') {
 $t = new lime_test();
 
 $periode = (date('Y')-1)."";
+$campagne = $periode."-".($periode + 1);
+$date = date('Y-m-d');
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
 $centilisations_bib_key = key($centilisations["bib"]);
@@ -42,7 +44,6 @@ foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
-$produitconfig2 = null;
 foreach($config->getProduits() as $produitconfig) {
     if(!$produitconfig->getRendement()) {
         continue;
@@ -55,7 +56,7 @@ $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
 $drev->addLot();
 $drev->lots[0]->produit_hash = $produitconfig1->getHash();
-$drev->lots[0]->numero_logement_operateur = '1';
+$drev->lots[0]->numero_logement_operateur = 'A1';
 $drev->lots[0]->volume = 100;
 $drev->validate();
 $drev->validateOdg();
@@ -113,3 +114,17 @@ $t->is($export->export(),
     $lot->unique_id.";".
     $lot->produit_hash
     , "Export csv du lot de la drev");
+
+$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
+$lotC = $conditionnement->addLot();
+$lotC->produit_hash = $produitconfig1->getHash();
+$lotC->volume = 15;
+$lotC->numero_logement_operateur = 'C12';
+$lotC->centilisation = $centilisations_bib_key;
+$conditionnement->validate();
+$conditionnement->validateOdg();
+$conditionnement->save();
+
+$export = new ExportDeclarationLotsCSV($conditionnement, false);
+$t->is(count(explode("\n", $export->export())), 1, "Export csv du lot de conditionnement");
+
