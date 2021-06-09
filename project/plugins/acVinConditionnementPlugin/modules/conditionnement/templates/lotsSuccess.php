@@ -98,6 +98,7 @@
                                   <?php echo $lot['millesime']->render(); ?>
                               </div>
                           </div>
+                          <?php echo $lot['millesime']->renderError(); ?>
                       </div>
                     </div>
                 </div>

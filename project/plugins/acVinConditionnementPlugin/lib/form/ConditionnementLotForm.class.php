@@ -37,7 +37,10 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
 
         $this->setWidget('millesime', new bsWidgetFormInput());
-        $this->setValidator('millesime', new sfValidatorInteger(array('required' => false)));
+        $this->setValidator('millesime', new sfValidatorOr(array(
+            new sfValidatorInteger(array('required' => false)),
+            new sfValidatorChoice(array('required' => false, 'choices' => array('NM', 'nm')))
+        )));
 
         $this->setWidget('destination_date', new bsWidgetFormInput());
         $this->setValidator('destination_date', new sfValidatorDate(
