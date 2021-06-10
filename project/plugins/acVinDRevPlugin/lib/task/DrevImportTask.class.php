@@ -56,6 +56,10 @@ EOF;
 
                 $cviParts = explode('_', $cviCampagne);
                 $cvi = $cviParts[0];
+                if($cvi == "CVI Opérateur"){
+                    continue;
+                }
+
                 $campagne = $cviParts[1];
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi,true);
@@ -147,6 +151,17 @@ EOF;
         }
 
         $lotsAdded = false;
+
+        $volumesbyCouleur = array();
+        foreach ($lignes as $ligne) {
+            $data = $this->csv[$ligne];
+            $couleur = $data[ExportDRevCSV::CSV_PRODUIT_COULEUR];
+            if(!isset($volumesbyCouleur[$couleur])){
+                $volumesbyCouleur[$couleur] = 0.0;
+            }
+            $volumesbyCouleur[$couleur] = $volumesbyCouleur[$couleur] + floatval(str_replace(",", ".",trim($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE])));
+        }
+
         foreach($lignes as $ligne) {
             $data = $this->csv[$ligne];
             if(!trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]) || !trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG])){
@@ -174,7 +189,7 @@ EOF;
 
 
             if($volume){
-                if($this->isLotInDrev($drev, $volume, $produit_line->getHash(), $code_inao,  $numero_cuve, $type_destination, $date_destination)){
+                if($this->isLotInDrev($drev, $volume, $volumesbyCouleur)){
                     $libelleProduit = $produit_line->getLibelleComplet();
                     echo "WARNING;PAS D'IMPORT lot existe : $drev->_id;$campagne;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
                     continue;
@@ -214,21 +229,30 @@ EOF;
         }
     }
 
-    protected function isLotInDrev($drev, $volume, $produit_hash, $code_inao, $numero_cuve, $type_destination, $date_destination){
+    protected function isLotInDrev($drev, $volume, $volumesbyCouleur){
+
+        // Check si le Volume est le même que celui d'un autre Lot
         foreach ($drev->getLots() as $lot) {
-            $drevLotProduit = null;
-            foreach ($this->configurationProduits as $key => $produit) {
-                if($key == $lot->produit_hash){
-                    $drevLotProduit = $produit;
-                    break;
-                }
-            }
-            $sameProduit = ($drevLotProduit->getCodeDouane() == $code_inao) || ($drevLotProduit->getCodeDouane() == preg_replace('/([0-9A-Z]+) ([0-9A-Z]*)/',"$1", $code_inao));
-            $sameVolume = ($volume == $lot->getVolume());
-            if($sameProduit && $sameVolume){
+            $sameVolume = ($this->formatFloat($volume) == $lot->getVolume());
+
+            if($sameVolume){
                 return true;
             }
         }
+
+        // Check le Volume couleur est le même que celui de l'ensemble de la couleur de la Drev existante
+        foreach ($drev->getLotsByCouleur() as $couleur => $lots) {
+            $somme = 0.0;
+            foreach ($lots as $lot) {
+                $somme += $lot->volume;
+            }
+            $couleurProduitDrev = $lot->getConfig()->getCouleur()->getKey();
+
+            if($volumesbyCouleur[$couleurProduitDrev] == $somme){
+                return true;
+            }
+        }
+
         return false;
     }
 
