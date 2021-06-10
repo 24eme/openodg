@@ -736,7 +736,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
         $exclude = (bool) $exclude;
-        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+        $regexpFilter = "#^(".implode("|", explode(",", $familleFilterMatch)).")$#";
 
         if(!$exclude && preg_match($regexpFilter, $this->declarant->famille)) {
 
