@@ -48,6 +48,12 @@ bash bin/export_docs.sh DRev 30 $1 > $EXPORTDIR/drev.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev.csv.part > $EXPORTDIR/drev.csv
 rm $EXPORTDIR/drev.csv.part
 
+sleep 60
+
+php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/declarations_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/liaisons.csv
+rm $EXPORTDIR/declarations_lots.csv.part
+
 bash bin/export_docs.sh Habilitation 30 $1 > $EXPORTDIR/habilitation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
 rm $EXPORTDIR/habilitation.csv.part

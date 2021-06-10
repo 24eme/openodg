@@ -8,7 +8,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Doc Id;Lot unique Id;Hash produit\n";
+        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($document, $header = true, $region = null) {
@@ -81,9 +81,10 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $this->document->validation_odg.";".
             ($this->document->exist('date_degustation_voulue') ? $this->document->date_degustation_voulue : null).";".
             ($this->document->exist('envoi_oi') ? $this->document->envoi_oi : null).";".
+            Organisme::getCurrentOrganisme().";".
             $this->document->_id.";".
             $lot->unique_id.";".
-            $lot->produit_hash;
+            $lot->produit_hash."\n";
         }
 
         return $csv;

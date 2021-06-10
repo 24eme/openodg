@@ -10,7 +10,12 @@ class Organisme
 
     public static function getCurrentRegion() {
 
-        return strtoupper(sfConfig::get('sf_app'));
+        return strtoupper(self::getCurrentOrganisme());
+    }
+
+    public static function getCurrentOrganisme() {
+
+        return sfConfig::get('sf_app');
     }
 
     public static function getInstance($region = null, $type = self::DEFAULT_TYPE) {

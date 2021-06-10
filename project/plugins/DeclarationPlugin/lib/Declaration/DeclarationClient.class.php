@@ -145,12 +145,19 @@ class DeclarationClient
         return $typeAndCampagne;
     }
 
-    public function getIds($type, $campagne, $validation = true) {
+    public function getIds($type, $campagne = null) {
         $ids = array();
 
+        $keys = array();
+
+        $keys[] = $type;
+        if(!is_null($campagne)) {
+            $keys[] = $campagne;
+        }
+
         $rows = acCouchdbManager::getClient()
-                    ->startkey(array($type, $campagne))
-                    ->endkey(array($type, $campagne, array()))
+                    ->startkey($keys)
+                    ->endkey(array_merge($keys, array(array())))
                     ->reduce(false)
                     ->getView('declaration', 'export')->rows;
 
