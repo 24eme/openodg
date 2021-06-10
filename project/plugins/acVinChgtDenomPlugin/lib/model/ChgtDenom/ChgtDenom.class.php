@@ -64,6 +64,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return ConfigurationClient::getInstance()->getConfiguration();
     }
 
+    public function getConfigProduitOrigine() {
+
+        return $this->getConfiguration()->get($this->origine_produit_hash);
+    }
+
+    public function getConfigProduitChangement() {
+
+        return $this->getConfiguration()->get($this->changement_produit_hash);
+    }
+
     public function getConfigProduits() {
         return $this->getConfiguration()->declaration->getProduits();
     }
