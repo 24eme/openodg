@@ -62,7 +62,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $lot->getConfigProduit()->getCouleur()->getKey().";".
             $lot->getConfigProduit()->getCepage()->getKey().";".
             $lot->getProduitLibelle().";".
-            $lot->getCepagesToStr().";".
+            $lot->getCepagesLibelle().";".
             $lot->millesime.";".
             $lot->specificite.";".
             $this->formatFloat($lot->volume).";".
