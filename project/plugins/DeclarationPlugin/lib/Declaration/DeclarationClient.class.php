@@ -39,6 +39,11 @@ class DeclarationClient
             return 'ExportDRevCSV';
         }
 
+        if(class_exists("ChgtDenomClient") && $type == DRevClient::TYPE_MODEL) {
+
+            return 'ExportChgtDenomCSV';
+        }
+
         if(class_exists("ParcellaireClient") && $type == ParcellaireClient::TYPE_MODEL) {
 
             return 'ExportParcellaireCSV';
