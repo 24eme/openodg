@@ -39,7 +39,7 @@ class DeclarationClient
             return 'ExportDRevCSV';
         }
 
-        if(class_exists("ChgtDenomClient") && $type == DRevClient::TYPE_MODEL) {
+        if(class_exists("ChgtDenomClient") && $type == ChgtDenomClient::TYPE_MODEL) {
 
             return 'ExportChgtDenomCSV';
         }
