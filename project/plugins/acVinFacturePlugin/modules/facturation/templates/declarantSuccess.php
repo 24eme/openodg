@@ -54,7 +54,7 @@
               <button type="button" class="btn btn-default btn-default-step btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
                   <li>
-                  <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement && !$facture->exist('avoir')): ?>
+                  <?php if(!$facture->isAvoir() && !$facture->exist('avoir')): ?>
                     <li>
                       <a href="<?php echo url_for("facturation_avoir_defacturant", array("id" => $facture->_id)) ?>" onclick='return confirm("Étes vous sûr de vouloir créer un avoir ?");' >
                           <span class="glyphicon glyphicon-repeat"></span> Créér un avoir
