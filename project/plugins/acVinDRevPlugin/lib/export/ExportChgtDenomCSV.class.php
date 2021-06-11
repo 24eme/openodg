@@ -52,8 +52,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
             $lotChgtRestant = $this->document->lots[0];
         }
 
-
-        $csv .= $this->document->type.";".
+        $base = $this->document->type.";".
         $this->document->campagne.";".
         $this->document->identifiant.";".
         $this->document->declarant->famille.";".
@@ -78,34 +77,66 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         $lotOrigine->getCepagesLibelle().";".
         $this->document->origine_millesime.";".
         $this->document->origine_specificite.";".
-        $this->formatFloat($this->document->origine_volume).";".
-        $this->document->changement_type.";".
-        $lotChgt->numero_dossier.";".
-        $lotChgt->numero_archive.";".
-        $this->document->changement_numero_logement_operateur.";".
-        $this->document->getConfigProduitChangement()->getCertification()->getKey().";".
-        $this->document->getConfigProduitChangement()->getGenre()->getKey().";".
-        $this->document->getConfigProduitChangement()->getAppellation()->getKey().";".
-        $this->document->getConfigProduitChangement()->getMention()->getKey().";".
-        $this->document->getConfigProduitChangement()->getLieu()->getKey().";".
-        $this->document->getConfigProduitChangement()->getCouleur()->getKey().";".
-        $this->document->getConfigProduitChangement()->getCepage()->getKey().";".
-        $this->document->changement_produit_libelle.";".
-        $lotChgt->getCepagesLibelle().";".
-        $this->document->changement_millesime.";".
-        $this->document->changement_specificite.";".
-        $this->formatFloat($this->document->changement_volume).";".
-        $this->document->changement_affectable.";".
-        $lotChgt->isAffecte().";".
-        $this->document->validation.";".
-        $this->document->validation_odg.";".
-        Organisme::getCurrentOrganisme().";".
-        $this->document->changement_origine_id_document.";".
-        $this->document->changement_origine_lot_unique_id.";".
-        $this->document->origine_produit_hash.";".
-        $this->document->_id.";".
-        $lotChgt->unique_id.";".
-        $this->document->changement_produit_hash."\n";
+        $this->formatFloat($this->document->origine_volume).";";
+
+        if($this->document->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+            $csv .= $base.
+            $this->document->changement_type.";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            ";".
+            $this->formatFloat($this->document->changement_volume).";".
+            ";".
+            ";".
+            $this->document->validation.";".
+            $this->document->validation_odg.";".
+            Organisme::getCurrentOrganisme().";".
+            $this->document->changement_origine_id_document.";".
+            $this->document->changement_origine_lot_unique_id.";".
+            $this->document->origine_produit_hash.";".
+            $this->document->_id.";".
+            ";\n";
+        } else {
+            $csv .= $base.
+            $this->document->changement_type.";".
+            $lotChgt->numero_dossier.";".
+            $lotChgt->numero_archive.";".
+            $this->document->changement_numero_logement_operateur.";".
+            $this->document->getConfigProduitChangement()->getCertification()->getKey().";".
+            $this->document->getConfigProduitChangement()->getGenre()->getKey().";".
+            $this->document->getConfigProduitChangement()->getAppellation()->getKey().";".
+            $this->document->getConfigProduitChangement()->getMention()->getKey().";".
+            $this->document->getConfigProduitChangement()->getLieu()->getKey().";".
+            $this->document->getConfigProduitChangement()->getCouleur()->getKey().";".
+            $this->document->getConfigProduitChangement()->getCepage()->getKey().";".
+            $this->document->changement_produit_libelle.";".
+            $lotChgt->getCepagesLibelle().";".
+            $this->document->changement_millesime.";".
+            $this->document->changement_specificite.";".
+            $this->formatFloat($this->document->changement_volume).";".
+            $this->document->changement_affectable.";".
+            $lotChgt->isAffecte().";".
+            $this->document->validation.";".
+            $this->document->validation_odg.";".
+            Organisme::getCurrentOrganisme().";".
+            $this->document->changement_origine_id_document.";".
+            $this->document->changement_origine_lot_unique_id.";".
+            $this->document->origine_produit_hash.";".
+            $this->document->_id.";".
+            $lotChgt->unique_id.";".
+            $this->document->changement_produit_hash."\n";
+        }
 
         return $csv;
     }

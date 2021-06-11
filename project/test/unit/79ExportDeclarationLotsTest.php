@@ -165,7 +165,6 @@ $chgtDenom->validateOdg();
 $chgtDenom->save();
 
 $lotOrigine = $chgtDenom->getLotOrigine();
-$lotChgtRestant = $chgtDenom->lots[0];
 $lotChgt = $chgtDenom->lots[1];
 
 $baseCsv = $chgtDenom->type.";".
@@ -226,3 +225,50 @@ $t->is($export->export(),
     $lotChgt->unique_id.";".
     $chgtDenom->changement_produit_hash."\n"
     , "Export csv des lots du $chgtDenom");
+
+$chgtDenom->delete();
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
+$chgtDenom->setLotOrigine($lotD);
+$chgtDenom->changement_produit_hash = $produitconfig2->getHash();
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+$chgtDenom->changement_volume = $lotD->volume;
+$chgtDenom->constructId();
+$chgtDenom->save();
+$chgtDenom->validate();
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+
+$lotOrigine = $chgtDenom->getLotOrigine();
+$lotChgt = $chgtDenom->lots[0];
+
+$export = new ExportChgtDenomCSV($chgtDenom, false);
+$t->is($export->export(),
+    $baseCsv.
+    ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT.";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    $chgtDenom->changement_volume.";".
+    ";".
+    ";".
+    $chgtDenom->validation.";".
+    $chgtDenom->validation_odg.";".
+    $application.";".
+    $chgtDenom->changement_origine_id_document.";".
+    $chgtDenom->changement_origine_lot_unique_id.";".
+    $chgtDenom->origine_produit_hash.";".
+    $chgtDenom->_id.";".
+    ";\n"
+    , "Export csv des lots du déclassement $chgtDenom");
