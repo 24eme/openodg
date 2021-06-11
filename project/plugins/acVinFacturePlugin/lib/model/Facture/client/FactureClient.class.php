@@ -515,7 +515,9 @@ class FactureClient extends acCouchdbClient {
       $avoir->statut = self::STATUT_NONREDRESSABLE;
       $avoir->storeDatesCampagne(date('Y-m-d'));
       $avoir->numero_archive = null;
+      $avoir->numero_odg = null;
       $avoir->versement_comptable = 0;
+      $avoir->versement_comptable_paiement = 0;
       $avoir->save();
       $f->defacturer();
       $f->save();
