@@ -6,7 +6,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
     protected $header = false;
 
     public static function getHeaderCsv() {
-        return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Num dossier;Num lot;Num logement Opérateur;Num Anonymat;Num Table;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Destination date;Elevage;Centilisation;Date prélévement;Conformité;Motif;Observation;Date envoi email resultat;Date recours;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Produit hash;\n";
+        return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Num dossier;Num lot;Num logement Opérateur;Num Anonymat;Num Table;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Elevage;Date prélévement;Conformité;Motif;Observation;Date envoi email resultat;Date recours;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Produit hash;\n";
     }
 
     public function __construct($degustation, $header = true) {
@@ -66,26 +66,10 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
             }
             $cepages = ($lot->cepages)? implode(',', array_keys($lot->cepages->toArray(true,false))) : '';
             $statut = (isset(Lot::$libellesStatuts[$lot->statut]))? Lot::$libellesStatuts[$lot->statut] : $lot->statut;
-            if (!isset($lot->conformite)) {
-              $lot->conformite = '';
-            }
             $conformite = (isset(Lot::$libellesConformites[$lot->conformite]))? Lot::$libellesConformites[$lot->conformite] : $lot->conformite;
-            $destination = null;
-            $destination_date = null;
-            if (isset($lot->destination_type)) {
-              $destination = isset(DRevClient::$lotDestinationsType[$lot->destination_type])? DRevClient::$lotDestinationsType[$lot->destination_type] : $lot->destination_type;
-            }
-            if (isset($lot->destination_date)) {
-              $destination_date = ($lot->destination_date)? preg_split('/( |T)/', $lot->destination_date, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
-            }
-            $contenances = ConditionnementConfiguration::getInstance()->getContenances();
-            $centilisation = null;
-            if (isset($lot->centilisation)) {
-              $centilisation = isset($contenances[$lot->centilisation])? $contenances[$lot->centilisation] : $lot->centilisation;
-            }
             $dateRecours = ($lot->recours_oc)? preg_split('/( |T)/', $lot->recours_oc, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
             $dateEmail = ($lot->email_envoye)? preg_split('/( |T)/', $lot->email_envoye, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
-            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
                 $ligne_base,
                 $lot->declarant_identifiant,
                 $lot->declarant_nom,
@@ -101,20 +85,17 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
                 trim($this->protectStr($lot->produit_libelle)),
                 $cepages,
                 $lot->millesime,
-                (isset($lot->specificite))? $this->protectStr($lot->specificite) : '',
+                $this->protectStr($lot->specificite) : '',
                 $this->formatFloat($lot->volume),
                 $statut,
-                $destination,
-                $destination_date,
-                (isset($lot->elevage) && $lot->elevage)? 'oui' : '',
-                $centilisation,
-                (isset($lot->preleve))? $lot->preleve : '',
+                ($lot->elevage)? 'oui' : '',
+                $lot->preleve,
                 $conformite,
                 $this->protectStr($lot->motif),
                 $this->protectStr($lot->observation),
                 $dateEmail,
                 $dateRecours,
-                (isset($lot->conforme_appel))? $lot->conforme_appel : '',
+                $lot->conforme_appel : '',
                 Organisme::getCurrentOrganisme(),
                 $lot->id_document,
                 $lot->unique_id,
