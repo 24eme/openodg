@@ -23,7 +23,7 @@
               <div class="col-md-6"><strong><?php echo $lot->produit_libelle; ?></strong>
                 <?php if(count($lot->cepages)): ?>
                   &nbsp;<small>
-                    <?php echo $lot->getCepagesToStr(); ?>
+                    <?php echo $lot->getCepagesLibelle(); ?>
                   </small>
                 <?php endif; ?>
               </div>

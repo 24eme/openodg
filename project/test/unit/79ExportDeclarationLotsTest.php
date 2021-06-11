@@ -44,13 +44,29 @@ foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
+$produitconfig2 = null;
 foreach($config->getProduits() as $produitconfig) {
     if(!$produitconfig->getRendement()) {
         continue;
     }
-    $produitconfig1 = $produitconfig->getCepage();
-    continue;
+    if(!$produitconfig1) {
+        $produitconfig1 = $produitconfig->getCepage();
+        continue;
+    }
+    if(!$produitconfig2) {
+        $produitconfig2 = $produitconfig->getCepage();
+        break;
+    }
 }
+
+
+$t->is(DeclarationExportCsv::getProduitKeysCsv($produitconfig1),str_replace("DEFAUT", "", $produitconfig1->getCertification()->getKey().";".
+$produitconfig1->getGenre()->getKey().";".
+$produitconfig1->getAppellation()->getKey().";".
+$produitconfig1->getMention()->getKey().";".
+$produitconfig1->getLieu()->getKey().";".
+$produitconfig1->getCouleur()->getKey().";".
+$produitconfig1->getCepage()->getKey()),'fonction qui sort les informations du produit');
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
@@ -64,15 +80,16 @@ $drev->add('envoi_oi', $drev->validation);
 $drev->add('date_degustation_voulue', $drev->validation);
 $drev->save();
 
-$lot = $drev->lots[0];
+$lotD = $drev->lots[0];
 
-$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Doc Id;Lot unique Id;Hash produit\n", "Entête de csv");
+$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays de destination;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n", "Entête du csv declarations lots");
 
 $export = new ExportDeclarationLotsCSV($drev, false);
 $t->is($export->export(),
     $drev->type.";".
     $drev->campagne.";".
     $drev->identifiant.";".
+    $drev->declarant->famille.";".
     $drev->declarant->cvi.";".
     $drev->declarant->siret.";".
     '"'.$drev->declarant->nom."\";".
@@ -80,40 +97,35 @@ $t->is($export->export(),
     $drev->declarant->code_postal.";".
     '"'.$drev->declarant->commune."\";".
     $drev->declarant->email.";".
-    $lot->numero_dossier.";".
-    $lot->numero_archive.";".
-    $lot->date.";".
-    '"'.$lot->numero_logement_operateur."\";".
-    $lot->getConfigProduit()->getCertification()->getKey().";".
-    $lot->getConfigProduit()->getGenre()->getKey().";".
-    $lot->getConfigProduit()->getAppellation()->getKey().";".
-    $lot->getConfigProduit()->getMention()->getKey().";".
-    $lot->getConfigProduit()->getLieu()->getKey().";".
-    $lot->getConfigProduit()->getCouleur()->getKey().";".
-    $lot->getConfigProduit()->getCepage()->getKey().";".
-    $lot->getProduitLibelle().";".
-    $lot->getCepagesToStr().";".
-    $lot->millesime.";".
-    $lot->specificite.";".
-    $lot->volume.";".
-    $lot->destination_type.";".
-    $lot->destination_date.";".
-    $lot->pays.";".
-    $lot->centilisation.";".
-    $lot->elevage.";".
-    $lot->eleve.";".
-    $lot->affectable.";".
-    $lot->isAffecte().";".
-    $lot->isChange().";".
-    '"'.$lot->adresse_logement."\";".
+    $lotD->numero_dossier.";".
+    $lotD->numero_archive.";".
+    $lotD->date.";".
+    '"'.$lotD->numero_logement_operateur."\";".
+    DeclarationExportCsv::getProduitKeysCsv($lotD->getConfigProduit()).';'.
+    $lotD->getProduitLibelle().";".
+    $lotD->getCepagesLibelle().";".
+    $lotD->millesime.";".
+    $lotD->specificite.";".
+    $lotD->volume.";".
+    $lotD->destination_type.";".
+    $lotD->destination_date.";".
+    $lotD->pays.";".
+    $lotD->centilisation.";".
+    $lotD->elevage.";".
+    $lotD->eleve.";".
+    $lotD->affectable.";".
+    $lotD->isAffecte().";".
+    $lotD->isChange().";".
+    '"'.$lotD->adresse_logement."\";".
     "PAPIER;".
     $drev->validation.";".
     $drev->validation_odg.";".
     $drev->date_degustation_voulue.";".
     $drev->envoi_oi.";".
+    $application.";".
     $drev->_id.";".
-    $lot->unique_id.";".
-    $lot->produit_hash
+    $lotD->unique_id.";".
+    $lotD->produit_hash."\n"
     , "Export csv du lot de la $drev");
 
 $conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
@@ -127,7 +139,7 @@ $conditionnement->validateOdg();
 $conditionnement->save();
 
 $export = new ExportDeclarationLotsCSV($conditionnement, false);
-$t->is(count(explode("\n", $export->export())), 1, "Export csv du lot de $conditionnement");
+$t->is(count(explode("\n", $export->export())), 2, "Export csv du lot de $conditionnement");
 
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
 $lotT = $transaction->addLot();
@@ -140,4 +152,117 @@ $transaction->validateOdg();
 $transaction->save();
 
 $export = new ExportDeclarationLotsCSV($transaction, false);
-$t->is(count(explode("\n", $export->export())), 1, "Export csv du lot de $transaction");
+$t->is(count(explode("\n", $export->export())), 2, "Export csv du lot de $transaction");
+
+$t->is(ExportChgtDenomCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Hash produit\n", "Entête de csv du changement de denom");
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, true);
+$chgtDenom->setLotOrigine($lotD);
+$chgtDenom->changement_produit_hash = $produitconfig2->getHash();
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
+$chgtDenom->changement_volume = $lotD - 10;
+$chgtDenom->constructId();
+$chgtDenom->save();
+$chgtDenom->validate();
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+
+$lotOrigine = $chgtDenom->getLotOrigine();
+$lotChgt = $chgtDenom->lots[1];
+
+$baseCsv = $chgtDenom->type.";".
+$chgtDenom->campagne.";".
+$chgtDenom->identifiant.";".
+$chgtDenom->declarant->famille.";".
+$chgtDenom->declarant->cvi.";".
+$chgtDenom->declarant->siret.";".
+'"'.$chgtDenom->declarant->nom."\";".
+'"'.$chgtDenom->declarant->adresse."\";".
+$chgtDenom->declarant->code_postal.";".
+'"'.$chgtDenom->declarant->commune."\";".
+$chgtDenom->declarant->email.";".
+$lotOrigine->numero_dossier.";".
+$lotOrigine->numero_archive.";".
+$chgtDenom->origine_numero_logement_operateur.";".
+DeclarationExportCsv::getProduitKeysCsv($chgtDenom->getConfigProduitOrigine()).';'.
+$chgtDenom->origine_produit_libelle.";".
+$lotOrigine->getCepagesLibelle().";".
+$chgtDenom->origine_millesime.";".
+$chgtDenom->origine_specificite.";".
+$chgtDenom->origine_volume.";";
+
+$export = new ExportChgtDenomCSV($chgtDenom, false);
+$t->is($export->export(),
+    $baseCsv.
+    ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT.";".
+    $lotChgt->numero_dossier.";".
+    $lotChgt->numero_archive.";".
+    $chgtDenom->changement_numero_logement_operateur.";".
+    DeclarationExportCsv::getProduitKeysCsv($chgtDenom->getConfigProduitChangement()).';'.
+    $chgtDenom->changement_produit_libelle.";".
+    $lotChgt->getCepagesLibelle().";".
+    $chgtDenom->changement_millesime.";".
+    $chgtDenom->changement_specificite.";".
+    $chgtDenom->changement_volume.";".
+    $chgtDenom->changement_affectable.";".
+    $lotChgt->isAffecte().";".
+    "PAPIER;".
+    $chgtDenom->validation.";".
+    $chgtDenom->validation_odg.";".
+    $application.";".
+    $chgtDenom->changement_origine_id_document.";".
+    $chgtDenom->changement_origine_lot_unique_id.";".
+    $chgtDenom->origine_produit_hash.";".
+    $chgtDenom->_id.";".
+    $lotChgt->unique_id.";".
+    $chgtDenom->changement_produit_hash."\n"
+    , "Export csv des lots du $chgtDenom");
+
+$chgtDenom->delete();
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, true);
+$chgtDenom->setLotOrigine($lotD);
+$chgtDenom->changement_produit_hash = $produitconfig2->getHash();
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+$chgtDenom->changement_volume = $lotD->volume;
+$chgtDenom->constructId();
+$chgtDenom->save();
+$chgtDenom->validate();
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+
+$lotOrigine = $chgtDenom->getLotOrigine();
+$lotChgt = $chgtDenom->lots[0];
+
+$export = new ExportChgtDenomCSV($chgtDenom, false);
+$t->is($export->export(),
+    $baseCsv.
+    ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT.";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    ";".
+    $chgtDenom->changement_volume.";".
+    ";".
+    ";".
+    "PAPIER;".
+    $chgtDenom->validation.";".
+    $chgtDenom->validation_odg.";".
+    $application.";".
+    $chgtDenom->changement_origine_id_document.";".
+    $chgtDenom->changement_origine_lot_unique_id.";".
+    $chgtDenom->origine_produit_hash.";".
+    $chgtDenom->_id.";".
+    ";\n"
+    , "Export csv des lots du déclassement $chgtDenom");
+

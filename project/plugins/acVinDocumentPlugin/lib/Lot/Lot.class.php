@@ -262,7 +262,7 @@ abstract class Lot extends acCouchdbDocumentTree
             return $this->getConfig()->getGenre()->getKey();
         }
         if ($type == DegustationClient::DEGUSTATION_TRI_CEPAGE) {
-            return $this->getCepagesToStr();
+            return $this->getCepagesLibelle();
         }
         if ($type == DegustationClient::DEGUSTATION_TRI_PRODUIT) {
             return $this->_get('produit_hash').$this->_get('details');
@@ -619,28 +619,6 @@ abstract class Lot extends acCouchdbDocumentTree
       }
 
      return false;
-    }
-
-    public function getCepagesToStr(){
-      $cepages = $this->cepages;
-      $str ='';
-      $k=0;
-      $total = 0.0;
-      $tabCepages=array();
-      foreach ($cepages as $c => $volume){
-        $total+=$volume;
-      }
-      foreach ($cepages as $c => $volume){
-        $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $tabCepages[$c]=$p;
-      }
-      arsort($tabCepages);
-      foreach ($tabCepages as $c => $p) {
-        $k++;
-        $str.=" ".$c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ',' : '';
-      }
-      return $str;
     }
 
     public function addCepage($cepage, $repartition) {
