@@ -55,7 +55,7 @@ rm $EXPORTDIR/changement_denomination.csv.part
 sleep 60
 
 php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/declarations_lots.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/liaisons.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/declarations_lots.csv
 rm $EXPORTDIR/declarations_lots.csv.part
 
 bash bin/export_docs.sh Habilitation 30 $1 > $EXPORTDIR/habilitation.csv.part

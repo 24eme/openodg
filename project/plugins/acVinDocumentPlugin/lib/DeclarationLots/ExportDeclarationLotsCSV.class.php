@@ -8,7 +8,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n";
+        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays de destination;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($document, $header = true, $region = null) {
@@ -43,6 +43,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $csv .= $this->document->type.";".
             $this->document->campagne.";".
             $this->document->identifiant.";".
+            $this->document->declarant->famille.";".
             $this->document->declarant->cvi.";".
             $this->document->declarant->siret.";".
             $this->protectStr($this->document->declarant->nom).";".
@@ -54,13 +55,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $lot->numero_archive.";".
             $lot->date.";".
             $this->protectStr($lot->numero_logement_operateur).";".
-            $lot->getConfigProduit()->getCertification()->getKey().";".
-            $lot->getConfigProduit()->getGenre()->getKey().";".
-            $lot->getConfigProduit()->getAppellation()->getKey().";".
-            $lot->getConfigProduit()->getMention()->getKey().";".
-            $lot->getConfigProduit()->getLieu()->getKey().";".
-            $lot->getConfigProduit()->getCouleur()->getKey().";".
-            $lot->getConfigProduit()->getCepage()->getKey().";".
+            DeclarationExportCsv::getProduitKeysCsv($lot->getConfigProduit()).';'.
             $lot->getProduitLibelle().";".
             $lot->getCepagesLibelle().";".
             $lot->millesime.";".
