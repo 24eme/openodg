@@ -71,7 +71,7 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
                 }
                 $organisme = $lieu[0];
 
-                $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+                $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
                   $ligne_base,
                   $college,
                   $nom,
