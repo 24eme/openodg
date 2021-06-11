@@ -5,6 +5,9 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
     done
+    rm -rf web/exports_igp/
+    bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
+    bash $(echo $0 | sed 's/[^\/]*$//')exports_distribueparproduits.sh;
     exit 0;
 fi
 
@@ -55,7 +58,7 @@ rm $EXPORTDIR/changement_denomination.csv.part
 sleep 60
 
 php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/declarations_lots.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/liaisons.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/declarations_lots.csv
 rm $EXPORTDIR/declarations_lots.csv.part
 
 bash bin/export_docs.sh Habilitation 30 $1 > $EXPORTDIR/habilitation.csv.part

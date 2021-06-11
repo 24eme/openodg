@@ -6,7 +6,7 @@ class ExportLotsCSV {
     protected $lots = array();
 
     public static function getHeaderCsv() {
-        return "Application;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Doc Id;Lot unique Id;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Hash produit\n";
+        return "Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -89,15 +89,12 @@ class ExportLotsCSV {
             $centilisation = isset($contenances[$lot['centilisation']])? $contenances[$lot['centilisation']] : $lot['centilisation'];
           }
           $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-              $this->appName,
               $lot['declarant_identifiant'],
               $lot['declarant_nom'],
               $this->protectStr($adresse),
               $code_postal,
               $this->protectStr($commune),
               $lot['campagne'],
-              $lot['id_document'],
-              $lot['unique_id'],
               $date[0],
               $lot['numero_dossier'],
               $lot['numero_archive'],
@@ -112,16 +109,20 @@ class ExportLotsCSV {
               trim($this->protectStr($lot['produit_libelle'])),
               $cepages,
               $lot['millesime'],
+              (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
+              $centilisation,
               $this->formatFloat($lot['volume']),
               $statut,
               $destination,
-              (isset($lot['elevage']) && $lot['elevage'])? 'oui' : '',
-              (isset($lot['details']))? $this->protectStr($lot['details']) : '',
-              (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
-              $centilisation,
+              $lot['destination_date'],
+              $lot['pays'],
+              (isset($lot['elevage']) && $lot['elevage'])? '1' : '',
               (isset($lot['preleve']))? $lot['preleve'] : '',
               $conformite,
               (isset($lot['conforme_appel']))? $lot['conforme_appel'] : '',
+              $this->appName,
+              $lot['id_document'],
+              $lot['unique_id'],
               $lot['produit_hash']
           ));
         }

@@ -44,18 +44,12 @@ class ExportParcellaireIrrigueCSV implements InterfaceDeclarationExportCsv {
                 }
             	$configProduit = $parcelle->getProduit()->getConfig();
 
-            	$certification = $configProduit->getCertification()->getKey();
-            	$genre = $configProduit->getGenre()->getKey();
-            	$appellation = $configProduit->getAppellation()->getKey();
-            	$mention = $configProduit->getMention()->getKey();
-            	$lieu = $configProduit->getLieu()->getKey();
-            	$couleur = $configProduit->getCouleur()->getKey();
-            	$cepage = $configProduit->getCepage()->getKey();
             	$inao = $configProduit->getCodeDouane();
 
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-            	$csv .= sprintf("%s;Parcellaire Irrigue;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
-            	$certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$libelle_complet,
+            	$csv .= sprintf("%s;Parcellaire Irrigue;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+                DeclarationExportCsv::getProduitKeysCsv($configProduit),
+                $inao,$libelle_complet,
             	$this->protectStr($parcelle->idu),
             	$parcelle->code_commune,
             	$this->protectStr($parcelle->commune),

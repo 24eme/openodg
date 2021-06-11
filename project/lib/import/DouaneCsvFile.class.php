@@ -65,6 +65,7 @@ class DouaneCsvFile
   protected static function clean($array) {
     for($i = 0 ; $i < count($array) ; $i++) {
       $array[$i] = preg_replace('/^ +/', '', preg_replace('/ +$/', '', $array[$i]));
+      $array[$i] = preg_replace("/^DEFAUT$/", "", $array[$i]);
     }
     return $array;
   }

@@ -6,7 +6,7 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
     protected $header = false;
 
     public static function getHeaderCsv() {
-        return "Campagne;Date;Heure;Num archive;Organisme;Adresse;Code postal;Commune;Doc Id;Collège;Dégustateur;Adresse;Code postal;Commune;Date de convocation;Présent;Num table;\n";
+        return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Collège;Dégustateur;Adresse;Code postal;Commune;Date de convocation;Présent;Num table;Organisme;Doc Id;\n";
     }
 
     public function __construct($degustation, $header = true) {
@@ -37,7 +37,7 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
           $commune = trim($m[3]);
         }
 
-        $ligne_base = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s",
+        $ligne_base = sprintf("%s;%s;%s;%s;%s;%s;%s;%s",
             $this->degustation->campagne,
             $date[0],
             $date[1],
@@ -45,8 +45,7 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
             $organisme,
             $adresse,
             $code_postal,
-            $commune,
-            $this->degustation->_id
+            $commune
           );
 
           foreach($this->degustation->degustateurs as $collegeKey => $comptes) {
@@ -72,7 +71,7 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
                 }
                 $organisme = $lieu[0];
 
-                $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+                $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
                   $ligne_base,
                   $college,
                   $nom,
@@ -81,7 +80,9 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
                   $commune,
                   $convocation,
                   $presence,
-                  $table
+                  $table,
+                  Organisme::getCurrentOrganisme(),
+                  $this->degustation->_id
                 );
               }
           }
