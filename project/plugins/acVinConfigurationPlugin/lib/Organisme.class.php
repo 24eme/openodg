@@ -125,6 +125,11 @@ class Organisme
         return $this->getInfo('oi');
     }
 
+    public function getUrl() {
+
+        return $this->getInfo('url');
+    }
+
     public function getLogoPdfPath() {
         return sfConfig::get('sf_web_dir')."/".$this->getLogoPdfWebPath();
     }
