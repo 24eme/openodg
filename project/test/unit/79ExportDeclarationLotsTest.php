@@ -73,13 +73,14 @@ $drev->save();
 
 $lotD = $drev->lots[0];
 
-$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n", "Entête du csv declarations lots");
+$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays de destination;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n", "Entête du csv declarations lots");
 
 $export = new ExportDeclarationLotsCSV($drev, false);
 $t->is($export->export(),
     $drev->type.";".
     $drev->campagne.";".
     $drev->identifiant.";".
+    $drev->declarant->famille.";".
     $drev->declarant->cvi.";".
     $drev->declarant->siret.";".
     '"'.$drev->declarant->nom."\";".
@@ -150,7 +151,7 @@ $transaction->save();
 $export = new ExportDeclarationLotsCSV($transaction, false);
 $t->is(count(explode("\n", $export->export())), 2, "Export csv du lot de $transaction");
 
-$t->is(ExportChgtDenomCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Num dossier restant;Num lot restant;Volume restant;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Lot unique Id restant;Hash produit\n", "Entête de csv du changement de denom");
+$t->is(ExportChgtDenomCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Hash produit\n", "Entête de csv du changement de denom");
 
 $chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
 $chgtDenom->setLotOrigine($lotD);
@@ -170,6 +171,7 @@ $lotChgt = $chgtDenom->lots[1];
 $baseCsv = $chgtDenom->type.";".
 $chgtDenom->campagne.";".
 $chgtDenom->identifiant.";".
+$chgtDenom->declarant->famille.";".
 $chgtDenom->declarant->cvi.";".
 $chgtDenom->declarant->siret.";".
 '"'.$chgtDenom->declarant->nom."\";".
@@ -214,9 +216,6 @@ $t->is($export->export(),
     $chgtDenom->changement_volume.";".
     $chgtDenom->changement_affectable.";".
     $lotChgt->isAffecte().";".
-    $lotChgtRestant->numero_dossier.";".
-    $lotChgtRestant->numero_archive.";".
-    $lotChgtRestant->volume.";".
     $chgtDenom->validation.";".
     $chgtDenom->validation_odg.";".
     $application.";".
@@ -225,6 +224,5 @@ $t->is($export->export(),
     $chgtDenom->origine_produit_hash.";".
     $chgtDenom->_id.";".
     $lotChgt->unique_id.";".
-    $lotChgtRestant->unique_id.";".
     $chgtDenom->changement_produit_hash."\n"
     , "Export csv des lots du $chgtDenom");

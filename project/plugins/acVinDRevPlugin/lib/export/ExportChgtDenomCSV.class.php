@@ -8,7 +8,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Num dossier restant;Num lot restant;Volume restant;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Lot unique Id restant;Hash produit\n";
+        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($document, $header = true, $region = null) {
@@ -56,6 +56,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->document->type.";".
         $this->document->campagne.";".
         $this->document->identifiant.";".
+        $this->document->declarant->famille.";".
         $this->document->declarant->cvi.";".
         $this->document->declarant->siret.";".
         '"'.$this->document->declarant->nom."\";".
@@ -77,7 +78,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         $lotOrigine->getCepagesLibelle().";".
         $this->document->origine_millesime.";".
         $this->document->origine_specificite.";".
-        $this->document->origine_volume.";".
+        $this->formatFloat($this->document->origine_volume).";".
         $this->document->changement_type.";".
         $lotChgt->numero_dossier.";".
         $lotChgt->numero_archive.";".
@@ -93,12 +94,9 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         $lotChgt->getCepagesLibelle().";".
         $this->document->changement_millesime.";".
         $this->document->changement_specificite.";".
-        $this->document->changement_volume.";".
+        $this->formatFloat($this->document->changement_volume).";".
         $this->document->changement_affectable.";".
         $lotChgt->isAffecte().";".
-        ($lotChgtRestant ? $lotChgtRestant->numero_dossier : null).";".
-        ($lotChgtRestant ? $lotChgtRestant->numero_dossier : null).";".
-        ($lotChgtRestant ? $lotChgtRestant->volume : null).";".
         $this->document->validation.";".
         $this->document->validation_odg.";".
         Organisme::getCurrentOrganisme().";".
@@ -107,7 +105,6 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         $this->document->origine_produit_hash.";".
         $this->document->_id.";".
         $lotChgt->unique_id.";".
-        $lotChgtRestant->unique_id.";".
         $this->document->changement_produit_hash."\n";
 
         return $csv;
