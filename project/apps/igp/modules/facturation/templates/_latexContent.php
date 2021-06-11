@@ -175,6 +175,8 @@
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
+  & \cellcolor{verttresclair} \textbf{SOMME DUE}  & \textbf{<?php echo formatFloat($facture->total_ttc - $facture->montant_paiement, ','); ?>~€} \tabularnewline
+  \hhline{|~|-|-}
 \end{tabular}
 \end{minipage}
 
