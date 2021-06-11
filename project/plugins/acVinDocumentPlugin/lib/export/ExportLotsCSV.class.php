@@ -6,7 +6,7 @@ class ExportLotsCSV {
     protected $lots = array();
 
     public static function getHeaderCsv() {
-        return "Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Destination date;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Hash produit\n";
+        return "Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -113,14 +113,14 @@ class ExportLotsCSV {
               trim($this->protectStr($lot['produit_libelle'])),
               $cepages,
               $lot['millesime'],
+              (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
+              $centilisation,
               $this->formatFloat($lot['volume']),
               $statut,
               $destination,
-              $destination_date,
-              (isset($lot['elevage']) && $lot['elevage'])? 'oui' : '',
-              (isset($lot['details']))? $this->protectStr($lot['details']) : '',
-              (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
-              $centilisation,
+              $lot['destination_date'],
+              $lot['pays'],
+              (isset($lot['elevage']) && $lot['elevage'])? '1' : '',
               (isset($lot['preleve']))? $lot['preleve'] : '',
               $conformite,
               (isset($lot['conforme_appel']))? $lot['conforme_appel'] : '',
