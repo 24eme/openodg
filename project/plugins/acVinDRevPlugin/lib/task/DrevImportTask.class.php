@@ -136,7 +136,7 @@ EOF;
                 $drev->validateOdg($dateValidation);
                 $drev->save();
 
-                echo "IMPORTE;$drev->_id\n";
+                echo "IMPORTE;$drev->_id;".Organisme::getInstance()->getUrl()."/drev/visualisation/".$drev->_id."\n";
             }
 
         }
@@ -199,7 +199,7 @@ EOF;
                 $lot->numero_logement_operateur = $numero_cuve;
                 $lot->destination_type = $type_destination;
                 $lot->destination_date = $date_destination;
-                $lot->volume = floatval($volume);
+                $lot->volume = $this->formatFloat($volume);
                 $lot->produit_hash = $produit_line->getHash();
                 $libelleProduit = $produit_line->getLibelle();
                 $lotsAdded = true;
@@ -225,7 +225,7 @@ EOF;
             $drev->validate($dateValidation);
             $drev->validateOdg($dateValidation);
             $drev->save();
-            echo "DREV SAUVE;$drev->_id\n";
+            echo "IMPORTE;$drev->_id;".Organisme::getInstance()->getUrl()."/drev/visualisation/".$drev->_id."\n";
         }
     }
 
