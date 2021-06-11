@@ -15,17 +15,16 @@ else
 fi
 
 EXPORTGLOBALDIR=web/exports_igp
+EXPORTDIRFORGLOBAL=$EXPORTDIR/GLOBAL
 
-rm -rf $EXPORTDIR/global_*.csv
+rm -rf $EXPORTDIRFORGLOBAL
+mkdir $EXPORTGLOBALDIR 2> /dev/null
 
 for file in $(find "$EXPORTGLOBALDIR" -maxdepth 1 -type f -name "*.csv")
 do
   FILENAME="global_$(basename $file)"
-  for hash in $(echo $HASHPRODUIT | tr "," "\n")
-  do
-    if [ ! -f "$EXPORTDIR/$FILENAME" ]; then
-      head -n 1 $file > $EXPORTDIR/$FILENAME
-    fi
-    cat $file | grep $hash --binary-files=text >> $EXPORTDIR/$FILENAME
-  done
+  if [ ! -f "$EXPORTDIRFORGLOBAL/$FILENAME" ]; then
+    head -n 1 $file > $EXPORTDIRFORGLOBAL/$FILENAME
+  fi
+  cat $file | grep -E $HASHPRODUIT --binary-files=text >> $EXPORTDIRFORGLOBAL/$FILENAME
 done
