@@ -57,11 +57,11 @@ rm $EXPORTDIR/changement_denomination.csv.part
 
 sleep 60
 
-php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/declarations_lots.csv.part
+php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_lots.csv.part
 
-head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv
-head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv
-head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv.part
 
 grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
@@ -75,7 +75,7 @@ grep "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transact
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/transaction_lots.csv.part > $EXPORTDIR/transaction_lots.csv
 rm $EXPORTDIR/transaction_lots.csv.part
 
-rm $EXPORTDIR/declaration_lots.csv.part
+rm $EXPORTDIR/declarations_lots.csv.part
 
 bash bin/export_docs.sh Habilitation 30 $1 > $EXPORTDIR/habilitation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
