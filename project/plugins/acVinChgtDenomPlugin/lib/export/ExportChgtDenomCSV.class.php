@@ -66,13 +66,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         $lotOrigine->numero_dossier.";".
         $lotOrigine->numero_archive.";".
         $this->document->origine_numero_logement_operateur.";".
-        $this->document->getConfigProduitOrigine()->getCertification()->getKey().";".
-        $this->document->getConfigProduitOrigine()->getGenre()->getKey().";".
-        $this->document->getConfigProduitOrigine()->getAppellation()->getKey().";".
-        $this->document->getConfigProduitOrigine()->getMention()->getKey().";".
-        $this->document->getConfigProduitOrigine()->getLieu()->getKey().";".
-        $this->document->getConfigProduitOrigine()->getCouleur()->getKey().";".
-        $this->document->getConfigProduitOrigine()->getCepage()->getKey().";".
+        DeclarationExportCsv::getProduitKeysCsv($this->document->getConfigProduitOrigine()).';'.
         $this->document->origine_produit_libelle.";".
         $lotOrigine->getCepagesLibelle().";".
         $this->document->origine_millesime.";".
@@ -114,13 +108,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
             $lotChgt->numero_dossier.";".
             $lotChgt->numero_archive.";".
             $this->document->changement_numero_logement_operateur.";".
-            $this->document->getConfigProduitChangement()->getCertification()->getKey().";".
-            $this->document->getConfigProduitChangement()->getGenre()->getKey().";".
-            $this->document->getConfigProduitChangement()->getAppellation()->getKey().";".
-            $this->document->getConfigProduitChangement()->getMention()->getKey().";".
-            $this->document->getConfigProduitChangement()->getLieu()->getKey().";".
-            $this->document->getConfigProduitChangement()->getCouleur()->getKey().";".
-            $this->document->getConfigProduitChangement()->getCepage()->getKey().";".
+            DeclarationExportCsv::getProduitKeysCsv($this->document->getConfigProduitChangement()).';'.
             $this->document->changement_produit_libelle.";".
             $lotChgt->getCepagesLibelle().";".
             $this->document->changement_millesime.";".

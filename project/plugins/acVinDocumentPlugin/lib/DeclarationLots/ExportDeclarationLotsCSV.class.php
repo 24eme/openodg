@@ -55,13 +55,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $lot->numero_archive.";".
             $lot->date.";".
             $this->protectStr($lot->numero_logement_operateur).";".
-            $lot->getConfigProduit()->getCertification()->getKey().";".
-            $lot->getConfigProduit()->getGenre()->getKey().";".
-            $lot->getConfigProduit()->getAppellation()->getKey().";".
-            $lot->getConfigProduit()->getMention()->getKey().";".
-            $lot->getConfigProduit()->getLieu()->getKey().";".
-            $lot->getConfigProduit()->getCouleur()->getKey().";".
-            $lot->getConfigProduit()->getCepage()->getKey().";".
+            DeclarationExportCsv::getProduitKeysCsv($lot->getConfigProduit()).';'.
             $lot->getProduitLibelle().";".
             $lot->getCepagesLibelle().";".
             $lot->millesime.";".

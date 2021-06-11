@@ -59,6 +59,15 @@ foreach($config->getProduits() as $produitconfig) {
     }
 }
 
+
+$t->is(DeclarationExportCsv::getProduitKeysCsv($produitconfig1),str_replace("DEFAUT", "", $produitconfig1->getCertification()->getKey().";".
+$produitconfig1->getGenre()->getKey().";".
+$produitconfig1->getAppellation()->getKey().";".
+$produitconfig1->getMention()->getKey().";".
+$produitconfig1->getLieu()->getKey().";".
+$produitconfig1->getCouleur()->getKey().";".
+$produitconfig1->getCepage()->getKey()),'fonction qui sort les informations du produit');
+
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
 $drev->addLot();
@@ -92,13 +101,7 @@ $t->is($export->export(),
     $lotD->numero_archive.";".
     $lotD->date.";".
     '"'.$lotD->numero_logement_operateur."\";".
-    $lotD->getConfigProduit()->getCertification()->getKey().";".
-    $lotD->getConfigProduit()->getGenre()->getKey().";".
-    $lotD->getConfigProduit()->getAppellation()->getKey().";".
-    $lotD->getConfigProduit()->getMention()->getKey().";".
-    $lotD->getConfigProduit()->getLieu()->getKey().";".
-    $lotD->getConfigProduit()->getCouleur()->getKey().";".
-    $lotD->getConfigProduit()->getCepage()->getKey().";".
+    DeclarationExportCsv::getProduitKeysCsv($lotD->getConfigProduit()).';'.
     $lotD->getProduitLibelle().";".
     $lotD->getCepagesLibelle().";".
     $lotD->millesime.";".
@@ -181,13 +184,7 @@ $chgtDenom->declarant->email.";".
 $lotOrigine->numero_dossier.";".
 $lotOrigine->numero_archive.";".
 $chgtDenom->origine_numero_logement_operateur.";".
-$chgtDenom->getConfigProduitOrigine()->getCertification()->getKey().";".
-$chgtDenom->getConfigProduitOrigine()->getGenre()->getKey().";".
-$chgtDenom->getConfigProduitOrigine()->getAppellation()->getKey().";".
-$chgtDenom->getConfigProduitOrigine()->getMention()->getKey().";".
-$chgtDenom->getConfigProduitOrigine()->getLieu()->getKey().";".
-$chgtDenom->getConfigProduitOrigine()->getCouleur()->getKey().";".
-$chgtDenom->getConfigProduitOrigine()->getCepage()->getKey().";".
+DeclarationExportCsv::getProduitKeysCsv($chgtDenom->getConfigProduitOrigine()).';'.
 $chgtDenom->origine_produit_libelle.";".
 $lotOrigine->getCepagesLibelle().";".
 $chgtDenom->origine_millesime.";".
@@ -201,13 +198,7 @@ $t->is($export->export(),
     $lotChgt->numero_dossier.";".
     $lotChgt->numero_archive.";".
     $chgtDenom->changement_numero_logement_operateur.";".
-    $chgtDenom->getConfigProduitChangement()->getCertification()->getKey().";".
-    $chgtDenom->getConfigProduitChangement()->getGenre()->getKey().";".
-    $chgtDenom->getConfigProduitChangement()->getAppellation()->getKey().";".
-    $chgtDenom->getConfigProduitChangement()->getMention()->getKey().";".
-    $chgtDenom->getConfigProduitChangement()->getLieu()->getKey().";".
-    $chgtDenom->getConfigProduitChangement()->getCouleur()->getKey().";".
-    $chgtDenom->getConfigProduitChangement()->getCepage()->getKey().";".
+    DeclarationExportCsv::getProduitKeysCsv($chgtDenom->getConfigProduitChangement()).';'.
     $chgtDenom->changement_produit_libelle.";".
     $lotChgt->getCepagesLibelle().";".
     $chgtDenom->changement_millesime.";".
@@ -274,3 +265,4 @@ $t->is($export->export(),
     $chgtDenom->_id.";".
     ";\n"
     , "Export csv des lots du déclassement $chgtDenom");
+

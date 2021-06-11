@@ -113,13 +113,6 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             if(!$configProduit){
                 continue;
             }
-            $certification = $configProduit->getCertification()->getKey();
-            $genre = $configProduit->getGenre()->getKey();
-            $appellation = $configProduit->getAppellation()->getKey();
-            $mention = $configProduit->getMention()->getKey();
-            $lieu = $configProduit->getLieu()->getKey();
-            $couleur = $configProduit->getCouleur()->getKey();
-            $cepage = $configProduit->getCepage()->getKey();
             $inao = $configProduit->getCodeDouane();
 
             $libelle_complet = $lot->getProduitLibelle();
@@ -129,8 +122,8 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $destination = $lot->getDestinationType()." ".$lot->getDestinationDate();
 
             $csv .= $ligneBase;
-            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-                $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,null,
+            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                DeclarationExportCsv::getProduitKeysCsv($configProduit),$inao,null,
                 trim($libelle_complet), null, $this->formatFloat($lot->volume), null, null, $this->formatFloat($lot->volume), null,null,null, null, null, null, null,
                 $mode, $date_envoi_oi, $this->protectStr($numLot), $dateRev, $this->protectStr($lot->millesime),$destination, $date_declarant, $date_odg, $this->drev->_id
             );
