@@ -6,7 +6,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
     protected $header = false;
 
     public static function getHeaderCsv() {
-        return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Num dossier;Num lot;Num logement Opérateur;Num Anonymat;Num Table;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Elevage;Date prélévement;Conformité;Motif;Observation;Date envoi email resultat;Date recours;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Produit hash;\n";
+        return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Num dossier;Num lot;Num logement Opérateur;Num Anonymat;Num Table;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Date prélévement;Conformité;Motif;Observation;Date envoi email resultat;Date recours;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Produit hash;\n";
     }
 
     public function __construct($degustation, $header = true) {
@@ -69,7 +69,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
             $conformite = (isset(Lot::$libellesConformites[$lot->conformite]))? Lot::$libellesConformites[$lot->conformite] : $lot->conformite;
             $dateRecours = ($lot->recours_oc)? preg_split('/( |T)/', $lot->recours_oc, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
             $dateEmail = ($lot->email_envoye)? preg_split('/( |T)/', $lot->email_envoye, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
-            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
                 $ligne_base,
                 $lot->declarant_identifiant,
                 $lot->declarant_nom,
@@ -85,17 +85,16 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
                 trim($this->protectStr($lot->produit_libelle)),
                 $cepages,
                 $lot->millesime,
-                $this->protectStr($lot->specificite) : '',
+                $this->protectStr($lot->specificite),
                 $this->formatFloat($lot->volume),
                 $statut,
-                ($lot->elevage)? 'oui' : '',
                 $lot->preleve,
                 $conformite,
                 $this->protectStr($lot->motif),
                 $this->protectStr($lot->observation),
                 $dateEmail,
                 $dateRecours,
-                $lot->conforme_appel : '',
+                $lot->conforme_appel,
                 Organisme::getCurrentOrganisme(),
                 $lot->id_document,
                 $lot->unique_id,

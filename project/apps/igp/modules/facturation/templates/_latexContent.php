@@ -175,6 +175,8 @@
   \hhline{|~|-|-}
   & \cellcolor{verttresclair} \textbf{TOTAL TTC}  & \textbf{\FACTURETOTALTTC~€} \tabularnewline
   \hhline{|~|-|-}
+  & \cellcolor{verttresclair} \textbf{SOMME DUE}  & \textbf{<?php echo formatFloat($facture->total_ttc - $facture->montant_paiement, ','); ?>~€} \tabularnewline
+  \hhline{|~|-|-}
 \end{tabular}
 \end{minipage}
 
@@ -195,7 +197,7 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
  \\
 <?php endforeach; ?>
 \end{itemize}
-<?php elseif ($facture->exist('modalite_paiement') && $facture->modalite_paiement): ?>
+<?php elseif (!$facture->isAvoir() && $facture->exist('modalite_paiement') && $facture->modalite_paiement): ?>
 \textbf{Modalités de paiements} \\ \\
 <?= escape_string_for_latex($facture->modalite_paiement) ?>
 <?php endif; ?>
