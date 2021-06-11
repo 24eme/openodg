@@ -23,7 +23,4 @@ echo -e "Ci dessous, veuillez trouver la liste des DREV qui ont été modifiées
 
 grep "IMPORTE;" $TMPDIR"/import_lots_from_openodg_$DATE.log" | cut -d ';' -f 3 >> $RAPPORTBODY
 
-
-
-
-cat $RAPPORTBODY
+cat $RAPPORTBODY  | iconv -t ISO-8859-1 | mail -s "[RAPPORT IMPORT DREV depuis https://teledeclaration.vinsvaldeloire.pro/ du $DATEFR à $TIMEFR]" $EMAILS_RAPPORT_IMPORT;
