@@ -153,7 +153,7 @@ $t->is(count(explode("\n", $export->export())), 2, "Export csv du lot de $transa
 
 $t->is(ExportChgtDenomCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Hash produit\n", "Entête de csv du changement de denom");
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, true);
 $chgtDenom->setLotOrigine($lotD);
 $chgtDenom->changement_produit_hash = $produitconfig2->getHash();
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
@@ -215,6 +215,7 @@ $t->is($export->export(),
     $chgtDenom->changement_volume.";".
     $chgtDenom->changement_affectable.";".
     $lotChgt->isAffecte().";".
+    "PAPIER;".
     $chgtDenom->validation.";".
     $chgtDenom->validation_odg.";".
     $application.";".
@@ -228,7 +229,7 @@ $t->is($export->export(),
 
 $chgtDenom->delete();
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, true);
 $chgtDenom->setLotOrigine($lotD);
 $chgtDenom->changement_produit_hash = $produitconfig2->getHash();
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
@@ -263,6 +264,7 @@ $t->is($export->export(),
     $chgtDenom->changement_volume.";".
     ";".
     ";".
+    "PAPIER;".
     $chgtDenom->validation.";".
     $chgtDenom->validation_odg.";".
     $application.";".

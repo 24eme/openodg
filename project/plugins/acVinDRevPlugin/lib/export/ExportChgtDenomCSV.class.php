@@ -99,6 +99,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
             $this->formatFloat($this->document->changement_volume).";".
             ";".
             ";".
+            $mode.";".
             $this->document->validation.";".
             $this->document->validation_odg.";".
             Organisme::getCurrentOrganisme().";".
@@ -127,6 +128,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
             $this->formatFloat($this->document->changement_volume).";".
             $this->document->changement_affectable.";".
             $lotChgt->isAffecte().";".
+            $mode.";".
             $this->document->validation.";".
             $this->document->validation_odg.";".
             Organisme::getCurrentOrganisme().";".
