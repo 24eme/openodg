@@ -6,7 +6,7 @@ class ExportLotsCSV {
     protected $lots = array();
 
     public static function getHeaderCsv() {
-        return "Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Hash produit\n";
+        return "Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Volume;Statut de lot;Destination;Destination date;Elevage;Détails;Spécificités;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -80,15 +80,19 @@ class ExportLotsCSV {
           }
           $conformite = (isset(Lot::$libellesConformites[$lot['conformite']]))? Lot::$libellesConformites[$lot['conformite']] : $lot['conformite'];
           $destination = null;
+          $destination_date = null;
           if (isset($lot['destination_type'])) {
             $destination = isset(DRevClient::$lotDestinationsType[$lot['destination_type']])? DRevClient::$lotDestinationsType[$lot['destination_type']] : $lot['destination_type'];
+          }
+          if (isset($lot['destination_date'])) {
+            $destination_date = $lot['destination_date'];
           }
           $contenances = ConditionnementConfiguration::getInstance()->getContenances();
           $centilisation = null;
           if (isset($lot['centilisation'])) {
             $centilisation = isset($contenances[$lot['centilisation']])? $contenances[$lot['centilisation']] : $lot['centilisation'];
           }
-          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s,%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $lot['declarant_identifiant'],
               $lot['declarant_nom'],
               $this->protectStr($adresse),
@@ -112,6 +116,7 @@ class ExportLotsCSV {
               $this->formatFloat($lot['volume']),
               $statut,
               $destination,
+              $destination_date,
               (isset($lot['elevage']) && $lot['elevage'])? 'oui' : '',
               (isset($lot['details']))? $this->protectStr($lot['details']) : '',
               (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
