@@ -6,7 +6,7 @@ class ExportHistoriqueLotsCSV {
     protected $appName = null;
 
     public static function getHeaderCsv() {
-        return "Application;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Doc Id;Lot unique Id;Produit;Volume;Statut;Details\n";
+        return "Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Produit;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -40,8 +40,7 @@ class ExportHistoriqueLotsCSV {
           }
           $statut = Lot::$libellesStatuts[$values['statut']];
           $date = preg_split('/( |T)/', $values['date'], -1, PREG_SPLIT_NO_EMPTY);
-          $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
-              $this->appName,
+          $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
               $values['declarant_identifiant'],
               $values['declarant_nom'],
               $values['campagne'],
@@ -50,12 +49,13 @@ class ExportHistoriqueLotsCSV {
               $values['numero_archive'],
               $values['document_ordre'],
               $values['document_type'],
-              $values['document_id'],
-              $values['lot_unique_id'],
               trim($this->protectStr($values['libelle'])),
               $this->formatFloat($values['volume']),
               $statut,
-              $this->protectStr($values['detail'])
+              $this->protectStr($values['detail']),
+              $this->appName,
+              $values['document_id'],
+              $values['lot_unique_id'],
           );
         }
         return $csv;

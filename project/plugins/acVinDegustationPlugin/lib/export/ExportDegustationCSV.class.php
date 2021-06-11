@@ -85,7 +85,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
             }
             $dateRecours = ($lot->recours_oc)? preg_split('/( |T)/', $lot->recours_oc, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
             $dateEmail = ($lot->email_envoye)? preg_split('/( |T)/', $lot->email_envoye, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
-            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
                 $ligne_base,
                 $lot->declarant_identifiant,
                 $lot->declarant_nom,
