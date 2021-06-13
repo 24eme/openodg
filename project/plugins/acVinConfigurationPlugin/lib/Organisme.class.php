@@ -137,4 +137,8 @@ class Organisme
 
         return 'images/signatures/signature_'.$this->region.'.jpg';
     }
+
+    public function getBic(){
+      return $this->getInfo('bic');
+    }
 }
