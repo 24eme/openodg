@@ -6,7 +6,7 @@ class ExportHistoriqueLotsCSV {
     protected $appName = null;
 
     public static function getHeaderCsv() {
-        return "Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Produit;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;\n";
+        return "Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Produit;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -39,12 +39,12 @@ class ExportHistoriqueLotsCSV {
             continue;
           }
           $statut = Lot::$libellesStatuts[$values['statut']];
-          $date = preg_split('/( |T)/', $values['date'], -1, PREG_SPLIT_NO_EMPTY);
-          $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+          $date = preg_replace('/( |T).*$/', "", $values['date']);
+          $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $values['declarant_identifiant'],
               $values['declarant_nom'],
               $values['campagne'],
-              $date[0],
+              $date,
               $values['numero_dossier'],
               $values['numero_archive'],
               $values['document_ordre'],

@@ -98,7 +98,6 @@ EOF;
           $newDegustation->campagne=$campagne;
           $newDegustation->max_lots = 1;
           $newDegustation->constructId();
-          $newDegustation->validation = $degustation_date;
 
           if($degustation && $newDegustation->_id != $degustation->_id) {
               $this->saveDegustation($degustation);

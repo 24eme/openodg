@@ -138,3 +138,7 @@ echo "Contacts"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/contacts.csv
 php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
+
+echo "Mise en reputes conforme des lots en attente"
+
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_AFFECTABLE_ENATTENTE | awk -F '"' '{if ( $9 < "2020-2021" ) print "php symfony lot:change-statut --application='$ODG' "$8" "$10"-"$12"-"$14" false"}' | bash
