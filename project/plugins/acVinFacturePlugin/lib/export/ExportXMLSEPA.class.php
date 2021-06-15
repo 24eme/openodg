@@ -23,6 +23,7 @@ class ExportXMLSEPA {
           $facture->versement_sepa = 1; //il n'a plus de paiement à mettre dans le xml
           foreach($facture->paiements as $paiement){
             $paiement->execute = true;  //ils ont tous été executés.
+            $paiement->commentaire = "prélèvement ajouté au xml";
           }
           $facture->save();
       }

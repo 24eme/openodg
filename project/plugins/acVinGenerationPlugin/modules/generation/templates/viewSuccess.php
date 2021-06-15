@@ -45,7 +45,7 @@
 <?php if($generation->type_document == "SEPA" && $generation->statut == GenerationClient::GENERATION_STATUT_GENERE): ?>
   <div class="col-xs-6 col-xs-offset-3">
     <p style="position: relative;">
-      <a class="btn btn-link" href="<?php echo('/generation/'.$generation->date_emission.'_factures_sepa.xml'); ?>"> <span class="glyphicon glyphicon-play-circle"></span> Voir le XML</a>
+      <a class="btn btn-link" href="<?php echo('/generation/'.$generation->date_emission.'_factures_sepa.xml'); ?>"> <span class="glyphicon glyphicon-eye-open"></span> Voir le XML</a>
     </p>
   </div>
 <?php endif; ?>
