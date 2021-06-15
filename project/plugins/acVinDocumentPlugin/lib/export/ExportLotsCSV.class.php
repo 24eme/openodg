@@ -32,10 +32,7 @@ class ExportLotsCSV {
         $uniqueLotId = $values['unique_id'];
         $statut = $values['statut'];
         $numeroOrdre = $values['document_ordre'];
-        $positionLotCourant = null;
-        if(isset($values[$uniqueLotId])) {
         $positionLotCourant = $values['document_ordre'].$values[$uniqueLotId]['statut'];
-        }
         if (!$statut) {
           continue;
         }
@@ -65,11 +62,11 @@ class ExportLotsCSV {
           $code_postal = null;
           $commune = null;
           $adresseTab = explode(' — ', $lot['adresse_logement']);
-          if (isset($adresseTab[2]) && preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
+          if (preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
               $adresse = $adresseTab[1];
               $code_postal = $adresseTab[2];
               $commune = $adresseTab[3];
-          } elseif (isset($adresseTab[1]) && preg_match('/^(.+)([0-9]{5})(.+)$/', $adresseTab[1], $m)) {
+          } elseif (preg_match('/^(.+)([0-9]{5})(.+)$/', $adresseTab[1], $m)) {
             $adresse = trim($m[1]);
             $code_postal = $m[2];
             $commune = trim($m[3]);
@@ -95,7 +92,7 @@ class ExportLotsCSV {
           if (isset($lot['centilisation'])) {
             $centilisation = isset($contenances[$lot['centilisation']])? $contenances[$lot['centilisation']] : $lot['centilisation'];
           }
-          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s,%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $lot['declarant_identifiant'],
               $lot['declarant_nom'],
               $this->protectStr($adresse),
@@ -122,7 +119,7 @@ class ExportLotsCSV {
               $statut,
               $destination,
               $lot['destination_date'],
-              (isset($lot['pays'])) ? $lot['pays'] : null,
+              $lot['pays'],
               (isset($lot['elevage']) && $lot['elevage'])? '1' : '',
               (isset($lot['preleve']))? $lot['preleve'] : '',
               $conformite,
