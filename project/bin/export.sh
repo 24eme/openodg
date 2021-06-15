@@ -5,7 +5,7 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
     done
-    rm -rf web/exports_igp/
+    rm -f web/exports_igp/*.csv
     bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
     bash $(echo $0 | sed 's/[^\/]*$//')exports_distribueparproduits.sh;
     exit 0;
