@@ -390,7 +390,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
       $paiement->type_reglement = FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO;
       $paiement->add('execute',false);
       $paiement->date = date('Y-m-d',strtotime($this->date_facturation.'+15 days'));
-
       $this->versement_sepa = 0;
     }
 
