@@ -678,6 +678,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getVolumeFacturable($produitFilter = null)
     {
+        if ($this->changement_type === self::CHANGEMENT_TYPE_DECLASSEMENT) {
+            return;
+        }
+
       $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
 			$produitExclude = (bool) $produitExclude;
 			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
@@ -699,6 +703,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         if(!$this->declarant->famille){
             return false;
+        }
+
+        if ($this->changement_type === self::CHANGEMENT_TYPE_DECLASSEMENT) {
+            return;
         }
 
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
