@@ -251,7 +251,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
                 $ligne->origine_mouvements->add($mouvement->id)->add(null, $mouvement->key[MouvementFactureView::KEY_ORIGIN]);
             }
 
-            $detail = null;
             $quantite = 0;
             $template = $this->getTemplate();
             if ($template) {
@@ -263,24 +262,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
                 }
             }
 
-            foreach ($ligne->details as $d) {
-                if($d->libelle == $mouvement_agreges->value->detail_libelle && $detail->prix_unitaire == $mouvement_agreges->value->taux && $detail->taux_tva == $mouvement_agreges->value->tva && $mouvement_agreges->value->unite){
-                    $detail = $d;
-                }
+            $detail = $ligne->details->add();
+            $detail->prix_unitaire = $mouvement_agreges->value->taux;
+            $detail->taux_tva = $mouvement_agreges->value->tva;
+            $detail->libelle = $mouvement_agreges->value->detail_libelle;
+            if(isset($mouvement_agreges->value->unite) && $mouvement_agreges->value->unite) {
+                $detail->add('unite', $mouvement_agreges->value->unite);
             }
-            if(!$detail){
-                $detail = $ligne->details->add();
-                $detail->prix_unitaire = $mouvement_agreges->value->taux;
-                $detail->taux_tva = $mouvement_agreges->value->tva;
-                $detail->libelle = $mouvement_agreges->value->detail_libelle;
-                if(isset($mouvement_agreges->value->unite) && $mouvement_agreges->value->unite) {
-                    $detail->add('unite', $mouvement_agreges->value->unite);
-                }
-            }
-
-            $detail->quantite += $mouvement_agreges->value->quantite;
+            $detail->quantite = $mouvement_agreges->value->quantite;
             $ligne->updateTotaux();
-
     }
 
     public function orderLignesByCotisationsKeys() {
