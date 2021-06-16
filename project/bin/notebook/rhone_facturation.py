@@ -8,12 +8,19 @@ import pandas as pd
 
 pd.set_option('display.max_columns', None)
 
-etablissements = pd.read_csv("../../web/export_odgrhone/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
-drev = pd.read_csv("../../web/export_odgrhone/drev.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
-dr = pd.read_csv("../../web/export_odgrhone/dr.csv", encoding="iso8859_15", delimiter=";", thousands=',', decimal=',', dtype={'Identifiant': 'str', 'Campagne': 'str', 'Valeur': 'float64'}, low_memory=False)
+etablissements = pd.read_csv("../../web/exports/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
+drev = pd.read_csv("../../web/exports/drev.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
+dr = pd.read_csv("../../web/exports/dr.csv", encoding="iso8859_15", delimiter=";",decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Valeur': 'float64'}, low_memory=False)
+
+
+# In[ ]:
+
+
+#Filtre sur la dernière période
+
 periode = "2020";
 drev = drev.query("Campagne == @periode");
-dr = drev.query("Campagne == @periode");
+dr = dr.query("Campagne == @periode");
 
 
 # In[ ]:
@@ -66,10 +73,4 @@ facturation = facturation[['Campagne', 'Identifiant', 'CVI', 'Raison sociale', '
 
 
 facturation.to_csv('../../web/exports/facturation_cotisations.csv', encoding="iso8859_15", sep=";", decimal=",", index=False)
-
-
-# In[ ]:
-
-
-
 
