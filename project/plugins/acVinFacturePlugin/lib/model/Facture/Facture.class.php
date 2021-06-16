@@ -425,7 +425,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         if ($this->total_ht > 0 && FactureConfiguration::getInstance()->hasEcheances()) {
           $this->storePapillons();
         }
-        $this->updateVersementSepa();
+
+        if($this->versement_sepa != null){
+          $this->updateVersementSepa();
+        }
         parent::save();
 
         $this->saveDocumentsOrigine();
