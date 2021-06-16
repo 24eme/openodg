@@ -7,6 +7,7 @@ all:
         "habilitation:inao": "Habilitation INAO"
         "habilitation:oivr": "Habilitation OIVR"
         "habilitation:odg": "Habilitation ODG"
+        "habilitation:certipaq": "Habilitation CERTIPAQ"
         "api": "API"
         "timbre": "Timbre"
         "stalker": "Stalker"

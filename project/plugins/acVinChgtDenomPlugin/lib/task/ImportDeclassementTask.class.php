@@ -68,10 +68,6 @@ EOF;
                 continue;
             }
 
-            if($dateDeclaration < "2019-01-01") {
-                continue;
-            }
-
             $etablissement = $this->identifyEtablissement($data[self::CSV_RAISON_SOCIALE], $data[self::CSV_CVI], $data[self::CSV_CODE_POSTAL]);
             if (!$etablissement) {
                echo "ERROR;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";

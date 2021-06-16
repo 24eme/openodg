@@ -64,7 +64,7 @@
                     <li  class="disabled"><a href=""><span class="glyphicon glyphicon-repeat"></span> Créér un avoir</a></li>
                   <?php endif; ?>
 
-                  <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement): ?>
+                  <?php if(!$facture->isAvoir()): ?>
                     <li><a href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>">Saisir / modifier les paiements</a></li>
                   <?php else: ?>
                     <li class="disabled"><a href="">Saisir / modifier les paiements</a></li>

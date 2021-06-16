@@ -39,6 +39,11 @@ class DeclarationClient
             return 'ExportDRevCSV';
         }
 
+        if(class_exists("ChgtDenomClient") && $type == ChgtDenomClient::TYPE_MODEL) {
+
+            return 'ExportChgtDenomCSV';
+        }
+
         if(class_exists("ParcellaireClient") && $type == ParcellaireClient::TYPE_MODEL) {
 
             return 'ExportParcellaireCSV';
@@ -114,6 +119,11 @@ class DeclarationClient
             return 'ExportParcellaireIntentionAffectationCSV';
         }
 
+        if(class_exists("DegustationClient") && $type == DegustationClient::TYPE_MODEL) {
+
+            return 'ExportDegustationCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
@@ -140,12 +150,19 @@ class DeclarationClient
         return $typeAndCampagne;
     }
 
-    public function getIds($type, $campagne, $validation = true) {
+    public function getIds($type, $campagne = null) {
         $ids = array();
 
+        $keys = array();
+
+        $keys[] = $type;
+        if(!is_null($campagne)) {
+            $keys[] = $campagne;
+        }
+
         $rows = acCouchdbManager::getClient()
-                    ->startkey(array($type, $campagne))
-                    ->endkey(array($type, $campagne, array()))
+                    ->startkey($keys)
+                    ->endkey(array_merge($keys, array(array())))
                     ->reduce(false)
                     ->getView('declaration', 'export')->rows;
 

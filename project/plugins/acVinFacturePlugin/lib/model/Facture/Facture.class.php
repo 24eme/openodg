@@ -97,10 +97,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
-        if($this->_get('numero_odg')) {
-            return $this->_get('numero_odg');
-        }
-
         return $this->campagne . $this->numero_archive;
     }
 

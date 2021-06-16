@@ -152,9 +152,6 @@ EOF;
               }
             }
             $periode = preg_replace('/\/.*/', '', trim($data[self::CSV_CAMPAGNE]));
-            if($periode < 2019) {
-                continue;
-            }
             $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : $periode;
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroLot = sprintf("%05d", trim($data[self::CSV_NUM_LOT_ODG]));
@@ -195,6 +192,7 @@ EOF;
                 $document->storeDeclarant();
                 $document->validation = $date;
                 $document->validation_odg = $date;
+                $document->papier = 1;
                 $document->save();
                 echo " création $document->_id\n";
             }

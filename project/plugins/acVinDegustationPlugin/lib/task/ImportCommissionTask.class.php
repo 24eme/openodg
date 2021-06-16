@@ -91,10 +91,6 @@ EOF;
               $campagne = str_replace('/', '-', trim($data[self::CSV_CAMPAGNE]));
           }
 
-          if($campagne < "2019-2020") {
-              continue;
-          }
-
           $newDegustation = new Degustation();
           $newDegustation->numero_archive = sprintf("%05d", preg_replace("/^.*-/", "", $data[self::CSV_ID]));
           $newDegustation->date=$date;
@@ -102,7 +98,6 @@ EOF;
           $newDegustation->campagne=$campagne;
           $newDegustation->max_lots = 1;
           $newDegustation->constructId();
-          $newDegustation->validation = $degustation_date;
 
           if($degustation && $newDegustation->_id != $degustation->_id) {
               $this->saveDegustation($degustation);

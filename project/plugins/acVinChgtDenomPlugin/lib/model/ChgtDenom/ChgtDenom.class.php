@@ -64,6 +64,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return ConfigurationClient::getInstance()->getConfiguration();
     }
 
+    public function getConfigProduitOrigine() {
+
+        return $this->getConfiguration()->get($this->origine_produit_hash);
+    }
+
+    public function getConfigProduitChangement() {
+
+        return $this->getConfiguration()->get($this->changement_produit_hash);
+    }
+
     public function getConfigProduits() {
         return $this->getConfiguration()->declaration->getProduits();
     }
@@ -422,45 +432,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
     }
 
-    public function getCepagesToStr(){
-      $cepages = $this->cepages;
-      $str ='';
-      $k=0;
-      $total = 0.0;
-      $tabCepages=array();
-      foreach ($cepages as $c => $volume){
-        $total+=$volume;
-      }
-      foreach ($cepages as $c => $volume){
-        $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $tabCepages[$c]=$p;
-      }
-      arsort($tabCepages);
-      foreach ($tabCepages as $c => $p) {
-        $k++;
-        $str.=" ".$c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ',' : '';
-      }
-      return $str;
-    }
-
   	public function getVersion() {
   			return null;
   	}
 
     public function addCepage($cepage, $repartition) {
         $this->changement_cepages->add($cepage, $repartition);
-    }
-
-    public function getCepagesLibelle() {
-        $libelle = null;
-        foreach($this->changement_cepages as $cepage => $repartition) {
-            if($libelle) {
-                $libelle .= ", ";
-            }
-            $libelle .= $cepage . " (".$repartition."%)";
-        }
-        return $libelle;
     }
 
     /**** FIN DES MOUVEMENTS ****/
@@ -561,7 +538,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function generateUrlPiece($source = null) {
-    	return null;
+    	return sfContext::getInstance()->getRouting()->generate('chgtdenom_pdf', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
@@ -701,6 +678,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getVolumeFacturable($produitFilter = null)
     {
+        if ($this->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+            return;
+        }
+
       $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
 			$produitExclude = (bool) $produitExclude;
 			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
@@ -724,9 +705,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return false;
         }
 
+        if ($this->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+            return;
+        }
+
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
         $exclude = (bool) $exclude;
-        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+        $regexpFilter = "#^(".implode("|", explode(",", $familleFilterMatch)).")$#";
 
         if(!$exclude && preg_match($regexpFilter, $this->declarant->famille)) {
 

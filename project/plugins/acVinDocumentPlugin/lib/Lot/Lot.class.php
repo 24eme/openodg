@@ -205,6 +205,24 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->_get("destination_type");
     }
 
+    public function getPays() {
+        if(!$this->exist('pays')) {
+
+            return null;
+        }
+
+        return $this->_get('pays');
+    }
+
+    public function getCentilisation() {
+        if(!$this->exist('centilisation')) {
+
+            return null;
+        }
+
+        return $this->_get('centilisation');
+    }
+
     public function getDestinationDate(){
         return $this->_get("destination_date");
     }
@@ -244,7 +262,7 @@ abstract class Lot extends acCouchdbDocumentTree
             return $this->getConfig()->getGenre()->getKey();
         }
         if ($type == DegustationClient::DEGUSTATION_TRI_CEPAGE) {
-            return $this->getCepagesToStr();
+            return $this->getCepagesLibelle();
         }
         if ($type == DegustationClient::DEGUSTATION_TRI_PRODUIT) {
             return $this->_get('produit_hash').$this->_get('details');
@@ -601,28 +619,6 @@ abstract class Lot extends acCouchdbDocumentTree
       }
 
      return false;
-    }
-
-    public function getCepagesToStr(){
-      $cepages = $this->cepages;
-      $str ='';
-      $k=0;
-      $total = 0.0;
-      $tabCepages=array();
-      foreach ($cepages as $c => $volume){
-        $total+=$volume;
-      }
-      foreach ($cepages as $c => $volume){
-        $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $tabCepages[$c]=$p;
-      }
-      arsort($tabCepages);
-      foreach ($tabCepages as $c => $p) {
-        $k++;
-        $str.=" ".$c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ',' : '';
-      }
-      return $str;
     }
 
     public function addCepage($cepage, $repartition) {

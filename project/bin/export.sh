@@ -5,6 +5,9 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
     done
+    rm -f web/exports_igp/*.csv
+    bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
+    bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
     exit 0;
 fi
 
@@ -47,6 +50,32 @@ sleep 60
 bash bin/export_docs.sh DRev 30 $1 > $EXPORTDIR/drev.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev.csv.part > $EXPORTDIR/drev.csv
 rm $EXPORTDIR/drev.csv.part
+
+bash bin/export_docs.sh ChgtDenom 30 $1 > $EXPORTDIR/changement_denomination.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/changement_denomination.csv.part > $EXPORTDIR/changement_denomination.csv
+rm $EXPORTDIR/changement_denomination.csv.part
+
+sleep 60
+
+php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_lots.csv.part
+
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv.part
+
+grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
+rm $EXPORTDIR/drev_lots.csv.part
+
+grep "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/conditionnement_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv
+rm $EXPORTDIR/conditionnement_lots.csv.part
+
+grep "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transaction_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/transaction_lots.csv.part > $EXPORTDIR/transaction_lots.csv
+rm $EXPORTDIR/transaction_lots.csv.part
+
+rm $EXPORTDIR/declarations_lots.csv.part
 
 bash bin/export_docs.sh Habilitation 30 $1 > $EXPORTDIR/habilitation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
@@ -113,11 +142,30 @@ rm $EXPORTDIR/factures.csv.part
 
 php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
-rm $EXPORTDIR/lots.csv.part
 
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.part > $EXPORTDIR/lots-historique.csv
+
+# Ajouter la hash produit à la fin du fichier lots-historique
+cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 33,34 | sort -t ";" -k 1,1 > $EXPORTDIR/lots_hash.csv
+tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 15,15 > $EXPORTDIR/lots-historique.csv.sorted
+head -n 1 $EXPORTDIR/lots-historique.csv.part | sed 's/$/;Hash produit/' > $EXPORTDIR/lots-historique.csv.sorted.join
+join -t ";" -a 1 -1 15 -2 1 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$16; $16=unique_id; $17=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
+
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
+
 rm $EXPORTDIR/lots-historique.csv.part
+rm $EXPORTDIR/lots-historique.csv.sorted
+rm $EXPORTDIR/lots-historique.csv.sorted.join
+rm $EXPORTDIR/lots_hash.csv
+rm $EXPORTDIR/lots.csv.part
+
+bash bin/export_docs.sh Degustation 30 $1 > $EXPORTDIR/degustations.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
+rm $EXPORTDIR/degustations.csv.part
+
+php symfony degustations:export-degustateurs-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/degustateurs.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustateurs.csv.part > $EXPORTDIR/degustateurs.csv
+rm $EXPORTDIR/degustateurs.csv.part
 
 find $EXPORTDIR -type f -empty -delete
 
