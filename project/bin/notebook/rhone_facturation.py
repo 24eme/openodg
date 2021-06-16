@@ -11,6 +11,9 @@ pd.set_option('display.max_columns', None)
 etablissements = pd.read_csv("../../web/export_odgrhone/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
 drev = pd.read_csv("../../web/export_odgrhone/drev.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 dr = pd.read_csv("../../web/export_odgrhone/dr.csv", encoding="iso8859_15", delimiter=";", thousands=',', decimal=',', dtype={'Identifiant': 'str', 'Campagne': 'str', 'Valeur': 'float64'}, low_memory=False)
+periode = "2020";
+drev = drev.query("Campagne == @periode");
+dr = drev.query("Campagne == @periode");
 
 
 # In[ ]:
@@ -50,7 +53,7 @@ facturation["Vendange fraiche vaison la romaine"] = facturation["Valeur vaison l
 
 
 etablissements['Identifiant'] = etablissements['Identifiant etablissement']
-facturation = pd.merge(facturation, etablissements,  how='outer', on=['Identifiant'], suffixes=("", " etablissement"))
+facturation = pd.merge(facturation, etablissements,  how='inner', on=['Identifiant'], suffixes=("", " etablissement"))
 
 
 # In[ ]:
