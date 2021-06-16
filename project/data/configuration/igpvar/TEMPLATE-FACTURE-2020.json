@@ -226,7 +226,7 @@
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "getVolumeFacturable",
+          "callback": "calculFraisJournalier",
           "callback_parameters": [
             "/appellations/MED"
           ]

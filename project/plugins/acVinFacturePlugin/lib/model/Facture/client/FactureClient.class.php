@@ -209,7 +209,7 @@ class FactureClient extends acCouchdbClient {
         $lignes = array();
         $lignes_originaux = array();
         foreach ($mouvements as $identifiant => $mvt) {
-            $cle = $mvt->value->categorie.$mvt->value->detail_libelle.$mvt->value->type_libelle;
+            $cle = $mvt->value->categorie.$mvt->value->detail_libelle.$mvt->value->type_libelle.$mvt->value->taux.$mvt->value->tva.$mvt->value->unite;
             $lignes_originaux[$cle][] = $mvt;
             if (isset($lignes[$cle])) {
                 $lignes[$cle]->value->quantite += $mvt->value->quantite;
