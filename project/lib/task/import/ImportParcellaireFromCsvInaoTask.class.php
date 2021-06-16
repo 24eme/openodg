@@ -267,7 +267,7 @@ EOF;
               if(trim($data[self::CSV_CODE_PORTEGREFFE])){
                 $parcelle->add('porte_greffe', trim($data[self::CSV_CODE_PORTEGREFFE]));
               }
-              if($parcelle->idu != $data[self::CSV_IDU]) {
+              if(isset($data[self::CSV_IDU]) && $data[self::CSV_IDU] && $parcelle->idu != $data[self::CSV_IDU]) {
                   echo "WARNING: Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $line)\n";
               }
               echo "Import de la parcelle $section $numero_parcelle pour $parcellaire->identifiant !\n";
