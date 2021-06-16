@@ -8,7 +8,7 @@
 <?php $i=0; foreach ($history as $document): $i++; if ($i>$limit) { break; } ?>
 <div class="list-group-item col-xs-12">
 	<span class="col-sm-2 col-xs-12">
-		<?php echo (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $document->key[PieceAllView::KEYS_DATE_DEPOT]))? format_date($document->key[PieceAllView::KEYS_DATE_DEPOT], "dd/MM/yyyy", "fr_FR") : null; ?>
+		<?php echo format_date(preg_replace('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/', '$1', $document->key[PieceAllView::KEYS_DATE_DEPOT]), "dd/MM/yyyy", "fr_FR"); ?>
 	</span>
 	<span class="col-sm-8 col-xs-12">
 		<?php if (Piece::isVisualisationMasterUrl($document->id, $sf_user->hasDrevAdmin())): ?>
