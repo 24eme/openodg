@@ -678,7 +678,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getVolumeFacturable($produitFilter = null)
     {
-        if ($this->changement_type === self::CHANGEMENT_TYPE_DECLASSEMENT) {
+        if ($this->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
             return;
         }
 
@@ -705,7 +705,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return false;
         }
 
-        if ($this->changement_type === self::CHANGEMENT_TYPE_DECLASSEMENT) {
+        if ($this->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
             return;
         }
 

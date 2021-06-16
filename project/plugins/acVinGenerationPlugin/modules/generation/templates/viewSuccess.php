@@ -41,7 +41,7 @@
     </div>
 <?php endif; ?>
 
-<?php if ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE ) : ?>
+<?php if ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE):?>
 <div class="row">
   <div class="col-xs-6 col-xs-offset-3">
     <?php foreach ($generation->fichiers as $chemin => $titre): ?>
