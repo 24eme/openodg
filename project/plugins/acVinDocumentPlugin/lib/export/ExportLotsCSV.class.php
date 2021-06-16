@@ -32,9 +32,6 @@ class ExportLotsCSV {
         $statut = $values['statut'];
         $numeroOrdre = $values['document_ordre'];
         $positionLotCourant = $values['document_ordre'].$values[$uniqueLotId]['statut'];
-        if (!$statut) {
-          continue;
-        }
         if (isset($values['leurre']) && $values['leurre']) {
           continue;
         }
