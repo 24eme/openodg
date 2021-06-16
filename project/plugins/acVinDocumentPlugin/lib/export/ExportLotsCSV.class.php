@@ -71,6 +71,12 @@ class ExportLotsCSV {
           $cepages = ($lot['cepages'])? implode(',', array_keys((array)$lot['cepages'])) : '';
           $date = preg_split('/( |T)/', $lot['date'], -1, PREG_SPLIT_NO_EMPTY);
           $statut = (isset(Lot::$libellesStatuts[$lot['statut']]))? Lot::$libellesStatuts[$lot['statut']] : $lot['statut'];
+          if (!$statut && boolval($lot['affectable'])) {
+            $statut = Lot::$libellesStatuts[Lot::STATUT_REVENDIQUE];
+          }
+          if (!$statut && !boolval($lot['affectable'])) {
+            $statut = Lot::$libellesStatuts[Lot::STATUT_NONAFFECTABLE];
+          }
           if (!isset($lot['conformite'])) {
             $lot['conformite'] = '';
           }
