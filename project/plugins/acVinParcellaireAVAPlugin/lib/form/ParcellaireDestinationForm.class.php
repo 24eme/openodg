@@ -113,9 +113,11 @@ class ParcellaireDestinationForm extends acCouchdbForm {
         $q = new acElasticaQuery();
         $q->setLimit(9999);
         $q->setQuery($qs);
-
+        try {
         $index = acElasticaManager::getType('COMPTE');
-
+        } catch(Exception $e) {
+            return array();
+        }
         $resset = $index->search($q);
         $results = $resset->getResults();
 
