@@ -15,14 +15,18 @@ else
 fi
 
 EXPORTGLOBALDIR=web/exports_igp
-EXPORTDIRFORGLOBAL=$EXPORTDIR/GLOBAL
+EXPORTAPPDIR=web/exports_"$1"
+EXPORTDIRFORGLOBAL=$EXPORTAPPDIR/GLOBAL
 
-rm -rf $EXPORTDIRFORGLOBAL
-mkdir $EXPORTGLOBALDIR 2> /dev/null
+if [ -d "$EXPORTDIRFORGLOBAL" ]; then
+  rm -rf $EXPORTDIRFORGLOBAL
+fi
+
+mkdir $EXPORTDIRFORGLOBAL 2> /dev/null
 
 for file in $(find "$EXPORTGLOBALDIR" -maxdepth 1 -type f -name "*.csv")
 do
-  FILENAME="global_$(basename $file)"
+  FILENAME="$(basename $file)"
   if [ ! -f "$EXPORTDIRFORGLOBAL/$FILENAME" ]; then
     head -n 1 $file > $EXPORTDIRFORGLOBAL/$FILENAME
   fi
