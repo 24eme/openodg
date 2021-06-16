@@ -12,7 +12,7 @@ $t = new lime_test($nb_test);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
-$campagne = (date('Y')-1)."";
+$periode = (date('Y')-1)."";
 
 //Début des tests
 //Suppression des DRev précédentes
@@ -21,7 +21,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
 $t->comment($drev->_id);
 
@@ -77,7 +77,7 @@ if ($has_lot) {
     $lot->specificite = Lot::SPECIFICITE_PRIMEUR;
     $lot->volume = 30.4;
     $lot->destination_type = null;
-    $lot->destination_date = $campagne.'-11-15';
+    $lot->destination_date = $periode.'-11-15';
     $lot->produit_hash = $produit1->getConfig()->getHash();
     $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
     $lot->addCepage("Chenin", 60);
@@ -86,8 +86,8 @@ if ($has_lot) {
 $drev->save();
 
 $t->comment("Validation des Drev");
-$date_validation_1 = $campagne."-10-30";
-$date_validation_odg_1 = $campagne."-11-05";
+$date_validation_1 = $periode."-10-30";
+$date_validation_odg_1 = $periode."-11-05";
 
 $t->comment("Point de vigilance DRev");
 $validation = new DRevValidation($drev);
@@ -125,8 +125,8 @@ if ($application == 'loire') {
 
 $t->comment("Création d'une modificatrice  Drev");
 
-$date_validation_2 = $campagne."-11-15";
-$date_validation_odg_2 = $campagne."-11-30";
+$date_validation_2 = $periode."-11-15";
+$date_validation_odg_2 = $periode."-11-30";
 
 $drev_modificative = $drev->generateModificative();
 $drev_modificative->save();
@@ -144,7 +144,7 @@ if ($has_lot) {
     $lot->volume = 3.5;
     $lot->specificite = Lot::SPECIFICITE_PRIMEUR;
     $lot->destination_type = null;
-    $lot->destination_date = ($campagne+1).'-06-15';
+    $lot->destination_date = ($periode+1).'-06-15';
     $lot->produit_hash = $produit1->getConfig()->getHash();
     $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
     $lot->addCepage("Chenin", 30);
@@ -184,7 +184,7 @@ if ($lot) {
 }
 
 if ($application == 'igp13') {
-    $dateDegustVoulue = $campagne.'-12-25';
+    $dateDegustVoulue = $periode.'-12-25';
     $drev->setDateDegustationSouhaitee($dateDegustVoulue);
     $t->is($drev->date_degustation_voulue, $dateDegustVoulue, 'La date de dégustation voulue par l\'opérateur est '.$dateDegustVoulue);
 }

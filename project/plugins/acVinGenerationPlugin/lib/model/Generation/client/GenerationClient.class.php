@@ -11,6 +11,7 @@ class GenerationClient extends acCouchdbClient {
     const TYPE_DOCUMENT_EXPORT_PARCELLAIRE = 'PARCELLAIRE';
     const TYPE_DOCUMENT_FACTURES_MAILS = 'FACTUREMAIL';
     const TYPE_DOCUMENT_FACTURES_PAPIER = 'FACTUREPAPIER';
+    const TYPE_DOCUMENT_EXPORT_XML_SEPA = 'SEPA';
 
     const HISTORY_KEYS_TYPE_DOCUMENT = 0;
     const HISTORY_KEYS_TYPE_DATE_EMISSION = 1;
@@ -120,11 +121,16 @@ class GenerationClient extends acCouchdbClient {
                 return 'GenerationExportSage';
 
             case GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE:
+
                 return 'GenerationExportComptable';
 
             case GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE:
 
                 return 'GenerationExportParcellaire';
+
+            case GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA:
+
+                return 'GenerationExportXmlSepa';
         }
         throw new sfException($generation->type_document." n'est pas un type supporté");
     }

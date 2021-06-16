@@ -79,4 +79,18 @@ class MandatSepa extends BaseMandatSepa {
     }
     return $result;
   }
+
+  public function getNumeroRum(){
+    if(!$this->debiteur->identifiant_rum){
+      return '';
+    }
+    return $this->debiteur->identifiant_rum;
+  }
+
+  public function getBic(){
+    if(!$this->debiteur->bic){
+      return '';
+    }
+    return $this->debiteur->bic;
+  }
 }

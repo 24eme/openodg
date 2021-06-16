@@ -73,12 +73,10 @@ all:
         iban: "FRXX XXXX XXXX XXXX XXXX XXXX XXX"
         tva_intracom: "FRXXX XXX XXX XXXXX"
         siret: "XXX XXX XXX XXXXX"
-    coordonnees_bancaire:
-      siret: "XXX XXX XXX XXXXX"
-      banquenom: "Banque nom"
-      banqueadresse: "Adresse de la banque"
-      rib: "FRXX XXXX XXXX XXXX XXXX XXXX XXX"
-      bic: "XXXXBIC"
+        banquenom: "Banque nom"
+        banqueadresse: "Adresse de la banque"
+        rib: "FRXX XXXX XXXX XXXX XXXX XXXX XXX"
+        bic: "XXXXBIC"
   contenances:
     bouteilles:
       "75 cl": 75

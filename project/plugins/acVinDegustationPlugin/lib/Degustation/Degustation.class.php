@@ -291,7 +291,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function getAllPieces() {
     	$pieces = array();
 
-        $base_libelle = 'Résultat de la dégustation du ' . $this->getDate();
+        $base_libelle = 'Résultat de la dégustation du ' . $this->getDateFormat('d/m/Y H:i');				
 
         $declarants = [];
 
