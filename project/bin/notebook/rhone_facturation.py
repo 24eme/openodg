@@ -12,14 +12,6 @@ etablissements = pd.read_csv("../../web/export_odgrhone/etablissements.csv", enc
 drev = pd.read_csv("../../web/export_odgrhone/drev.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 dr = pd.read_csv("../../web/export_odgrhone/dr.csv", encoding="iso8859_15", delimiter=";", thousands=',', decimal=',', dtype={'Identifiant': 'str', 'Campagne': 'str', 'Valeur': 'float64'}, low_memory=False)
 
-etablissements['Identifiant'] = 
-
-
-# In[ ]:
-
-
-etablissements
-
 
 # In[ ]:
 
@@ -59,8 +51,6 @@ facturation["Vendange fraiche vaison la romaine"] = facturation["Valeur vaison l
 
 etablissements['Identifiant'] = etablissements['Identifiant etablissement']
 facturation = pd.merge(facturation, etablissements,  how='outer', on=['Identifiant'], suffixes=("", " etablissement"))
-
-facturation
 
 
 # In[ ]:
