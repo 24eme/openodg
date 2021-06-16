@@ -456,9 +456,3 @@ $lot = $drev_modif2->lots[1];
 
 $t->is($lot->version, 'M02', 'Le mouvement a le bon numéro de version');
 $t->is($lot->produit_hash, $produitconfig1->getHash(), 'Le mouvement a le bon hash');
-
-$dr->delete();
-foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
-    $drev = DRevClient::getInstance()->find($k);
-    $drev->delete(false);
-}

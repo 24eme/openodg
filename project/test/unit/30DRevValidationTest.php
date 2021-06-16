@@ -19,6 +19,8 @@ $periode = (date('Y')-1)."";
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
     $drev->delete(false);
+    $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON);
+    if($dr) { DRClient::getInstance()->deleteDoc($dr); }
 }
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
