@@ -38,7 +38,7 @@ EOF;
         $ids = array_merge(
             DeclarationClient::getInstance()->getIds(DRevClient::TYPE_MODEL),
             DeclarationClient::getInstance()->getIds(ConditionnementClient::TYPE_MODEL),
-            DeclarationClient::getInstance()->getIds(TransactionClient::TYPE_MODEL),
+            DeclarationClient::getInstance()->getIds(TransactionClient::TYPE_MODEL)
         );
 
         $sleepSecond = false;
