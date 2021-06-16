@@ -35,10 +35,7 @@ class ExportHistoriqueLotsCSV {
         }
         foreach($lots as $lot) {
           $values = (array)$lot->value;
-          if (!$values['statut'] || !isset(Lot::$libellesStatuts[$values['statut']])) {
-            continue;
-          }
-          $statut = Lot::$libellesStatuts[$values['statut']];
+          $statut = (isset(Lot::$libellesStatuts[$values['statut']]))? Lot::$libellesStatuts[$values['statut']] : null;
           $date = preg_replace('/( |T).*$/', "", $values['date']);
           $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $values['declarant_identifiant'],
