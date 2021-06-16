@@ -4,12 +4,10 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
 
 
   public function configure() {
-    foreach ($this->getObject()->getDegustateurs() as $degustateurs) {
-      foreach ($degustateurs as $id => $degustateur){
-        $name = $this->getWidgetNameFromDegustateur($degustateur);
-        $this->setWidget($name , new WidgetFormInputCheckbox());
-        $this->setValidator($name, new ValidatorBoolean());
-      }
+    foreach ($this->getObject()->getAllDegustateurs() as $degustateur) {
+      $name = $this->getWidgetNameFromDegustateur($degustateur);
+      $this->setWidget($name , new WidgetFormInputCheckbox());
+      $this->setValidator($name, new ValidatorBoolean());
     }
     $this->widgetSchema->setNameFormat('degustateurs_table[%s]');
   }
@@ -26,25 +24,21 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
 
   protected function doUpdateObject($values) {
     parent::doUpdateObject($values);
-    foreach ($this->getObject()->getDegustateurs() as $degustateurs) {
-      foreach ($degustateurs as $id => $degustateur){
-        $name = $this->getWidgetNameFromDegustateur($degustateur);
-        if($values[$name]){
-          $degustateur->add('confirmation',boolval($values[$name]));
-        }elseif($degustateur->exist('confirmation') && $degustateur->confirmation && !$values[$name]){
-          $degustateur->remove('confirmation');
-        }
+    foreach ($this->getObject()->getAllDegustateurs() as $degustateur) {
+      $name = $this->getWidgetNameFromDegustateur($degustateur);
+      if($values[$name]){
+        $degustateur->add('confirmation',boolval($values[$name]));
+      }elseif($degustateur->exist('confirmation') && $degustateur->confirmation && !$values[$name]){
+        $degustateur->remove('confirmation');
       }
     }
   }
 
   protected function updateDefaultsFromObject() {
     $defaults = $this->getDefaults();
-    foreach ($this->getObject()->getDegustateurs() as $degustateurs) {
-      foreach ($degustateurs as $id => $degustateur){
-        if($degustateur->exist('confirmation') && $degustateur->get("confirmation")){
-          $defaults[$this->getWidgetNameFromDegustateur($degustateur)] = 1;
-        }
+    foreach ($this->getObject()->getAllDegustateurs() as $degustateur) {
+      if($degustateur->exist('confirmation') && $degustateur->get("confirmation")){
+        $defaults[$this->getWidgetNameFromDegustateur($degustateur)] = 1;
       }
     }
     $this->setDefaults($defaults);
