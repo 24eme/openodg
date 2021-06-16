@@ -15,11 +15,10 @@ class ExportLotsCSV {
     }
 
     public function protectStr($str) {
-    	return str_replace('"', '', $str);
+    	return '"'.str_replace(array('\n', '"', ';'), array('', '', '−'), $str).'"';
     }
 
     protected function formatFloat($value) {
-
         return str_replace(".", ",", $value);
     }
 
@@ -33,9 +32,6 @@ class ExportLotsCSV {
         $statut = $values['statut'];
         $numeroOrdre = $values['document_ordre'];
         $positionLotCourant = $values['document_ordre'].$values[$uniqueLotId]['statut'];
-        if (!$statut) {
-          continue;
-        }
         if (isset($values['leurre']) && $values['leurre']) {
           continue;
         }
