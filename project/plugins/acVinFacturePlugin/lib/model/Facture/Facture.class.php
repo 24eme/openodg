@@ -353,9 +353,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->updateTotalTaxe();
         $this->updateTotalTTC();
 
-        if($this->getSociete()->hasMandatSepa()){
-            $this->updatePrelevement();
-        }
+
     }
 
     public function updateTotalHT()
@@ -381,13 +379,14 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $this->total_taxe = round($this->total_taxe, 2);
     }
 
-    public function updatePrelevement()
+    public function addPrelevementAutomatique()
     {
       $paiement = $this->add('paiements')->add();
       $paiement->montant =  $this->total_ttc;
       $paiement->type_reglement = FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO;
       $paiement->add('execute',false);
       $paiement->date = date('Y-m-d',strtotime($this->date_facturation.'+15 days'));
+      $this->versement_sepa = 0;
     }
 
     public function getNbLignesMouvements() {
@@ -422,7 +421,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         if ($this->total_ht > 0 && FactureConfiguration::getInstance()->hasEcheances()) {
           $this->storePapillons();
         }
+
+        if($this->versement_sepa != null){
+          $this->updateVersementSepa();
+        }
         parent::save();
+
         $this->saveDocumentsOrigine();
     }
 
@@ -477,6 +481,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
         if (!$this->exist('paiements') || !count($this->paiements)) {
             $this->versement_comptable_paiement = 1;
+            $this->versement_sepa = 1;
         }
 
 
@@ -672,6 +677,24 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return (bool) $this->date_telechargement;
     }
 
+    public function getNbPaiementsAutomatique(){ 
+        if($this->paiements){
+          return count($this->paiements);
+        }
+        return 0;
+    }
+
+    public function getMandatSepaMontant($i){
+      return($this->paiements[$i]->montant);
+    }
+
+    public function paiementIsExecute($i){
+      if($this->paiements){
+        return ($this->paiements[$i]->execute);
+      }
+      return true;
+    }
+
     public function setTelechargee($date = null)
     {
         if (!$date) {
@@ -687,44 +710,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
 
         $this->_set('date_telechargement', $date);
-    }
-
-    public function getXml(){
-      // ! mettre la condition que le execute vaut 0 sinon ils sont deja passe par le xml
-      $xml = new SimpleXMLElement('<xml/>');
-
-      $pmtInf = $xml->addChild('PmtInf');
-      $pmtInf->addChild('PmtInfId', $this->_id);
-      $pmtInf->addChild('PmtMtd', "DD");
-      $pmtInf->addChild('NbOfTxs', "1");
-      $pmtInf->addChild('CtrlSum', "DD");
-
-      $pmtTpInf = $pmtInf->addChild('PmtTpInf');
-      $svcLvl = $pmtTpInf->addChild('SvcLvl');
-      $svcLvl->addChild('Cd','SEPA');
-      $lclInstrm = $pmtTpInf->addChild('LclInstrum');
-      $lclInstrm->addChild('Cd','CORE');
-      $pmtTpInf->addChild('SeqTp','RCUR');
-
-      $pmtInf->addChild('ReqdColltnDt',"2021-04-20"); //date d'execution demandée du prélèmemtn
-
-      $cdtr = $pmtInf->addChild('Cdtr');
-      $cdtr->addChild('Nm',''); //nom de l'odg
-
-      $cdtrAcct = $pmtInf->addChild('CdtrAcct');
-      $id = $cdtrAcct->addChild('Id');
-      $id->addChild('IBAN','');
-
-      $cdtrAgt = $pmtInf->addChild('CdtrAgt');
-      $finInstnID = $cdtrAgt->addChild('FinInstnId');
-      $finInstnID->addChild('BIC','');
-
-      $pmtInf->addChild('ChrgBr','SLEV');
-
-      $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
-      $idcdtrschemeid = $cdtrschemeid->addChild('id');
-
-      return $xml->asXML();
     }
 
     public function updateVersementComptablePaiement() {
@@ -750,4 +735,13 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->date_paiement = $date;
     }
 
+    public function updateVersementSepa(){
+      $versement_sepa = 1;
+      foreach($this->paiements as $paiement){
+        if(!$paiement->execute){
+          $versement_sepa = 0;
+        }
+      }
+      $this->versement_sepa = $versement_sepa;
+    }
 }
