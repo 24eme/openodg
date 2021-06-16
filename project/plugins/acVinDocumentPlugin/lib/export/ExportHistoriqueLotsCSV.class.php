@@ -15,7 +15,7 @@ class ExportHistoriqueLotsCSV {
     }
 
     public function protectStr($str) {
-    	return str_replace('"', '', $str);
+    	return '"'.str_replace(array('\n', '"', ';'), array('', '', '−'), $str).'"';
     }
 
     protected function formatFloat($value) {
