@@ -40,7 +40,7 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\EMETTEURIBAN{<?php echo Organisme::getInstance($facture->region)->getIban() ?>}
+\def\EMETTEURIBAN{<?php echo Organisme::getInstance($facture->region)->getIban()." ( ".Organisme::getInstance($facture->region)->getBic()." )" ?>}
 \def\EMETTEURTVAINTRACOM{<?php echo Organisme::getInstance($facture->region)->getNoTvaIntracommunautaire() ?>}
 \def\EMETTEURSIRET{<?php echo Organisme::getInstance($facture->region)->getSiret() ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
