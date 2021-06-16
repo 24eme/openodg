@@ -684,12 +684,30 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->getVolumeFacturable($produitFilter);
     }
 
-    private function produitFilter($produitFilter = null, $chgtdenom = null)
+    public function matchFilter($produitFilter = null, $chgtdenom = null)
     {
         if ($chgtdenom === null) {
             $chgtdenom = $this;
         }
 
+        $match = true;
+        $filters = explode(" AND ", $produitFilter);
+
+        foreach ($filters as $filter) {
+            if (strpos($filter, 'appellations') !== false) {
+                // filtre sur produit
+                $match = $match && $this->produitFilter($filter, $chgtdenom);
+            } else {
+                // filtre sur famille
+                $match = $match && $this->isDeclarantFamille($filter);
+            }
+        }
+
+        return $match;
+    }
+
+    private function produitFilter($produitFilter = null, $chgtdenom = null)
+    {
       $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
 			$produitExclude = (bool) $produitExclude;
 			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
@@ -705,7 +723,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getVolumeFacturable($produitFilter = null)
     {
-        if ($this->produitFilter($produitFilter) === false) {
+        if ($this->matchFilter($produitFilter) === false) {
             return;
         }
 
@@ -748,7 +766,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         $today = [];
         foreach ($chgtdenoms as $chgt) {
-            if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->produitFilter($produitFilter, $chgt)) {
+            if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
                 $today[] = $chgt;
             }
         }
