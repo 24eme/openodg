@@ -27,20 +27,20 @@ class ExportHistoriqueLotsCSV {
         foreach($lots as $lot) {
           $values = (array)$lot->value;
           $statut = (isset(Lot::$libellesStatuts[$values['statut']]))? Lot::$libellesStatuts[$values['statut']] : null;
-          $date = preg_replace('/( |T).*$/', "", $values['date']);
+          $date = preg_split('/( |T)/', $lot['date'], -1, PREG_SPLIT_NO_EMPTY);
           $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $values['declarant_identifiant'],
-              $values['declarant_nom'],
+              VarManipulator::protectStrForCsv($$values['declarant_nom']),
               $values['campagne'],
-              $date,
+              $date[0],
               $values['numero_dossier'],
               $values['numero_archive'],
               $values['document_ordre'],
               $values['document_type'],
-              trim($this->protectStr($values['libelle'])),
-              $this->formatFloat($values['volume']),
-              $statut,
-              $this->protectStr($values['detail']),
+              VarManipulator::protectStrForCsv($values['libelle']),
+              VarManipulator::floatize($values['volume']),
+              VarManipulator::protectStrForCsv($$statut),
+              VarManipulator::protectStrForCsv($$values['detail']),
               $this->appName,
               $values['document_id'],
               $values['lot_unique_id'],
