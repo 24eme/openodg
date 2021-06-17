@@ -73,9 +73,6 @@
     <?php if(class_exists("TravauxMarc")): ?>
     <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
-    <?php if(class_exists("Parcellaire") && in_array('parcellaire', sfConfig::get('sf_enabled_modules')) && sfContext::getInstance()->getController()->componentExists('parcellaire', 'monEspace')): ?>
-    <?php include_component('parcellaire', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
-    <?php endif; ?>
     <?php if(class_exists("ParcellaireIrrigable") && in_array('parcellaireIrrigable', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireIrrigable', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
