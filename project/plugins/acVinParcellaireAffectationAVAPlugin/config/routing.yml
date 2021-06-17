@@ -1,0 +1,220 @@
+parcellaire_delete:
+  url: /parcellaire-affectation/supprimer/:id
+  param: { module: parcellaire, action: delete }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
+parcellaire_devalidation:
+  url: /parcellaire-affectation/devalidation/:id
+  param: { module: parcellaire, action: devalidation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_create:
+  url: /parcellaire-affectation/creation/:identifiant
+  param: { module: parcellaire, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_create_papier:
+  url: /parcellaire-affectation/creation-papier/:identifiant
+  param: { module: parcellaire, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_cremant_create:
+  url: /parcellaireCremant/creation/:identifiant
+  param: { module: parcellaireCremant, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_cremant_create_papier:
+  url: /parcellaireCremant/creation-papier/:identifiant
+  param: { module: parcellaireCremant, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+intention_cremant_create:
+  url: /intentionCremant/creation/:identifiant
+  param: { module: intentionCremant, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+intention_cremant_create_papier:
+  url: /intentionCremant/creation-papier/:identifiant
+  param: { module: intentionCremant, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_edit:
+  url: /parcellaire-affectation/edition/:id
+  param: { module: parcellaire, action: edit }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_exploitation:
+  url: /parcellaire-affectation/exploitation/:id
+  param: { module: parcellaire, action: exploitation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaire_propriete:
+  url: /parcellaire-affectation/propriete/:id
+  param: { module: parcellaire, action: propriete }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaire_parcelles:
+  url: /parcellaire-affectation/parcelles/:id/:appellation
+  param: { module: parcellaire, action: parcelles }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+parcellaire_parcelle_ajout:
+  url: /parcellaire-affectation/ajout-parcelle/:id/:appellation
+  param: { module: parcellaire, action: ajoutParcelle }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [post]
+
+parcellaire_parcelle_modification:
+  url: /parcellaire-affectation/modification-parcelle/:id/:appellation/:parcelle
+  param: { module: parcellaire, action: modificationParcelle }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaire_parcelle_delete:
+  url: /parcellaire-affectation/suppression-parcelle/:id/:appellation/:parcelle
+  param: { module: parcellaire, action: deleteParcelle }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_acheteurs:
+  url: /parcellaire-affectation/acheteurs/:id
+  param: { module: parcellaire, action: acheteurs }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+parcellaire_acheteurs_parcelles:
+  url: /parcellaire-affectation/acheteurs-parcelles/:id
+  param: { module: parcellaire, action: acheteursParcelles }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+parcellaire_validation:
+  url: /parcellaire-affectation/validation/:id
+  param: { module: parcellaire, action: validation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+parcellaire_confirmation:
+  url: /parcellaire-affectation/confirmation/:id
+  param: { module: parcellaire, action: confirmation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+parcellaire_export_pdf:
+  url: /parcellaire-affectation/pdf/:id
+  param: { module: parcellaire, action: PDF }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_visualisation:
+  url: /parcellaire-affectation/visualisation/:id
+  param: { module: parcellaire, action: visualisation }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_export_csv:
+  url: /parcellaire-affectation/csv/:id
+  param: { module: parcellaire, action: CSV }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
