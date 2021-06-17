@@ -16,7 +16,7 @@ $list_idu = [];
 <?php else: ?>
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
-  <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
+  <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
 </ol>
 <?php endif; ?>
 <div class="page-header no-border">
@@ -190,10 +190,13 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php
+    $synthese = array();
 
-    $synthese = $parcellaire->getSyntheseCepages();
+    if($parcellaire) {
+        $synthese = $parcellaire->getSyntheseCepages();
+    }
 
-    if (count($synthese)): 
+    if (count($synthese)):
 ?>
 <h3>Synthèse par cépages</h3>
 
@@ -219,8 +222,12 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php
-    $synthese = $parcellaire->getSyntheseProduitsCepages();
-    if (count($synthese)): 
+    $synthese = array();
+
+    if($parcellaire) {
+        $synthese = $parcellaire->getSyntheseProduitsCepages();
+    }
+    if (count($synthese)):
 ?>
 <h3>Synthèse par produits habilités</h3>
 
@@ -264,7 +271,7 @@ $list_idu = [];
 </table>
 <?php endif; ?>
 
-<?php if ($parcellaire->hasParcellairePDF()): ?>
+<?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
 <a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
 </div>

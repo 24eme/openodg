@@ -38,6 +38,7 @@ class ProjectConfiguration extends sfProjectConfiguration
             $this->enablePlugins('acVinTourneePlugin');
             $this->enablePlugins('acVinConstatsVTSGNPlugin');
             $this->enablePlugins('acVinRegistreVCIPlugin');
+            $this->enablePlugins('acVinParcellairePlugin');
             $this->enablePlugins('acVinParcellaireAffectationAVAPlugin');
             return;
         }
