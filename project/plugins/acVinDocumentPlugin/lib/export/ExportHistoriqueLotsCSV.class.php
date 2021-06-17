@@ -14,15 +14,6 @@ class ExportHistoriqueLotsCSV {
         $this->appName = $appName;
     }
 
-    public function protectStr($str) {
-    	return '"'.str_replace(array('\n', '"', ';'), array('', '', '−'), $str).'"';
-    }
-
-    protected function formatFloat($value) {
-
-        return str_replace(".", ",", $value);
-    }
-
     protected function getLots() {
         return MouvementLotHistoryView::getInstance()->getAllLotsWithHistorique()->rows;
     }
