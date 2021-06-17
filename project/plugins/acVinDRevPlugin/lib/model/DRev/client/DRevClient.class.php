@@ -209,6 +209,48 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public function matchFilter($lot, $produitFilter)
     {
+        $filters = explode(" AND ", $produitFilter);
+        $etablissements = [];
+        $match = true;
+
+        foreach ($filters as $filter) {
+            if (strpos($filter, 'appellations') !== false) {
+                $match = $match && $this->matchFilterProduit($lot, $filter);
+            } else {
+                if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
+                    $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
+                }
+
+                $match = $match && $this->matchFilterFamille($etablissements[$lot->declarant_identifiant]->famille, $filter);
+            }
+        }
+
+        return $match;
+    }
+
+    private function matchFilterFamille($famille, $familleFilter)
+    {
+        if(! $famille){
+            return false;
+        }
+
+        $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
+        $exclude = (bool) $exclude;
+        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+
+        if(!$exclude && preg_match($regexpFilter, $famille)) {
+            return true;
+        }
+
+        if($exclude && !preg_match($regexpFilter, $famille)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function matchFilterProduit($lot, $produitFilter)
+    {
         $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
         $isExcludeMode = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
