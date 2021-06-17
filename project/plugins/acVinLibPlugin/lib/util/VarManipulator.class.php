@@ -24,4 +24,9 @@ class VarManipulator
 	{
 		return '"'.str_replace(array('\n', '\r\n', '"', ';'), array('', '', '', '−'), trim($str)).'"';
 	}
+
+	public static function floatizeForCsv($v)
+	{
+		return str_replace(array('.', ' '), array(',', ''), $v);
+	}
 }
