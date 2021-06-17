@@ -16,7 +16,7 @@ $list_idu = [];
 <?php else: ?>
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
-  <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
+  <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
 </ol>
 <?php endif; ?>
 <div class="page-header no-border">
@@ -191,6 +191,46 @@ $list_idu = [];
         </div>
     </div>
 
+<?php
+    $synthese = array();
+
+    if($parcellaire) {
+        $synthese = $parcellaire->getSyntheseCepages();
+    }
+
+    if (count($synthese)):
+?>
+<h3>Synthèse par cépages</h3>
+
+<table class="table table-bordered table-condensed table-striped tableParcellaire">
+  <thead>
+    <tr>
+        <th class="col-xs-4">Cépage</th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+
+    foreach($synthese as $cepage_libelle => $s): ?>
+        <tr>
+            <td><?php echo $cepage_libelle ; ?></td>
+            <td class="text-right"><?php echoLongFloat($s['superficie']); ?></td>
+<?php
+    endforeach;
+?>
+  </tbody>
+</table>
+<?php endif; ?>
+
+<?php
+    $synthese = array();
+
+    if($parcellaire) {
+        $synthese = $parcellaire->getSyntheseProduitsCepages();
+    }
+    if (count($synthese)):
+?>
 <h3>Synthèse par produits habilités</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
@@ -219,7 +259,7 @@ $list_idu = [];
   </tbody>
 </table>
 
-<?php if ($parcellaire->hasParcellairePDF()): ?>
+<?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
 <a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
 </div>
