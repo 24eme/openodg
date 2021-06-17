@@ -27,7 +27,7 @@ class ExportHistoriqueLotsCSV {
         foreach($lots as $lot) {
           $values = (array)$lot->value;
           $statut = (isset(Lot::$libellesStatuts[$values['statut']]))? Lot::$libellesStatuts[$values['statut']] : null;
-          $date = preg_split('/( |T)/', $lot['date'], -1, PREG_SPLIT_NO_EMPTY);
+          $date = preg_split('/( |T)/', $values['date'], -1, PREG_SPLIT_NO_EMPTY);
           $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $values['declarant_identifiant'],
               VarManipulator::protectStrForCsv($$values['declarant_nom']),
