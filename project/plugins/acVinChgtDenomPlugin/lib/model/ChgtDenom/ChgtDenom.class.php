@@ -675,22 +675,57 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return 0;
     }
 
-
-    public function getVolumeFacturable($produitFilter = null)
+    public function calculFraisJournalier($produitFilter = null)
     {
-        if ($this->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
+        if ($this->nbChgtDenomToday($produitFilter) > 1) {
             return;
         }
 
+        return $this->getVolumeFacturable($produitFilter);
+    }
+
+    public function matchFilter($produitFilter = null, $chgtdenom = null)
+    {
+        if ($chgtdenom === null) {
+            $chgtdenom = $this;
+        }
+
+        $match = true;
+        $filters = explode(" AND ", $produitFilter);
+
+        foreach ($filters as $filter) {
+            if (strpos($filter, 'appellations') !== false) {
+                // filtre sur produit
+                $match = $match && $this->produitFilter($filter, $chgtdenom);
+            } else {
+                // filtre sur famille
+                $match = $match && $this->isDeclarantFamille($filter);
+            }
+        }
+
+        return $match;
+    }
+
+    private function produitFilter($produitFilter = null, $chgtdenom = null)
+    {
       $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
 			$produitExclude = (bool) $produitExclude;
 			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
-			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $this->changement_produit_hash)) {
-					return;
+			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+					return false;
 			}
-			if($produitFilter && $produitExclude && preg_match($regexpFilter, $this->changement_produit_hash)) {
-					return;
+			if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+					return false;
 			}
+
+            return true;
+    }
+
+    public function getVolumeFacturable($produitFilter = null)
+    {
+        if ($this->matchFilter($produitFilter) === false) {
+            return;
+        }
 
       return $this->changement_volume;
     }
@@ -703,10 +738,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         if(!$this->declarant->famille){
             return false;
-        }
-
-        if ($this->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
-            return;
         }
 
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
@@ -724,5 +755,22 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         return false;
+    }
+
+    private function nbChgtDenomToday()
+    {
+        $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
+            $this->identifiant,
+            substr($this->campagne, 0, 4)
+        );
+
+        $today = [];
+        foreach ($chgtdenoms as $chgt) {
+            if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
+                $today[] = $chgt;
+            }
+        }
+
+        return count($today);
     }
 }

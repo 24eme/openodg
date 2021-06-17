@@ -226,9 +226,9 @@
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "getVolumeFacturable",
+          "callback": "calculFraisJournalier",
           "callback_parameters": [
-            "/appellations/MED"
+            "/appellations/MED AND NOT NEGOCIANT"
           ]
         },
         "forfaitNegociant": {
@@ -257,7 +257,7 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
-            "/appellations/MED"
+            "/appellations/MED AND NOT NEGOCIANT"
           ]
         },
         "chgtdenomigp": {
@@ -272,7 +272,7 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
-            "/appellations/VAR,/appellations/MAU,/appellations/MCA"
+            "/appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
           ]
         }
       }
