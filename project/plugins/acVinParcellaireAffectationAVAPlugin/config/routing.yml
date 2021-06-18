@@ -1,6 +1,6 @@
 parcellaire_delete:
   url: /parcellaire-affectation/supprimer/:id
-  param: { module: parcellaire, action: delete }
+  param: { module: parcellaireAffectation, action: delete }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -11,7 +11,7 @@ parcellaire_delete:
 
 parcellaire_devalidation:
   url: /parcellaire-affectation/devalidation/:id
-  param: { module: parcellaire, action: devalidation }
+  param: { module: parcellaireAffectation, action: devalidation }
   class: ParcellaireAffectationRoute
   options:
     model:    DRev
@@ -21,7 +21,7 @@ parcellaire_devalidation:
 
 parcellaire_create:
   url: /parcellaire-affectation/creation/:identifiant
-  param: { module: parcellaire, action: create }
+  param: { module: parcellaireAffectation, action: create }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -31,7 +31,7 @@ parcellaire_create:
 
 parcellaire_create_papier:
   url: /parcellaire-affectation/creation-papier/:identifiant
-  param: { module: parcellaire, action: createPapier }
+  param: { module: parcellaireAffectation, action: createPapier }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -41,7 +41,7 @@ parcellaire_create_papier:
 
 parcellaire_cremant_create:
   url: /parcellaireCremant/creation/:identifiant
-  param: { module: parcellaireCremant, action: create }
+  param: { module: parcellaireAffectationCremant, action: create }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -51,7 +51,7 @@ parcellaire_cremant_create:
 
 parcellaire_cremant_create_papier:
   url: /parcellaireCremant/creation-papier/:identifiant
-  param: { module: parcellaireCremant, action: createPapier }
+  param: { module: parcellaireAffectationCremant, action: createPapier }
   class: EtablissementRoute
   options:
     model:    Etablissement
@@ -81,7 +81,7 @@ intention_cremant_create_papier:
 
 parcellaire_edit:
   url: /parcellaire-affectation/edition/:id
-  param: { module: parcellaire, action: edit }
+  param: { module: parcellaireAffectation, action: edit }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -91,7 +91,7 @@ parcellaire_edit:
 
 parcellaire_exploitation:
   url: /parcellaire-affectation/exploitation/:id
-  param: { module: parcellaire, action: exploitation }
+  param: { module: parcellaireAffectation, action: exploitation }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -101,7 +101,7 @@ parcellaire_exploitation:
 
 parcellaire_propriete:
   url: /parcellaire-affectation/propriete/:id
-  param: { module: parcellaire, action: propriete }
+  param: { module: parcellaireAffectation, action: propriete }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -111,7 +111,7 @@ parcellaire_propriete:
 
 parcellaire_parcelles:
   url: /parcellaire-affectation/parcelles/:id/:appellation
-  param: { module: parcellaire, action: parcelles }
+  param: { module: parcellaireAffectation, action: parcelles }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -121,7 +121,7 @@ parcellaire_parcelles:
 
 parcellaire_parcelle_ajout:
   url: /parcellaire-affectation/ajout-parcelle/:id/:appellation
-  param: { module: parcellaire, action: ajoutParcelle }
+  param: { module: parcellaireAffectation, action: ajoutParcelle }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -131,7 +131,7 @@ parcellaire_parcelle_ajout:
 
 parcellaire_parcelle_modification:
   url: /parcellaire-affectation/modification-parcelle/:id/:appellation/:parcelle
-  param: { module: parcellaire, action: modificationParcelle }
+  param: { module: parcellaireAffectation, action: modificationParcelle }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -141,7 +141,7 @@ parcellaire_parcelle_modification:
 
 parcellaire_parcelle_delete:
   url: /parcellaire-affectation/suppression-parcelle/:id/:appellation/:parcelle
-  param: { module: parcellaire, action: deleteParcelle }
+  param: { module: parcellaireAffectation, action: deleteParcelle }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -151,7 +151,7 @@ parcellaire_parcelle_delete:
 
 parcellaire_acheteurs:
   url: /parcellaire-affectation/acheteurs/:id
-  param: { module: parcellaire, action: acheteurs }
+  param: { module: parcellaireAffectation, action: acheteurs }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -161,7 +161,7 @@ parcellaire_acheteurs:
 
 parcellaire_acheteurs_parcelles:
   url: /parcellaire-affectation/acheteurs-parcelles/:id
-  param: { module: parcellaire, action: acheteursParcelles }
+  param: { module: parcellaireAffectation, action: acheteursParcelles }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -171,7 +171,7 @@ parcellaire_acheteurs_parcelles:
 
 parcellaire_validation:
   url: /parcellaire-affectation/validation/:id
-  param: { module: parcellaire, action: validation }
+  param: { module: parcellaireAffectation, action: validation }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -181,7 +181,7 @@ parcellaire_validation:
 
 parcellaire_confirmation:
   url: /parcellaire-affectation/confirmation/:id
-  param: { module: parcellaire, action: confirmation }
+  param: { module: parcellaireAffectation, action: confirmation }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -191,7 +191,7 @@ parcellaire_confirmation:
 
 parcellaire_export_pdf:
   url: /parcellaire-affectation/pdf/:id
-  param: { module: parcellaire, action: PDF }
+  param: { module: parcellaireAffectation, action: PDF }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -201,7 +201,7 @@ parcellaire_export_pdf:
 
 parcellaire_visualisation:
   url: /parcellaire-affectation/visualisation/:id
-  param: { module: parcellaire, action: visualisation }
+  param: { module: parcellaireAffectation, action: visualisation }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
@@ -211,7 +211,7 @@ parcellaire_visualisation:
 
 parcellaire_export_csv:
   url: /parcellaire-affectation/csv/:id
-  param: { module: parcellaire, action: CSV }
+  param: { module: parcellaireAffectation, action: CSV }
   class: ParcellaireAffectationRoute
   options:
     model:    Parcellaire
