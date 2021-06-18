@@ -1,5 +1,5 @@
-<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
-<?php include_partial('parcellaire/step', array('step' => 'propriete', 'parcellaire' => $parcellaire)) ?>
+<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaire' => $parcellaire )); ?>
+<?php include_partial('parcellaireAffectation/step', array('step' => 'propriete', 'parcellaire' => $parcellaire)) ?>
 
 <div class="page-header">
     <h2>Destination des raisins&nbsp;

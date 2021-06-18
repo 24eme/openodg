@@ -6,11 +6,11 @@
                 <?php echo $form->renderGlobalErrors(); ?>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    
+
                     <h2 class="modal-title" id="myModalLabel">Ajouter une parcelle&nbsp;<?php echo ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN)? 'd\'AOC Alsace blanc' : '';  ?></h2>
                 </div>
-                <div class="modal-body">                    
-                    <?php include_partial('parcellaire/parcelleForm', array('form' => $form,'appellation' => $appellation)); ?>                                  
+                <div class="modal-body">
+                    <?php include_partial('parcellaireAffectation/parcelleForm', array('form' => $form,'appellation' => $appellation)); ?>
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>

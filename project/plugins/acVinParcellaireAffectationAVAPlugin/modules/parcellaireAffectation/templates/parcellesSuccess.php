@@ -1,14 +1,14 @@
 <?php use_helper('Float'); ?>
-<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
+<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 <?php include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire));
 $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffectationClient::APPELLATION_VTSGN);
 ?>
 
 <?php if ($recapParcellaire): ?>
 	<div class="page-header"><h2>Rappel de votre parcellaire crémant <?php echo $recapParcellaire->campagne; ?></h2></div>
-	<?php include_partial('parcellaire/recap', array('parcellaire' => $recapParcellaire)); ?>
+	<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $recapParcellaire)); ?>
 <?php endif; ?>
-        	
+
 <div class="page-header">
     <h2>Saisie des <?php if ($parcellaire->isIntentionCremant()): ?>intentions de production<?php else: ?>parcelles<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
 </div>
@@ -150,4 +150,4 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
     </div>
 </form>
 
-<?php include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm, 'appellation' => $appellation)); ?>
+<?php include_partial('parcellaireAffectation/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm, 'appellation' => $appellation)); ?>

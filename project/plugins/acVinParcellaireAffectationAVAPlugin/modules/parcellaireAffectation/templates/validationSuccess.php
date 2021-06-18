@@ -1,5 +1,5 @@
-<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
-<?php include_partial('parcellaire/step', array('step' => 'validation', 'parcellaire' => $parcellaire)) ?>
+<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaire' => $parcellaire )); ?>
+<?php include_partial('parcellaireAffectation/step', array('step' => 'validation', 'parcellaire' => $parcellaire)) ?>
 <div class="page-header">
     <h2>Validation de votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?> <?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?>AOC Crémant d'Alsace<?php else: ?>Crémant<?php endif; ?><?php endif; ?></h2>
 </div>
@@ -10,9 +10,9 @@
 </div>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>
-    <?php include_partial('parcellaire/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
+    <?php include_partial('parcellaireAffectation/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
 <?php endif; ?>
-<?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire, 'diff' => 1)); ?>
+<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $parcellaire, 'diff' => 1)); ?>
 
     <?php  if ($parcellaire->hasVtsgn()): ?>
     <div class="alert" role="alert" id="engagements">
@@ -46,5 +46,5 @@
         </div>
     </div>
 <?php if (!$validation->hasErreurs()): ?>
-    <?php include_partial('parcellaire/popupConfirmationValidation', array('form' => $form,'parcellaire' => $parcellaire)); ?>
+    <?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form,'parcellaire' => $parcellaire)); ?>
 <?php endif; ?>
