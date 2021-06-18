@@ -1,4 +1,4 @@
-<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
+<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 <?php include_partial('step', array('parcellaire' => $parcellaire, 'step' => 'acheteurs', 'identifiant' => 'XXX')); ?>
 
 <div class="page-header">

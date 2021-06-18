@@ -1,4 +1,4 @@
-<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
+<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 
 <div class="page-header">
     <h2>Confirmation de la validation de votre déclaration d'affectation parcellaire</h2>
