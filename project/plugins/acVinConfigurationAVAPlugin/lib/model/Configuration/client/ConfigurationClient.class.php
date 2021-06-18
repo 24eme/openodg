@@ -26,8 +26,10 @@ class ConfigurationClient extends acCouchdbClient {
                 $campagne = self::getInstance()->getCampagneManager()->getCurrent();
             }
         }
-
-        if (!isset(self::$configuration[$campagne])) {
+        if ($campagne < 2013) {
+            $campagne = '2013';
+        }
+        if (!isset(self::$configuration[$campagne]) || ! self::$configuration[$campagne]) {
             self::$configuration[$campagne] = CacheFunction::cache('model', array(acCouchdbManager::getClient(), 'find'), array('CONFIGURATION-' . $campagne));
         }
 
@@ -52,5 +54,19 @@ class ConfigurationClient extends acCouchdbClient {
 
         return new CampagneManager('10-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
+
+    public function buildCampagne($date) {
+
+        return $this->getCampagneVinicole()->getCampagneByDate($date);
+    }
+
+	/**
+	*
+	* @return Current
+	*/
+	public static function getCurrent() {
+
+		return self::getInstance()->getConfiguration();
+	}
 
 }
