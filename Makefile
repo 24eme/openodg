@@ -1,6 +1,6 @@
 couchurl=project/config/databases.yml
 
-all: .views/etablissements.json .views/societe.json .views/compte.json .views/declaration.json .views/piece.json .views/generation.json .views/habilitation.json .views/archivage.json .views/mouvement.json
+all: .views/etablissements.json .views/societe.json .views/compte.json .views/declaration.json .views/piece.json .views/generation.json .views/habilitation.json .views/archivage.json .views/mouvement.json .views/facture.json
 
 .views/societe.json: project/plugins/acVinSocietePlugin/lib/model/views/societe.all.reduce.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.all.map.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.export.map.view.js .views
 	perl bin/generate_views.pl $(couchurl) project/plugins/acVinSocietePlugin/lib/model/views/societe.all.reduce.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.all.map.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.export.map.view.js > $@ || rm >@
@@ -28,6 +28,9 @@ all: .views/etablissements.json .views/societe.json .views/compte.json .views/de
 
 .views/mouvement.json: project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.facture.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.facture.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lot.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lotHistory.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lotHistory.reduce.view.js
 	perl bin/generate_views.pl $(couchurl) project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.facture.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.consultation.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.facture.reduce.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lot.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lotHistory.map.view.js project/plugins/acVinDocumentPlugin/lib/Mouvement/views/mouvement.lotHistory.reduce.view.js  > $@ || rm >@
+
+.views/facture.json: project/plugins/acVinFacturePlugin/lib/model/views/facture.etablissement.map.view.js project/plugins/acVinFacturePlugin/lib/model/views/facture.etablissement.reduce.view.js
+	perl bin/generate_views.pl $(couchurl) project/plugins/acVinFacturePlugin/lib/model/views/facture.etablissement.map.view.js project/plugins/acVinFacturePlugin/lib/model/views/facture.etablissement.reduce.view.js > $@ || rm >@
 
 .views:
 	mkdir -p .views

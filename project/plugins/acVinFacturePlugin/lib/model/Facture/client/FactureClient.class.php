@@ -202,14 +202,14 @@ class FactureClient extends acCouchdbClient {
     /** facturation par mvts **/
     public function createDocFromView($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
         if(!$region){
-            return null;
+            $region = Organisme::getCurrentRegion();
         }
         $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
 
         $lignes = array();
         $lignes_originaux = array();
         foreach ($mouvements as $identifiant => $mvt) {
-            $cle = $mvt->value->categorie.$mvt->value->detail_libelle;
+            $cle = $mvt->value->categorie.$mvt->value->detail_libelle.$mvt->value->type_libelle.$mvt->value->taux.$mvt->value->tva.$mvt->value->unite;
             $lignes_originaux[$cle][] = $mvt;
             if (isset($lignes[$cle])) {
                 $lignes[$cle]->value->quantite += $mvt->value->quantite;
@@ -224,13 +224,16 @@ class FactureClient extends acCouchdbClient {
         $facture->orderLignesByCotisationsKeys();
         $facture->updateTotaux();
 
+        if($facture->getSociete()->hasMandatSepa()){    // si il a un mandat sepa j'ajoute directement le noeud
+            $facture->addPrelevementAutomatique();
+        }
+
         if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
             $facture->set('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
         }
         if(FactureConfiguration::getInstance()->hasPaiements()){
           $facture->add("paiements",array());
         }
-
         if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
           return null;
         }

@@ -151,7 +151,7 @@
             "details": {
                 "premier": {
                     "modele": "CotisationFixe",
-                    "prix": 10,
+                    "prix": 15,
                     "tva": 0.2,
                     "libelle": "",
                     "complement_libelle": "",
@@ -164,7 +164,7 @@
                 },
                 "suivant": {
                     "modele": "CotisationFixe",
-                    "prix": 15,
+                    "prix": 10,
                     "tva": 0.2,
                     "libelle": "",
                     "complement_libelle": "",

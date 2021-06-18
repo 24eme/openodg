@@ -291,7 +291,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function getAllPieces() {
     	$pieces = array();
 
-        $base_libelle = 'Résultat de la dégustation du ' . $this->getDate();
+        $base_libelle = 'Résultat de la dégustation du ' . $this->getDateFormat('d/m/Y H:i');				
 
         $declarants = [];
 
@@ -994,23 +994,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getDegustateursStatutsParCollege(){
 			$degustateursByCollege = array();
-			foreach ($this->degustateurs as $college => $degs) {
+			foreach ($this->getAllDegustateurs() as $college_cmptId => $degustateur) {
+				list($college, $compte_id) = explode("|", $college_cmptId);
 				if(!array_key_exists($college,$degustateursByCollege)){
 					$degustateursByCollege[$college] = array();
 				}
-				foreach ($degs as $compte_id => $degustateur) {
-						$degustateursByCollege[$college][$compte_id] = ($degustateur->exist('confirmation') && !is_null($degustateur->confirmation) && $degustateur->confirmation);
-					}
+				$degustateursByCollege[$college][$compte_id] = ($degustateur->exist('confirmation') && !is_null($degustateur->confirmation) && $degustateur->confirmation);
 			}
 			return $degustateursByCollege;
 		}
 
 		public function haveAllDegustateursSet(){
-			foreach ($this->degustateurs as $college => $degs) {
-				foreach ($degs as $compte_id => $degustateur) {
-					if(!$degustateur->exist("confirmation")){
-						return false;
-					}
+			foreach ($this->getAllDegustateurs() as $degustateur) {
+				if(!$degustateur->exist("confirmation")){
+					return false;
 				}
 			}
 			return true;
@@ -1019,11 +1016,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getDegustateursConfirmes(){
 			$degustateurs = array();
-			foreach ($this->degustateurs as $college => $degs) {
-				foreach ($degs as $compte_id => $degustateur) {
-					if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
-						$degustateurs[$compte_id] = $degustateur;
-					}
+			foreach ($this->getAllDegustateurs() as $college_cmptId => $degustateur) {
+				list($college, $compte_id) = explode("|", $college_cmptId);
+				if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
+					$degustateurs[$compte_id] = $degustateur;
 				}
 			}
 			return $degustateurs;
@@ -1042,11 +1038,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getDegustateursATable(){
 			$degustateurs = array();
+			foreach ($this->getAllDegustateurs() as $college_cmptId => $degustateur) {
+				list($college, $compte_id) = explode("|", $college_cmptId);
+				if($degustateur->exist('numero_table') && !is_null($degustateur->numero_table)){
+					$degustateurs[$compte_id] = $degustateur;
+				}
+			}
+			return $degustateurs;
+		}
+
+		public function getAllDegustateurs(){
+			$degustateurs = array();
 			foreach ($this->degustateurs as $college => $degs) {
 				foreach ($degs as $compte_id => $degustateur) {
-					if($degustateur->exist('numero_table') && !is_null($degustateur->numero_table)){
-						$degustateurs[$compte_id] = $degustateur;
-					}
+					$degustateurs["$college|$compte_id"] = $degustateur;
 				}
 			}
 			return $degustateurs;
@@ -1088,16 +1093,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function hasAllDegustateursConfirmation(){
-			$confirmation = true;
-			foreach ($this->getDegustateurs() as $collegeKey => $degustateursCollege) {
-				foreach ($degustateursCollege as $compte_id => $degustateur) {
-					if(!$degustateur->exist('confirmation')){
-						$confirmation = false;
-						break;
-					}
+			foreach ($this->getAllDegustateurs() as $degustateur) {
+				if(!$degustateur->exist('confirmation')){
+					return false;
 				}
 			}
-			return $confirmation;
+			return true;
 		}
 
 		/**** Fin Gestion dégustateurs ****/
@@ -1489,28 +1490,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
         }
         public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
-			$mouvements = array();
-			$detailKey = $cotisation->getDetailKey();
-			foreach ($this->getLotsPreleves() as $lot) {
-				if(!$lot->isSecondPassage()){
-					continue;
-				}
-                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
-                    continue;
-                }
-				$mvtFacture = DegustationMouvementFactures::freeInstance($this);
-				$mvtFacture->detail_identifiant = $lot->numero_dossier;
-				$mvtFacture->createFromCotisationAndDoc($cotisation, $this);
-				$mvtFacture->date = $this->getDateFormat();
-				$mvtFacture->date_version = $this->getDateFormat();
-				$mvtFacture->quantite = $lot->volume;
-				$mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
-			}
-
-			return $mouvements;
+            return $this->buildMouvementsFacturesVolume($cotisation, $filter, true);
 		}
 
         public function buildMouvementsFacturesVolumeDeguste($cotisation, $filters = null){
+            return $this->buildMouvementsFacturesVolume($cotisation, $filter);
+        }
+
+        private function buildMouvementsFacturesVolume($cotisation, $filter = null, $redegusation = false) {
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
@@ -1519,9 +1506,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
 
-                if ($lot->isSecondPassage()) {
+                if ($redegustation && !$lot->isSecondPassage()) {
                     continue;
                 }
+
+                if ($redegustation === false && $lot->isSecondPassage()) {
+                    continue;
+                }
+
                 $volumes_operateurs[$lot->declarant_identifiant] += $lot->volume;
             }
             foreach ($volumes_operateurs as $operateur => $volume) {
@@ -1538,6 +1530,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if ($minimum && $minimum > $volume * $cotisation->getPrix()) {
                     $mvtFacture->quantite = 1;
                     $mvtFacture->taux = $minimum;
+                    $mvtFacture->unite = null;
                 }
                 $mouvements[$operateur][$detailKey] = $mvtFacture;
             }

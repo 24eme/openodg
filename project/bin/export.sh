@@ -5,9 +5,9 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
     done
-    rm -rf web/exports_igp/
+    rm -f web/exports_igp/*.csv
     bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
-    bash $(echo $0 | sed 's/[^\/]*$//')exports_distribueparproduits.sh;
+    bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
     exit 0;
 fi
 
@@ -151,7 +151,7 @@ tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 15,15 > $EXPORTD
 head -n 1 $EXPORTDIR/lots-historique.csv.part | sed 's/$/;Hash produit/' > $EXPORTDIR/lots-historique.csv.sorted.join
 join -t ";" -a 1 -1 15 -2 1 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$16; $16=unique_id; $17=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
 
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.part > $EXPORTDIR/lots-historique.csv
 
 rm $EXPORTDIR/lots-historique.csv.part
 rm $EXPORTDIR/lots-historique.csv.sorted

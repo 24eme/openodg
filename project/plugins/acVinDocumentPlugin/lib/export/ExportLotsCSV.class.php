@@ -14,15 +14,6 @@ class ExportLotsCSV {
         $this->appName = $appName;
     }
 
-    public function protectStr($str) {
-    	return str_replace('"', '', $str);
-    }
-
-    protected function formatFloat($value) {
-
-        return str_replace(".", ",", $value);
-    }
-
     public function getUniqueLotsLastStatut() {
       if ($this->lots) {
         return $this->lots;
@@ -32,13 +23,7 @@ class ExportLotsCSV {
         $uniqueLotId = $values['unique_id'];
         $statut = $values['statut'];
         $numeroOrdre = $values['document_ordre'];
-        $positionLotCourant = null;
-        if(isset($values[$uniqueLotId])) {
         $positionLotCourant = $values['document_ordre'].$values[$uniqueLotId]['statut'];
-        }
-        if (!$statut) {
-          continue;
-        }
         if (isset($values['leurre']) && $values['leurre']) {
           continue;
         }
@@ -65,11 +50,11 @@ class ExportLotsCSV {
           $code_postal = null;
           $commune = null;
           $adresseTab = explode(' — ', $lot['adresse_logement']);
-          if (isset($adresseTab[2]) && preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
+          if (preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
               $adresse = $adresseTab[1];
               $code_postal = $adresseTab[2];
               $commune = $adresseTab[3];
-          } elseif (isset($adresseTab[1]) && preg_match('/^(.+)([0-9]{5})(.+)$/', $adresseTab[1], $m)) {
+          } elseif (preg_match('/^(.+)([0-9]{5})(.+)$/', $adresseTab[1], $m)) {
             $adresse = trim($m[1]);
             $code_postal = $m[2];
             $commune = trim($m[3]);
@@ -78,6 +63,12 @@ class ExportLotsCSV {
           $cepages = ($lot['cepages'])? implode(',', array_keys((array)$lot['cepages'])) : '';
           $date = preg_split('/( |T)/', $lot['date'], -1, PREG_SPLIT_NO_EMPTY);
           $statut = (isset(Lot::$libellesStatuts[$lot['statut']]))? Lot::$libellesStatuts[$lot['statut']] : $lot['statut'];
+          if (!$statut && boolval($lot['affectable'])) {
+            $statut = Lot::$libellesStatuts[Lot::STATUT_REVENDIQUE];
+          }
+          if (!$statut && !boolval($lot['affectable'])) {
+            $statut = Lot::$libellesStatuts[Lot::STATUT_NONAFFECTABLE];
+          }
           if (!isset($lot['conformite'])) {
             $lot['conformite'] = '';
           }
@@ -95,17 +86,17 @@ class ExportLotsCSV {
           if (isset($lot['centilisation'])) {
             $centilisation = isset($contenances[$lot['centilisation']])? $contenances[$lot['centilisation']] : $lot['centilisation'];
           }
-          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s,%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $lot['declarant_identifiant'],
-              $lot['declarant_nom'],
-              $this->protectStr($adresse),
+              VarManipulator::protectStrForCsv($lot['declarant_nom']),
+              VarManipulator::protectStrForCsv($adresse),
               $code_postal,
-              $this->protectStr($commune),
+              VarManipulator::protectStrForCsv($commune),
               $lot['campagne'],
               $date[0],
               $lot['numero_dossier'],
               $lot['numero_archive'],
-              $this->protectStr($lot['numero_logement_operateur']),
+              VarManipulator::protectStrForCsv($lot['numero_logement_operateur']),
               $produit[3],
               $produit[5],
               $produit[7],
@@ -113,19 +104,19 @@ class ExportLotsCSV {
               $produit[11],
               $produit[13],
               null,
-              trim($this->protectStr($lot['produit_libelle'])),
-              $cepages,
+              VarManipulator::protectStrForCsv($lot['produit_libelle']),
+              VarManipulator::protectStrForCsv($cepages),
               $lot['millesime'],
-              (isset($lot['specificite']))? $this->protectStr($lot['specificite']) : '',
-              $centilisation,
-              $this->formatFloat($lot['volume']),
-              $statut,
+              (isset($lot['specificite']))? VarManipulator::protectStrForCsv($lot['specificite']) : '',
+              VarManipulator::floatizeForCsv($lot['volume']),
+              VarManipulator::protectStrForCsv($statut),
               $destination,
               $lot['destination_date'],
-              (isset($lot['pays'])) ? $lot['pays'] : null,
+              VarManipulator::protectStrForCsv($lot['pays']),
               (isset($lot['elevage']) && $lot['elevage'])? '1' : '',
+              VarManipulator::protectStrForCsv($centilisation),
               (isset($lot['preleve']))? $lot['preleve'] : '',
-              $conformite,
+              VarManipulator::protectStrForCsv($conformite),
               (isset($lot['conforme_appel']))? $lot['conforme_appel'] : '',
               $this->appName,
               $lot['id_document'],
