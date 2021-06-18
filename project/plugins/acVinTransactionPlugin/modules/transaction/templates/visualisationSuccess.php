@@ -47,7 +47,7 @@
 
 <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form, 'dr' => $dr)); ?>
 
-<?php if (TransactionConfiguration::getInstance()->hasDegustation()): ?>
+<?php if (TransactionConfiguration::getInstance()->hasDegustation() && $transaction->exist("date_degustation_voulue")): ?>
     <h3>Dégustation</h3>
     <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($transaction->date_degustation_voulue)     ? date_format(date_create($transaction->validation), 'd/m/Y') : null;?></p>
 <?php endif ?>
