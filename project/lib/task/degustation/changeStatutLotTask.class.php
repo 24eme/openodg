@@ -6,7 +6,7 @@ class changeStatutLotTask extends sfBaseTask
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('etablissement_id', sfCommandArgument::REQUIRED, "Etablissement ID"),
+            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Doc ID"),
             new sfCommandArgument('lot_unique_id', sfCommandArgument::REQUIRED, "lot id"),
             new sfCommandArgument('affectable', sfCommandArgument::REQUIRED, "affectable (true/false)")
         ));
@@ -35,9 +35,10 @@ EOF;
             $affecte = true;
         }
 
-        $this->lot = LotsClient::getInstance()->findByUniqueId($arguments['etablissement_id'], $arguments['lot_unique_id']);
-        $this->lot->affectable = $affecte;
-        $this->lot->getDocument()->save();
+        $doc = acCouchdbManager::getClient()->find($arguments['doc_id']);
+        $lot = $doc->getLot($arguments['lot_unique_id']);
+        $lot->affectable = $affecte;
+        $doc->save();
 
     }
 }
