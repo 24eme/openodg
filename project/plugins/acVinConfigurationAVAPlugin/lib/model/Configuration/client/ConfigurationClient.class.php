@@ -55,4 +55,18 @@ class ConfigurationClient extends acCouchdbClient {
         return new CampagneManager('10-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
 
+    public function buildCampagne($date) {
+
+        return $this->getCampagneVinicole()->getCampagneByDate($date);
+    }
+
+	/**
+	*
+	* @return Current
+	*/
+	public static function getCurrent() {
+
+		return self::getInstance()->getConfiguration();
+	};
+
 }
