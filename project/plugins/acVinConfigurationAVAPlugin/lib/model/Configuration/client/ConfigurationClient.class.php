@@ -67,6 +67,6 @@ class ConfigurationClient extends acCouchdbClient {
 	public static function getCurrent() {
 
 		return self::getInstance()->getConfiguration();
-	};
+	}
 
 }
