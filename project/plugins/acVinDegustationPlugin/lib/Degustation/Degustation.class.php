@@ -1539,6 +1539,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if ($minimum && $minimum > $volume * $cotisation->getPrix()) {
                     $mvtFacture->quantite = 1;
                     $mvtFacture->taux = $minimum;
+                    $mvtFacture->unite = null;
                 }
                 $mouvements[$operateur][$detailKey] = $mvtFacture;
             }
