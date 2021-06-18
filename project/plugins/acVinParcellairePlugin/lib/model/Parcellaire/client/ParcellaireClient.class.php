@@ -150,11 +150,24 @@ class ParcellaireClient extends acCouchdbClient {
      */
     public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null)
     {
-        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
+        $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
+        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
+
+        if($scrapping) {
+            $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
+        }
+
+        $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
+
+        $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
-        $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
-        $return = $this->saveParcellairePDF($etablissement, $fileJson, $errors['pdf']);
-        return $return && $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
+
+        $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
+        if($scrapping) {
+            $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
+        }
+        $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
+        return $return;
     }
 
     public function getParcellaireGeoJson($identifiant, $cvi){
