@@ -10,7 +10,7 @@ class drevmarcComponents extends sfComponents {
                 $this->drevmarc_non_ouverte = true;
             }
         }
-        $this->drevmarc = DRevMarcClient::getInstance()->find('DREVMARC-' . $this->etablissement->identifiant . '-' . $this->campagne);
+        $this->drevmarc = DRevMarcClient::getInstance()->find('DREVMARC-' . $this->etablissement->identifiant . '-' . $this->periode);
     }
 
 }
