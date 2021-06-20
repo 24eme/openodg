@@ -414,12 +414,27 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getCepagesAutorises()
     {
-        return array();
+        $cepages = array();
+        foreach($this->getProduits() as $p) {
+            if(!$p->getLibelle()) {
+                continue;
+            }
+            $cepages[] = $p->getLibelle();
+        }
+
+        return $cepages;
     }
 
     public function isCepageAutorise($cepage) {
+        foreach($this->getCepagesAutorises() as $c) {
+            if(strpos(KeyInflector::slugify($cepage), KeyInflector::slugify($c)) === false) {
+                continue;
+            }
 
-        return in_array($cepage, $this->getCepagesAutorises());
+            return true;
+        }
+
+        return false;
     }
 
 }
