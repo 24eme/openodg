@@ -85,7 +85,7 @@
     <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php endif; ?>
-    <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectationCremant', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php if(class_exists("ParcellaireAffectationCremant") && in_array('parcellaireAffectationCremant', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireAffectationCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("IntentionCremant") && in_array('intentionCremant', sfConfig::get('sf_enabled_modules'))): ?>

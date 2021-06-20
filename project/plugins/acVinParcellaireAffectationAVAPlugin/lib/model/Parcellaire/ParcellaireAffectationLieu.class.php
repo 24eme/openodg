@@ -4,8 +4,8 @@
  *
  */
 
-class ParcellaireLieu extends BaseParcellaireAffectationLieu {
-	public function getMention() 
+class ParcellaireAffectationLieu extends BaseParcellaireAffectationLieu {
+	public function getMention()
     {
         return $this->getParent();
     }
