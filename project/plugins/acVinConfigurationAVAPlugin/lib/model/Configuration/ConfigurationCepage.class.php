@@ -148,18 +148,32 @@ class ConfigurationCepage extends BaseConfigurationCepage {
 
   public function existRendement() {
     if($this->getKey() == 'cepage_RB') {
-      
+
       return false;
     }
 
     return parent::existRendement();
   }
-  
 
-    
+
+
     public function getDrevLotProduits()
     {
     	return array($this->getHash());
     }
-  
+
+    public function isAssemblage() {
+
+        return ($this->getKey() == "cepage_ED");
+    }
+
+    public function isCepageAutorise($cepage) {
+        if($this->isAssemblage()) {
+
+            return $this->getParentNode()->getCepagesAutorises();
+        }
+
+        return parent::isCepageAutorise($cepage);
+    }
+
 }
