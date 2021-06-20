@@ -87,16 +87,16 @@
     <?php include_component('parcellaireIrrigue', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if($sf_user->isAdmin() && class_exists("ParcellaireIntentionAffectation") && in_array('parcellaireIntentionAffectation', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireIntentionAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php include_component('parcellaireIntentionAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode + 1)); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php include_component('parcellaireAffectation', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode + 1)); ?>
     <?php endif; ?>
     <?php if(class_exists("ParcellaireAffectationCremant") && in_array('parcellaireAffectationCremant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireAffectationCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php include_component('parcellaireAffectationCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode + 1)); ?>
     <?php endif; ?>
     <?php if(class_exists("IntentionCremant") && in_array('intentionCremant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode + 1)); ?>
     <?php endif; ?>
     <?php if(class_exists("Tirage")): ?>
     <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
