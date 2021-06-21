@@ -31,10 +31,8 @@ class GenerationExportXmlSepa extends GenerationAbstract
 
       //ajouter l'url de la facture dans la génération.
       if(count($this->generation->documents)) {
-         echo("HELLLO");
          echo(sfConfig::get('sf_web_dir')."/".$sepa_file);
           if (filesize(sfConfig::get('sf_web_dir')."/".$sepa_file)) {
-              echo("HELLLO");
               $this->generation->add('fichiers')->add(urlencode("/".$sepa_file), 'Export XML des prélèvements');
           }
       }
