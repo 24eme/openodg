@@ -15,12 +15,18 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 $periode = (date('Y')-1)."";
 
 //Début des tests
-//Suppression des DRev précédentes
+//Suppression des DRev et DR précédentes
+$dr = DRClient::getInstance()->findByArgs($viti->identifiant, $periode, acCouchdbClient::HYDRATE_JSON);
+if ($dr) {
+  DRClient::getInstance()->deleteDoc($dr);
+}
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
-    $drev->delete(false);
     $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON);
-    if($dr) { DRClient::getInstance()->deleteDoc($dr); }
+    if($dr) {
+      DRClient::getInstance()->deleteDoc($dr);
+    }
+    $drev->delete(false);
 }
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);

@@ -1490,28 +1490,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
         }
         public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
-			$mouvements = array();
-			$detailKey = $cotisation->getDetailKey();
-			foreach ($this->getLotsPreleves() as $lot) {
-				if(!$lot->isSecondPassage()){
-					continue;
-				}
-                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
-                    continue;
-                }
-				$mvtFacture = DegustationMouvementFactures::freeInstance($this);
-				$mvtFacture->detail_identifiant = $lot->numero_dossier;
-				$mvtFacture->createFromCotisationAndDoc($cotisation, $this);
-				$mvtFacture->date = $this->getDateFormat();
-				$mvtFacture->date_version = $this->getDateFormat();
-				$mvtFacture->quantite = $lot->volume;
-				$mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;
-			}
-
-			return $mouvements;
+            return $this->buildMouvementsFacturesVolume($cotisation, $filter, true);
 		}
 
         public function buildMouvementsFacturesVolumeDeguste($cotisation, $filters = null){
+            return $this->buildMouvementsFacturesVolume($cotisation, $filter);
+        }
+
+        private function buildMouvementsFacturesVolume($cotisation, $filter = null, $redegusation = false) {
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
@@ -1520,9 +1506,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
 
-                if ($lot->isSecondPassage()) {
+                if ($redegustation && !$lot->isSecondPassage()) {
                     continue;
                 }
+
+                if ($redegustation === false && $lot->isSecondPassage()) {
+                    continue;
+                }
+
                 $volumes_operateurs[$lot->declarant_identifiant] += $lot->volume;
             }
             foreach ($volumes_operateurs as $operateur => $volume) {
@@ -1539,6 +1530,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if ($minimum && $minimum > $volume * $cotisation->getPrix()) {
                     $mvtFacture->quantite = 1;
                     $mvtFacture->taux = $minimum;
+                    $mvtFacture->unite = null;
                 }
                 $mouvements[$operateur][$detailKey] = $mvtFacture;
             }

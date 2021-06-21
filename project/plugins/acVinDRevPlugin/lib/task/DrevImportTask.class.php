@@ -6,7 +6,11 @@ class DrevImportTask extends sfBaseTask
     protected $byLots = false;
     protected $configurationProduits = array();
     protected $csv = null;
-    protected static $destinationsTypes = array("VRAC_FRANCE_ET_CONDITIONNEMENT" => DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT,
+    protected static $destinationsTypes = array(
+                                            "CONDITIONNEMENT" => DRevClient::LOT_DESTINATION_CONDITIONNEMENT,
+                                            "VRAC_FRANCE" => DRevClient::LOT_DESTINATION_VRAC_FRANCE,
+                                            "VRAC_EXPORT" => DRevClient::LOT_DESTINATION_VRAC_EXPORT,
+                                            "VRAC_FRANCE_ET_CONDITIONNEMENT" => DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT,
                                            "VRAC_FRANCE_ET_VRAC_EXPORT" => DRevClient::LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT,
                                            "VRAC_EXPORT_VRAC_FRANCE_ET_CONDITIONNEMENT" => DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT);
 
@@ -164,10 +168,10 @@ EOF;
 
         foreach($lignes as $ligne) {
             $data = $this->csv[$ligne];
-            if(!trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]) || !trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG])){
+            if(!trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]) && !trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG])){
                 $cvi = $data[ExportDRevCSV::CSV_CVI];
                 $campagne = $data[ExportDRevCSV::CSV_CAMPAGNE];
-                echo "ERREUR;$cvi;$campagne;pas d'import, pas de validation declarant ou odg\n";
+                echo "ERREUR;$cvi;$campagne;pas d'import, pas de validation declarant et odg\n";
             }
             $volume = trim($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE]);
             $numero_cuve = trim($data[ExportDRevCSV::CSV_LOT_NUMERO_CUVE]);
@@ -199,6 +203,7 @@ EOF;
                 $lot->numero_logement_operateur = $numero_cuve;
                 $lot->destination_type = $type_destination;
                 $lot->destination_date = $date_destination;
+                $lot->affectable = false;
                 $lot->volume = $this->formatFloat($volume);
                 $lot->produit_hash = $produit_line->getHash();
                 $libelleProduit = $produit_line->getLibelle();

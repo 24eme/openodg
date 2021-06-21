@@ -77,7 +77,6 @@
     },
     "10_%detail_identifiant%_20_controleIgp": {
       "minimum": 70,
-      "minimum_fallback": "10_%detail_identifiant%_20_fallbackIgp",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle IGP",
@@ -122,7 +121,6 @@
     },
     "10_%detail_identifiant%_20_controleMed": {
       "minimum": 90,
-      "minimum_fallback": "10_%detail_identifiant%_20_fallbackMed",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle Méditerranée",
@@ -299,7 +297,6 @@
     },
     "20_%detail_identifiant%_10_redegustationIgp": {
       "minimum": 70,
-      "minimum_fallback": "10_%detail_identifiant%_20_fallbackIgp",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
@@ -324,7 +321,6 @@
     },
     "20_%detail_identifiant%_10_redegustationMed": {
       "minimum": 90,
-      "minimum_fallback": "10_%detail_identifiant%_20_fallbackMed",
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",

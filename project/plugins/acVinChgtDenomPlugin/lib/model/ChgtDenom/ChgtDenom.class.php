@@ -648,31 +648,14 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getFirstChgtDenomFacturable()
     {
-
-        $views = ChgtDenomClient::getInstance()->getHistoryCampagne($this->identifiant,substr($this->campagne,0,4));
-
-        foreach ($views as $id => $view) {
-            if($id == $this->_id){
-                return 1;
-            }
-            return 0;
-        }
+      $chgtdenom = $this->getChgtDenomToday();
+      $first = current($chgtdenom);
+      return (!$first||$first->_id == $this->_id)? true : false;
     }
 
     public function getSecondChgtDenomFacturable()
     {
-        $views = ChgtDenomClient::getInstance()->getHistoryCampagne($this->identifiant,substr($this->campagne,0,4));
-        $first = true;
-        foreach ($views as $id => $view) {
-            if($first){
-                $first = false;
-                continue;
-            }
-            if($id == $this->_id){
-                return 1;
-            }
-        }
-        return 0;
+        return !$this->getFirstChgtDenomFacturable();
     }
 
     public function calculFraisJournalier($produitFilter = null)
@@ -691,7 +674,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         $match = true;
-        $filters = explode(" AND ", $produitFilter);
+        $filters = ($produitFilter)? explode(" AND ", $produitFilter) : [];
 
         foreach ($filters as $filter) {
             if (strpos($filter, 'appellations') !== false) {
@@ -757,7 +740,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
-    private function nbChgtDenomToday()
+    private function nbChgtDenomToday($produitFilter = null)
+    {
+        return count($this->getChgtDenomToday($produitFilter));
+    }
+
+    private function getChgtDenomToday($produitFilter = null)
     {
         $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
             $this->identifiant,
@@ -767,10 +755,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $today = [];
         foreach ($chgtdenoms as $chgt) {
             if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
-                $today[] = $chgt;
+                $today[$chgt->_id] = $chgt;
             }
         }
+        ksort($today);
 
-        return count($today);
+        return $today;
     }
 }
