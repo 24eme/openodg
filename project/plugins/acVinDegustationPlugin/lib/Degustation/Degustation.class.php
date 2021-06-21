@@ -1490,14 +1490,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
         }
         public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
-            return $this->buildMouvementsFacturesVolume($cotisation, $filter, true);
+            return $this->buildMouvementsFacturesVolume($cotisation, $filters, true);
 		}
 
         public function buildMouvementsFacturesVolumeDeguste($cotisation, $filters = null){
             return $this->buildMouvementsFacturesVolume($cotisation, $filter);
         }
 
-        private function buildMouvementsFacturesVolume($cotisation, $filter = null, $redegusation = false) {
+        private function buildMouvementsFacturesVolume($cotisation, $filters = null, $redegustation = false) {
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
@@ -1514,6 +1514,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
 
+				if (!isset($volumes_operateurs[$lot->declarant_identifiant])) {
+					$volumes_operateurs[$lot->declarant_identifiant] = 0;
+				}
                 $volumes_operateurs[$lot->declarant_identifiant] += $lot->volume;
             }
             foreach ($volumes_operateurs as $operateur => $volume) {
