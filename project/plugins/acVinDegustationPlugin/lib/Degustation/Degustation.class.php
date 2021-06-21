@@ -1494,7 +1494,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
         public function buildMouvementsFacturesVolumeDeguste($cotisation, $filters = null){
-            return $this->buildMouvementsFacturesVolume($cotisation, $filter);
+            return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
 
         private function buildMouvementsFacturesVolume($cotisation, $filters = null, $redegustation = false) {
