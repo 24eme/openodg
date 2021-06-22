@@ -39,9 +39,54 @@ class ExportXMLSEPA {
 
     foreach($this->factures as $vfacture){
       $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
-      $tabPmtInf[$facture->date_echeance][] = $vfacture;  // OU $facture->date_echeance OU $facture->paiement->date
+      $tabPmtInf[$facture->date_echeance][] = $vfacture;  // $facture->date_echeance OU $facture->paiements[0]->date
     }
 
+    $this->generatePmtInf($tabPmtInf);
+
+    foreach($this->xml->PmtInf as $paiement){
+      $nbPrelevement += $paiement->NbOfTxs;
+      $sommeMontant += $paiement->CtrlSum;
+    }
+
+    $this->xml->CstmrDrctDbtInitn->GrpHdr->NbOfTxs = $nbPrelevement;
+    $this->xml->CstmrDrctDbtInitn->GrpHdr->CtrlSum = $sommeMontant;
+    return $this->xml->asXML();
+  }
+
+  protected function generateHeader() {
+
+    $document = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><Document/>");
+
+
+    $document->addAttribute("xmlns","urn:iso:std:iso:20022:tech:xsd:pain.008.001.02");
+    $document->addAttribute("xmlns:xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+    $document->addAttribute("xsi:xsi:schemaLocation","urn:iso:std:iso:20022:tech:xsd:pain.008.001.02 pain.008.001.02.xsd");
+
+    $cstmrDrctDbtInitn = $document->addChild('CstmrDrctDbtInitn');
+
+    $grpHdr = $cstmrDrctDbtInitn->addChild('GrpHdr');
+    $grpHdr->addChild('MsgId',date('Y-m-d-h-i-00'));
+
+    $date = new DateTime();
+    $date = $date->format('Y-m-d\TH:i:00\Z');
+    $grpHdr->addChild("CreDtTm",$date);
+
+    $grpHdr->addChild("NbOfTxs",0);
+    $grpHdr->addChild("CtrlSum", 0);
+
+    $initgPty = $grpHdr->addChild("InitgPty");
+
+    $initgPty->addChild('Nm',Organisme::getInstance()->getNom());
+
+    $idHdr = $initgPty->addChild("Id");
+    $orgId = $idHdr->addChild('OrgId');
+    $othrHdr = $orgId->addChild("Othr");
+    $othrHdr->addChild("Id",Organisme::getInstance()->getIban());
+    return $document;
+  }
+
+  protected function generatePmtInf($tabPmtInf){
     foreach($tabPmtInf as $d => $vfacture){  //parcours de l'arbre des pmtInf
       $facture = FactureClient::getInstance()->find($vfacture[0]->key[FactureEtablissementView::KEYS_FACTURE_ID]);
       $nbOfTxs = 0;
@@ -90,47 +135,6 @@ class ExportXMLSEPA {
         $this->generateOneFacture($facture,$pmtInf);
       }
     }
-
-    foreach($this->xml->PmtInf as $paiement){
-      $nbPrelevement = $paiement->NbOfTxs;
-      $sommeMontant = $paiement->CtrlSum;
-    }
-
-    $this->xml->CstmrDrctDbtInitn->GrpHdr->NbOfTxs = $nbPrelevement;
-    $this->xml->CstmrDrctDbtInitn->GrpHdr->CtrlSum = $sommeMontant;
-    return $this->xml->asXML();
-  }
-
-  protected function generateHeader() {
-
-    $document = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><Document/>");
-
-
-    $document->addAttribute("xmlns","urn:iso:std:iso:20022:tech:xsd:pain.008.001.02");
-    $document->addAttribute("xmlns:xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-    $document->addAttribute("xsi:xsi:schemaLocation","urn:iso:std:iso:20022:tech:xsd:pain.008.001.02 pain.008.001.02.xsd");
-
-    $cstmrDrctDbtInitn = $document->addChild('CstmrDrctDbtInitn');
-
-    $grpHdr = $cstmrDrctDbtInitn->addChild('GrpHdr');
-    $grpHdr->addChild('MsgId',date('Y-m-d-h-i-00'));
-
-    $date = new DateTime();
-    $date = $date->format('Y-m-d\TH:i:00\Z');
-    $grpHdr->addChild("CreDtTm",$date);
-
-    $grpHdr->addChild("NbOfTxs",0);
-    $grpHdr->addChild("CtrlSum", 0);
-
-    $initgPty = $grpHdr->addChild("InitgPty");
-
-    $initgPty->addChild('Nm',Organisme::getInstance()->getNom());
-
-    $idHdr = $initgPty->addChild("Id");
-    $orgId = $idHdr->addChild('OrgId');
-    $othrHdr = $orgId->addChild("Othr");
-    $othrHdr->addChild("Id",Organisme::getInstance()->getIban());
-    return $document;
   }
 
   protected function generateOneFacture($facture,$pmtInf) {
