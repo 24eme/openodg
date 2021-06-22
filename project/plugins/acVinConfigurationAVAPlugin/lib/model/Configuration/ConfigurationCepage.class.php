@@ -1,5 +1,7 @@
 <?php
 
+// AVA //
+
 class ConfigurationCepage extends BaseConfigurationCepage {
 
     public function getAppellation() {

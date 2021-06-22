@@ -1,5 +1,7 @@
 <?php
 
+// AVA //
+
 class EtablissementClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Etablissement";
