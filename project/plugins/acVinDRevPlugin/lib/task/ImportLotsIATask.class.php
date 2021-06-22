@@ -192,7 +192,7 @@ EOF;
                 $document->storeDeclarant();
                 $document->validation = $date;
                 $document->validation_odg = $date;
-                $document->papier = 1;
+                $document->add('papier', 1);
                 $document->save();
                 echo " création $document->_id\n";
             }

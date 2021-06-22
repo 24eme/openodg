@@ -117,6 +117,8 @@ class LotsClient
                 $doc->validate();
                 $doc->validateOdg();
             }
+            $doc->numero_archive = $lot->numero_dossier;
+            $doc->generateMouvementsFactures();
 
             $doc->save();
         }
