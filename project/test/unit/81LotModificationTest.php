@@ -97,11 +97,13 @@ $degustation->save();
 
 $t->comment('Récupération du lot');
 
-$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id);
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
 
+$t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), "Mouvement de lot revendiqué");
 $t->is($lot->unique_id, $drev->lots[0]->unique_id, "Le lot récupéré à le même unique id");
 $t->is($lot->id_document, $drev->_id, "Le lot récupéré provient de la drev");
 $t->is($lot->document_ordre, "01", "Le lot récupéré a le numéro d'ordre 01");
+$t->is($lotDegustation->id_document_provenance, $drevM01->_id, "Le document de provenance du lot de dégustation est la drev modificatrice");
 
 $t->comment('Modification du lot');
 
@@ -143,6 +145,7 @@ $t->is(count($lotDrev->getMouvements()), 0, "Le lot de la drev d'origine n'a auc
 $t->is($drevM01->_id, $drev->_id.'-M01',"La modification du lot a créé une modificatrice");
 $t->is($drevM01->numero_archive, $drev->numero_archive, "La modificatrice a le même numero d'archive que la drev d'origine");
 $t->is($lotDrevM01->id_document, $drevM01->_id, "L'id document du lot de la modificatrice est celui de la modificatrice");
+$t->ok($lotDrevM01->getMouvement(Lot::STATUT_REVENDIQUE), "Mouvement de lot revendiqué");
 $t->is($lotDrevM01->volume, $values['volume'], "Le lot de la modificatrice a le nouveau volume");
 $t->is($lotDrevM01->produit_hash, $values['produit_hash'],"Le produit de la drev modificatrice a évolué");
 $t->is($lotDrevM01->cepages->toArray(true, false), array('CHENIN B' => 11),"Le cépage de la drev modificatrice a évolué");
