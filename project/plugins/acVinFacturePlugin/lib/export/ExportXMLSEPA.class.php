@@ -35,22 +35,29 @@ class ExportXMLSEPA {
     $nombreDePrelevement = 0;
     $this->xml = $this->generateHeader();
 
+    $tabPmtInf = [];  //tableaux par date pour regrouper les prelevement à la même date.
+
     foreach($this->factures as $vfacture){
       $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
-      $this->generateOneFacture($facture);
+      $tabPmtInf[$facture->date_echeance][] = $vfacture;  // $facture->date_echeance OU $facture->paiements[0]->date
     }
+
+    $this->generatePmtInf($tabPmtInf);
 
     foreach($this->xml->PmtInf as $paiement){
-      $sommeMontant += $paiement->DrctDbtTxInf->InstdAmt;
+      $nbPrelevement += $paiement->NbOfTxs;
+      $sommeMontant += $paiement->CtrlSum;
     }
 
-    $this->xml->CstmrDrctDbtInitn->GrpHdr->NbOfTxs = count($this->xml->PmtInf);
+    $this->xml->CstmrDrctDbtInitn->GrpHdr->NbOfTxs = $nbPrelevement;
     $this->xml->CstmrDrctDbtInitn->GrpHdr->CtrlSum = $sommeMontant;
     return $this->xml->asXML();
   }
 
   protected function generateHeader() {
-    $document = new SimpleXMLElement('<Document/>');
+
+    $document = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><Document/>");
+
 
     $document->addAttribute("xmlns","urn:iso:std:iso:20022:tech:xsd:pain.008.001.02");
     $document->addAttribute("xmlns:xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
@@ -79,40 +86,61 @@ class ExportXMLSEPA {
     return $document;
   }
 
-  protected function generateOneFacture($facture) {
+  protected function generatePmtInf($tabPmtInf){
+    foreach($tabPmtInf as $d => $vfacture){  //parcours de l'arbre des pmtInf
+      $facture = FactureClient::getInstance()->find($vfacture[0]->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+      $nbOfTxs = 0;
+      $sommetot = 0;
+
+      $pmtInf = $this->xml->addChild('PmtInf');
+      $pmtInf->addChild('PmtInfId', $facture->_id.'-PAIEMENT-'.$i);
+      $pmtInf->addChild('PmtMtd', "DD");
+
+      $pmtInf->addChild('NbOfTxs', $nbOfTxs);
+      $pmtInf->addChild('CtrlSum', $sommetot);
+
+      $pmtTpInf = $pmtInf->addChild('PmtTpInf');
+      $svcLvl = $pmtTpInf->addChild('SvcLvl');
+      $svcLvl->addChild('Cd','SEPA');
+      $lclInstrm = $pmtTpInf->addChild('LclInstrum');
+      $lclInstrm->addChild('Cd','CORE');
+      $pmtTpInf->addChild('SeqTp','RCUR');
+
+      $pmtInf->addChild('ReqdColltnDt', $d ); //Date d'échéance du recouvrement,
+
+      $cdtr = $pmtInf->addChild('Cdtr');
+      $cdtr->addChild('Nm',Organisme::getInstance()->getNom()); //nom de l'odg
+
+      $cdtrAcct = $pmtInf->addChild('CdtrAcct');
+      $id = $cdtrAcct->addChild('Id');
+      $id->addChild('IBAN',Organisme::getInstance()->getIban());
+
+      $cdtrAgt = $pmtInf->addChild('CdtrAgt');
+      $finInstnID = $cdtrAgt->addChild('FinInstnId');
+      $finInstnID->addChild('BIC',Organisme::getInstance()->getBic());  //BIC odg
+
+      $pmtInf->addChild('ChrgBr','SLEV');
+
+      $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
+      $idcdtrschemeid = $cdtrschemeid->addChild('Id');
+      $prvtid = $idcdtrschemeid->addChild('PrvtId');
+      $othr = $prvtid->addChild("Othr");
+      $othr->addChild("Id",$facture->getSociete()->getMandatSepaIdentifiant());  //id sepa
+      $schmeNm = $othr->addChild("SchmeNm");
+      $schmeNm->addChild("Prtry","SEPA");
+
+
+      foreach($vfacture as $f){
+        $facture = FactureClient::getInstance()->find($f->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+        $this->generateOneFacture($facture,$pmtInf);
+      }
+    }
+  }
+
+  protected function generateOneFacture($facture,$pmtInf) {
     $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($facture->getIdentifiant());
     for($i=0; $i< $facture->getNbPaiementsAutomatique() ;$i++){ // un seul paiement par ligne de pmt
-
         if(!$facture->paiementIsExecute($i)){  //verifie que le "execute" du paiement est à false
-
-          $pmtInf = $this->xml->addChild('PmtInf');
-          $pmtInf->addChild('PmtInfId', $facture->_id.'-PAIEMENT-'.$i);
-          $pmtInf->addChild('PmtMtd', "DD");
-          $pmtInf->addChild('NbOfTxs', "1");
-          $pmtInf->addChild('CtrlSum', "DD");
-
-          $pmtTpInf = $pmtInf->addChild('PmtTpInf');
-          $svcLvl = $pmtTpInf->addChild('SvcLvl');
-          $svcLvl->addChild('Cd','SEPA');
-          $lclInstrm = $pmtTpInf->addChild('LclInstrum');
-          $lclInstrm->addChild('Cd','CORE');
-          $pmtTpInf->addChild('SeqTp','RCUR');
-
-          $pmtInf->addChild('ReqdColltnDt',$facture->date_echeance); //Date d'échéance du recouvrement,
-
-          $cdtr = $pmtInf->addChild('Cdtr');
-          $cdtr->addChild('Nm',Organisme::getInstance()->getNom()); //nom de l'odg
-
-          $cdtrAcct = $pmtInf->addChild('CdtrAcct');
-          $id = $cdtrAcct->addChild('Id');
-          $id->addChild('IBAN',Organisme::getInstance()->getIban());
-
-          $cdtrAgt = $pmtInf->addChild('CdtrAgt');
-          $finInstnID = $cdtrAgt->addChild('FinInstnId');
-          $finInstnID->addChild('BIC',Organisme::getInstance()->getBic());  //BIC odg
-
-          $pmtInf->addChild('ChrgBr','SLEV');
-
           $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
           $idcdtrschemeid = $cdtrschemeid->addChild('Id');
           $prvtid = $idcdtrschemeid->addChild('PrvtId');
@@ -147,6 +175,8 @@ class ExportXMLSEPA {
           $rmtinf = $drctdbttxinf->addChild("RmtInf");
           $rmtinf->addChild("Ustrd","Facture"); //libelle bancaire pour lui
 
+          $pmtInf->NbOfTxs ++;
+          $pmtInf->CtrlSum = $pmtInf->CtrlSum + $facture->getMandatSepaMontant($i);
         }
     }
   }
