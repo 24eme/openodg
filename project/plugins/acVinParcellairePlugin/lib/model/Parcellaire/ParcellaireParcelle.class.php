@@ -174,6 +174,12 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->_set('vtsgn', $value * 1);
     }
 
+    public function setCampagnePlantation($value)
+    {
+        $campagne = ($value === '9999-9999') ? "" : $value;
+        return $this->_set('campagne_plantation', $campagne);
+    }
+
     public function isFromAppellation($appellation){
         return 'appellation_'.$appellation == $this->getAppellation()->getKey();
     }
