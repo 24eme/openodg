@@ -1,5 +1,7 @@
 <?php
 
+// AVA //
+
 class Configuration extends BaseConfiguration {
 
     protected $identifyLibelleProduct = array();

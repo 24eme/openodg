@@ -1,5 +1,7 @@
 <?php
 
+// AVA //
+
 class ConfigurationClient extends acCouchdbClient {
 
     private static $configuration = array();

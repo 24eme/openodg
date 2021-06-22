@@ -1,5 +1,7 @@
 <?php
 
+/* AVA */
+
 abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     protected $produits = array();
