@@ -177,13 +177,13 @@ $t->comment('Facturation du lot');
 
 $mouvementINAOM00 = null;
 foreach($drev->mouvements->get($viti->identifiant) as $mouvement) {
-    if($mouvement->categorie == "inao") {
+    if($mouvement->categorie == "08_inao") {
         $mouvementINAOM00 = $mouvement;
     }
 }
 $mouvementINAOM01 = null;
 foreach($drevM01->mouvements->get($viti->identifiant) as $mouvement) {
-    if($mouvement->categorie == "inao") {
+    if($mouvement->categorie == "08_inao") {
         $mouvementINAOM01 = $mouvement;
     }
 }
