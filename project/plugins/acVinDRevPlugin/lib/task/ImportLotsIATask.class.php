@@ -192,7 +192,6 @@ EOF;
                 $document->storeDeclarant();
                 $document->validation = $date;
                 $document->validation_odg = $date;
-                $document->add('papier', 1);
                 $document->save();
                 echo " création $document->_id\n";
             }
@@ -272,6 +271,7 @@ EOF;
             $document->add('lots', $lots);
         }
         if($document) {
+            $document->add('papier', 1);
             $document->save();
         }
     }
