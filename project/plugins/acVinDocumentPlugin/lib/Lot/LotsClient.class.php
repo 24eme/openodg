@@ -97,13 +97,15 @@ class LotsClient
 
         foreach($ids as $id) {
             $doc = DeclarationClient::getInstance()->find($id);
+            $docM = $doc;
 
             if($doc instanceof InterfaceVersionDocument) {
-                $doc = $doc->getMaster()->generateModificative();
+                $docM = $doc->getMaster()->generateModificative();
+                $docM->numero_archive = $doc->numero_archive;
             }
 
-            $lotM = $doc->getLot($lot->unique_id);
-            $lotM->id_document = $doc->_id;
+            $lotM = $docM->getLot($lot->unique_id);
+            $lotM->id_document = $docM->_id;
             $lotM->produit_hash = $lot->produit_hash;
             $lotM->cepages = $lot->cepages;
             $lotM->volume = $lot->volume;
@@ -113,14 +115,14 @@ class LotsClient
             $lotM->destination_date = $lot->destination_date;
             $lotM->specificite = $lot->specificite;
 
-            if($doc instanceof InterfaceVersionDocument) {
-                $doc->validate();
-                $doc->validateOdg();
-            }
-            $doc->numero_archive = $lot->numero_dossier;
-            $doc->generateMouvementsFactures();
+            $docM->save();
 
-            $doc->save();
+            if($docM instanceof InterfaceVersionDocument) {
+                $docM->validate();
+                $docM->validateOdg();
+            }
+
+            $docM->save();
         }
     }
 

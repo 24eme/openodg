@@ -6,7 +6,7 @@
 
 
     <div class="page-header no-border">
-      <h2>Changement de dénomination / Déclassement</h2>
+      <h2>Changement de dénomination / Déclassement <?php echo $periode; ?></h2>
       <h3><small></small></h3>
     </div>
 

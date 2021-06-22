@@ -3,7 +3,22 @@
 <?php use_helper('Lot') ?>
 
 <div class="page-header">
-    <h2>Changement de dénomination / Déclassement</h2>
+  <div class="pull-right">
+      <?php if ($sf_user->hasDrevAdmin()): ?>
+      <form method="GET" class="form-inline" action="">
+          Campagne :
+          <select class="select2SubmitOnChange form-control" name="campagne_switch">
+              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+                  <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+              <?php endfor; ?>
+          </select>
+          <button type="submit" class="btn btn-default">Changer</button>
+      </form>
+      <?php else: ?>
+          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne; ?></span>
+      <?php endif; ?>
+  </div>
+    <h2>Changement de dénomination / Déclassement <?php echo $periode; ?></h2>
     <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
     <?php if(!count($lots)): ?>
     <p>Aucun lot pour la campagne <?php echo isset($chgtDenom) ? $chgtDenom->campagne : $campagne ?></p>
