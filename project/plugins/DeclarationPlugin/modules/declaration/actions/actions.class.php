@@ -57,12 +57,17 @@ class declarationActions extends sfActions {
         $doc_id = $request->getParameter("id");
         $this->regionParam = $request->getParameter('region',null);
 
-        if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-MT]*$/", $doc_id, $matches)) {
+        if(!preg_match("/^([A-Z]+)-([^-]+)/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
 
         $doc_type = $matches[1];
+
+        if ($doc_type == "DEGUSTATION") {
+            return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
+        }
+
         $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$matches[2]);
 
         if(!$etablissement) {
@@ -118,10 +123,6 @@ class declarationActions extends sfActions {
 
         if ($doc_type == "TRANSACTION" ) {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
-        }
-
-        if ($doc_type == "DEGUSTATION") {
-            return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
         }
 
         return $this->forward404();
