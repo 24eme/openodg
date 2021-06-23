@@ -72,7 +72,9 @@ class ExportXMLSEPA {
     foreach($this->factures as $vfacture){
       $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
       foreach($facture->paiements as $paiement){  //parcourir toutes les paiments de chaque factures et mets les factures qui ont un paiement à cette date.
-        $tabPmtInf[$paiement->date][] = $vfacture;
+        if( !in_array($vfacture,$tabPmtInf[$paiement->date])){
+          $tabPmtInf[$paiement->date][] = $vfacture;
+        }
       }
     }
 
