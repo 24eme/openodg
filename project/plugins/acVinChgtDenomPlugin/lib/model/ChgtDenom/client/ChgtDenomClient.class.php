@@ -105,4 +105,8 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
       return $chgtsdenomFacturants;
     }
 
+    public function getPeriodeFromCampagne($campagne) {
+        return preg_replace('/-.*/', '', $campagne);
+    }
+
 }

@@ -35,6 +35,9 @@ class DegustationDegustateursTableForm extends acCouchdbObjectForm {
     foreach ($this->getDegustateursForTable() as $degustateur) {
       $name = $this->getWidgetNameFromDegustateur($degustateur);
       if($values[$name]){
+        if($degustateur->exist('confirmation') && $degustateur->confirmation === false){
+          $degustateur->confirmation = true;
+        }
         $degustateur->add('numero_table',$this->numero_table);
       }elseif ($degustateur->exist('numero_table') && ($degustateur->numero_table == $this->numero_table)) {
         $degustateur->numero_table = null;

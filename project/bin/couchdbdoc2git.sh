@@ -14,4 +14,4 @@ curl "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/$doc?open_revs=all&revs=tr
 	git commit -m "version "$i"-"$rev ; 
 done
 
-git log -p
+git log -p $doc".json"
