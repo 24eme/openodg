@@ -120,6 +120,10 @@ class declarationActions extends sfActions {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
         }
 
+        if ($doc_type == "DEGUSTATION") {
+            return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
+        }
+
         return $this->forward404();
     }
 
