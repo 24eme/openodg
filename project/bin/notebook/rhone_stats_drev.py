@@ -20,10 +20,15 @@ drev_2020 = drev[drev['Campagne'] == '2020'][['Campagne', 'Appellation','Lieu', 
 #drev_2020
 
 
-# In[3]:
+# In[ ]:
 
 
-drev_2020_groupby = drev_2020.groupby(['Couleur','Appellation', 'Lieu']).sum()
+drev_2020_groupby = drev_2020.groupby(['Couleur','Appellation','Lieu']).sum()
+
+
+# In[ ]:
+
+
 drev_total = drev_2020.groupby(['Appellation', 'Lieu']).sum()
 drev_total['Couleur'] = 'total'
 
