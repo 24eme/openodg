@@ -415,7 +415,6 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isRedegustationDejaConforme() {
         foreach(MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, null, Lot::STATUT_CONFORME)->rows as $mvt){
-            print_r($mvt);
             if ($mvt->keys[MouvementLotHistoryView::KEY_ORIGINE_DOCUMENT_ID] != $this->getDocument()->_id) {
                 return true;
             }
