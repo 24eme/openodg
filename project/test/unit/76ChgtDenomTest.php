@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(158);
+$t = new lime_test(159);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -299,6 +299,11 @@ $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "Mouveme
 $t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_CHANGE_DEST), "Mouvement lot changé change dest");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE_SRC), "le lot originel a bien un mouvement au statut changé");
 
+$t->comment("On check l'historique du lot");
+$lotHistoryARecup = $chgtDenom->lots[1];
+$historiqueDuLot = LotsClient::getInstance()->getHistory($chgtDenom->identifiant, $lotHistoryARecup->unique_id);
+$t->is(strpos($historiqueDuLot[0]->id, 'DREV') === 0, true, "On remonte jusqu'à l'origine");
+
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 
@@ -417,7 +422,6 @@ $t->is($chgtDenom->lots->get(0)->isLogementEditable(), true, "Le lot d'origine d
 $chgtDenom->validate();
 $chgtDenom->save();
 $t->is($chgtDenom->lots->get(0)->isLogementEditable(), false, "Le lot d'origine d'un chgt denom total après validation n'a pas de logement editable");
-
 
 $t->comment("ajout d'un lot sans origine");
 
