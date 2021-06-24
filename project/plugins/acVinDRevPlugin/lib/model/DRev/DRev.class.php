@@ -1767,10 +1767,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
             }
 
-            if (! $lot->isChange() && ! $lot->isAffecte()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
-            }else{
+            if($lot->isChange()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+            } elseif(!$lot->isAffecte()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
             }
 
             if($lot->isAffecte()) {
