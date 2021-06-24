@@ -36,7 +36,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Dénomination complémentaire;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué issu du mutage;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination;Date de validation Déclarant;Date de validation ODG;Doc ID\n";
+        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Certification Libelle;Genre;Genre Libelle;Appellation;Appellation Libelle;Mention;Mention Libelle;Lieu;Lieu Libelle;Couleur;Couleur Libelle;Cepage;Cepage Libelle;INAO;Dénomination complémentaire;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué issu du mutage;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination;Date de validation Déclarant;Date de validation ODG;Doc ID\n";
     }
 
     public function __construct($drev, $header = true, $region = null) {
@@ -87,20 +87,27 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
             $configProduit = $produit->getConfig();
             $certification = $configProduit->getCertification()->getKey();
+            $certificationLibelle = $configProduit->getCertification()->getLibelle();
             $genre = $configProduit->getGenre()->getKey();
+            $genreLibelle =  $configProduit->getGenre()->getLibelle();
             $appellation = $configProduit->getAppellation()->getKey();
+            $appellationLibelle = $configProduit->getAppellation()->getLibelle();
             $mention = $configProduit->getMention()->getKey();
+            $mentionLibelle = $configProduit->getMention()->getLibelle();
             $lieu = $configProduit->getLieu()->getKey();
+            $lieuLibelle = $configProduit->getLieu()->getLibelle();
             $couleur = $configProduit->getCouleur()->getKey();
+            $couleurLibelle = $configProduit->getCouleur()->getLibelle();
             $cepage = $configProduit->getCepage()->getKey();
+            $cepageLibelle = $configProduit->getCepage()->getLibelle();
             $inao = $configProduit->getCodeDouane();
 
             $denomination = $produit->denomination_complementaire;
             $libelle_complet = $produit->getLibelleComplet();
             $validation_odg = ($produit->exist('validation_odg') && $produit->validation_odg)? $produit->validation_odg : $date_odg;
             $csv .= $ligneBase;
-            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-                $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$denomination,trim($libelle_complet), $this->formatFloat($produit->superficie_revendique),
+            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                $certification,$certificationLibelle,$genre,$genreLibelle,$appellation,$appellationLibelle,$mention,$mentionLibelle,$lieu,$lieuLibelle,$couleur,$couleurLibelle,$cepage,$cepageLibelle,$inao,$denomination,trim($libelle_complet), $this->formatFloat($produit->superficie_revendique),
                 $this->formatFloat($produit->volume_revendique_issu_recolte), $this->formatFloat($produit->volume_revendique_issu_vci), $this->formatFloat($produit->volume_revendique_issu_mutage), $this->formatFloat($produit->volume_revendique_total),
                 $this->formatFloat($produit->vci->stock_precedent), $this->formatFloat($produit->vci->destruction),$this->formatFloat($produit->vci->complement),
                 $this->formatFloat($produit->vci->substitution), $this->formatFloat($produit->vci->rafraichi), $this->formatFloat($produit->vci->constitue), $this->formatFloat($produit->vci->stock_final),
