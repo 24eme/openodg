@@ -35,7 +35,10 @@ drev_2020_groupby['Rendement'] = drev_2020_groupby['Volume revendiqué net total
 
 
 drev_2020_appellation_lieu_couleur = drev_2020_groupby[['Superficie revendiqué', 'Volume revendiqué net total', 'Volume revendiqué issu du vci', 'Rendement']].reset_index().pivot(columns=['Couleur'], index=['Appellation', 'Lieu']).fillna(0)
-#drev_2020_appellation_lieu_couleur
+
+#print(drev_2020_appellation_lieu_couleur.columns.tolist())
+columns = [('Superficie revendiqué', 'rouge'), ('Superficie revendiqué', 'rose'), ('Superficie revendiqué', 'blanc'), ('Superficie revendiqué', 'total'), ('Volume revendiqué net total', 'rouge'), ('Volume revendiqué net total', 'rose'), ('Volume revendiqué net total', 'blanc'), ('Volume revendiqué net total', 'total'), ('Volume revendiqué issu du vci', 'rouge'), ('Volume revendiqué issu du vci', 'rose'), ('Volume revendiqué issu du vci', 'blanc'), ('Volume revendiqué issu du vci', 'total'), ('Rendement', 'rouge'), ('Rendement', 'rose'), ('Rendement', 'blanc'), ('Rendement', 'total')]
+drev_2020_appellation_lieu_couleur = drev_2020_appellation_lieu_couleur[columns]
 
 
 # In[5]:
