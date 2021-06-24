@@ -347,7 +347,7 @@
     "40_changementdeno_redegustation": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Nouveau passsage",
+      "libelle": "Nouveau passage",
       "code_comptable": "",
       "details": {
         "frais": {
