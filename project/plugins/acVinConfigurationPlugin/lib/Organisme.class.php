@@ -151,4 +151,8 @@ class Organisme
     public function getBic(){
       return $this->getInfo('bic');
     }
+
+    public function getCreditorId(){
+      return $this->getinfo('creditorId');
+    }
 }
