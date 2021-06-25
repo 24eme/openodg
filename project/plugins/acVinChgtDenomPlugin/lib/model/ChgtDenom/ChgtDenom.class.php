@@ -372,13 +372,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot->millesime = $this->origine_millesime;
         $lot->produit_libelle = $this->origine_produit_libelle;
         $lot->produit_hash = $this->origine_produit_hash;
-        $lot->date = $this->date;
         $lot->campagne = $this->campagne;
         $lot->declarant_nom = $this->declarant->raison_sociale;
         $lot->declarant_identifiant = $this->identifiant;
       }
 
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
+      $lot->date = $this->date;
       $lot->document_ordre = $ordre;
       $lot->id_document_provenance = $this->changement_origine_id_document;
 

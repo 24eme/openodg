@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(160);
+$t = new lime_test(163);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -38,7 +38,9 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $chgtdenom->delete(false);
 }
 
-$periode = (date('Y')-1)."";
+$year = (date('Y') - 1)."";
+$periode = $year;
+$date = $year.'-10-10 10:10:10';
 
 //Début des tests
 $t->comment("Création d'une DRev");
@@ -71,10 +73,10 @@ $lot->destination_date = ($periode+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d",
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
 $i++;
 }
-$drev->validate();
+$drev->validate($date);
 $drev->lots[2]->affectable = false;
 $drev->lots[2]->millesime = "2015";
-$drev->validateOdg();
+$drev->validateOdg($date);
 $drev->save();
 
 $t->is(count($drev->lots), 3, "3 lots ont automatiquement été créés");
@@ -104,12 +106,11 @@ foreach(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, nu
     $lots[] = $lot;
 }
 
-$year = date('Y') - 1;
 $campagne = $year.'-'.($year + 1);
 
 $t->comment("Changement de dénom sur DREV");
 
-$date = $year.'-10-10 10:10:10';
+$date = $year.'-12-10 10:10:10';
 $chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
 $chgtDenomFromDrev->constructId();
 $chgtDenomFromDrev->validate();
@@ -141,6 +142,7 @@ $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le ch
 $t->isnt($chgtDenomFromDrev->changement_produit_hash, $lotFromDrev->produit_hash, "Le changement a bien un produit différent");
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Le lot ");
 $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le changement a bien le millesime de son origine : ".$drev->lots[2]->millesime);
+$t->is($chgtDenomFromDrev->lots[0]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
 $t->is($chgtDenomFromDrev->lots[0]->numero_archive, "00003", "Le lot du chgt a le même numéro d'archive que dans la drev");
 
 $t->is(count($chgtDenomFromDrev->lots), 1, "Le changement étant total, on a un seul lot");
@@ -281,8 +283,10 @@ $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libe
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
+$t->is($chgtDenom->lots[0]->date, $chgtDenom->date, "La date du lot est celle du changement de dénomination");
 $t->is($chgtDenom->lots[0]->numero_archive, $autreLot->numero_archive, "numero d'archive correctement du lot 2 conservé : ".$autreLot->numero_archive);
 $t->is($chgtDenom->lots[1]->numero_archive, '00004', "numeros d'archive du lot 2 changé pour le suivant");
+$t->is($chgtDenom->lots[1]->date, $chgtDenom->date, "La date du lot est celle du changement de dénomination");
 $t->is($chgtDenom->lots[0]->document_ordre, '03', "Le lot 1 a bien 03 comme numéro d'ordre");
 $t->is($chgtDenom->lots[1]->document_ordre, '01', "Le lot 2 a bien 01 comme numéro d'ordre");
 $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "Le lot 1 généré provient bien de la dégustation ".$degustation->_id);
