@@ -118,7 +118,7 @@
                     ],
                     "callback": "getVolumeRevendiqueLots",
                     "callback_parameters": [
-                        "NOT /CDR/"
+                        "NOT /appellations/CDR/"
                     ]
                 }
             }
