@@ -117,4 +117,9 @@ class Cotisation
 
 		return $this->getConfig()->unite;
 	}
+
+    public function __debugInfo() {
+
+        return array("config" => $this->config->__debugInfo(), "doc" => $this->getDoc()->__toString(), "getHash" => $this->getHash(), "getQuantite" => $this->getQuantite(), "getPrix" => $this->getPrix(), 'getTva' => $this->getTva(), 'getTotal' => $this->getTotal(), 'getLibelle' => $this->getLibelle(), 'getUnite' => $this->getUnite());
+    }
 }

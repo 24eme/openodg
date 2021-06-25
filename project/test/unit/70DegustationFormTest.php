@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(117);
+$t = new lime_test(122);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -211,6 +211,11 @@ $drev = DRevClient::getInstance()->find($iddrev);
 $t->ok($drev->hasLotsUtilises(), "La drev a des lots utilisée");
 $t->is($drev->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la DREV est bien ".$degustation->_id);
 $t->is($drev->lots[1]->id_document_affectation, $degustation->_id, "L'affectation du lot 2 dans la DREV est bien ".$degustation->_id);
+$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot de la drev a un mouvement affecté");
+$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot de la drev a un mouvement affectable");
+$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le lot de la drev ");
+$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot de la drev n'est pas cheagable");
+$t->ok(!$drev->lots[0]->isChange(), "Le lot n'est pas changé");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[0]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 1 dans la DREV");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[1]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 2 dans la DREV");
 
