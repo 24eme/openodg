@@ -175,7 +175,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
-      "code_comptable": "",
+      "code_comptable": "70615000",
       "details": {
         "frais": {
           "modele": "CotisationFixe",
@@ -197,7 +197,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
-      "code_comptable": "",
+      "code_comptable": "70610400",
       "details": {
         "forfaitNegociant": {
           "modele": "CotisationFixe",
@@ -219,7 +219,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
-      "code_comptable": "",
+      "code_comptable": "70615000",
       "details": {
         "chgtdenommed": {
           "modele": "CotisationVariable",
@@ -242,7 +242,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
-      "code_comptable": "",
+      "code_comptable": "70613400",
       "details": {
         "chgtdenomigp": {
           "modele": "CotisationVariable",
