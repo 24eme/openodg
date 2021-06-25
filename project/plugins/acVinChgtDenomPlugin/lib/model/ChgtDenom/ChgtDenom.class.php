@@ -681,6 +681,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             if (strpos($filter, 'appellations') !== false) {
                 // filtre sur produit
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
+            } elseif (strpos($filter, '/millesime/courant') !== false) {
+                // filtre sur millesime
+                $isMillesimeCourant = ($this->changement_millesime == substr($this->campagne,0, 4));
+                if(strpos($filter, 'NOT') !== false) {
+                    $isMillesimeCourant = !$isMillesimeCourant;
+                }
+                $match = $match && $isMillesimeCourant;
             } else {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
@@ -705,9 +712,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return true;
     }
 
-    public function getVolumeFacturable($produitFilter = null)
+    public function getVolumeFacturable($filter = null)
     {
-        if ($this->matchFilter($produitFilter) === false) {
+        if ($this->matchFilter($filter) === false) {
             return;
         }
 
