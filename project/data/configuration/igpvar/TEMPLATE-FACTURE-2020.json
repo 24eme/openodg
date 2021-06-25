@@ -55,26 +55,6 @@
         }
       }
     },
-    "10_%detail_identifiant%_20_fallbackIgp": {
-      "fallback": true,
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Contrôle IGP",
-      "code_comptable": "",
-      "details": {
-        "fallbackIgp": {
-          "modele": "CotisationFixe",
-          "prix": 70,
-          "tva": 0.2,
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": ""
-        }
-      }
-    },
     "10_%detail_identifiant%_20_controleIgp": {
       "minimum": 70,
       "modele": "CotisationsCollection",
@@ -96,26 +76,6 @@
           "callback_parameters": [
             "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
-        }
-      }
-    },
-    "10_%detail_identifiant%_20_fallbackMed": {
-      "fallback": true,
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Contrôle Meditérannée",
-      "code_comptable": "",
-      "details": {
-        "fallbackMed": {
-          "modele": "CotisationFixe",
-          "prix": 90,
-          "tva": 0.2,
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": ""
         }
       }
     },
