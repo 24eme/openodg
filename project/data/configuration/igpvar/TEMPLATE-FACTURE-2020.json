@@ -261,7 +261,7 @@
         }
       }
     },
-    "conditionnement": {
+    "40_conditionnement": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Forfait conditionneur IGP",
