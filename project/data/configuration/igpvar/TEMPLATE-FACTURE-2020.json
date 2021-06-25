@@ -16,7 +16,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
-      "code_comptable": "",
+      "code_comptable": "70604000",
       "details": {
         "superficie": {
           "modele": "CotisationVariable",
@@ -39,7 +39,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Frais de gestion",
-      "code_comptable": "",
+      "code_comptable": "70611400",
       "details": {
         "fraisgestion": {
           "modele": "CotisationFixe",
@@ -80,7 +80,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle IGP",
-      "code_comptable": "",
+      "code_comptable": "70610400",
       "details": {
         "cotisationIgp": {
           "modele": "Cotisation",
@@ -124,7 +124,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle Méditerranée",
-      "code_comptable": "",
+      "code_comptable": "70615000",
       "details": {
         "cotisationMed": {
           "modele": "Cotisation",
@@ -147,7 +147,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation promotion",
-      "code_comptable": "",
+      "code_comptable": "70612400",
       "details": {
         "promotion": {
           "modele": "Cotisation",
@@ -170,7 +170,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation organisme d'inspection",
-      "code_comptable": "",
+      "code_comptable": "70612400",
       "details": {
         "oi": {
           "modele": "Cotisation",
@@ -193,7 +193,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droit INAO",
-      "code_comptable": "",
+      "code_comptable": "70612400",
       "details": {
         "inao": {
           "modele": "Cotisation",
@@ -282,7 +282,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Forfait conditionneur IGP",
-      "code_comptable": "",
+      "code_comptable": "70610400",
       "details": {
         "frais": {
           "modele": "CotisationFixe",
@@ -303,7 +303,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
-      "code_comptable": "",
+      "code_comptable": "70610400",
       "details": {
         "redegustation": {
           "modele": "Cotisation",
@@ -327,7 +327,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
-      "code_comptable": "",
+      "code_comptable": "70615000",
       "details": {
         "redegustation": {
           "modele": "Cotisation",
