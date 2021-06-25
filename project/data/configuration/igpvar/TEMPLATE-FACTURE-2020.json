@@ -94,7 +94,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -138,7 +138,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "/appellations/MED"
+            "/appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -161,7 +161,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -184,7 +184,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -205,7 +205,10 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "buildMouvementsFacturesVolumeDeguste"
+          "callback": "buildMouvementsFacturesVolumeDeguste",
+          "callback_parameters": [
+              "NOT /deja/CONFORME"
+          ]
         }
       }
     },
@@ -314,7 +317,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -338,7 +341,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "/appellations/MED"
+            "/appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }

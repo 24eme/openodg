@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(159);
+$t = new lime_test(160);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -267,7 +267,7 @@ $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
 
 $t->comment("Création d'un Chgt de Denom Partiel");
-$chgtDenom->setLotOrigine($lotFromDegust);
+$chgtDenom->setLotOrigine($autreLot);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenom->changement_volume = round($volume / 2, 2);
@@ -281,7 +281,7 @@ $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libe
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
 
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
-$t->is($chgtDenom->lots[0]->numero_archive, $lotFromDegust->numero_archive, "numero d'archive correctement du lot 1 conservé : ".$lotFromDegust->numero_archive);
+$t->is($chgtDenom->lots[0]->numero_archive, $autreLot->numero_archive, "numero d'archive correctement du lot 2 conservé : ".$autreLot->numero_archive);
 $t->is($chgtDenom->lots[1]->numero_archive, '00004', "numeros d'archive du lot 2 changé pour le suivant");
 $t->is($chgtDenom->lots[0]->document_ordre, '03', "Le lot 1 a bien 03 comme numéro d'ordre");
 $t->is($chgtDenom->lots[1]->document_ordre, '01', "Le lot 2 a bien 01 comme numéro d'ordre");
@@ -292,7 +292,7 @@ $t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->changement_nu
 $t->is($chgtDenom->lots[0]->affectable, $chgtDenom->origine_affectable, "L'affectation du lot origine n'a pas changé");
 $t->is($chgtDenom->lots[1]->affectable, $chgtDenom->changement_affectable, "L'affectation lot 2 a changé");
 
-$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_NONCONFORME, "statut du lot orginel est bien non conforme");
+$t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot orginel est bien conforme");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable");
 $t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "Mouvement lot changé affectable ");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "Mouvement lot restant change dest");
@@ -303,6 +303,7 @@ $t->comment("On check l'historique du lot");
 $lotHistoryARecup = $chgtDenom->lots[1];
 $historiqueDuLot = LotsClient::getInstance()->getHistory($chgtDenom->identifiant, $lotHistoryARecup->unique_id);
 $t->is(strpos($historiqueDuLot[0]->id, 'DREV') === 0, true, "On remonte jusqu'à l'origine");
+$t->is($chgtDenom->lots->get(1)->isRedegustationDejaConforme(), true, "Le lot est déjà conforme");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
