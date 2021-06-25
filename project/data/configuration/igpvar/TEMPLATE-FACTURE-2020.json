@@ -171,7 +171,7 @@
         }
       }
     },
-    "changementdenom": {
+    "30_changementdenom_10_fraismed": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
@@ -190,7 +190,15 @@
           "callback_parameters": [
             "/appellations/MED AND NOT NEGOCIANT"
           ]
-        },
+        }
+      }
+    },
+    "30_changementdenom_20_forfait_negociant": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "",
+      "details": {
         "forfaitNegociant": {
           "modele": "CotisationFixe",
           "prix": 200,
@@ -204,7 +212,15 @@
           "callback_parameters": [
             "NEGOCIANT"
           ]
-        },
+        }
+      }
+    },
+    "30_changementdenom_30_mediterranee": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "",
+      "details": {
         "chgtdenommed": {
           "modele": "CotisationVariable",
           "prix": 0.2,
@@ -219,7 +235,15 @@
           "callback_parameters": [
             "/appellations/MED AND NOT NEGOCIANT"
           ]
-        },
+        }
+      }
+    },
+    "30_changementdenom_40_igp": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "",
+      "details": {
         "chgtdenomigp": {
           "modele": "CotisationVariable",
           "prix": 0.7,
