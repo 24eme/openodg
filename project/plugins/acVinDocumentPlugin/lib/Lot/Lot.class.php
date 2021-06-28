@@ -312,8 +312,12 @@ abstract class Lot extends acCouchdbDocumentTree
       return DeclarationClient::getInstance()->findCache($this->id_document);
     }
 
+    public function isCurrent(){
+        return $this->id_document == $this->getDocument()->_id;
+    }
+
     public function hasBeenEdited(){
-      return $this->id_document != $this->getDocument()->_id;
+        return !$this->isCurrent();
     }
 
     public function setOrigineDocumentId($id) {
