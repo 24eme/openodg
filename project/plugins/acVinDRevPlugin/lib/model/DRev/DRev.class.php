@@ -299,7 +299,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $lots = array();
       foreach($this->getLots() as $lot) {
         if ($lot->numero_dossier != $this->numero_archive) {
-          continue;
+              continue;
         }
         $lots[] = $lot;
       }
@@ -1767,10 +1767,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ELEVE, '', $lot->eleve));
             }
 
-            if (! $lot->isChange() && ! $lot->isAffecte()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
-            }else{
+            if($lot->isChange()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+            } elseif(!$lot->isAffecte()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
             }
 
             if($lot->isAffecte()) {
