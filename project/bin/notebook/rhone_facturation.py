@@ -11,6 +11,7 @@ pd.set_option('display.max_columns', None)
 etablissements = pd.read_csv("../../web/exports/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
 drev = pd.read_csv("../../web/exports/drev.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 dr = pd.read_csv("../../web/exports/dr.csv", encoding="iso8859_15", delimiter=";",decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Valeur': 'float64'}, low_memory=False)
+societe = pd.read_csv("../../web/exports/societe.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Téléphone' :'str', 'Téléphone portable': 'str'}, index_col=False, low_memory=False)
 
 
 # In[ ]:
@@ -60,17 +61,34 @@ facturation["Vendange fraiche vaison la romaine"] = facturation["Valeur vaison l
 
 
 etablissements['Identifiant'] = etablissements['Identifiant etablissement']
+
+etablissements = etablissements.rename(columns = {'Titre':'Titre Etablissement','Raison sociale':'Raison sociale Etablissement','Adresse':'Adresse Etablissement','Adresse 2':'Adresse 2 Etablissement','Adresse 3':'Adresse 3 Etablissement','Code postal':'Code postal Etablissement','Commune':'Commune Etablissement','Code comptable':'Code comptable Etablissement','Fax':'Fax Etablissement','Email':'Email Etablissement','Statut':'Statut Etablissement','Observation':'Observation Etablissement'})
+
+etablissements = pd.merge(etablissements, societe, how='inner',left_on="Login", right_on="Identifiant",suffixes=("", " societe"))
+
 facturation = pd.merge(facturation, etablissements,  how='inner', on=['Identifiant'], suffixes=("", " etablissement"))
 
 
 # In[ ]:
 
 
-facturation = facturation[['Campagne', 'Identifiant', 'CVI', 'Raison sociale', 'Adresse', 'Adresse 2', 'Adresse 3', 'Code postal', 'Commune', 'Téléphone bureau', 'Téléphone mobile', 'Email', 'Famille', 'Superficie revendiqué', 'Volume revendiqué net total', 'Superficie revendiqué sablet', 'Volume revendiqué net total sablet',  'Superficie revendiqué vaison la romaine', 'Volume revendiqué net total vaison la romaine', 'Vendange fraiche', 'Vendange fraiche sablet', 'Vendange fraiche vaison la romaine']]
+facturation = facturation[['Campagne', 'Identifiant', 'CVI', 'Raison sociale', 'Adresse', 'Adresse 2', 'Adresse 3', 'Code postal', 'Commune', 'Téléphone', 'Téléphone portable', 'Email', 'Famille', 'Superficie revendiqué', 'Volume revendiqué net total', 'Superficie revendiqué sablet', 'Volume revendiqué net total sablet',  'Superficie revendiqué vaison la romaine', 'Volume revendiqué net total vaison la romaine', 'Vendange fraiche', 'Vendange fraiche sablet', 'Vendange fraiche vaison la romaine']]
 
 
 # In[ ]:
 
 
 facturation.to_csv('../../web/exports/facturation_cotisations.csv', encoding="iso8859_15", sep=";", decimal=",", index=False)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
