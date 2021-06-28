@@ -299,18 +299,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $lots = array();
       foreach($this->getLots() as $lot) {
         if ($lot->numero_dossier != $this->numero_archive) {
-            $mother = $this->getMother();
-            $founded = false;
-            while($mother && !$founded){
-                if($lot->numero_dossier != $mother->numero_archive){
-                    $mother = $mother->getMother();
-                }else{
-                    $founded = true;
-                }
-            }
-          if($founded){
               continue;
-          }
         }
         $lots[] = $lot;
       }
