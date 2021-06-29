@@ -35,7 +35,7 @@ EOF;
 
     $produits = ConfigurationClient::getCurrent()->getProduits();
 
-    echo sprintf("hash;libelle;code douane;code produit;code comptable;cvo\n");
+    echo sprintf("hash;libelle;catégorie;genre;dénomination;mention;lieu;couleur;cépage;code douane;réserve interpro;rend conseil;rend;rend DR;Rend VCI;Rend VCI total;code OI;code produit;code comptable;cvo\n");
 
     foreach($produits as $hash => $produit) {
         try {
@@ -43,7 +43,28 @@ EOF;
         } catch(Exception $e) {
             $droit_cvo = null;
         }
-        echo sprintf("%s;%s;%s;%s;%s;%s\n", $hash, $produit->getLibelleFormat(), $produit->getCodeDouane(), $produit->getCodeProduit(), $produit->getCodeComptable(),$droit_cvo);
+        echo sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+        $hash,
+        $produit->getLibelleFormat(),
+        $produit->getCertification()->getLibelle(),
+        $produit->getGenre()->getLibelle(),
+        $produit->getAppellation()->getLibelle(),
+        $produit->getMention()->getLibelle(),
+        $produit->getLieu()->getLibelle(),
+        $produit->getCouleur()->getLibelle(),
+        $produit->getCepage()->getLibelle(),
+        $produit->getCodeDouane(),
+        $produit->getRendementReserveInterpro(),
+        $produit->getRendementConseille(),
+        $produit->getRendement(),
+        $produit->getRendementDrL5(),
+        $produit->getRendementDrL15(),
+        $produit->getRendementVci(),
+        $produit->getRendementVciTotal(),
+        $produit->getCodeProduit(),
+        $produit->getCodeComptable(),
+        $produit->code_produit,
+        $droit_cvo);
     }
   }
 }
