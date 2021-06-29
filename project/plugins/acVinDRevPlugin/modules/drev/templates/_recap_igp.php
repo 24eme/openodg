@@ -46,7 +46,7 @@
                       <td class="text-right">
                               <?php  if ($synthese['nb_lots'] > 0): ?>
                                   <?php if ($isTotal): ?>
-                                  <span class="text-muted"><?php printf("%0.2d", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100); ?>%</span> &nbsp;&nbsp;
+                                  <span class="text-muted"><?php printf("%0.0f", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100.0); ?>%</span> &nbsp;&nbsp;
                                   <?php endif;?>
                                   <?php echo $synthese['nb_lots']; ?>
                               <?php else: ?>
