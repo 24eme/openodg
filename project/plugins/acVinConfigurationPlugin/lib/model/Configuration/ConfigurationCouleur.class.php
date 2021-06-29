@@ -79,4 +79,12 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
 
 		return $this->getRendementCouleur();
 	}
+
+    public function getLibelleDR() {
+        $libelle = $this->getLibelleComplet();
+        if (strpos($libelle, 'Blanc') !== false){
+            return $this->getLieu()->getLibelleComplet()." Blanc";
+        }
+        return $libelle;
+    }
 }
