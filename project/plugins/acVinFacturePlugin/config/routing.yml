@@ -5,6 +5,13 @@ facturation:
     sf_method: [get, post]
   class: FacturationRoute
 
+facturation_en_attente:
+  url: /facturation/attente
+  param: { module: facturation, action: attente }
+  requierements:
+    sf_method: [get]
+  class: FacturationRoute
+
 facturation_massive:
   url: /facturation_massive
   param: { module: facturation, action: massive }

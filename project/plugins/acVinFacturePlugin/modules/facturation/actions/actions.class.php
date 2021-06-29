@@ -48,6 +48,22 @@ class facturationActions extends sfActions
         return $this->redirect('facturation_declarant', $this->form->getValue('etablissement')->getCompte());
     }
 
+    public function executeAttente(sfWebRequest $request)
+    {
+        $this->mouvements = [];
+        $etablissements = [];
+
+        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente();
+
+        foreach ($mouvements_en_attente as $m) {
+            if (empty($m->key[MouvementFactureView::KEY_ETB_ID])) {
+                continue;
+            }
+
+            $this->mouvements[$m->key[MouvementFactureView::KEY_ETB_ID]][] = $m->value;
+        }
+    }
+
     public function executeMassive(sfWebRequest $request)
     {
         $this->generation = new Generation();

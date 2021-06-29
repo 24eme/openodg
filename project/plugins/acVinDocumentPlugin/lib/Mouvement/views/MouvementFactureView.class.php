@@ -25,4 +25,11 @@ class MouvementFactureView extends acCouchdbView
 	  ->getView($this->design, $this->view)->rows;
     }
 
+    public function getMouvementsFacturesEnAttente()
+    {
+        return $this->client->startkey([0, 1])
+                            ->endkey([0, 1, []])
+                            ->reduce(false)
+                            ->getView($this->design, $this->view)->rows;
+    }
 }
