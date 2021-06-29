@@ -57,7 +57,7 @@ class DegustationDegustateursTableForm extends acCouchdbObjectForm {
   }
 
   protected function getDegustateursForTable(){
-    return $this->getObject()->getDegustateursConfirmesTableOrFreeTable($this->numero_table);
+    return $this->getObject()->getAllDegustateurs();
   }
 
 
