@@ -30,6 +30,29 @@ class LotsClient
         return $params[3];
     }
 
+    public function getHistory($declarant, $uniqueId)
+    {
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarant, $uniqueId)->rows;
+        $first_mvt = current($mouvements);
+
+        if (strpos($first_mvt->value->document_id, "CHGTDENOM") === 0) {
+            $lot0_unique_id = ChgtDenomClient::getInstance()->find($first_mvt->value->document_id, acCouchdbClient::HYDRATE_JSON)->changement_origine_lot_unique_id;
+
+            $mvmt_temp = [];
+            foreach($this->getHistory($declarant, $lot0_unique_id) as $mvmt) {
+                if ($mvmt->value->document_id === $first_mvt->value->document_id) {
+                    break;
+                }
+
+                $mvmt_temp[] = $mvmt;
+            }
+
+            $mouvements = array_merge($mvmt_temp, $mouvements);
+        }
+
+        return $mouvements;
+    }
+
     public function findByUniqueId($declarantIdentifiant, $uniqueId, $documentOrdre = null) {
 
         return $this->find($declarantIdentifiant, self::getCampagneFromUniqueId($uniqueId), self::getNumeroDossierFromUniqueId($uniqueId), self::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre);

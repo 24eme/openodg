@@ -39,7 +39,10 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $mode = 'AUTOMATIQUE';
         }
 
-        foreach($this->document->getCurrentLots() as $lot) {
+        foreach($this->document->getLots() as $lot) {
+            if(!$lot->isCurrent()){
+                continue;
+            }
             $csv .= $this->document->type.";".
             $this->document->campagne.";".
             $this->document->identifiant.";".

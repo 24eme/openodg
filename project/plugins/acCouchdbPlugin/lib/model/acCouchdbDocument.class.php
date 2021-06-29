@@ -26,7 +26,7 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
     }
 
     public function __toString() {
-        return $this->get('_id') . '/' . $this->get('_rev');
+        return $this->get('_id') . '@' . $this->get('_rev');
     }
 
     public function __construct() {
