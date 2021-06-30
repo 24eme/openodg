@@ -34,7 +34,7 @@
         }
       }
     },
-    "10_fraisGestion": {
+    "00_fraisGestion": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Frais de gestion",
