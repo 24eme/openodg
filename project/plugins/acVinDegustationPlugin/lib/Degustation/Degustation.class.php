@@ -355,6 +355,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
+    public function removeLot($lot) {
+        $this->fillDocToSaveFromLots();
+        $this->remove($lot->getHash());
+    }
+
     public function addLot($lotOrig, $update = true)
     {
         if (!$this->_id) {

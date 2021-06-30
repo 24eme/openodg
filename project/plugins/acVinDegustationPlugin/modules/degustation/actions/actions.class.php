@@ -1099,7 +1099,7 @@ class degustationActions extends sfActions {
         $lot = $degustation->getLot($unique_id);
         $this->forward404Unless($lot);
 
-        $degustation->remove($lot->getHash());
+        $degustation->removeLot($lot);
         $degustation->save();
         return $this->redirect('degustation_lot_historique', array('identifiant' => $declarant_id, 'unique_id' => $unique_id));
 
