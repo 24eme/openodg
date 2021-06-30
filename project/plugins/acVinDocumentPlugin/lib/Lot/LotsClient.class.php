@@ -74,7 +74,7 @@ class LotsClient
 
         $doc = DeclarationClient::getInstance()->findCache($docId);
 
-        return $doc->get($mouvement->value->lot_hash);
+        return $doc->getLot($mouvement->value->lot_unique_id);
     }
 
     public function getDocumentsIds($declarantIdentifiant, $uniqueId) {
