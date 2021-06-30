@@ -16,17 +16,18 @@
     <section class="col-xs-9" id="contenu_etape">
 		<form id="recherche_contact_form">
 			<div id="recherche_contact" class="section_label_maj">
-
-                <div class="input-group">
-                    <input id="champ_recherche" class="form-control input-lg" type="text" name="q" value="<?php echo $q; ?>" autofocus="autofocus" />
-                    <span class="input-group-btn">
-                        <button class="btn btn-lg btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-                    </span>
-                </div>
-                <div>
-                    <label for="contacts_all">Inclure les contacts archivés </label>
-                    <input type="checkbox" value="1" name="contacts_all" id="contacts_all"<?php if($contacts_all) echo " CHECKED"; ?>/>
-                </div>
+        <div class="input-group">
+            <input id="champ_recherche" name="q" value = "<?php echo ($q == '*') ? '' : $q ?>" class="form-control input-lg typeahead typeaheadGlobal"
+            placeholder = "Votre recherche..." autocomplete = "off" data-url = "<?php echo url_for('soc_etb_com_autocomplete_all', array('link' => true, 'isObject' => true,'interpro_id'=> 'INTERPRO-declaration','type_compte' => '*')); ?>"
+            data-query-param = "q" type="text" data-link = "visualisationLink" autofocus="autofocus" data-text = "text_html" />
+            <span class="input-group-btn">
+                <button class="btn btn-lg btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+        </div>
+        <div>
+            <label for="contacts_all">Inclure les contacts archivés </label>
+            <input type="checkbox" value="1" name="contacts_all" id="contacts_all"<?php if($contacts_all) echo " CHECKED"; ?>/>
+        </div>
 			</div>
 		</form>
 	<?php if($nb_results > 0): ?>

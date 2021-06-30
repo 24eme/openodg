@@ -17,9 +17,25 @@ class societeActions extends sfCredentialActions {
         $this->resultsElk = $resset->getResults();
 
         $jsonElastic = $this->matchCompteElastic($this->resultsElk, $limit);
-        $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit));
+        $list = array();
+        $listMerged = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit));
+        if($request->getParameter('isObject', false)){
+          foreach ($listMerged as $id => $res) {
+            $item = new stdClass();
+            $item->id = $id;
+            $item->text_html = '<span style="white-space: nowrap;text-overflow: ellipsis;display: block;overflow: hidden">'.$res.'</span>';
+            if($request->getParameter('link')) {
+                $item->visualisationLink = $this->generateUrl('compte_visualisation', array('identifiant' => $id));
+            }
+            $list[] = $item;
+          }
+        }else{
+          $list = $listMerged;
+        }
 
-        return $this->renderText(json_encode($json));
+        $json = json_encode($list);
+
+        return $this->renderText($json);
     }
 
     public function executeActifautocomplete(sfWebRequest $request) {
