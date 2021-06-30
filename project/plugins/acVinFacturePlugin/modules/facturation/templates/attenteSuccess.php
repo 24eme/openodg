@@ -17,7 +17,7 @@
             <tr>
                 <td title="<?php echo $id ?>"><?php echo EtablissementClient::getInstance()->retrieveById($id)->raison_sociale ?></td>
                 <td>
-                    <a href="<?php echo url_for('facturation_declarant', ['id' => $id]) ?>" class="btn btn-xs btn-default pull-right">
+                    <a target='_blank' href="<?php echo url_for('facturation_declarant', ['id' => $id]) ?>" class="btn btn-xs btn-default pull-right">
                         Voir le<?php echo (count($infos) > 1) ? 's' : '' ?> <?php echo count($infos) ?> mouvement<?php echo (count($infos) > 1) ? 's' : '' ?>
                         <span class="glyphicon glyphicon-chevron-right"></span>
                     </a>
