@@ -1083,4 +1083,25 @@ class degustationActions extends sfActions {
         $this->degustation->save(false);
 
     }
+
+    public function executeRetirerLot(sfWebRequest $request) {
+        $declarant_id = $request->getParameter('id');
+        $unique_id = $request->getParameter('unique_id');
+        $degustation_id = $request->getParameter('degustation_id');
+
+        $degustation = DegustationClient::getInstance()->find($degustation_id);
+        $this->forward404Unless($degustation);
+
+        if ($degustation->isAnonymized()) {
+            throw new sfException('La dégustation est déjà anonimisée : impossible de retirer le lot '.$degustation_id.':'.$unique_id);
+        }
+
+        $lot = $degustation->getLot($unique_id);
+        $this->forward404Unless($lot);
+
+        $degustation->remove($lot->getHash());
+        $degustation->save();
+        return $this->redirect('degustation_lot_historique', array('identifiant' => $declarant_id, 'unique_id' => $unique_id));
+
+    }
 }
