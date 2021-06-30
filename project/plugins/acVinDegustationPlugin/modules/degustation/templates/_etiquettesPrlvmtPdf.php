@@ -49,16 +49,16 @@
                     <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:7px;">
                       <?php echo tdStart() ?>
 
-                      <strong><?php echo showOnlyCepages($lotInfo->lot) ?></strong>
+                      <strong><?php echo showOnlyCepages($lotInfo->lot, 65) ?></strong>
 
                     </td>
                   </tr>
                   <tr style="overflow:hidden; text-overflow: ellipsis">
-                    <td style="line-height:12px; width:75%;">
+                    <td style="line-height:12px; width:50%;">
                       <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
-                      &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo substr($lotInfo->lot->numero_logement_operateur.$centilisation, 0, 25)  ?></strong>
+                      &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo substr($lotInfo->lot->numero_logement_operateur.$centilisation, 0, 20)  ?></strong>
                     </td>
-                    <td class="font-1-3em" style="text-align: right; width:25%;">
+                    <td class="font-1-3em" style="text-align: right; width:50%;">
                       <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
