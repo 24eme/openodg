@@ -607,3 +607,13 @@ degustation_affectation_lot:
     type: object
   requirements:
     sf_method: [get, post]
+
+degustation_retirer:
+  url: /historique/:id/:unique_id/retirer/:degustation_id
+  param: {module: degustation, action: retirerLot}
+  class: DegustationRoute
+  options:
+    model: Degustation
+    type: object
+  requirements:
+    sf_method: [get]
