@@ -661,7 +661,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function calculFraisJournalier($produitFilter = null)
     {
-        if ($this->nbChgtDenomToday($produitFilter) > 1) {
+        if ($this->nbChgtDenomToday($produitFilter) > 0) {
             return;
         }
 

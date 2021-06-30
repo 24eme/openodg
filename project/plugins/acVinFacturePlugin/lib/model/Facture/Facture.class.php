@@ -728,6 +728,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public function updateVersementSepa(){
       $versement_sepa = 1;
       foreach($this->paiements as $paiement){
+        if (! $paiement->exist('execute')) {
+            continue;
+        }
         if(!$paiement->execute){
           $versement_sepa = 0;
         }
