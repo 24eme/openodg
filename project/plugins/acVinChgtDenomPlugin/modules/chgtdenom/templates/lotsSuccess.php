@@ -2,6 +2,8 @@
 <?php use_helper('Date') ?>
 <?php use_helper('Lot') ?>
 
+<?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $etablissement )); ?>
+
 <div class="page-header">
   <div class="pull-right">
       <?php if ($sf_user->hasDrevAdmin()): ?>
