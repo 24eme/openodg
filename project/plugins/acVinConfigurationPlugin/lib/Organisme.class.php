@@ -153,6 +153,6 @@ class Organisme
     }
 
     public function getCreditorId(){
-      return $this->getinfo('creditorId');
+      return $this->getInfo('creditorId');
     }
 }
