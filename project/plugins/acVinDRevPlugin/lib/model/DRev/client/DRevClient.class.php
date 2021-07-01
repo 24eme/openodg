@@ -216,6 +216,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         foreach ($filters as $filter) {
             if (strpos($filter, 'appellations') !== false) {
                 $match = $match && $this->matchFilterProduit($lot, $filter);
+            } elseif (strpos($filter, 'deja') !== false) {
+                // On gère que l'option (NOT)? /deja/CONFORME pour le moment
+                // Pas NONCONFORME
+                $match = $match && $this->matchFilterConformite($lot, $filter);
             } else {
                 if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
                     $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
@@ -264,5 +268,12 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         }
 
         return true;
+    }
+
+    private function matchFilterConformite($lot, $filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+        $conformite = str_replace(['NOT', ' ', '/deja/'], '', $filter);
+        return ($not) ? $lot->isRedegustationDejaConforme() === false : $lot->isRedegustationDejaConforme() === true;
     }
 }

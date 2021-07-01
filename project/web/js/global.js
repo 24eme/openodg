@@ -744,7 +744,54 @@
     }
 
     $.initTypeahead = function() {
-        $('.typeahead').typeahead({
+
+        $('.typeahead.typeaheadGlobal').typeahead({
+            itemLink: function(item) {
+
+                return item[this.$element.data("link")];
+            },
+            displayText: function(item) {
+                if(!item[this.$element.data("text")]) {
+
+                    return item.replace("%query%", this.$element.val());
+                }
+
+                return item[this.$element.data("text")];
+            },
+            source: function (query, process) {
+                var params = {};
+                params[this.$element.data('queryParam')] = query;
+                var urlVisu = this.$element.attr("data-visualisationLink");
+
+                return $.getJSON(this.$element.data('url'), params, function (data) {
+                    var tmpData = []
+                    $.each(data, function(id, val){
+                      let compte = new Object();
+                      compte.id = id;
+                      compte.text_html = '<span style="white-space: nowrap;text-overflow: ellipsis;display: block;overflow: hidden">'+val+'</span>';
+                      compte.visualisationLink = urlVisu.replace("identifiant", id)
+                      tmpData.push(compte)
+                    });
+
+
+                    return process(tmpData);
+                });
+            },
+            sorter: function(items) { return items },
+            matcher: function(item) { return true },
+            highlighter: function(item) { return item; },
+            updater: function(item) { return this.$element.val(); },
+            afterEmptySelect: function() { this.$element.parents('form').submit(); },
+            items: 5,
+            delay: 200,
+            addItem: "<em>Chercher plus de résultats pour \"%query%\"</em>",
+            minLength: 3,
+            autoSelect: false,
+            fitToElement: true,
+            followLinkOnSelect: true,
+        });
+
+        $('.typeahead:not(.typeaheadGlobal)').typeahead({
             itemLink: function(item) {
 
                 return item[this.$element.data("link")];

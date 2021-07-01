@@ -372,13 +372,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot->millesime = $this->origine_millesime;
         $lot->produit_libelle = $this->origine_produit_libelle;
         $lot->produit_hash = $this->origine_produit_hash;
-        $lot->date = $this->date;
         $lot->campagne = $this->campagne;
         $lot->declarant_nom = $this->declarant->raison_sociale;
         $lot->declarant_identifiant = $this->identifiant;
       }
 
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
+      $lot->date = $this->date;
       $lot->document_ordre = $ordre;
       $lot->id_document_provenance = $this->changement_origine_id_document;
 
@@ -661,7 +661,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function calculFraisJournalier($produitFilter = null)
     {
-        if ($this->nbChgtDenomToday($produitFilter) > 1) {
+        if ($this->nbChgtDenomToday($produitFilter) > 0) {
             return;
         }
 
@@ -681,6 +681,13 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             if (strpos($filter, 'appellations') !== false) {
                 // filtre sur produit
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
+            } elseif (strpos($filter, '/millesime/courant') !== false) {
+                // filtre sur millesime
+                $isMillesimeCourant = ($this->changement_millesime == substr($this->campagne,0, 4));
+                if(strpos($filter, 'NOT') !== false) {
+                    $isMillesimeCourant = !$isMillesimeCourant;
+                }
+                $match = $match && $isMillesimeCourant;
             } else {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
@@ -705,9 +712,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return true;
     }
 
-    public function getVolumeFacturable($produitFilter = null)
+    public function getVolumeFacturable($filter = null)
     {
-        if ($this->matchFilter($produitFilter) === false) {
+        if ($this->matchFilter($filter) === false) {
             return;
         }
 

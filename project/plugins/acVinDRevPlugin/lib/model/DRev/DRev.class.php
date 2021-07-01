@@ -115,7 +115,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
-            $couleur = $p->getConfig()->getCouleur()->getLibelleComplet();
+            $couleur = $p->getConfig()->getCouleur()->getLibelleDR();
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_total' => 0, 'volume_sur_place' => 0,
@@ -141,7 +141,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->millesime != $this->getPeriode()) {
                 continue;
             }
-            $couleur = $lot->getConfig()->getCouleur()->getLibelleComplet();
+            $couleur = $lot->getConfig()->getCouleur()->getLibelleDR();
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
                                             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
@@ -152,7 +152,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             $couleurs[$couleur]['appellation'] = $lot->getConfig()->getAppellation()->getLibelleComplet().' Total';
             if($lot->getProduitRevendique()){
-                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleComplet();
+                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleDR();
             }
             $couleurs[$couleur]['volume_lots'] += $lot->volume;
             $couleurs[$couleur]['nb_lots']++;
@@ -299,7 +299,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $lots = array();
       foreach($this->getLots() as $lot) {
         if ($lot->numero_dossier != $this->numero_archive) {
-          continue;
+              continue;
         }
         $lots[] = $lot;
       }

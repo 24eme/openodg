@@ -325,7 +325,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
 
-        if (!$this->degustation->AreAllLotsSaisis()) {
+        if (!$this->degustation->areAllLotsSaisis()) {
             $this->getUser()->setFlash('error', "Il reste des lots sans résultats (conformes/non-conformes). Merci de les saisir !");
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_RESULTATS), $this->degustation);
         }
@@ -598,7 +598,7 @@ class degustationActions extends sfActions {
         }
 
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
-        $this->mouvements =  MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($identifiant, $uniqueId)->rows;
+        $this->mouvements = LotsClient::getInstance()->getHistory($identifiant, $uniqueId);
     }
 
     public function executeLotModification(sfWebRequest $request){
@@ -1081,6 +1081,27 @@ class degustationActions extends sfActions {
 
         $degustateurs->get($this->college)->get($this->identifiant)->add('confirmation', boolval($this->presence));
         $this->degustation->save(false);
+
+    }
+
+    public function executeRetirerLot(sfWebRequest $request) {
+        $declarant_id = $request->getParameter('id');
+        $unique_id = $request->getParameter('unique_id');
+        $degustation_id = $request->getParameter('degustation_id');
+
+        $degustation = DegustationClient::getInstance()->find($degustation_id);
+        $this->forward404Unless($degustation);
+
+        if ($degustation->isAnonymized()) {
+            throw new sfException('La dégustation est déjà anonimisée : impossible de retirer le lot '.$degustation_id.':'.$unique_id);
+        }
+
+        $lot = $degustation->getLot($unique_id);
+        $this->forward404Unless($lot);
+
+        $degustation->removeLot($lot);
+        $degustation->save();
+        return $this->redirect('degustation_lot_historique', array('identifiant' => $declarant_id, 'unique_id' => $unique_id));
 
     }
 }

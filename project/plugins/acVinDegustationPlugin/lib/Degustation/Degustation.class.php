@@ -355,6 +355,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return false;
     }
 
+    public function removeLot($lot) {
+        $this->fillDocToSaveFromLots();
+        $this->remove($lot->getHash());
+    }
+
     public function addLot($lotOrig, $update = true)
     {
         if (!$this->_id) {
@@ -470,24 +475,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $lots;
     }
 
-		public function AreAllLotsSaisis(){
-			$etapeInf = array(
-				Lot::STATUT_AFFECTE_DEST,
-				Lot::STATUT_ATTENTE_PRELEVEMENT,
-				Lot::STATUT_PRELEVE,
-				Lot::STATUT_ATTABLE,
-				Lot::STATUT_ANONYMISE,
-				Lot::STATUT_DEGUSTE
-			);
+	public function areAllLotsSaisis(){
+		$etapeInf = array(
+			Lot::STATUT_AFFECTE_DEST,
+			Lot::STATUT_ATTENTE_PRELEVEMENT,
+			Lot::STATUT_PRELEVE,
+			Lot::STATUT_ATTABLE,
+			Lot::STATUT_ANONYMISE,
+			Lot::STATUT_DEGUSTE
+		);
 
-			foreach ($this->getLotsAnonymized() as $lot) {
+		foreach ($this->getLotsAnonymized() as $lot) {
 
-				if (in_array($lot->statut, $etapeInf)) {
-						return false;
-				}
+			if (in_array($lot->statut, $etapeInf)) {
+					return false;
 			}
-			return true;
 		}
+		return true;
+	}
 
     public function getLotsConformes($identifiant = null)
     {

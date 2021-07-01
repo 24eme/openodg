@@ -34,7 +34,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         			$libellesLigne = $values;
         			continue;
         		}
-        		if ((!$values[1]) && preg_match('/^commune de[\s]*(.*)$/i', $values[0], $m)) {
+        		if ((!isset($values[1]) || !$values[1]) && preg_match('/^commune de[\s]*(.*)$/i', $values[0], $m)) {
         			$communeTiers = $m[1];
         			continue;
         		}
