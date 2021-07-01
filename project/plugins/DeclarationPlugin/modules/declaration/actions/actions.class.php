@@ -57,7 +57,7 @@ class declarationActions extends sfActions {
         $doc_id = $request->getParameter("id");
         $this->regionParam = $request->getParameter('region',null);
 
-        if(!preg_match("/^([A-Z]+)-([^-]+)/", $doc_id, $matches)) {
+        if(!preg_match("/^([A-Z]+[1-2]{0,2})-([^-]+)/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
@@ -123,6 +123,10 @@ class declarationActions extends sfActions {
 
         if ($doc_type == "TRANSACTION" ) {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "SV12" || $doc_type == "DR") {
+            return $this->redirect('get_fichier', ['id' => $doc_id]);
         }
 
         return $this->forward404();
