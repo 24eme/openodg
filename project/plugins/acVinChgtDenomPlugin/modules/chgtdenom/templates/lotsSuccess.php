@@ -2,6 +2,8 @@
 <?php use_helper('Date') ?>
 <?php use_helper('Lot') ?>
 
+<?php include_partial('chgtdenom/breadcrumb', array('chgtDenom' => $etablissement )); ?>
+
 <div class="page-header">
   <div class="pull-right">
       <?php if ($sf_user->hasDrevAdmin()): ?>
@@ -18,7 +20,7 @@
           <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne; ?></span>
       <?php endif; ?>
   </div>
-    <h2>Changement de dénomination / Déclassement <?php echo $periode; ?></h2>
+    <h2>Changement de dénomination / Déclassement <?php echo $campagne; ?></h2>
     <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
     <?php if(!count($lots)): ?>
     <p>Aucun lot pour la campagne <?php echo isset($chgtDenom) ? $chgtDenom->campagne : $campagne ?></p>
