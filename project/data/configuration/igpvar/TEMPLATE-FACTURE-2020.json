@@ -254,7 +254,7 @@
           ],
           "callback": "isDeclarantFamille",
           "callback_parameters": [
-            "NEGOCIANT"
+            "NEGOCIANT AND /appellations/MED,/appellations/VAR,/appellations/MAU,/appellations/MCA"
           ]
         }
       }
