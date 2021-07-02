@@ -315,7 +315,7 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
-            "/appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
+            "/origine/MED AND /appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
           ]
         }
       }
