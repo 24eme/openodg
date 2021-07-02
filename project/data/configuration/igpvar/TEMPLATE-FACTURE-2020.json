@@ -141,7 +141,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "/appellations/MED AND NOT /deja/CONFORME"
+            "/appellations/MED"
           ]
         }
       }
@@ -198,7 +198,7 @@
       "libelle": "Droit INAO",
       "code_comptable": "70612400",
       "details": {
-        "inao": {
+        "inao_igp": {
           "modele": "Cotisation",
           "prix": 0.03,
           "tva": 0,
@@ -210,7 +210,22 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-              "NOT /deja/CONFORME"
+              "NOT /appellations/MED AND NOT /deja/CONFORME"
+          ]
+        },
+        "inao_med": {
+          "modele": "Cotisation",
+          "prix": 0.03,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeDeguste",
+          "callback_parameters": [
+              "/appellations/MED"
           ]
         }
       }
@@ -368,7 +383,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "/appellations/MED AND NOT /deja/CONFORME"
+            "/appellations/MED"
           ]
         }
       }
