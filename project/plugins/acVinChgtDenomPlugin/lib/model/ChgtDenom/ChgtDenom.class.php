@@ -371,38 +371,39 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot = new stdClass;
         $lot->document_ordre = "00";
         $lot->volume = $this->origine_volume;
-        $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
-        $lot->millesime = $this->origine_millesime;
-        $lot->produit_libelle = $this->origine_produit_libelle;
-        $lot->produit_hash = $this->origine_produit_hash;
-        $lot->campagne = $this->campagne;
-        $lot->declarant_nom = $this->declarant->raison_sociale;
-        $lot->declarant_identifiant = $this->identifiant;
       }
+      $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
+      $lot->millesime = $this->origine_millesime;
+      $lot->produit_libelle = $this->origine_produit_libelle;
+      $lot->produit_hash = $this->origine_produit_hash;
+      $lot->campagne = $this->campagne;
+      $lot->declarant_nom = $this->declarant->raison_sociale;
+      $lot->declarant_identifiant = $this->identifiant;
 
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
       $lot->date = $this->date;
       $lot->document_ordre = $ordre;
       $lot->id_document_provenance = $this->changement_origine_id_document;
 
-      if (!$this->isTotal()) {
-        $lotOrig = clone $lot;
-        $lotOrig->volume -= $this->changement_volume;
-
-        if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
-            $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
-        }
-
-        $lots[] = $lotOrig;
-        $lot->numero_archive = null;
-        $lot->unique_id = null;
-        $lot->document_ordre = '01';
-      }
-
       $lot->volume = $this->changement_volume;
       $lot->specificite = $this->changement_specificite;
 
       if ($this->isChgtDenomination()) {
+          $lotOrig = clone $lot;
+          $lotOrig->volume = $this->origine_volume - $this->changement_volume;
+          if (!$lotOrig->volume) {
+              $lotOrig->affectable = false;
+          }
+          if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
+              $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
+          }
+
+          $lots[] = $lotOrig;
+          $lot->numero_archive = null;
+          $lot->unique_id = null;
+          $lot->document_ordre = '01';
+
+          $lot->volume = $this->changement_volume;
           $lot->produit_hash = $this->changement_produit_hash;
           $lot->produit_libelle = $this->changement_produit_libelle;
           $lot->cepages = $this->changement_cepages;
@@ -421,10 +422,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
               $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
           }
       } else {
-          $lot->produit_hash = null;
+          $lot->volume = $this->origine_volume - $this->changement_volume;
+          if (!$lot->volume) {
+              $lot->affectable = false;
+          }
           $lot->produit_libelle = $this->origine_produit_libelle;
           $lot->cepages = $this->origine_cepages;
-          $lot->specificite .= " DECLASSÉ en VSIG";
       }
 
       $lots[] = $lot;
@@ -489,7 +492,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }else{
             if ($this->isDeclassement()) {
                 $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl"));
-                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé pour ".$this->lots[1]->volume." hl"));
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé pour ".($this->origine_volume - $this->changement_volume)." hl"));
             }else{
                 $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non changée de ".$this->lots[0]->volume." hl"));
                 $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changé pour : ".$this->lots[1]->getLibelle().", ".$this->lots[1]->volume." hl"));
@@ -508,7 +511,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 continue;
             }
             //Si le lot changé n'a pas été lui même de nouveau changé, on peut le changer et le déguster ou non
-            $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+            if ($lot->volume) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+            }
             if($lot->isAffectable()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
             }else{
