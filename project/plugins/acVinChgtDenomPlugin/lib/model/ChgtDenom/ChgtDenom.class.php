@@ -161,6 +161,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function setLotOrigine($lot) {
+        if (get_class($lot) != 'stdClass' && $lot->id_document_provenance && !$lot->getMouvement(Lot::STATUT_CHANGEABLE)){
+            throw new sfException('Lot '.$lot->unique_id.' doit être changeable');
+        }
         $this->fillDocToSaveFromLots();
 
         $this->changement_origine_id_document = $lot->id_document;
