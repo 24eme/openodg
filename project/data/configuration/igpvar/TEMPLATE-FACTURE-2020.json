@@ -6,12 +6,13 @@
   "libelle": "2020 - IGP Var",
   "docs": [
     "DR",
+    "SV12",
     "Degustation",
     "Conditionnement",
     "ChgtDenom"
   ],
   "cotisations": {
-    "00_cotisationSyndicaleRecolte": {
+    "00_DR_10_cotisationSyndicaleRecolte": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
@@ -34,7 +35,7 @@
         }
       }
     },
-    "10_fraisGestion": {
+    "00_DR_20_fraisGestion": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Frais de gestion",
@@ -48,6 +49,49 @@
           "complement_libelle": "",
           "docs": [
             "DR"
+          ],
+          "callback": null,
+          "callback_parameters": []
+        }
+      }
+    },
+    "00_SV12_10_cotisationSyndicaleRecolte": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "70604000",
+      "details": {
+        "superficie": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0.2,
+          "unite": "ha",
+          "libelle": "Cotisation technique et syndicale récolte 2020",
+          "complement_libelle": "",
+          "docs": [
+            "SV12"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L09"
+          ]
+        }
+      }
+    },
+    "00_SV12_10_fraisGestion": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Frais de gestion",
+      "code_comptable": "70611400",
+      "details": {
+        "fraisgestion": {
+          "modele": "CotisationFixe",
+          "prix": 35,
+          "tva": 0.2,
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "SV12"
           ],
           "callback": null,
           "callback_parameters": []
@@ -97,7 +141,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "/appellations/MED AND NOT /deja/CONFORME"
+            "/appellations/MED"
           ]
         }
       }
@@ -154,7 +198,7 @@
       "libelle": "Droit INAO",
       "code_comptable": "70612400",
       "details": {
-        "inao": {
+        "inao_igp": {
           "modele": "Cotisation",
           "prix": 0.03,
           "tva": 0,
@@ -166,7 +210,22 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-              "NOT /deja/CONFORME"
+              "NOT /appellations/MED AND NOT /deja/CONFORME"
+          ]
+        },
+        "inao_med": {
+          "modele": "Cotisation",
+          "prix": 0.03,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeDeguste",
+          "callback_parameters": [
+              "/appellations/MED"
           ]
         }
       }
@@ -210,7 +269,7 @@
           ],
           "callback": "isDeclarantFamille",
           "callback_parameters": [
-            "NEGOCIANT"
+            "NEGOCIANT AND /appellations/MED,/appellations/VAR,/appellations/MAU,/appellations/MCA"
           ]
         }
       }
@@ -256,7 +315,7 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
-            "/appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
+            "/origine/MED AND /appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
           ]
         }
       }
@@ -324,7 +383,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "/appellations/MED AND NOT /deja/CONFORME"
+            "/appellations/MED"
           ]
         }
       }

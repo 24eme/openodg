@@ -87,7 +87,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                 $export.= $parcelle->section . ";";
                 $export.= $parcelle->numero_parcelle . ";";
                 $export.= $parcelle->getAppellation()->getLibelle() . ";";
-                $export.= str_replace('"','',$parcelle->getLieuLibelle()) . ";";
+                $export.= str_replace(array('"',';'),array('',''),$parcelle->getLieuLibelle()) . ";";
                 $export.= $parcelle->getCepageLibelle() . ";";
                 $export.= sprintf("%01.02f", $parcelle->superficie) . ";";
                 $export.= $this->parcellaire->campagne . ";";

@@ -17,6 +17,7 @@ class societeActions extends sfCredentialActions {
         $this->resultsElk = $resset->getResults();
 
         $jsonElastic = $this->matchCompteElastic($this->resultsElk, $limit);
+
         $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit));
 
         return $this->renderText(json_encode($json));
