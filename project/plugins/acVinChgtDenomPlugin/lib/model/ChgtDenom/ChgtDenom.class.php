@@ -407,12 +407,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->produit_hash = $this->changement_produit_hash;
           $lot->produit_libelle = $this->changement_produit_libelle;
           $lot->cepages = $this->changement_cepages;
-          if (count($this->changement_cepages->toArray(true, false))) {
-              $lot->details = '';
-              foreach($this->getPourcentagesCepages() as $cep => $pc) {
-                  $lot->details .= $cep.' ('.$pc.'%) ';
-              }
-          }
 
           if ($this->exist('changement_affectable')) {
               $lot->affectable = $this->changement_affectable;
