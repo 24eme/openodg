@@ -19,6 +19,10 @@ drev = pd.read_csv("../../web/exports/drev.csv", encoding="iso8859_15", delimite
 def createCSVStatByCampagne(campagne,drev):
     drev = drev[drev['Campagne'] == campagne][['Campagne', 'Appellation','Appellation Libelle','Lieu','Lieu Libelle','Couleur', 'Produit', 'Superficie revendiqué', 'Volume revendiqué net total', 'Volume revendiqué issu du vci']]
     drev['Lieu Libelle'] = drev['Lieu Libelle'].fillna("DEFAUT")
+    
+    drev.loc[drev.Appellation != 'CVG','Lieu'] = 'DEFAUT' 
+    drev.loc[drev.Appellation != 'CVG','Lieu Libelle'] = 'DEFAUT' 
+    
     drev_groupby = drev.groupby(['Couleur','Appellation','Appellation Libelle','Lieu','Lieu Libelle']).sum()
     drev_total = drev.groupby(['Appellation','Appellation Libelle', 'Lieu','Lieu Libelle']).sum()
     drev_total['Couleur'] = 'total'
