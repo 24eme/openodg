@@ -688,6 +688,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                     $isMillesimeCourant = !$isMillesimeCourant;
                 }
                 $match = $match && $isMillesimeCourant;
+            } elseif (strpos($filter, 'origine') !== false) {
+                $match = $match && $this->origineFilter($filter);
             } else {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
@@ -769,5 +771,24 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         ksort($today);
 
         return $today;
+    }
+
+    private function origineFilter($filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+        $filter = str_replace(['NOT', ' '], '', $filter);
+        $origine_produit_hash = $this->origine_produit_hash;
+
+        $matches = array_filter(explode(',', $filter), function ($item) use ($origine_produit_hash) {
+            return strpos($origine_produit_hash, str_replace('/origine/', '', $item)) !== false; // si on trouve l'origine, il ressortira dans $match si true
+        });
+
+        $found = count($matches) > 0;
+
+        if ($not) {
+            $found = ! $found;
+        }
+
+        return $found;
     }
 }
