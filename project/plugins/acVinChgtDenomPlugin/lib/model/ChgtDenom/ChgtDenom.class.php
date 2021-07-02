@@ -443,6 +443,24 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
   			return null;
   	}
 
+    public function getLotsWithPseudoDeclassement() {
+        if (!$this->isDeclassement()) {
+            return $this->lots;
+        }
+        $lots_res = array();
+        $lots_res[] = $this->lots[0];
+
+        $decl = clone $this->lots[0];
+        $decl->produit_hash = null;
+        $decl->produit_libelle = "Vin sans IG";
+        $decl->cepages = null;
+        $decl->millesime = null;
+        $decl->volume = $this->changement_volume;
+        $lots_res[] = $decl;
+
+        return $lots_res;
+    }
+
     public function addCepage($cepage, $repartition) {
         $this->changement_cepages->add($cepage, $repartition);
     }
