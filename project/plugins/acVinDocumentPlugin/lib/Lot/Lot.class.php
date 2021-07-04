@@ -882,4 +882,13 @@ abstract class Lot extends acCouchdbDocumentTree
     {
       return ($this->elevage);
     }
+
+    public function getAdresseLogement() {
+        return Anonymization::hideIfNeeded($this->_get('adresse_logement'));
+    }
+
+    public function getDeclarantNom() {
+        return Anonymization::hideIfNeeded($this->_get('declarant_nom'));
+    }
+
 }

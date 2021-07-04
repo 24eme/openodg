@@ -31,7 +31,7 @@
                   $declarant = EtablissementClient::getInstance()->findByIdentifiant($doc->key[HabilitationActiviteView::KEY_IDENTIFIANT], acCouchdbClient::HYDRATE_JSON);
                    ?>
                     <tr>
-                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])); ?>"><?php echo Anonymization::hideIfNeeded($declarant->raison_sociale); ?> <small>(<?php echo $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
                         <td><?php echo $doc->key[HabilitationActiviteView::KEY_PRODUIT_LIBELLE]; ?></td>
                         <td><?php echo HabilitationClient::getInstance()->getLibelleActivite($doc->key[HabilitationActiviteView::KEY_ACTIVITE]); ?></td>
                         <td><a href="<?php echo url_for('habilitation_declarant', array('identifiant' => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])) ?>"><?php echo HabilitationClient::$statuts_libelles[$doc->key[HabilitationActiviteView::KEY_STATUT]]; ?></a></td>
