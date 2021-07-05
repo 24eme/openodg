@@ -1018,12 +1018,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return true;
 		}
 
-
 		public function getDegustateursConfirmes(){
 			$degustateurs = array();
 			foreach ($this->getAllDegustateurs() as $college_cmptId => $degustateur) {
 				list($college, $compte_id) = explode("|", $college_cmptId);
-				if($degustateur->exist('confirmation') && !is_null($degustateur->confirmation)){
+				if($degustateur->exist('confirmation') && $degustateur->confirmation === true){
 					$degustateurs[$compte_id] = $degustateur;
 				}
 			}
