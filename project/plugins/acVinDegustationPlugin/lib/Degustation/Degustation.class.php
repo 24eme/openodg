@@ -1038,19 +1038,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $degustateurs;
-		}
-
-		public function getDegustateursForTable($numero_table){
-	    $degustateursDispo = array();
-
-	    foreach ($this->getAllDegustateurs() as $key => $degustateur) {
-	      if($degustateur->exist('numero_table') && $degustateur->numero_table != $numero_table){
-	        continue;
-	      }
-	      $degustateursDispo[$key] = $degustateur;
-	    }
-	    return $degustateursDispo;
-	  }
+		}		
 
 		public function getDegustateursATable(){
 			$degustateurs = array();

@@ -39,7 +39,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($degustation->getDegustateursForTable($numero_table) as $name => $degustateur): ?>
+                  <?php foreach ($form->getDegustateursForTable() as $name => $degustateur): ?>
                     <tr <?php if($degustateur->exist('confirmation') && ($degustateur->confirmation === false)): ?>class="disabled text-muted" disabled="disabled" style="text-decoration:line-through;"<?php endif; ?>>
                       <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
                       <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id_compte)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
