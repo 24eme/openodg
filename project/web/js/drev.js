@@ -304,6 +304,21 @@
               if(parseFloat(vol_total.value) > 0){
                 $('#'+modal.id).find('.input-total').val(total.toFixed(2));
                 vol_total.readOnly = true;
+
+                if($('.bloc_condition .radio-inline input')){
+                $('.bloc_condition .radio-inline input').each((i, item) => {
+                    var element_check = $(item)
+                    element_check.on("change", function(){
+                      if(element_check.attr('value') == "DECLASSEMENT"){
+                        vol_total.readOnly = false;
+                      }else{
+                        vol_total.readOnly = true;
+                      }
+                    })
+                   element_check.trigger('change')
+                  });
+                }
+
                 let target_link = vol_total.id.replace('volume', 'cepages')
                 $('#'+input_volume_id).attr('data-target', '#'+target_link);
                 $('#'+input_volume_id).attr('data-toggle', "modal");
