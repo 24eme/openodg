@@ -95,7 +95,7 @@
                 <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Annuler</a>
             </div>
             <div class="col-xs-4 col-xs-offset-4 text-right">
-                <button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button>
+                <button type="submit" class="btn btn-primary btn-upper">Suivant <span class="glyphicon glyphicon-chevron-right"></span></button>
             </div>
         </div>
 
