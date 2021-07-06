@@ -34,9 +34,6 @@
 <?php
   $lots = $chgtDenom->getLotsWithPseudoDeclassement();
   foreach($lots as $k => $lot):
-      if (!$lot->volume) {
-          continue;
-      }
 ?>
   <div class="alert block-chgtDenom col-sm-<?php if (count($lots) == 1): ?>12<?php else: ?>6<?php endif; ?>">
   <?php if($chgtDenom->isDeclassement() && $lot->statut == Lot::STATUT_DECLASSE): ?>
