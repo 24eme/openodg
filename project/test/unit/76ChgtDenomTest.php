@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(195);
+$t = new lime_test(204);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -68,6 +68,8 @@ $lot->millesime = $periode;
 $lot->numero_logement_operateur = $i;
 $lot->volume = 50;
 $lot->affectable = true;
+$lot->cepages = array('CABERNET' => 25, 'PINOT' => 25);
+
 $lot->destination_type = null;
 $lot->destination_date = ($periode+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d", 1);
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
@@ -333,7 +335,8 @@ $t->comment("Création d'un Chgt de Denom Partiel");
 $chgtDenom->setLotOrigine($autreLot);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
-$chgtDenom->changement_volume = round($volume / 2, 2);
+$chgtDenom->changement_volume = 20;
+$chgtDenom->changement_cepages = array('CABERNET' => 10, 'PINOT' => 10);
 $chgtDenom->changement_numero_logement_operateur = "2(ex1)";
 $chgtDenom->changement_affectable = true;
 $chgtDenom->validate();
@@ -342,6 +345,8 @@ $chgtDenom->save();
 $t->is($chgtDenom->changement_origine_id_document, $degustation->_id, "Le changement a bien comme origine ".$degustation->_id);
 $t->is($chgtDenom->changement_produit_libelle, $autreLot->produit_libelle, "Libellé produit");
 $t->is($chgtDenom->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Type de changement à CHANGEMENT");
+$t->is(count($chgtDenom->origine_cepages), 2, "L'origine du cépage a bien 2 cepages");
+$t->is(count($chgtDenom->changement_cepages), 2, "Le changement a bien 2 cepages");
 
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
 $t->is($chgtDenom->lots[0]->date, $chgtDenom->date, "La date du lot est celle du changement de dénomination");
@@ -356,6 +361,10 @@ $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numer
 $t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur, "Le logement lot 2 a changé");
 $t->is($chgtDenom->lots[0]->affectable, $chgtDenom->origine_affectable, "L'affectation du lot origine n'a pas changé");
 $t->is($chgtDenom->lots[1]->affectable, $chgtDenom->changement_affectable, "L'affectation lot 2 a changé");
+$t->is($chgtDenom->lots[0]->cepages['CABERNET'], 15, "L'affectation du lot origine a la bonne répartition de cepages (CABERNET)");
+$t->is($chgtDenom->lots[0]->cepages['PINOT'], 15, "L'affectation du lot origine a la bonne répartition de cepages (PINOT)");
+$t->is($chgtDenom->lots[1]->cepages['CABERNET'], 10, "Le lot 2 du changement a les cepages (CABERNET)");
+$t->is($chgtDenom->lots[1]->cepages['PINOT'], 10, "Le lot 2 du changement a les cepages (PINOT)");
 
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot orginel est bien conforme");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable");
@@ -400,7 +409,7 @@ $chgtDenom->clearLots();
 $t->comment("Création d'un Declassement Partiel");
 $chgtDenom->setLotOrigine($lotFromDegust);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
-$chgtDenom->changement_volume = round($volume / 3, 2);
+$chgtDenom->changement_volume = 10;
 $chgtDenom->origine_numero_logement_operateur = "2 (ex1)";
 $chgtDenom->validate();
 $chgtDenom->save();
@@ -416,7 +425,10 @@ $t->is($chgtDenom->origine_produit_hash, $lotFromDegust->produit_hash, "l'origin
 $t->is(count($chgtDenom->lots), 1, "Pour un déclassement partiel n'a qu'un seul lot");
 $t->is($chgtDenom->lots[0]->numero_archive, '00001', "Pour le déclassement, le 1er lot n'a pas changé de numéro d'archive");
 $t->is($chgtDenom->lots[0]->document_ordre, '03', "Le numéro d'ordre du lot 1 est bien 03");
-$t->is($chgtDenom->lots[0]->volume, $volume - round($volume / 3, 2), "le volume du lot originel a bien changé également");
+$t->is($chgtDenom->lots[0]->volume, 40, "le volume du lot originel a bien changé également");
+$t->is(count($chgtDenom->lots[0]->cepages), 2, "Le lot non déclassé à toujours 2 cepages");
+$t->is($chgtDenom->lots[0]->cepages['CABERNET'], 20, "Le nouveau volume est appliqué au 1er cépage");
+$t->is($chgtDenom->lots[0]->cepages['PINOT'], 20, "Le nouveau volume est appliqué au 2d cépages");
 $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "la provenance du lot 1 est bien ".$degustation->_id);
 $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement operateur d'origine a changé");
 $t->is($chgtDenom->lots[0]->produit_hash, $lotFromDegust->produit_hash, "Le 1er lot a bien conservé son produit");
