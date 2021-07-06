@@ -438,12 +438,19 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
   	}
 
     public function getLotsWithPseudoDeclassement() {
-        if (!$this->isDeclassement()) {
-            return $this->lots;
-        }
         $lots_res = array();
-        $lots_res[] = $this->lots[0];
+        if (!$this->isDeclassement()) {
+            foreach($this->lots as $lot) {
+                if ($lot->volume) {
+                    $lots_res[] = $lot;
+                }
+            }
+            return $lots_res;
+        }
 
+        if ($this->lots[0]->volume) {
+            $lots_res[] = $this->lots[0];
+        }
         $decl = clone $this->lots[0];
         $decl->produit_hash = null;
         $decl->produit_libelle = "Vin sans IG";
