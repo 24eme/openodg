@@ -397,7 +397,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
               $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
           }
-
+          $this->updateCepageCoherencyWithVolume($lotOrig);
           $lots[] = $lotOrig;
           $lot->numero_archive = null;
           $lot->unique_id = null;
@@ -424,6 +424,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->cepages = $this->origine_cepages;
       }
 
+      $this->updateCepageCoherencyWithVolume($lot);
       $lots[] = $lot;
 
       foreach($lots as $l) {
@@ -431,6 +432,27 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot->id_document = $this->_id;
         $lot->updateDocumentDependances();
       }
+    }
+
+    private function updateCepageCoherencyWithVolume($lot) {
+        if (!$lot->cepages) {
+            return $lot;
+        }
+        if (!$lot->volume) {
+            $lot->cepages = array();
+            return $lot;
+        }
+        $volume_cepages = 0;
+        foreach($lot->cepages as $k => $v) {
+            $volume_cepages += $v;
+        }
+        if ($volume_cepages == $lot->volume) {
+            return $lot;
+        }
+        foreach($this->origine_cepages as $k => $v) {
+            $lot->cepages->{$k} = $v * $lot->volume / $this->origine_volume;
+        }
+        return $lot;
     }
 
   	public function getVersion() {
