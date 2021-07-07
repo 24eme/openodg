@@ -105,6 +105,10 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
+
         return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 

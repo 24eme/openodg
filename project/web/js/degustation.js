@@ -19,27 +19,6 @@
       });
     });
 
-    $('.submitFormBefore').each(function(){
-      $(this).on('click', function(e){
-        e.preventDefault()
-
-        var form = $('form.degustation')
-        var action = form.attr('action')
-        var url = $(this).data('href')
-        $.ajax({
-         type: "POST",
-         url: action,
-         data: form.serialize(),
-         success: function (data) {
-              window.location.assign(url)
-          },
-          error: function (data) {
-              console.log('An error occurred.')
-          }
-        })
-      })
-    });
-
     $('.degustation li.ajax a').on('click',function(){
       var form = $('form.degustation');
       form.post();
