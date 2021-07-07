@@ -1004,7 +1004,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!array_key_exists($college,$degustateursByCollege)){
 					$degustateursByCollege[$college] = array();
 				}
-				$degustateursByCollege[$college][$compte_id] = ($degustateur->exist('confirmation') && !is_null($degustateur->confirmation) && $degustateur->confirmation);
+				$degustateursByCollege[$college][$compte_id] = ($degustateur->exist('confirmation') && $degustateur->confirmation);
 			}
 			return $degustateursByCollege;
 		}
@@ -1022,7 +1022,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$degustateurs = array();
 			foreach ($this->getAllDegustateurs() as $college_cmptId => $degustateur) {
 				list($college, $compte_id) = explode("|", $college_cmptId);
-				if($degustateur->exist('confirmation') && $degustateur->confirmation === true){
+				if($degustateur->exist('confirmation') && $degustateur->confirmation){
 					$degustateurs[$compte_id] = $degustateur;
 				}
 			}
@@ -1033,7 +1033,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$degustateurs = array();
 			foreach ($this->getDegustateursConfirmes() as $id => $degustateur) {
 				if(($degustateur->exist('numero_table') && $degustateur->numero_table == $numero_table)
-					|| (!$degustateur->exist('numero_table') || is_null($degustateur->numero_table))){
+					|| (!$degustateur->exist('numero_table') || !($degustateur->numero_table))){
 					$degustateurs[$id] = $degustateur;
 				}
 			}
