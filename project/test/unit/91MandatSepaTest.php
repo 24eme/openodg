@@ -39,12 +39,6 @@ $t->is(MandatSepaConfiguration::getInstance()->getMentionAutorisation(), 'En sig
 $t->is(MandatSepaConfiguration::getInstance()->getMentionRemboursement(), 'Vous bénéficiez d\'un droit à remboursement par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle. Toute demande de remboursement doit être présentée dans les 8 semaines suivant la date de débit de votre compte ou sans tarder et au plus tard dans les 13 mois en cas de prélèvement non autorisé.', 'remboursement correctement configuré');
 $t->is(MandatSepaConfiguration::getInstance()->getMentionDroits(), 'Vos droits concernant le présent mandat sont expliqués dans un document que vous pouvez obtenir auprès de votre banque.', 'droits correctement configuré');
 
-$t->is(MandatSepaConfiguration::getInstance()->getMandatSepaIdentifiant(), '** ID ICS **', 'ics correctement configuré');
-$t->is(MandatSepaConfiguration::getInstance()->getMandatSepaNom(), 'Syndicat des Vins IGP', 'nom correctement configuré');
-$t->is(MandatSepaConfiguration::getInstance()->getMandatSepaAdresse(), '22 Avenue Henri Pontier', 'adresse correctement configuré');
-$t->is(MandatSepaConfiguration::getInstance()->getMandatSepaCodePostal(), '13626', 'cp correctement configuré');
-$t->is(MandatSepaConfiguration::getInstance()->getMandatSepaCommune(), 'Aix-en-Provence', 'commune correctement configuré');
-
 $mandatSepa = MandatSepaClient::getInstance()->createDoc($societe);
 $mandatSepa->constructId();
 $mandatSepa->save();
