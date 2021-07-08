@@ -127,8 +127,6 @@ class parcellaireAffectationCoopActions extends sfActions {
           throw new sfException("La page de recap des liaisons n'est disponible qu'en admin");
 
         }
-
-        $this->apporteursWithDiff = $this->parcellaireAffectationCoop->getApporteursDiffFromLiaison();
     }
 
     public function executeExportcsv(sfWebRequest $request) {
