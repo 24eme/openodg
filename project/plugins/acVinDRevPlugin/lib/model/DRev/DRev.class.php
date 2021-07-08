@@ -1553,7 +1553,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
             return 0;
         }
-        return $douane->getNbApporteurs() + 1;
+        $apporteurs = $douane->getNbApporteurs();
+        if (!$apporteurs) {
+            return 0;
+        }
+        return $apporteurs + 1;
     }
 
     /**
