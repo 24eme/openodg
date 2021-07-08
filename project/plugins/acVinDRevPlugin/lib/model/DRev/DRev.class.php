@@ -1548,6 +1548,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
 
+    public function getNbApporteursPlusOneFromDouane() {
+        $douane = $this->getDR();
+        if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
+            return 0;
+        }
+        $apporteurs = $douane->getNbApporteurs();
+        if (!$apporteurs) {
+            return 0;
+        }
+        return $apporteurs + 1;
+    }
+
     /**
     * @deprecated use getVolumeRevendiqueLots instead
     */
