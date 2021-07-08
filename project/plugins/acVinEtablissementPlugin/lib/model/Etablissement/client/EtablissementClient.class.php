@@ -218,11 +218,17 @@ class EtablissementClient extends acCouchdbClient {
       }
 
       foreach ($rows as $r) {
-          $e = $this->find($r->id, $hydrate);
-          if (!$with_suspendu && $e->isSuspendu()) {
+          $e = $this->find($r->id, acCouchdbClient::HYDRATE_JSON);
+          if ($e->statut == EtablissementClient::STATUT_SUSPENDU) {
               continue;
           }
-          return $e;
+          return $this->find($r->id, $hydrate);
+      }
+      
+      if($with_suspendu) {
+          foreach ($rows as $r) {
+              return $this->find($r->id, $hydrate);
+          }
       }
       return null;
     }
