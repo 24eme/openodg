@@ -2,10 +2,11 @@
 <?php include_partial('parcellaireAffectationCoop/step', array('step' => 'apporteurs', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
 
 <div class="page-header no-border">
-    <h2>Liste de vos apporteurs</h2>
+    <h2>Liste globale de tous vos apporteurs</h2>
 </div>
 
-<p>Veuillez mettre à jour la liste de vos apporteurs</p>
+<?php if($sf_user->isAdmin()): ?><a class="pull-right" href="<?php echo url_for("parcellaireaffectationcoop_recap", $parcellaireAffectationCoop) ?>">Voir les changements</a><?php endif; ?>
+<p>Veuillez mettre à jour la liste globale de tous vos apporteurs</p>
 
 <form action="" method="post" class="form-horizontal">
     <table class="table table-condensed table-striped table-bordered">
