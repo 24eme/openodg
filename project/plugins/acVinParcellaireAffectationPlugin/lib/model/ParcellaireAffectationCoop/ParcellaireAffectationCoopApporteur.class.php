@@ -18,6 +18,11 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
 
         return str_replace("ETABLISSEMENT-", "", $this->getEtablissementId());
     }
+    
+    public function getEtablissementObject() {
+
+          return EtablissementClient::getInstance()->find($this->getEtablissementId());
+    }
 
     public function getStatut() {
         $affectationParcellaire = $this->getAffectationParcellaire();

@@ -102,25 +102,40 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         }
     }
 
+    public function getApporteursChanges(){
+        $liaisons = array();
 
-    public function getApporteursDiffFromLiaison(){
-      $apporteursLiaisonArray = array();
+        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
+            $liaisons[$liaison->id_etablissement] = true;
+        }
 
-      foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR) as $liaison) {
-          $apporteursLiaisonArray[$liaison->id_etablissement] = $liaison->libelle_etablissement;
-      }
+        $retires = array();
+        foreach ($this->getApporteurs() as $apporteur) {
+            if($apporteur->apporteur) {
+                continue;
+            }
+            if(!isset($liaisons[$apporteur->getEtablissementId()])) {
+                continue;
+            }
+            if($apporteur->getEtablissementObject()->isSuspendu()) {
+                continue;
+            }
+          
+            $retires[] = $apporteur;
+        }
+        $ajoutes = array();
+        foreach ($this->getApporteurs() as $id => $apporteur) {
+            if(!$apporteur->apporteur) {
+                continue;
+            }
+            if(isset($liaisons[$apporteur->getEtablissementId()])) {
+                continue;
+            }
+          
+            $ajoutes[] = $apporteur;
+        }
 
-      $apporteursWithDiff = array();
-      foreach ($this->getApporteurs() as $id => $apporteur) {
-        $apporteursWithDiff[$id] = new stdClass();
-        $apporteursWithDiff[$id]->apporteur = $apporteur;
-
-        $apporteursWithDiff[$id]->remove = (array_key_exists($id,$apporteursLiaisonArray) && !$apporteur->apporteur);
-        $apporteursWithDiff[$id]->add = (!array_key_exists($id,$apporteursLiaisonArray) && $apporteur->apporteur);
-        
-      }
-
-      return $apporteursWithDiff;
+      return array_merge($retires, $ajoutes);
     }
 
 

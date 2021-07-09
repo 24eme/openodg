@@ -36,6 +36,7 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
         foreach($values['lots'] as $key => $value) {
             if(!isset($value['preleve']) || !$value['preleve']) {
                 $this->getDocument()->lots->get($key)->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+                $this->getDocument()->lots->get($key)->preleve = null;
                 continue;
             }
             if(!$this->getDocument()->lots->get($key)->isPreleve()){

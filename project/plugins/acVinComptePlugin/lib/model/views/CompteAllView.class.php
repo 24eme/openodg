@@ -119,7 +119,7 @@ class CompteAllView extends acCouchdbView {
             if ($libelle) {
                 $libelle .= ' / ';
             }
-            $libelle .= $nom;
+            $libelle .= Anonymization::hideIfNeeded($nom);
         }
 
         $libelle .= ' (' . $datas[self::KEY_ADRESSE];

@@ -57,8 +57,10 @@
                           <?php echoFloat($synthese['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
                       </td>
                       <td class="text-right">
-                        <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) >= 0): ?><?php echoFloat($synthese['volume_restant_max']); ?><small>&nbsp;hl</small><?php endif; ?>
-                        <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant_max']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                        <?php if(isset($synthese['volume_sur_place']) && $synthese['volume_sur_place']): ?>
+                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) >= 0): ?><?php echoFloat($synthese['volume_restant_max']); ?><small>&nbsp;hl</small><?php endif; ?>
+                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant_max']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                        <?php endif; ?>
                       </td>
                       </tr>
                   <?php endforeach; ?>

@@ -13,7 +13,7 @@
           Pour terminer votre inscription au prélèvement automatique vous devez télécharger le mandat de prélèvement SEPA.
         </p>
         <p>
-          Une fois télécharger, il vous suffit de le signer et de nous le renvoyer par voie postale à l'adresse suivante :</p>
+          Une fois téléchargé, il vous suffit de le signer et de nous le renvoyer par voie postale à l'adresse suivante :</p>
         </p>
         <p class="text-center">
           <?php echo $mandatSepa->creancier->nom; ?>
