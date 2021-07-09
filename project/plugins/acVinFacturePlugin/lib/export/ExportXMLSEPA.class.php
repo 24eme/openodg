@@ -2,7 +2,7 @@
 
 class ExportXMLSEPA {
 
-  private array $factures;
+  private $factures;
   private $xml;
 
   public function __construct(array $factures = array(), $auto_save_facture = false) {
