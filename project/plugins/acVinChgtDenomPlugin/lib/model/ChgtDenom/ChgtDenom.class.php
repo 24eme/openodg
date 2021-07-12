@@ -402,6 +402,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->numero_archive = null;
           $lot->unique_id = null;
           $lot->document_ordre = '01';
+          $lot->specificite = '';
 
           $lot->volume = $this->changement_volume;
           $lot->produit_hash = $this->changement_produit_hash;
