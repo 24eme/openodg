@@ -172,7 +172,7 @@ class ExportXMLSEPA {
         $dbtr->addChild("Nm",$facture->declarant->raison_sociale); // sa raison Social  //ou $facture->getSociete()->getRaisonSociale()
         $dbtracct = $drctdbttxinf->addChild("DbtrAcct");
         $idDbtracct = $dbtracct->addChild('Id');
-        $idDbtracct->addChild('IBAN',$mandatSepa->getIbanFormate()); //son iban
+        $idDbtracct->addChild('IBAN',$mandatSepa->getIban()); //son iban
         $rmtinf = $drctdbttxinf->addChild("RmtInf");
         $rmtinf->addChild("Ustrd","Facture"); //libelle bancaire pour lui
       }
