@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(206);
+$t = new lime_test(211);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -68,7 +68,7 @@ $lot->millesime = $periode;
 $lot->numero_logement_operateur = $i;
 $lot->volume = 50;
 $lot->affectable = true;
-$lot->specificite = 'Ma specificite';
+$lot->specificite = 'Ma fausse 2ème dégustation';
 $lot->cepages = array('CABERNET' => 25, 'PINOT' => 25);
 
 $lot->destination_type = null;
@@ -145,6 +145,8 @@ $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le ch
 $t->isnt($chgtDenomFromDrev->changement_produit_hash, $lotFromDrev->produit_hash, "Le changement a bien un produit différent");
 $t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Le lot ");
 $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le changement a bien le millesime de son origine : ".$drev->lots[2]->millesime);
+$t->is($chgtDenomFromDrev->changement_specificite, "Ma fausse", "Le changement n'a plus de 2de dégustation dans sa spécificité");
+$t->is($chgtDenomFromDrev->origine_specificite, "Ma fausse 2ème dégustation", "L'origine a 2de dégustation dans sa spécificité");
 
 $t->is(count($chgtDenomFromDrev->lots), 2, "Le changement étant total, on a 2 lots");
 
@@ -156,7 +158,7 @@ $t->is($chgtDenomFromDrev->lots[0]->document_ordre, '02', "Le lot du chgt a bien
 $t->is($chgtDenomFromDrev->lots[0]->id_document_provenance, $drev->_id, "Le lot du chgt a bien comme provenance la drev ".$drev->_id);
 $t->is($chgtDenomFromDrev->lots[0]->affectable, false, "Le lot du chgt n'est pas affectable");
 $t->is($chgtDenomFromDrev->lots[0]->volume, 0, "Le lot 1 du chgt a un volume à 0");
-$t->is($chgtDenomFromDrev->lots[0]->specificite, 'Ma specificite', "Le lot 1 du chgt a bien une spécificité");
+$t->is($chgtDenomFromDrev->lots[0]->specificite, 'Ma fausse 2ème dégustation', "Le lot 1 du chgt a bien une spécificité");
 $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_NONAFFECTABLE), "Le lot 1 du changement a bien un mouvement non affectable");
 $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le lot 1 du changement a bien un mouvement changé dest");
 $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 du changement n'est pas changeable");
@@ -171,7 +173,7 @@ $t->is($chgtDenomFromDrev->lots[1]->document_ordre, '01', "Le lot du chgt a bien
 $t->is($chgtDenomFromDrev->lots[1]->id_document_provenance, null, "Le lot du chgt n'a  de provenance");
 $t->is($chgtDenomFromDrev->lots[1]->affectable, $lotFromDrev->affectable, "Le lot du chgt a la même non affectation que dans la drev (réputé conforme)");
 $t->is($chgtDenomFromDrev->lots[1]->volume, $lotFromDrev->volume, "Le lot 2 du chgt a le volume total");
-$t->is($chgtDenomFromDrev->lots[1]->specificite, '', "Le lot 1 du chgt n'a plus de spécificité");
+$t->is($chgtDenomFromDrev->lots[1]->specificite, 'Ma fausse', "Le lot 1 du chgt n'a plus de spécificité");
 $t->ok($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE), "Le lot 1 du changement a bien un mouvement non affectable");
 $t->ok(!$chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le lot 1 du changement a bien un mouvement changé dest");
 $t->ok($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 du changement n'est pas changeable");
@@ -199,6 +201,7 @@ $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le d
 $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le déclassement n'a pas de mouvement changé dest");
 $t->is($chgtDenomFromDrev->lots[0]->volume, 0, "Le lot du déclassement n'a plus de volume");
 $t->is($chgtDenomFromDrev->lots[0]->produit_hash, $chgtDenomFromDrev->origine_produit_hash, "Le lot du déclassement conserve le produit d'origine");
+$t->is($chgtDenomFromDrev->lots[0]->specificite, 'Ma fausse 2ème dégustation', "Le lot du déclassement à la spécificité");
 
 
 $t->comment("on remet et un produit et on rend le lot affectable");
@@ -368,6 +371,8 @@ $t->is($chgtDenom->lots[0]->cepages['CABERNET'], 15, "L'affectation du lot origi
 $t->is($chgtDenom->lots[0]->cepages['PINOT'], 15, "L'affectation du lot origine a la bonne répartition de cepages (PINOT)");
 $t->is($chgtDenom->lots[1]->cepages['CABERNET'], 10, "Le lot 2 du changement a les cepages (CABERNET)");
 $t->is($chgtDenom->lots[1]->cepages['PINOT'], 10, "Le lot 2 du changement a les cepages (PINOT)");
+$t->is($chgtDenomFromDrev->lots[0]->specificite, 'Ma fausse 2ème dégustation', "La spécificité du lot d'origine est celle d'origine");
+$t->is($chgtDenomFromDrev->lots[1]->specificite, 'Ma fausse', "La spécificité du lot changé n'a plus de 2d dégust");
 
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot orginel est bien conforme");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable");
