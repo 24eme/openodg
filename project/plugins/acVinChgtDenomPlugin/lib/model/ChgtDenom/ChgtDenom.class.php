@@ -170,7 +170,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->changement_origine_lot_unique_id = $lot->unique_id;
         $this->changement_millesime = $lot->millesime;
         $this->changement_volume = $lot->volume;
-        $this->changement_specificite = $lot->specificite;
+        $this->changement_specificite = preg_replace('/ *\d+ème dégustation/', '', $lot->specificite);
         $this->changement_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->changement_affectable = $lot->affectable;
         $this->changement_cepages = $lot->cepages;
@@ -228,7 +228,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
            $lot->unique_id = $this->changement_origine_lot_unique_id;
            $lot->millesime = $this->changement_millesime;
            $lot->volume = $this->changement_volume;
-           $lot->specificite = $this->changement_specificite;
            $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
            $lot->affectable = $this->changement_affectable;
            $lot->millesime = $this->origine_millesime;
@@ -386,7 +385,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lot->id_document_provenance = $this->changement_origine_id_document;
 
       $lot->volume = $this->changement_volume;
-      $lot->specificite = $this->changement_specificite;
 
       if ($this->isChgtDenomination()) {
           $lotOrig = clone $lot;
@@ -402,6 +400,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->numero_archive = null;
           $lot->unique_id = null;
           $lot->document_ordre = '01';
+          $lot->specificite = $this->changement_specificite;
 
           $lot->volume = $this->changement_volume;
           $lot->produit_hash = $this->changement_produit_hash;
