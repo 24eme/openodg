@@ -74,6 +74,9 @@ class CertipaqService
         return $result;
     }
 
+    /**
+     * @deprecated
+     */
     public function storeXmlAsAttachement($drm, $xml) {
         $tmp = tempnam('/tmp', 'attachement');
         file_put_contents($tmp, $xml);
@@ -81,6 +84,9 @@ class CertipaqService
         unlink($tmp);
     }
 
+    /**
+     * @deprecated
+     */
     public function transferAndStore($drm, $xml, $token = null) {
         $certipaqResponse = "";
         try {
