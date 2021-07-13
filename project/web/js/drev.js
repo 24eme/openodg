@@ -336,7 +336,7 @@
 
                 var element_check = $('.bloc_condition .radio-inline input[checked="checked"]')
 
-                if(element_check.attr('value') === "DECLASSEMENT"){
+                if(element_check.attr('value') === "DECLASSEMENT" && element_check.is(":checked")){
                   $(vol_total).removeAttr('readOnly')
                 }
 
