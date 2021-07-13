@@ -138,11 +138,13 @@ class CertipaqService
         return array(
             'headers'  => array(
                 "Host: ".$this->configuration['host'],
-                "Content-Type: application/x-www-form-urlencoded"),
+                "Content-Type: application/json"
+            ),
             'method'  => 'POST',
             'protocol_version' => 1.1,
             'ignore_errors' => true,
-            'content' => http_build_query($content));
+            'content' => http_build_query($content)
+        );
     }
 
     protected function getTransferHttpRequest($token, $xml = null)
@@ -150,12 +152,14 @@ class CertipaqService
         return array(
             'headers'  => array(
                 "Host: ".$this->configuration['host'],
-                "Content-Type: application/xml;charset=UTF-8",
-                "Authorization: Bearer $token"),
+                "Content-Type: application/json",
+                "Authorization: Bearer $token"
+            ),
             'method'  => 'POST',
             'protocol_version' => 1.1,
             'ignore_errors' => true,
-            'content' => $xml);
+            'content' => $xml
+        );
     }
 
     protected function httpQuery($url, $options)
