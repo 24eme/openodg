@@ -30,6 +30,7 @@ $t->is($drev->identifiant, $viti->identifiant, "L'identifiant est celui du viti 
 $t->is($drev->campagne, $campagne, "La campagne est ".$campagne);
 $drev->storeDeclarant();
 $drev->save();
+$t->comment($drev->_id);
 
 $t->comment("Initialisation des produits");
 
@@ -92,8 +93,8 @@ $lot->destination_type = null;
 $lot->destination_date = ($campagne+1).'-04-15';
 $lot->produit_hash = $produit1->getConfig()->getHash();
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
-$lot->addCepage("Chenin", 60);
-$lot->addCepage("Sauvignon", 40);
+$lot->addCepage("PINOT G", 60);
+$lot->addCepage("SAUVIGN.B", 40);
 
 $drev->save();
 
@@ -109,11 +110,11 @@ $t->is($lot->getDestinationDateFr(), '15/04/'.($campagne+1), "La date est 15/04/
 $t->is($lot->produit_hash, $produit1->getConfig()->getHash(), "Le hash produit produit est ".$produit1->getConfig()->getHash());
 $t->is($lot->produit_libelle, $produit1->getConfig()->getLibelleComplet(), "Le libelle produit est ".$produit1->getConfig()->getLibelleComplet());
 $t->is($lot->destination_type, DRevClient::LOT_DESTINATION_VRAC_EXPORT, "La destination_type est ".DRevClient::LOT_DESTINATION_VRAC_EXPORT);
-$t->is($lot->cepages->getFirstKey(), "Chenin", "Le premier cépage est du Chenin");
+$t->is($lot->cepages->getFirstKey(), "PINOT G", "Le premier cépage est du Pinot");
 $t->is($lot->cepages->getFirst(), 60, "Le premier cépage représente 60% des cépages");
-$t->is($lot->cepages->getLastKey(), "Sauvignon", "Le dernier cépage est du Sauvignon");
+$t->is($lot->cepages->getLastKey(), "SAUVIGN.B", "Le dernier cépage est du Sauvignon");
 $t->is($lot->cepages->getLast(), 40, "Le dernier cépage représente 40% des cépages");
-$t->is($lot->getCepagesLibelle(), "Chenin (60%), Sauvignon (40%)", "Le dernier cépage représente 40% des cépages");
+$t->is($lot->getCepagesLibelle(), "PINOT G (60%), SAUVIGN.B (40%)", "Le dernier cépage représente 40% des cépages");
 
 $drev->addLot();
 $t->is(count($drev->lots), 4, "Le lot a été ajouté");

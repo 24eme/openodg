@@ -1,86 +1,59 @@
 <?php
 
-class ExportDegustationFicheRecapTablesPDF extends ExportPDF {
+class ExportDegustationFicheRecapTablesPDF extends ExportDeclarationLotsPDF {
 
     protected $degustation = null;
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
 
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
-        parent::__construct($type, $use_cache, $file_dir, $filename);
+        parent::__construct($degustation, $type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
-      foreach ($this->degustation->getLotsTablesByNumAnonyme() as $numTab => $lotsAnom) {
-        @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheRecapTablesPdf',
-          array(
-            'degustation' => $this->degustation,
-            'lots' => $lotsAnom,
-            'numTab' => $numTab
-          )
-        ));
+        $lotsByTable = array();
+      foreach ($this->degustation->getLotsSortByTables() as $lot) {
+          $lotsByTable[$lot->numero_table][$lot->numero_anonymat] = $lot;
       }
-    }
 
-
-    public function output() {
-        if($this->printable_document instanceof PageableHTML) {
-            return parent::output();
+        if (empty($lotsByTable)) {
+            throw new sfException('Pas de lots attablés : '.$this->degustation->_id);
         }
 
-        return file_get_contents($this->getFile());
-    }
-
-    public function getFile() {
-
-        if($this->printable_document instanceof PageableHTML) {
-            return parent::getFile();
+        foreach ($lotsByTable as &$table) {
+            ksort($table);
         }
 
-        return sfConfig::get('sf_cache_dir').'/pdf/'.$this->getFileName(true);
+      foreach($lotsByTable as $numeroTable => $lots) {
+          @$this->printable_document->addPage(
+            $this->getPartial('degustation/ficheRecapTablesPdf',
+            array(
+              'degustation' => $this->degustation,
+              'lots' => $lots,
+              'numTab' => $numeroTable
+            )
+          ));
+        }
     }
+
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
-
-        return $titre;
+        return "Fiche de synthèse";
     }
 
     protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)."FICHE DE SYNTHÈSE";
+        $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+        $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
 
         return $header_subtitle;
     }
 
 
-    protected function getFooterText() {
-        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
-        return $footer;
-    }
-
-    protected function getConfig() {
-
-        return new ExportDegustationFicheRecapTablesPDFConfig();
-    }
-
     public function getFileName($with_rev = false) {
-
-        return self::buildFileName($this->degustation, true);
-    }
-
-    public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_synthese_recap_tables_%s", $degustation->_id);
-
-
+        $filename = sprintf("Fiche_synthese_recap_tables_%s", $this->degustation->_id);
         if ($with_rev) {
-            $filename .= '_' . $degustation->_rev;
+            $filename .= '_' . $this->degustation->_rev;
         }
-
 
         return $filename . '.pdf';
     }

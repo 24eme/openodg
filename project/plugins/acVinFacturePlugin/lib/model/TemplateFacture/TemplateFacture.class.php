@@ -14,14 +14,23 @@ class TemplateFacture extends BaseTemplateFacture
 			if(!$config->isForType($document->getType())) {
 				continue;
 			}
+			if($config->isDisabled()) {
+				continue;
+			}
 			foreach ($config->generateCotisations($document) as $cotisation) {
 				if($config->exist('fallback') && $config->fallback){
 					continue;
 				}
-				$cotisations[$cotisation->getHash()] = $cotisation;
+                $cle = $cotisation->getHash();
+                if ((strpos('%detail_identifiant%', $cle) !== false) && !$document->exist('numero_archive')) {
+                    throw new sfException('pas de %detail_identifiant% possible pour la clé '.$cle.' : '.get_class($document)." n'a pas de champs numero_archive");
+                }
+                if (strpos('%detail_identifiant%', $cle) !== false) {
+                    $cle = str_replace('%detail_identifiant%', $document->numero_archive, $cle);
+                }
+				$cotisations[$cle] = $cotisation;
 			}
 		}
-
 		return $cotisations;
 	}
 
@@ -29,7 +38,7 @@ class TemplateFacture extends BaseTemplateFacture
 		$mouvements = array();
 		foreach ($this->docs as $docModele) {
 			$documents = $this->getDocumentFacturable($docModele, $compteIdentifiant, $this->getCampagne());
-			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsFacturesByDocs($compteIdentifiant, $documents));
+			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsFacturesByDocs($compteIdentifiant, $documents,$force));
 		}
 
 		return $mouvements;

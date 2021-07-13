@@ -83,12 +83,45 @@ class FactureConfiguration {
       return $this->configuration['numero_format'];
     }
 
+    public function getNumeroFormatDocuments(){
+      if(!isset($this->configuration['numero_format_documents']) || !$this->configuration['numero_format_documents']){
+        return "";
+      }
+      return $this->configuration['numero_format_documents'];
+    }
+
     public function getModaliteDePaiement()
     {
         return ($this->configuration['modalite_paiement']) ?: '';
     }
 
+    public function getExercice() {
+
+        return ($this->configuration['exercice']) ?: '';
+    }
+
     public function hasPaiements(){
       return isset($this->configuration['paiements']) && $this->configuration['paiements'];
+    }
+
+    public function getDelaisPaiement() {
+        if(!isset($this->configuration['delais_paiement'])) {
+
+            return null;
+        }
+
+        return $this->configuration['delais_paiement'];
+    }
+
+    /* @Deprecated use Organisme::getInstance() */
+    public function getInfos($region = null) {
+
+        return Organisme::getInstance($region)->getInfos();
+    }
+
+    /* @Deprecated use Organisme::getInstance() */
+    public function getInfo($key, $region = null) {
+
+        return Organisme::getInstance($region)->getInfo($key);
     }
 }

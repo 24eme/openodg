@@ -8,7 +8,8 @@ Facture:
       identifiant: {}
       code_comptable_client: {}
       numero_facture: {}
-      numero_ava: {}
+      numero_odg: {}
+      numero_ava: { required: false }
       numero_adherent: {}
       date_emission: {}
       date_facturation: {}
@@ -25,6 +26,7 @@ Facture:
       region: {}
       versement_comptable: {type: integer}
       versement_comptable_paiement: {type: integer}
+      versement_sepa: {type: integer}
       arguments:
         type: collection
         definition:
@@ -40,7 +42,7 @@ Facture:
             ville: {}
             service_facturation: {}
             telephone: {}
-            email: {required: false}
+            email: { }
       declarant:
         type: collection
         definition:
@@ -68,6 +70,7 @@ Facture:
                   produit_identifiant_analytique: {  }
                   montant_tva: {type: float}
                   montant_ht: {type: float}
+                  reference: { required: false } # À supprimer
                   origine_mouvements:
                     type: collection
                     definition:
@@ -83,6 +86,7 @@ Facture:
                       fields:
                         '*':
                           type: collection
+                          class: FactureLigneDetail
                           definition:
                             fields:
                               libelle: {}
@@ -115,7 +119,7 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
-      modalite_paiement: { required: false}
+      modalite_paiement: { }
       paiements:
         class: FacturePaiements
         required: false
@@ -131,6 +135,8 @@ Facture:
                   montant: { }
                   type_reglement: { }
                   commentaire: { }
+                  execute: {required: false}
+                  versement_comptable: { }
       pieces:
         type: array_collection
         definition:
@@ -187,6 +193,7 @@ TemplateFacture:
                   minimum_fallback: { required: false }
                   callback: { required: false }
                   required: { required: false }
+                  disabled: { required: false }
                   libelle: {  }
                   code_comptable: {  }
                   details:

@@ -21,7 +21,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         return $this->societe;
     }
-    
+
     public function getLibelleWithAdresse() {
         $libelle = $this->nom_a_afficher;
         if ($this->adresse || $this->adresse_complementaire || $this->code_postal || $this->commune || $this->pays) {
@@ -32,12 +32,12 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
         if ($this->adresse_complementaire) {
             $libelle .=  ' '.$this->adresse_complementaire;
-        } 
+        }
         if ($this->code_postal) {
             $libelle .= ' '.$this->code_postal;
         }
         if ($this->commune) {
-            $libelle .= ' '.$this->commune; 
+            $libelle .= ' '.$this->commune;
         }
         if ($this->pays) {
         	 $libelle .= ' ('.$this->pays.')';
@@ -87,35 +87,35 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return preg_replace('/[^a-z0-9éàùèêëïç]+/', '_', $tag);
     }
 
+    public function updateTagsGroupes() {
+        $this->tags->remove('groupes');
+        $this->tags->add('groupes');
+        foreach($this->groupes as $groupe_obj) {
+            $this->addTag('groupes', $groupe_obj->nom);
+        }
+    }
+
     public function addInGroupes($grp,$fct){
-        $grpt = str_replace(array('.', ')', '('), array('','',''), $grp);
-        $grpn = str_replace(array( ')', '('), array('',''), $grp);
         $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
         $allGrps = $this->getOrAdd('groupes');
         $grpNode = $allGrps->add();
-        $grpNode->nom = $grpn;
+        $grpNode->nom = $grp;
         $grpNode->fonction = $fct;
-        $this->addTag('groupes', $grpt);
     }
 
     public function removeGroupes($grp){
-        $grpt = str_replace(array( ')', '('), array('',''), $grp);
-        $grpt = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
+        $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
         $allGrps = $this->getOrAdd('groupes');
         $grp_to_keep = array();
         foreach ($allGrps as $oldGrp) {
-          if(str_replace('.','!',$oldGrp->nom) != $grp){
+          if($oldGrp->nom != $grp){
             $grp_to_keep[] = $oldGrp;
           }
         }
         $this->remove("groupes");
         $this->getOrAdd('groupes');
-        $this->get('tags')->remove('groupes');
         foreach ($grp_to_keep as $newgrp) {
           $this->groupes->add(null,$newgrp);
-          $newgrpNom = str_replace(array( ')', '('), array('',''), $newgrp->nom);
-          $newgrpNom = preg_replace('/^ */', '', preg_replace('/ *$/', '', $newgrpNom));
-          $this->addTag('groupes', $newgrpNom);
         }
 
     }
@@ -274,6 +274,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', preg_replace('/:.*/', '', $droit));
             }
         }
+
+        $this->updateTagsGroupes();
 
         parent::save();
 
@@ -444,10 +446,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function updateLdap($verbose = 0) {
         $ldap = new CompteLdap();
+        try {
         if ($this->isActif())
             $ldap->saveCompte($this, $verbose);
         else
-            $ldap->deleteCompte($this, $verbose);
+            @$ldap->deleteCompte($this, $verbose);
+        } catch(Exception $e) {
+            echo $this->_id." save ldap : ".$e->getMessage()."\n";
+        }
     }
 
     public function buildDroits($removeAll = false) {
@@ -655,33 +661,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     	return (6378137 * $d);
     }
 
-    public function calculCoordonnees($adresse, $commune, $code_postal) {
-        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
-        if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
-            return false;
-        }
-        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
-        $file = file_get_contents($url);
-        $result = json_decode($file);
-        if(!$result || !count($result->response->docs)){
-            return false;
-        }
-        if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
-            //echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
-        }
-        return array("lat" => $result->response->docs[0]->lat, "lon" => $result->response->docs[0]->lng);
+    public function calculCoordonnees() {
+      return CompteClient::getInstance()->calculCoordonnees($this->adresse, $this->commune, $this->code_postal);
     }
 
     public function updateCoordonneesLongLatByNoeud($noeud,$latCompare = false,$lonCompare = false) {
 
-        $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
+        $coordonnees = CompteClient::getInstance()->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
 
         if(!$coordonnees) {
             return false;
         }
         if($latCompare && $lonCompare){
           if(round($this->getDistances($coordonnees["lat"], $coordonnees["lon"],$latCompare,$lonCompare)) > 20000){
-            $coordonnees = $this->calculCoordonnees("", $noeud->commune, $noeud->code_postal);
+            $coordonnees = CompteClient::getInstance()->calculCoordonnees("", $noeud->commune, $noeud->code_postal);
           }
           if(round($this->getDistances($coordonnees["lat"], $coordonnees["lon"],$latCompare,$lonCompare)) > 20000){
             $coordonnees["lon"] = null;
@@ -774,4 +767,18 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       return $this->getSociete()->getCodeComptable();
     }
 
+    public function getTagsDegustateur()
+    {
+        $tags = [];
+
+        if ($this->tags->exist('manuel')) {
+            foreach ($this->tags->manuel as $tag) {
+                if (strpos($tag, 'degustateur_') === 0) {
+                    $tags[] = ucfirst(str_replace('_', ' ', substr($tag, strlen('degustateur_'))));
+                }
+            }
+        }
+
+        return $tags;
+    }
 }

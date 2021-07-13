@@ -374,7 +374,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
         }
 
         if(!$this->lat || !$this->lon) {
-            $coordonnees = $compte->calculCoordonnees($this->adresse, $this->commune, $this->code_postal);
+            $coordonnees = $compte->calculCoordonnees();
             if($coordonnees) {
                 $this->lat = $coordonnees["lat"];
                 $this->lon = $coordonnees["lon"];

@@ -19,17 +19,26 @@ class GenerationFacturePDF extends GenerationPDF {
 
     public function preGeneratePDF() {
         parent::preGeneratePDF();
+        $this->preGenerate();
+    }
 
-        $template = TemplateFactureClient::getInstance()->find($this->generation->arguments->modele);
 
-        if(!$template) {
-            throw new sfException(sprintf("Le template de facture %s n'existe pas", $this->generation->arguments->modele));
-        }
+    public function preGenerate(){
 
         $comptes_id = FactureClient::getInstance()->getComptesIdFilterWithParameters($this->generation->arguments->toArray());
 
         $message_communication = $this->generation->arguments->exist('message_communication') ? $this->generation->arguments->get('message_communication') : null;
-        $date_facturation = $this->generation->arguments->exist('date_facturation') ? $this->generation->arguments->get('date_facturation') : null;
+        $date_facturation = $this->generation->arguments->exist('date_facturation') ? Date::getIsoDateFromFrenchDate($this->generation->arguments->get('date_facturation')) : null;
+
+        $modele = ($this->generation->arguments->exist('modele'))? $this->generation->arguments->modele : null;
+        if(!$modele){
+            throw new sfException("Il est obligatoire d'avoir un template de facturation");
+        }
+
+        $template = TemplateFactureClient::getInstance()->find($modele);
+        if(!$template) {
+            throw new sfException(sprintf("Le template de facture %s n'existe pas", $modele));
+        }
 
         if(!$this->generation->exist('somme')) {
           $this->generation->somme = 0;
@@ -37,38 +46,29 @@ class GenerationFacturePDF extends GenerationPDF {
 
         $cpt = count($this->generation->documents);
         $batch_cpt = 0;
+        $societe_a_facturer = array();
+
         foreach($comptes_id as $compte_id) {
             $compte = CompteClient::getInstance()->find($compte_id);
-
             if(!$compte) {
                 continue;
             }
-            try {
-              $facture = FactureClient::getInstance()->createFactureByTemplate($template, $compte, $date_facturation, $message_communication);
-            } catch (FacturationPassException $e) {
-              echo $e->getMessage()."\n";
-              continue;              
-            }
+             $societe = $compte->getSociete();
+             $societe_a_facturer[$societe->_id] = $societe;
+         }
 
+         $mouvementsBySoc = array();
+         $mouvementsBySocietes = array();
 
-            if(!$facture) {
-                continue;
-            }
-
-            $facture->save();
-            $this->generation->somme += $facture->total_ttc;
-            $this->generation->documents->add($cpt, $facture->_id);
-
-            $batch_cpt++;
-            if($batch_cpt >= (self::BATCH_SAVE)) {
-              $this->generation->save();
-              $batch_cpt = 0;
-            }
-
-            $cpt++;
+         foreach($societe_a_facturer as $societe) {
+             $mouvementsBySoc = array($societe->identifiant => FactureClient::getInstance()->getFacturationForSociete($societe));
+             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$this->generation->arguments->toArray(0,1));
+             $mouvementsBySocietes = array_merge($mouvementsBySocietes,$mouvementsBySoc);
         }
 
-        $this->generation->save();
+        $generation = FactureClient::getInstance()->createFacturesBySoc($mouvementsBySocietes, $date_facturation, $message_communication, $this->generation);
+        $generation->save();
+        return $generation;
     }
 
     public function preRegeneratePDF() {

@@ -13,22 +13,34 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
       return $this->cepages;
     }
 
-    /**
-     *
-     * @return ConfigurationLieu
-     */
+    public function getCouleur() {
+        return $this;
+    }
+
     public function getLieu() {
+
         return $this->getParentNode();
     }
 
-		public function getMention() {
+	public function getMention() {
+
         return $this->getLieu()->getMention();
     }
 
-		public function getGenre() {
+    public function getAppellation() {
 
-				return $this->getMention()->getGenre();
-		}
+        return $this->getMention()->getAppellation();
+    }
+
+	public function getGenre() {
+
+		return $this->getAppellation()->getGenre();
+	}
+
+    public function getCertification() {
+
+            return $this->getGenre()->getCertification();
+    }
 
     public function hasCepage() {
     	return (count($this->cepages) > 1 || (count($this->cepages) == 1 && $this->cepages->getFirst()->getKey() != Configuration::DEFAULT_KEY));
@@ -67,4 +79,12 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
 
 		return $this->getRendementCouleur();
 	}
+
+    public function getLibelleDR() {
+        $libelle = $this->getLibelleComplet();
+        if (strpos($libelle, 'Blanc') !== false){
+            return $this->getLieu()->getLibelleComplet()." Blanc";
+        }
+        return $libelle;
+    }
 }

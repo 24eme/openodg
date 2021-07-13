@@ -1,7 +1,10 @@
 <?php
 
 class DRClient extends acCouchdbClient implements FacturableClient, DouaneClient {
+
+    const TYPE_COUCHDB = 'DR';
 	const TYPE_MODEL = 'DR';
+
     public static function getInstance()
     {
       return acCouchdbManager::getClient("DR");
@@ -38,10 +41,8 @@ class DRClient extends acCouchdbClient implements FacturableClient, DouaneClient
 
 	public function findFacturable($identifiant, $campagne) {
     	$dr = $this->find('DR-'.$identifiant.'-'.$campagne);
-
         if($dr && !$dr->exist('donnees')) {
-
-            return null;
+            $dr->generateDonnees();
         }
 
         return $dr;

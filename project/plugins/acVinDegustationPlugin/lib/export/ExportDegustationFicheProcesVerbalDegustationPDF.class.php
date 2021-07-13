@@ -15,19 +15,19 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
 
     public function create() {
       $etablissements = array();
-      $nbLotTotal = 0;
-      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
-				$etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
-        $nbLotTotal += count($lotsEtablissement);
-        $etablissements[$numDossier] = $etablissement;
+
+      foreach ($this->degustation->getLotsDegustes() as $lot) {
+          if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
+              $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+          }
       }
+
       foreach ($this->degustation->getLotsDegustesByAppelation() as $appellation => $lotsDegustes) {
         @$this->printable_document->addPage(
           $this->getPartial('degustation/ficheProcesVerbalDegustationPdf',
           array(
             'degustation' => $this->degustation,
             'etablissements' => $etablissements,
-            'nbLotTotal' => $nbLotTotal,
             "appellation" => $appellation,
             "nbTables" => $this->degustation->getLastNumeroTable(),
             "nbDegustateurs" => count($this->degustation->getDegustateursConfirmes()),
@@ -57,14 +57,19 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s PROCÈS VERBAL DE DEGUSTATION", $this->degustation->getOdg());
+        $titre = $this->degustation->getNomOrganisme();
 
         return $titre;
     }
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu
+        $header_subtitle = sprintf("%s - %s %s\n\nCommission: %s - Campagne: %s",
+            $this->degustation->lieu,
+            strstr($this->degustation->date, ' ', true),
+            trim(strstr($this->degustation->date, ' ')),
+            $this->degustation->_id,
+            $this->degustation->campagne
         );
 
         return $header_subtitle;
@@ -72,7 +77,7 @@ class ExportDegustationFicheProcesVerbalDegustationPDF extends ExportPDF {
 
 
     protected function getFooterText() {
-        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
+        $footer= sprintf($this->degustation->getNomOrganisme()." — %s", $this->degustation->getLieuNom());
         return $footer;
     }
 

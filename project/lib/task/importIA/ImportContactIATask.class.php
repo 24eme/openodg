@@ -51,10 +51,15 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
             $societe = null;
-            $idSociete=sprintf("%06d",preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]));
+            $id_ia = intval(preg_replace("/^ENT/","",$data[self::CSV_NUM_SOCIETE]));
+            if (!$id_ia) {
+                echo "WARNING: societe non trouvée : ".$data[self::CSV_NUM_SOCIETE]."\n";
+                continue;
+            }
+            $idSociete=sprintf(SocieteClient::getSocieteFormatIdentifiant(), $id_ia);
             $societe = SocieteClient::getInstance()->find('SOCIETE-'.$idSociete);
             if(!$societe) {
-                $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR,preg_replace("/^ENT/","", $data[self::CSV_NUM_SOCIETE]));
+                $societe = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, $id_ia);
                 if (isset($data[self::CSV_ADRESSE_1])){
                   $societe->siege->adresse = $data[self::CSV_ADRESSE_1];
                 }
@@ -126,6 +131,7 @@ EOF;
                   $compte->civilite = "M";
               }
             }
+            $compte->statut = $societe->statut;
             $compte->save();
 
         }

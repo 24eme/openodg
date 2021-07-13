@@ -157,6 +157,13 @@ class habilitationActions extends sfActions {
         }
 
         $this->habilitation = $this->getRoute()->getHabilitation();
+        $this->habilitationLast = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->habilitation->getEtablissementObject()->identifiant);
+
+        if($this->habilitationLast->_id == $this->habilitation->_id) {
+
+            return $this->redirect('habilitation_declarant', $this->habilitation->getEtablissementObject());
+        }
+
         $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
         if(class_exists("EtablissementChoiceForm") && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
             $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
@@ -311,7 +318,7 @@ class habilitationActions extends sfActions {
         try {
             $this->formDemandeCreation->save();
         } catch (Exception $e) {
-            $this->getUser()->setFlash('erreur', $e->getMessage());
+            $this->getUser()->setFlash('error', $e->getMessage());
 
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
@@ -361,7 +368,7 @@ class habilitationActions extends sfActions {
         try {
             $this->formDemandeEdition->save();
         } catch (Exception $e) {
-            $this->getUser()->setFlash('erreur', $e->getMessage());
+            $this->getUser()->setFlash('error', $e->getMessage());
 
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }

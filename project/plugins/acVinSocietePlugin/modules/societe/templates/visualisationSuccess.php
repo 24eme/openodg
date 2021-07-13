@@ -73,6 +73,36 @@
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
                 <?php include_partial('compte/visualisationLogin', array('compte' => $societe->getMasterCompte())); ?>
                 <hr />
+                <?php if (MandatSepaConfiguration::getInstance()->isActive()): ?>
+                <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Coordonnées bancaires</strong></h5>
+                <?php if ($mandatSepa): ?>
+                  <div class="row">
+                    <div style="margin-bottom: 5px;" class="col-xs-1  text-muted">RUM&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-5"><?php echo $mandatSepa->debiteur->identifiant_rum; ?></div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Mandat généré&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3">
+                      <a href="<?php echo url_for('mandatsepa_pdf', $mandatSepa) ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-file"></span>&nbsp;PDF</a>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-top: 5px;">
+                    <div style="margin-bottom: 5px;" class="col-xs-1  text-muted">IBAN&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-5"><?php echo $mandatSepa->debiteur->iban; ?></div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Mandat signé&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3"><input type="checkbox" data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" class="bsswitch ajax" data-size="mini"<?php if ($mandatSepa->is_signe): ?> checked="checked" disabled<?php endif; ?> onchange="document.location='<?php echo url_for('societe_mandat_sepa_switch_signe', array('identifiant' => $societe->identifiant)); ?>'" /></div>
+                  </div>
+                  <div class="row" style="margin-top: 5px;">
+                    <div style="margin-bottom: 5px;" class="col-xs-1 text-muted">BIC&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-5"><?php echo $mandatSepa->debiteur->bic; ?></div>
+                    <?php if ($mandatSepa->is_signe): ?>
+                    <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Prélèvement actif&nbsp;</div>
+                    <div style="margin-bottom: 5px;" class="col-xs-3"><input type="checkbox" data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" class="bsswitch ajax" data-size="mini"<?php if($mandatSepa->is_actif): ?> checked="checked"<?php endif; ?> onchange="document.location='<?php echo url_for('societe_mandat_sepa_switch_actif', array('identifiant' => $societe->identifiant)); ?>'" /></div>
+                    <?php endif; ?>
+                  </div>
+                <?php else: ?>
+                  <p class="text-muted">Aucun mandat de prélèvement SEPA n'a été saisi</p>
+                <?php endif; ?>
+                <hr />
+                <?php endif; ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte(), 'modifiable' => $modifiable)); ?>
                 <?php if ($societe->commentaire && $modifiable) : ?>

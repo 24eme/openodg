@@ -232,9 +232,9 @@ class DRevDeclaration extends BaseDRevDeclaration
     {
     	$total = 0;
 
-			$produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-			$produitExclude = (bool) $produitExclude;
-			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
+		$produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+		$produitExclude = (bool) $produitExclude;
+		$regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
       foreach($this->getProduits() as $key => $item) {
 				if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $key)) {
 						continue;
@@ -244,7 +244,6 @@ class DRevDeclaration extends BaseDRevDeclaration
 				}
             $total += $item->getTotalVolumeRevendique();
       }
-
 			return $total;
     }
 

@@ -22,36 +22,36 @@ class ImportParcellaireFromCsvInaoTask extends sfBaseTask
     const CSV_CIVILITE_PROPRIETAIRE = 10;
     const CSV_NOM_PROPRIETAIRE = 11;
     const CSV_PRENOM_PROPRIETAIRE = 12;
-    const CSV_NUMERO_ORDRE = 13;
-    const CSV_DATE_MODIFICATION = 14;
-    const CSV_EVV = 15;                   /* /!\ */
-    const CSV_LIBELLE_EVV = 16;
-    const CSV_ETAT_METIER = 17;
-
-    const CSV_ETAT_SEGMENT = 18;
-    const CSV_CODE_AIRE = 19;
-    const CSV_ICAIR = 20;              /* /!\ */
-    const CSV_LIBELLE_AIRE = 21;     /* /!\ */
-    const CSV_CODE_PRODUIT = 22;  /* /!\ */
-    const CSV_LIBELLE_PRODUIT = 23;  /* /!\ */
-    const CSV_CODE_CEPAGE = 24;
-    const CSV_LIBELLE_CEPAGE = 25;
-
-    const CSV_CODE_COULEUR = 26;
-    const CSV_CODE_PORTEGREFFE = 27;
-    const CSV_LIBELLE_PORTEGREFFE = 28;
-    const CSV_LIBELLE_MOTIF_ENCEPAGEMENT = 29; /* /!\ COMMENTAIRE */
-    const CSV_LIBELLE_MODE_SAVOIRFAIRE = 30;
-    const CSV_LIBELLE_DATE_SAVOIRFAIRE = 31;
-    const CSV_CAMPAGNE_PLANTATION = 32;
-
-    const CSV_SUPERFICIE = 33;        /* /!\ */
-    const CSV_ECART_RANG = 34;
-    const CSV_ECART_PIED = 35;
-    const CSV_DATE_DEBUT_GESTION = 36;
-    const CSV_DATE_FIN_GESTION = 37;
-    const CSV_IDU = 38;
-    const CSV_CDP = 39;
+    const CSV_DATE_DEBUT_VALIDITE = 13;
+    const CSV_NUMERO_ORDRE = 14;
+    const CSV_DATE_MODIFICATION = 15;
+    const CSV_EVV = 16;
+    const CSV_LIBELLE_EVV = 17;
+    const CSV_SIRET = 18;
+    const CSV_ETAT_METIER = 19;
+    const CSV_ETAT_SEGMENT = 20;
+    const CSV_CODE_AIRE = 21;
+    const CSV_ICAIR = 22;
+    const CSV_LIBELLE_AIRE = 23;
+    const CSV_CODE_PRODUIT = 24;
+    const CSV_LIBELLE_PRODUIT = 25;
+    const CSV_CODE_CEPAGE = 26;
+    const CSV_LIBELLE_CEPAGE = 27;
+    const CSV_CODE_COULEUR = 28;
+    const CSV_CODE_PORTEGREFFE = 29;
+    const CSV_LIBELLE_PORTEGREFFE = 30;
+    const CSV_LIBELLE_MOTIF_ENCEPAGEMENT = 31;
+    const CSV_LIBELLE_MODE_SAVOIRFAIRE = 32;
+    const CSV_LIBELLE_DATE_SAVOIRFAIRE = 33;
+    const CSV_CAMPAGNE_PLANTATION = 34;
+    const CSV_SUPERFICIE = 35;
+    const CSV_ECART_RANG = 36;
+    const CSV_ECART_PIED = 37;
+    const CSV_DATE_DEBUT_GESTION = 38;
+    const CSV_DATE_FIN_GESTION = 39;
+    const CSV_IDU = 40;
+    //    const CSV_IDU = 3;
+    const CSV_CDP = 41;
 
 
     protected function configure()
@@ -219,13 +219,14 @@ EOF;
               $parcelle->add('ecart_pieds', trim($data[self::CSV_ECART_PIED]) * 1);
 
               $date2018 = "20180101";
+              $data[self::CSV_DATE_DEBUT_GESTION] = preg_replace('/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/', '\3-\2-\1', $data[self::CSV_DATE_DEBUT_GESTION]);
               if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION])) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
-                    echo "$p->_id : La date de début de gestion  de la ligne $ligne est mal formattée\n";
+                    echo $parcellaire->_id." : La date de début de gestion ".$data[self::CSV_DATE_DEBUT_GESTION]." de la ligne $line est mal formattée\n";
                     return;
               }
               $dateFinGestionCsv = (trim($data[self::CSV_DATE_FIN_GESTION]))? trim($data[self::CSV_DATE_FIN_GESTION]) : null;
               if($dateFinGestionCsv && !preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$dateFinGestionCsv) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_FIN_GESTION]))){
-                echo "$parcellaire->_id : La date de fin de gestion  de la ligne $ligne est mal formattée\n";
+                echo "$parcellaire->_id : La date de fin de gestion  de la ligne $line est mal formattée\n";
                 return;
               }
 
@@ -266,9 +267,8 @@ EOF;
               if(trim($data[self::CSV_CODE_PORTEGREFFE])){
                 $parcelle->add('porte_greffe', trim($data[self::CSV_CODE_PORTEGREFFE]));
               }
-
-              if($parcelle->idu != $data[self::CSV_IDU]) {
-                  echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
+              if(isset($data[self::CSV_IDU]) && $data[self::CSV_IDU] && $parcelle->idu != $data[self::CSV_IDU]) {
+                  echo "WARNING: Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $line)\n";
               }
               echo "Import de la parcelle $section $numero_parcelle pour $parcellaire->identifiant !\n";
             }

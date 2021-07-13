@@ -1,0 +1,39 @@
+{
+   "_id": "TEMPLATE-FACTURE-MARC-2019",
+   "campagne": 2019,
+   "type": "TemplateFacture",
+   "template": "MARC",
+   "libelle": "2020 - Marc d'Alsace Gewurztraminer",
+   "docs": [
+       "DRevMarc"
+   ],
+   "cotisations": {
+       "marc_alsace_gewurztraminer": {
+           "libelle": "Cotisation ODG - AVA / Droits INAO / Contrôle externe 2020 AOC Marc d'Alsace Gewurztraminer",
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "code_comptable": "706200",
+           "details": {
+               "marc_fixe": {
+                   "modele": "CotisationFixe",
+                   "prix": 33,
+                   "libelle": "Fixe",
+                   "docs": [
+                       "DRevMarc"
+                   ],
+                   "callback": "getVolumeFacturable"
+               },
+               "marc_variable": {
+                   "modele": "CotisationVariable",
+                   "prix": 6.6,
+                   "libelle": "hl de marc revendiqué",
+                   "docs": [
+                       "DRevMarc"
+                   ],
+                   "callback": "getVolumeFacturable"
+               }
+           }
+       }
+   }
+}

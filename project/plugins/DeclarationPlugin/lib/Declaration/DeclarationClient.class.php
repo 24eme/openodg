@@ -5,6 +5,8 @@ class DeclarationClient
     protected static $self = null;
     const REGION_LOT = 'IGP_VALDELOIRE';
 
+    public $findCache = array();
+
     public static function getInstance() {
         if(is_null(self::$self)) {
 
@@ -19,10 +21,27 @@ class DeclarationClient
         return acCouchdbManager::getClient()->find($id, $hydrate, $force_return_ls);
     }
 
+    public function clearCache() {
+        $this->findCache = array();
+    }
+
+    public function findCache($id) {
+        if(!array_key_exists($id, $this->findCache)) {
+            $this->findCache[$id] = $this->find($id);
+        }
+
+        return $this->findCache[$id];
+    }
+
     public function getExportCsvClassName($type) {
         if(class_exists("DRevClient") && $type == DRevClient::TYPE_MODEL) {
 
             return 'ExportDRevCSV';
+        }
+
+        if(class_exists("ChgtDenomClient") && $type == ChgtDenomClient::TYPE_MODEL) {
+
+            return 'ExportChgtDenomCSV';
         }
 
         if(class_exists("ParcellaireClient") && $type == ParcellaireClient::TYPE_MODEL) {
@@ -100,6 +119,11 @@ class DeclarationClient
             return 'ExportParcellaireIntentionAffectationCSV';
         }
 
+        if(class_exists("DegustationClient") && $type == DegustationClient::TYPE_MODEL) {
+
+            return 'ExportDegustationCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
@@ -126,12 +150,19 @@ class DeclarationClient
         return $typeAndCampagne;
     }
 
-    public function getIds($type, $campagne, $validation = true) {
+    public function getIds($type, $campagne = null) {
         $ids = array();
 
+        $keys = array();
+
+        $keys[] = $type;
+        if(!is_null($campagne)) {
+            $keys[] = $campagne;
+        }
+
         $rows = acCouchdbManager::getClient()
-                    ->startkey(array($type, $campagne))
-                    ->endkey(array($type, $campagne, array()))
+                    ->startkey($keys)
+                    ->endkey(array_merge($keys, array(array())))
                     ->reduce(false)
                     ->getView('declaration', 'export')->rows;
 

@@ -1,3 +1,13 @@
+chgtdenom_create_from_lot:
+  url: /changement-denomination/:identifiant/creation-lot/:lot
+  param: { module: chgtdenom, action: createFromLot }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 chgtdenom_create:
   url: /changement-denomination/creation/:identifiant/:campagne
   param: { module: chgtdenom, action: create }
@@ -8,19 +18,8 @@ chgtdenom_create:
   requirements:
     sf_method: [get]
 
-chgtdenom_create_lot:
-  url: /changement-denomination/creation/:identifiant/lot/:lot
-  param: { module: chgtdenom, action: createLot }
-  class: EtablissementRoute
-  options:
-    model:    Etablissement
-    type:     object
-  requirements:
-    sf_method: [get]
-
-
 chgtdenom_create_papier:
-  url: /changement-denomination/creation-papier/:identifiant
+  url: /changement-denomination/creation-papier/:identifiant/:campagne
   param: { module: chgtdenom, action: createPapier }
   class: EtablissementRoute
   options:
@@ -30,18 +29,28 @@ chgtdenom_create_papier:
     sf_method: [get]
 
 chgtdenom_lots:
-  url: /changement-denomination/lots/:id
+  url: /changement-denomination/lots/:identifiant/:campagne
   param: { module: chgtdenom, action: lots }
-  class: ChgtDenomRoute
+  class: EtablissementRoute
   options:
-    model:    ChgtDenom
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+chgtdenom_ajout_lot:
+  url: /changement-denomination/lots/:identifiant/:campagne/ajout
+  param: { module: chgtdenom, action: ajoutLot }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get, post]
 
 chgtdenom_edition:
-  url: /changement-denomination/edition/:id/:key
-  param: { module: chgtdenom, action: edition, key: 0 }
+  url: /changement-denomination/edition/:id
+  param: { module: chgtdenom, action: edition }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -60,8 +69,8 @@ chgtdenom_validation:
     sf_method: [get, post]
 
 chgtdenom_logement:
-  url: /changement-denomination/logement/:id/:key
-  param: { module: chgtdenom, action: logement, key: null }
+  url: /changement-denomination/logement/:id
+  param: { module: chgtdenom, action: logement }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom
@@ -82,6 +91,26 @@ chgtdenom_visualisation:
 chgtdenom_delete:
   url: /changement-denomination/suppression/:id
   param: { module: chgtdenom, action: suppression }
+  class: ChgtDenomRoute
+  options:
+    model:    ChgtDenom
+    type:     object
+  requirements:
+    sf_method: [get]
+
+chgtdenom_pdf:
+  url: /changement-denomination/:id/pdf
+  param: { module: chgtdenom, action: chgtDenomPDF }
+  class: ChgtDenomRoute
+  options:
+    model: ChgtDenom
+    type: object
+  requirements:
+    sf_method: [get]
+
+chgtdenom_devalidation:
+  url: /changement-denomination/devalidation/:id
+  param: { module: chgtdenom, action: devalidation }
   class: ChgtDenomRoute
   options:
     model:    ChgtDenom

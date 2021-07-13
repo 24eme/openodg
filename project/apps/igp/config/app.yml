@@ -3,9 +3,11 @@
 
 # default values
 all:
+  organisme:
+    nom: "Vins IGP"
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
   donnees_viticoles:
     regions:
-      NANTES: "IGP13"
+      IGP: "IGP"

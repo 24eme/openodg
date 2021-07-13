@@ -98,8 +98,7 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getFooterText() {
         if(!$this->getRegion()) {
-
-            return null;
+            return sprintf("<span style='color:#ff0000;'>%s     %s - %s - %s - %s - %s</span>", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
         }
 
         $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());

@@ -5,9 +5,8 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     const TYPE_MODEL = "ChgtDenom";
     const TYPE_COUCHDB = "CHGTDENOM";
     const ORIGINE_LOT = "DREV";
-
-    const FORMAT_DATE = 'Y-m-d\THis';
-
+    const CHANGEMENT_TYPE_CHANGEMENT = "CHANGEMENT";
+    const CHANGEMENT_TYPE_DECLASSEMENT = "DECLASSEMENT";
 
     public static function getInstance() {
         return acCouchdbManager::getClient("ChgtDenom");
@@ -21,15 +20,24 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
-    public function getHistory($identifiant, $campagne_to = "9999-99-99T999999", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = "0000-00-00T000000";
+    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $campagne_from = "00000000000000";
+        $campagne_to = "99999999999999";
+        return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
+                    ->endkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_to))
+                    ->execute($hydrate);
+    }
+
+    public function getHistoryCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $campagne_from = $campagne."0000000000";
+        $campagne_to = ($campagne+1)."9999999999";
         return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 
     public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-        return $this->findPreviousByIdentifiantAndDate($identifiant, "9999-99-99T999999");
+        return $this->findPreviousByIdentifiantAndDate($identifiant, "99999999999999");
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -43,32 +51,62 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
+    public function getLotsChangeable($identifiant, $campagne) {
+        $lots = array();
+        $lots_filtre = array();
+        foreach (MouvementLotView::getInstance()->getByIdentifiant($identifiant, Lot::STATUT_CHANGEABLE)->rows as $row_lot) {
+            $lots[$row_lot->value->unique_id] = $row_lot->value;
+            $lots[$row_lot->value->unique_id]->type_document = substr($row_lot->value->id_document, 0, 4);
+        }
+
+        if($campagne){
+          foreach ($lots as $unique_id => $lot) {
+            if($campagne && $campagne == $lot->campagne){
+              $lots_filtre[$unique_id] = $lot;
+            }
+          }
+        }else{
+          $lots_filtre = $lots;
+        }
+
+        return $lots_filtre;
+    }
+
     public function createDoc($identifiant, $date = null, $papier = false) {
         $chgtdenom = new ChgtDenom();
-        if ($date && preg_match('/^\d{4}$/', $date)) {
-          $date = str_replace(date('Y').'-', $date.'-', date(self::FORMAT_DATE));
+
+        if(!$date) {
+            $date = new DateTime();
         } else {
-          $date = ($date && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/', $date))? $date : date(self::FORMAT_DATE);
+            $date = new DateTime($date);
         }
-        $chgtdenom->initDoc($identifiant, $date);
+
+        $chgtdenom->identifiant = $identifiant;
+        $chgtdenom->date = $date->format('Y-m-d H:i:s');
+
         if($papier) {
             $chgtdenom->add('papier', 1);
         }
+        $chgtdenom->changement_type = self::CHANGEMENT_TYPE_DECLASSEMENT;
         $chgtdenom->storeDeclarant();
+
         return $chgtdenom;
     }
 
     public function findFacturable($identifiant, $campagne) {
-      $chgtsdenom = $this->getHistory($identifiant);
-      $chgtsdenomFacturants = array();
-      foreach ($chgtsdenom as $chgtdenom) {
-        if($chgtdenom && !$chgtdenom->validation_odg) {
-          continue;
-        }
-        $chgtsdenomFacturants[] = $chgtdenom;
-      }
 
+      // TODO : A retirer : aujourd'hui on bypass les Chgts Denom facturables pour optimiser la page de facturation
+
+      $chgtsdenomCampagne = $this->getHistoryCampagne($identifiant,$campagne);
+      $chgtsdenomFacturants = array();
+      foreach ($chgtsdenomCampagne as $chgtdenom) {
+          $chgtsdenomFacturants[$chgtdenom->_id] = $chgtdenom;
+      }
       return $chgtsdenomFacturants;
+    }
+
+    public function getPeriodeFromCampagne($campagne) {
+        return preg_replace('/-.*/', '', $campagne);
     }
 
 }

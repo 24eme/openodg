@@ -75,7 +75,7 @@ EOF;
 
           $oldreporting = error_reporting(0);
 	  if (($csv[self::DRCIVA_LIEU] == 'TOTAL') || (preg_match("/^TOTAL/", $csv[self::DRCIVA_CEPAGE]))) {
-              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][''][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['DONTVCI'] = $csv[self::DRCIVA_DONT_VCI];
+              $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][''][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE']['TOTAL']['DONTVCI'] += $csv[self::DRCIVA_DONT_VCI];
               $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] += $csv[self::DRCIVA_DONT_VCI];
           }
 	  if (($csv[self::DRCIVA_LIEU] != 'TOTAL') && !preg_match("/^TOTAL/", $csv[self::DRCIVA_CEPAGE])) {
@@ -98,7 +98,7 @@ EOF;
               foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
                 foreach($vciacheteur as $cviacheteur => $vcicepage) {
                   foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
-                      if($cepage == "TOTAL" && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
+                      if(preg_match("/^TOTAL/", $cepage ) && $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['DONTVCI'] && (!isset($unvci['DONTVCI']) || !$unvci['DONTVCI']) && isset($unvci['VOLUME_TOTAL']) && $unvci['VOLUME_TOTAL']) {
                           $vci[$recoltant][$appellation]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] -= $unvci['VOLUME_TOTAL'];
                           unset($vci[$recoltant][$appellation]['LIEU'][$lieu][$cviacheteur]);
                           break;
@@ -129,9 +129,6 @@ EOF;
             $totalappellation = $vcilieu['LIEU']['TOTAL']['']['CEPAGE'][''];
             if (!isset($totalappellation['VOLUME']) || !(sprintf('%0.2f', $totalappellation['VOLUME_TOTAL']) === sprintf('%0.2f', $totalappellation['VOLUME']))) {
               $nonsolvable = 1;
-            }
-            if (isset($totalappellation['SUPERFICIE'])) {
-              $registre->superficies_facturables += $totalappellation['SUPERFICIE'];
             }
             foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
               if ($lieu == 'TOTAL') {
@@ -168,13 +165,8 @@ EOF;
               continue;
           }
 
-          if($registre->getTotalMouvement(RegistreVCIClient::MOUVEMENT_CONSTITUE) < 1) {
-              $registre->superficies_facturables = 0;
-          }
-
-          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
-
           $registre->save();
+          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
           echo $registre->_id." savé\n";
         }
     }

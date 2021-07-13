@@ -15,13 +15,21 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 
 	public function configure()
     {
-	    $form = new BaseForm();
+	  $form = new BaseForm();
       $subForm = new BaseForm();
+
+      if ($this->getDocument()->degustateurs->exist($this->college) && count($this->getDocument()->degustateurs->{$this->college})) {
+          foreach ($this->getDocument()->degustateurs->{$this->college} as $id => $selectionne) {
+              $subForm->embedForm($id, new DegustationSelectionDegustateurForm());
+          }
+      }
+
       foreach($this->getDegustateursByCollege() as $compte_id => $compte) {
           $subForm->embedForm($compte->_id, new DegustationSelectionDegustateurForm());
       }
       $form->embedForm($this->college, $subForm);
       $this->embedForm('degustateurs', $form);
+      $this->validatorSchema->setPostValidator(new DegustationSelectionDegustateursValidator($this->getDocument(),null, array('college' => $this->college)));
       $this->widgetSchema->setNameFormat('degustation[%s]');
     }
 
@@ -40,8 +48,8 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
     }
 
 	public function save() {
-		$values = $this->getValues();
-		$doc = $this->getDocument();
+	$values = $this->getValues();
+	$doc = $this->getDocument();
     $doc->getOrAdd('degustateurs');
     foreach ($values['degustateurs'] as $college => $items) {
         if($college == $this->college){
@@ -49,10 +57,7 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
         }
         foreach ($items as $compteId => $val) {
             if (isset($val['selectionne']) && !empty($val['selectionne'])) {
-                $compte = $this->getCompteByIdentifiant($compteId);
-                $degustateur = $doc->degustateurs->getOrAdd($college)->getOrAdd($compteId);
-		$degustateur->getOrAdd('libelle');
-		$degustateur->libelle = $compte->getLibelleWithAdresse();
+                $doc->addDegustateur($compteId, $college, false);
             }
         }
     }
@@ -70,7 +75,9 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
                     }
                     $this->degustateurs = $result;
                 }
-            ksort($this->degustateurs);
+                uasort($this->degustateurs, function ($deg1, $deg2) {
+                    return strcasecmp($deg1->nom, $deg2->nom);
+                });
         }
         return $this->degustateurs;
     }

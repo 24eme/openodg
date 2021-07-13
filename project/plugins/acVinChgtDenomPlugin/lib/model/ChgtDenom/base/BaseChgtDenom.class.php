@@ -15,7 +15,7 @@
  * @property string $identifiant
  * @property integer $papier
  * @property string $changement_origine_mvtkey
- * @property string $changement_produit
+ * @property string $changement_produit_hash
  * @property string $changement_produit_libelle
  * @property acCouchdbJson $changement_cepages
  * @property float $changement_volume
@@ -48,7 +48,7 @@
  * @method string getChangementOrigineMvtkey()
  * @method string setChangementOrigineMvtkey()
  * @method string getChangementProduit()
- * @method string setChangementProduit()
+ * @method string setChangementProduitHash()
  * @method string getChangementProduitLibelle()
  * @method string setChangementProduitLibelle()
  * @method acCouchdbJson getChangementCepages()
@@ -67,8 +67,8 @@
  * @method acCouchdbJson setPieces()
  
  */
- 
-abstract class BaseChgtDenom extends acCouchdbDocument {
+
+abstract class BaseChgtDenom extends  DeclarationLots {
 
     public function getDocumentDefinitionModel() {
         return 'ChgtDenom';

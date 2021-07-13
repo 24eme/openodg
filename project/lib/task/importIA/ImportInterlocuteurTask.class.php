@@ -67,7 +67,7 @@ EOF;
 
             $raisonSociale = $data[self::CSV_RAISON_SOCIALE];
             if(!$raisonSociale) {
-                $raisonSociale = trim($civilite." ".$data[self::CSV_NOM]." ".$data[self::CSV_PRENOM]);
+                $raisonSociale = trim($civilite." ".trim($data[self::CSV_NOM])." ".trim($data[self::CSV_PRENOM]));
             }
 
             $resultat = SocieteClient::matchSociete($societes, $raisonSociale, 1);
@@ -98,7 +98,7 @@ EOF;
                   $societe->fax = Phone::format($data[self::CSV_FAX]);
                 }
                 if (isset($data[self::CSV_EMAIL])){
-                  $societe->email = $data[self::CSV_EMAIL];
+                  $societe->email = KeyInflector::unaccent($data[self::CSV_EMAIL]);
                 }
                 $societe->save();
             }
@@ -107,22 +107,22 @@ EOF;
             $compte->civilite = $civilite;
 
             if (isset($data[self::CSV_NOM])){
-              $compte->nom = $data[self::CSV_NOM];
+              $compte->nom = trim($data[self::CSV_NOM]);
             }
             if (isset($data[self::CSV_PRENOM])){
-              $compte->prenom = $data[self::CSV_PRENOM];
+              $compte->prenom = trim($data[self::CSV_PRENOM]);
             }
             if (isset($data[self::CSV_ADRESSE_1])){
-              $compte->adresse = $data[self::CSV_ADRESSE_1];
+              $compte->adresse = trim($data[self::CSV_ADRESSE_1]);
             }
             if (isset($data[self::CSV_ADRESSE_2])){
-              $compte->adresse_complementaire = $data[self::CSV_ADRESSE_2];
+              $compte->adresse_complementaire = trim($data[self::CSV_ADRESSE_2]);
             }
             if (isset($data[self::CSV_CODE_POSTAL])){
-              $compte->code_postal = $data[self::CSV_CODE_POSTAL];
+              $compte->code_postal = trim($data[self::CSV_CODE_POSTAL]);
             }
             if (isset($data[self::CSV_VILLE])){
-              $compte->commune = $data[self::CSV_VILLE];
+              $compte->commune = trim($data[self::CSV_VILLE]);
             }
             if (isset($data[self::CSV_TELEPHONE])){
               $compte->telephone_bureau = Phone::format($data[self::CSV_TELEPHONE]);
@@ -134,10 +134,13 @@ EOF;
               $compte->fax = Phone::format($data[self::CSV_FAX]);
             }
             if (isset($data[self::CSV_EMAIL])){
-              $compte->email = $data[self::CSV_EMAIL];
+              $compte->email = KeyInflector::unaccent($data[self::CSV_EMAIL]);
             }
             if (isset($data[self::CSV_COLLEGE])){
               if(preg_match('/Porteur de mémoire/', $data[self::CSV_COLLEGE])) {
+                  $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
+              }
+              if(preg_match('/Observateur/', $data[self::CSV_COLLEGE])) {
                   $compte->add('droits')->add(null, 'degustateur:porteur_de_memoire');
               }
               if(preg_match('/Technicien/', $data[self::CSV_COLLEGE])) {
@@ -147,8 +150,15 @@ EOF;
                   $compte->add('droits')->add(null, 'degustateur:usager_du_produit');
               }
             }
+            if ($data[self::CSV_FORMATION] == "Oui") {
+                $compte->tags->add("manuel")->add(null, "degustateur_formation");
+            }
+            if ($data[self::CSV_COMPETENCES]) {
+                $competence = trim($data[self::CSV_COMPETENCES]);
+                $competence = "degustateur_competence_".preg_replace('/[\(\) ]/', '_', $competence);
+                $compte->tags->add("manuel")->add(null, $competence);
+            }
             $compte->save();
-
         }
     }
 }

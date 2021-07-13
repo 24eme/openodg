@@ -24,6 +24,10 @@ class CampagneManager {
         return $this->getCampagneByDate(date('Y-m-d'));
     }
 
+    public function getCurrentYearPeriode() {
+        return preg_replace('/-.*/', '', $this->getCurrent());
+    }
+
     public function getCurrentPrevious() {
 
         return $this->getPrevious($this->getCurrent());
@@ -51,7 +55,13 @@ class CampagneManager {
     }
 
     public function getDateDebutByDate($date) {
+        if (!$date) {
+            throw new sfException("date needed");
+        }
         $annee = date('Y', strtotime($date));
+        if (!$annee) {
+            throw new sfException("wrong date format");
+        }
 
         while($date < $annee."-".$this->mm_dd_debut) {
         	$annee = $annee - 1;

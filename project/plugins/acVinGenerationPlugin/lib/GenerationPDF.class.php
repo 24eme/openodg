@@ -24,7 +24,16 @@ class GenerationPDF extends GenerationAbstract {
       return null;
     }
 
-    asort($pdffiles);
+    uasort($pdffiles, function($a, $b) {
+        $filtreOrdre = '(facture|avoir)_';
+        if(GenerationConfiguration::getInstance()->getOrdreFacture() == "commune"){
+            $filtreOrdre = '(facture|avoir)_[0-9]+_';
+        }
+        $aCompare = preg_replace("/$filtreOrdre/", "", $a);
+        $bCompare = preg_replace("/$filtreOrdre/", "", $b);
+
+        return $aCompare > $bCompare;
+    });
 
     $fileres = rand().".pdf";
     $this->doesPDFsExist($pdffiles);
@@ -173,10 +182,10 @@ class GenerationPDF extends GenerationAbstract {
   }
 
   protected function getDocumentName() {
-    throw new sfException('should be called from the parent class');
+    throw new sfException(__FUNCTION__.' should be called from the child class');
   }
   protected function generatePDFForADocumentID($docid) {
-    throw new sfException('should be called from the parent class');
+    throw new sfException(__FUNCTION__.' should be called from the child class');
   }
 
   function preGeneratePDF() { }

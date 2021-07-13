@@ -34,12 +34,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php endif; ?>
     <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte, SV11 ou SV12, lorsque nous avons pu déduire vos volumes sur place.
     <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
-    <?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-    <?php endif; ?>
-    <?php if ($sf_user->hasFlash('erreur')): ?>
-    <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
-    <?php endif; ?>
+    <?php include_partial('global/flash'); ?>
     <table class="table table-bordered table-striped table-condensed" id="table-revendication">
         <thead>
             <tr>
@@ -104,7 +99,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         </div>
         <div class="col-xs-4 text-center">
                 <div class="btn-group">
-                    <?php if ($sf_user->hasDrevAdmin()): ?>
+                    <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
                       <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
                           <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
                       </a>

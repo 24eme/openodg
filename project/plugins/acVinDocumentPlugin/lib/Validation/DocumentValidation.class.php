@@ -2,10 +2,14 @@
 
 abstract class DocumentValidation
 {
+    const TYPE_ERROR = 'erreur';
+    const TYPE_WARNING = 'vigilance';
+    const TYPE_ENGAGEMENT = 'engagement';
+
     protected $types = array(
-        'engagement',
-        'vigilance',
-        'erreur',
+        self::TYPE_ENGAGEMENT,
+        self::TYPE_WARNING,
+        self::TYPE_ERROR,
     );
 
     protected $document;

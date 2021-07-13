@@ -7,11 +7,16 @@ class GenerationClient extends acCouchdbClient {
     const TYPE_DOCUMENT_RELANCE = 'RELANCE';
     const TYPE_DOCUMENT_EXPORT_CSV = 'EXPORT';
     const TYPE_DOCUMENT_EXPORT_SAGE = 'SAGE';
+    const TYPE_DOCUMENT_EXPORT_COMPTABLE = 'COMPTABLE';
     const TYPE_DOCUMENT_EXPORT_PARCELLAIRE = 'PARCELLAIRE';
+    const TYPE_DOCUMENT_FACTURES_MAILS = 'FACTUREMAIL';
+    const TYPE_DOCUMENT_FACTURES_PAPIER = 'FACTUREPAPIER';
+    const TYPE_DOCUMENT_EXPORT_XML_SEPA = 'SEPA';
+
     const HISTORY_KEYS_TYPE_DOCUMENT = 0;
     const HISTORY_KEYS_TYPE_DATE_EMISSION = 1;
     const HISTORY_KEYS_DOCUMENT_ID = 1;
-    
+
     const HISTORY_VALUES_NBDOC = 0;
     const HISTORY_VALUES_DOCUMENTS = 1;
     const HISTORY_VALUES_SOMME = 2;
@@ -32,31 +37,30 @@ class GenerationClient extends acCouchdbClient {
 
     public function findHistory($limit = 10) {
         return acCouchdbManager::getClient()
-                        ->limit($limit)
-                        ->getView("generation", "history")
-                ->rows;
+        ->limit($limit)
+        ->getView("generation", "history")
+        ->rows;
     }
 
-//     public function findHistoryWithStatusAndType($status, $type,$limit = 10) {
-//        $views = acCouchdbManager::getClient()
-//                        ->startkey(array($status, $type))
-//                        ->endkey(array($status, $type, array()));
-//           if($limit) $views = $views->limit($limit);
-//        return $views->getView("generation", "history")->rows;
-//    }
-
     public function findHistoryWithType($type, $limit = 100) {
-        $views = acCouchdbManager::getClient()
+        return acCouchdbManager::getClient()
             ->startkey(array($type, array()))
             ->endkey(array($type))
             ->descending(true)
-            ->limit($limit);
-	    $rows = $views->getView("generation", "history")->rows;
-	    return $rows;
+            ->limit($limit)
+	        ->getView("generation", "history")->rows;
+   }
+
+    public function findSubGeneration($idGeneration) {
+        return acCouchdbManager::getClient()
+                ->startkey_docid($idGeneration."-")
+                ->endkey_docid($idGeneration."-Z")
+                ->execute();
     }
 
     public static function sortHistory($a, $b) {
-      return strcmp($b->key[1], $a->key[1]);
+
+        return strcmp($b->key[self::HISTORY_KEYS_TYPE_DATE_EMISSION], $a->key[self::HISTORY_KEYS_TYPE_DATE_EMISSION]);
     }
 
     public function getGenerationIdEnAttente() {
@@ -92,6 +96,14 @@ class GenerationClient extends acCouchdbClient {
 
                 return 'GenerationFacturePDF';
 
+            case GenerationClient::TYPE_DOCUMENT_FACTURES_MAILS:
+
+                return 'GenerationFactureMail';
+
+            case GenerationClient::TYPE_DOCUMENT_FACTURES_PAPIER:
+
+                return 'GenerationFacturePapier';
+
             case GenerationClient::TYPE_DOCUMENT_DS:
 
                 return 'GenerationDSPDF';
@@ -108,11 +120,18 @@ class GenerationClient extends acCouchdbClient {
 
                 return 'GenerationExportSage';
 
+            case GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE:
+
+                return 'GenerationExportComptable';
+
             case GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE:
 
                 return 'GenerationExportParcellaire';
+
+            case GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA:
+
+                return 'GenerationExportXmlSepa';
         }
-      
         throw new sfException($generation->type_document." n'est pas un type supporté");
     }
 

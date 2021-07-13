@@ -90,6 +90,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function calculateVolumeRevendiqueVCI()
     {
     	$vci = array();
+    	$vciChezNegociant = array();
         foreach($this->getProduits() as $produit) {
             if(!$produit->exist('volume_revendique_vci') || $this->isNonRecoltant()) {
                 continue;
@@ -97,18 +98,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit->volume_revendique_vci = 0;
         }
     	foreach ($this->getProduitsVci() as $produit) {
-            if(!$this->isNonRecoltant() && $produit->getKey() != RegistreVCIClient::LIEU_CAVEPARTICULIERE && $produit->getKey() != $this->identifiant) {
+            if($this->isRecoltant() && !$produit->isStockageCaveParticuliere() && !$produit->isStockageNegociant()) {
                 continue;
             }
     		if (!isset($vci[$produit->getCouleur()->getHash()])) {
+
                 $vci[$produit->getCouleur()->getHash()] = 0;
+                $vciChezNegociant[$produit->getCouleur()->getHash()] = 0;
     		}
-            $vci[$produit->getCouleur()->getHash()] += $produit->complement + $produit->substitution + $produit->rafraichi;
+            $vciProduit = $produit->complement + $produit->substitution + $produit->rafraichi;
+            $vci[$produit->getCouleur()->getHash()] += $vciProduit;
+            if($produit->isStockageNegociant()) {
+                $vciChezNegociant[$produit->getCouleur()->getHash()] += $vciProduit;
+            }
     	}
     	foreach ($vci as $hash => $val) {
             $this->get($hash)->add('volume_revendique_vci');
-            $this->get($hash)->volume_revendique_vci = $val;
+            $this->get($hash)->setVolumeRevendiqueVCI($val, $vciChezNegociant[$hash]);
     	}
+    }
+
+    public function isRecoltant() {
+
+        return !$this->isNonRecoltant();
     }
 
     public function getConfigProduits() {

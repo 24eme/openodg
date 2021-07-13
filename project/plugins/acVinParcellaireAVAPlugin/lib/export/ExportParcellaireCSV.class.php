@@ -32,7 +32,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
     }
 
     public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
-        
+
         $prefixName = $parcellaire->getTypeParcellaire()."_%s_%s";
         $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
 
@@ -52,7 +52,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
     public function export($cviFilter = null) {
         $export = "";
-        if($this->header) { 
+        if($this->header) {
             $export = self::getHeaderCsv();
         }
 
@@ -60,12 +60,12 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
             return;
         }
-        
+
         $acheteursGlobal = $this->parcellaire->getAcheteursByCVI();
-        
+
         foreach ($this->parcellaire->declaration->getProduitsCepageDetails() as $parcelle) {
             $acheteurs = $parcelle->getAcheteursByCVI();
-            
+
             if(!count($acheteurs) && count($acheteursGlobal) > 1) {
                 //echo sprintf("ERROR pas d'acheteur : %s : %s !\n", $this->parcellaire->_id, $parcelle->getHash());
             }
@@ -87,7 +87,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                 $export.= $parcelle->section . ";";
                 $export.= $parcelle->numero_parcelle . ";";
                 $export.= $parcelle->getAppellation()->getLibelle() . ";";
-                $export.= $parcelle->getLieuLibelle() . ";";
+                $export.= str_replace(array('"',';'),array('',''),$parcelle->getLieuLibelle()) . ";";
                 $export.= $parcelle->getCepageLibelle() . ";";
                 $export.= sprintf("%01.02f", $parcelle->superficie) . ";";
                 $export.= $this->parcellaire->campagne . ";";

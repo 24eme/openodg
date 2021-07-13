@@ -3511,14 +3511,16 @@ class TCPDF {
 			$this->Cell(0, 0, $pagenumtxt, 'T', 0, 'L');
 			if($this->footer_text) {
 				$this->SetX($this->original_lMargin);
-				$this->Cell(0, 0, $this->footer_text, 'T', 0, 'R');
+				//$this->Cell(0, 0, $this->footer_text, 'T', 0, 'R');
+				$this->writeHTML($this->footer_text, false, true, false, true);
 			}
 		} else {
 			$this->SetX($this->original_lMargin);
 			$this->Cell(0, 0, $this->getAliasRightShift().$pagenumtxt, 'T', 0, 'R');
 			if($this->footer_text) {
 				$this->SetX($this->original_rMargin);
-				$this->Cell(0, 0, $this->footer_text, 'T', 0, 'L');
+				//$this->Cell(0, 0, $this->footer_text, 'T', 0, 'L');
+				$this->writeHTML($this->footer_text, false, true, false, true);
 			}
 		}
 	}

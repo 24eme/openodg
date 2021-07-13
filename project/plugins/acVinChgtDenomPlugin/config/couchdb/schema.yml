@@ -6,21 +6,41 @@ ChgtDenom:
       _rev: {  }
       type: {  }
       date: {  }
+      type_archive:  { required: false }
+      numero_archive: {  }
       campagne: { }
       etape: {  }
       validation: {  }
       validation_odg: {  }
       identifiant: {  }
       papier: { required: false, type: integer }
-      changement_origine_mvtkey: {}
-      changement_produit: {}
+      changement_origine_id_document: {}
+      changement_origine_lot_unique_id: {}
+      changement_type: {}
+      changement_produit_hash: {}
       changement_produit_libelle: { }
+      changement_millesime: { }
+      changement_specificite: { }
+      changement_numero_logement_operateur: {}
       changement_cepages:
         type: collection
         definition:
           fields:
             '*': { type: float }
       changement_volume: { type: float }
+      changement_affectable: {}
+      origine_produit_hash: {}
+      origine_produit_libelle: { }
+      origine_millesime: { }
+      origine_specificite: { }
+      origine_numero_logement_operateur: {}
+      origine_cepages:
+        type: collection
+        definition:
+          fields:
+            '*': { type: float }
+      origine_volume: { type: float }
+      origine_affectable: {}
       declarant:
         type: collection
         class: ChgtDenomDeclarant
@@ -52,9 +72,14 @@ ChgtDenom:
                 fields:
                   date: { }
                   id_document: { }
+                  unique_id: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
+                  campagne: {}
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero_cuve: { }
+                  document_ordre: {  }
+                  numero_logement_operateur: { }
                   millesime: { }
                   elevage: { }
                   volume: { type: float }
@@ -64,10 +89,18 @@ ChgtDenom:
                   produit_libelle: { }
                   declarant_identifiant: { }
                   declarant_nom: { }
-                  origine_mouvement: {}
+                  origine_mouvement: { required: false }
                   details: {}
                   statut: {}
+                  adresse_logement: {}
                   specificite: {}
+                  affectable: { }
+                  document_fils: { required: false }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
       mouvements:
         type: collection
         definition:
@@ -94,12 +127,12 @@ ChgtDenom:
                         unite: { required: false }
                         taux: { }
                         tva: { }
-                        facture: { type: integer }
-                        facturable: { type: integer }
                         date: {  }
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+                        type: {  }
+                        campagne: {  }
       mouvements_lots:
         type: collection
         definition:
@@ -114,34 +147,22 @@ ChgtDenom:
                     type: collection
                     definition:
                       fields:
-                        prelevable: { type: integer }
-                        preleve: { type: integer }
-                        produit_hash: {  }
-                        produit_libelle: {  }
-                        produit_couleur: { }
-                        volume: { type: float }
                         date: {  }
-                        millesime: {  }
-                        elevage: { }
-                        region: {  }
+                        campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: { }
+                        libelle: {}
+                        detail: {}
+                        volume: { type: float }
                         version: {  }
-                        origine_hash: {  }
-                        origine_type: {  }
-                        origine_document_id: {  }
-                        origine_mouvement: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        destination_type: { }
-                        destination_date: { }
-                        details: {}
-                        region: {}
-                        campagne: {}
-                        id_document: {  }
                         statut: {}
-                        specificite: {}
       pieces:
         type: array_collection
         definition:

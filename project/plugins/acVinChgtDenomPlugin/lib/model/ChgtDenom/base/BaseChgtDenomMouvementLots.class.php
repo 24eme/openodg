@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseChgtDenomMouvementLots
- * 
+ *
  * Base model for ChgtDenomMouvementLots
 
  * @property integer $prelevable
@@ -16,7 +16,7 @@
  * @property string $region
  * @property string $numero_dossier
  * @property string $numero_archive
- * @property string $numero_cuve
+ * @property string $numero_logement_operateur
  * @property string $version
  * @property string $origine_hash
  * @property string $origine_type
@@ -56,16 +56,16 @@
  * @method string setNumeroDossier()
  * @method string getNumeroArchive()
  * @method string setNumeroArchive()
- * @method string getNumeroCuve()
- * @method string setNumeroCuve()
+ * @method string getNumeroLogementOperateur()
+ * @method string setNumeroLogementOperateur()
  * @method string getVersion()
  * @method string setVersion()
  * @method string getOrigineHash()
  * @method string setOrigineHash()
  * @method string getOrigineType()
  * @method string setOrigineType()
- * @method string getOrigineDocumentId()
- * @method string setOrigineDocumentId()
+ * @method string getOrigineIdDocument()
+ * @method string setOrigineIdDocument()
  * @method string getOrigineMouvement()
  * @method string setOrigineMouvement()
  * @method string getDeclarantIdentifiant()
@@ -86,14 +86,14 @@
  * @method string setStatut()
  * @method string getSpecificite()
  * @method string setSpecificite()
- 
+
  */
 
 abstract class BaseChgtDenomMouvementLots extends MouvementLots {
-                
+
     public function configureTree() {
        $this->_root_class_name = 'ChgtDenom';
        $this->_tree_class_name = 'ChgtDenomMouvementLots';
     }
-                
+
 }

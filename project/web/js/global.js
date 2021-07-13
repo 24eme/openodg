@@ -744,6 +744,7 @@
     }
 
     $.initTypeahead = function() {
+
         $('.typeahead').typeahead({
             itemLink: function(item) {
 
@@ -760,8 +761,25 @@
             source: function (query, process) {
                 var params = {};
                 params[this.$element.data('queryParam')] = query;
+                
+                if($('.typeahead').hasClass("typeaheadGlobal")){
+                  var urlVisu = this.$element.attr("data-visualisationLink");
+                }
+
                 return $.getJSON(this.$element.data('url'), params, function (data) {
-                    return process(data);
+                  var tmpData = data
+                  if($('.typeahead').hasClass("typeaheadGlobal")){
+                    tmpData = []
+                    $.each(data, function(id, val){
+                      let compte = new Object();
+                      compte.id = id;
+                      compte.text_html = '<span style="white-space: nowrap;text-overflow: ellipsis;display: block;overflow: hidden">'+val+'</span>';
+                      compte.visualisationLink = urlVisu.replace("identifiant", id)
+                      tmpData.push(compte)
+                    });
+                  }
+
+                  return process(tmpData);
                 });
             },
             sorter: function(items) { return items },

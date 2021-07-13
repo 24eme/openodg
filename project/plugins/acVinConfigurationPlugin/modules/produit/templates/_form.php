@@ -67,6 +67,20 @@
 				            </div>
 			            </div>
                         <div class="col-sm-4">
+                            <div class="form-group <?php if ($form['attributs']['rendement_dr_l5']->hasError()): ?>has-error<?php endif; ?>" >
+                                <?php echo $form['attributs']['rendement_dr_l5']->renderError() ?>
+                                <?php echo $form['attributs']['rendement_dr_l5']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+                                <div class="col-xs-6"><?php echo $form['attributs']['rendement_dr_l5']->render(array('class' => 'form-control text-right')); ?></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group <?php if ($form['attributs']['rendement_dr_l15']->hasError()): ?>has-error<?php endif; ?>" >
+                                <?php echo $form['attributs']['rendement_dr_l15']->renderError() ?>
+                                <?php echo $form['attributs']['rendement_dr_l15']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+                                <div class="col-xs-6"><?php echo $form['attributs']['rendement_dr_l15']->render(array('class' => 'form-control text-right')); ?></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
 							<div class="form-group <?php if ($form['attributs']['rendement_conseille']->hasError()): ?>has-error<?php endif; ?>" >
 								<?php echo $form['attributs']['rendement_conseille']->renderError() ?>
 				                <?php echo $form['attributs']['rendement_conseille']->renderLabel(null, array('class' => 'col-xs-6')); ?>
@@ -197,7 +211,7 @@
                 </div>
             </div>
         <?php endif; ?>
-        <?php if($form->getObject()->exist('cepages_autorises') && count($form->getObject()->cepages_autorises)): ?>
+        <?php if($form->getObject()->exist('cepages_autorises') && count($form->getObject()->cepages_autorises) && isset($form['cepages_autorises'])): ?>
             <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">

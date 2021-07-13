@@ -1,4 +1,5 @@
 bin/config.inc
+bin/config_*.inc
 bin/config_extra.inc
 config/app.yml
 config/databases.yml
@@ -12,6 +13,7 @@ log/[^.]*
 data/*
 .~*
 !data/configuration/
+!data/comptes/
 !data/elk
 test/output
 test_ava/output

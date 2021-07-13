@@ -25,8 +25,8 @@
                     <th class="col-xs-1">Date</th>
                     <th class="col-xs-1 text-center">Camp.</th>
                     <th class="col-xs-1 text-center">Type</th>
-                    <th class="col-xs-4">Opérateur</th>
-                    <th class="col-xs-2 text-center">Mode</th>
+                    <th class="col-xs-5">Opérateur</th>
+                    <th class="col-xs-1 text-center">Mode</th>
                     <th class="col-xs-2 text-center">Statut</th>
                 </tr>
             </thead>
@@ -40,8 +40,11 @@
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_DATE]); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
                         <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
-                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
-                        <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
+                        <td><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo Anonymization::hideIfNeeded($doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]); ?>&nbsp;<small><?php echo $doc->key[DeclarationTousView::KEY_CVI]; ?>&nbsp;(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
+                        <td title="<?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?>" data-toggle="tooltip" class="text-center">
+                        <span class="<?php if($doc->key[DeclarationTousView::KEY_MODE] == DeclarationTousView::MODE_SAISIE_INTERNE): ?>glyphicon glyphicon-file
+                            <?php else: ?>glyphicon glyphicon-globe<?php endif; ?>"></span>
+                        </td>
                         <td class="text-center"><a href="<?php echo url_for("declaration_doc", $params); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo Date::francizeDate($doc->key[DeclarationTousView::KEY_INFOS]); ?></small><?php endif; ?></a></td>
                     </tr>
                 <?php endforeach; ?>

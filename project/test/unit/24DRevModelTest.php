@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(48);
+$t = new lime_test(56);
 
 $igp13 = ($application == 'igp13');
 
@@ -14,16 +14,24 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-$campagne = (date('Y'))."";
+$periode = date('Y');
+if (date('m') < 8) {
+    $periode = $periode - 1;
+}
+$campagne = $periode.'-'.($periode + 1);
 
 //Début des tests
-$t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$campagne.")");
+$t->comment("Création d'une DRev (DREV-".$viti->identifiant."-".$periode.")");
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
 
 $t->is($drev->identifiant, $viti->identifiant, "L'identifiant est celui du viti : ".$viti->identifiant);
+$t->is($drev->periode, $periode, "La période est ".$periode);
 $t->is($drev->campagne, $campagne, "La campagne est ".$campagne);
+$t->is($drev->type_archive, "Revendication", "Le type d'archive est Revendication");
+$t->is($drev->numero_archive, null, "Le numéro d'archive est vide");
+$t->is($drev->_id,  'DREV-'.$viti->identifiant.'-'.$periode, "L'id est DREV-".$viti->identifiant.'-'.$periode);
 
 $drev->storeDeclarant();
 $drev->save();
@@ -119,6 +127,14 @@ if(isset($produit_hash_mutage)) {
     $nbProduits += 1;
 }
 
+if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
+    $drev->addLot();
+    $drev->lots[0]->numero_logement_operateur = '1';
+    $drev->lots[0]->produit_hash = $produit->getHash();
+    $drev->lots[0]->volume = 100;
+}
+
+
 $drev->save();
 
 if(isset($produit_hash_mutage)) {
@@ -146,8 +162,15 @@ $drev->save();
 $t->is($drev->declaration->getTotalTotalSuperficie(), $totalSuperficie, "La supeficie revendiqué totale est toujours de 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), $totalVolume, "Le volume revendiqué totale est toujours de 200");
 
+$t->ok($drev->numero_archive, "Le numéro d'archive a été défini");
 $t->is($drev->validation, $date , "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, $date, "La DRev a la date du jour comme date de validation odg");
+
+if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
+    $t->is($drev->addLot(), null, "L'ajout de lot ne fonctionne pas une fois la drev validée");
+} else {
+    $t->pass();
+}
 
 if(FactureConfiguration::getInstance()->isActive()) {
     $t->is(count($drev->mouvements->toArray(0,1)), 0, "La DRev n'a pas encore de mouvements");
@@ -162,11 +185,12 @@ $drev->validate();
 $drev->save();
 
 
+$nbMvtsAttendu = 0;
 if(FactureConfiguration::getInstance()->isActive()) {
     $template = $drev->getTemplateFacture();
     $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
-    $mouvements = $drev->mouvements->get($viti->identifiant);
-    $nbMvtsAttendu = 0;
+    $drev->generateMouvementsFactures();
+    $mouvements = $drev->mouvements->add($viti->identifiant);
     foreach ($template->cotisations as $type => $cot) {
         foreach($cot->details as $h => $d) {
             if (in_array('DRev', $d->docs->toArray())) {
@@ -175,10 +199,12 @@ if(FactureConfiguration::getInstance()->isActive()) {
             }
         }
     }
-    $t->is(count($mouvements), $nbMvtsAttendu, "La DRev a $nbMvtsAttendu mouvements");
+}
+if ($nbMvtsAttendu) {
+    $t->ok(count($mouvements) > 0, "La DRev a des mouvements");
     $mouvement = $mouvements->getFirst();
     $t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
-    $t->ok($mouvement->date === $campagne."-12-10" && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
+    $t->ok($mouvement->date === $drev->validation && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
 } else {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
@@ -208,12 +234,27 @@ $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_revendique'),
 
 $t->comment("Validation de la modificatrice");
 
+if (DRevConfiguration::getInstance()->isRevendicationParLots()) {
+    $drevM1->addLot();
+    $drevM1->lots[1]->numero_logement_operateur = '2';
+    $drevM1->lots[1]->produit_hash = $produit->getHash();
+    $drevM1->lots[1]->volume = 50;
+}
+
 $drevM1->save();
 $drevM1->validate();
+$drevM1->generateMouvementsFactures();
 $drevM1->save();
 
-if(FactureConfiguration::getInstance()->isActive()) {
-    $t->is(count($drevM1->mouvements->get($viti->identifiant)), $nbMvtsAttendu, "La DRev modificatrice a $nbMvtsAttendu mouvements");
+$t->comment("Test numero dossier/numero archive pour la nouvelle modificatrice");
+
+$t->ok($drevM1->numero_archive !== $drev->numero_archive, sprintf("Le numero d'archive de la Drev (%s) est different de la Drev modificatrice (%s)", $drev->numero_archive, $drevM1->numero_archive));
+$lotDrev = $drevM1->getLots()[0];
+$lotDrevM1 = $drevM1->getLots()[1];
+$t->ok($lotDrev->numero_dossier !== $lotDrevM1->numero_dossier, sprintf("Le numero de dossier %s et numero d'archive %s du lot de la Drev est different du celui du lot numero de dossier %s et numero d'archive %s rajouter dans Drev modificatrice", $lotDrev->numero_dossier, $lotDrev->numero_archive, $lotDrevM1->numero_dossier,$lotDrevM1->numero_archive));
+
+if(FactureConfiguration::getInstance()->isActive() && $nbMvtsAttendu) {
+    $t->ok(count($drevM1->mouvements->get($viti->identifiant)) > 0, "La DRev modificatrice a des mouvements");
 } else {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
 }

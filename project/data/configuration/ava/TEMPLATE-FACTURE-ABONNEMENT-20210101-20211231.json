@@ -1,0 +1,32 @@
+{
+   "_id": "TEMPLATE-FACTURE-ABONNEMENT-20210101-20211231",
+   "type": "TemplateFacture",
+   "campagne": "20210101-20211231",
+   "template": "ABONNEMENT",
+   "libelle": "2021 - Abonnement à la revue",
+   "docs": [
+       "Abonnement"
+   ],
+   "cotisations": {
+       "abonnement_revue": {
+           "modele": "CotisationsCollection",
+           "required": true,
+           "callback": "",
+           "libelle": "Abonnement à la revue \"Les Vins d'Alsace\"",
+           "code_comptable": "707500",
+           "details": {
+               "abonnement_fixe": {
+                   "modele": "CotisationFixe",
+                   "prix": 52.89,
+                   "tva": 0.021,
+                   "libelle": "Abonnement au tarif Membre - Année 2021 (12 numéros)",
+                   "complement_libelle": "",
+                   "callback": "",
+                   "docs": [
+                       "Abonnement"
+                   ]
+               }
+           }
+       }
+   }
+}

@@ -73,4 +73,9 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         }
     }
 
+    protected function doSave($con = null) {
+        $this->updateObject();
+        $this->object->getCouchdbDocument()->save(false);
+    }
+
 }

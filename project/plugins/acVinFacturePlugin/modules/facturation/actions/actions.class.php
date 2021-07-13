@@ -5,35 +5,38 @@ class facturationActions extends sfActions
 
     public function executeIndex(sfWebRequest $request)
     {
-        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,200);
+        $this->generations = GenerationClient::getInstance()->findHistory(200);
 
         $this->form = new LoginForm();
 
-        if(class_exists("EtablissementChoiceForm")) {
-            $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => ""), true);
+        if(class_exists("SocieteChoiceForm")) {
+            $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => ""), true);
 
             $this->generation = new Generation();
             $this->generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
             $this->generation->somme = 0;
-            $this->formFacturationMassive = new FacturationMassiveForm($this->generation, array(), array('uniqueTemplateFactureName' => $this->getUniqueTemplateFactureName()));
         }
+        $this->formFacturationMassive = new FactureGenerationMasseForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
-        if(class_exists("EtablissementChoiceForm")) {
-          $this->formEtablissement->bind($request->getParameter($this->formEtablissement->getName()));
-          $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
-          if($this->formEtablissement->isValid()) {
-              $etb = EtablissementClient::getInstance()->find($this->formEtablissement->getValue('identifiant'));
-              return $this->redirect('facturation_declarant', array('id' => $etb->getMasterCompte()->_id));
+         $this->formSociete->bind($request->getParameter($this->formSociete->getName()));
+         $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
+         $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
+         if($this->formSociete->isValid()) {
+              $soc = SocieteClient::getInstance()->find($this->formSociete->getValue('identifiant'));
+              return $this->redirect('facturation_declarant', array('id' => $soc->getMasterCompte()->_id));
           }
           if($this->formFacturationMassive->isValid()) {
-              $etb = EtablissementClient::getInstance()->find($this->formEtablissement->getValue('identifiant'));
-              return $this->redirect('facturation_declarant', array('id' => $etb->getMasterCompte()->_id));
+
+              $generation = $this->formFacturationMassive->save();
+              $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+              $generation->save();
+
+              return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
           }
-        }
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -43,6 +46,22 @@ class facturationActions extends sfActions
         }
 
         return $this->redirect('facturation_declarant', $this->form->getValue('etablissement')->getCompte());
+    }
+
+    public function executeAttente(sfWebRequest $request)
+    {
+        $this->mouvements = [];
+        $etablissements = [];
+
+        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente();
+
+        foreach ($mouvements_en_attente as $m) {
+            if (empty($m->key[MouvementFactureView::KEY_ETB_ID])) {
+                continue;
+            }
+
+            $this->mouvements[$m->key[MouvementFactureView::KEY_ETB_ID]][] = $m->value;
+        }
     }
 
     public function executeMassive(sfWebRequest $request)
@@ -58,8 +77,7 @@ class facturationActions extends sfActions
 
         $options = array('modeles' => TemplateFactureClient::getInstance()->findAll(),'uniqueTemplateFactureName' => $this->getUniqueTemplateFactureName());
 
-        $this->form = new FacturationMassiveForm($this->generation, $defaults, $options);
-
+        $this->form = new FactureGenerationForm();
 
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -78,6 +96,62 @@ class facturationActions extends sfActions
 
         return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $this->generation->date_emission));
     }
+
+
+    public function executeDeclarant(sfWebRequest $request){
+            $this->compte = $this->getRoute()->getCompte();
+
+            $this->forwardCompteSecure();
+            $identifiant = $this->compte->identifiant;
+            if($this->compte->exist('id_societe')){
+              $identifiant = $this->compte->getSociete()->identifiant;
+            }
+            $this->societe = $this->compte->getSociete();
+            $this->form = new FactureGenerationForm();
+
+            if(class_exists("SocieteChoiceForm")) {
+                $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => $this->compte->getSociete()->identifiant), true);
+            }
+
+            $this->identifiant = $request->getParameter('identifiant');
+
+            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
+            $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
+
+            $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
+            $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
+
+            $this->setTemplate('declarant');
+
+            if (!$request->isMethod(sfWebRequest::POST)) {
+
+                return sfView::SUCCESS;
+            }
+
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if(!$this->form->isValid()) {
+
+                return sfView::SUCCESS;
+            }
+
+            $generation = $this->form->save();
+            $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+
+            $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
+            $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
+            if($mouvementsBySoc)
+            {
+                $date_facturation = Date::getIsoDateFromFrenchDate($generation->arguments->get('date_facturation'));
+                $message_communication = $generation->arguments->get('message_communication');
+                $generation = FactureClient::getInstance()->createFacturesBySoc($mouvementsBySoc,$date_facturation, $message_communication,$generation);
+                $generation->libelle = $this->compte->nom_a_afficher;
+                $generation->save();
+            }
+
+            return $this->redirect('facturation_declarant', array('id' => $this->compte->_id));
+
+        }
 
     public function executeEdition(sfWebRequest $request) {
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
@@ -243,10 +317,28 @@ class facturationActions extends sfActions
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
 
-        if(!$this->getUser()->isAdmin() && !$this->facture->exist('date_telechargement')) {
-            $this->facture->add('date_telechargement', date('Y-m-d'));
+        if(!$this->getUser()->isAdmin()) {
+            $this->facture->setTelechargee();
             $this->facture->save();
         }
+        exit;
+    }
+
+    public function executeGetFactureWithAuth(sfWebRequest $request) {
+        $authKey = $request->getParameter('auth');
+        $id = $request->getParameter('id');
+
+        if (UrlSecurity::verifyAuthKey($authKey, $id)) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+
+        $facture = FactureClient::getInstance()->find($id);
+        $facture->setTelechargee();
+        $facture->save();
+
+        $latex = new FactureLatex($facture);
+        $latex->echoWithHTTPHeader();
+
         exit;
     }
 
@@ -266,64 +358,48 @@ class facturationActions extends sfActions
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$f->identifiant));
     }
 
-    public function executeDeclarant(sfWebRequest $request) {
-        $this->compte = $this->getRoute()->getCompte();
-
-        $this->forwardCompteSecure();
-        $identifiant = $this->compte->identifiant;
-        if($this->compte->exist('id_societe')){
-          $identifiant = $this->compte->getSociete()->identifiant;
-        }
-        $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
-        $this->values = array();
-        $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
-        $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
-        $this->form = new FacturationDeclarantForm(array(), array('modeles' => $this->templatesFactures,'uniqueTemplateFactureName' => $this->uniqueTemplateFactureName));
-
-        $this->mouvements = array();
-
-        try {
-          foreach ($this->templatesFactures as $key => $templateFacture) {
-            $this->mouvements = array_merge($templateFacture->getMouvementsFactures($this->compte->identifiant),$this->mouvements);
-          }
-        } catch (FacturationPassException $e) { }
-
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
+    public function executeGenerer(sfWebRequest $request) {
+        $this->redirect403IfIsTeledeclaration();
+        $parameters = $request->getParameter('facture_generation');
+        $date_facturation = (!isset($parameters['date_facturation']))? null : DATE::getIsoDateFromFrenchDate($parameters['date_facturation']);
+        $message_communication = (!isset($parameters['message_communication']))? null : $parameters['message_communication'];
+        $parameters['date_mouvement'] = (isset($parameters['date_mouvement']) && $parameters['date_mouvement']!='')?  $parameters['date_mouvement'] : $date_facturation;
+        if(!isset($parameters['type_document']) || !$parameters['type_document'] || $parameters['type_document'] == FactureGenerationMasseForm::TYPE_DOCUMENT_TOUS) {
+          unset($parameters['type_document']);
         }
 
-        $this->form->bind($request->getParameter($this->form->getName()));
+        $this->societe = $this->getRoute()->getSociete();
 
-        if(!$this->form->isValid()) {
+        $mouvementsBySoc = array($this->societe->identifiant => FactureClient::getInstance()->getFacturationForSociete($this->societe));
+        $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$parameters);
+        if($mouvementsBySoc)
+        {
+            $generation = FactureClient::getInstance()->createFacturesBySoc($mouvementsBySoc,$date_facturation, $message_communication);
+            $generation->save();
+        }
+        $this->redirect('facture_societe', $this->societe);
+    }
 
-            return sfView::SUCCESS;
+    public function executeSousGenerationFacture(sfWebRequest $request)
+    {
+        $generationMaitre = $request->getParameter('generation');
+        $type = $request->getParameter('type');
+
+        $generationMaitre = GenerationClient::getInstance()->find($generationMaitre);
+
+        if (! $generationMaitre) {
+            $this->redirect404();
         }
 
-        $this->values = $this->form->getValues();
-        if($this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName()) {
-          $modelName = $this->uniqueTemplateFactureName;
-        }else{
-          $modelName = $this->values['modele'];
-        }
-        $templateFacture = TemplateFactureClient::getInstance()->find($modelName);
-        try {
-           $generation = FactureClient::getInstance()->createFactureByTemplateWithGeneration($templateFacture, $this->compte->_id, $this->value['date_facturation'], null, $templateFacture->arguments->toArray(true, false));
-        } catch (Exception $e) {
-           $this->getUser()->setFlash("error", $e->getMessage());
-           return $this->redirect('facturation_declarant', $this->compte);
-        }
+        $generation = $generationMaitre->getOrCreateSubGeneration($type);
 
-        if(!$generation) {
-            $this->getUser()->setFlash("error", "Cet opérateur a déjà été facturé pour ce type de facture.");
-
-            return $this->redirect('facturation_declarant', $this->compte);
-        }
-
+        $generationMaitre->save();
         $generation->save();
 
-        return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
+        return $this->redirect('generation_view', [
+          'type_document' => $generationMaitre->type_document,
+          'date_emission' => $generationMaitre->date_emission.'-'.$generation->type_document
+        ]);
     }
 
     public function executeTemplate(sfWebRequest $request) {
@@ -354,5 +430,13 @@ class facturationActions extends sfActions
 
           return $this->forwardSecure();
       }
+    }
+
+    public function executeXml(sfWebRequest $request){
+      $facture = FactureClient::getInstance()->find($request->getParameter('id'));
+      $this->getResponse()->setContentType('text/xml');
+      $this->setLayout(false);
+      $this->xml = $facture->getXml();
+
     }
 }

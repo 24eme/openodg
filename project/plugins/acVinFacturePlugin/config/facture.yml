@@ -8,3 +8,5 @@ all:
       uniq_template_prefix: false
       export_sage_width_txt: false
       paiements: false
+      delais_paiement: null
+      exercice: "civil"

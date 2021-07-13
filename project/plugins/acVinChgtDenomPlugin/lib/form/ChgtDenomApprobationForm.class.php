@@ -9,7 +9,6 @@ class ChgtDenomApprobationForm extends acCouchdbObjectForm
         if (!$this->getObject()->isDeclassement()) {
           $this->setWidget('deguster', new sfWidgetFormInputCheckbox());
           $this->setValidator('deguster', new sfValidatorBoolean(['required' => false]));
-          $this->setDefault('deguster', 1);
         }
         $this->widgetSchema->setNameFormat('chgt_denom_approbation[%s]');
     }
@@ -28,6 +27,5 @@ class ChgtDenomApprobationForm extends acCouchdbObjectForm
         $this->getObject()->validation_odg = null;
         $this->getObject()->generateMouvementsLots($prelevable);
         $this->getObject()->validation_odg = $validationOdg;
-        $this->getObject()->generateMouvementsFactures();
     }
 }

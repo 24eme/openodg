@@ -1,0 +1,13 @@
+all:
+  configuration:
+    facture:
+      aggregateMouvements: false
+      ligneMsg: false
+      echeances: false
+      all_etablissements: false
+      export_sage_width_txt: true
+      all_etablissements: true
+      modalite_paiement: "- comptant par virement ou chèque \\"
+      uniq_template_prefix: "TEMPLATE-FACTURE"
+      paiements: true
+      exercice: "viticole"

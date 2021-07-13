@@ -37,7 +37,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
 
         $this->setWidget('millesime', new bsWidgetFormInput());
-        $this->setValidator('millesime', new sfValidatorInteger(array('required' => false)));
+        $this->setValidator('millesime', new sfValidatorChoice(array('required' => false, 'choices' => $this->getMillesimes())));
 
         $this->setWidget('destination_date', new bsWidgetFormInput());
         $this->setValidator('destination_date', new sfValidatorDate(
@@ -48,8 +48,12 @@ class ConditionnementLotForm extends acCouchdbObjectForm
         $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
         $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
 
-        $this->setWidget('numero', new bsWidgetFormInput());
-        $this->setValidator('numero', new sfValidatorString(array('required' => false)));
+        $this->setWidget('numero_logement_operateur', new bsWidgetFormInput());
+        $this->setValidator('numero_logement_operateur', new sfValidatorString(array('required' => false)));
+
+        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
+
 
         if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
@@ -71,6 +75,8 @@ class ConditionnementLotForm extends acCouchdbObjectForm
             $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
             $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
+        $this->setWidget('elevage', new sfWidgetFormInputCheckbox());
+        $this->setValidator('elevage', new sfValidatorBoolean(['required' => false]));
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
@@ -88,11 +94,17 @@ class ConditionnementLotForm extends acCouchdbObjectForm
 
             $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
         }
+
+        if (!empty($values['elevage'])) {
+          $this->getObject()->statut = Lot::STATUT_ELEVAGE;
+        }
+        
+        $this->getObject()->set("affectable",true);
     }
 
     public function getSpecificites()
     {
-        return array_merge(array(Lot::SPECIFITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
+        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
     }
 
     public function getProduits()
@@ -113,6 +125,14 @@ class ConditionnementLotForm extends acCouchdbObjectForm
     public function getCepages()
     {
         return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
+    }
+
+    public function getMillesimes() {
+        $m = array('NM', 'nm');
+        for($i = 0 ; $i < 10 ; $i++) {
+            $m[] = date('Y') - $i;
+        }
+        return $m;
     }
 
 }

@@ -17,25 +17,25 @@
 
 <div class="list-group">
     <form class="pull-right">
-        <select class="form-control select2 select2SubmitOnChange select2autocomplete input-md text-right pull-right" id="year" name="annee">
-            <option value="0">Toutes années</option>
-            <?php foreach ($years as $y): ?>
-            <option value="<?php echo $y ?>"<?php if($y == $year): ?> selected="selected"<?php endif; ?>><?php echo $y ?></option>
+        <select class="form-control select2 select2SubmitOnChange select2autocomplete input-md text-right pull-right" id="year" name="campagne">
+            <option value="0">Toutes campagnes</option>
+            <?php foreach ($campagnes as $c): ?>
+            <option value="<?php echo $c ?>"<?php if($c == $campagne): ?> selected="selected"<?php endif; ?>><?php echo $c ?></option>
             <?php endforeach; ?>
         </select>
     </form>
 <?php if(count($history) > 0): ?>
 	<ul class="nav nav-pills" style="margin: 0 0 20px 0;">
-		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) - $decreases ?></a></li>
+		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) - $decreases ?></a></li>
 		<?php foreach ($categories as $categorie => $nbDoc): ?>
-        <li<?php if ($category && $category == $categorie):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtolower($categorie))); ?>&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nbDoc ?></a></li>
+        <li<?php if ($category && $category == $categorie):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtolower($categorie))); ?>&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nbDoc ?></a></li>
 		<?php endforeach; ?>
 	</ul>
 	<?php foreach ($history as $document): ?>
 		<?php if ($category && strtolower($document->key[PieceAllView::KEYS_CATEGORIE]) != $category) { continue; } ?>
 	<div class="list-group-item col-xs-12">
 		<span class="col-sm-2 col-xs-12">
-			<?php echo (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $document->key[PieceAllView::KEYS_DATE_DEPOT]))? format_date($document->key[PieceAllView::KEYS_DATE_DEPOT], "dd/MM/yyyy", "fr_FR") : null; ?>
+			<?php echo format_date(preg_replace('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/', '$1', $document->key[PieceAllView::KEYS_DATE_DEPOT]), "dd/MM/yyyy", "fr_FR"); ?>
 		</span>
 		<span class="col-sm-8 col-xs-12">
 			<?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) &&  Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
@@ -90,6 +90,6 @@
 	</div>
 	<?php endforeach; ?>
 <?php else: ?>
-	<p class="text-center"><em>Aucun document disponible<?php if ($year): ?> pour l'année <strong><?php echo $year ?></strong><?php endif; ?></em></p>
+	<p class="text-center"><em>Aucun document disponible<?php if ($campagne): ?> pour la campagne <strong><?php echo $campagne ?></strong><?php endif; ?></em></p>
 <?php endif; ?>
 </div>

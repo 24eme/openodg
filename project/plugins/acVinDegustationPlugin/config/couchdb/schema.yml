@@ -10,8 +10,10 @@ Degustation:
       lieu: {  }
       max_lots: {  }
       etape: {  }
-      provenance: { }
-      validation: {  }
+      validation: { required: false }
+      tri : { }
+      provenance: { required: false }
+      numero_archive: {  }
       lots:
         type: array_collection
         definition:
@@ -24,12 +26,16 @@ Degustation:
                 fields:
                   date: { }
                   id_document: { }
+                  unique_id: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
+                  campagne: {}
                   numero_dossier: { }
                   numero_archive: { }
-                  numero_cuve: { }
+                  numero_logement_operateur: { }
                   numero_anonymat: { }
+                  document_ordre: {  }
                   millesime: { }
-                  elevage: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }
@@ -37,16 +43,32 @@ Degustation:
                   produit_libelle: { }
                   declarant_identifiant: { }
                   declarant_nom: { }
-                  origine_mouvement: {}
+                  origine_mouvement: { required: false}
+                  document_fils: { required: false }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
                   details: {}
                   statut: {}
+                  adresse_logement: {}
                   numero_table: {}
+                  position: {}
                   leurre: {}
                   conformite: {}
                   motif: {}
                   specificite: {}
                   centilisation: { }
                   observation: {}
+                  email_envoye: { }
+                  nombre_degustation: {required: false}
+                  doc_ordre: {required: false}
+                  affectable: {}
+                  recours_oc: {}
+                  conforme_appel: {}
+                  a_redeguster: {required: false}
+                  preleve: {}
       mouvements_lots:
         type: collection
         definition:
@@ -61,35 +83,63 @@ Degustation:
                     type: collection
                     definition:
                       fields:
-                        produit_hash: {  }
-                        produit_libelle: {  }
-                        produit_couleur: { }
-                        volume: { type: float }
                         date: {  }
-                        elevage: { }
-                        millesime: {  }
-                        region: {  }
+                        campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: {  }
+                        libelle: {}
+                        detail: {}
+                        volume: { type: float }
                         version: {  }
-                        origine_hash: {  }
-                        origine_type: {  }
-                        origine_document_id: {  }
-                        origine_mouvement: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        destination_type: { }
-                        destination_date: { }
-                        details: {}
-                        region: {}
-                        campagne: {}
-                        id_document: {  }
-                        statut: {  }
-                        specificite: {}
-                        centilisation: { }
-                        conformite: {}
-                        motif: {}
+                        statut: { }
+                        id_document: { required: false }
+                        specificite: { required: false }
+                        centilisation: { required: false }
+                        conformite: { required: false }
+                        motif: { required: false }
+                        nombre_degustation: { required: false }
+                        affectable: { required: false }
+                        a_redeguster: {required: false}
+                        recours_oc: { required: false }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: DegustationMouvementFactures
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        detail_identifiant: {  }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        unite: { required: false }
+                        taux: { }
+                        tva: { }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
+                        categorie: {  }
+                        type: {  }
+                        campagne: {  }
       degustateurs:
         type: collection
         definition:

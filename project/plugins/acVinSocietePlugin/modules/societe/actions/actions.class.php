@@ -17,6 +17,7 @@ class societeActions extends sfCredentialActions {
         $this->resultsElk = $resset->getResults();
 
         $jsonElastic = $this->matchCompteElastic($this->resultsElk, $limit);
+
         $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit));
 
         return $this->renderText(json_encode($json));
@@ -145,6 +146,7 @@ class societeActions extends sfCredentialActions {
         }
 
         $this->societe = $this->getRoute()->getSociete();
+        $this->mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($this->societe);
         $this->applyRights();
         $this->societe_compte = $this->societe->getMasterCompte();
         if(!$this->societe_compte->lat && !$this->societe_compte->lon){
@@ -197,6 +199,28 @@ class societeActions extends sfCredentialActions {
 
             return $this->redirect('societe');
         }
+    }
+
+    public function executeMandatSepaSwitchSigne(sfWebRequest $request) {
+          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
+              return $this->forwardSecure();
+          }
+          $societe = $this->getRoute()->getSociete();
+          $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($societe);
+          $mandatSepa->switchIsSigne();
+          $mandatSepa->save();
+          return $this->redirect('societe_visualisation', array('identifiant' => $societe->identifiant));
+    }
+
+    public function executeMandatSepaSwitchActif(sfWebRequest $request) {
+          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
+              return $this->forwardSecure();
+          }
+          $societe = $this->getRoute()->getSociete();
+          $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($societe);
+          $mandatSepa->switchIsActif();
+          $mandatSepa->save();
+          return $this->redirect('societe_visualisation', array('identifiant' => $societe->identifiant));
     }
 
     public function executeExport(sfWebRequest $request) {

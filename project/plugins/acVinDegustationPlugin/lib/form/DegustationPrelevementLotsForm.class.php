@@ -2,7 +2,8 @@
 
 class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
 
-    private $lotsPrelevables = null;
+    private $lots = [];
+    private $leurres = [];
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
     protected $object = null;
@@ -10,67 +11,101 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         $id = $object->_id;
         $this->object = $object;
-        strtok($id, '-');
-        $this->date_degustation = DateTime::createFromFormat('YmdHi', strtok('-'))->format('Ymd');
+        $this->date_degustation = $object->getDateFormat('Ymd');
 
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }
 
     public function configure() {
-        $this->lotsPrelevables = $this->getLotsPrelevables();
-        $formLots = new BaseForm();
-        foreach ($this->lotsPrelevables as $key => $item) {
-            $formLots->embedForm($key, new DegustationPrelevementLotForm());
+        $this->lots = $this->object->getLotsFromProvenance();
+        uasort($this->lots, array("DegustationClient", "sortLotByDate"));
 
-            if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
-                $obj = acCouchdbManager::getClient()->find($item->id_document);
-                $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
+        foreach ($this->object->getLots() as $lot) {
+            if ($lot->isLeurre()) {
+                $this->leurres[] = $lot;
             }
         }
+
+        foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {
+            if (array_key_exists($item->unique_id, $this->lots)) {
+                continue;
+            }
+
+            $this->lots[$item->unique_id] = $item;
+        }
+
+        $formLots = new BaseForm();
+
+        ksort($this->lots);
+
+        foreach ($this->lots as $key => $lot) {
+            $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
+
+            if (array_key_exists($lot->id_document, $this->dates_degust_drevs) === false) {
+                $doc = acCouchdbManager::getClient()->find($lot->id_document);
+                $this->dates_degust_drevs[$lot->id_document] = date('Ymd');
+                if($doc->exist("date_degustation_voulue") && DateTime::createFromFormat('Y-m-d', $doc->date_degustation_voulue)){
+                    $this->dates_degust_drevs[$lot->id_document] = DateTime::createFromFormat('Y-m-d', $doc->date_degustation_voulue)->format('Ymd');
+                }
+            }
+        }
+
         $this->embedForm('lots', $formLots);
         $this->widgetSchema->setNameFormat('prelevement[%s]');
 
     }
 
     protected function doUpdateObject($values) {
+        $this->getObject()->fillDocToSaveFromLots();
         parent::doUpdateObject($values);
-        $mvtkeys = array();
+
+        $lots = [];
         foreach ($values['lots'] as $id => $val) {
-            $mvtkeys[$id] = (isset($val['preleve']) && !empty($val['preleve']));
+            if (isset($val['preleve']) && !empty($val['preleve'])) {
+                $lots[$id] = $this->getLot($id);
+            }
         }
-        $this->getObject()->setLotsFromMvtKeys($mvtkeys, Lot::STATUT_ATTENTE_PRELEVEMENT);
+
+        $lots = array_merge($lots, $this->leurres);
+
+        $this->getObject()->setLots($lots);
+        if (!$this->getObject()->max_lots < count($lots)) {
+            $this->getObject()->max_lots = count($lots);
+        }
     }
 
     protected function updateDefaultsFromObject() {
         $defaults = $this->getDefaults();
 
+        $nbLots = 0;
+        $lots_preleves = [];
         foreach ($this->getObject()->lots as $lot) {
-          $key = $lot->getGeneratedMvtKey();
-          $defaults['lots'][$key] = array('preleve' => 1);
+          if ($lot->isLeurre()) {
+              continue;
+          }
+          $defaults['lots'][$lot->getUniqueId()] = array('preleve' => 1);
+          $lots_preleves[] = $lot->getUniqueId();
+          $nbLots++;
         }
 
-        if(!count($this->getObject()->lots)){
-            $nbLots = 0;
-            foreach ($this->lotsPrelevables as $key => $item) {
-                if (array_key_exists($item->id_document, $this->dates_degust_drevs) === false) {
-                    $obj = acCouchdbManager::getClient()->find($item->id_document);
-                    $this->dates_degust_drevs[$item->id_document] = ($obj->exist("date_degustation_voulue"))? DateTime::createFromFormat('Y-m-d', $obj->date_degustation_voulue)->format('Ymd') : date('Ymd');
+        if (!count($lots_preleves)){
+
+            foreach ($this->lots as $key => $lot) {
+                if (in_array($lot->unique_id, $lots_preleves)) {
+                    continue;
                 }
 
-                $preleve = ($this->dates_degust_drevs[$item->id_document] > $this->getDateDegustation()) ? 0 : 1;
+                $preleve = ($this->dates_degust_drevs[$lot->id_document] > $this->getDateDegustation()) ? 0 : 1;
 
                 if(!is_null($this->getObject()->max_lots) && ($this->getObject()->max_lots <= $nbLots)){
-                  $preleve = 0;
+                    $preleve = 0;
                 }
                 $nbLots+=$preleve;
                 $defaults['lots'][$key] = array('preleve' => $preleve);
             }
         }
-        $this->setDefaults($defaults);
-    }
 
-    public function getLotsPrelevables() {
-        return $this->getObject()->getLotsPrelevablesSortByDate($this->object->provenance);
+        $this->setDefaults($defaults);
     }
 
     public function getDateDegustation()
@@ -81,5 +116,10 @@ class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
     public function getDateDegustParDrev()
     {
         return $this->dates_degust_drevs;
+    }
+
+    public function getLot($key)
+    {
+        return $this->lots[$key];
     }
 }

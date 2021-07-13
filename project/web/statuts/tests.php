@@ -1,9 +1,7 @@
 <?php
 
 $directory = dirname(__FILE__);
-$files = scandir($directory."/xml");
-
-sort($files);
+$allFiles = scandir($directory."/xml");
 
 $output = 'html';
 
@@ -20,16 +18,28 @@ if ($limit < 1) {
     unset($limit);
 }
 
-$tests = array();
-$precs = array();
+rsort($allFiles);
+
+$files = array();
 $i = 0;
-foreach($files as $file) {
-    if(!preg_match('/^(.+)_(.+)_(.+)_(.+)\.xml/', $file, $matches)) {
+foreach($allFiles as $file) {
+    if(!preg_match('/^.+_.+_.+_.+\.xml/', $file)) {
         continue;
     }
     if (isset($limit) && ($i++ > $limit)) {
         break;
     }
+
+    $files[] = $file;
+}
+
+sort($files);
+
+$tests = array();
+$precs = array();
+foreach($files as $file) {
+    preg_match('/^(.+)_(.+)_(.+)_(.+)\.xml/', $file, $matches);
+
     $xml = new SimpleXMLElement(file_get_contents($directory."/xml/".$file));
 
     $date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '\1-\2-\3 \4:\5:\6', $matches[1]);
@@ -83,7 +93,7 @@ krsort($tests);
         <?php foreach($tests as $test): ?>
         <?php if(!$test->diff_nb_success && !$test->diff_nb_errors): continue; endif;?>
         <entry>
-    		<title>Le bilan des tests a évolué : <?php echo $test->nb_success ?> (<?php if($test->diff_nb_success > 0): ?>+<?php endif; ?><?php echo $test->diff_nb_success ?>) SUCCESS / <?php echo $test->nb_errors ?> (<?php if($test->diff_nb_errors > 0): ?>+<?php endif; ?><?php echo $test->diff_nb_errors ?>) FAILED </title>
+    		<title><?php if(!$test->nb_errors): ?>💚<?php else: ?>🔴<?php endif; ?> Le bilan des tests a évolué : <?php echo $test->nb_success ?> (<?php if($test->diff_nb_success > 0): ?>🥳 +<?php endif; ?><?php echo $test->diff_nb_success ?>) SUCCESS / <?php echo $test->nb_errors ?> (<?php if($test->diff_nb_errors > 0): ?>🥵 +<?php endif; ?><?php echo $test->diff_nb_errors ?>) FAILED </title>
     	    <id><?php echo $test->commit ?></id>
     	    <link><?php echo (isset($_SERVER['HTTPS']) ? 'https://' : 'http://').$_SERVER['HTTP_HOST'].preg_replace("/\?.+$/", "", $_SERVER['REQUEST_URI']) ?>?file=<?php echo str_replace('.xml', '', $test->file) ?></link>
     		<updated><?php echo $test->date->format('Y-m-d H:i:s') ?></updated>
@@ -98,6 +108,7 @@ krsort($tests);
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">

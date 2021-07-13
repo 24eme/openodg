@@ -1,10 +1,6 @@
 <?php
-class DRevValidation extends DocumentValidation
+class DRevValidation extends DeclarationLotsValidation
 {
-    const TYPE_ERROR = 'erreur';
-    const TYPE_WARNING = 'vigilance';
-    const TYPE_ENGAGEMENT = 'engagement';
-
     protected $etablissement = null;
     protected $produit_revendication_rendement = array();
 
@@ -27,12 +23,6 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas tout votre volume malgré votre stock VCI disponible");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', "Le volume récolté de la DR est absent ou à zéro");
-
-        $this->addControle(self::TYPE_ERROR, 'lot_millesime_non_saisie', "Le millesime du lot n'a pas été saisie");
-        $this->addControle(self::TYPE_ERROR, 'lot_destination_type_non_saisie', "La destination du lot n'a pas été renseignée");
-        $this->addControle(self::TYPE_WARNING, 'lot_destination_date_non_saisie', "La date du lot n'a pas été renseignée");
-        $this->addControle(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', "Ce lot IGP est inexistant dans la DR.");
-        $this->addControle(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', "Ce lot IGP est inexistant dans la DR.");
 
         /*
          * Error
@@ -62,12 +52,8 @@ class DRevValidation extends DocumentValidation
 
         $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
-        $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
-        $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
-        $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
-
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
-        $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->campagne-1));
+        $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->periode-1));
 
         /*
          * Engagement
@@ -81,6 +67,14 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
+
+        /* Lots */
+
+        $this->configureLots();
+        $this->addControle(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', "Ce lot IGP est inexistant dans la DR.");
+        $this->addControle(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', "Ce lot IGP est inexistant dans la DR.");
+        $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
+        $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
     }
 
     public function controle()
@@ -193,7 +187,7 @@ class DRevValidation extends DocumentValidation
     protected function controleRecoltes()
     {
         foreach($this->document->getProduits() as $produit) {
-            if($produit->getConfig()->getRendementDR() && ($produit->getRendementDR() > $produit->getConfig()->getRendementDR()) ) {
+            if($produit->getConfig()->getRendementDrL15() && ($produit->getRendementDrL15() > $produit->getConfig()->getRendementDrL15()) ) {
                 if(!array_key_exists($produit->gethash(),$this->produit_revendication_rendement)){
                   $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
                   $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
@@ -319,71 +313,38 @@ class DRevValidation extends DocumentValidation
     }
 
     protected function controleLots(){
-        $produits = [];
-        foreach ($this->document->getProduits() as $hash => $produit) {
-          $produits[$hash] = $produit;
+        if(!$this->document->exist('lots')){
+            return;
         }
 
-      if($this->document->exist('lots')){
+        $this->controleLotsGenerique('drev_lots');
+
         foreach ($this->document->lots as $key => $lot) {
-          if($lot->hasBeenEdited()){
-            continue;
-          }
-          if(!$lot->hasVolumeAndHashProduit()){
-            continue;
-          }
-          $volume = sprintf("%01.02f",$lot->getVolume());
-          if(!$lot->exist('millesime') || !$lot->millesime){
-              $this->addPoint(self::TYPE_ERROR, 'lot_millesime_non_saisie', $lot->getProduitLibelle()." ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-          }elseif($lot->millesime < ($this->document->campagne - 1)){
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-          }
-          if(!$lot->exist('destination_type') || !$lot->destination_type){
-              $this->addPoint(self::TYPE_ERROR, 'lot_destination_type_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-          }
-          if(!$lot->exist('destination_date') || !$lot->destination_date){
-            $this->addPoint(self::TYPE_WARNING, 'lot_destination_date_non_saisie', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-          }
+            if($lot->hasBeenEdited()){
+              continue;
+            }
 
-          //si lots IGP n'existent pas dans la DR
+            if($lot->isEmpty()){
+              continue;
+            }
 
-
-        if(!$lot->lotPossible() && $this->document->hasDocumentDouanier()){
-            if (preg_match('/(DEFAUT|MULTI)$/', $lot->produit_hash)) {
-                $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-            }else{
-                $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+            //si lots IGP n'existent pas dans la DR
+            if(!$lot->lotPossible() && $this->document->hasDocumentDouanier()){
+                $volume = sprintf("%01.02f",$lot->getVolume());
+                if (preg_match('/(DEFAUT|MULTI)$/', $lot->produit_hash)) {
+                    $this->addPoint(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', $lot->getProduitLibelle(). " ( ".$lot->volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+                }else{
+                    $this->addPoint(self::TYPE_ERROR, 'lot_igp_inexistant_dans_dr_err', $lot->getProduitLibelle(). " ( ".$lot->volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
+                }
             }
         }
 
-
-          if(count($lot->cepages)){
-            $somme = 0.0;
-            foreach ($lot->cepages as $cepage => $v) {
-              $somme+=$v;
-            }
-            if($somme != $lot->volume){
-              $this->addPoint(self::TYPE_ERROR, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl('drev_lots', array("id" => $this->document->_id, "appellation" => $key)));
-            }
-          }
-
-          if ($lot->statut == Lot::STATUT_ELEVAGE) {
-              $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, "$lot->produit_libelle ( $lot->volume hl )");
-          }
-      }
-
-        $synthese = $this->document->summerizeProduitsLotsByCouleur();
+        $synthese = $this->document->summerizeProduitsLotsByCouleur(false);
         foreach ($this->document->getLotsByCouleur() as $couleur => $lot) {
             if (! isset($synthese[$couleur])) {
                 continue;
             }
-
-            $volume = 0;
-            foreach ($lot as $produit) {
-                $volume += $produit->volume;
-            }
-
-            if (round($volume,2) > round($synthese[$couleur]['volume_max'],2)) {
+            if (isset($synthese[$couleur]['volume_restant_max']) && round($synthese[$couleur]['volume_restant_max'], 4) < -0.0001) {
                 if ($this->document->exist('achat_tolerance') && $this->document->get('achat_tolerance')) {
                     $this->addPoint(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', $couleur, $this->generateUrl('drev_lots', array('id' => $this->document->_id)));
                 }else{
@@ -392,6 +353,4 @@ class DRevValidation extends DocumentValidation
             }
         }
     }
-        //exit;
-  }
 }

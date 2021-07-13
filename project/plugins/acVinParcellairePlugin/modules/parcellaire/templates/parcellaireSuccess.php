@@ -34,16 +34,7 @@ $list_idu = [];
 </div>
 <?php endif;?>
 
-<?php if ($sf_user->hasFlash('erreur_import')): ?>
-<div class="alert alert-danger" role="alert">
-    <strong>Erreur :</strong> <?= $sf_user->getFlash('erreur_import') ?>
-</div>
-<?php endif; ?>
-<?php if ($sf_user->hasFlash('success_import')): ?>
-<div class="alert alert-success" role="alert">
-    <strong>Succès :</strong> <?= $sf_user->getFlash('success_import') ?>
-</div>
-<?php endif; ?>
+<?php include_partial('global/flash'); ?>
 
 <?php if(isset($form)): ?>
 <div class="row row-margin">
@@ -68,7 +59,7 @@ $list_idu = [];
     <?php if(!empty($import)): ?>
      <div class="row" id="jump">
             <div class="col-xs-12">
-                <a name="carte"/><h3>Filtrer</h3>
+                <a name="carte"></a><h3>Filtrer</h3>
                 <div class="form-group">
                     <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
                 </div>
@@ -190,26 +181,71 @@ $list_idu = [];
     <?php endforeach; ?>
         </div>
     </div>
+<?php
 
-<h3>Synthèse par produits habilités</h3>
+    $synthese = $parcellaire->getSyntheseCepages();
+
+    if (count($synthese)):
+?>
+<h3>Synthèse par cépages</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
     <tr>
-        <th class="col-xs-8">Produit</th>
+        <th class="col-xs-4">Cépage</th>
         <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
     </tr>
   </thead>
   <tbody>
 <?php
 
+    foreach($synthese as $cepage_libelle => $s): ?>
+        <tr>
+            <td><?php echo $cepage_libelle ; ?></td>
+            <td class="text-right"><?php echoLongFloat($s['superficie']); ?></td>
+<?php
+    endforeach;
+?>
+  </tbody>
+</table>
+<?php endif; ?>
+
+<?php
     $synthese = $parcellaire->getSyntheseProduitsCepages();
+    if (count($synthese)):
+?>
+<h3>Synthèse par produits habilités</h3>
+
+<table class="table table-bordered table-condensed table-striped tableParcellaire">
+  <thead>
+    <tr>
+        <th class="col-xs-4">Produit</th>
+        <th class="col-xs-4">Cépage</th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+
     foreach($synthese as $produit_libelle => $sous_synthese):
         foreach($sous_synthese as $cepage_libelle => $s): ?>
         <tr>
             <?php if ($cepage_libelle == 'Total'): ?>
                 <th><?php echo $produit_libelle ; ?></th>
-                <th class="text-right"><?php echoLongFloat($s['superficie_max']); ?></th>
+                <th><?php echo $cepage_libelle ; ?></th>
+                <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
+                <th class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></th>
+                <?php else: ?>
+                <th class="text-right"><?php echoLongFloat($s['superficie_min']); ?></th><th class="text-right"><?php echoLongFloat($s['superficie_max']); ?></th>
+                <?php endif; ?>
+            <?php else: ?>
+                <td><?php echo $produit_libelle ; ?></td>
+                <td><?php echo $cepage_libelle ; ?></td>
+                <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
+                <td class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></td>
+                <?php else: ?>
+                <td class="text-right"><?php echoLongFloat($s['superficie_min']); ?></td><td class="text-right"><?php echoLongFloat($s['superficie_max']); ?></td>
+                <?php endif; ?>
             <?php endif; ?>
         </tr>
 <?php
@@ -218,12 +254,14 @@ $list_idu = [];
 ?>
   </tbody>
 </table>
+<?php endif; ?>
 
 <?php if ($parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
 <a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
 </div>
 <?php endif; ?>
+
 <?php else: ?>
     <div class="row">
         <div class="col-xs-12">

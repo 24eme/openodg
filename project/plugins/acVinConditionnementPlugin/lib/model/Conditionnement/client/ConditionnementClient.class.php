@@ -21,20 +21,37 @@ class ConditionnementClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $drevs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
-        foreach ($drevs as $id => $drev) {
+    public function findBrouillon($identifiant)
+    {
+        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent(), $identifiant);
 
-            return $this->find($id, $hydrate);
+        foreach ($docs->rows as $doc) {
+            if ($doc->key[4] == DeclarationTousView::STATUT_BROUILLON) {
+                return $this->find($doc->id);
+            }
         }
-
         return null;
     }
 
-    public function createDoc($identifiant, $campagne, $papier = false)
+    public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
+        $doc = $this->find($docid);
+        return $doc;
+    }
+
+
+    public function findByIdentifiantAndDateOrCreateIt($identifiant, $campagne, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $doc = $this->findByIdentifiantAndDate($identifiant, $date);
+        if (!$doc) {
+            $doc = $this->createDoc($identifiant, $campagne, $date);
+        }
+        return $doc;
+    }
+
+    public function createDoc($identifiant, $campagne, $date, $papier = false)
     {
         $doc = new Conditionnement();
-        $doc->initDoc($identifiant, $campagne);
+        $doc->initDoc($identifiant, $campagne, $date);
 
         $doc->storeDeclarant();
 
@@ -55,22 +72,22 @@ class ConditionnementClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function getIds($campagne) {
-        $ids = $this->startkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "0000000000", "0000"))
-                    ->endkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "9999999999", "9999"))
+    public function getIds($periode) {
+        $ids = $this->startkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "0000000000", "00000000"))
+                    ->endkey_docid(sprintf("CONDITIONNEMENT-%s-%s", "ZZZZZZZZZZ", "99999999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
-        $ids_campagne = array();
+        $ids_periode = array();
 
         foreach($ids as $id) {
-            if(strpos($id, "-".$campagne) !== false) {
-                $ids_campagne[] = $id;
+            if(strpos($id, "-".$periode) !== false) {
+                $ids_periode[] = $id;
             }
         }
 
-        sort($ids_campagne);
+        sort($ids_periode);
 
-        return $ids_campagne;
+        return $ids_periode;
     }
 
     public function getDateOuvertureDebut() {
@@ -95,8 +112,8 @@ class ConditionnementClient extends acCouchdbClient {
     }
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = "0000";
-        $campagne_to = "9999";
+        $campagne_from = "00000000";
+        $campagne_to = "99999999";
 
         return $this->startkey(sprintf("CONDITIONNEMENT-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("CONDITIONNEMENT-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))

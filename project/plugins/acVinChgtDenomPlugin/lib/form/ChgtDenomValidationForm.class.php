@@ -1,18 +1,43 @@
 <?php
 
-class ChgtDenomValidationForm extends acCouchdbObjectForm
+class ChgtDenomValidationForm extends acCouchdbForm
 {
+    public $isAdmin = null;
 
-    public function configure() {
-        $this->setWidget('validation', new sfWidgetFormInputHidden());
-        $this->setValidator('validation', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})~', 'required' => true)));
+    public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+      parent::__construct($doc, $defaults, $options, $CSRFSecret);
+      $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
+    }
+
+    public function configure()
+    {
+        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
+        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
+
         $this->widgetSchema->setNameFormat('chgt_denom_validation[%s]');
     }
 
-    protected function updateDefaultsFromObject() {
-      parent::updateDefaultsFromObject();
-      $defaults = $this->getDefaults();
-      $defaults['validation'] = date('Y-m-d');
-      $this->setDefaults($defaults);
+    public function save()
+    {
+      $values = $this->getValues();
+      $dateValidation = date('c');
+
+      if($this->isAdmin) {
+          if (isset($values['affectable']) && $values['affectable']) {
+              $this->getDocument()->set('changement_affectable', true);
+          } else {
+              $this->getDocument()->set('changement_affectable', false);
+          }
+       }
+
+       if($this->getDocument()->isValidee()){
+         $this->getDocument()->validateOdg();
+       }
+
+      if(!$this->getDocument()->isValidee()){
+        $this->getDocument()->validate($dateValidation);
+      }
+
+      $this->getDocument()->save();
     }
 }

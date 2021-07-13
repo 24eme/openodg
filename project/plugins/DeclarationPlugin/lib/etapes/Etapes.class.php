@@ -104,9 +104,6 @@ abstract class Etapes
         return false;
     }
 
-    public function isHiddenAfterValidation($doc, $k){
-      return false;
-    }
 
     public function getDefaultStep(){
       return self::ETAPE_VALIDATION;

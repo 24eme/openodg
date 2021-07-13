@@ -5,6 +5,13 @@ facturation:
     sf_method: [get, post]
   class: FacturationRoute
 
+facturation_en_attente:
+  url: /facturation/attente
+  param: { module: facturation, action: attente }
+  requierements:
+    sf_method: [get]
+  class: FacturationRoute
+
 facturation_massive:
   url: /facturation_massive
   param: { module: facturation, action: massive }
@@ -12,9 +19,26 @@ facturation_massive:
     sf_method: [get, post]
   class: FacturationRoute
 
+facturation_sous_generation:
+  url: /facture/generation/:generation/:type
+  param: { module: facturation, action: sousGenerationFacture }
+  requirements:
+    sf_method: [get, post]
+  class: FacturationRoute
+
 facturation_pdf:
   url: /facturation/pdf/:id
   param: { module: facturation, action: latex }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get]
+
+facturation_pdf_auth:
+  url: /facturation/pdf/:id/:auth
+  param: { module: facturation, action: getFactureWithAuth }
   class: FactureRoute
   options:
     model:    Facture
@@ -92,9 +116,18 @@ facturation_declarant:
   requirements:
     sf_method: [get, post]
 
+
 facturation_tempalte:
   url: /facturation/template/:id
   param: { module: facturation, action: template }
   requirements:
     sf_method: [get, post]
   class: FacturationRoute
+
+facturation_xml:
+  url : /facture/xml/:id
+  param: { module:facturation, action: xml }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object

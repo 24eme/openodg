@@ -5,10 +5,6 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-  <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
-
 <div class="page-header no-border">
   <h2>Présence des dégustateurs</h2>
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
@@ -43,17 +39,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numero_table) as $degustateur):
-                    $name = $form->getWidgetNameFromDegustateur($degustateur);
-                     ?>
-                    <tr>
+                  <?php foreach ($form->getDegustateursForTable() as $name => $degustateur): ?>
+                    <tr <?php if($degustateur->exist('confirmation') && ($degustateur->confirmation === false)): ?>class="disabled text-muted" disabled="disabled" style="text-decoration:line-through;"<?php endif; ?>>
                       <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
-                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id_compte)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
                       <td class="text-center">
                         <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                           <?php echo $form[$name]->renderError() ?>
                           <div class="col-xs-12">
-                            <?php echo $form[$name]->render(array('class' => "bsswitch ajax", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                            <?php echo $form[$name]->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                           </div>
                         </div>
                       </td>
@@ -64,6 +58,7 @@
               <div class="row row-margin row-button">
                 <div class="col-xs-4"><a href="<?php echo url_for("degustation_resultats_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
                 <div class="col-xs-4 text-center">
+                  <a href="<?php echo url_for("degustation_ajout_degustateurPresence", array('id' => $degustation->_id, "table" => $numero_table)) ?>" class="btn btn-default btn-upper">Ajouter un dégustateur</a>
                 </div>
                 <div class="col-xs-4 text-right">
                   <button type="submit" class="btn btn-primary btn-upper">Valider</button>

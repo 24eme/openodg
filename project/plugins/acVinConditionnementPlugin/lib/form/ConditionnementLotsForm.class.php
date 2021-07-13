@@ -27,9 +27,11 @@ class ConditionnementLotsForm extends acCouchdbForm
 
 	public function save() {
 		$values = $this->getValues();
+
 		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
 			$embedForm->doUpdateObject($values['lots'][$key]);
-        }
+		}
+
 		$this->getDocument()->save();
 	}
 

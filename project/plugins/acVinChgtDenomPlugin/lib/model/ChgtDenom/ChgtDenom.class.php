@@ -1,18 +1,20 @@
 <?php
 
-class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument {
+class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceMouvementFacturesDocument, InterfaceArchivageDocument {
 
     const DEFAULT_KEY = 'DEFAUT';
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
     protected $piece_document = null;
+    protected $archivage_document = null;
   	protected $cm = null;
+    protected $docToSave = array();
 
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
-				$this->cm = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
+				$this->cm = new CampagneManager('08-01');
     }
 
     public function __clone() {
@@ -32,18 +34,28 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementFacturesDocument($this);
         $this->piece_document = new PieceDocument($this);
+        $this->archivage_document = new ArchivageDocument($this);
     }
 
-		public function getDateStdr() {
-			return ($this->date && preg_match('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*$/', $this->date, $m))? $m[1] : date ('Y-m-d');
-		}
+        public function getDateFormat($format = 'Y-m-d') {
+            if (!$this->date) {
+                return date($format);
+            }
+            return date ($format, strtotime($this->date));
+        }
 
-		public function getCampagneByDate() {
-			return $this->cm->getCampagneByDate($this->getDateStdr());
-		}
+        private function getCampagneByDate() {
+            return $this->cm->getCampagneByDate($this->getDateFormat());
+        }
+
+        public function getPeriode() {
+            return preg_replace('/-.*/', '', $this->campagne);
+        }
 
     public function constructId() {
-        $id = 'CHGTDENOM-' . $this->identifiant . '-' . $this->date;
+        $date = new DateTime($this->date);
+
+        $id = 'CHGTDENOM-' . $this->identifiant . '-' . $date->format('YmdHis');
         $this->set('_id', $id);
         $this->set('campagne', $this->getCampagneByDate());
     }
@@ -52,14 +64,18 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return ConfigurationClient::getInstance()->getConfiguration();
     }
 
-    public function getConfigProduits() {
-        return $this->getConfiguration()->declaration->getProduits();
+    public function getConfigProduitOrigine() {
+
+        return $this->getConfiguration()->get($this->origine_produit_hash);
     }
 
-    public function initDoc($identifiant, $date) {
-        $this->identifiant = $identifiant;
-        $this->date = $date;
-        $etablissement = $this->getEtablissementObject();
+    public function getConfigProduitChangement() {
+
+        return $this->getConfiguration()->get($this->changement_produit_hash);
+    }
+
+    public function getConfigProduits() {
+        return $this->getConfiguration()->declaration->getProduits();
     }
 
     public function storeDeclarant() {
@@ -80,6 +96,22 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('Y-m-d');
         }
         $this->validation = $date;
+        $this->generateLots();
+    }
+
+    public function devalidate() {
+        if ($this->isFactures()){
+            throw new sfException("dévalisation impossible : le document est déjà facturé");
+        }
+        $this->validation = null;
+        $this->validation_odg = null;
+        $this->clearMouvementsFactures();
+        if($this->exist('etape')) {
+            $this->etape = null;
+        }
+        if($this->exist("envoi_oi")){
+         $this->envoi_oi = null;
+        }
     }
 
     public function isPapier() {
@@ -98,57 +130,185 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->validation_odg);
     }
 
-    public function validateOdg($date = null) {
+    public function validateOdg($date = null, $region = NULL) {
         if(is_null($date)) {
-            $date = date('Y-m-d');
+            $date = date('c');
         }
         $this->validation_odg = $date;
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
     }
 
     public function getEtablissementObject() {
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function getMvtLots() {
-      $lots = array();
-      $statuts = ($this->isValidee() && $this->isApprouve())? array(Lot::STATUT_CHANGE, Lot::STATUT_DECLASSE) : array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME);
-      foreach (MouvementLotView::getInstance()->getAllByIdentifiantAndStatuts($this->identifiant, $statuts) as $item) {
-          $key = Lot::generateMvtKey($item->value);
-          $lots[$key] = $item->value;
-      }
-      return $lots;
-    }
-
-    public function getLotByNumArchive($numero_archive){
-      foreach ($this->lots as $lot) {
-        if($lot->numero_archive == $numero_archive){
-          return $lot;
+    public function setChangementType($type, $external_call = true) {
+        if($external_call && ($type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT)) {
+            $this->changement_produit_hash = null;
         }
-      }
-      return null;
+        return $this->_set('changement_type', $type);
     }
 
-    public function hasLots() {
-      return !empty($this->__get('changement_origine_mvtkey'));
+    public function setChangementProduitHash($hash) {
+        $this->changement_produit_libelle = null;
+        if($hash) {
+            $this->changement_produit_libelle = $this->getConfiguration()->get($hash)->getLibelleComplet();
+        }
+        return $this->_set('changement_produit_hash', $hash);
+    }
+
+    public function setLotOrigine($lot) {
+        if (get_class($lot) != 'stdClass' && $lot->id_document_provenance && !$lot->getMouvement(Lot::STATUT_CHANGEABLE)){
+            throw new sfException('Lot '.$lot->unique_id.' doit être changeable');
+        }
+        $this->fillDocToSaveFromLots();
+
+        $this->changement_origine_id_document = $lot->id_document;
+        $this->changement_origine_lot_unique_id = $lot->unique_id;
+        $this->changement_millesime = $lot->millesime;
+        $this->changement_volume = $lot->volume;
+        $this->changement_specificite = preg_replace('/ *\d+ème dégustation/', '', $lot->specificite);
+        $this->changement_numero_logement_operateur = $lot->numero_logement_operateur;
+        $this->changement_affectable = $lot->affectable;
+        $this->changement_cepages = $lot->cepages;
+        $this->origine_millesime = $lot->millesime;
+        $this->origine_volume = $lot->volume;
+        $this->origine_specificite = $lot->specificite;
+        $this->origine_produit_hash = $lot->produit_hash;
+        $this->origine_cepages = $lot->cepages;
+        $this->origine_produit_libelle = $lot->produit_libelle;
+        $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
+        $this->origine_affectable = $lot->affectable;
+    }
+
+    public function getOrigineNumeroLogementOperateur()
+    {
+        $l = $this->_get('origine_numero_logement_operateur');
+
+        if ($l) {
+            return $l;
+        }
+
+        $l = $this->getLotOrigine()->numero_logement_operateur;
+        $this->setOrigineNumeroLogementOperateur($l);
+        return $l;
+    }
+
+    public function getChangementNumeroLogementOperateur()
+    {
+        $l = $this->_get('changement_numero_logement_operateur');
+
+        if ($l) {
+            return $l;
+        }
+
+        $l = $this->getOrigineNumeroLogementOperateur();
+        $this->setOrigineNumeroLogementOperateur($l);
+        return $l;
+    }
+
+    public function getLotOrigine() {
+        if(!$this->changement_origine_id_document) {
+            return false;
+        }
+
+        $doc = acCouchdbManager::getClient()->find($this->changement_origine_id_document);
+
+        if(!$doc) {
+
+            return null;
+        }
+
+        if (!$doc->getLot($this->changement_origine_lot_unique_id)) {
+           $lot = ChgtDenomLot::freeInstance($this);
+           $lot->id_document = $this->changement_origine_id_document;
+           $lot->unique_id = $this->changement_origine_lot_unique_id;
+           $lot->millesime = $this->changement_millesime;
+           $lot->volume = $this->changement_volume;
+           $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
+           $lot->affectable = $this->changement_affectable;
+           $lot->millesime = $this->origine_millesime;
+           $lot->volume = $this->origine_volume;
+           $lot->specificite = $this->origine_specificite;
+           $lot->produit_hash = $this->origine_produit_hash;
+           $lot->cepages = $this->origine_cepages;
+           $lot->produit_libelle = $this->origine_produit_libelle;
+           $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
+           $lot->affectable = $this->origine_affectable;
+           return $lot ;
+        }
+
+        return $doc->getLot($this->changement_origine_lot_unique_id);
+
     }
 
     public function getLotKey() {
-      return ($this->hasLots())? $this->changement_origine_mvtkey : null;
+
+      return $this->changement_origine_id_document.":".$this->changement_origine_lot_unique_id;
     }
 
-    public function getMvtLot() {
-      $mvts = $this->getMvtLots();
-      $key = $this->getLotKey();
-      return ($mvts && $key && isset($mvts[$key]))? $mvts[$key] : null;
+    public function hasLotsUtilises() {
+        foreach($this->lots as $lot) {
+            if($lot->hasBeenEdited()) {
+                continue;
+            }
+
+            if($lot->isAffecte()) {
+                return true;
+            }
+
+            if($lot->isChange()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-	  protected function doSave() {
-      $this->piece_document->generatePieces();
-	  }
+    public function hasDocumentOrigine() {
 
-    public function clearMouvementsLots(){
-      $this->remove('mouvements_lots');
-      $this->add('mouvements_lots');
+      $doc = acCouchdbManager::getClient()->find($this->changement_origine_id_document);
+
+      if (!$doc->getLot($this->changement_origine_lot_unique_id)) {
+        return false;
+      }
+
+      return true;
+    }
+
+	protected function doSave() {
+          $this->piece_document->generatePieces();
+    	}
+
+    public function saveDocumentsDependants() {
+        foreach($this->docToSave as $docId) {
+            DeclarationClient::getInstance()->findCache($docId)->save(false);
+        }
+
+        $this->docToSave = array();
+        DeclarationClient::getInstance()->clearCache();
+
+    }
+
+    public function save($saveDependants = true) {
+        $this->archiver();
+        $this->generateMouvementsLots();
+
+        parent::save();
+
+        if (count($this->lots) && $saveDependants) {
+            $this->fillDocToSaveFromLots();
+            $this->saveDocumentsDependants();
+        }
+    }
+
+    public function fillDocToSaveFromLots() {
+        if ($this->changement_origine_id_document) {
+            $this->docToSave[$this->changement_origine_id_document] = $this->changement_origine_id_document;
+        }
     }
 
     public function clearLots(){
@@ -157,185 +317,264 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function isDeclassement() {
-      return (!$this->changement_produit);
+      return ($this->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
     }
-    public function isChgtTotal() {
-      return ($this->changement_volume == $this->getMvtLot()->volume);
+    public function isChgtDenomination() {
+        return !$this->isDeclassement();
+    }
+
+    public function isTotal()
+    {
+        if ($this->getLotOrigine() == null) {
+            return $this->changement_volume == $this->origine_volume;
+        }
+
+        return ($this->changement_volume == $this->getLotOrigine()->volume);
     }
 
     public function getPourcentagesCepages() {
-      $total = 0;
+      $volume_total = 0;
       $cepages = array();
-      foreach($this->changement_cepages as $pc) {
-        $total += $pc;
+      foreach($this->changement_cepages as $volume) {
+        $volume_total += $volume;
       }
-      foreach($this->changement_cepages as $cep => $pc) {
-        $cepages[$cep] += round(($pc/$total) * 100);
+      foreach($this->changement_cepages as $cep => $volume) {
+        $cepages[$cep] += round(($volume/$volume_total) * 100);
       }
       return $cepages;
     }
 
     public function generateLots() {
-      $mvtLot = $this->getMvtLot();
       $this->clearMouvementsLots();
       $this->clearLots();
 
       $lots = array();
-      $lot = MouvementLotView::generateLotByMvt($mvtLot);
-      $lot->numero_archive .= 'a';
+      $lot = $this->getLotOrigine();
+      if ($lot === null) {
+          return;
+      }
 
-      if (!$this->isChgtTotal()) {
-        $lot->volume -= $this->changement_volume;
-        $lot->statut = Lot::STATUT_CONFORME;
-        $lotBis = MouvementLotView::generateLotByMvt($mvtLot);
-        $lotBis->numero_archive .= 'b';
-        $lotBis->volume = $this->changement_volume;
-        $lotBis->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
-        $lotBis->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lotBis->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
-        $lotBis->details = '';
-        foreach($this->getPourcentagesCepages() as $cep => $pc) {
-            $lotBis->details .= $cep.' ('.$pc.'%) ';
-        }
-        $lots[] = $lot;
-        $lots[] = $lotBis;
+      if ($lot !== false) { // Lot d'origine
+          $lot = $lot->getData();
+          unset($lot->numero_anonymat);
+
+          $lotDef = ChgtDenomLot::freeInstance($this);
+          foreach($lot as $key => $value) {
+              if($lotDef->getDefinition()->exist($key)) {
+                  continue;
+              }
+
+              unset($lot->{$key});
+          }
+      } else { // Lot de négociant créé
+        $lot = new stdClass;
+        $lot->document_ordre = "00";
+        $lot->volume = $this->origine_volume;
+      }
+      $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
+      $lot->millesime = $this->origine_millesime;
+      $lot->produit_libelle = $this->origine_produit_libelle;
+      $lot->produit_hash = $this->origine_produit_hash;
+      $lot->campagne = $this->campagne;
+      $lot->declarant_nom = $this->declarant->raison_sociale;
+      $lot->declarant_identifiant = $this->identifiant;
+
+      $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
+      $lot->date = $this->date;
+      $lot->document_ordre = $ordre;
+      $lot->id_document_provenance = $this->changement_origine_id_document;
+
+      $lot->volume = $this->changement_volume;
+
+      if ($this->isChgtDenomination()) {
+          $lotOrig = clone $lot;
+          $lotOrig->volume = $this->origine_volume - $this->changement_volume;
+          if (!$lotOrig->volume) {
+              $lotOrig->affectable = false;
+          }
+          if ($this->origine_numero_logement_operateur !== $this->getLotOrigine()->numero_logement_operateur) {
+              $lotOrig->numero_logement_operateur = $this->origine_numero_logement_operateur;
+          }
+          $this->updateCepageCoherencyWithVolume($lotOrig);
+          $lots[] = $lotOrig;
+          $lot->numero_archive = null;
+          $lot->unique_id = null;
+          $lot->document_ordre = '01';
+          $lot->specificite = $this->changement_specificite;
+
+          $lot->volume = $this->changement_volume;
+          $lot->produit_hash = $this->changement_produit_hash;
+          $lot->produit_libelle = $this->changement_produit_libelle;
+          $lot->cepages = $this->changement_cepages;
+
+          if ($this->exist('changement_affectable')) {
+              $lot->affectable = $this->changement_affectable;
+          }
+
+          if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
+              $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
+          }
       } else {
-        $lot->produit_hash = ($this->isDeclassement())? null : $this->changement_produit;
-        $lot->produit_libelle = ($this->isDeclassement())? 'Déclassement' : $this->changement_produit_libelle;
-        $lot->statut = ($this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CONFORME;
-        if (count($this->changement_cepages->toArray(true, false))) {
-          $lot->details = '';
-          foreach($this->getPourcentagesCepages() as $cep => $pc) {
-              $lot->details .= $cep.' ('.$pc.'%) ';
+          $lot->volume = $this->origine_volume - $this->changement_volume;
+          if (!$lot->volume) {
+              $lot->affectable = false;
           }
-        }
-        $lots[] = $lot;
+          $lot->produit_libelle = $this->origine_produit_libelle;
+          $lot->cepages = $this->origine_cepages;
       }
+
+      $this->updateCepageCoherencyWithVolume($lot);
+      $lots[] = $lot;
+
       foreach($lots as $l) {
-        $this->lots->add(null, $l);
+        $lot = $this->lots->add(null, $l);
+        $lot->id_document = $this->_id;
+        $lot->updateDocumentDependances();
       }
     }
 
-    private function generateMouvementLotsFromLot($lot, $key) {
-        $mvt = new stdClass();
-        $mvt->date = $lot->date;
-  			$mvt->statut = $lot->statut;
-  			$mvt->numero_dossier = $lot->numero_dossier;
-  			$mvt->numero_archive = $lot->numero_archive;
-  			$mvt->numero_cuve = $lot->numero_cuve;
-        $mvt->millesime = $lot->millesime;
-        $mvt->volume = $lot->volume;
-        $mvt->elevage = $lot->elevage;
-        $mvt->produit_hash = $lot->produit_hash;
-        $mvt->produit_libelle = $lot->produit_libelle;
-        $mvt->produit_couleur = ($lot->produit_hash)? $lot->getCouleurLibelle() : null;
-        $mvt->region = '';
-        $mvt->version = $this->getVersion();
-        $mvt->origine_hash = $lot->getHash();
-        $mvt->origine_type = 'chgtdenom';
-        $mvt->origine_document_id = $this->_id;
-        $mvt->id_document = $this->_id;
-        $mvt->origine_mouvement = '/mouvements_lots/'.$lot->declarant_identifiant.'/'.$key;
-  			$mvt->declarant_identifiant = $lot->declarant_identifiant;
-  			$mvt->declarant_nom = $lot->declarant_nom;
-        $mvt->destination_type = $lot->destination_type;
-        $mvt->destination_date = $lot->destination_date;
-        $mvt->details = $lot->details;
-        $mvt->campagne = $this->campagne;
-  			$mvt->specificite = $lot->specificite;
-        return $mvt;
-    }
-
-    private function generateAndAddMouvementLotsFromLot($lot, $key) {
-        $mvt = $this->generateMouvementLotsFromLot($lot, $key);
-        if(!$this->add('mouvements_lots')->exist($this->identifiant)) {
-            $this->add('mouvements_lots')->add($this->identifiant);
+    private function updateCepageCoherencyWithVolume($lot) {
+        if (!$lot->cepages) {
+            return $lot;
         }
-        return $this->add('mouvements_lots')->get($this->identifiant)->add($key, $mvt);
-    }
-
-    public function generateMouvementsLots($prelevable = 1) {
-        foreach($this->lots as $k => $lot) {
-          if ($prelevable && $lot->produit_hash && $lot->produit_hash == $this->changement_produit) {
-            $lot->statut = Lot::STATUT_PRELEVABLE;
-          }
-          $key = $lot->getUnicityKey();
-          $mvt = $this->generateAndAddMouvementLotsFromLot($lot, $key);
+        if (!$lot->volume) {
+            $lot->cepages = array();
+            return $lot;
         }
-        $this->updateMouvementOrigineDocument();
-    }
-
-    private function updateMouvementOrigineDocument() {
-      if ($doc = $this->getOrigineDocumentMvtLot()) {
-          $doc->statut = ($this->isChgtTotal() && $this->isDeclassement())? Lot::STATUT_DECLASSE : Lot::STATUT_CHANGE;
-          $doc->getDocument()->get($doc->origine_hash)->statut = $doc->statut;
-          $doc->getDocument()->save();
-      }
-    }
-
-    public function getOrigineDocumentMvtLot() {
-      $mvtLot = $this->getMvtLot();
-      if ($doc = acCouchdbManager::getClient()->find($mvtLot->origine_document_id)) {
-        if ($doc->exist($mvtLot->origine_mouvement)) {
-          return $doc->get($mvtLot->origine_mouvement);
+        $volume_cepages = 0;
+        foreach($lot->cepages as $k => $v) {
+            $volume_cepages += $v;
         }
-      }
-      return null;
-    }
-
-    public function getCepagesToStr(){
-      $cepages = $this->cepages;
-      $str ='';
-      $k=0;
-      $total = 0.0;
-      $tabCepages=array();
-      foreach ($cepages as $c => $volume){
-        $total+=$volume;
-      }
-      foreach ($cepages as $c => $volume){
-        $p = ($total)? round(($volume/$total)*100) : 0.0;
-        $tabCepages[$c]=$p;
-      }
-      arsort($tabCepages);
-      foreach ($tabCepages as $c => $p) {
-        $k++;
-        $str.=" ".$c." (".$p.'%)';
-        $str.= ($k < count($cepages))? ',' : '';
-      }
-      return $str;
+        if ($volume_cepages == $lot->volume) {
+            return $lot;
+        }
+        foreach($this->origine_cepages as $k => $v) {
+            $lot->cepages->{$k} = $v * $lot->volume / $this->origine_volume;
+        }
+        return $lot;
     }
 
   	public function getVersion() {
   			return null;
   	}
 
+    public function getLotsWithPseudoDeclassement() {
+        $lots_res = array();
+        if (!$this->isDeclassement()) {
+            foreach($this->lots as $lot) {
+                if ($lot->volume) {
+                    $lots_res[] = $lot;
+                }
+            }
+            return $lots_res;
+        }
+
+        if ($this->lots[0]->volume) {
+            $lots_res[] = $this->lots[0];
+        }
+        $decl = clone $this->lots[0];
+        $decl->produit_hash = null;
+        $decl->produit_libelle = "Vin sans IG";
+        $decl->cepages = null;
+        $decl->millesime = null;
+        $decl->volume = $this->changement_volume;
+        $lots_res[] = $decl;
+
+        return $lots_res;
+    }
+
     public function addCepage($cepage, $repartition) {
         $this->changement_cepages->add($cepage, $repartition);
     }
 
-    public function getCepagesLibelle() {
-        $libelle = null;
-        foreach($this->changement_cepages as $cepage => $repartition) {
-            if($libelle) {
-                $libelle .= ", ";
-            }
-            $libelle .= $cepage . " (".$repartition."%)";
-        }
-        return $libelle;
+    /**** FIN DES MOUVEMENTS ****/
+
+    /**** MOUVEMENTS LOTS ****/
+
+    public function clearMouvementsLots(){
+        $this->remove('mouvements_lots');
+        $this->add('mouvements_lots');
     }
 
-    /**** FIN DES MOUVEMENTS ****/
+    public function addMouvementLot($mouvement) {
+
+        return $this->mouvements_lots->add($mouvement->declarant_identifiant)->add($mouvement->getUnicityKey(), $mouvement);
+    }
+
+    public function getLot($uniqueId) {
+
+        foreach($this->lots as $lot) {
+            if($lot->getUniqueId() != $uniqueId) {
+
+                continue;
+            }
+
+            return $lot;
+        }
+
+        return null;
+    }
+
+    public function generateMouvementsLots()
+    {
+        $this->clearMouvementsLots();
+        if(!count($this->lots)) {
+            return;
+        }
+
+        if($this->isTotal()) {
+            if ($this->isDeclassement()) {
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassement total"));
+            }else{
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changement total : ".$this->lots[0]->getLibelle()));
+            }
+
+        }else{
+            if ($this->isDeclassement()) {
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl"));
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé pour ".($this->origine_volume - $this->changement_volume)." hl"));
+            }else{
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non changée de ".$this->lots[0]->volume." hl"));
+                $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changé pour : ".$this->lots[1]->getLibelle().", ".$this->lots[1]->volume." hl"));
+
+            }
+        }
+
+        foreach ($this->lots as $i => $lot) {
+            $lot->updateDocumentDependances();
+            if ($this->isDeclassement() && ($this->isTotal() || $i == 1)) {
+                continue;
+            }
+            //On gère l'avenir du lot changé
+            if ($lot->isChange()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_SRC, $lot->getLibelle()));
+                continue;
+            }
+            //Si le lot changé n'a pas été lui même de nouveau changé, on peut le changer et le déguster ou non
+            if ($lot->volume) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGEABLE));
+            }
+            if($lot->isAffectable()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE));
+            }else{
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
+            }
+        }
+    }
+
+    /**** FIN DES MOUVEMENTS LOTS ****/
 
     /**** PIECES ****/
     public function getAllPieces() {
-      $mvtLot = $this->getMvtLot();
+      $lot = $this->getLotOrigine();
       $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
-      $libelle .= ($this->isChgtTotal())? '' : ' partiel';
-      $libelle .= ' du logement n°'.$mvtLot->numero;
+      $libelle .= ($this->isTotal())? '' : ' partiel';
+      $libelle .= ' lot de '.$lot->produit_libelle.' '.$lot->millesime;
+      $libelle .= ' (logement '.$lot->numero_logement_operateur.')';
       $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->validation,
+    		'date_depot' => preg_replace('/T.*/', '', $this->validation),
     		'libelle' => $libelle,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
@@ -348,7 +587,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function generateUrlPiece($source = null) {
-    	return null;
+    	return sfContext::getInstance()->getRouting()->generate('chgtdenom_pdf', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
@@ -371,10 +610,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getCampagne())){
-          return TemplateFactureClient::getInstance()->find($templateName);
-        }
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
     }
 
     public function getMouvementsFactures() {
@@ -398,12 +634,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       foreach($cotisations as $cotisation) {
           $mouvement = ChgtDenomMouvementFactures::freeInstance($this);
-          $mouvement->fillFromCotisation($cotisation);
-          $mouvement->facture = 0;
-          $mouvement->facturable = 1;
-          $mouvement->date = $this->getCampagne().'-12-10';
-          $mouvement->date_version = $this->validation;
-          $mouvement->version = $this->version;
+          foreach ($this->lots as $lot) {
+              if($this->changement_produit_hash == $lot->produit_hash){
+                  $mouvement->detail_identifiant = $lot->numero_archive;
+              }
+          }
+          $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
           if(!$mouvement->quantite) {
               continue;
@@ -417,7 +653,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       }
 
       if($rienAFacturer) {
-          return array($identifiantCompte => array());
+          return array();
 
       }
 
@@ -459,20 +695,148 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
+    public function getFirstChgtDenomFacturable()
+    {
+      $chgtdenom = $this->getChgtDenomToday();
+      $first = current($chgtdenom);
+      return (!$first||$first->_id == $this->_id)? true : false;
+    }
 
-    public function getVolumeFacturable($produitFilter = null)
+    public function getSecondChgtDenomFacturable()
+    {
+        return !$this->getFirstChgtDenomFacturable();
+    }
+
+    public function calculFraisJournalier($produitFilter = null)
+    {
+        if ($this->nbChgtDenomToday($produitFilter) > 0) {
+            return;
+        }
+
+        return $this->getVolumeFacturable($produitFilter);
+    }
+
+    public function matchFilter($produitFilter = null, $chgtdenom = null)
+    {
+        if ($chgtdenom === null) {
+            $chgtdenom = $this;
+        }
+
+        $match = true;
+        $filters = ($produitFilter)? explode(" AND ", $produitFilter) : [];
+
+        foreach ($filters as $filter) {
+            if (strpos($filter, 'appellations') !== false) {
+                // filtre sur produit
+                $match = $match && $this->produitFilter($filter, $chgtdenom);
+            } elseif (strpos($filter, '/millesime/courant') !== false) {
+                // filtre sur millesime
+                $isMillesimeCourant = ($this->changement_millesime == substr($this->campagne,0, 4));
+                if(strpos($filter, 'NOT') !== false) {
+                    $isMillesimeCourant = !$isMillesimeCourant;
+                }
+                $match = $match && $isMillesimeCourant;
+            } elseif (strpos($filter, 'origine') !== false) {
+                $match = $match && $this->origineFilter($filter);
+            } else {
+                // filtre sur famille
+                $match = $match && $this->isDeclarantFamille($filter);
+            }
+        }
+
+        return $match;
+    }
+
+    private function produitFilter($produitFilter = null, $chgtdenom = null)
     {
       $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
 			$produitExclude = (bool) $produitExclude;
 			$regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
-			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $this->changement_produit)) {
-					return;
+			if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+					return false;
 			}
-			if($produitFilter && $produitExclude && preg_match($regexpFilter, $this->changement_produit)) {
-					return;
+			if($produitFilter && $produitExclude && preg_match($regexpFilter, $chgtdenom->changement_produit_hash)) {
+					return false;
 			}
+
+            return true;
+    }
+
+    public function getVolumeFacturable($filter = null)
+    {
+        if ($this->matchFilter($filter) === false) {
+            return;
+        }
 
       return $this->changement_volume;
     }
 
+    public function isDeclarantFamille($familleFilter = null)
+    {
+        if(!$familleFilter){
+            return false;
+        }
+
+        if(!$this->declarant->famille){
+            return false;
+        }
+
+        $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
+        $exclude = (bool) $exclude;
+        $regexpFilter = "#^(".implode("|", explode(",", $familleFilterMatch)).")$#";
+
+        if(!$exclude && preg_match($regexpFilter, $this->declarant->famille)) {
+
+            return true;
+        }
+
+        if($exclude && !preg_match($regexpFilter, $this->declarant->famille)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function nbChgtDenomToday($produitFilter = null)
+    {
+        return count($this->getChgtDenomToday($produitFilter));
+    }
+
+    private function getChgtDenomToday($produitFilter = null)
+    {
+        $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
+            $this->identifiant,
+            substr($this->campagne, 0, 4)
+        );
+
+        $today = [];
+        foreach ($chgtdenoms as $chgt) {
+            if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
+                $today[$chgt->_id] = $chgt;
+            }
+        }
+        ksort($today);
+
+        return $today;
+    }
+
+    private function origineFilter($filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+        $filter = str_replace(['NOT', ' '], '', $filter);
+        $origine_produit_hash = $this->origine_produit_hash;
+
+        $matches = array_filter(explode(',', $filter), function ($item) use ($origine_produit_hash) {
+            return strpos($origine_produit_hash, str_replace('/origine/', '', $item)) !== false; // si on trouve l'origine, il ressortira dans $match si true
+        });
+
+        $found = count($matches) > 0;
+
+        if ($not) {
+            $found = ! $found;
+        }
+
+        return $found;
+    }
 }

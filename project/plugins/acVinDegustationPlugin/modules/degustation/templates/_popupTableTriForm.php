@@ -9,6 +9,9 @@
 					<h4 class="modal-title" id="myModalLabel">Modifier le tri des lots</h4>
 				</div>
 				<div class="modal-body">
+                    <div class="alert alert-warning">
+                        <p>La modification des paramètres de tri va impacter le tri sur toutes les tables</p>
+                    </div>
 					<?php for($i = 0 ; isset($form['tri_'.$i]) ; $i++): ?>
 					<span class="error"><?php echo $form['tri_'.$i]->renderError() ?></span>
 					<div class="form-group row">

@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
@@ -12,66 +13,74 @@
 <?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
 <p>Sélectionner les lots qui ont été prélevés</p>
-<form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="form-horizontal degustation prelevements">
+<div class="row">
+  <div class="form-group col-xs-10">
+    <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
+  </div>
+
+  <div class="col-xs-2">
+    <button class="btn btn-block btn-default" id="btn-preleve-all">
+      <i class="glyphicon glyphicon-ok-sign"></i>
+      Tout prélever
+    </button>
+  </div>
+</div>
+
+<form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="ajaxForm form-horizontal degustation prelevements">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
 
-    <table class="table table-bordered table-condensed table-striped">
+    <table class="table table-bordered table-condensed table-striped" id="table_prelevements">
         <thead>
             <tr>
-                <th class="col-xs-3">Opérateur</th>
+                <th class="col-xs-2">Opérateur</th>
+                <th class="col-xs-1">Provenance</th>
                 <th class="col-xs-1">Logement</th>
                 <th class="col-xs-3">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">Prélevé</th>
+                <th class="col-xs-1"></th>
             </tr>
         </thead>
 		<tbody>
-		<?php $adherents = array(); foreach ($form['lots'] as $key => $formLot): ?>
+		<?php foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
-       <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
-        <td><?php echo $lot->declarant_nom; ?>  <span class="pull-right"><?php echo(substr($lot->id_document,0,4))?></span> </td>
-        <td class="edit"><?= $lot->numero_cuve ?>
+      <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->declarant_identifiant; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
+        <td><?php echo $lot->declarant_nom; ?></td>
+        <td><?php echo $lot->getTypeProvenance(); ?> <span class="text-muted">n°<?php echo $lot->numero_dossier; ?></span></td>
+        <td class="edit"><?= $lot->numero_logement_operateur ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
-              <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+              <a class= "ajax" title="Modifier le logement" data-href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
             </span>
           <?php endif; ?>
         </td>
-				<td>
-          <?php echo $lot->produit_libelle; ?>
-          &nbsp;
-          <small class="text-muted"><?php echo $lot->details; ?></small>
-          <?php if ($lot->millesime): ?>
-            &nbsp;
-            <?php echo $lot->millesime; ?>
-          <?php endif; ?>
-          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-            <small class="text-muted">(<?php echo $lot->specificite; ?>)</small>
-          <?php endif ?>
+        <td>
+            <?= showProduitCepagesLot($lot) ?>
         </td>
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
               &nbsp;
-              <?php if($lot->isOrigineEditable()): ?>
-              <a title="Modifier le lot dans la DRev" href="<?php echo url_for('degustation_update_lot', ['id' => $degustation->_id, 'lot' => $key]) ?>">
-                <i class="glyphicon glyphicon-pencil"></i>
+              <a class= "ajax" title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
+                <i class="glyphicon glyphicon-share-alt"></i>
               </a>
-              <?php else: ?>
-              <i class="glyphicon glyphicon-pencil" style="opacity:0.0"></i>
-          <?php endif; ?>
         </td>
       	<td class="text-center">
               <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
               	<?php echo $formLot['preleve']->renderError() ?>
                   <div class="col-xs-12">
-            	<?php echo $formLot['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+            	<?php echo $formLot['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                   </div>
               </div>
       	</td>
+        <td class="edit text-center">
+          <span>
+            <a class="text-muted" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le logement <?php echo $lot->numero_logement_operateur.' de '.$lot->volume."hl" ?> ?');" title="Supprimer le logement" href="<?php echo url_for('degustation_supprimer_lot_non_preleve', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-trash"></i></a>
+          </span>
+        </td>
       </tr>
     <?php endforeach; ?>
     </tbody>
@@ -85,3 +94,5 @@
     </div>
 </form>
 </div>
+
+<?php use_javascript('hamza_style.js'); ?>

@@ -6,7 +6,6 @@ $stepNum = $etapes->getEtapeNum($etapeMax);
     <ul class="nav navbar-nav">
     <?php foreach ($etapes->getEtapesHash() as $k => $num):
       ?>
-        <?php if($etapes->isHiddenAfterValidation($object,$k)){ continue; } ?>
         <?php $actif = ($step == $k); ?>
         <?php $past = ($etapes->isGt($etapeMax, $k)); ?>
         <?php $disabled = ($etapes->isEtapeDisabled($k, $object)); ?>
@@ -17,7 +16,7 @@ $stepNum = $etapes->getEtapeNum($etapeMax);
     }else{
        echo url_for($etapes->getRouteLink($k), $object);
     }
-    ?>" class="<?php if(isset($ajax) && $ajax): ?>ajax<?php endif; ?>"><?php echo str_replace('%campagne%', intval($object->campagne) - 1, $etapes->getLibelle($k, $object, ESC_RAW));?></a>
+    ?>" class="<?php echo strtolower($k); ?> <?php if(isset($ajax) && $ajax): ?>ajax<?php endif; ?>"><?php echo str_replace('%campagne%', intval($object->campagne) - 1, $etapes->getLibelle($k, $object, ESC_RAW));?></a>
         </li>
     <?php endforeach; ?>
     </ul>

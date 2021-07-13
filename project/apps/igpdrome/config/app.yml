@@ -1,0 +1,16 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+all:
+  routing_context_production_host: drome.igp.vins.24eme.fr
+  organisme:
+    nom: "Fédération Drômoise des Indications géographiques Viticoles"
+  float:
+    default_decimal_format: 2
+    max_decimal_authorized: 4
+  societe:
+    format_identifiant: "DRM%06d"
+  donnees_viticoles:
+    regions:
+      IGPDROME : "IGPDROME"

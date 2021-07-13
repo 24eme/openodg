@@ -51,7 +51,7 @@ $etablissementviti->commune = "NEUILLY";
 $etablissementviti->siege->commune = "NEUILLY";
 $etablissementviti->pays = "FR";
 $etablissementviti->insee = "98475";
-$etablissementviti->ppm = "P123456798";
+$etablissementviti->ppm = "P12345678";
 $etablissementviti->cvi = "7523700100";
 
 
@@ -66,7 +66,7 @@ $compteviti = CompteClient::getInstance()->findByIdentifiant($id."01");
 $compteviti->addTag('test', 'test');
 $compteviti->addTag('test', 'test_viti');
 $compteviti->save();
-$t->is($compteviti->tags->automatique->toArray(true, false), array('etablissement','producteur'), "Création d'un etablissement viti met à jour le compte $compteviti->_id");
+$t->is($compteviti->tags->automatique->toArray(true, false), array('etablissement','producteur_raisins'), "Création d'un etablissement viti met à jour le compte $compteviti->_id");
 $t->is($etablissementviti->region, EtablissementClient::REGION_CVO, "L'établissement est en région CVO après le save");
 
 $t->is($compteviti->_get('email'), $etablissementviti->_get('email'), "L'établissement a le même email que le compte");

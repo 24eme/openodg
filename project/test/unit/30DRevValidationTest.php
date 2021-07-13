@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 27;
+$nb_test = 29;
 $has_lot = false;
 if ($application == 'loire' || $application == 'igp13') {
     $has_lot = true;
@@ -12,17 +12,26 @@ $t = new lime_test($nb_test);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
-$campagne = (date('Y')-1)."";
+$periode = (date('Y')-1)."";
 
 //Début des tests
-//Suppression des DRev précédentes
+//Suppression des DRev et DR précédentes
+$dr = DRClient::getInstance()->findByArgs($viti->identifiant, $periode, acCouchdbClient::HYDRATE_JSON);
+if ($dr) {
+  DRClient::getInstance()->deleteDoc($dr);
+}
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
+    $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON);
+    if($dr) {
+      DRClient::getInstance()->deleteDoc($dr);
+    }
     $drev->delete(false);
 }
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
+$t->comment($drev->_id);
 
 $produits = $drev->getConfigProduits();
 foreach($produits as $produit) {
@@ -71,11 +80,12 @@ $produit2->superficie_revendique = 150;
 
 if ($has_lot) {
     $lot = $drev->addLot();
-    $lot->millesime = $campagne;
-    $lot->numero = "1";
+    $lot->millesime = null;
+    $lot->numero_logement_operateur = "1";
+    $lot->specificite = Lot::SPECIFICITE_PRIMEUR;
     $lot->volume = 30.4;
     $lot->destination_type = null;
-    $lot->destination_date = $campagne.'-11-15';
+    $lot->destination_date = $periode.'-11-15';
     $lot->produit_hash = $produit1->getConfig()->getHash();
     $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
     $lot->addCepage("Chenin", 60);
@@ -84,8 +94,13 @@ if ($has_lot) {
 $drev->save();
 
 $t->comment("Validation des Drev");
-$date_validation_1 = $campagne."-10-30";
-$date_validation_odg_1 = $campagne."-11-05";
+$date_validation_1 = $periode."-10-30";
+$date_validation_odg_1 = $periode."-11-05";
+
+$t->comment("Point de vigilance DRev");
+$validation = new DRevValidation($drev);
+$vigilance = $validation->getVigilances();
+$t->ok(preg_match('/Millésime/', $vigilance[0]->getInfo()), "Il y a une vigilance dû au millésime absent.");
 
 $drev->validate($date_validation_1);
 $drev->save();
@@ -118,8 +133,8 @@ if ($application == 'loire') {
 
 $t->comment("Création d'une modificatrice  Drev");
 
-$date_validation_2 = $campagne."-11-15";
-$date_validation_odg_2 = $campagne."-11-30";
+$date_validation_2 = $periode."-11-15";
+$date_validation_odg_2 = $periode."-11-30";
 
 $drev_modificative = $drev->generateModificative();
 $drev_modificative->save();
@@ -132,16 +147,24 @@ $lot = null;
 if ($has_lot) {
     $lot = $drev_modificative->addLot();
 
-    $lot->millesime = $campagne;
-    $lot->numero = "14";
+    $lot->millesime = null;
+    $lot->numero_logement_operateur = "14";
     $lot->volume = 3.5;
+    $lot->specificite = Lot::SPECIFICITE_PRIMEUR;
     $lot->destination_type = null;
-    $lot->destination_date = ($campagne+1).'-06-15';
+    $lot->destination_date = ($periode+1).'-06-15';
     $lot->produit_hash = $produit1->getConfig()->getHash();
     $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
     $lot->addCepage("Chenin", 30);
     $lot->addCepage("Sauvignon", 70);
 }
+
+$t->comment("Point de vigilance DRev modificatrice");
+$validation = new DRevValidation($drev_modificative);
+$vigilance = $validation->getVigilances();
+//$t->is(count($vigilance), 3, "Il ya trois points de vigilance, deux repris de la DRev et un autre dans la DRev modificatrice");
+$t->is(count($vigilance), 1, "Il y a un point de vigilance la DRev modificatrice");
+
 $drev_modificative->validate($date_validation_2);
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
@@ -164,12 +187,12 @@ $t->is($drev_modificative->getValidation(),$date_validation_2,"La date de valida
 $t->is($drev_modificative->getValidationOdg(),$date_validation_odg_2,"La date de validation de l'odg est ".$date_validation_odg_2);
 
 if ($lot) {
-    $t->is($drev_modificative->lots[0]->date,$date_validation_2,"La date de version du lot de départ est celle de la validation ODG de la M00 ($date_validation_odg_1)");
+    $t->is($drev_modificative->lots[0]->date,$date_validation_1,"La date de version du lot de départ est celle de la validation de la M00 (date_validation_1)");
     $t->is($lot->date,$date_validation_2,"La date de version du dernier lot est celle de la validation ODG de la M01 ($date_validation_2)");
 }
 
 if ($application == 'igp13') {
-    $dateDegustVoulue = $campagne.'-12-25';
+    $dateDegustVoulue = $periode.'-12-25';
     $drev->setDateDegustationSouhaitee($dateDegustVoulue);
     $t->is($drev->date_degustation_voulue, $dateDegustVoulue, 'La date de dégustation voulue par l\'opérateur est '.$dateDegustVoulue);
 }

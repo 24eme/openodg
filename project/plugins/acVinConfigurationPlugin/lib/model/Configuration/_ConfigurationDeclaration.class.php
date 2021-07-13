@@ -742,11 +742,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getRendementDrL5() {
-        if($this->exist('attributs') && $this->attributs->exist('rendement_dr_l5')){
-          return $this->getRendementByKey('rendement_dr_l5');
-        }
 
-        return $this->getRendementByKey('rendement_dr');
+        return $this->getRendementByKey('rendement_dr_l5');
     }
 
     public function getRendementDR() {
@@ -1064,7 +1061,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function canHaveVci() {
 
-        return true;
+        return $this->hasRendementVci();
     }
 
     public function isEffervescentNode(){
@@ -1104,12 +1101,32 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getCepagesAutorises() {
+        if($this->hasCepagesAutorises()) {
+            return $this->_get('cepages_autorises');
+        }
         $produits = array();
         foreach($this->getProduits() as $p) {
             $produits = array_merge($produits, $p->getCepage()->getCepagesAutorises()->toArray());
         }
         $produits = array_unique($produits);
         return $produits;
+    }
+
+    public function setCepagesAutorises($cepages_autorises_str){
+        if($this->hasCepagesAutorises()){
+            $cepages_autorises = explode(',',$cepages_autorises_str);
+            $c_a_new = array();
+            foreach ($cepages_autorises as $cepage_autorise) {
+                $c_a = strtoupper(trim($cepage_autorise));
+                if($c_a){
+                    if(!preg_match('/^[A-Z\.\ Ç0-9\-ÉéèÈÔôÜüûÛÏïŒœ\=\(\)\']+$/',$c_a)){
+                        throw new sfException("Le cépage autorisé $c_a n'a pas un bon format. ");
+                    }
+                    $c_a_new[] = $c_a;
+                }
+            }
+            $this->_set('cepages_autorises',$c_a_new);
+        }
     }
 
 }

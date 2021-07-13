@@ -12,11 +12,11 @@
   <table class="table table-condensed">
     <tbody>
       <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total de <strong>lots prévus&nbsp;:</strong></td>
+        <td class="col-xs-3" >Nombre total de <strong>lots à prélever&nbsp;:</strong></td>
         <td class="col-xs-9"><strong id="nbLotsSelectionnes"><?php echo $infosDegustation["nbLots"]; ?></strong></td>
       </tr>
       <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total <strong>d'adhérents prélevés&nbsp;:</strong></td>
+        <td class="col-xs-3" >Nombre total <strong>d'adhérents à prélever&nbsp;:</strong></td>
         <td class="col-xs-9"><strong id="nbAdherentsAPrelever"><?php echo $infosDegustation["nbAdherents"]; ?></strong></td>
       </tr>
     </tbody>
@@ -35,38 +35,46 @@
         <thead>
             <tr>
                 <th class="col-xs-1">Degustation voulue<br/> à partir du</th>
-                <th class="col-xs-2">Opérateur</th>
+                <th class="col-xs-3">Opérateur</th>
+                <th class="col-xs-1">Provenance</th>
                 <th class="col-xs-1">Logement</th>
-                <th class="col-xs-3">Produit (millésime, spécificité)</th>
+                <th class="col-xs-5">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
                 <th class="col-xs-1">À prélever?</th>
             </tr>
         </thead>
 		<tbody>
-		<?php
-            $dates = $form->getDateDegustParDrev();
-			foreach ($form->getLotsPrelevables() as $key => $lot):
-			if (isset($form['lots'][$key])):
-      $lot = DegustationClient::updatedSpecificite($lot);
-		?>
-			<tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->numero_dossier; ?>">
-        <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
-        <td><?php echo $lot->declarant_nom; ?></td>
-				<td><?php echo $lot->numero_cuve; ?></td>
-				<td>
-          <?php echo showProduitLot($lot) ?>
-        </td>
-        <td class="text-right"><?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small></td>
-            	<td class="text-center" data-hash="<?php echo $lot->declarant_nom; ?>">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form['lots'][$key]['preleve']->renderError() ?>
-                        <div class="col-xs-12">
-			            	<?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => "$lot->numero_dossier", "data-preleve-lot" => "$lot->numero_cuve", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
-                        </div>
-                    </div>
-            	</td>
-            </tr>
-        <?php  endif; endforeach; ?>
+        <?php $dates = $form->getDateDegustParDrev();
+            foreach ($form['lots'] as $key => $lotForm):
+                $lot = $form->getLot($key);
+                $lot->type_document = substr($lot->id_document, 0, 4);
+            ?>
+          <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->declarant_identifiant ?>">
+            <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
+            <td><?php echo $lot->declarant_nom; ?></td>
+            <td>
+              <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
+                <?php echo ucfirst(strtolower($lot->type_document)).' n°&nbsp;'.$lot->numero_dossier; ?>
+              </a>
+            </td>
+            <td><?php echo $lot->numero_logement_operateur; ?></td>
+            <td><?php echo showProduitCepagesLot($lot, false) ?></td>
+            <td class="edit text-right">
+              <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
+              <a title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
+                <i class="glyphicon glyphicon-share-alt"></i>
+              </a>
+            </td>
+            <td class="text-center" data-hash="<?php echo $lot->declarant_nom; ?>">
+              <div style="margin-bottom: 0;" class="form-group <?php if($form['lots'][$key]['preleve']->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form['lots'][$key]['preleve']->renderError() ?>
+                  <div class="col-xs-12">
+                    <?php echo $form['lots'][$key]['preleve']->render(array('class' => "degustation bsswitch", "data-preleve-adherent" => $lot->declarant_identifiant, "data-preleve-lot" => $lot->unique_id, 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                  </div>
+              </div>
+            </td>
+          </tr>
+        <?php  endforeach; ?>
         </tbody>
 	</table>
 

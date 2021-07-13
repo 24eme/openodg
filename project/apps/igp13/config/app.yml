@@ -1,0 +1,16 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+all:
+  routing_context_production_host: 13.igp.vins.24eme.fr
+  float:
+    default_decimal_format: 2
+    max_decimal_authorized: 4
+  organisme:
+    nom: "Syndicat des vins IGP des Bouches-du-Rhône"
+  societe:
+    format_identifiant: "BDR%06d"
+  donnees_viticoles:
+    regions:
+      IGP13: "IGP13"

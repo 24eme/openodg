@@ -6,7 +6,7 @@ class etablissement_autocompleteActions extends sfActions
   	public function executeAll(sfWebRequest $request) {
 	    $interpro = $request->getParameter('interpro_id');
 	    $q = $request->getParameter('q');
-	    $limit = $request->getParameter('limit', 100);
+	    $limit = $request->getParameter('limit', 500);
 	    $e = EtablissementAllView::getInstance()->findByInterproAndStatut($interpro, EtablissementClient::STATUT_ACTIF, $q, $limit);
 	    $json = $this->matchEtablissements($e, $q, $limit);
         $this->getResponse()->setContentType('text/json');
@@ -33,10 +33,11 @@ class etablissement_autocompleteActions extends sfActions
 
 	  	foreach($etablissements as $key => $etablissement) {
 	      $text = EtablissementAllView::getInstance()->makeLibelle($etablissement);
-
 	      if (Search::matchTerm($term, $text)) {
             $compte = CompteClient::getInstance()->find(str_replace("ETABLISSEMENT-", "COMPTE-", $etablissement->id));
-            if($compte && $compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1))){
+            $verif_exploite_plus = $compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1));
+            $verif_en_alert = $compte->exist('en_alerte') && $compte->en_alerte;
+            if($compte && ($verif_exploite_plus || $verif_en_alert)){
                 $text.=' ⛔';
             }
 	        $json[EtablissementClient::getInstance()->getId($etablissement->id)] = $text;

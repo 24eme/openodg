@@ -12,11 +12,11 @@ Rappel des documents à envoyer :
 
 <?php endforeach; ?>
 
-Le ou les document(s) annexes peuvent nous être envoyés par mail (<igp13@orange.fr>) ou par voie postale :
+Le ou les document(s) annexes peuvent nous être envoyés par mail (<<?php echo $email; ?>>) ou par voie postale :
 
-Maison des Agriculteurs
-22 avenue Henri PONTIER
-13626 AIX EN PROVENCE Cedex 1
+<?php echo $service; ?>
+<?php echo $adresse; ?>
+<?php echo $code_postal; ?> <?php echo $ville; ?>
 <?php endif; ?>
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>

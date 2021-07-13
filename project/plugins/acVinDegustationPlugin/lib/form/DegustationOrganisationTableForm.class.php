@@ -5,10 +5,10 @@ class DegustationOrganisationTableForm extends acCouchdbObjectForm {
   private $tableLots = null;
   private $numero_table = null;
 
-  public function __construct(acCouchdbJson $object, $numero_table, array $tri, $options = array(), $CSRFSecret = null)
+  public function __construct(acCouchdbJson $object, $numero_table, $options = array(), $CSRFSecret = null)
   {
     $this->numero_table = $numero_table;
-    $this->tableLots = $object->getLotsTableOrFreeLotsCustomSort($this->numero_table, $tri);
+    $this->tableLots = $object->getLotsTableOrFreeLotsCustomSort($this->numero_table);
     parent::__construct($object, $options, $CSRFSecret);
   }
 
@@ -54,4 +54,12 @@ class DegustationOrganisationTableForm extends acCouchdbObjectForm {
         $this->setDefaults($defaults);
     }
 
+
+    protected function doSave($con = null) {
+        $this->updateObject();
+        $this->object->getCouchdbDocument()->save(false);
+    }
+
+
 }
+

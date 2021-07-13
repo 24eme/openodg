@@ -1,15 +1,14 @@
 
   $(document).ready(function(){
 
-    var mailLinkAuto = document.getElementById('link-mail-auto');
-    if(mailLinkAuto) {
-      mailLinkAuto.click();
-      var retour = mailLinkAuto.getAttribute("data-retour");
-      console.log(retour);
-      if(retour){
-        window.location = retour;
-      }
-    }
+    $('#mailPreviewModal').modal('show');
+
+    $('#btn-preleve-all').on('click', function (event) {
+      $('.bsswitch').each(function(index, element) {
+        $(element).bootstrapSwitch('state', true)
+      })
+    })
+
     $('#popupLeurreForm').each(function(){
       $('#vin_sans_cepage').click(function(){
         if($(this).is(':checked')){

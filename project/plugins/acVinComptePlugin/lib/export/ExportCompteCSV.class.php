@@ -25,13 +25,18 @@ class ExportComptesCsv
             "Code postal",
             "Ville",
             "Pays",
+            "Lat",
+            "Lon",
             "N° identifiant",
             "N° siret",
             "Statut",
             "Téléphone",
             "Fax",
             "Email",
-            "Site"
+            "Site",
+            "Compte Type",
+            "Tags",
+            "N° Compte Type"
         ];
     }
 
@@ -55,6 +60,14 @@ class ExportComptesCsv
 
         foreach (CompteAllView::getInstance()->getAll() as $json_doc) {
             $compte = $compteclient->find($json_doc->id);
+            $domaine = sfConfig::get('app_routing_context_production_host');
+            $type = strtolower($compte->type);
+            $tagsArray = array();
+            foreach ($compte->tags as $keys => $json) {
+                foreach ($json as $key => $value) {
+                  $tagsArray[] = $keys.":".$value;
+                }
+            }
 
             $data = [
                 $compte->getCodeComptable(),
@@ -66,22 +79,27 @@ class ExportComptesCsv
                 $compte->code_postal,
                 $compte->commune,
                 $compte->pays,
+                $compte->lat,
+                $compte->lon,
                 $compte->identifiant,
                 $compte->societe_informations->siret,
                 $compte->statut,
                 ($compte->telephone_bureau) ?: $compte->telephone_mobile,
                 $compte->fax,
                 $compte->email,
-                "https://declaration.syndicat-cotesdurhone.com/societe/$compte->identifiant/visualisation"
+                "https://$domaine/$type/$compte->identifiant/visualisation",
+                $compte->compte_type,
+                implode(',',$tagsArray),
+                $compte->_id
             ];
 
             fputcsv($this->csv, $data, self::$delimiter);
         }
-            
+
         fclose($this->csv);
     }
-    /**        
-            
+    /**
+
             sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
             $this->compte->getCodeComptable(),
             $this->compte->nom_a_afficher,

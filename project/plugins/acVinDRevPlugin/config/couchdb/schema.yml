@@ -30,6 +30,7 @@ DRev:
       lecture_seule: { required: false }
       denomination_auto: { required: false }
       date_degustation_voulue: { required: false }
+      type_archive:  { required: false }
       version: {  }
       numero_archive: {  }
       declarant:
@@ -119,19 +120,28 @@ DRev:
                 fields:
                   date: { }
                   id_document: { }
+                  unique_id: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
+                  campagne: {}
                   numero_dossier: {  }
                   numero_archive: {  }
-                  numero: { }
-                  numero_cuve: { required: false } # a supprimer
+                  numero_logement_operateur: { }
                   millesime: { }
                   volume: { type: float }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
                   destination_type: { }
                   destination_date: { }
                   produit_hash: { }
                   produit_libelle: { }
                   elevage: { }
-                  statut: {}
-                  specificite: { required: false }
+                  eleve: { }
+                  statut: { }
+                  adresse_logement: {}
+                  specificite: { }
+                  affectable: { }
+                  document_ordre: {}
                   cepages:
                     type: collection
                     definition:
@@ -166,9 +176,11 @@ DRev:
         type: collection
         definition:
           fields:
+            nom: { }
             adresse: { }
             commune: { }
             code_postal: { }
+            telephone: { }
       mouvements:
         type: collection
         definition:
@@ -195,12 +207,12 @@ DRev:
                         unite: { required: false }
                         taux: { }
                         tva: { }
-                        facture: { type: integer }
-                        facturable: { type: integer }
                         date: {  }
                         date_version: {  }
                         version: {  }
                         categorie: {  }
+                        type: {  }
+                        campagne: {  }
       mouvements_lots:
         type: collection
         definition:
@@ -215,32 +227,22 @@ DRev:
                     type: collection
                     definition:
                       fields:
-                        produit_hash: {  }
-                        produit_libelle: {  }
-                        produit_couleur: { }
-                        volume: { type: float }
                         date: {  }
-                        millesime: {  }
-                        elevage: { }
-                        region: {  }
+                        campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
-                        numero_cuve: {  }
+                        libelle: {}
+                        detail: {}
+                        volume: { type: float }
                         version: {  }
-                        origine_hash: {  }
-                        origine_type: {  }
-                        origine_document_id: {  }
-                        origine_mouvement: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
                         declarant_identifiant: {  }
                         declarant_nom: {  }
-                        destination_type: { }
-                        destination_date: { }
-                        details: {}
-                        region: {}
-                        campagne: {}
-                        id_document: {  }
-                        statut: {  }
-                        specificite: { required: false }
+                        statut: {}
       pieces:
         type: array_collection
         definition:

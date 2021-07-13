@@ -23,6 +23,7 @@ class DeclarationTousView extends acCouchdbView
     const STATUT_A_VALIDER = "À valider";
     const STATUT_VALIDE = "Validé";
     const STATUT_EN_ATTENTE = "En attente";
+    const STATUT_A_APPROUVER = "À approuver";
 
     public static function getInstance() {
         return acCouchdbManager::getView('declaration', 'tous');
@@ -32,4 +33,11 @@ class DeclarationTousView extends acCouchdbView
       return $result->id.$facetName;
     }
 
+    public function getByTypeCampagneIdentifiant($typeDoc, $campagne, $identifiant) {
+
+        return $this->client->startkey([$typeDoc, "".$campagne, $identifiant])
+                            ->endkey(array($typeDoc, "".$campagne, $identifiant, array()))
+                            ->reduce(false)
+                            ->getView($this->design, $this->view);
+    }
 }

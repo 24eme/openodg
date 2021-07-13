@@ -35,4 +35,28 @@ if(getenv("COUCHURL")) {
 // remove all cache
 sfToolkit::clearDirectory(sfConfig::get('sf_app_cache_dir'));
 
+$facture_emetteur_test = [
+    'IGP13' => [
+        'adresse' => '1 rue du chemin',
+        'code_postal' => '12345',
+        'ville' => 'Ville',
+        'service_facturation' => 'Syndicat',
+        'telephone' => 'Tel. 01 02 03 04 05',
+        'email' => 'email@domain.com',
+        'responsable' => 'Re Sponsable'
+    ]
+];
+
+$degustation_emetteur_test = [
+    'IGP13' => [
+        'adresse' => '2 rue du chemin',
+        'code_postal' => '67890',
+        'ville' => 'Ville 2',
+        'service_facturation' => 'Syndicat degustation',
+        'telephone' => 'Tel. 01 02 03 04 05',
+        'email' => 'email@domaine.com',
+        'responsable' => 'Ress Ponsable'
+    ]
+];
+
 define ('K_PATH_CACHE', sys_get_temp_dir().'/');

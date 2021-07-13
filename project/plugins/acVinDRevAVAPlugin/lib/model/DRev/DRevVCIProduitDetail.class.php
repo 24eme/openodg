@@ -6,6 +6,25 @@
 
 class DRevVCIProduitDetail extends BaseDRevVCIProduitDetail {
 
+    public function isStockageCaveParticuliere() {
+
+        return $this->getKey() == RegistreVCIClient::LIEU_CAVEPARTICULIERE || $this->getKey() == $this->getDocument()->identifiant;
+    }
+
+    public function isStockageNegociant() {
+
+        return $this->getDocument()->isRecoltant() && !$this->isStockageCaveParticuliere() && $this->getStockageEtablissement()->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT);
+    }
+
+    public function getStockageEtablissement() {
+        if($this->isStockageCaveParticuliere()) {
+
+            return $this->getDocument()->getEtablissementObject();
+        }
+
+        return EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$this->stockage_identifiant);
+    }
+
     public function getLibelleComplet() {
       return $this->getLibelleProduit();
     }

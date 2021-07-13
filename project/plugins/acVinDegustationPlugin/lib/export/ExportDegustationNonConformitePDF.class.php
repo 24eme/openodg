@@ -1,82 +1,44 @@
 <?php
 
-class ExportDegustationNonConformitePDF extends ExportPDF {
+class ExportDegustationNonConformitePDF extends ExportDeclarationLotsPDF {
 
     protected $degustation = null;
+    protected $lot = null;
     protected $etablissement = null;
-    protected $lot_dossier = null;
-    protected $lot_num_anon = null;
 
-    public function __construct($degustation,$etablissement,$lot_dossier, $lot_num_anon, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation, $lot, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
-        $this->etablissement = $etablissement;
-        $this->lot_dossier = $lot_dossier;
-        $this->lot_num_anon = $lot_num_anon;
+        $this->lot = $lot;
+        $this->etablissement = $lot->getEtablissement();
 
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
-        parent::__construct($type, $use_cache, $file_dir, $filename);
-        if($this->printable_document->getPdf()){
-          $this->printable_document->getPdf()->setPrintHeader(true);
-          $this->printable_document->getPdf()->setPrintFooter(true);
-        }
+        parent::__construct($degustation,$type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
-      $lot = ($this->degustation->getLotsByNumDossier())[$this->lot_dossier][$this->lot_num_anon];
-      $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF',
-      array('degustation' => $this->degustation, 'etablissement' => $this->etablissement,'lot_dossier'=>$this->lot_dossier, "lot" => $lot )));
-    }
-
-
-    public function output() {
-        if($this->printable_document instanceof PageableHTML) {
-
-            return parent::output();
+        if ($this->lot->conformite === Lot::CONFORMITE_NONTYPICITE_CEPAGE) {
+            $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_typiciteCepage', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lot' => $this->lot)));
+        } elseif ($this->lot->conformite === Lot::CONFORMITE_NONCONFORME_ANALYTIQUE) {
+            $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_analytique', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, 'lot' => $this->lot)));
+        } else {
+            $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page1', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot)));
+            $this->printable_document->addPage($this->getPartial('degustation/degustationNonConformitePDF_page2', array('degustation' => $this->degustation, 'etablissement' => $this->etablissement, "lot" => $this->lot )));
         }
-
-        return file_get_contents($this->getFile());
-    }
-
-    public function getFile() {
-
-        if($this->printable_document instanceof PageableHTML) {
-            return parent::getFile();
-        }
-
-        return sfConfig::get('sf_cache_dir').'/pdf/'.$this->getFileName(true);
     }
 
     protected function getHeaderTitle() {
-      $title = sprintf("Syndicat des Vins IGP des Bouches du Rhône- Antenne d'Aix");
-        return $title;
-    }
-
-    protected function getFooterText() {
-        return "";
+        return "Résultat de lot non conforme";
     }
 
     protected function getHeaderSubtitle() {
-
-        return "";
-    }
-
-
-    protected function getConfig() {
-
-        return new ExportDegustationNonConformitePDFConfig();
+        $header_subtitle = sprintf("%s\n\n", $this->etablissement->nom);
+        $header_subtitle .= sprintf("Dégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+        return $header_subtitle;
     }
 
     public function getFileName($with_rev = false) {
-
-        return self::buildFileName($this->degustation, true);
-    }
-
-    public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("NON_CONFORMITE_%s", $degustation->_id);
+        $filename = sprintf("NON_CONFORMITE_%s", $this->degustation->_id);
         if ($with_rev) {
-            $filename .= '_' . $degustation->_rev;
+            $filename .= '_' . $this->degustation->_rev;
         }
 
         return $filename . '.pdf';

@@ -54,6 +54,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
+    public function findMasterByIdentifiantAndPeriode($identifiant, $periode, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        return $this->findMasterByIdentifiantAndCampagne($identifiant, $periode.'-'.($periode + 1), $hydrate );
+    }
+
     public function findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $drevs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
         foreach ($drevs as $id => $drev) {
@@ -64,22 +68,27 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return null;
     }
 
-    public function findFacturable($identifiant, $campagne) {
-    	$drev = $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
+    public function findFacturable($identifiant, $periode) {
+    	$drevs = $this->getHistory($identifiant,$periode,$periode);
 
-        if($drev && !$drev->validation_odg) {
+        if(!$drevs){
 
-            return null;
+            return array();
+        }
+        $facturables = array();
+        foreach ($drevs as $drev) {
+            if($drev->validation_odg){
+                $facturables[$drev->_id] = $drev;
+            }
         }
 
-        return $drev;
+        return $facturables;
     }
 
-    public function createDoc($identifiant, $campagne, $papier = false, $reprisePrecedente = true)
+    public function createDoc($identifiant, $periode, $papier = false, $reprisePrecedente = true)
     {
         $drev = new DRev();
-        $drev->initDoc($identifiant, $campagne);
-
+        $drev->initDoc($identifiant, $periode);
         $drev->storeDeclarant();
 
         $etablissement = $drev->getEtablissementObject();
@@ -97,7 +106,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         }
 
         if($reprisePrecedente) {
-            $previous_drev = self::findMasterByIdentifiantAndCampagne($identifiant, $campagne - 1 );
+            $previous_drev = self::findMasterByIdentifiantAndPeriode($identifiant, $periode - 1 );
             if ($previous_drev) {
                 $drev->set('chais', $previous_drev->chais->toArray(true, false));
               foreach($previous_drev->getProduitsVci() as $produit) {
@@ -111,22 +120,22 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $drev;
     }
 
-    public function getIds($campagne) {
+    public function getIds($periode) {
         $ids = $this->startkey_docid(sprintf("DREV-%s-%s", "0000000000", "0000"))
                     ->endkey_docid(sprintf("DREV-%s-%s", "9999999999", "9999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
-        $ids_campagne = array();
+        $ids_periode = array();
 
         foreach($ids as $id) {
-            if(strpos($id, "-".$campagne) !== false) {
-                $ids_campagne[] = $id;
+            if(strpos($id, "-".$periode) !== false) {
+                $ids_periode[] = $id;
             }
         }
 
-        sort($ids_campagne);
+        sort($ids_periode);
 
-        return $ids_campagne;
+        return $ids_periode;
     }
 
     public function getDateOuvertureDebut() {
@@ -150,12 +159,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin();
     }
 
-    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = "0000";
-        $campagne_to = "9999";
+    public function getHistory($identifiant, $periode_from = "0000", $periode_to = "9999", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
 
-        return $this->startkey(sprintf("DREV-%s-%s", $identifiant, $campagne_from))
-                    ->endkey(sprintf("DREV-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
+        return $this->startkey(sprintf("DREV-%s-%s", $identifiant, $periode_from))
+                    ->endkey(sprintf("DREV-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $periode_to))
                     ->execute($hydrate);
     }
 
@@ -200,4 +207,73 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
       return null;
     }
 
+    public function matchFilter($lot, $produitFilter)
+    {
+        $filters = explode(" AND ", $produitFilter);
+        $etablissements = [];
+        $match = true;
+
+        foreach ($filters as $filter) {
+            if (strpos($filter, 'appellations') !== false) {
+                $match = $match && $this->matchFilterProduit($lot, $filter);
+            } elseif (strpos($filter, 'deja') !== false) {
+                // On gère que l'option (NOT)? /deja/CONFORME pour le moment
+                // Pas NONCONFORME
+                $match = $match && $this->matchFilterConformite($lot, $filter);
+            } else {
+                if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
+                    $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
+                }
+
+                $match = $match && $this->matchFilterFamille($etablissements[$lot->declarant_identifiant]->famille, $filter);
+            }
+        }
+
+        return $match;
+    }
+
+    private function matchFilterFamille($famille, $familleFilter)
+    {
+        if(! $famille){
+            return false;
+        }
+
+        $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
+        $exclude = (bool) $exclude;
+        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+
+        if(!$exclude && preg_match($regexpFilter, $famille)) {
+            return true;
+        }
+
+        if($exclude && !preg_match($regexpFilter, $famille)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function matchFilterProduit($lot, $produitFilter)
+    {
+        $produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+        $isExcludeMode = (bool) $produitExclude;
+        $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
+
+        if($produitFilter && !$isExcludeMode && !preg_match($regexpFilter, $lot->getProduitHash())) {
+            return false;
+        }
+
+        if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function matchFilterConformite($lot, $filter)
+    {
+        $not = strpos($filter, 'NOT') === 0;
+        $conformite = str_replace(['NOT', ' ', '/deja/'], '', $filter);
+        return ($not) ? $lot->isRedegustationDejaConforme() === false : $lot->isRedegustationDejaConforme() === true;
+    }
 }

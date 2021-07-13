@@ -1,9 +1,8 @@
 <?php
 class TransactionLotsForm extends acCouchdbForm
 {
-
 	public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
-      parent::__construct($doc, $defaults, $options, $CSRFSecret);
+    parent::__construct($doc, $defaults, $options, $CSRFSecret);
 	  $doc->add('lots');
     }
 
@@ -16,7 +15,7 @@ class TransactionLotsForm extends acCouchdbForm
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-                $formLots->embedForm($lot->getKey(), new TransactionLotForm($lot));
+								$formLots->embedForm($lot->getKey(), new TransactionLotForm($lot));
             }
         }
 
@@ -27,9 +26,10 @@ class TransactionLotsForm extends acCouchdbForm
 
 	public function save() {
 		$values = $this->getValues();
-		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-			$embedForm->doUpdateObject($values['lots'][$key]);
-        }
+
+			foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {				
+				$embedForm->doUpdateObject($values['lots'][$key]);
+			}
 		$this->getDocument()->save();
 	}
 

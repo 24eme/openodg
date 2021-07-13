@@ -1,0 +1,18 @@
+all:
+  credentials: [ADMIN]
+
+getCourrierWithAuth:
+  is_secure: false
+  credentials: []
+
+convocationWithAuth:
+  is_secure: false
+  credentials: []
+
+degustationConformitePDF:
+  is_secure: true
+  credentials: []
+
+degustationNonConformitePDF:
+  is_secure: true
+  credentials: []

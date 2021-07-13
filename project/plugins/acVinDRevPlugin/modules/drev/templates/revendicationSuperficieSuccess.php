@@ -4,7 +4,7 @@
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, 'drev' => $drev, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Revendication <?php echo $drev->campagne; ?> de la superficie</h2></div>
+    <div class="page-header"><h2>Revendication <?php echo $drev->periode; ?> de la superficie</h2></div>
 
     <?php echo include_partial('global/flash'); ?>
 
@@ -38,7 +38,7 @@
                 <?php $produit = $drev->get($hash); ?>
                 <tr class="produits vertical-center">
                     <td>
-                    	<a href="<?php echo url_for('drev_revendication_cepage_suppression', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getParent()->getHash()))) ?>" onclick='return confirm("Êtes vous sûr de vouloir supprimer le produit <?php echo $produit->getLibelleComplet() ?> de votre DRev <?php echo $drev->campagne ?> ?");'><span class="glyphicon glyphicon-remove-sign text-muted"></span></a>
+                    	<a href="<?php echo url_for('drev_revendication_cepage_suppression', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getParent()->getHash()))) ?>" onclick='return confirm("Êtes vous sûr de vouloir supprimer le produit <?php echo $produit->getLibelleComplet() ?> de votre DRev <?php echo $drev->periode ?> ?");'><span class="glyphicon glyphicon-remove-sign text-muted"></span></a>
                     	<?php echo $produit->getLibelleComplet() ?>
                     </td>
                     <td class="info"><?php echo $formProduit['recolte']['superficie_total']->render(array( 'placeholder' => "ha")) ?></td>
@@ -63,7 +63,7 @@
             <a href="<?php echo url_for("drev_dr", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-        <?php if ($sf_user->hasDrevAdmin()): ?>
+        <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
           <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
           </a>

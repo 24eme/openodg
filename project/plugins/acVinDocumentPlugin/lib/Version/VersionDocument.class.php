@@ -239,8 +239,18 @@ class VersionDocument
 
         $document_modificative->version = $this->buildVersionDocument($this->getRectificative(), $this->getModificative() + 1);
         $this->document->listenerGenerateVersion($document_modificative);
+        $document_modificative->numero_archive = null;
 
         return $document_modificative;
+    }
+
+    public function verifyGenerateModificative() {
+        try {
+            $this->generateModificative();
+        }catch(sfException $e){
+            return false;
+        }
+        return true;
     }
 
     public function generateNextVersion()

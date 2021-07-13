@@ -6,6 +6,9 @@ class FactureRoute extends CompteRoute implements InterfaceFacturationRoute {
     protected function getObjectForParameters($parameters = null) {
 
         $this->facture = FactureClient::getInstance()->find($parameters['id']);
+        if (sfContext::getInstance()->getUser()->hasTeledeclaration() && sfContext::getInstance()->getUser()->getCompte()->id_societe != $this->facture->getSociete()->_id) {
+            throw new sfError404Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
         if (!$this->facture) {
 
             throw new sfError404Exception(sprintf('No Facture found with the id "%s".', $parameters['id']));

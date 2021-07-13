@@ -1,14 +1,15 @@
 <?php use_helper('Date') ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
+<?php include_partial('global/flash'); ?>
 <?php if (isset($form)): ?>
-    <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
+    <form role="form" class="form-inline" action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
+    <h2>Déclaration de Revendication <?php echo $drev->periode ?>
     <?php if($drev->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
       <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
@@ -21,9 +22,11 @@
     </h2>
 </div>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
+<?php if ($drev->isValidee()): ?>
+<div class="well mb-5">
+    <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $drev->getEtablissementObject())); ?>
+</div>
+<?php endif ?>
 
 <?php if(!$drev->validation): ?>
 <div class="alert alert-warning">
@@ -62,27 +65,29 @@
 <?php endif ?>
 
 <div class="row row-margin row-button">
-    <div class="col-xs-3">
+    <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $drev->identifiant, 'campagne' => $drev->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
     <div class="col-xs-4 text-center">
         <div class="btn-group">
+            <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
             <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default" >
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
             </a>
-            <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default">
-                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
+        <?php endif; ?>
+            <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default" id="lien-telechargement-pdf-drev">
+                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;PDF de la DRev
             </a>
         </div>
     </div>
 
-    <div class="col-xs-5 text-right">
+    <div class="col-xs-4 text-right">
         <div class="btn-group">
-        <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)):
+        <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION) && !$drev->hasLotsUtilises()):
                 if (!$drev->validation_odg): ?>
-                    <a class="btn btn-default" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin()): ?>
-                    <a class="btn btn-warning" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+                    <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin() &&  !$drev->hasLotsUtilises()): ?>
+                    <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
             <?php elseif ($drev->isFactures()): ?>
                 <span class="text-muted">DRev facturée</span>
             <?php endif; ?>
@@ -96,11 +101,15 @@
         <?php if (!$drev->isMiseEnAttenteOdg()): ?>
                 <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
         <?php endif; ?>
-                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", $params) ?>" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+                <button type="button" name="validateOdg" id="btn-validation-document-drev" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         <?php endif; ?>
         </div>
     </div>
 </div>
 <?php if (isset($form)): ?>
 </form>
+<?php endif; ?>
+<?php include_partial('drev/popupConfirmationValidation', array('approuver' => false)); ?>
+<?php if (!$sf_user->isAdmin() && MandatSepaConfiguration::getInstance()->isActive() && !$drev->getEtablissementObject()->getSociete()->hasMandatSepa()): ?>
+<?php include_partial('mandatsepa/popupPropositionInscriptionPrelevement'); ?>
 <?php endif; ?>

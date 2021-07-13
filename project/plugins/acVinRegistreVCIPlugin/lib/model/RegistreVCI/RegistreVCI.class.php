@@ -135,13 +135,17 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         $this->remove('declaration');
         $this->remove('lignes');
         $this->remove('mouvements');
-        $this->superficies_facturables = 0;
+        $this->superficies_facturables = null;
+      }
+
+      public function save() {
+          $this->superficies_facturables = $this->calculSurfaceFacturable();
+          return parent::save();
       }
 
       protected function doSave() {
         $this->piece_document->generatePieces();
       }
-
 
       public function isStockUtiliseEntierement() {
           foreach($this->getProduitsWithPseudoAppelations() as $produit) {
@@ -258,7 +262,26 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         return $produits;
       }
 
+      public function calculSurfaceFacturable() {
+          $surfaceFacturable = 0;
+
+          foreach($this->getProduitsWithPseudoAppelations() as $p) {
+              if(!$p || !$p->isPseudoAppellation()) {
+                  continue;
+              }
+              if(!$p->stock_precedent && !$p->constitue)  {
+                  continue;
+              }
+              $surfaceFacturable += (float)$p->getSuperficieFromDrev();
+          }
+
+          return $surfaceFacturable;
+      }
+
       public function getSurfaceFacturable() {
+          if(is_null($this->superficies_facturables)) {
+              $this->superficies_facturables = $this->calculSurfaceFacturable();
+          }
 
           return ($this->superficies_facturables > 0)? round($this->superficies_facturables / 100, 4) : 0;
       }
@@ -272,7 +295,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       public function getTemplateFacture() {
 
-          return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+          return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
       }
 
       public function getMouvementsFactures() {

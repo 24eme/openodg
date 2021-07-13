@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF'); ?>
+<?php use_helper('Lot'); ?>
 <style>
 <?php echo style(); ?>
 .bg-white{
@@ -11,7 +12,6 @@ th {
 </style>
     <div>
       <table>
-        <?php echo tdStart() ?>
         <tr>
           <td style="width:20%;">
           </td>
@@ -29,63 +29,71 @@ th {
     <div>
       <table>
         <tr style="line-height: 25em; height:25em;">
-          <td style="width:20%;"></td>
-          <td style="width:80%;"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
+          <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
         </tr>
       </table>
-      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
-        <tr style="line-height:20px;">
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse prélèvement</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Tel / Fix / Port </strong></th>
-          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Dosssier /<br/> Nb Lots</strong></th>
-          <th class="topempty bg-white"style="width:16%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
-        </tr>
-        <?php $i=0;
-    foreach($lots as $numDossier => $lotsCuves): ?>
-    <?php $etablissement = $etablissements[$numDossier]; ?>
-    <?php if($i == 14 || ($i - 14) % 17 > 16): //display 14 Lots on the first page and below 17 Lots all others pages?>
+    <?php $ligne = 1; $table_header = true;
+    foreach($lots as $key_lots => $lotsDossier):
+        $etablissement = $etablissements[$key_lots];
+            foreach ($lotsDossier as $numDossier => $lot) :
+
+            $adresse = $lot->getRawValue()->adresse_logement;
+            $adresseLogement = splitLogementAdresse($lot->adresse_logement);
+    ?>
+    <?php if ($ligne % 12 == 0 ) : $table_header = true; ?>
       </table>
       <br pagebreak="true" />
       <p>Suite des lots<p/>
-      <br/>
+    <?php endif;?>
+    <?php if ($table_header): $table_header = false; ?>
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse prélèvement</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Tel / Fix / Port </strong></th>
-          <th class="topempty bg-white"style="width:12%;"><?php echo tdStart() ?><strong>Dosssier /<br/> Nb Lots</strong></th>
-          <th class="topempty bg-white"style="width:16%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
+          <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Coordonnées</strong></th>
+          <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
+          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
         </tr>
-      <?php endif;?>
+    <?php endif;?>
          <tr style="line-height:17px;">
-           <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale ?></small></strong></td>
-           <td><?php echo tdStart() ?>
-              <small><?php echo $etablissement->adresse ?></small>
-              <br/>
-              <strong><small><?php echo $etablissement->code_postal. ' '.$etablissement->commune; ?></small></strong>
-           </td>
-           <td><?php echo tdStart() ?>
-             <small>
-             <?php echo ($etablissement->telephone_bureau) ? 'Fix: '.$etablissement->telephone_bureau : '' ?><br/>
-             <?php echo ($etablissement->telephone_perso) ? 'Port: '.$etablissement->telephone_perso : '' ?><br/>
+           <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale; ?></small></strong></td>
+           <td>
+             <small><?php
+              if($adresseLogement):
+                if ($adresseLogement['nom'] != $etablissement->raison_sociale) {
+                    echo substrUtf8($adresseLogement['nom'], 0, 32).'<br/>';
+                }?>
+                <?php echo substrUtf8($adresseLogement['adresse'], 0, 32).'<br/>'.substrUtf8($adresseLogement['code_postal'].' '.$adresseLogement['commune'], 0, 32).'<br/>'; ?>
+              <?php else: ?>
+                <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
+              <?php endif; ?>
+             <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?>
+             <?php echo ($etablissement->telephone_bureau && $etablissement->telephone_mobile) ? ' / ' : ''; ?>
+             <?php echo ($etablissement->telephone_mobile) ? $etablissement->telephone_mobile : '' ?>
             </small>
           </td>
           <td><?php echo tdStart() ?>
-            <?php $lotTypesNb = $degustation->getNbLotByTypeForNumDossier($numDossier); ?>
-            <small>n°&nbsp;<?php echo $numDossier; ?></small><br/>
-            <small><?php echo count($lots[$numDossier]); ?>&nbsp;lot(s) <?php echo $lotTypesNb['Cond'] > 0 ? $lotTypesNb['Cond'].' Cond' : null  ?><?php echo $lotTypesNb['DRev'] > 0 ? $lotTypesNb['DRev'].' DRev' : null;  ?></small>
+            <?php echo $numDossier; ?><br/>
+            <small>
+            <?php $lotTypesNb = $degustation->getNbLotByTypeFilteredByNumDossier($etablissement->identifiant, $numDossier); ?>
+            <?php foreach ($lotTypesNb as $provenance => $nb) {
+                echo $nb." lot";
+                echo ($nb>1)?'s':'';
+                echo " provenant ";
+                switch ($provenance) {
+                    case 'DEGU': echo "d'une dégustation";break;
+                    case 'DREV': echo "d'une revendication";break;
+                    case 'COND': echo "d'un conditionnement";break;
+                    case 'TRAN': echo "d'une transaction";break;
+                }
+            }?>
+          </small>
           </td>
-          <td><?php echo tdStart() ?>
-            <small><?php //echo $degustation->laboratoire; ?></small>
-          </td>
-          <td><?php echo tdStart() ?>
-
-          </td>
+          <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
+          <td></td>
          </tr>
-         <?php $i++; ?>
+         <?php $ligne++; ?>
       <?php endforeach; ?>
+   <?php endforeach; ?>
       </table>
     </div>

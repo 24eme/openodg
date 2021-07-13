@@ -5,22 +5,19 @@ class conditionnementActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_CONDITIONNEMENT, $etablissement);
-
+        $isAdmin = $this->getUser()->isAdmin();
+        if (!$isAdmin) {
+            $this->secureEtablissement(EtablissementSecurity::DECLARANT_CONDITIONNEMENT, $etablissement);
+        }
+        $date = $request->getParameter("date", date('Y-m-d'));
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-        $conditionnement->save();
-
-        return $this->redirect('conditionnement_edit', $conditionnement);
-    }
-
-    public function executeCreatePapier(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
-
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
-        $conditionnement->save();
+        $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
+        try {
+            $conditionnement->save();
+        }catch(couchException $e) {
+            $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de conditionnement aujourd'hui");
+            return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
+        }
 
         return $this->redirect('conditionnement_edit', $conditionnement);
     }
@@ -54,11 +51,15 @@ class conditionnementActions extends sfActions {
           $this->secure(ConditionnementSecurity::DEVALIDATION , $conditionnement);
         }
 
+        if($conditionnement->hasLotsUtilises()) {
+            throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
+        }
+
         $conditionnement->validation = null;
         $conditionnement->validation_odg = null;
-        foreach ($conditionnement->getProduits() as $produit) {
-          if($produit->exist('validation_odg') && $produit->validation_odg){
-            $produit->validation_odg = null;
+        foreach ($conditionnement->getLots() as $lot) {
+          if($lot->exist('validation_odg') && $lot->validation_odg){
+            $lot->validation_odg = null;
           }
         }
         $conditionnement->add('etape', null);
@@ -131,7 +132,7 @@ class conditionnementActions extends sfActions {
             $this->conditionnement->save();
         }
 
-        if (count($this->conditionnement->getLots()) == 0 || current(array_reverse($this->conditionnement->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        if (count($this->conditionnement->getLots()) == 0 || current(array_reverse($this->conditionnement->getSortedLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
             $this->conditionnement->addLot();
         }
         $this->form = new ConditionnementLotsForm($this->conditionnement);
@@ -166,11 +167,11 @@ class conditionnementActions extends sfActions {
         }
 
         $lot = $this->conditionnement->getLotByNumArchive($request->getParameter('numArchive'));
-        $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->conditionnement->identifiant, $lot->numero_archive, $this->conditionnement->campagne);
-        if($lotCheck){
-          throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
-          " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
-        }
+        // $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->conditionnement->identifiant, $lot->numero_archive, $this->conditionnement->campagne);
+        // if($lotCheck){
+        //   throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
+        //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
+        // }
 
         if($lot){
             $this->conditionnement->remove($lot->getHash());
@@ -184,6 +185,7 @@ class conditionnementActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::EDITION, $this->conditionnement);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if($this->conditionnement->storeEtape($this->getEtape($this->conditionnement, ConditionnementEtapes::ETAPE_VALIDATION))) {
             $this->conditionnement->save();
@@ -193,7 +195,7 @@ class conditionnementActions extends sfActions {
 
         $this->validation = new ConditionnementValidation($this->conditionnement);
 
-        $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
+        $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -233,7 +235,7 @@ class conditionnementActions extends sfActions {
             $this->conditionnement->validateOdg();
             $this->conditionnement->cleanLots();
             $this->conditionnement->save();
-            $this->getUser()->setFlash("notice", "La déclaration de conditionnement papier a été validée et approuvée, un email a été envoyé au déclarant");
+            $this->getUser()->setFlash("notice", "La déclaration de conditionnement papier a été validée et approuvée");
 
             return $this->redirect('conditionnement_visualisation', $this->conditionnement);
         }
@@ -294,6 +296,7 @@ class conditionnementActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::VISUALISATION, $this->conditionnement);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         $this->service = $request->getParameter('service');
 
@@ -301,12 +304,13 @@ class conditionnementActions extends sfActions {
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasConditionnementAdmin() || $this->conditionnement->validation) {
             $this->validation = new ConditionnementValidation($this->conditionnement);
+            $this->form = new ConditionnementValidationForm($this->conditionnement, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = null;
+
         $this->dr = DRClient::getInstance()->findByArgs($this->conditionnement->identifiant, $this->conditionnement->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
@@ -319,6 +323,10 @@ class conditionnementActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin && $this->conditionnement->isValidee() && $this->conditionnement->isValideeODG() === false){
+          return $this->redirect('conditionnement_validation_admin', $this->conditionnement);
+        }
 
         return $this->redirect('conditionnement_visualisation', $this->conditionnement);
     }
@@ -340,22 +348,13 @@ class conditionnementActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
         $conditionnement = $this->getRoute()->getConditionnement();
         $this->secure(ConditionnementSecurity::PDF, $conditionnement);
-
-        if (!$conditionnement->validation) {
-            $conditionnement->cleanDoc();
-        }
-
-        $this->document = new ExportConditionnementPdf($conditionnement, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportConditionnementPdf($conditionnement, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
-
         if ($request->getParameter('force')) {
             $this->document->removeCache();
         }
-
         $this->document->generate();
-
         $this->document->addHeaders($this->getResponse());
-
         return $this->renderText($this->document->output());
     }
 

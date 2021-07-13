@@ -227,29 +227,26 @@ class ConfigurationCepage extends BaseConfigurationCepage {
         return $this->getGenre()->getKey() == "VDN";
     }
 
-    public function hasCepagesAutorises(){
-        return $this->exist('cepages_autorises') && count($this->cepages_autorises);
-    }
-
     public function getCepagesAutorises() {
+        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
+
+            return $this->getCertification()->getCepagesAutorises();
+        }
+
         return $this->_get('cepages_autorises');
     }
 
-    public function setCepagesAutorises($cepages_autorises_str){
-        if($this->hasCepagesAutorises()){
-            $cepages_autorises = explode(',',$cepages_autorises_str);
-            $c_a_new = array();
-            foreach ($cepages_autorises as $cepage_autorise) {
-                $c_a = strtoupper(trim($cepage_autorise));
-                if($c_a){
-                    if(!preg_match('/^[A-Z\.\ Ç0-9\-ÉéèÈÔôÜüûÛ\=\(\)\']+$/',$c_a)){
-                        throw new sfException("Le cépage autorisé $c_a n'a pas un bon format. ");
-                    }
-                    $c_a_new[] = $c_a;
-                }
-            }
-            $this->_set('cepages_autorises',$c_a_new);
+    public function hasCepagesAutorises(){
+        return $this->exist('cepages_autorises') && count($this->_get('cepages_autorises')->toArray(true, false));
+    }
+
+    public function getNoeudCepagesAutorises() {
+        if(!$this->hasCepagesAutorises() && $this->getCertification()->hasCepagesAutorises()) {
+
+            return $this->getCertification();
         }
+
+        return $this;
     }
 
 }

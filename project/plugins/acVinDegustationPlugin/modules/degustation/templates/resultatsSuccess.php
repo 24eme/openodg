@@ -1,19 +1,16 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_RESULTATS)); ?>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-  <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
-
 <div class="page-header no-border">
   <h2>Saisie des résultats de conformité</h2>
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
-
+<p>Nombre total d'échantillons : <?php echo count($degustation->getLotsWithoutLeurre()); ?></p>
 <p>Cocher les échantillons conformes à chaque tables</p>
 
 <ul class="nav nav-pills">
@@ -39,9 +36,10 @@
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr>
-                    <th class="col-xs-2 text-left">Numéro<br/>anonyme</th>
-                    <th class="col-xs-4 text-left">Opérateur</th>
-                    <th class="col-xs-4 text-left">Produit (millésime, spécificité)</th>
+                    <th class="col-xs-1 text-left">N°&nbsp;Ano.</th>
+                    <th class="col-xs-3 text-left">Opérateur</th>
+                    <th class="col-xs-1 text-left">Provenance</th>
+                    <th class="col-xs-5 text-left">Produit (millésime, spécificité)</th>
                     <th class="col-xs-2 text-left" colspan="2" >Conformité</th>
                   </tr>
                 </thead>
@@ -51,15 +49,13 @@
                     $name = $form->getWidgetNameFromLot($lot);
                     if (!$lot->leurre && isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
-                        <td class="text-left"><?php echo $lot->getNumeroAnonymat() ?></td>
+                        <td class="text-right"><?php echo $lot->getNumeroAnonymat() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
+                        <td><?= $lot->getTypeProvenance() ?></td>
                         <td class="text-left">
-                          <?php echo $lot->produit_libelle;?>&nbsp;
-                          <small class="text-muted"><?php echo $lot->details; ?></small>
-                          <?php echo ($lot->millesime)? $lot->millesime : ''; ?>
-                          <?php if(DrevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                            <span class="text-muted">(<?php echo $lot->specificite; ?>)</span>
-                          <?php endif ?>
+                            <?php echo showOnlyProduit($lot) ?> - <small>n°&nbsp;<?php echo $lot->numero_logement_operateur; ?></small>
+                            <br/><?php echo showOnlyCepages($lot) ?>
+                            <span class="pull-right text-muted" ><small><?php echo $lot->volume.'&nbsp;hl'; ?></small></span>
                         </td>
                         <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <div style="margin-bottom: 0;">
@@ -93,7 +89,7 @@
               <?php
               foreach ($form->getTableLots() as $lot):
                 $name = $form->getWidgetNameFromLot($lot);
-                include_partial('degustation/popupResultats', array('form' => $form, 'name' => $name));
+                include_partial('degustation/popupResultats', array('form' => $form, 'name' => $name, 'lot' => $lot));
               endforeach;
               ?>
             </form>

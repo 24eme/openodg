@@ -10,6 +10,7 @@ class AppUser extends sfBasicSecurityUser {
     const CREDENTIAL_ADMIN = "ADMIN";
     const CREDENTIAL_DREV_ADMIN = 'teledeclaration_drev_admin';
     const CREDENTIAL_CONDITIONNEMENT_ADMIN = 'teledeclaration_conditionnement_admin';
+    const CREDENTIAL_CHGTDENOM_ADMIN = 'teledeclaration_chgtDenom_admin';
     const CREDENTIAL_TRANSACTION_ADMIN = 'teledeclaration_transaction_admin';
     const CREDENTIAL_STALKER = 'stalker';
     const CREDENTIAL_TOURNEE = "tournee";
@@ -49,12 +50,15 @@ class AppUser extends sfBasicSecurityUser {
         if(!$compte) {
           $societe = SocieteClient::getInstance()->findByIdentifiantSociete($login_or_compte);
           if(!$societe){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+              $this->signOut();
+              return false;
+              //throw new sfException("Le compte est nul : ".$login_or_compte);
           }
           $compte = $societe->getMasterCompte();
           $login = $compte->identifiant;
           if(!$compte){
-             throw new sfException("Le compte est nul : ".$login_or_compte);
+              $this->signOut();
+              return false;
           }
         }
 
@@ -154,6 +158,10 @@ class AppUser extends sfBasicSecurityUser {
 
     public function hasDrevAdmin() {
         return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdmin();
+    }
+
+    public function hasChgtDenomAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_CHGTDENOM_ADMIN) || $this->isAdmin();
     }
 
     public function hasConditionnementAdmin() {

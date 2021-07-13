@@ -36,6 +36,7 @@ class Parcellaire extends BaseParcellaire {
     public function initDoc($identifiant, $date, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
         $this->date = $date;
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ParcellaireClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->storeDeclarant();
     }
@@ -166,7 +167,7 @@ class Parcellaire extends BaseParcellaire {
         foreach($this->getParcelles() as $p) {
             $cepage = $p->getCepage();
             if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                $cepage .= ' - jeunes feuilles';
+                $cepage .= ' - jeunes vignes';
             }
             if (!isset($synthese[$cepage])) {
                 $synthese[$cepage] = array();
@@ -191,7 +192,7 @@ class Parcellaire extends BaseParcellaire {
                     $libelles[] = '';
                 }
                 if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                    $libelles = array('jeunes feuilles');
+                    $libelles = array('jeunes vignes');
                 }
             }
             foreach($libelles as $libelle) {

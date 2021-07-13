@@ -5,21 +5,14 @@ class transactionActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
+        $isAdmin = $this->getUser()->isAdmin();
+        if (!$isAdmin) {
+            $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
+        }
 
+        $date = $request->getParameter("date", date('Y-m-d'));
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-        $transaction->save();
-
-        return $this->redirect('transaction_edit', $transaction);
-    }
-
-    public function executeCreatePapier(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_TRANSACTION, $etablissement);
-
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
+        $transaction = TransactionClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
         $transaction->save();
 
         return $this->redirect('transaction_edit', $transaction);
@@ -52,6 +45,10 @@ class transactionActions extends sfActions {
         $transaction = $this->getRoute()->getTransaction();
         if (!$this->getUser()->isAdmin()) {
           $this->secure(TransactionSecurity::DEVALIDATION , $transaction);
+        }
+
+        if($transaction->hasLotsUtilises()) {
+            throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
         }
 
         $transaction->validation = null;
@@ -131,7 +128,7 @@ class transactionActions extends sfActions {
             $this->transaction->save();
         }
 
-        if (count($this->transaction->getLots()) == 0 || current(array_reverse($this->transaction->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        if (count($this->transaction->getLots()) == 0 || current(array_reverse($this->transaction->getSortedLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
             $this->transaction->addLot();
         }
         $this->form = new TransactionLotsForm($this->transaction);
@@ -166,11 +163,11 @@ class transactionActions extends sfActions {
         }
 
         $lot = $this->transaction->getLotByNumArchive($request->getParameter('numArchive'));
-        $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->transaction->identifiant, $lot->numero_archive, $this->transaction->campagne);
-        if($lotCheck){
-          throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
-          " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
-        }
+        // $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->transaction->identifiant, $lot->numero_archive, $this->transaction->campagne);
+        // if($lotCheck){
+        //   throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
+        //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
+        // }
 
         if($lot){
             $this->transaction->remove($lot->getHash());
@@ -184,6 +181,7 @@ class transactionActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::EDITION, $this->transaction);
+        $this->isAdmin = $this->getUser()->isAdmin();
 
         if($this->transaction->storeEtape($this->getEtape($this->transaction, TransactionEtapes::ETAPE_VALIDATION))) {
             $this->transaction->save();
@@ -191,7 +189,7 @@ class transactionActions extends sfActions {
 
         $this->validation = new TransactionValidation($this->transaction);
 
-        $this->form = new TransactionValidationForm($this->transaction, array(), array('engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
+        $this->form = new TransactionValidationForm($this->transaction, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -231,7 +229,7 @@ class transactionActions extends sfActions {
             $this->transaction->validateOdg();
             $this->transaction->cleanLots();
             $this->transaction->save();
-            $this->getUser()->setFlash("notice", "La déclaration de transaction papier a été validée et approuvée, un email a été envoyé au déclarant");
+            $this->getUser()->setFlash("notice", "La déclaration de transaction papier a été validée et approuvée");
 
             return $this->redirect('transaction_visualisation', $this->transaction);
         }
@@ -292,19 +290,20 @@ class transactionActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::VISUALISATION, $this->transaction);
-
+        $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
 
         $this->regionParam = $request->getParameter('region',null);
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
             $this->regionParam = $this->getUser()->getCompte()->region;
         }
-
+        $this->form = null;
         if($this->getUser()->hasTransactionAdmin() || $this->transaction->validation) {
             $this->validation = new TransactionValidation($this->transaction);
+            $this->form = new TransactionValidationForm($this->transaction, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(TransactionValidation::TYPE_ENGAGEMENT)));
         }
 
-        $this->form = null;
+
         $this->dr = DRClient::getInstance()->findByArgs($this->transaction->identifiant, $this->transaction->campagne);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
@@ -317,6 +316,10 @@ class transactionActions extends sfActions {
         }
 
         $this->form->save();
+
+        if($this->isAdmin && $this->transaction->isValidee() && $this->transaction->isValideeODG() === false){
+          return $this->redirect('transaction_validation_admin', $this->transaction);
+        }
 
         return $this->redirect('transaction_visualisation', $this->transaction);
     }
@@ -338,22 +341,13 @@ class transactionActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
         $transaction = $this->getRoute()->getTransaction();
         $this->secure(TransactionSecurity::PDF, $transaction);
-
-        if (!$transaction->validation) {
-            $transaction->cleanDoc();
-        }
-
-        $this->document = new ExportTransactionPdf($transaction, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportTransactionPdf($transaction, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
-
         if ($request->getParameter('force')) {
             $this->document->removeCache();
         }
-
         $this->document->generate();
-
         $this->document->addHeaders($this->getResponse());
-
         return $this->renderText($this->document->output());
     }
 

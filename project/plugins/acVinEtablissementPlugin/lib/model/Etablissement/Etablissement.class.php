@@ -126,6 +126,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return ($this->nom) ? $this->nom : $this->raison_sociale;
     }
 
+    public function existLiaison($type, $etablissementId) {
+
+        return $this->liaisons_operateurs->exist($type . '_' . $etablissementId);
+    }
+
     public function addLiaison($type, $etablissement,$saveOther = true, $chai = null, $attributsChai = array()) {
 
         if(!$etablissement instanceof Etablissement) {
@@ -184,15 +189,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         }
 
         $liaison = $this->liaisons_operateurs->get($key);
-        if($removeOther && $liaison->type_liaison == EtablissementClient::TYPE_LIAISON_BAILLEUR) {
-            $etablissement = EtablissementClient::getInstance()->find($liaison->id_etablissement);
-            $etablissement->removeLiaison(EtablissementClient::TYPE_LIAISON_METAYER."_".$this->_id, false);
-            $etablissement->save();
-        }
 
-        if($removeOther && $liaison->type_liaison == EtablissementClient::TYPE_LIAISON_METAYER) {
-            $etablissement = EtablissementClient::getInstance()->find($liaison->id_etablissement);
-            $etablissement->removeLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR."_".$this->_id, false);
+        $typeLiaisonOpposee = EtablissementClient::getTypeLiaisonOpposee($liaison->type_liaison);
+
+        if($removeOther && $typeLiaisonOpposee) {
+            $etablissement = $liaison->getEtablissement();
+            $etablissement->removeLiaison($typeLiaisonOpposee."_".$this->_id, false);
             $etablissement->save();
         }
 
@@ -517,18 +519,38 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function getMeAndLiaisonOfType($type) {
-        $etablissements = array($this);
-        if ($this->exist('liaisons_operateurs')) {
-            foreach ($this->liaisons_operateurs as $k => $o) {
-                if ($o->type_liaison == $type) {
-                    $e = EtablissementClient::getInstance()->find($o->id_etablissement);
-                    if ($e && ($e->cvi || $e->ppm)) {
-                        $etablissements[] = $e;
-                    }
-                }
+        return array_merge(array($this), $this->getLiaisonObjectOfType($type));
+    }
+
+    public function  getLiaisonObjectOfType($type) {
+        $etablissements = array();
+        foreach ($this->getLiaisonOfType($type) as $o) {
+            $e = EtablissementClient::getInstance()->find($o->id_etablissement);
+            if ($e && ($e->cvi || $e->ppm)) {
+                $etablissements[] = $e;
             }
         }
         return $etablissements;
+    }
+
+    public function  getLiaisonOfType($type) {
+        $liaisons = array();
+        if ($this->exist('liaisons_operateurs')) {
+            foreach ($this->liaisons_operateurs as $k => $o) {
+                if ($o->type_liaison == $type) {
+                    $liaisons[] = $o;
+                }
+            }
+        }
+        return $liaisons;
+    }
+
+    public function getLaboLibelle() {
+        $labos = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_LABO);
+        if (!count($labos)) {
+            return null;
+        }
+        return $labos[0]->libelle_etablissement;
     }
 
 }

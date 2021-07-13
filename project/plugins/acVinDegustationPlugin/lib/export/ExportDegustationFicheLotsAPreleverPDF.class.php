@@ -1,91 +1,57 @@
 <?php
 
-class ExportDegustationFicheLotsAPreleverPDF extends ExportPDF {
+class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
 
     protected $degustation = null;
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
 
-        if (!$filename) {
-            $filename = $this->getFileName(true);
-        }
-        parent::__construct($type, $use_cache, $file_dir, $filename);
+        parent::__construct($degustation,$type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
       $etablissements = array();
-      foreach ($this->degustation->getLotsByNumDossierNumCuve() as $numDossier => $lotsEtablissement) {
-        if (!$numDossier) {
-            continue;
-        }
-	      $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lotsEtablissement[array_key_first($lotsEtablissement)]->declarant_identifiant);
-        $etablissements[$numDossier] = $etablissement;
+      $adresses = array();
+      foreach ($this->degustation->getLots() as $lot) {
+          if ($lot->isLeurre()) {
+              continue;
+          }
+          $adresses[$lot->declarant_identifiant][$lot->getNumeroDossier()] = $lot;
+          $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+
       }
-        @$this->printable_document->addPage(
-          $this->getPartial('degustation/ficheLotsAPrelevesPdf',
+
+      @$this->printable_document->addPage(
+        $this->getPartial('degustation/ficheLotsAPrelevesPdf',
           array(
             'degustation' => $this->degustation,
             'etablissements' => $etablissements,
             "date_edition" => date("d/m/Y"),
             "nbLotTotal" => count($this->degustation->getLots()),
-            'lots' => $this->degustation->getLotsByNumDossierNumCuve()
+            'lots' => $adresses
           )
         ));
     }
 
 
-    public function output() {
-        if($this->printable_document instanceof PageableHTML) {
-            return parent::output();
-        }
-
-        return file_get_contents($this->getFile());
-    }
-
-    public function getFile() {
-
-        if($this->printable_document instanceof PageableHTML) {
-            return parent::getFile();
-        }
-
-        return sfConfig::get('sf_cache_dir').'/pdf/'.$this->getFileName(true);
-    }
-
     protected function getHeaderTitle() {
-        $titre = sprintf("Syndicat des Vins IGP de %s", $this->degustation->getOdg());
-        return $titre;
+        return "Fiche de tournée";
     }
 
     protected function getHeaderSubtitle() {
-        $date = substr($this->degustation->date,0,10);
-        $date = $date[8].$date[9].'/'.$date[5].$date[6].'/'.$date[0].$date[1].$date[2].$date[3];
-        $header_subtitle = sprintf("%s\n\n", $this->degustation->lieu)." \nFiche de tournée (Liste des lots à prélever) Date de commission : ".$date;
+        $header_subtitle = sprintf("(Liste des lots à prélever)\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+        $header_subtitle .= sprintf("\nLieu de dégustation: %s", $this->degustation->lieu);
         return $header_subtitle;
     }
 
 
-    protected function getFooterText() {
-        $footer= sprintf("Syndicat des Vins IGP de %s  %s\n\n", $this->degustation->getOdg(), $this->degustation->lieu);
-        return $footer;
-    }
-
-    protected function getConfig() {
-
-        return new ExportDegustationFicheLotsAPreleverPDFConfig();
-    }
-
     public function getFileName($with_rev = false) {
-
-        return self::buildFileName($this->degustation, true);
-    }
-
-    public static function buildFileName($degustation, $with_rev = false) {
-        $filename = sprintf("fiche_tournee_prelevements_%s", $degustation->_id);
+        $filename = sprintf("fiche_tournee_prelevements_%s", $this->degustation->_id);
 
 
         if ($with_rev) {
-            $filename .= '_' . $degustation->_rev;
+            $filename .= '_' . $this->degustation->_rev;
         }
 
 

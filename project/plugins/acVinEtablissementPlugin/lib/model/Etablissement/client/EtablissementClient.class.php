@@ -29,6 +29,9 @@ class EtablissementClient extends acCouchdbClient {
     const TYPE_LIAISON_HEBERGE_TIERS = 'HEBERGE_TIERS'; //Hébergé chez un tiers
     const TYPE_LIAISON_HEBERGE = 'HEBERGE'; //Heberge
 
+    const TYPE_LIAISON_LABO = "LABO";
+    const TYPE_LIAISON_ANALYSE_DE = "ANALYSE_DE";
+
     const STATUT_ACTIF = 'ACTIF'; #'actif';
     const STATUT_SUSPENDU = 'SUSPENDU'; #'suspendu';
     const OUI = 'OUI';
@@ -171,12 +174,32 @@ class EtablissementClient extends acCouchdbClient {
         return parent::find($this->getId($id_or_identifiant), $hydrate, $force_return_ls);
     }
 
+
+    /**
+     * Rechercher un établissment par id, identifiant, cvi, no accices, ppm
+     *
+     * @param string $anyIdentifiant Id, identifiant, cvi, no accices, ppm
+     * @param bool $withSuspendu Inclure les établissements suspendu
+     *
+     * @return Etablissement
+     */
+    public function findAny($anyIdentifiant, $withSuspendu = false) {
+        $etablissement = $this->find($this->getId($anyIdentifiant));
+
+        if($etablissement) {
+
+            return $etablissement;
+        }
+
+        return $this->findByCvi($anyIdentifiant, $withSuspendu);
+    }
+
     public function findByAccises($no_accises, $with_suspendu = false) {
         return $this->findByCvi($no_accises, $with_suspendu);
     }
 
-    public function findByCvi($cvi, $with_suspendu = false) {
-      return $this->findByCviOrAcciseOrPPM($cvi, $with_suspendu);
+    public function findByCvi($cvi, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+      return $this->findByCviOrAcciseOrPPM($cvi, $with_suspendu, $hydrate);
     }
 
     public function findByPPM($ppm, $with_suspendu = false) {
@@ -187,10 +210,10 @@ class EtablissementClient extends acCouchdbClient {
       return $this->findByCviOrAcciseOrPPM($accise, $with_suspendu);
     }
 
-    public function findByCviOrAcciseOrPPM($accise, $with_suspendu = false) {
-      return $this->findByCviOrAcciseOrPPMOrSiren($accise, $with_suspendu);
+    public function findByCviOrAcciseOrPPM($accise, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+      return $this->findByCviOrAcciseOrPPMOrSiren($accise, $with_suspendu, $hydrate);
     }
-    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
+    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
       $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi_or_accise_or_ppm));
 
       if (!count($rows)) {
@@ -198,11 +221,17 @@ class EtablissementClient extends acCouchdbClient {
       }
 
       foreach ($rows as $r) {
-          $e = $this->find($r->id);
-          if (!$with_suspendu && $e->isSuspendu()) {
+          $e = $this->find($r->id, acCouchdbClient::HYDRATE_JSON);
+          if ($e->statut == EtablissementClient::STATUT_SUSPENDU) {
               continue;
           }
-          return $e;
+          return $this->find($r->id, $hydrate);
+      }
+      
+      if($with_suspendu) {
+          foreach ($rows as $r) {
+              return $this->find($r->id, $hydrate);
+          }
       }
       return null;
     }
@@ -322,6 +351,10 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_HEBERGE_TIERS => 'Hébergé chez un tiers',
             self::TYPE_LIAISON_HEBERGE => 'Héberge',
 
+            self::TYPE_LIAISON_LABO => 'A pour labo',
+            self::TYPE_LIAISON_ANALYSE_DE => "Analyse les vins de",
+
+
         );
     }
 
@@ -332,7 +365,8 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_COOPERATEUR => self::TYPE_LIAISON_COOPERATIVE,
             self::TYPE_LIAISON_VENDEUR_VRAC => self::TYPE_LIAISON_NEGOCIANT,
             self::TYPE_LIAISON_APPORTEUR_RAISIN => self::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,
-            self::TYPE_LIAISON_HEBERGE => self::TYPE_LIAISON_HEBERGE_TIERS
+            self::TYPE_LIAISON_HEBERGE => self::TYPE_LIAISON_HEBERGE_TIERS,
+            self::TYPE_LIAISON_LABO => self::TYPE_LIAISON_ANALYSE_DE,
         );
     }
 
