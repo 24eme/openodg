@@ -147,7 +147,7 @@ if ($last) {
     <div class="row">
         <div class="col-xs-12">
             <p class="text-muted">
-                Aucune parcelle n'a été déclarée pour cette année en AOC Alsace Grand Cru, AOC Alsace Lieu-dit et AOC Alsace Communale.
+                Aucune parcelle n'a été déclarée pour cette année.
             </p>
         </div>
     </div>

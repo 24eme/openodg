@@ -88,7 +88,7 @@ $lot = $lots[0]; ?>
     <tr>
         <td>
 N° Lot OP : <?php echo $lot->numero_logement_operateur; ?><br/>
-            Produit : <?php echo showProduitCepagesLot($chgtdenom->lots[0]); ?><br/>
+            Produit : <?php echo showProduitCepagesLot($lot); ?><br/>
             Volume : <?php echo sprintf("%.2f", $lot->volume) ?> hl
         </td>
         <?php if ($total == false): ?>
