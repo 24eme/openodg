@@ -28,13 +28,15 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         $communesDenominations = sfConfig::get('app_communes_denominations');
         $dgcFinal = null;
         foreach ($communesDenominations as $dgc => $communes) {
-            if (in_array($this->code_commune, $communes) && strpos($dgc, $this->getHash()) !== false) {
+            if (!in_array($this->code_commune, $communes)) {
+                continue;
+            }
+            if (strpos($dgc, $this->getHash()) !== false) {
+                
                 return $dgc;
             }
             
-            if (in_array($this->code_commune, $communes)) {
-                $dgcFinal = $dgc;
-            }
+            $dgcFinal = $dgc;
         }
         return $dgcFinal;
     }
