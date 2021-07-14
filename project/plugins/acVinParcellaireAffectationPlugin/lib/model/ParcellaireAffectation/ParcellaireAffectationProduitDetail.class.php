@@ -24,14 +24,30 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
     }
     
-    public function getDgcLibelle() {
+    public function getDgc() {
         $communesDenominations = sfConfig::get('app_communes_denominations');
+        $dgcFinal = null;
         foreach ($communesDenominations as $dgc => $communes) {
+            if (in_array($this->code_commune, $communes) && strpos($dgc, $this->getHash()) !== false) {
+                return $dgc;
+            }
+            
             if (in_array($this->code_commune, $communes)) {
-                return $this->getDocument()->getDgcLibelle($dgc);
+                $dgcFinal = $dgc;
             }
         }
-        return null;
+        return $dgcFinal;
+    }
+    
+    public function getDgcLibelle() {
+        $dgc = $this->getDgc();
+        
+        if(!$dgc) {
+            
+            return null;
+        }
+        
+        return $this->getDocument()->getDgcLibelle($dgc);
     }
 
     public function getLieuLibelle() {
