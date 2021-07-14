@@ -33,9 +33,9 @@ def createCSVFacturationByCampagne(campagne,drev,etablissements,dr,societe):
     facturation = pd.merge(facturation, drev_cdrv_sablet,  how='outer', on=['Campagne', 'Identifiant'], suffixes=("", " sablet"))
     facturation = pd.merge(facturation, drev_cdrv_vaison_romaine,  how='outer', on=['Campagne', 'Identifiant'], suffixes=("", " vaison la romaine"))
 
-    dr_cdr_cdrv = dr.query("(Appellation == 'CDR' or Appellation == 'CVG') and Code == '06'").groupby(["Campagne", "Identifiant"]).sum()
-    dr_cdrv_sablet = dr.query("Appellation == 'CVG' and Lieu == 'SAB' and Code == '06'").groupby(["Campagne", "Identifiant"]).sum()
-    dr_cdrv_vaison_romaine = dr.query("Appellation == 'CVG' and Lieu == 'VLR' and Code == '06'").groupby(["Campagne", "Identifiant"]).sum()
+    dr_cdr_cdrv = dr.query("(Appellation == 'CDR' or Appellation == 'CVG') and (Code == '06' or Code == '07')").groupby(["Campagne", "Identifiant"]).sum()
+    dr_cdrv_sablet = dr.query("Appellation == 'CVG' and Lieu == 'SAB' and (Code == '06' or Code == '07')").groupby(["Campagne", "Identifiant"]).sum()
+    dr_cdrv_vaison_romaine = dr.query("Appellation == 'CVG' and Lieu == 'VLR' and (Code == '06' OR Code == '07')").groupby(["Campagne", "Identifiant"]).sum()
 
     facturation = pd.merge(facturation, dr_cdr_cdrv,  how='outer', on=['Campagne', 'Identifiant'])
     facturation = pd.merge(facturation, dr_cdrv_sablet,  how='outer', on=['Campagne', 'Identifiant'], suffixes=("", " sablet"))
@@ -60,4 +60,10 @@ def createCSVFacturationByCampagne(campagne,drev,etablissements,dr,societe):
 
 createCSVFacturationByCampagne(dr['Campagne'].unique()[-1],drev,etablissements,dr,societe)
 createCSVFacturationByCampagne(dr['Campagne'].unique()[-2],drev,etablissements,dr,societe)
+
+
+# In[ ]:
+
+
+
 
