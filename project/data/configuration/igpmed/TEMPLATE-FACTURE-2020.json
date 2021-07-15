@@ -1,53 +1,44 @@
 {
-    "_id": "TEMPLATE-FACTURE-2020",
-    "type": "TemplateFacture",
-    "campagne": 2020,
-    "template": "IGP",
-    "libelle": "2020 - IGP Méditerrannée",
-    "docs": [
-        "DRev",
-        "Degustation"
-    ],
-    "cotisations": {
-        "forfaitAnalyse": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "IGP Méditerrannée",
-            "code_comptable": "",
-            "details": {
-                "forfait": {
-                    "modele": "CotisationFixe",
-                    "prix": 20,
-                    "tva": 0.2,
-                    "unite": "hl",
-                    "libelle": "Forfait analyse",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": ""
-                }
-            }
+  "_id": "TEMPLATE-FACTURE-2020",
+  "type": "TemplateFacture",
+  "campagne": 2020,
+  "template": "IGP",
+  "libelle": "2020 - IGP Méditerrannée",
+  "docs": [
+    "Degustation"
+  ],
+  "cotisations": {
+    "cotisationODG": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation Fédération",
+      "code_comptable": "",
+      "details": {
+        "analyse": {
+          "modele": "Cotisation",
+          "prix": 20,
+          "tva": 0.2,
+          "libelle": "Analyse de lot",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsNbLotsDegustes",
+          "callback_parameters": []
         },
-        "forfaitOrganoleptique": {
-            "modele": "CotisationsCollection",
-            "callback": "",
-            "libelle": "IGP Méditerrannée",
-            "code_comptable": "",
-            "details": {
-                "forfait": {
-                    "modele": "CotisationFixe",
-                    "prix": 60,
-                    "tva": 0.2,
-                    "unite": "hl",
-                    "libelle": "Forfait organoleptique",
-                    "complement_libelle": "",
-                    "docs": [
-                        "DRev"
-                    ],
-                    "callback": ""
-                }
-            }
+        "presentation": {
+          "modele": "Cotisation",
+          "prix": 60,
+          "tva": 0.2,
+          "libelle": "Présentation de lot",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsNbLotsDegustes",
+          "callback_parameters": []
         }
+      }
     }
+  }
 }

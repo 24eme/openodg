@@ -38,6 +38,7 @@ class GenerationClient extends acCouchdbClient {
     public function findHistory($limit = 10) {
         return acCouchdbManager::getClient()
         ->limit($limit)
+        ->descending(true)
         ->getView("generation", "history")
         ->rows;
     }
