@@ -73,6 +73,7 @@ ChgtDenom:
                   date: { }
                   id_document: { }
                   unique_id: { }
+                  origine_type: { }
                   id_document_provenance: { }
                   id_document_affectation: { }
                   campagne: {}
@@ -158,6 +159,7 @@ ChgtDenom:
                         document_ordre: {  }
                         document_type: {  }
                         document_id: {  }
+                        origine_type: { }
                         lot_unique_id: {  }
                         lot_hash: {  }
                         declarant_identifiant: {  }

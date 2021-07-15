@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(17);
+$t = new lime_test(20);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -75,6 +75,10 @@ foreach ($produits as $key => $produit) {
 $lot = $transaction->addLot();
 $lot->volume = 12;
 $lot->specificite = null;
+
+$t->is($lot->origine_type, TransactionClient::TYPE_MODEL, "L'origine type par défaut est ".TransactionClient::TYPE_MODEL);
+$lot->origine_type = null;
+$t->is($lot->origine_type, TransactionClient::TYPE_MODEL, "L'origine type calculé est ".TransactionClient::TYPE_MODEL);
 $lot = $transaction->addLot();
 $lot->produit_hash = $produit->getHash();
 $transaction->save();
@@ -112,4 +116,5 @@ $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_ENLEVE), 'Le lot est enlevé');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
+$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->origine_type, $lot->origine_type, "Mouvement origine type");
 

@@ -758,6 +758,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->document_ordre = $this->getDocumentOrdre();
         $mouvement->document_type = $this->getDocumentType();
         $mouvement->document_id = $this->getDocument()->_id;
+        $mouvement->origine_type = $this->getOrigineType();
         $mouvement->lot_unique_id = $this->getUniqueId();
         $mouvement->lot_hash = $this->getHash();
         $mouvement->declarant_identifiant = $this->declarant_identifiant;
@@ -807,7 +808,16 @@ abstract class Lot extends acCouchdbDocumentTree
         return LotsClient::getInstance()->find($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $numero_archive, sprintf("%02d", $documentOrdre));
     }
 
+    public function getOrigineType() {
+        if(is_null($this->_get('origine_type'))) {
+            $this->origine_type = $this->getLotDocumentOrdre(1)->origine_type;
+        }
+
+        return $this->_get('origine_type');
+    }
+
     public function updateDocumentDependances() {
+        $this->getOrigineType();
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
             $this->id_document_affectation = $lotAffectation->getDocument()->_id;
