@@ -30,7 +30,7 @@ class CertipaqService
     public function getToken()
     {
         if ($this->needNewToken()) {
-            $token = $this->sign();
+            $token = $this->getNewToken();
             $this->setTokenCache($token);
         } else {
             $file = $this->getTokenCacheFilename();
@@ -42,7 +42,7 @@ class CertipaqService
         return $token;
     }
 
-    public function sign()
+    public function getNewToken()
     {
         $payload = [
             'username' => $this->configuration['username'],
