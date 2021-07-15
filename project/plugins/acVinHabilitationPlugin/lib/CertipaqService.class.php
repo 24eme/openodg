@@ -105,6 +105,16 @@ class CertipaqService
         );
     }
 
+    public function getProfil()
+    {
+        return $this->httpQuery(
+            $this->configuration['apiurl'].'profil',
+            [
+                'http' => $this->getQueryHttpRequest($this->getToken())
+            ]
+        );
+    }
+
     protected function getQueryHttpRequest($token, $method = 'GET', $payload = null)
     {
         return array(
