@@ -72,7 +72,7 @@ class MandatSepa extends BaseMandatSepa {
     $result = '';
     $length = strlen($this->debiteur->iban);
     for($i=0; $i<$length; $i++) {
-      if ($i%4 === 0) {
+      if ($result && ($i % 4 === 0)) {
         $result .= ' ';
       }
       $result .= $iban[$i];

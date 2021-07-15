@@ -241,4 +241,13 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
 
         return $value;
     }
+    public function getNbApporteurs() {
+        $apporteurs = array();
+        foreach($this->donnees as $donnee) {
+            if ($donnee->tiers) {
+                $apporteurs[$donnee->tiers] = 1;
+            }
+        }
+        return count($apporteurs);
+    }
 }

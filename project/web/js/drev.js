@@ -231,7 +231,7 @@
                     $(this).removeClass('transparence-sm');
                 }
             });
-
+            var title = "";
             $('#form_'+type+'_lots .modal_lot_cepages').each(function() {
 
                 var libelle = "";
@@ -267,14 +267,43 @@
                         }
                     });
                 });
+                title = libelle;
+                var bloc_condition = $('.bloc_condition .radio-inline input[checked="checked"]')
+                var vol_total = $("#chgt_denom_changement_volume")
+
                 if(!libelle) {
                     libelle = "Sans mention de cépage";
                     $('#lien_'+$(this).attr('id')).removeAttr("checked");
+
+                    if(bloc_condition.attr('value') === "DECLASSEMENT"){
+                      vol_total.removeAttr('readOnly')
+                    }
+
                 }else{
                   $('#lien_'+$(this).attr('id')).prop("checked","checked");
+
+                  if(bloc_condition.attr('value') !== "DECLASSEMENT"){
+                    vol_total.attr('readOnly', true)
+                  }
                 }
                 $('span.checkboxtext_'+$(this).attr('id')).html(libelle + " <a>(Changer)</a>");
+
             });
+
+            if($('.bloc_condition .radio-inline input')){
+              var vol_total = $("#chgt_denom_changement_volume")
+              $('.bloc_condition .radio-inline input').on("change", function(){
+                  var element_check = $(this)
+
+                  if(element_check.attr('value') !== "DECLASSEMENT" && element_check.is(":checked") && title){
+                    vol_total.attr('readOnly', true)
+                  }
+
+                  if(element_check.attr('value') === "DECLASSEMENT" && element_check.is(":checked")){
+                    vol_total.removeAttr('readOnly')
+                  }
+                });
+            }
 
             document.querySelectorAll('#form_'+type+'_lots .modal_lot_cepages').forEach(function(modal) {
               var total = 0.00
@@ -304,6 +333,13 @@
               if(parseFloat(vol_total.value) > 0){
                 $('#'+modal.id).find('.input-total').val(total.toFixed(2));
                 vol_total.readOnly = true;
+
+                var element_check = $('.bloc_condition .radio-inline input[checked="checked"]')
+
+                if(element_check.attr('value') === "DECLASSEMENT" && element_check.is(":checked")){
+                  $(vol_total).removeAttr('readOnly')
+                }
+
                 let target_link = vol_total.id.replace('volume', 'cepages')
                 $('#'+input_volume_id).attr('data-target', '#'+target_link);
                 $('#'+input_volume_id).attr('data-toggle', "modal");

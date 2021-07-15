@@ -181,19 +181,11 @@ $list_idu = [];
     <?php endforeach; ?>
         </div>
     </div>
-<?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
-        </div>
-    </div>
-<?php endif; ?>
-
 <?php
 
     $synthese = $parcellaire->getSyntheseCepages();
 
-    if (count($synthese)): 
+    if (count($synthese)):
 ?>
 <h3>Synthèse par cépages</h3>
 
@@ -220,7 +212,7 @@ $list_idu = [];
 
 <?php
     $synthese = $parcellaire->getSyntheseProduitsCepages();
-    if (count($synthese)): 
+    if (count($synthese)):
 ?>
 <h3>Synthèse par produits habilités</h3>
 
@@ -268,6 +260,14 @@ $list_idu = [];
 <div class="text-center">
 <a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
 </div>
+<?php endif; ?>
+
+<?php else: ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+        </div>
+    </div>
 <?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>

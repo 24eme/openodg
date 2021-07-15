@@ -26,17 +26,21 @@ class SV11 extends BaseSV11 {
                 continue;
             }
 
-            $rows = EtablissementFindByCviView::getInstance()->findByCvi($cvi);
-            if(!count($rows)) {
+            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, true, acCouchdbClient::HYDRATE_JSON);
+            if(!$etablissement) {
+				$cvis[$cvi] = false;
                 continue;
             }
-
-            $cvis[$cvi] = $rows[0];
+			
+            $cvis[$cvi] = $etablissement;
         }
 
         $etablissements = array();
-        foreach($cvis as $cvi => $row) {
-            $etablissements[$row->id] = $row->value[1]." - ".$row->key[0];
+        foreach($cvis as $cvi => $etablissement) {
+			if(!$etablissement) {
+				continue;
+			}
+            $etablissements[$etablissement->_id] = $etablissement->raison_sociale." - ".$etablissement->cvi;
         }
 
         return $etablissements;

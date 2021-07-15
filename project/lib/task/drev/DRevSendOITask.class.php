@@ -9,6 +9,7 @@ class DRevSendOITask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('drev', null, sfCommandOption::PARAMETER_OPTIONAL, 'Une drev', '')
         ));
 
         $this->namespace = 'drev';
@@ -26,7 +27,11 @@ EOF;
         $contextInstance = sfContext::createInstance($this->configuration);
 
 
-        $items = DrevAttenteOiView::getInstance()->getAll();
+        if (isset($options['drev'])) {
+            $items = $options['drev'];
+        } else {
+            $items = DrevAttenteOiView::getInstance()->getAll();
+        }
         foreach ($items as $item) {
         	$drev = DRevClient::getInstance()->find($item->id);
             try {

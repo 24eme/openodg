@@ -5,7 +5,7 @@
 </ol>
 
 <div style="position: relative;">
-    <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" style="position: absolute; right: 0" />
+    <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" class="pull-right" />
     <h2><?php echo $organisme->getNom(); ?></h2>
     <div class="row">
       <div class="col-xs-1">Adresse : </div>

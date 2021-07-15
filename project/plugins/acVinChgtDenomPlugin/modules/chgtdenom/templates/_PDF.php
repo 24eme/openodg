@@ -74,19 +74,21 @@
 
 <br/>
 
-<?php $lot = $chgtdenom->lots[0]; ?>
+<?php
+$lots = $chgtdenom->getLotsWithPseudoDeclassement();
+$lot = $lots[0]; ?>
 <table border="1">
     <tr>
         <th style="font-size: 14px">Lot n°: <?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></th>
         <?php if ($total == false): ?>
-          <?php $lot2 = $chgtdenom->lots[1]; ?>
+          <?php $lot2 = $lots[1]; ?>
           <th style="font-size: 14px">Lot n°: <?php echo $lot2->numero_dossier.' / '.$lot2->numero_archive ?></th>
         <?php endif ?>
     </tr>
     <tr>
         <td>
 N° Lot OP : <?php echo $lot->numero_logement_operateur; ?><br/>
-            Produit : <?php echo showProduitCepagesLot($chgtdenom->lots[0]); ?><br/>
+            Produit : <?php echo showProduitCepagesLot($lot); ?><br/>
             Volume : <?php echo sprintf("%.2f", $lot->volume) ?> hl
         </td>
         <?php if ($total == false): ?>

@@ -93,11 +93,11 @@ function getUrlEtapeFromMvtLot($mvtLot)
 }
 
 function pictoDegustable($lot) {
-    if(isset($lot->id_document_affectation) && $lot->id_document_affectation) {
+        if($lot->id_document_affectation) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok text-success"></span>';
     }
 
-    if(isset($lot->affectable) && $lot->affectable) {
+    if($lot->affectable) {
         return '<span title="À déguster" class="glyphicon glyphicon-time"></span>';
     }
 

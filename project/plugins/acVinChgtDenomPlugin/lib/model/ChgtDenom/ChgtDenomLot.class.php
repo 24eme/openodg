@@ -29,17 +29,8 @@ class ChgtDenomLot extends BaseChgtDenomLot
         if ($chgt->isValide()) {
             return false;
         }
-
-        if ($chgt->changement_type === ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {
-            if ($chgt->isTotal()) {
-                return false;
-            }
-
-            if ($this->numero_archive === $chgt->lots->get(1)->numero_archive) {
-                return false;
-            }
-
-            return true;
+        if (!$this->volume) {
+            return false;
         }
 
         return true;
@@ -53,11 +44,11 @@ class ChgtDenomLot extends BaseChgtDenomLot
             return false;
         }
 
-        if ($this->numero_archive === $chgt->lots->get(1)->numero_archive) {
-            return false;
+        if ($this->unique_id === $chgt->changement_origine_lot_unique_id) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
 }

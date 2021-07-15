@@ -29,11 +29,13 @@ class TeledeclarationEnvoiEmailOuvertureTask extends sfBaseTask
     if(!isset($arguments['identifiant'])){
       throw new sfException("Cette tache doit être appelé avec un identifiant de société");
     }
+
     if(!preg_match("/^[A-Z]*[0-9]{5,8}$/",$arguments['identifiant'])){
       throw new sfException("L'identifiant de la société ". $arguments['identifiant']." est mal formé");
     }
 
-    $compte = CompteClient::getInstance()->findByIdentifiant($arguments['identifiant']."01");
+    $compte = CompteClient::getInstance()->findByIdentifiant($arguments['identifiant']);
+    $urlportail = $arguments['urlportail'];
     if(!$compte){
       throw new sfException("Le compte associé n'existe pas");
     }
@@ -44,26 +46,24 @@ class TeledeclarationEnvoiEmailOuvertureTask extends sfBaseTask
     }
 
     $resultSend = $this->sendEmail($compte);
-    var_dump($resultSend);
   }
 
   protected function sendEmail($compte) {
+
       $destMail = $compte->getSociete()->getEmails();
       if(!count($destMail)){
           echo "opérateur $compte->_id sans mail \n";
           return null;
       }
       echo "envoi du mail \n";
+
       $mailer = $this->getMailer();
-
       $body = $this->getBodyMail($compte);
-      $subject = "Ouverture de votre portail interprofessionnel www.ivbdpro.fr et dématérialisation des DRMS";
+      $subject = "Ouverture de votre plateforme déclarative des ".Organisme::getInstance()->getNom()."";
       $firstMail = $destMail[0];
-      $message = $this->getMailer()->compose(
-                  array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $firstMail ,$subject, $body);
+      $message = $this->getMailer()->compose(array(Organisme::getInstance()->getEmail() => Organisme::getInstance()->getNom()), $firstMail ,$subject, $body);
 
-                  var_dump($subject,$body);
-      // $resultSend = $mailer->send($message);
+      $resultSend = $mailer->send($message);
       echo "Mail envoyé à $firstMail pour l'ouverture de son compte ($compte->identifiant) \n";
       return $resultSend;
   }
@@ -71,22 +71,32 @@ class TeledeclarationEnvoiEmailOuvertureTask extends sfBaseTask
     protected function getBodyMail($compte){
 
     $identifiant = $compte->getSociete()->identifiant;
-    if($compte->getStatutTeledeclarant() != CompteClient::STATUT_TELEDECLARANT_INACTIF){
-        throw new sfException("Le compte $compte->_id a déjà été créé !");
-    }
 
     $codeCreation = str_replace("{TEXT}","", $compte->mot_de_passe);
 
     $body = "Madame, Monsieur,
 
+    Veuillez trouver ci dessous vos accès pour le portail du ".Organisme::getInstance()->getNom()." :
 
+    ".Organisme::getInstance()->getUrl()."
 
-Votre identifiant : $identifiant
+    Ce portail permet de déclarer de vos Revendications, Changement de dénomination, Déclassement et la visualisation de vos factures.
 
-Votre code de création de compte : $codeCreation
+    Nous saurions trop vous conseiller de, d'ores et déjà, créer votre compte en préparation de la prochaine campagne.
 
+    La saisie en ligne sera pour vous un gain de temps, et l'assurance de la réception de vos demandes (DREV notamment) en temps et heure !
 
-Nous vous souhaitons une bonne navigation sur le portail www.xxx.fr !";
+    Pour l'activer, il faut créer votre compte sous l'encart Première Connexion avec les identifiant suivant :
+
+    Votre identifiant :$identifiant
+
+    Votre code de création de compte : $codeCreation
+
+    Nous vous souhaitons une bonne navigation sur le portail ".Organisme::getInstance()->getUrl()."!
+
+    Pour toute question, merci de contacter ".Organisme::getInstance()->getResponsable()." du lundi au jeudi au ".Organisme::getInstance()->getTelephone()." .
+
+    Belle journée !";
 
     return $body;
     }
