@@ -65,15 +65,6 @@ class CertipaqService
         return $result['token'];
     }
 
-    public function transfer($xml = null, $token = null)
-    {
-        if (!$token) {
-            $token = $this->getToken();
-        }
-        $result = $this->httpQuery($this->configuration['urlapp'], array('http' => $this->getTransferHttpRequest($token, $xml)));
-        return $result;
-    }
-
     protected function needNewToken()
     {
         $file = $this->getTokenCacheFilename();
