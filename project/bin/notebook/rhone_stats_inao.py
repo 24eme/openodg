@@ -79,30 +79,66 @@ dr_2020.columns
 
 stats_dr_vci = dr_2020[dr_2020['Code'] == '04'][['Produit', 'Valeur']].groupby('Produit').sum().rename(columns={'Valeur': 'Superficie en production - L4'})
 stats_dr_vci['Volume total produit - L5'] = dr_2020[dr_2020['Code'] == '05'][['Produit', 'Valeur']].groupby('Produit').sum()
-stats_dr_vci['Rdt moyen - L5/L4'] = stats_drev_vci['Volume total produit - L5'] / stats_drev_vci['Superficie en production - L4']
-stats_dr_vci['nb DR'] = dr_2020[dr_2020['Code'] == '04'][['Produit', 'CVI']].groupby('Produit').count()
+stats_dr_vci['Rdt moyen - L5/L4'] = stats_dr_vci['Volume total produit - L5'] / stats_dr_vci['Superficie en production - L4']
+stats_dr_vci['nb DR'] = dr_2020[dr_2020['Code'] == '04'][['Produit', 'CVI']].drop_duplicates().groupby('Produit').count()
 #stats_drev_vci
-
-
-# In[ ]:
-
 
 cvi_with_vci = dr_2020[(dr_2020['Code'] == '19') & (dr_2020['Valeur'] > 0)]['CVI']
 dr_2020_with_vci = dr_2020[dr_2020['CVI'].isin(cvi_with_vci)]
-stats_dr_vci['vci - nb DR'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '19'][['Produit', 'CVI']].groupby('Produit').count()
-stats_dr_vci = stats_drev_vci[stats_dr_vci['vci - nb DR'] > 0 ]
 
-stats_dr_vci['vci - % DR'] = stats_drev_vci['vci - nb DR'] * 100 / stats_drev_vci['nb DR']
-stats_dr_vci['vci - superficie'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '04'][['Produit', 'Valeur']].groupby('Produit').sum()
-stats_dr_vci['vci - % superficie'] = stats_dr_vci['vci - superficie'] * 100 / stats_drev_vci['Superficie en production - L4']
-stats_dr_vci['vci - hl créé'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '19'][['Produit', 'Valeur']].groupby('Produit').sum()
-stats_dr_vci['vci - hl moyen par DR'] = stats_dr_vci['vci - hl créé'] / stats_drev_vci['vci - nb DR']
-stats_dr_vci['vci - rdmt'] = stats_dr_vci['vci - hl créé'] / stats_drev_vci['vci - superficie']
-#stats_dr_vci
+stats_dr_vci['vci - nb DR'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '19'][['Produit', 'CVI']].drop_duplicates().groupby('Produit').count()
+stats_dr_vci = stats_dr_vci[stats_dr_vci['vci - nb DR'] > 0 ]
+
+
+stats_dr_vci['vci - % DR'] = stats_dr_vci['vci - nb DR'] * 100 / stats_dr_vci['nb DR']
 
 
 # In[ ]:
 
 
-stats_dr_vci.reset_index().to_csv("../../web/exports/inao_vci_dr_2020.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+stats_dr_vci['vci - superficie'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '04'][['Produit','CVI','Valeur']].sort_values('Valeur', ascending=False).drop_duplicates(subset=['Produit', 'CVI'], keep='first').groupby('Produit').sum()
+stats_dr_vci['vci - % superficie'] = stats_dr_vci['vci - superficie'] * 100 / stats_dr_vci['Superficie en production - L4']
+
+
+# In[ ]:
+
+
+stats_dr_vci['vci - hl créé'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '19'][['Produit', 'Valeur']].groupby('Produit').sum()
+stats_dr_vci['vci - hl moyen par DR'] = stats_dr_vci['vci - hl créé'] / stats_dr_vci['vci - nb DR']
+stats_dr_vci['vci - rdmt'] = stats_dr_vci['vci - hl créé'] / stats_dr_vci['vci - superficie']
+
+#merge avec les produits pour avoir les rendement et le libelle 
+produits = pd.read_csv("../../web/exports/produits.csv", encoding="iso8859_15", delimiter=";", decimal=",", 
+                   dtype={'appellation': 'str'}, low_memory=False, index_col = False)
+
+produits['nom'] = produits['appellation'] + produits['couleur'].str.lower() + produits['lieu']
+
+stats_dr_vci = pd.merge(stats_dr_vci,produits, how='left',left_on='Produit',right_on='nom')
+
+stats_dr_vci['Produit'] = stats_dr_vci['nom']
+
+stats_dr_vci['VCI déclaré / VCI autorisé'] = stats_dr_vci['vci - rdmt']* 100/ stats_dr_vci['Rend VCI total']
+
+stats_dr_vci = stats_dr_vci[['Produit','libelle','Superficie en production - L4', 'Volume total produit - L5',
+       'Rdt moyen - L5/L4', 'rend','Rend VCI total','nb DR', 'vci - nb DR', 'vci - % DR',
+       'vci - superficie', 'vci - % superficie', 'vci - hl créé',
+       'vci - hl moyen par DR', 'vci - rdmt','VCI déclaré / VCI autorisé']]
+
+
+# In[ ]:
+
+
+stats_dr_vci.reset_index(drop=True).to_csv("../../web/exports/inao_vci_dr_2020.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
