@@ -112,7 +112,7 @@ class CertipaqService
         );
     }
 
-    protected function getTransferHttpRequest($token, $xml = null)
+    protected function getQueryHttpRequest($token, $method = 'GET', $payload = null)
     {
         return array(
             'headers'  => array(
@@ -120,10 +120,8 @@ class CertipaqService
                 "Content-Type: application/json",
                 "Authorization: Bearer $token"
             ),
-            'method'  => 'POST',
-            'protocol_version' => 1.1,
-            'ignore_errors' => true,
-            'content' => $xml
+            'method'  => $method,
+            'content' => ($payload) ? json_encode($payload) : null
         );
     }
 
