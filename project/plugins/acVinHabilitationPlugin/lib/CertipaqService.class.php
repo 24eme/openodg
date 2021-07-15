@@ -2,7 +2,7 @@
 
 class CertipaqService
 {
-    private static $_instance = null;
+    private static $_instances = [];
     protected $configuration;
     const TOKEN_CACHE_FILENAME = 'certipaq_access_token';
     const TOKEN_TIME_VALIDITY = 2700;
@@ -19,12 +19,14 @@ class CertipaqService
         }
     }
 
-    public static function getInstance()
+    final public static function getInstance()
     {
-        if(is_null(self::$_instance)) {
-            self::$_instance = new CertipaqService();
+        $class = get_called_class();
+
+        if(! isset(self::$_instances[$class])) {
+            self::$_instances[$class] = new $class();
         }
-        return self::$_instance;
+        return self::$_instances[$class];
     }
 
     public function getToken()
