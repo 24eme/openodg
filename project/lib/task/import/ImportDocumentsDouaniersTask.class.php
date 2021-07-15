@@ -14,8 +14,9 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
 
-        	new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, "Type de document", null),
+        	  new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, "Type de document", null),
             new sfCommandOption('forceimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Force import document (exept if manualy edited)", false),
+            new sfCommandOption('scrapefiles', null, sfCommandOption::PARAMETER_OPTIONAL, "Scrape import document", false),
         ));
 
         $this->namespace = 'import';
@@ -81,7 +82,7 @@ EOF;
         		}
 
         		try {
-        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, false);
+        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, $options['scrapefiles']);
         		} catch (Exception $e) {
         			echo sprintf("ERROR;%s\n", $e->getMessage());
         			continue;
