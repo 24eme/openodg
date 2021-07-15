@@ -30,7 +30,8 @@ EOF;
     {
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-
+        $context = sfContext::createInstance($this->configuration);
+        
         $annee = $arguments['annee'];
         $type = ($options['type'])? strtoupper($options['type']) : null;
 
