@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $t = new lime_test(18);
 
-$cvi_test = "0708900950";
+$cvi_test = "0000000000";
 
 $certipaq = CertipaqService::getInstance();
 $deroulant = CertipaqDeroulant::getInstance();
