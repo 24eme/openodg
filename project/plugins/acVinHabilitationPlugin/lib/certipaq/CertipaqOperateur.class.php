@@ -7,16 +7,16 @@ class CertipaqOperateur extends CertipaqService
 
     private function query($endpoint, $method = 'GET', $payload = null)
     {
-        $result = $this->httpQuery(
+        $response = $this->httpQuery(
             $this->configuration['apiurl'].$endpoint,
             [
                 'http' => $this->getQueryHttpRequest($this->getToken(), $method, $payload)
             ]
         );
 
-        $result = json_decode($result);
+        $response = json_decode($response);
 
-        return $result->results;
+        return ($response->results) ?: $response;
     }
 
     /**
