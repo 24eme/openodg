@@ -64,6 +64,13 @@ class MandatSepa extends BaseMandatSepa {
     return $d->format('d/m/Y');
   }
 
+  public function getIban(){
+    if (!$this->debiteur->iban) {
+      return '';
+    }
+    return $this->debiteur->iban;
+  }
+  
   public function getIbanFormate() {
     if (!$this->debiteur->iban) {
       return '';
