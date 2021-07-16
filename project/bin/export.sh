@@ -174,6 +174,6 @@ if test "$METABASE_SQLITE"; then
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
 fi
 
-php symfony export:etablissements-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.csv.part
+php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part

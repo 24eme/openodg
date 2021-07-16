@@ -96,7 +96,8 @@ stats_dr_vci['vci - % DR'] = stats_dr_vci['vci - nb DR'] * 100 / stats_dr_vci['n
 # In[ ]:
 
 
-stats_dr_vci['vci - superficie'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '04'][['Produit','CVI','Valeur']].sort_values('Valeur', ascending=False).drop_duplicates(subset=['Produit', 'CVI'], keep='first').groupby('Produit').sum()
+#stats_dr_vci['vci - superficie'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '04'][['Produit','CVI','Valeur']].sort_values('Valeur', ascending=False).drop_duplicates(subset=['Produit', 'CVI'], keep='first').groupby('Produit').sum()
+stats_dr_vci['vci - superficie'] = dr_2020_with_vci[dr_2020_with_vci['Code'] == '04'][['Produit','Valeur']].groupby('Produit').sum()
 stats_dr_vci['vci - % superficie'] = stats_dr_vci['vci - superficie'] * 100 / stats_dr_vci['Superficie en production - L4']
 
 
