@@ -11,6 +11,8 @@ fi
 
 mkdir $EXPORTDIR 2> /dev/null
 
+APPLICATION=$(echo -n $SYMFONYTASKOPTIONS | sed -r 's/.*--application=([^ ]+).*/\1/')
+
 php symfony export:etablissements-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/etablissements.csv.part
 cat $EXPORTDIR/etablissements.csv.part | sort | grep -E "^(Login)" > $EXPORTDIR/etablissements.csv.sorted.part
 cat $EXPORTDIR/etablissements.csv.part | sort | grep -Ev "^(Login)" >> $EXPORTDIR/etablissements.csv.sorted.part
@@ -106,13 +108,17 @@ curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHBASE/_design/mouvement/_view/lot" 
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
 rm $EXPORTDIR/lots.csv.part
 
+php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
+rm $EXPORTDIR/produits.csv.part
+
+cd bin/notebook/
+ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+cd -
+
 find $EXPORTDIR -type f -empty -delete
 
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
 fi
-
-php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
-rm $EXPORTDIR/produits.csv.part
