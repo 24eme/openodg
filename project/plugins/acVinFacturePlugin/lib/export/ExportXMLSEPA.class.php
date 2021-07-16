@@ -31,7 +31,7 @@ class ExportXMLSEPA {
 
   protected function generateHeader() {
 
-    $document = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><Document/>");
+    $document = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8'?><Document/>");
 
 
     $document->addAttribute("xmlns","urn:iso:std:iso:20022:tech:xsd:pain.008.001.02");
@@ -164,7 +164,7 @@ class ExportXMLSEPA {
         $drctdbttx = $drctdbttxinf->addChild("DrctDbtTx");
         $mndtRltdInf = $drctdbttx->addChild("MndtRltdInf");
         $mndtRltdInf->addChild("MndtId", $mandatSepa->getNumeroRum());  //
-        $mndtRltdInf->addChild("DtOfSgntr",$mandatSepa->getDateFr()); //date de signature du sepa
+        $mndtRltdInf->addChild("DtOfSgntr",$mandatSepa->date); //date de signature du sepa
         $dbtrAgt = $drctdbttxinf->addChild("DbtrAgt");
         $finInstnId = $dbtrAgt->addChild("FinInstnId");
         $finInstnId->addChild('BIC',$mandatSepa->getBic()); //son bic
