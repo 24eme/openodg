@@ -2,9 +2,9 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(10);
+$t = new lime_test(18);
 
-$cvi_test = "0708900950";
+$cvi_test = "0000000000";
 
 $certipaq = CertipaqService::getInstance();
 $deroulant = CertipaqDeroulant::getInstance();
@@ -12,6 +12,7 @@ $drev = CertipaqDRev::getInstance();
 $operateur = CertipaqOperateur::getInstance();
 
 $statuts_habilitations = $deroulant->getListeStatutHabilitation();
+$cahiers_des_charges = $deroulant->getListeCahiersDesCharges();
 $token = $certipaq->getToken();
 
 $t->ok($token, "Il y a un token");
@@ -19,10 +20,16 @@ $t->ok($certipaq->getProfil(), "On récupère l'info du profil");
 $t->cmp_ok(count($deroulant->getListeActivitesOperateurs()), '>=', 1, "On récupère la liste d'activité");
 $t->cmp_ok(count($deroulant->getListeTypeControle()), '>=', 1, "On récupère la liste des types controle");
 $t->cmp_ok(count($deroulant->getListeStatutHabilitation()), '>=', 1, "On récupère la liste des statuts d'habilitation");
+$t->cmp_ok(count($cahiers_des_charges), '>=', 1, "On récupère la liste des statuts d'habilitation");
 
 $habilitations = [];
 foreach($statuts_habilitations as $h) {
     $habilitations[$h->id] = $h;
+}
+
+$cdcs = [];
+foreach($cahiers_des_charges as $c) {
+    $cdcs[$c->id] = $c;
 }
 
 $t->comment("DRev");
@@ -61,3 +68,4 @@ $t->cmp_ok(count($infos_operateur->sites[0]->habilitations), ">", 0, "Il a des h
 
 $habilitation = $infos_operateur->sites[0]->habilitations[0];
 $t->is($habilitations[$habilitation->dr_statut_habilitation_id]->cle, "HABILITE", "Le statut de l'habilitation est 'HABILITE'");
+$t->is($cdcs[$habilitation->dr_cdc_id]->libelle, "Crozes Hermitage AOC", "Il s'agit de Crozes Hermitage AOC");
