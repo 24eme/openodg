@@ -4,6 +4,7 @@ class CertipaqDeroulant extends CertipaqService
 {
     const ENDPOINT_ACTIVITE_OPERATEUR = 'dr/activites_operateurs';
     const ENDPOINT_TYPE_CONTROLE = 'dr/type_controle';
+    const ENDPOINT_HABILITATION = 'dr/statut_habilitation';
 
     private function query($endpoint)
     {
@@ -27,5 +28,10 @@ class CertipaqDeroulant extends CertipaqService
     public function getListeTypeControle()
     {
         return $this->query(self::ENDPOINT_TYPE_CONTROLE);
+    }
+
+    public function getListeStatutHabilitation()
+    {
+        return $this->query(self::ENDPOINT_HABILITATION);
     }
 }
