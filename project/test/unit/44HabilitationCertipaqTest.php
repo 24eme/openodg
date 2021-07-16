@@ -41,6 +41,6 @@ try {
     $t->pass($e->getMessage());
 }
 
-$operateur = $operateur->recherche(['cvi' => $cvi_test]);
-$t->is(count($operateur), 1, "On récupère les infos du viti");
-$t->is($operateur[0]->cvi, $cvi_test, "C'est le cvi qu'on a demandé");
+$resultats = $operateur->recherche(['cvi' => $cvi_test]);
+$t->is(count($resultats), 1, "On récupère les infos du viti");
+$t->is($resultats[0]->cvi, $cvi_test, "C'est le cvi qu'on a demandé");
