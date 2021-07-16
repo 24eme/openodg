@@ -20,6 +20,11 @@ $t->cmp_ok(count($deroulant->getListeActivitesOperateurs()), '>=', 1, "On récup
 $t->cmp_ok(count($deroulant->getListeTypeControle()), '>=', 1, "On récupère la liste des types controle");
 $t->cmp_ok(count($deroulant->getListeStatutHabilitation()), '>=', 1, "On récupère la liste des statuts d'habilitation");
 
+$habilitations = [];
+foreach($statuts_habilitations as $h) {
+    $habilitations[$h->id] = $h;
+}
+
 $t->comment("DRev");
 $t->ok($drev->list(['date' => ['2019-01-01', '2022-01-01']]));
 try {
@@ -53,3 +58,6 @@ $t->ok($infos_operateur->id, "On récupère les infos opérateurs");
 $t->is($infos_operateur->cvi, $cvi_test, "C'est le bon operateur");
 $t->cmp_ok(count($infos_operateur->sites), ">", 0, "Il a des sites");
 $t->cmp_ok(count($infos_operateur->sites[0]->habilitations), ">", 0, "Il a des habilitations");
+
+$habilitation = $infos_operateur->sites[0]->habilitations[0];
+$t->is($habilitations[$habilitation->dr_statut_habilitation_id]->cle, "HABILITE", "Le statut de l'habilitation est 'HABILITE'");
