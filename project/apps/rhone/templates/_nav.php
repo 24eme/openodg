@@ -78,6 +78,7 @@
                     <li><a href="<?php echo url_for('export'); ?>">Génération</a></li>
                     <?php if(sfConfig::get('app_export_webpath', null)): ?>
                     <li><a href="<?php echo sfConfig::get('app_export_webpath', null) ?>">Export</a></li>
+                    <li><a href="/metabase/">Metabase</a></li>
                     <?php endif; ?>
                   </ul>
                 </li>
