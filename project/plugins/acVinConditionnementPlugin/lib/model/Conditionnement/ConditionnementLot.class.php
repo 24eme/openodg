@@ -24,6 +24,14 @@ class ConditionnementLot extends BaseConditionnementLot
         return $c;
     }
 
+    public function getOrigineType() {
+        if(is_null($this->_get('origine_type'))) {
+            $this->origine_type = $this->getDocumentType();
+        }
+
+        return $this->_get('origine_type');
+    }
+
     public function getDocumentType() {
 
         return ConditionnementClient::TYPE_MODEL;

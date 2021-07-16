@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(122);
+$t = new lime_test(128);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -188,6 +188,17 @@ $form->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 3, 'Il y a 3 lots dans la dégustation');
+
+$t->is($degustation->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
+$degustation->lots[0]->origine_type = null;
+$t->is($degustation->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->origine_type, $degustation->lots[0]->origine_type, "L'origine type du mouvement");
+
+$t->is($degustation->lots[2]->origine_type, TransactionClient::TYPE_MODEL, "L'origine type par défaut est ".TransactionClient::TYPE_MODEL);
+$degustation->lots[2]->origine_type = null;
+$t->is($degustation->lots[2]->origine_type, TransactionClient::TYPE_MODEL, "L'origine type calculé est ".TransactionClient::TYPE_MODEL);
+$t->is($degustation->lots[2]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->origine_type, $degustation->lots[2]->origine_type, "L'origine type du mouvement");
+
 
 $t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");
 $t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00001-00002", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00001-00002");

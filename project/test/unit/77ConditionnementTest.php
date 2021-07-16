@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(33);
+$t = new lime_test(36);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -68,6 +68,10 @@ foreach ($produits as $key => $produit) {
 }
 $t->comment("création du lot 1");
 $lot1 = $conditionnement->addLot();
+
+$t->is($lot1->origine_type, ConditionnementClient::TYPE_MODEL, "L'origine type par défaut est ".ConditionnementClient::TYPE_MODEL);
+$lot1->origine_type = null;
+$t->is($lot1->origine_type, ConditionnementClient::TYPE_MODEL, "L'origine type calculé est ".ConditionnementClient::TYPE_MODEL);
 $t->is($lot1->millesime, $year, "Le millésime est intialisé à $year d'après la campagne");
 $t->is($lot1->specificite, Lot::SPECIFICITE_UNDEFINED, "La spécificité est nul à la création du lot");
 $t->ok($lot1->isEmpty(), "Le lot est vide sans numéro et sans produit");
@@ -129,6 +133,7 @@ $t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
 $t->ok($lot->getMouvement(Lot::STATUT_CONDITIONNE), 'Le lot est conditionné');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
+$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->origine_type, $lot->origine_type, "Mouvement origine type");
 
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
 $lottransaction = $transaction->addLot();
