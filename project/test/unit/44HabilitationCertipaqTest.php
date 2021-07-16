@@ -41,6 +41,13 @@ try {
     $t->pass($e->getMessage());
 }
 
-$operateur = $operateur->recherche(['cvi' => $cvi_test]);
-$t->is(count($operateur), 1, "On récupère les infos du viti");
-$t->is($operateur[0]->cvi, $cvi_test, "C'est le cvi qu'on a demandé");
+$resultats = $operateur->recherche(['cvi' => $cvi_test]);
+$t->is(count($resultats), 1, "On récupère les infos du viti");
+$t->is($resultats[0]->cvi, $cvi_test, "C'est le cvi qu'on a demandé");
+
+$t->comment("Identifiant opérateur: ".$resultats[0]->id);
+$infos_operateur = $operateur->recuperation($resultats[0]->id);
+$t->ok($infos_operateur->id, "On récupère les infos opérateurs");
+$t->is($infos_operateur->cvi, $cvi_test, "C'est le bon operateur");
+$t->cmp_ok(count($infos_operateur->sites), ">", 0, "Il a des sites");
+$t->cmp_ok(count($infos_operateur->sites[0]->habilitations), ">", 0, "Il a des habilitations");

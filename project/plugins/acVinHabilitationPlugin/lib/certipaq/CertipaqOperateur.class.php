@@ -39,4 +39,10 @@ class CertipaqOperateur extends CertipaqService
 
         return $this->query(self::ENDPOINT_RECHERCHE, 'GET', $params);
     }
+
+    public function recuperation($id)
+    {
+        $endpoint = str_replace('{id_operateur}', $id, self::ENDPOINT_RECUPERATION);
+        return $this->query($endpoint);
+    }
 }
