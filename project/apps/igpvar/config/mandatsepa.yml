@@ -1,13 +1,3 @@
 all:
   mandatsepa:
     configuration:
-      frequence_prelevement: "RECURRENT"
-      mention_autorisation: "En signant ce formulaire de mandat, vous autorisez (A) le Syndicat des Vins IGP à envoyer des instructions à votre banque pour débiter votre compte, et (B) votre banque à débiter votre compte conformément aux instructions du Syndicat des Vins IGP."
-      mention_remboursement: "Vous bénéficiez d'un droit à remboursement par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle. Toute demande de remboursement doit être présentée dans les 8 semaines suivant la date de débit de votre compte ou sans tarder et au plus tard dans les 13 mois en cas de prélèvement non autorisé."
-      mention_droits: "Vos droits concernant le présent mandat sont expliqués dans un document que vous pouvez obtenir auprès de votre banque."
-      creancier:
-        identifiant_ics: "** ID ICS **"
-        nom: "Syndicat des Vins IGP"
-        adresse: "22 Avenue Henri Pontier"
-        code_postal: "13626"
-        commune: "Aix-en-Provence"

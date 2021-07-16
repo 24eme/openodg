@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(117);
+$t = new lime_test(128);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -189,6 +189,17 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 3, 'Il y a 3 lots dans la dégustation');
 
+$t->is($degustation->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
+$degustation->lots[0]->origine_type = null;
+$t->is($degustation->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->origine_type, $degustation->lots[0]->origine_type, "L'origine type du mouvement");
+
+$t->is($degustation->lots[2]->origine_type, TransactionClient::TYPE_MODEL, "L'origine type par défaut est ".TransactionClient::TYPE_MODEL);
+$degustation->lots[2]->origine_type = null;
+$t->is($degustation->lots[2]->origine_type, TransactionClient::TYPE_MODEL, "L'origine type calculé est ".TransactionClient::TYPE_MODEL);
+$t->is($degustation->lots[2]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->origine_type, $degustation->lots[2]->origine_type, "L'origine type du mouvement");
+
+
 $t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");
 $t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00001-00002", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00001-00002");
 $t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00002-00003", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00003");
@@ -211,6 +222,11 @@ $drev = DRevClient::getInstance()->find($iddrev);
 $t->ok($drev->hasLotsUtilises(), "La drev a des lots utilisée");
 $t->is($drev->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la DREV est bien ".$degustation->_id);
 $t->is($drev->lots[1]->id_document_affectation, $degustation->_id, "L'affectation du lot 2 dans la DREV est bien ".$degustation->_id);
+$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot de la drev a un mouvement affecté");
+$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot de la drev a un mouvement affectable");
+$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le lot de la drev ");
+$t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot de la drev n'est pas cheagable");
+$t->ok(!$drev->lots[0]->isChange(), "Le lot n'est pas changé");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[0]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 1 dans la DREV");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[1]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 2 dans la DREV");
 

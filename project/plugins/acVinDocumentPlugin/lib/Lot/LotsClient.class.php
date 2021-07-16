@@ -30,6 +30,29 @@ class LotsClient
         return $params[3];
     }
 
+    public function getHistory($declarant, $uniqueId)
+    {
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarant, $uniqueId)->rows;
+        $first_mvt = current($mouvements);
+
+        if (strpos($first_mvt->value->document_id, "CHGTDENOM") === 0) {
+            $lot0_unique_id = ChgtDenomClient::getInstance()->find($first_mvt->value->document_id, acCouchdbClient::HYDRATE_JSON)->changement_origine_lot_unique_id;
+
+            $mvmt_temp = [];
+            foreach($this->getHistory($declarant, $lot0_unique_id) as $mvmt) {
+                if ($mvmt->value->document_id === $first_mvt->value->document_id) {
+                    break;
+                }
+
+                $mvmt_temp[] = $mvmt;
+            }
+
+            $mouvements = array_merge($mvmt_temp, $mouvements);
+        }
+
+        return $mouvements;
+    }
+
     public function findByUniqueId($declarantIdentifiant, $uniqueId, $documentOrdre = null) {
 
         return $this->find($declarantIdentifiant, self::getCampagneFromUniqueId($uniqueId), self::getNumeroDossierFromUniqueId($uniqueId), self::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre);
@@ -51,7 +74,7 @@ class LotsClient
 
         $doc = DeclarationClient::getInstance()->findCache($docId);
 
-        return $doc->get($mouvement->value->lot_hash);
+        return $doc->getLot($mouvement->value->lot_unique_id);
     }
 
     public function getDocumentsIds($declarantIdentifiant, $uniqueId) {
@@ -97,13 +120,15 @@ class LotsClient
 
         foreach($ids as $id) {
             $doc = DeclarationClient::getInstance()->find($id);
+            $docM = $doc;
 
             if($doc instanceof InterfaceVersionDocument) {
-                $doc = $doc->getMaster()->generateModificative();
+                $docM = $doc->getMaster()->generateModificative();
+                $docM->numero_archive = $doc->numero_archive;
             }
 
-            $lotM = $doc->getLot($lot->unique_id);
-            $lotM->id_document = $doc->_id;
+            $lotM = $docM->getLot($lot->unique_id);
+            $lotM->id_document = $docM->_id;
             $lotM->produit_hash = $lot->produit_hash;
             $lotM->cepages = $lot->cepages;
             $lotM->volume = $lot->volume;
@@ -113,14 +138,14 @@ class LotsClient
             $lotM->destination_date = $lot->destination_date;
             $lotM->specificite = $lot->specificite;
 
-            if($doc instanceof InterfaceVersionDocument) {
-                $doc->validate();
-                $doc->validateOdg();
-            }
-            $doc->numero_archive = $lot->numero_dossier;
-            $doc->generateMouvementsFactures();
+            $docM->save();
 
-            $doc->save();
+            if($docM instanceof InterfaceVersionDocument) {
+                $docM->validate();
+                $docM->validateOdg();
+            }
+
+            $docM->save();
         }
     }
 

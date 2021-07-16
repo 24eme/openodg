@@ -26,7 +26,7 @@
   </div>
 </div>
 
-<form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="form-horizontal degustation prelevements">
+<form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="ajaxForm form-horizontal degustation prelevements">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
@@ -54,7 +54,7 @@
         <td class="edit"><?= $lot->numero_logement_operateur ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
-              <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+              <a class= "ajax" title="Modifier le logement" data-href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
             </span>
           <?php endif; ?>
         </td>
@@ -64,7 +64,7 @@
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
               &nbsp;
-              <a title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
+              <a class= "ajax" title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
                 <i class="glyphicon glyphicon-share-alt"></i>
               </a>
         </td>

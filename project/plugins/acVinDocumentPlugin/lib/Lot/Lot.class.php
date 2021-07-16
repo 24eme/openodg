@@ -65,7 +65,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_NONCONFORME_LEVEE => 'Non conformité levée',
         self::STATUT_RECOURS_OC => 'En recours OC',
         self::STATUT_CONFORME_APPEL => 'Conforme en appel',
-        self::STATUT_AFFECTE_DEST => 'Affecté à une dégustation',
+        self::STATUT_AFFECTE_SRC => 'Affecté à une dégustation (source)',
+        self::STATUT_AFFECTE_DEST => 'Affecté à une dégustation (destination)',
         self::STATUT_CHANGE => 'Changé',
         self::STATUT_CHANGE_SRC => 'Changé (source)',
         self::STATUT_CHANGE_DEST => 'Changé (destination)',
@@ -311,8 +312,12 @@ abstract class Lot extends acCouchdbDocumentTree
       return DeclarationClient::getInstance()->findCache($this->id_document);
     }
 
+    public function isCurrent(){
+        return $this->id_document == $this->getDocument()->_id;
+    }
+
     public function hasBeenEdited(){
-      return $this->id_document != $this->getDocument()->_id;
+        return !$this->isCurrent();
     }
 
     public function setOrigineDocumentId($id) {
@@ -414,9 +419,8 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isRedegustationDejaConforme() {
-        foreach(MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, null, Lot::STATUT_CONFORME)->rows as $mvt){
-            print_r($mvt);
-            if ($mvt->keys[MouvementLotHistoryView::KEY_ORIGINE_DOCUMENT_ID] != $this->getDocument()->_id) {
+        foreach(LotsClient::getInstance()->getHistory($this->declarant_identifiant, $this->unique_id) as $mvt){
+            if (in_array($mvt->key[MouvementLotHistoryView::KEY_STATUT], [Lot::STATUT_CONFORME, Lot::STATUT_NONAFFECTABLE]) && $mvt->key[MouvementLotHistoryView::KEY_ORIGINE_DOCUMENT_ID] != $this->getDocument()->_id) {
                 return true;
             }
         }
@@ -754,6 +758,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->document_ordre = $this->getDocumentOrdre();
         $mouvement->document_type = $this->getDocumentType();
         $mouvement->document_id = $this->getDocument()->_id;
+        $mouvement->origine_type = $this->getOrigineType();
         $mouvement->lot_unique_id = $this->getUniqueId();
         $mouvement->lot_hash = $this->getHash();
         $mouvement->declarant_identifiant = $this->declarant_identifiant;
@@ -803,7 +808,16 @@ abstract class Lot extends acCouchdbDocumentTree
         return LotsClient::getInstance()->find($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $numero_archive, sprintf("%02d", $documentOrdre));
     }
 
+    public function getOrigineType() {
+        if(is_null($this->_get('origine_type'))) {
+            $this->origine_type = $this->getLotDocumentOrdre(1)->origine_type;
+        }
+
+        return $this->_get('origine_type');
+    }
+
     public function updateDocumentDependances() {
+        $this->getOrigineType();
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
             $this->id_document_affectation = $lotAffectation->getDocument()->_id;
@@ -878,4 +892,13 @@ abstract class Lot extends acCouchdbDocumentTree
     {
       return ($this->elevage);
     }
+
+    public function getAdresseLogement() {
+        return Anonymization::hideIfNeeded($this->_get('adresse_logement'));
+    }
+
+    public function getDeclarantNom() {
+        return Anonymization::hideIfNeeded($this->_get('declarant_nom'));
+    }
+
 }

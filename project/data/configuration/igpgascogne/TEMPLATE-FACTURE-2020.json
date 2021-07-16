@@ -55,6 +55,50 @@
         }
       }
     },
+    "00_cotisationSyndicaleApporteurs": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation",
+      "code_comptable": "75101000",
+      "details": {
+        "forfait": {
+          "modele": "CotisationVariable",
+          "prix": 5,
+          "tva": 0,
+          "unite": null,
+          "libelle": "syndicale annuelle",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbApporteursPlusOneFromDouane",
+          "callback_parameters": [
+          ]
+        }
+      }
+    },
+    "00_forfaitOdgApporteurs": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation",
+      "code_comptable": "75102000",
+      "details": {
+        "forfaitOdg": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0.2,
+          "unite": null,
+          "libelle": "Adhésion ODG",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getNbApporteursPlusOneFromDouane",
+          "callback_parameters": [
+          ]
+        }
+      }
+    },
     "55_%detail_identifiant%_00_CDG_revendicationLotCDG": {
       "modele": "CotisationsCollection",
       "callback": "",

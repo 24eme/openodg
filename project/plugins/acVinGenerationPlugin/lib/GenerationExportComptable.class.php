@@ -64,17 +64,13 @@ class GenerationExportComptable extends GenerationAbstract
 
         $date_mouvement = $this->generation->arguments->exist('date_mouvement') ? Date::getIsoDateFromFrenchDate($this->generation->arguments->get('date_mouvement')) : null;
 
-        $handle_paiements = fopen(sfConfig::get('sf_web_dir')."/".$paiementsfile.".tmp", 'a');
 
         if(!class_exists("ExportFacturePaiementsCSV")){
 
             throw new sfException("La classe ExportFacturePaiementsCSV n'existe pas");
         }
 
-        if ($with_headers) {
-            fwrite($handle_paiements, ExportFacturePaiementsCSV::getHeaderCsv());
-        }
-
+        $paiements_buffer = '';
         foreach(FactureEtablissementView::getInstance()->getPaiementNonVerseeEnCompta() as $vfacture) {
             $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
 
@@ -84,7 +80,7 @@ class GenerationExportComptable extends GenerationAbstract
 
             if(!$facture->versement_comptable_paiement) {
                 $export = new ExportFacturePaiementsCSV($facture, false, true);
-                fwrite($handle_paiements, $export->exportFacturePaiements($date_mouvement, true));
+                $paiements_buffer .= $export->exportFacturePaiements($date_mouvement, true);
                 $this->generation->documents->add(null, $facture->_id);
                 $facture->save();
             }
@@ -92,24 +88,30 @@ class GenerationExportComptable extends GenerationAbstract
         }
 
         $this->generation->save();
-        fclose($handle_paiements);
 
-        shell_exec(sprintf("cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$paiementsfile.".tmp", sfConfig::get('sf_web_dir')."/".$paiementsfile));
-
-        file_put_contents(sfConfig::get('sf_web_dir')."/".$paiementsisafile, shell_exec(sprintf("bash %s/bin/facture/csvpaiement2isacompta.sh %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$paiementsfile)));
-
-        if(count($this->generation->documents)) {
-            if (filesize(sfConfig::get('sf_web_dir')."/".$paiementsisafile)) {
-                $this->generation->add('fichiers')->add(urlencode("/".$paiementsisafile), 'Export Comptable des paiements');
+        if ($paiements_buffer) {
+            $handle_paiements = fopen(sfConfig::get('sf_web_dir')."/".$paiementsfile.".tmp", 'a');
+            if ($with_headers) {
+                fwrite($handle_paiements, ExportFacturePaiementsCSV::getHeaderCsv());
             }
-            if (filesize(sfConfig::get('sf_web_dir')."/".$paiementsfile)) {
-                $this->generation->add('fichiers')->add(urlencode("/".$paiementsfile), 'Export CSV des paiements');
+            fwrite($handle_paiements, $paiements_buffer);
+            fclose($handle_paiements);
+
+            shell_exec(sprintf("cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$paiementsfile.".tmp", sfConfig::get('sf_web_dir')."/".$paiementsfile));
+
+            file_put_contents(sfConfig::get('sf_web_dir')."/".$paiementsisafile, shell_exec(sprintf("bash %s/bin/facture/csvpaiement2isacompta.sh %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$paiementsfile)));
+
+            if(count($this->generation->documents)) {
+                if (filesize(sfConfig::get('sf_web_dir')."/".$paiementsisafile)) {
+                    $this->generation->add('fichiers')->add(urlencode("/".$paiementsisafile), 'Export Comptable des paiements');
+                }
+                if (filesize(sfConfig::get('sf_web_dir')."/".$paiementsfile)) {
+                    $this->generation->add('fichiers')->add(urlencode("/".$paiementsfile), 'Export CSV des paiements');
+                }
             }
         }
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
         $this->generation->save();
-
-
 
     }
 

@@ -2,7 +2,7 @@
 
 class ExportXMLSEPA {
 
-  private array $factures;
+  private $factures;
   private $xml;
 
   public function __construct(array $factures = array(), $auto_save_facture = false) {
@@ -29,28 +29,10 @@ class ExportXMLSEPA {
       }
   }
 
-  public function getXml() {
-
-    $sommeMontant = 0;
-    $nombreDePrelevement = 0;
-    $this->xml = $this->generateHeader();
-
-    foreach($this->factures as $vfacture){
-      $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
-      $this->generateOneFacture($facture);
-    }
-
-    foreach($this->xml->PmtInf as $paiement){
-      $sommeMontant += $paiement->DrctDbtTxInf->InstdAmt;
-    }
-
-    $this->xml->CstmrDrctDbtInitn->GrpHdr->NbOfTxs = count($this->xml->PmtInf);
-    $this->xml->CstmrDrctDbtInitn->GrpHdr->CtrlSum = $sommeMontant;
-    return $this->xml->asXML();
-  }
-
   protected function generateHeader() {
-    $document = new SimpleXMLElement('<Document/>');
+
+    $document = new SimpleXMLElement("<?xml version='1.0' encoding='utf-8'?><Document/>");
+
 
     $document->addAttribute("xmlns","urn:iso:std:iso:20022:tech:xsd:pain.008.001.02");
     $document->addAttribute("xmlns:xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
@@ -79,75 +61,121 @@ class ExportXMLSEPA {
     return $document;
   }
 
-  protected function generateOneFacture($facture) {
-    $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($facture->getIdentifiant());
-    for($i=0; $i< $facture->getNbPaiementsAutomatique() ;$i++){ // un seul paiement par ligne de pmt
+  public function getXml() {
 
-        if(!$facture->paiementIsExecute($i)){  //verifie que le "execute" du paiement est à false
+    $sommeMontant = 0;
+    $nombreDePrelevement = 0;
+    $this->xml = $this->generateHeader();
 
-          $pmtInf = $this->xml->addChild('PmtInf');
-          $pmtInf->addChild('PmtInfId', $facture->_id.'-PAIEMENT-'.$i);
-          $pmtInf->addChild('PmtMtd', "DD");
-          $pmtInf->addChild('NbOfTxs', "1");
-          $pmtInf->addChild('CtrlSum', "DD");
+    $tabPmtInf = [];
 
-          $pmtTpInf = $pmtInf->addChild('PmtTpInf');
-          $svcLvl = $pmtTpInf->addChild('SvcLvl');
-          $svcLvl->addChild('Cd','SEPA');
-          $lclInstrm = $pmtTpInf->addChild('LclInstrum');
-          $lclInstrm->addChild('Cd','CORE');
-          $pmtTpInf->addChild('SeqTp','RCUR');
-
-          $pmtInf->addChild('ReqdColltnDt',$facture->date_echeance); //Date d'échéance du recouvrement,
-
-          $cdtr = $pmtInf->addChild('Cdtr');
-          $cdtr->addChild('Nm',Organisme::getInstance()->getNom()); //nom de l'odg
-
-          $cdtrAcct = $pmtInf->addChild('CdtrAcct');
-          $id = $cdtrAcct->addChild('Id');
-          $id->addChild('IBAN',Organisme::getInstance()->getIban());
-
-          $cdtrAgt = $pmtInf->addChild('CdtrAgt');
-          $finInstnID = $cdtrAgt->addChild('FinInstnId');
-          $finInstnID->addChild('BIC',Organisme::getInstance()->getBic());  //BIC odg
-
-          $pmtInf->addChild('ChrgBr','SLEV');
-
-          $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
-          $idcdtrschemeid = $cdtrschemeid->addChild('Id');
-          $prvtid = $idcdtrschemeid->addChild('PrvtId');
-          $othr = $prvtid->addChild("Othr");
-          $othr->addChild("Id",$facture->getSociete()->getMandatSepaIdentifiant());  //id sepa
-          $schmeNm = $othr->addChild("SchmeNm");
-          $schmeNm->addChild("Prtry","SEPA");
-
-          $drctdbttxinf = $pmtInf->addChild("DrctDbtTxInf");
-
-          $pmtid = $drctdbttxinf->addChild("PmtId");
-          $pmtid->addChild("EndToEndId", Organisme::getInstance()->getNom()." Facture"); //intitule pour l'ODG
-          $montant = $drctdbttxinf->addChild("InstdAmt",$facture->getMandatSepaMontant($i));  //montant  //bug ? pas le meme montant que dans la facture
-          $montant->addAttribute('Ccy', "EUR");
-
-          $drctdbttx = $drctdbttxinf->addChild("DrctDbtTx");
-          $mndtRltdInf = $drctdbttx->addChild("MndtRltdInf");
-          $mndtRltdInf->addChild("MndtId", $mandatSepa->getNumeroRum());  //identifiant rum pour l'intant j'ai pas cette info
-          $mndtRltdInf->addChild("DtOfSgntr",$mandatSepa->getDateFr()); //date de signature du sepa  //il faudra l'enregistrés au moment ou ça passe à 1
-
-          $dbtrAgt = $drctdbttxinf->addChild("DbtrAgt");
-          $finInstnId = $dbtrAgt->addChild("FinInstnId");
-          $finInstnId->addChild('BIC',$mandatSepa->getBic()); //son bic
-
-          $dbtr = $drctdbttxinf->addChild("Dbtr");
-          $dbtr->addChild("Nm",$facture->declarant->raison_sociale); // sa raison Social  //ou $facture->getSociete()->getRaisonSociale()
-
-          $dbtracct = $drctdbttxinf->addChild("DbtrAcct");
-          $idDbtracct = $dbtracct->addChild('Id');
-          $idDbtracct->addChild('IBAN',$mandatSepa->getIbanFormate()); //son iban
-
-          $rmtinf = $drctdbttxinf->addChild("RmtInf");
-          $rmtinf->addChild("Ustrd","Facture"); //libelle bancaire pour lui
-
+    foreach($this->factures as $vfacture){
+      $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+      foreach($facture->paiements as $paiement){  //parcourir toutes les paiments de chaque factures et mets les factures qui ont un paiement à cette date.
+        if( !in_array($vfacture,$tabPmtInf[$paiement->date])){
+          $tabPmtInf[$paiement->date][] = $vfacture;
         }
+      }
+    }
+
+    $this->generatePmtInf($tabPmtInf);
+
+    foreach($this->xml->PmtInf as $paiement){
+      $nbPrelevement += $paiement->NbOfTxs;
+      $sommeMontant += $paiement->CtrlSum;
+    }
+
+    $this->xml->CstmrDrctDbtInitn->GrpHdr->NbOfTxs = $nbPrelevement;
+    $this->xml->CstmrDrctDbtInitn->GrpHdr->CtrlSum = $sommeMontant;
+    return $this->xml->asXML();
+  }
+
+
+
+  protected function generatePmtInf($tabPmtInf){
+
+    foreach($tabPmtInf as $d => $factures){
+      $nbOfTxs = 0;
+      $sommetot = 0;
+
+      $pmtInf = $this->xml->addChild('PmtInf');
+      $pmtInf->addChild('PmtInfId', 'PAIEMENT-'.$d);
+      $pmtInf->addChild('PmtMtd', "DD");
+
+      $pmtInf->addChild('NbOfTxs', $nbOfTxs);
+      $pmtInf->addChild('CtrlSum', $sommetot);
+
+      $pmtTpInf = $pmtInf->addChild('PmtTpInf');
+      $svcLvl = $pmtTpInf->addChild('SvcLvl');
+      $svcLvl->addChild('Cd','SEPA');
+      $lclInstrm = $pmtTpInf->addChild('LclInstrum');
+      $lclInstrm->addChild('Cd','CORE');
+      $pmtTpInf->addChild('SeqTp','RCUR');
+
+      $pmtInf->addChild('ReqdColltnDt', $d); //Date d'échéance du recouvrement,
+
+      $cdtr = $pmtInf->addChild('Cdtr');
+      $cdtr->addChild('Nm',Organisme::getInstance()->getNom()); //nom de l'odg
+
+      $cdtrAcct = $pmtInf->addChild('CdtrAcct');
+      $id = $cdtrAcct->addChild('Id');
+      $id->addChild('IBAN',Organisme::getInstance()->getIban());
+
+      $cdtrAgt = $pmtInf->addChild('CdtrAgt');
+      $finInstnID = $cdtrAgt->addChild('FinInstnId');
+      $finInstnID->addChild('BIC',Organisme::getInstance()->getBic());  //BIC odg
+
+      $pmtInf->addChild('ChrgBr','SLEV');
+
+      $cdtrschemeid = $pmtInf->addChild('CdtrSchmeId');
+      $idcdtrschemeid = $cdtrschemeid->addChild('Id');
+      $prvtid = $idcdtrschemeid->addChild('PrvtId');
+      $othr = $prvtid->addChild("Othr");
+      $othr->addChild("Id",Organisme::getInstance()->getCreditorId());  //creditorId
+      $schmeNm = $othr->addChild("SchmeNm");
+      $schmeNm->addChild("Prtry","SEPA");
+
+      foreach($factures as $f){
+        $facture = FactureClient::getInstance()->find($f->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+        $this->generateOnePaiement($facture,$d,$pmtInf);
+      }
+
+      $nbOfTxs = count($pmtInf->DrctDbtTxInf);
+
+      foreach($pmtInf->DrctDbtTxInf as $paiement){
+        $sommetot += $paiement->InstdAmt;
+      }
+
+      $pmtInf->NbOfTxs = $nbOfTxs;
+      $pmtInf->CtrlSum = $sommetot;
+    }
+  }
+
+
+  protected function generateOnePaiement($facture,$d,$pmtInf){
+    $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($facture->getIdentifiant());
+    foreach($facture->paiements as $paiement){
+      if($paiement->date == $d && $paiement->execute == false){ //regarde si c'est la même date que dans le pmtInf si oui c'est la qu'il doit l'écrire
+        $drctdbttxinf = $pmtInf->addChild("DrctDbtTxInf");
+        $pmtid = $drctdbttxinf->addChild("PmtId");
+        $pmtid->addChild("EndToEndId", Organisme::getInstance()->getNom()." Facture"); //intitule pour l'ODG
+        $montant = $drctdbttxinf->addChild("InstdAmt",$paiement->montant);  //montant
+        $montant->addAttribute('Ccy', "EUR");
+        $drctdbttx = $drctdbttxinf->addChild("DrctDbtTx");
+        $mndtRltdInf = $drctdbttx->addChild("MndtRltdInf");
+        $mndtRltdInf->addChild("MndtId", $mandatSepa->getNumeroRum());  //
+        $mndtRltdInf->addChild("DtOfSgntr",$mandatSepa->getDateFr()); //date de signature du sepa
+        $dbtrAgt = $drctdbttxinf->addChild("DbtrAgt");
+        $finInstnId = $dbtrAgt->addChild("FinInstnId");
+        $finInstnId->addChild('BIC',$mandatSepa->getBic()); //son bic
+        $dbtr = $drctdbttxinf->addChild("Dbtr");
+        $dbtr->addChild("Nm",$facture->declarant->raison_sociale); // sa raison Social  //ou $facture->getSociete()->getRaisonSociale()
+        $dbtracct = $drctdbttxinf->addChild("DbtrAcct");
+        $idDbtracct = $dbtracct->addChild('Id');
+        $idDbtracct->addChild('IBAN',$mandatSepa->getIban()); //son iban
+        $rmtinf = $drctdbttxinf->addChild("RmtInf");
+        $rmtinf->addChild("Ustrd","Facture"); //libelle bancaire pour lui
+      }
     }
   }
 

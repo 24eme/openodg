@@ -810,6 +810,10 @@ class drevActions extends sfActions {
         $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
 
+        if (!$this->drev->validation) {
+            $this->drev->cleanDoc();
+        }
+
         $documents = $this->drev->getOrAdd('documents');
         $this->regionParam = $request->getParameter('region',null);
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {

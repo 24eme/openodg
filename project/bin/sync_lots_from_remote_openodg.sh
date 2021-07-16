@@ -21,6 +21,15 @@ echo -e "Voici le rapport d'import des lots provenant de la plateforme https://t
 echo -e "Cet import a été effectué le $DATEFR à $TIMEFR \n\n" >> $RAPPORTBODY
 echo -e "Ci dessous, veuillez trouver la liste des DREV qui ont été modifiées ou créées : \n\n" >> $RAPPORTBODY
 
+DREVS=$(grep "IMPORTE;" $TMPDIR"/import_lots_from_openodg_$DATE.log" | cut -d ';' -f 3)
+
+if ! test "$DREVS"
+then
+    echo -e "Aucun changement \n\n" >> $RAPPORTBODY
+    cat $RAPPORTBODY | mail -s "[RAPPORT IMPORT DREV depuis https://teledeclaration.vinsvaldeloire.pro/ du $DATEFR à $TIMEFR]" $EMAIL_LOGS;
+    exit;
+fi
+
 grep "IMPORTE;" $TMPDIR"/import_lots_from_openodg_$DATE.log" | cut -d ';' -f 3 >> $RAPPORTBODY
 
-cat $RAPPORTBODY | mail -s "[RAPPORT IMPORT DREV depuis https://teledeclaration.vinsvaldeloire.pro/ du $DATEFR à $TIMEFR]" $EMAILS_RAPPORT_IMPORT;
+cat $RAPPORTBODY | mail -s "[RAPPORT IMPORT DREV depuis https://teledeclaration.vinsvaldeloire.pro/ du $DATEFR à $TIMEFR]" $EMAILS_RAPPORT_IMPORT $EMAIL_LOGS;

@@ -7,7 +7,7 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     done
     rm -f web/exports_igp/*.csv
     bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
-    bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
+    #bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
     exit 0;
 fi
 
@@ -173,3 +173,7 @@ if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
 fi
+
+php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
+rm $EXPORTDIR/produits.csv.part

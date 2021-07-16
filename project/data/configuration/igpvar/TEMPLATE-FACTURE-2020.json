@@ -6,17 +6,17 @@
   "libelle": "2020 - IGP Var",
   "docs": [
     "DR",
-    "DRev",
+    "SV12",
     "Degustation",
     "Conditionnement",
     "ChgtDenom"
   ],
   "cotisations": {
-    "00_cotisationSyndicaleRecolte": {
+    "00_DR_10_cotisationSyndicaleRecolte": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "",
-      "code_comptable": "",
+      "code_comptable": "70604000",
       "details": {
         "superficie": {
           "modele": "CotisationVariable",
@@ -35,11 +35,11 @@
         }
       }
     },
-    "10_fraisGestion": {
+    "00_DR_20_fraisGestion": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Frais de gestion",
-      "code_comptable": "",
+      "code_comptable": "70611400",
       "details": {
         "fraisgestion": {
           "modele": "CotisationFixe",
@@ -55,23 +55,46 @@
         }
       }
     },
-    "10_%detail_identifiant%_20_fallbackIgp": {
-      "fallback": true,
+    "00_SV12_10_cotisationSyndicaleRecolte": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Contrôle IGP",
-      "code_comptable": "",
+      "libelle": "",
+      "code_comptable": "70604000",
       "details": {
-        "fallbackIgp": {
+        "superficie": {
+          "modele": "CotisationVariable",
+          "prix": 10,
+          "tva": 0.2,
+          "unite": "ha",
+          "libelle": "Cotisation technique et syndicale récolte 2020",
+          "complement_libelle": "",
+          "docs": [
+            "SV12"
+          ],
+          "callback": "calcul",
+          "callback_parameters": [
+            "L09"
+          ]
+        }
+      }
+    },
+    "00_SV12_10_fraisGestion": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Frais de gestion",
+      "code_comptable": "70611400",
+      "details": {
+        "fraisgestion": {
           "modele": "CotisationFixe",
-          "prix": 70,
+          "prix": 35,
           "tva": 0.2,
           "libelle": "",
           "complement_libelle": "",
           "docs": [
-            "DRev"
+            "SV12"
           ],
-          "callback": ""
+          "callback": null,
+          "callback_parameters": []
         }
       }
     },
@@ -80,7 +103,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle IGP",
-      "code_comptable": "",
+      "code_comptable": "70610400",
       "details": {
         "cotisationIgp": {
           "modele": "Cotisation",
@@ -94,28 +117,8 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
-        }
-      }
-    },
-    "10_%detail_identifiant%_20_fallbackMed": {
-      "fallback": true,
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Contrôle Meditérannée",
-      "code_comptable": "",
-      "details": {
-        "fallbackMed": {
-          "modele": "CotisationFixe",
-          "prix": 90,
-          "tva": 0.2,
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": ""
         }
       }
     },
@@ -124,7 +127,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Contrôle Méditerranée",
-      "code_comptable": "",
+      "code_comptable": "70615000",
       "details": {
         "cotisationMed": {
           "modele": "Cotisation",
@@ -147,7 +150,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation promotion",
-      "code_comptable": "",
+      "code_comptable": "70612400",
       "details": {
         "promotion": {
           "modele": "Cotisation",
@@ -161,7 +164,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -170,7 +173,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Cotisation organisme d'inspection",
-      "code_comptable": "",
+      "code_comptable": "70612400",
       "details": {
         "oi": {
           "modele": "Cotisation",
@@ -184,7 +187,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -193,9 +196,9 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Droit INAO",
-      "code_comptable": "",
+      "code_comptable": "70612400",
       "details": {
-        "inao": {
+        "inao_igp": {
           "modele": "Cotisation",
           "prix": 0.03,
           "tva": 0,
@@ -205,15 +208,33 @@
           "docs": [
             "Degustation"
           ],
-          "callback": "buildMouvementsFacturesVolumeDeguste"
+          "callback": "buildMouvementsFacturesVolumeDeguste",
+          "callback_parameters": [
+              "NOT /appellations/MED AND NOT /deja/CONFORME"
+          ]
+        },
+        "inao_med": {
+          "modele": "Cotisation",
+          "prix": 0.03,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "buildMouvementsFacturesVolumeDeguste",
+          "callback_parameters": [
+              "/appellations/MED"
+          ]
         }
       }
     },
-    "changementdenom": {
+    "30_changementdenom_10_fraismed": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
-      "code_comptable": "",
+      "code_comptable": "70615000",
       "details": {
         "frais": {
           "modele": "CotisationFixe",
@@ -228,7 +249,15 @@
           "callback_parameters": [
             "/appellations/MED AND NOT NEGOCIANT"
           ]
-        },
+        }
+      }
+    },
+    "30_changementdenom_20_forfait_negociant": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "70610400",
+      "details": {
         "forfaitNegociant": {
           "modele": "CotisationFixe",
           "prix": 200,
@@ -240,9 +269,17 @@
           ],
           "callback": "isDeclarantFamille",
           "callback_parameters": [
-            "NEGOCIANT"
+            "NEGOCIANT AND /appellations/MED,/appellations/VAR,/appellations/MAU,/appellations/MCA"
           ]
-        },
+        }
+      }
+    },
+    "30_changementdenom_30_mediterranee": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "70615000",
+      "details": {
         "chgtdenommed": {
           "modele": "CotisationVariable",
           "prix": 0.2,
@@ -257,7 +294,15 @@
           "callback_parameters": [
             "/appellations/MED AND NOT NEGOCIANT"
           ]
-        },
+        }
+      }
+    },
+    "30_changementdenom_40_igp": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Changement de dénomination",
+      "code_comptable": "70613400",
+      "details": {
         "chgtdenomigp": {
           "modele": "CotisationVariable",
           "prix": 0.7,
@@ -270,16 +315,16 @@
           ],
           "callback": "getVolumeFacturable",
           "callback_parameters": [
-            "/appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
+            "/origine/MED AND /appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
           ]
         }
       }
     },
-    "conditionnement": {
+    "40_conditionnement": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Forfait conditionneur IGP",
-      "code_comptable": "",
+      "code_comptable": "70610400",
       "details": {
         "frais": {
           "modele": "CotisationFixe",
@@ -300,7 +345,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
-      "code_comptable": "",
+      "code_comptable": "70610400",
       "details": {
         "redegustation": {
           "modele": "Cotisation",
@@ -314,7 +359,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "NOT /appellations/MED"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -324,7 +369,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "2nd dégustation",
-      "code_comptable": "",
+      "code_comptable": "70615000",
       "details": {
         "redegustation": {
           "modele": "Cotisation",

@@ -46,7 +46,7 @@
                       <td class="text-right">
                               <?php  if ($synthese['nb_lots'] > 0): ?>
                                   <?php if ($isTotal): ?>
-                                  <span class="text-muted"><?php printf("%0.2d", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100); ?>%</span> &nbsp;&nbsp;
+                                  <span class="text-muted"><?php printf("%0.0f", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100.0); ?>%</span> &nbsp;&nbsp;
                                   <?php endif;?>
                                   <?php echo $synthese['nb_lots']; ?>
                               <?php else: ?>
@@ -57,8 +57,10 @@
                           <?php echoFloat($synthese['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
                       </td>
                       <td class="text-right">
-                        <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) >= 0): ?><?php echoFloat($synthese['volume_restant_max']); ?><small>&nbsp;hl</small><?php endif; ?>
-                        <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant_max']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                        <?php if(isset($synthese['volume_sur_place']) && $synthese['volume_sur_place']): ?>
+                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) >= 0): ?><?php echoFloat($synthese['volume_restant_max']); ?><small>&nbsp;hl</small><?php endif; ?>
+                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant_max']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                        <?php endif; ?>
                       </td>
                       </tr>
                   <?php endforeach; ?>

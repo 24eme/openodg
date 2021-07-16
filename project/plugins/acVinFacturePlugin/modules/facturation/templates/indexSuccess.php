@@ -26,4 +26,6 @@
     </div>
 </div>
 <br/>
+
+<h3>Historique des générations</h3>
 <?php include_partial('generation/list', array('generations' => $generations)); ?>

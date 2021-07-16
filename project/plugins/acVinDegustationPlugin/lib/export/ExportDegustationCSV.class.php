@@ -106,7 +106,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function protectStr($str) {
-    	return str_replace('"', '', $str);
+        return str_replace('\n', ' ', str_replace(';', ',', str_replace('"', '', $str)));
     }
 
     protected function formatFloat($value) {

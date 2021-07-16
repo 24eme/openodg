@@ -16,15 +16,15 @@
       <table border="0">
         <tr><td>&nbsp;</td></tr>
         <tr>
-            <td>&nbsp;<?php echo $mandatSepa->mention_autorisation ?></td>
+            <td><?php echo $mandatSepa->mention_autorisation ?></td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
-            <td>&nbsp;<?php echo $mandatSepa->mention_remboursement ?></td>
+            <td><?php echo $mandatSepa->mention_remboursement ?></td>
         </tr>
         <tr><td>&nbsp;</td></tr>
         <tr>
-            <td>&nbsp;<?php echo $mandatSepa->mention_droits ?></td>
+            <td><?php echo $mandatSepa->mention_droits ?></td>
         </tr>
         <tr><td>&nbsp;</td></tr>
       </table>
@@ -41,16 +41,16 @@
       <table border="0">
         <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
         <tr>
-            <td>&nbsp;Identifiant (ICS) : <strong><?php echo $mandatSepa->creancier->identifiant_ics ?></strong></td>
+            <td>Identifiant (ICS) : <strong><?php echo $mandatSepa->creancier->identifiant_ics ?></strong></td>
             <td>&nbsp;</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td>&nbsp;<?php echo $mandatSepa->creancier->nom ?></td>
+            <td><?php echo $mandatSepa->creancier->nom ?></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td>&nbsp;<?php echo $mandatSepa->creancier->adresse ?></td>
+            <td><?php echo $mandatSepa->creancier->adresse ?></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
@@ -71,20 +71,20 @@
       <table border="0">
         <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
         <tr>
-            <td>&nbsp;Identifiant (RUM) : <strong><?php echo $mandatSepa->debiteur->identifiant_rum ?></strong></td>
+            <td>Identifiant (RUM) : <strong><?php echo $mandatSepa->debiteur->identifiant_rum ?></strong></td>
             <td>&nbsp;</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td>&nbsp;<?php echo $mandatSepa->debiteur->nom ?></td>
+            <td><?php echo $mandatSepa->debiteur->nom ?></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td>&nbsp;<?php echo $mandatSepa->debiteur->adresse ?></td>
+            <td><?php echo $mandatSepa->debiteur->adresse ?></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td>&nbsp;<?php echo $mandatSepa->debiteur->code_postal ?>&nbsp;<?php echo $mandatSepa->debiteur->commune ?></td>
+            <td><?php echo $mandatSepa->debiteur->code_postal ?>&nbsp;<?php echo $mandatSepa->debiteur->commune ?></td>
         </tr>
         <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
       </table>
@@ -101,16 +101,16 @@
       <table border="0">
         <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
         <tr>
-            <td>&nbsp;</td>
-            <td>&nbsp;Prélèvement <?php echo strtolower(MandatSepaClient::getFrequencePrelevementLibelle($mandatSepa->debiteur->frequence_prelevement)) ?></td>
-        </tr>
-        <tr>
-            <td>&nbsp;IBAN : <?php echo $mandatSepa->getIbanFormate() ?></td>
+            <td>Prélèvement <?php echo strtolower(MandatSepaClient::getFrequencePrelevementLibelle($mandatSepa->debiteur->frequence_prelevement)) ?></td>
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>&nbsp;&nbsp;&nbsp;BIC : <?php echo $mandatSepa->debiteur->bic ?></td>
             <td>&nbsp;</td>
+            <td>IBAN : <?php echo $mandatSepa->getIbanFormate() ?></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>BIC : <?php echo $mandatSepa->debiteur->bic ?></td>
         </tr>
         <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
       </table>
@@ -127,7 +127,7 @@
     <td>&nbsp;</td>
     <td>
       <table class="tableAlt">
-        <tr><td>Signature du débiteur :</td></tr>
+        <tr><td>&nbsp;Signature du débiteur :</td></tr>
         <tr><td>&nbsp;</td></tr>
         <tr><td>&nbsp;</td></tr>
         <tr><td>&nbsp;</td></tr>

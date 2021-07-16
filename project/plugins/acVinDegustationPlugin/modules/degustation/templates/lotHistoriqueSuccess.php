@@ -31,7 +31,7 @@
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
           <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
           <?php $class = ($lastiddate == preg_replace("/ .*$/", "", $mouvement->value->document_id.$mouvement->value->date)) ? "text-muted": null ; ?>
-              <tr>
+              <tr<?php if ($lot->unique_id !== $mouvement->value->lot_unique_id) { echo ' style="opacity:0.5"'; } ?>>
                   <td>
                       <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
                       <?php echo $mouvement->value->document_type;  ?>
@@ -75,6 +75,9 @@
                  <?php elseif ($mouvement->value->statut == Lot::STATUT_NONAFFECTABLE): ?>
                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_affectable', array('id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Retirer le "réputé conforme"</a></li>
                        <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
+                <?php endif; ?>
+                <?php if ($mouvement->value->statut == Lot::STATUT_ATTENTE_PRELEVEMENT): ?>
+                    <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous le retrait de la dégustation de ce lot pour qu\' il soit affectable à un autre moment ?')">Retirer de la dégustation</a></li>
                 <?php endif; ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_modification', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Modifier les informations du lot</a></li>
                 </ul>

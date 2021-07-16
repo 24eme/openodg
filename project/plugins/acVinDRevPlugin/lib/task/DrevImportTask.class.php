@@ -215,10 +215,10 @@ EOF;
         if($papier){
             $drev->add('papier', 1);
         }
-        $dateValidation = null;
+        $dateValidationDeclarant = null;
         if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]){
             $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]);
-            $dateValidation = $dt->modify('+1 minute')->format('c');
+            $dateValidationDeclarant = $dt->modify('+1 minute')->format('c');
         }
         $dateValidation = null;
         if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]){
@@ -227,7 +227,7 @@ EOF;
         }
 
         if($lotsAdded){
-            $drev->validate($dateValidation);
+            $drev->validate($dateValidationDeclarant);
             $drev->validateOdg($dateValidation);
             $drev->save();
             echo "IMPORTE;$drev->_id;".Organisme::getInstance()->getUrl()."/drev/visualisation/".$drev->_id."\n";

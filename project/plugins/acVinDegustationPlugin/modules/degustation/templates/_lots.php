@@ -17,7 +17,7 @@
           <?php echo $lot->numero_archive;  ?> /
           <?php echo substr($lot->id_document, 0, 4); ?>
       </td>
-      <td><?php echo $lot->declarant_nom; ?></td>
+      <td><?php echo Anonymization::hideIfNeeded($lot->declarant_nom); ?></td>
       <td class="text-right"><?php echo $lot->volume; ?>&nbsp;hl</td>
       <td>
           <?php echo showOnlyProduit($lot->getRawValue(), false) ?>
