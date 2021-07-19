@@ -41,7 +41,13 @@
   <?php endif; ?>
     <div class="row">
       <div class="col-xs-9">
-        <h4>Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong></h4>
+        <h4>Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> –
+          <?php if($lot->numero_archive):?>
+             Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong>
+          <?php else: ?>
+            <strong>Nouveau lot</strong>
+          <?php endif; ?>
+        </h4>
       </div>
       <div class="col-xs-3 text-right">
       <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->validation_odg && $sf_user->isAdmin() && $lot->isLogementEditable()): ?>
