@@ -46,11 +46,14 @@ class ChgtDenomForm extends acCouchdbObjectForm
         }
         $this->getObject()->remove('changement_cepages');
         $this->getObject()->add('changement_cepages');
-        for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
-            if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
-                continue;
-            }
-            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+
+        if($values['changement_type'] !== ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT){
+          for($i = 0; $i < DRevLotForm::NBCEPAGES; $i++) {
+              if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
+                  continue;
+              }
+              $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+          }
         }
 
         $this->getObject()->generateLots();
