@@ -51,7 +51,7 @@ EOF;
             throw new sfException('Etablissement '.$arguments['etablissement_destination_id'].' non trouvé');
         }
         if($options['remove']) {
-            $etablissement_source->removeLiaison($arguments['relations_type']."_".$etablissement_dest, (bool) $options['both_side']);
+            $etablissement_source->removeLiaison($arguments['relations_type']."_".$etablissement_dest->_id, (bool) $options['both_side']);
         } else {
             $etablissement_source->addLiaison($arguments['relations_type'], $etablissement_dest, (bool) $options['both_side']);
         }
