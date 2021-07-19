@@ -15,6 +15,8 @@ class importRelationsEtablissementsTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('remove', null, sfCommandOption::PARAMETER_OPTIONAL, 'Delete relation', false),
+            new sfCommandOption('both_side', null, sfCommandOption::PARAMETER_OPTIONAL, 'Delete or creation relation on both side', true),
         ));
         $this->namespace = 'import';
         $this->name = 'relations-etablissements';
@@ -48,7 +50,12 @@ EOF;
         if (!$etablissement_dest) {
             throw new sfException('Etablissement '.$arguments['etablissement_destination_id'].' non trouvé');
         }
-        $etablissement_source->addLiaison($arguments['relations_type'], $etablissement_dest, true);
+        if($options['remove']) {
+            $etablissement_source->removeLiaison($arguments['relations_type']."_".$etablissement_dest, (bool) $options['both_side']);
+        } else {
+            $etablissement_source->addLiaison($arguments['relations_type'], $etablissement_dest, (bool) $options['both_side']);
+        }
+
         $etablissement_source->save();
 
     }
