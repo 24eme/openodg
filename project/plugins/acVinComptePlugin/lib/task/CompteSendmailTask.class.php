@@ -44,17 +44,14 @@ class CompteSendmailTask extends sfBaseTask
 
     $message = $this->getMailer()->compose(array(Organisme::getInstance()->getEmail() => Organisme::getInstance()->getNom()), $email ,$subject, $body);
 
-    echo $message;
-
-    return;
     $resultSend = $this->getMailer()->send($message);
     
     if(!$resultSend) {
-        echo "ERROR;$compte->_id;Mail non envoyé\n";
+        echo "ERROR;$compte->_id ($email);Mail non envoyé\n";
         return;
     }
     
-    echo "SUCCESS;$compte->_id;Mail envoyé à ".date('Y-m-d H:i:s')."\n";
+    echo "SUCCESS;$compte->_id ($email);Mail envoyé à ".date('Y-m-d H:i:s')."\n";
   }
 
     protected function parseTemplate($body, $compte){
