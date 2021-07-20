@@ -82,6 +82,14 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->nom_a_afficher = trim(sprintf('%s %s %s', $this->civilite, $this->prenom, $this->nom));
     }
 
+    public function getCodeCreation() {
+        if(strpos("{TEXT}") === false) {
+            return null;
+        }
+
+        return str_replace("{TEXT}","", $this->mot_de_passe);
+    }
+
     public static function transformTag($tag) {
         $tag = strtolower(KeyInflector::unaccent($tag));
         return preg_replace('/[^a-z0-9éàùèêëïç]+/', '_', $tag);
