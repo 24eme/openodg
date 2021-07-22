@@ -7,7 +7,7 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     done
     rm -f web/exports_igp/*.csv
     bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
-    #bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
+    bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
     exit 0;
 fi
 
