@@ -810,7 +810,14 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getOrigineType() {
         if(is_null($this->_get('origine_type'))) {
-            $this->origine_type = $this->getLotDocumentOrdre(1)->origine_type;
+            if ($this->document_ordre != 1) {
+                $original = $this->getLotDocumentOrdre(1);
+                if ($original) {
+                    $this->origine_type = $original->getOrigineType();
+                }
+            }else{
+                $this->origine_type = $this->getDocument()->type;
+            }
         }
 
         return $this->_get('origine_type');
