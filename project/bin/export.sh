@@ -148,7 +148,7 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.c
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
 
 # Ajouter la hash produit à la fin du fichier lots-historique
-cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 33,34 | sort -t ";" -k 1,1 > $EXPORTDIR/lots_hash.csv
+cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,35 | sort -t ";" -k 1,1 > $EXPORTDIR/lots_hash.csv
 tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 15,15 > $EXPORTDIR/lots-historique.csv.sorted
 head -n 1 $EXPORTDIR/lots-historique.csv.part | sed 's/$/;Hash produit/' > $EXPORTDIR/lots-historique.csv.sorted.join
 join -t ";" -a 1 -1 15 -2 1 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$16; $16=unique_id; $17=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
