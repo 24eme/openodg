@@ -5,8 +5,9 @@
   <a href="<?php  echo url_for('degustation_lot_modification', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id));  ?>" style="position: absolute; right:6px; top: 12px;" class="btn btn-sm btn-link transparence-sm btn-modifier-lot" title="Modifier le lot"><span class="glyphicon glyphicon-pencil"></span></a>
 <?php endif; ?>
   <h4>
+      Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> –
       <a href="<?php echo url_for('degustation_lot_historique',array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)); ?>">
-      Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> – Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong>
+      Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></strong>
       </a>
   </h4>
 
