@@ -70,9 +70,7 @@ class ExportXMLSEPA {
 
     foreach($this->factures as $facture){
       foreach($facture->paiements as $paiement){  //parcourir toutes les paiments de chaque factures et mets les factures qui ont un paiement à cette date.
-        if( !in_array($facture,$tabPmtInf[$paiement->date])){
-          $tabPmtInf[$paiement->date][] = $facture;
-        }
+          $tabPmtInf[$paiement->date][$facture->_id] = $facture;
       }
     }
 
