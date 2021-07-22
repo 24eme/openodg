@@ -30,5 +30,8 @@ do
   if [ ! -f "$EXPORTDIRFORGLOBAL/$FILENAME" ]; then
     head -n 1 $file > $EXPORTDIRFORGLOBAL/$FILENAME
   fi
-  cat $file | grep -E $HASHPRODUIT --binary-files=text >> $EXPORTDIRFORGLOBAL/$FILENAME
+  cat $file | grep -E $HASHPRODUIT --binary-files=text > $EXPORTDIRFORGLOBAL/"tmp_$FILENAME"
+  cat $EXPORTAPPDIR/$FILENAME | sed 1,1d >> $EXPORTDIRFORGLOBAL/"tmp_$FILENAME"
+  cat $EXPORTDIRFORGLOBAL/"tmp_$FILENAME" | sort | uniq >> $EXPORTDIRFORGLOBAL/$FILENAME
+  rm $EXPORTDIRFORGLOBAL/"tmp_$FILENAME"
 done
