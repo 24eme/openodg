@@ -193,4 +193,13 @@ class ExportXMLSEPA {
       return $sepa;
   }
 
+  public static function getExportXMLSepaFromFactureIds($ids, $auto_save = false) {
+      $factures = array();
+      foreach($ids as $id) {
+          $factures[] = FactureClient::getInstance()->find($id);
+      }
+      $sepa = new ExportXMlSEPA($factures, $auto_save);
+      return $sepa;
+  }
+
 }
