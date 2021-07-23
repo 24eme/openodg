@@ -188,7 +188,7 @@ class ExportXMLSEPA {
       foreach (FactureEtablissementView::getInstance()->getPaiementNonExecuteSepa() as $vf) {
           $factures[] = FactureClient::getInstance()->find($vf->key[FactureEtablissementView::KEYS_FACTURE_ID]);
       }
-      $sepa = new ExportXMlSEPA($factures, $auto_save);
+      $sepa = new ExportXMLSEPA($factures, $auto_save);
       return $sepa;
   }
 
