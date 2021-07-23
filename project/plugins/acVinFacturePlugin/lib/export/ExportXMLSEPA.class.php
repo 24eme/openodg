@@ -151,7 +151,7 @@ class ExportXMLSEPA {
   protected function generateOnePaiement($facture,$d,$pmtInf){
     $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($facture->getIdentifiant());
     foreach($facture->paiements as $paiement){
-      if($paiement->date == $d && ($paiement->type_reglement == FACTURE_PAIEMENT_PRELEVEMENT_AUTO) && ($paiement->execute == false || !$this->not_execute_only) ){
+      if($paiement->date == $d && ($paiement->type_reglement == FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) && ($paiement->execute == false || !$this->not_execute_only) ){
         $drctdbttxinf = $pmtInf->addChild("DrctDbtTxInf");
         $pmtid = $drctdbttxinf->addChild("PmtId");
         $pmtid->addChild("EndToEndId", Organisme::getInstance()->getNom()." Facture"); //intitule pour l'ODG
