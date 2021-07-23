@@ -5,9 +5,10 @@ class ExportXMLSEPA {
   private $factures;
   private $xml;
 
-  public function __construct(array $factures = array(), $auto_save_facture = false) {
+  public function __construct(array $factures = array(), $auto_save_facture = false, $not_execute_only = true) {
     $this->factures = $factures;
     $this->auto_save_facture = $auto_save_facture;
+    $this->not_execute_only = $not_execute_only;
   }
 
   public function addFacture(Facture $facture) {
@@ -150,7 +151,7 @@ class ExportXMLSEPA {
   protected function generateOnePaiement($facture,$d,$pmtInf){
     $mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($facture->getIdentifiant());
     foreach($facture->paiements as $paiement){
-      if($paiement->date == $d && $paiement->execute == false){ //regarde si c'est la même date que dans le pmtInf si oui c'est la qu'il doit l'écrire
+      if($paiement->date == $d && ($paiement->type_reglement == FACTURE_PAIEMENT_PRELEVEMENT_AUTO) && ($paiement->execute == false || !$this->not_execute_only) ){
         $drctdbttxinf = $pmtInf->addChild("DrctDbtTxInf");
         $pmtid = $drctdbttxinf->addChild("PmtId");
         $pmtid->addChild("EndToEndId", Organisme::getInstance()->getNom()." Facture"); //intitule pour l'ODG
@@ -196,7 +197,7 @@ class ExportXMLSEPA {
       foreach($ids as $id) {
           $factures[] = FactureClient::getInstance()->find($id);
       }
-      $sepa = new ExportXMlSEPA($factures, $auto_save);
+      $sepa = new ExportXMLSEPA($factures, $auto_save, false);
       return $sepa;
   }
 
