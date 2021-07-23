@@ -10,6 +10,7 @@ if ($application != 'igp13') {
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
+$societe->add('region',"IGP13");
 $socVitiCompte = $societe->getMasterCompte();
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
@@ -106,8 +107,6 @@ $drev->validateOdg();
 $drev->save();
 
 //Création de la facture
-$societe->add('region',"IGP13");
-$societe->save();
 $mouvementsBySoc = array($societe->identifiant => FactureClient::getInstance()->getFacturationForSociete($societe));
 $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,array("date_mouvement" => date('Y-m-d')));
 $facture = FactureClient::getInstance()->createDocFromView($mouvementsBySoc[$societe->getIdentifiant()],$societe->getMasterCompte());
