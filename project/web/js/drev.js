@@ -450,20 +450,15 @@
         //Au switch, on remet à Zero les inputs non visibles et on affiche la bonne colonne
         var set_switch = function(){
           var is_pc = $('.switch_hl_to_pc').is(':checked');
-          var vol_total = $('.input-total').val()
+
           if(is_pc){
             $(this).parents('.modal_lot_cepages').find('.input-group-pc').show();
-
-            $(this).parents('.modal_lot_cepages').find('.input-hl').each(function(){
-              let vol_pc = ($(this).val()*100/vol_total).toFixed(2)
-              if(vol_pc > 0){
-                $(this).parent().parent().find(".input-pc").val(vol_pc)
-              }
-            });
             $(this).parents('.modal_lot_cepages').find('.input-group-hl').hide();
-          }else{
+            $(this).parents('.modal_lot_cepages').find('.input-hl').each(function(){ $(this).val(''); });
+          } else {
             $(this).parents('.modal_lot_cepages').find('.input-group-hl').show();
             $(this).parents('.modal_lot_cepages').find('.input-group-pc').hide();
+            $(this).parents('.modal_lot_cepages').find('.input-pc').each(function(){ $(this).val(''); });
           }
 
         };
