@@ -488,6 +488,8 @@ class FactureClient extends acCouchdbClient {
       $avoir->reglement_paiement = null;
       $avoir->remove('arguments');
       $avoir->add('arguments');
+      $avoir->remove('paiements');
+      $avoir->add('paiements');
 
       return $avoir;
     }
@@ -521,6 +523,8 @@ class FactureClient extends acCouchdbClient {
       $avoir->numero_odg = null;
       $avoir->versement_comptable = 0;
       $avoir->versement_comptable_paiement = 0;
+      $avoir->remove('paiements');
+      $avoir->add('paiements');
       $avoir->save();
       $f->defacturer();
       $f->save();
