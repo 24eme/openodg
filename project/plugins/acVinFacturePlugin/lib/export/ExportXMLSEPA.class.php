@@ -77,7 +77,10 @@ class ExportXMLSEPA {
 
     $this->generatePmtInf($tabPmtInf);
 
-    foreach($this->xml->PmtInf as $paiement){
+    foreach($this->xml->CstmrDrctDbtInitn->children() as $paiement){
+      if ($paiement->getName() != 'PmtInf') {
+          continue;
+      }
       $nbPrelevement += $paiement->NbOfTxs;
       $sommeMontant += $paiement->CtrlSum;
     }
@@ -95,7 +98,7 @@ class ExportXMLSEPA {
       $nbOfTxs = 0;
       $sommetot = 0;
 
-      $pmtInf = $this->xml->addChild('PmtInf');
+      $pmtInf = $this->xml->CstmrDrctDbtInitn->addChild('PmtInf');
       $pmtInf->addChild('PmtInfId', 'PAIEMENT-'.$d);
       $pmtInf->addChild('PmtMtd', "DD");
 
@@ -105,7 +108,7 @@ class ExportXMLSEPA {
       $pmtTpInf = $pmtInf->addChild('PmtTpInf');
       $svcLvl = $pmtTpInf->addChild('SvcLvl');
       $svcLvl->addChild('Cd','SEPA');
-      $lclInstrm = $pmtTpInf->addChild('LclInstrum');
+      $lclInstrm = $pmtTpInf->addChild('LclInstrm');
       $lclInstrm->addChild('Cd','CORE');
       $pmtTpInf->addChild('SeqTp','RCUR');
 
@@ -154,7 +157,7 @@ class ExportXMLSEPA {
       if($paiement->date == $d && ($paiement->type_reglement == FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) && ($paiement->execute == false || !$this->not_execute_only) ){
         $drctdbttxinf = $pmtInf->addChild("DrctDbtTxInf");
         $pmtid = $drctdbttxinf->addChild("PmtId");
-        $pmtid->addChild("EndToEndId", Organisme::getInstance()->getNom()." Facture"); //intitule pour l'ODG
+        $pmtid->addChild("EndToEndId", substr("Facture ".Organisme::getInstance()->getNom(), 0, 34)); //intitule pour l'ODG
         $montant = $drctdbttxinf->addChild("InstdAmt",$paiement->montant);  //montant
         $montant->addAttribute('Ccy', "EUR");
         $drctdbttx = $drctdbttxinf->addChild("DrctDbtTx");
