@@ -16,11 +16,15 @@ class GenerationExportXmlSepa extends GenerationAbstract
       }
 
       //on parcours notre array de facture et on appelle la fonction getXml():
-      $sepa = ExportXMlSEPA::getExportXMLSepaForCurrentPrelevements(true);
+      if (!$this->generation->documents || ! count($this->generation->documents)) {
+          $sepa = ExportXMlSEPA::getExportXMLSepaForCurrentPrelevements(true);
+          $this->generation->documents = $sepa->getFacturesId();
+      }else{
+          $sepa = ExportXMlSEPA::getExportXMLSepaFromFactureIds($this->generation->documents, true);
+      }
+
       $xml = $sepa->getXml();
       $sepa->saveExportedSepa();
-
-      $this->generation->documents = $sepa->getFacturesId();
 
       // faire le document
       fwrite($handle_factures, $xml);

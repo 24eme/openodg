@@ -18,8 +18,7 @@ class ExportXMLSEPA {
       if(!$this->auto_save_facture){
         return;
       }
-      foreach($this->factures as $f){
-          $facture = FactureClient::getInstance()->find($f->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+      foreach($this->factures as $facture){
           $facture->versement_sepa = 1; //il n'a plus de paiement à mettre dans le xml
           foreach($facture->paiements as $paiement){
             $paiement->execute = true;  //ils ont tous été executés.
@@ -69,12 +68,9 @@ class ExportXMLSEPA {
 
     $tabPmtInf = [];
 
-    foreach($this->factures as $vfacture){
-      $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+    foreach($this->factures as $facture){
       foreach($facture->paiements as $paiement){  //parcourir toutes les paiments de chaque factures et mets les factures qui ont un paiement à cette date.
-        if( !in_array($vfacture,$tabPmtInf[$paiement->date])){
-          $tabPmtInf[$paiement->date][] = $vfacture;
-        }
+          $tabPmtInf[$paiement->date][$facture->_id] = $facture;
       }
     }
 
@@ -135,8 +131,7 @@ class ExportXMLSEPA {
       $schmeNm = $othr->addChild("SchmeNm");
       $schmeNm->addChild("Prtry","SEPA");
 
-      foreach($factures as $f){
-        $facture = FactureClient::getInstance()->find($f->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+      foreach($factures as $facture){
         $this->generateOnePaiement($facture,$d,$pmtInf);
       }
 
@@ -188,7 +183,19 @@ class ExportXMLSEPA {
   }
 
   public static function getExportXMLSepaForCurrentPrelevements($auto_save = false) {
-      $factures = FactureEtablissementView::getInstance()->getPaiementNonExecuteSepa();  //toutes les factures avec non execute à true.
+      $factures = array();
+      foreach (FactureEtablissementView::getInstance()->getPaiementNonExecuteSepa() as $vf) {
+          $factures[] = FactureClient::getInstance()->find($vf->key[FactureEtablissementView::KEYS_FACTURE_ID]);
+      }
+      $sepa = new ExportXMlSEPA($factures, $auto_save);
+      return $sepa;
+  }
+
+  public static function getExportXMLSepaFromFactureIds($ids, $auto_save = false) {
+      $factures = array();
+      foreach($ids as $id) {
+          $factures[] = FactureClient::getInstance()->find($id);
+      }
       $sepa = new ExportXMlSEPA($factures, $auto_save);
       return $sepa;
   }
