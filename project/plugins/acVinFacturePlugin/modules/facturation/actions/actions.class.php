@@ -203,8 +203,6 @@ class facturationActions extends sfActions
           return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
       }
 
-      $this->facture = FactureClient::createAvoir($this->baseFacture);
-
       $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture);
       return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
     }
