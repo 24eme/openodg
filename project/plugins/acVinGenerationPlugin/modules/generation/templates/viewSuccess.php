@@ -78,12 +78,10 @@
 </div>
 <?php endif; ?>
 
-
-
 <div class="row row-margin">
     <div class="col-xs-4 text-left">
         <?php if(isset($backUrl) && $backUrl): ?>
-        <a class="btn btn-default btn-default-step btn-lg btn-upper" href="<?php echo $backUrl ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a class="btn btn-default" href="<?php echo $backUrl ?>"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;Retour</a>
         <?php endif; ?>
     </div>
     <?php if(($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR) || ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && $generation->message)): ?>
