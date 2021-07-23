@@ -52,7 +52,7 @@ class ExportXMLSEPA {
 
     $initgPty = $grpHdr->addChild("InitgPty");
 
-    $initgPty->addChild('Nm',Organisme::getInstance()->getNom());
+    $initgPty->addChild('Nm', substr(iconv('utf-8', 'us-ascii//TRANSLIT', Organisme::getInstance()->getNom()), 0, 70));
 
     $idHdr = $initgPty->addChild("Id");
     $orgId = $idHdr->addChild('OrgId');
@@ -115,7 +115,7 @@ class ExportXMLSEPA {
       $pmtInf->addChild('ReqdColltnDt', $d); //Date d'échéance du recouvrement,
 
       $cdtr = $pmtInf->addChild('Cdtr');
-      $cdtr->addChild('Nm',Organisme::getInstance()->getNom()); //nom de l'odg
+      $cdtr->addChild('Nm', substr(iconv('utf-8', 'us-ascii//TRANSLIT', Organisme::getInstance()->getNom()), 0, 70)); //nom de l'odg
 
       $cdtrAcct = $pmtInf->addChild('CdtrAcct');
       $id = $cdtrAcct->addChild('Id');
@@ -157,7 +157,7 @@ class ExportXMLSEPA {
       if($paiement->date == $d && ($paiement->type_reglement == FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) && ($paiement->execute == false || !$this->not_execute_only) ){
         $drctdbttxinf = $pmtInf->addChild("DrctDbtTxInf");
         $pmtid = $drctdbttxinf->addChild("PmtId");
-        $pmtid->addChild("EndToEndId", substr("Facture ".Organisme::getInstance()->getNom(), 0, 34)); //intitule pour l'ODG
+        $pmtid->addChild("EndToEndId", substr("Facture ".iconv('utf-8', 'us-ascii//TRANSLIT', Organisme::getInstance()->getNom()), 0, 35)); //intitule pour l'ODG
         $montant = $drctdbttxinf->addChild("InstdAmt",$paiement->montant);  //montant
         $montant->addAttribute('Ccy', "EUR");
         $drctdbttx = $drctdbttxinf->addChild("DrctDbtTx");
@@ -168,7 +168,7 @@ class ExportXMLSEPA {
         $finInstnId = $dbtrAgt->addChild("FinInstnId");
         $finInstnId->addChild('BIC',$mandatSepa->getBic()); //son bic
         $dbtr = $drctdbttxinf->addChild("Dbtr");
-        $dbtr->addChild("Nm",$facture->declarant->raison_sociale); // sa raison Social  //ou $facture->getSociete()->getRaisonSociale()
+        $dbtr->addChild("Nm", substr(iconv('utf-8', 'us-ascii//TRANSLIT', $facture->declarant->raison_sociale), 0, 70)); // sa raison Social  //ou $facture->getSociete()->getRaisonSociale()
         $dbtracct = $drctdbttxinf->addChild("DbtrAcct");
         $idDbtracct = $dbtracct->addChild('Id');
         $idDbtracct->addChild('IBAN',$mandatSepa->getIban()); //son iban
