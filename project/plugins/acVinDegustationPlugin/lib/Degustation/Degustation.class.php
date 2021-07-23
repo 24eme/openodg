@@ -258,9 +258,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     if ($lot->document_ordre < 2) {
                         throw new sfException("Le numéro d'ordre d'un lot de dégustation ne peut être inférieur à 2 : ".$lot->unique_id);
                     }
-					$ordre = intval($lot->document_ordre) - 1;
-					$detail = sprintf("%dme passage", $ordre);
-					if ($ordre == 1) {
+					$detail = sprintf("%dme passage", $lot->getNombrePassage());
+					if ($lot->getNombrePassage() == 1) {
 						$detail = "1er passage";
 					}
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_DEST, $detail));
