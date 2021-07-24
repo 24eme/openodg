@@ -1,12 +1,8 @@
 function(doc) {
   if (doc.lots) {
-    campagne_archive = doc.campagne;
-   	if(doc.campagne_archive) {
-   		campagne_archive = doc.campagne_archive;
-   	}
     for(lot_key in doc.lots) {
       var lot = doc.lots[lot_key];
-      emit(["Lot", campagne_archive, lot.numero_archive], 1);
+      emit(["Lot", lot.campagne, lot.numero_archive], 1);
     }
   }
 

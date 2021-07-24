@@ -365,7 +365,10 @@ $t->is(count($chgtDenom->changement_cepages), 2, "Le changement a bien 2 cepages
 $t->is(count($chgtDenom->lots), 2, "2 lot généré");
 $t->is($chgtDenom->lots[0]->date, $chgtDenom->date, "La date du lot est celle du changement de dénomination");
 $t->is($chgtDenom->lots[0]->numero_archive, $autreLot->numero_archive, "numero d'archive correctement du lot 2 conservé : ".$autreLot->numero_archive);
+$t->is($chgtDenom->lots[0]->campagne, $autreLot->campagne, "la campagne est conservé : ".$autreLot->campagne);
 $t->is($chgtDenom->lots[1]->numero_archive, '00007', "numeros d'archive du lot 2 changé pour le suivant");
+$t->is($chgtDenom->lots[1]->numero_archive, '00007', "numeros d'archive du lot 2 changé pour le suivant");
+$t->is($chgtDenom->lots[1]->campagne, $chgtDenom->campagne, "La campagne du lot 2 est celle du changement de dénomination");
 $t->is($chgtDenom->lots[1]->date, $chgtDenom->date, "La date du lot est celle du changement de dénomination");
 $t->is($chgtDenom->lots[0]->document_ordre, '03', "Le lot 1 a bien 03 comme numéro d'ordre");
 $t->is($chgtDenom->lots[1]->document_ordre, '01', "Le lot 2 a bien 01 comme numéro d'ordre");
@@ -547,4 +550,20 @@ $t->ok($chgtDenom->isValidee(), "Le changement est validé");
 $t->is($chgtDenom->numero_archive, '00005', "le changement de dénomination a bien un numero d'archive");
 $t->is($chgtDenom->lots[0]->numero_archive, '00008', "Le lot déclassé a le bon numéro d'archive");
 $t->is($chgtDenom->lots[0]->numero_dossier, '00005', "Le lot déclassé a le bon numéro de dossier");
+$t->is($chgtDenom->lots[0]->campagne, $periode.'-'.($periode + 1 ), "Le lot déclassé à la bonne campagne");
 $t->is($chgtDenom->lots[0]->unique_id, $periode.'-'.($periode + 1 ).'-00005-00008', "Le lot déclassé a le bon unique_id");
+
+
+$t->comment("Changement de dénomination sur une campagne différente");
+
+$date = ($year+1).'-12-10 10:10:10';
+$chgtDenomAutreCampagne = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
+$chgtDenomAutreCampagne->constructId();
+$chgtDenomAutreCampagne->setLotOrigine($lotFromDrev);
+$chgtDenomAutreCampagne->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
+$chgtDenomAutreCampagne->changement_produit_hash = $autreLot->produit_hash;
+$chgtDenomAutreCampagne->changement_volume = 1;
+$chgtDenomAutreCampagne->generateLots();
+
+$t->is($chgtDenomAutreCampagne->lots[0]->campagne, $lotFromDrev->campagne, "La campagne du lot non changé est celle du lot de la drev");
+$t->is($chgtDenomAutreCampagne->lots[1]->campagne, $chgtDenomAutreCampagne->campagne, "La campagne du lot changé est celle du changement de dénpmination");
