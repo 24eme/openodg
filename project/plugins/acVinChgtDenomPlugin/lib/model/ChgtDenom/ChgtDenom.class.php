@@ -406,7 +406,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->volume = $this->changement_volume;
           $lot->produit_hash = $this->changement_produit_hash;
           $lot->produit_libelle = $this->changement_produit_libelle;
-          $lot->cepages = $this->changement_cepages;
+          $lot->cepages = $this->changement_cepages->getData();
 
           if ($this->exist('changement_affectable')) {
               $lot->affectable = $this->changement_affectable;
@@ -435,7 +435,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     private function updateCepageCoherencyWithVolume($lot) {
-        if (!$lot->cepages) {
+        if (!$lot->cepages || !count((array) $lot->cepages)) {
             return $lot;
         }
         if (!$lot->volume) {
