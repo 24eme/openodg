@@ -52,9 +52,9 @@ class ChgtDenomLot extends BaseChgtDenomLot
     }
 
     public function getOrigineType() {
-        $origine = $this->getDocOrigine();
+        $origine = $this->getDocument()->getLotOrigine();
         if ($origine) {
-            $this->origine_type = $origine->type;
+            $this->origine_type = $origine->origine_type;
         }else{
             $this->origine_type = $this->getDocument()->type;
         }

@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(217);
+$t = new lime_test(223);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -143,7 +143,7 @@ $t->is($chgtDenomFromDrev->changement_origine_lot_unique_id, $lotFromDrev->uniqu
 $t->is($chgtDenomFromDrev->changement_volume, $lotFromDrev->volume, "Le changement a bien le volume de son origine");
 $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le changement a bien le millesime de son origine : ".$drev->lots[2]->millesime);
 $t->isnt($chgtDenomFromDrev->changement_produit_hash, $lotFromDrev->produit_hash, "Le changement a bien un produit différent");
-$t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "Le lot ");
+$t->is($chgtDenomFromDrev->changement_type, ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT, "C'est un changement de dénomination");
 $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le changement a bien le millesime de son origine : ".$drev->lots[2]->millesime);
 $t->is($chgtDenomFromDrev->changement_specificite, "Ma fausse", "Le changement n'a plus de 2de dégustation dans sa spécificité");
 $t->is($chgtDenomFromDrev->origine_specificite, "Ma fausse 2ème dégustation", "L'origine a 2de dégustation dans sa spécificité");
@@ -171,7 +171,7 @@ $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le l
 $t->is($chgtDenomFromDrev->lots[1]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
 $chgtDenomFromDrev->lots[1]->origine_type = null;
 $t->is($chgtDenomFromDrev->lots[1]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
-$t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->origine_type, $chgtDenomFromDrev->lots[1]->origine_type, "L'origine type du mouvement");
+$t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->origine_type, DRevClient::TYPE_MODEL, "L'origine type du mouvement est drev");
 $t->is($chgtDenomFromDrev->lots[1]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
 $t->is($chgtDenomFromDrev->lots[1]->numero_archive, "00005", "Le lot changé (2d) a un nouveau numéro d'archive");
 $t->is($chgtDenomFromDrev->lots[1]->numero_dossier, $chgtDenomFromDrev->numero_archive, "Le lot changé a le même numéro de dossier que l'archive du chgmt");
