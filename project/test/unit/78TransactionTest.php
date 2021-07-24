@@ -8,8 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-
-$t = new lime_test(20);
+$t = new lime_test(21);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -112,9 +111,10 @@ $t->is(count($transaction->lots->toArray(true, false)), 1, "La transaction poss�
 $t->is($transaction->numero_archive, '00003', "Le numéro de dossier sur la transaction prend en compte la DREV et le conditionnement créé au début");
 $t->is($lot->numero_dossier, '00003', "Le numeor de dossier du lot reprend bien le numero d'archive de la transaction");
 $t->is($lot->numero_archive, '00001', "Le numéro d'archive est bien le premier");
-$t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
-$t->ok($lot->getMouvement(Lot::STATUT_ENLEVE), 'Le lot est enlevé');
+$t->is(count($lot->getMouvements()), 3, "2 mouvements pour le lot");
+$t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), 'Le lot est revendiqué');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
+$t->ok($lot->getMouvement(Lot::STATUT_CHANGEABLE), 'Le lot est changeable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
 $t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->origine_type, $lot->origine_type, "Mouvement origine type");
 

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(36);
+$t = new lime_test(37);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -129,9 +129,10 @@ $t->is($conditionnement->numero_archive, '00001', "Le numéro de dossier du cond
 
 $t->is($lot->numero_dossier, '00001', "Le numéro de dossier du lot est bien le numéro d'archive du conditionnement");
 $t->is($lot->numero_archive, '00001', "Le numéro d'archive du lot est bien celui attendu");
-$t->is(count($lot->getMouvements()), 2, "2 mouvements pour le lot");
-$t->ok($lot->getMouvement(Lot::STATUT_CONDITIONNE), 'Le lot est conditionné');
+$t->is(count($lot->getMouvements()), 3, "2 mouvements pour le lot");
+$t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), 'Le lot est revendiqué');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
+$t->ok($lot->getMouvement(Lot::STATUT_CHANGEABLE), 'Le lot est changeable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
 $t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->origine_type, $lot->origine_type, "Mouvement origine type");
 
