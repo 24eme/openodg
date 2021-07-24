@@ -2,6 +2,12 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if(!sfConfig::get('app_certipaq_oauth')) {
+    $t = new lime_test(1);
+    $t->ok(true, "Test disabled (not configured)");
+    return;
+}
+
 $t = new lime_test(18);
 
 $cvi_test = "0708900950";
