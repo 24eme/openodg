@@ -57,7 +57,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         $id = 'CHGTDENOM-' . $this->identifiant . '-' . $date->format('YmdHis');
         $this->set('_id', $id);
-        $this->set('campagne', $this->getCampagneByDate());
+        $this->getCampagne();
     }
 
     public function getConfiguration() {
@@ -166,6 +166,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
         $this->fillDocToSaveFromLots();
 
+        $this->campagne = null;
+        $this->getCampagne();
+
         $this->changement_origine_id_document = $lot->id_document;
         $this->changement_origine_lot_unique_id = $lot->unique_id;
         $this->changement_millesime = $lot->millesime;
@@ -208,6 +211,24 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $l = $this->getOrigineNumeroLogementOperateur();
         $this->setOrigineNumeroLogementOperateur($l);
         return $l;
+    }
+
+    public function getCampagne() {
+        if(is_null($this->campagne)) {
+            $firstOrigineLot = $this->getFirstOrigineLot();
+            if($firstOrigineLot) {
+                $this->campagne = $firstOrigineLot->campagne;
+            } else {
+                $this->campagne = $this->getCampagneByDate();
+            }
+        }
+
+        return $this->_get('campagne');
+    }
+
+    public function getFirstOrigineLot() {
+
+        return LotsClient::getInstance()->findByUniqueId($this->identifiant, $this->changement_origine_lot_unique_id, "01");
     }
 
     public function getLotOrigine() {
@@ -406,8 +427,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->volume = $this->changement_volume;
           $lot->produit_hash = $this->changement_produit_hash;
           $lot->produit_libelle = $this->changement_produit_libelle;
-          $lot->cepages = $this->changement_cepages->getData();
-
+          if($lot instanceof acCouchdbJson) {
+              $lot->remove('cepages');
+              $lot->add('cepages', $this->changement_cepages->toArray());
+          } else {
+            $lot->cepages = $this->changement_cepages->toArray();
+          }
           if ($this->exist('changement_affectable')) {
               $lot->affectable = $this->changement_affectable;
           }
@@ -449,7 +474,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         if ($volume_cepages == $lot->volume) {
             return $lot;
         }
+
         foreach($this->origine_cepages as $k => $v) {
+            if(is_array($lot->cepages)) {
+                $lot->cepages[$k] = $v * $lot->volume / $this->origine_volume;
+                continue;
+            }
             $lot->cepages->{$k} = $v * $lot->volume / $this->origine_volume;
         }
         return $lot;

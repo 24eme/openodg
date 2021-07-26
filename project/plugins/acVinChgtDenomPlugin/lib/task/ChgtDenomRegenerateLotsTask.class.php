@@ -47,21 +47,20 @@ EOF;
 
 
         $lots = $chgt->lots->toJson();
-
+        $chgt->campagne = null;
+        $chgt->getCampagne();
         $chgt->generateLots();
 
         $chgt->lots[0]->numero_archive = $lots[0]->numero_archive;
         $chgt->lots[0]->numero_dossier = $lots[0]->numero_dossier;
-        $chgt->lots[0]->campagne = $lots[0]->campagne;
         $chgt->lots[0]->unique_id = $lots[0]->unique_id;
+        $chgt->lots[0]->document_ordre = $lots[0]->document_ordre;
         $chgt->lots[0]->id_document_provenance = $lots[0]->id_document_provenance;
         $chgt->lots[0]->id_document_affectation = $lots[0]->id_document_affectation;
-        $chgt->lots[0]->document_ordre = $lots[0]->document_ordre;
 
         if(isset($chgt->lots[1])) {
             $chgt->lots[1]->numero_archive = $lots[1]->numero_archive;
             $chgt->lots[1]->numero_dossier = $lots[1]->numero_dossier;
-            $chgt->lots[1]->campagne = $lots[1]->campagne;
             $chgt->lots[1]->unique_id = $lots[1]->unique_id;
             $chgt->lots[1]->document_ordre = $lots[1]->document_ordre;
             $chgt->lots[1]->id_document_provenance = $lots[1]->id_document_provenance;
