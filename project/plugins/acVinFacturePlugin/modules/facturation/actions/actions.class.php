@@ -153,7 +153,7 @@ class facturationActions extends sfActions
 
         }
 
-    public function executeEdition(sfWebRequest $request) {
+    public function executeAvaEdition(sfWebRequest $request) {
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
 
         if(!$this->facture) {
@@ -189,7 +189,7 @@ class facturationActions extends sfActions
 
         if($request->getParameter("not_redirect")) {
 
-            return $this->redirect('facturation_edition', $this->facture);
+            return $this->redirect('facturation_ava_edition', $this->facture);
         }
 
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
@@ -207,7 +207,7 @@ class facturationActions extends sfActions
       return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
     }
 
-    public function executeAvoir(sfWebRequest $request) {
+    public function executeAvaAvoirForm(sfWebRequest $request) {
         $this->baseFacture = FactureClient::getInstance()->find($request->getParameter('id'));
 
         if(!$this->baseFacture) {
@@ -215,11 +215,11 @@ class facturationActions extends sfActions
             return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
         }
 
-        $this->facture = FactureClient::createAvoir($this->baseFacture);
+        $this->facture = FactureClient::getInstance()->createAvoir($this->baseFacture);
 
         $this->form = new FactureEditionForm($this->facture);
 
-        $this->setTemplate('edition');
+        $this->setTemplate('avaEdition');
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -238,7 +238,7 @@ class facturationActions extends sfActions
 
         if($request->getParameter("not_redirect")) {
 
-            return $this->redirect('facturation_edition', $this->facture);
+            return $this->redirect('facturation_ava_edition', $this->facture);
         }
 
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));

@@ -55,7 +55,7 @@ EOF;
             return;
         }
 
-        $avoir = FactureClient::createAvoir($facture);
+        $avoir = FactureClient::getInstance()->createAvoir($facture);
 
         foreach($avoir->lignes as $ligne) {
             foreach($ligne->details as $detail) {

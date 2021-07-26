@@ -124,7 +124,7 @@
                                     </div>
                                     <div class="col-xs-5">
                                         <?php if($key_detail == count($f_ligne['details']) - 1): ?>
-                                        <button type="button" class="btn btn-success data-add-line hidden" data-form="#form_edition_facture" data-form-action="<?php echo isset($baseFacture) ? url_for("facturation_avoir", array('sf_subject' => $baseFacture, 'not_redirect' => true)) : url_for("facturation_edition", array('sf_subject' => $facture, 'not_redirect' => true)) ?>"><span class="glyphicon glyphicon-plus"></span></button>
+                                        <button type="button" class="btn btn-success data-add-line hidden" data-form="#form_edition_facture" data-form-action="<?php echo isset($baseFacture) ? url_for("facturation_ava_avoir", array('sf_subject' => $baseFacture, 'not_redirect' => true)) : url_for("facturation_ava_edition", array('sf_subject' => $facture, 'not_redirect' => true)) ?>"><span class="glyphicon glyphicon-plus"></span></button>
                                         <?php else: ?>
                                         <button data-detail="#<?php echo $f_detail->renderId() ?>" type="button" class="btn btn-danger data-clean-line hidden"><span class="glyphicon glyphicon-trash"></span></button>
                                         <?php endif; ?>
