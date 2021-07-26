@@ -47,15 +47,17 @@
                   <?php
                   foreach ($form->getTableLots() as $lot):
                     $name = $form->getWidgetNameFromLot($lot);
-                    if (!$lot->leurre && isset($form["conformite_".$name])): ?>
+                    if (isset($form["conformite_".$name])): ?>
                       <tr class="vertical-center <?php if($lot->isNonConforme()): ?>list-group-item-danger<?php elseif($lot->isConformeObs()): ?>list-group-item-warning<?php  endif; ?>">
                         <td class="text-right"><?php echo $lot->getNumeroAnonymat() ?></td>
                         <td class="text-left"><?php echo $lot->declarant_nom ?></td>
                         <td><?= $lot->getTypeProvenance() ?></td>
                         <td class="text-left">
-                            <?php echo showOnlyProduit($lot) ?> - <small>n°&nbsp;<?php echo $lot->numero_logement_operateur; ?></small>
+                            <?php echo showOnlyProduit($lot) ?><?php if(!$lot->isLeurre()):?> - <small>n°&nbsp;<?php echo $lot->numero_logement_operateur; ?></small><?php endif; ?>
                             <br/><?php echo showOnlyCepages($lot) ?>
+                            <?php if(!$lot->isLeurre()):?>
                             <span class="pull-right text-muted" ><small><?php echo $lot->volume.'&nbsp;hl'; ?></small></span>
+                            <?php endif; ?>
                         </td>
                         <td class="text-center cursor-pointer" data-toggle="modal" data-target="#popupResultat_<?php echo $name; ?>">
                           <div style="margin-bottom: 0;">
