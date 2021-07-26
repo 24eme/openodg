@@ -409,6 +409,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       if ($this->isChgtDenomination()) {
           $lotOrig = clone $lot;
+          $lotOrig->origine_type = null;
           $lotOrig->volume = $this->origine_volume - $this->changement_volume;
           if (!$lotOrig->volume) {
               $lotOrig->affectable = false;
@@ -418,6 +419,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           }
           $this->updateCepageCoherencyWithVolume($lotOrig);
           $lots[] = $lotOrig;
+          $lot->origine_type = null;
           $lot->campagne = $this->campagne;
           $lot->numero_archive = null;
           $lot->unique_id = null;

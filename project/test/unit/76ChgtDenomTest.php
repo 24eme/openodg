@@ -150,9 +150,9 @@ $t->is($chgtDenomFromDrev->origine_specificite, "Ma fausse 2ème dégustation", 
 $t->is(count($chgtDenomFromDrev->lots), 2, "Le changement étant total, on a 2 lots");
 
 $t->is($chgtDenomFromDrev->lots[0]->campagne, $drev->campagne, "Le lot non changé à la campagne de la drev");
-$t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE, "L'origine type par défaut est ".DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE);
+$t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
 $chgtDenomFromDrev->lots[0]->origine_type = null;
-$t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_NONAFFECTABLE)->origine_type, $chgtDenomFromDrev->lots[0]->origine_type, "L'origine type du mouvement");
 $t->is($chgtDenomFromDrev->lots[0]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
 $t->is($chgtDenomFromDrev->lots[0]->numero_archive, "00003", "Le lot du chgt a le même numéro d'archive que dans la drev");
