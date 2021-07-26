@@ -115,12 +115,12 @@
                 <button type="button" class="btn btn-default btn-default-step btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
                 <ul class="dropdown-menu">
                     <?php if(!$facture->isPayee() && !$facture->versement_comptable): ?>
-                    <li><a href="<?php if(!$facture->isPayee() && !$facture->versement_comptable): ?><?php echo url_for("facturation_edition", array("id" => $facture->_id)) ?><?php endif; ?>">Modifier</a></li>
+                    <li><a href="<?php if(!$facture->isPayee() && !$facture->versement_comptable): ?><?php echo url_for("facturation_ava_edition", array("id" => $facture->_id)) ?><?php endif; ?>">Modifier</a></li>
                     <?php else: ?>
                         <li class="disabled"><a href="">Modifier</a></li>
                     <?php endif; ?>
                     <?php if(!$facture->isAvoir()): ?>
-                    <li><a href="<?php echo url_for("facturation_avoir", array("id" => $facture->_id)) ?>">Créer un avoir <small>(à partir de cette facture)</small></a></li>
+                    <li><a href="<?php echo url_for("facturation_ava_avoir", array("id" => $facture->_id)) ?>">Créer un avoir <small>(à partir de cette facture)</small></a></li>
                     <?php else: ?>
                         <li class="disabled"><a href="">Créer un avoir <small>(à partir de cette facture)</small></a></li>
                     <?php endif; ?>

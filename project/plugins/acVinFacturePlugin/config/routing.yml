@@ -46,9 +46,9 @@ facturation_pdf_auth:
   requirements:
     sf_method: [get]
 
-facturation_edition:
+facturation_ava_edition:
   url: /facturation/edition/:id
-  param: { module: facturation, action: edition }
+  param: { module: facturation, action: avaEdition }
   class: FactureRoute
   options:
     model:    Facture
@@ -56,9 +56,9 @@ facturation_edition:
   requirements:
     sf_method: [get, post]
 
-facturation_avoir:
+facturation_ava_avoir:
   url: /facturation/avoir/:id
-  param: { module: facturation, action: avoir }
+  param: { module: facturation, action: avaAvoirForm }
   class: FactureRoute
   options:
     model:    Facture
