@@ -445,6 +445,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!$including_leurre && $lot->isLeurre()){
 					continue;
 				}
+				//Les leurres n'ont pas de uniqid donc pas de mouvement
+				if($including_leurre && $lot->isLeurre() && $lot->statut === $statut){
+					$lots[] = $lot;
+				}
+
 				if($lot->getMouvement($statut)){
 					$lots[] = $lot;
 				}
@@ -574,8 +579,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		 return (count($this->getLots()) - $this->getNbLotsPreleves());
 	 }
 
-	 public function getLotsDegustes(){
-		 return array_merge($this->getLotsWithStatut(Lot::STATUT_CONFORME,false),$this->getLotsWithStatut(Lot::STATUT_NONCONFORME,false));
+	 public function getLotsDegustes($including_leurre = false){
+		 return array_merge($this->getLotsWithStatut(Lot::STATUT_CONFORME, $including_leurre),$this->getLotsWithStatut(Lot::STATUT_NONCONFORME, $including_leurre));
 	 }
 
 
@@ -1321,7 +1326,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsDegustesByAppelation(){
 			$degust = array();
-			foreach ($this->getLotsDegustes() as $key => $lot) {
+			foreach ($this->getLotsDegustes(true) as $key => $lot) {
 				$degust[$lot->getConfig()->getAppellation()->getLibelle()][] = $lot;
 			}
 
