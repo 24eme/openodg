@@ -52,8 +52,8 @@ class ChgtDenomLot extends BaseChgtDenomLot
     }
 
     public function getOrigineType() {
-        $origine = $this->getDocument()->getLotOrigine();
-        if ($origine) {
+        $origine = LotsClient::getInstance()->findByUniqueId($this->getDocument()->identifiant, $this->getDocument()->changement_origine_lot_unique_id, "01");
+        if ($origine && $origine->getDocument()->_id != $this->getDocument()->_id) {
             $this->origine_type = $origine->origine_type;
         }else{
             $this->origine_type = $this->getDocument()->type;
