@@ -708,7 +708,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getUniqueId(){
         if(is_null($this->_get('unique_id'))) {
-            $this->set('unique_id', KeyInflector::slugify($this->campagne."-".$this->numero_dossier.'-'.$this->numero_archive));
+            $this->set('unique_id', strtolower(KeyInflector::slugify($this->campagne."-".$this->numero_dossier.'-'.$this->numero_archive)));
         }
 
         return $this->_get('unique_id');
