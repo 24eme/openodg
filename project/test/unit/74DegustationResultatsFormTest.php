@@ -88,7 +88,7 @@ foreach ($doc->getLots() as $lot) {
 $doc->addLeurre($doc->lots[0]->getProduitHash(), null, 1);
 
 $t->comment('Résultat de conformité / non conformité');
-$lotConformes = $doc->getLotsConformesOrNot();
+$lotConformes = $doc->getLotsConformesOrNot(true);
 $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
 $t->is(count($doc->getLots()), 3, "Il y a 3 lots");
@@ -109,7 +109,7 @@ $valuesRev = array(
 $form->bind($valuesRev);
 $form->save();
 
-$lotConformes = $doc->getLotsConformesOrNot();
+$lotConformes = $doc->getLotsConformesOrNot(true);
 $t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
 
 $form = new DegustationResultatsForm($doc, $options);
@@ -158,7 +158,7 @@ $valuesRev = array(
 $form->bind($valuesRev);
 $form->save();
 
-$lotConformes = $doc->getLotsConformesOrNot();
+$lotConformes = $doc->getLotsConformesOrNot(true);
 $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
