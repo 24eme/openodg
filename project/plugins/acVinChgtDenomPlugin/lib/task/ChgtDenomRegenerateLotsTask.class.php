@@ -57,10 +57,10 @@ EOF;
         $chgt->generateLots();
 
         if($lots[0]) {
+            $chgt->lots[0]->document_ordre = $lots[0]->document_ordre;
             $chgt->lots[0]->numero_archive = $lots[0]->numero_archive;
             $chgt->lots[0]->numero_dossier = $lots[0]->numero_dossier;
             $chgt->lots[0]->unique_id = $lots[0]->unique_id;
-            $chgt->lots[0]->document_ordre = $lots[0]->document_ordre;
             $chgt->lots[0]->id_document_provenance = $lots[0]->id_document_provenance;
             $chgt->lots[0]->id_document_affectation = $lots[0]->id_document_affectation;
         }
@@ -73,10 +73,17 @@ EOF;
             $chgt->lots[1]->id_document_affectation = $lots[1]->id_document_affectation;
 
             if($lots[1]->id_document_affectation && $lots[1]->document_ordre > 1) {
-                echo $chgt->_id.";Les numéro d'ordre du lot n°2 ne vont sans doute pas se suivre\n";
+                $updateAndSaveDocumentOrdre = $lots[1]->unique_id;
             }
         }
 
         $chgt->save(false);
+
+        if($updateAndSaveDocumentOrdre) {
+            LotsClient::getInstance()->updateAndSaveDocumentsOrdres($chgt->identifiant, $updateAndSaveDocumentOrdre);
+            echo $chgt->_id.";Mise à jour des documents d'ordre du lot $updateAndSaveDocumentOrdre, car il y a sans doute un trou dans les documents d'ordre\n";
+        }
+
     }
+
 }

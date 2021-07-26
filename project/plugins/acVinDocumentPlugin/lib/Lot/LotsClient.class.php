@@ -79,6 +79,20 @@ class LotsClient
         return $doc->getLot($mouvement->value->lot_unique_id);
     }
 
+    public function updateAndSaveDocumentsOrdres($declarantIdentifiant, $uniqueId) {
+        $i = 1;
+        $ids = $this->getDocumentsIds($declarantIdentifiant, $uniqueId);
+        foreach($ids as $id) {
+            $doc = DeclarationClient::getInstance()->find($id);
+            $doc->getLot($uniqueId)->document_ordre = sprintf("%02d", $i);
+            $doc->save(false);
+            $i++;
+        }
+        foreach($ids as $id) {
+            DeclarationClient::getInstance()->find($id)->save(false);
+        }
+    }
+
     public function getDocumentsIds($declarantIdentifiant, $uniqueId) {
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
 
