@@ -168,16 +168,16 @@ $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le l
 $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 du changement n'est pas changeable");
 $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le lot 1 du changement n'a pas de mouvement change src");
 
-$t->is($chgtDenomFromDrev->lots[1]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
+$t->is($chgtDenomFromDrev->lots[1]->origine_type.":Changé", DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
 $chgtDenomFromDrev->lots[1]->origine_type = null;
-$t->is($chgtDenomFromDrev->lots[1]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($chgtDenomFromDrev->lots[1]->origine_type.":Changé", DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->origine_type, DRevClient::TYPE_MODEL, "L'origine type du mouvement est drev");
 $t->is($chgtDenomFromDrev->lots[1]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
 $t->is($chgtDenomFromDrev->lots[1]->numero_archive, "00005", "Le lot changé (2d) a un nouveau numéro d'archive");
 $t->is($chgtDenomFromDrev->lots[1]->numero_dossier, $chgtDenomFromDrev->numero_archive, "Le lot changé a le même numéro de dossier que l'archive du chgmt");
 $t->is($chgtDenomFromDrev->lots[1]->unique_id, $campagne.'-00002-00005', "Le lot changé a un nouveau uniq id");
 $t->is($chgtDenomFromDrev->lots[1]->id_document, $idChgtDenomFromDrev, "Le lot du chgt a bien id_document ".$idChgtDenomFromDrev);
-$t->is($chgtDenomFromDrev->lots[1]->document_ordre, '01', "Le lot du chgt a bien comme document_ordre 02");
+$t->is($chgtDenomFromDrev->lots[1]->document_ordre, '01', "Le lot du chgt a bien comme document_ordre 01");
 $t->is($chgtDenomFromDrev->lots[1]->id_document_provenance, null, "Le lot du chgt n'a  de provenance");
 $t->is($chgtDenomFromDrev->lots[1]->affectable, $lotFromDrev->affectable, "Le lot du chgt a la même non affectation que dans la drev (réputé conforme)");
 $t->is($chgtDenomFromDrev->lots[1]->volume, $lotFromDrev->volume, "Le lot 2 du chgt a le volume total");
