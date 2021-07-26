@@ -144,8 +144,7 @@ EOF;
 
             if (self::$statut_libelle[$data[self::CSV_STATUT]] == self::STATUT_DECLASSE) {
                 $degust->save();
-                $declassmt = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $statut_date, true);
-                $declassmt->setLotOrigine($lot);
+                $declassmt = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $lot, $statut_date, true);
                 $declassmt->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
                 $declassmt->constructId();
                 $declassmt->validate($statut_date);

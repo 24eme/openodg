@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(223);
+$t = new lime_test(226);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -113,21 +113,20 @@ $campagne = $year.'-'.($year + 1);
 
 $t->comment("Changement de dénom total sur DREV");
 
+$lotFromDrev = array_shift($lots);
+
 $date = $year.'-12-10 10:10:10';
-$chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
-$chgtDenomFromDrev->constructId();
+
+$chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotFromDrev, $date, null);
 $chgtDenomFromDrev->validate();
 $chgtDenomFromDrev->save();
 $t->comment($chgtDenomFromDrev->_id);
 
 $idChgtDenomFromDrev = "CHGTDENOM-".$viti->identifiant."-".preg_replace("/[-\ :]+/", "", $date);
 $t->is($chgtDenomFromDrev->_id, $idChgtDenomFromDrev, "id du document");
-$t->is($chgtDenomFromDrev->campagne, $campagne, "le chgt de denom a la bonne campagne à $campagne");
+$t->is($chgtDenomFromDrev->campagne, $drev->campagne, "le chgt de denom a la campagne de la drev");
 $t->is($chgtDenomFromDrev->periode, $year, "le chgt de denom a la bonne periode à $year");
 $t->is($chgtDenomFromDrev->numero_archive, '00002', "le chgt de denom a bien un numero d'archive'");
-
-$lotFromDrev = array_shift($lots);
-$chgtDenomFromDrev->setLotOrigine($lotFromDrev);
 
 $t->is($chgtDenom->changement_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur par defaut est le numero logement du lot origine');
 $t->is($chgtDenomFromDrev->origine_affectable, $lotFromDrev->affectable, "L'affectation origine reprends l'affectation du lot de la DREV d'origine");
@@ -150,6 +149,7 @@ $t->is($chgtDenomFromDrev->origine_specificite, "Ma fausse 2ème dégustation", 
 
 $t->is(count($chgtDenomFromDrev->lots), 2, "Le changement étant total, on a 2 lots");
 
+$t->is($chgtDenomFromDrev->lots[0]->campagne, $drev->campagne, "Le lot non changé à la campagne de la drev");
 $t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
 $chgtDenomFromDrev->lots[0]->origine_type = null;
 $t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
@@ -168,14 +168,15 @@ $t->ok($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_DEST), "Le l
 $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 du changement n'est pas changeable");
 $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le lot 1 du changement n'a pas de mouvement change src");
 
+$t->is($chgtDenomFromDrev->lots[1]->campagne, $drev->campagne, "Le lot changé à la campagne de la drev");
 $t->is($chgtDenomFromDrev->lots[1]->origine_type.":Changé", DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
 $chgtDenomFromDrev->lots[1]->origine_type = null;
 $t->is($chgtDenomFromDrev->lots[1]->origine_type.":Changé", DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->origine_type, DRevClient::TYPE_MODEL, "L'origine type du mouvement est drev");
 $t->is($chgtDenomFromDrev->lots[1]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
-$t->is($chgtDenomFromDrev->lots[1]->numero_archive, "00005", "Le lot changé (2d) a un nouveau numéro d'archive");
+$t->is($chgtDenomFromDrev->lots[1]->numero_archive, "00004", "Le lot changé (2d) a un nouveau numéro d'archive");
 $t->is($chgtDenomFromDrev->lots[1]->numero_dossier, $chgtDenomFromDrev->numero_archive, "Le lot changé a le même numéro de dossier que l'archive du chgmt");
-$t->is($chgtDenomFromDrev->lots[1]->unique_id, $campagne.'-00002-00005', "Le lot changé a un nouveau uniq id");
+$t->is($chgtDenomFromDrev->lots[1]->unique_id, $campagne.'-00002-00004', "Le lot changé a un nouveau uniq id");
 $t->is($chgtDenomFromDrev->lots[1]->id_document, $idChgtDenomFromDrev, "Le lot du chgt a bien id_document ".$idChgtDenomFromDrev);
 $t->is($chgtDenomFromDrev->lots[1]->document_ordre, '01', "Le lot du chgt a bien comme document_ordre 01");
 $t->is($chgtDenomFromDrev->lots[1]->id_document_provenance, null, "Le lot du chgt n'a  de provenance");
@@ -233,10 +234,8 @@ $t->ok($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lo
 
 $t->comment("Changement de dénom de changement de dénom");
 
-$chgtDenomDeChgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $year.'-12-12 10:10:10', null);
-$chgtDenomDeChgtDenom->constructId();
+$chgtDenomDeChgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $chgtDenomFromDrev->lots[1], $year.'-12-12 10:10:10', null);
 $chgtDenomDeChgtDenom->save();
-$chgtDenomDeChgtDenom->setLotOrigine($chgtDenomFromDrev->lots[1]);
 $chgtDenomDeChgtDenom->changement_produit_hash = $lotFromDrev->produit_hash;
 $chgtDenomDeChgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenomDeChgtDenom->validate();
@@ -286,22 +285,22 @@ $t->is($lotFromDegust->id_document, $degustation->_id, 'le lot sélectionné pro
 $volume = $lot->volume;
 $autreLot = next($lots);
 
+$t->comment("Création d'un Changement de Denom Total depuis une dégustation");
+
 $date = $year.'-11-11 11:11:11';
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotFromDegust, $date, null);
 $chgtDenom->save();
 $t->comment($chgtDenom->_id);
 $t->is($chgtDenom->_id, "CHGTDENOM-".$viti->identifiant."-".preg_replace("/[-\ :]+/", "", $date), "id du document");
-$t->is($chgtDenom->campagne, $campagne, "le chgt de denom a la bonne campagne à $campagne");
+$t->is($chgtDenom->campagne, $drev->campagne, "le chgt de denom a la campagne de la drev");
 $t->is($chgtDenom->periode, $year, "le chgt de denom a la bonne periode à $year");
-
-$t->comment("Création d'un Changement de Denom Total depuis une dégustation");
-
-$chgtDenom->setLotOrigine($lotFromDegust);
 
 $t->is($chgtDenom->changement_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur par defaut est le numero logement du lot origine');
 $t->is($chgtDenom->origine_affectable, $lotFromDegust->affectable, "L'affectation origine reprends l'affectation du lot d'origine de la dégustation");
 $t->is($chgtDenom->changement_affectable, $lotFromDegust->affectable, "L'affectation changé reprends l'affectation du lot d'origine de la dégustation comme le changement est total");
 
+$chgtDenom->remove('changement_cepages');
+$chgtDenom->add('changement_cepages');
 $chgtDenom->changement_cepages = array('CABERNET' => $volume);
 $chgtDenom->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
@@ -520,7 +519,7 @@ $drev->addLot();
 $lot = $drev->lots[0] ;
 $lot->getUniqueId();
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, null, $papier);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lot, null, $papier);
 $chgtDenom->constructId();
 $chgtdenom_sanslot_id = $chgtDenom->_id;
 $t->comment($chgtdenom_sanslot_id);
@@ -539,6 +538,7 @@ $valuesRev = array(
 $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire de création de lot est valide");
 $form->save();
+
 $chgtDenom = ChgtDenomClient::getInstance()->find($chgtdenom_sanslot_id);
 $chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT);
 $chgtDenom->changement_volume = 12;
@@ -557,9 +557,8 @@ $t->is($chgtDenom->lots[0]->unique_id, $periode.'-'.($periode + 1 ).'-00005-0000
 $t->comment("Changement de dénomination sur une campagne différente");
 
 $date = ($year+1).'-12-10 10:10:10';
-$chgtDenomAutreCampagne = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $date, null);
+$chgtDenomAutreCampagne = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotFromDrev, $date, null);
 $chgtDenomAutreCampagne->constructId();
-$chgtDenomAutreCampagne->setLotOrigine($lotFromDrev);
 $chgtDenomAutreCampagne->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
 $chgtDenomAutreCampagne->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenomAutreCampagne->changement_volume = 1;

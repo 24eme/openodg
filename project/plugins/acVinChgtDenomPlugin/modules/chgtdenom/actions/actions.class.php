@@ -14,7 +14,7 @@ class chgtdenomActions extends sfActions
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
 
-        $this->chgtDenom = ChgtDenomClient::getInstance()->createDoc($this->etablissement->identifiant,null, $papier);
+        $this->chgtDenom = ChgtDenomClient::getInstance()->createDoc($this->etablissement->identifiant, $this->lot, null, $papier);
         $this->chgtDenom->constructId();
 
         $this->form = new ChgtDenomNewLotForm($this->lot, $this->chgtDenom);
@@ -41,17 +41,15 @@ class chgtdenomActions extends sfActions
         $this->secureEtablissement(null, $etablissement);
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
-
-        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, null, $papier);
-
-        // Format de $lot : DEGUSTATION-20210101:2020-2021-00001-00001 | document_id:unique_id
         $docid = strtok($lot, ':');
         $unique_id = strtok(':');
         $doc = acCouchdbManager::getClient()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($unique_id);
         $this->forward404Unless($lot);
-        $chgtDenom->setLotOrigine($lot);
+
+        $chgtDenom = ChgtDenomClient::getInstance()->createDoc($etablissement->identifiant, $lot, null, $papier);
+
         $chgtDenom->save();
 
         return $this->redirect('chgtdenom_edition', array('id' => $chgtDenom->_id));

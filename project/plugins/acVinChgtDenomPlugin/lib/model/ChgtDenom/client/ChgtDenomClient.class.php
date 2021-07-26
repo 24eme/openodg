@@ -72,7 +72,7 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         return $lots_filtre;
     }
 
-    public function createDoc($identifiant, $date = null, $papier = false) {
+    public function createDoc($identifiant, $lot, $date = null, $papier = false) {
         $chgtdenom = new ChgtDenom();
 
         if(!$date) {
@@ -89,6 +89,8 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
         }
         $chgtdenom->changement_type = self::CHANGEMENT_TYPE_DECLASSEMENT;
         $chgtdenom->storeDeclarant();
+        $chgtdenom->setLotOrigine($lot);
+        $chgtdenom->constructId();
 
         return $chgtdenom;
     }
