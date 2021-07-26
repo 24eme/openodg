@@ -565,5 +565,6 @@ $chgtDenomAutreCampagne->changement_produit_hash = $autreLot->produit_hash;
 $chgtDenomAutreCampagne->changement_volume = 1;
 $chgtDenomAutreCampagne->generateLots();
 
-$t->is($chgtDenomAutreCampagne->lots[0]->campagne, $lotFromDrev->campagne, "La campagne du lot non changé est celle du lot de la drev");
-$t->is($chgtDenomAutreCampagne->lots[1]->campagne, $chgtDenomAutreCampagne->campagne, "La campagne du lot changé est celle du changement de dénpmination");
+$t->is($chgtDenomAutreCampagne->campagne, $drev->campagne, "La campagne du changement de dénomination est celle de la drev");
+$t->is($chgtDenomAutreCampagne->lots[0]->campagne, $drev->campagne, "La campagne du lot non changé est celle de la drev");
+$t->is($chgtDenomAutreCampagne->lots[1]->campagne, $drev->campagne, "La campagne du lot changé est celle de la drev");
