@@ -768,7 +768,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 $match = $match && $this->produitFilter($filter, $chgtdenom);
             } elseif (strpos($filter, '/millesime/courant') !== false) {
                 // filtre sur millesime
-                $isMillesimeCourant = ($this->changement_millesime == substr($this->campagne,0, 4));
+                $isMillesimeCourant = ($this->changement_millesime == substr($this->getCampagneByDate(),0, 4));
                 if(strpos($filter, 'NOT') !== false) {
                     $isMillesimeCourant = !$isMillesimeCourant;
                 }
