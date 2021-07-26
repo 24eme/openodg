@@ -31,9 +31,9 @@ th {
           <tbody>
             <tr>
               <th><small>Nombre de lots</small></th>
-              <td><small><?php echo $degustation->getNbLotsConformes() + $degustation->getNbLotsNonConformes() ?></small></td>
-              <td><small><?php echo $degustation->getNbLotsConformes() ?></small></td>
-              <td><small><?php echo $degustation->getNbLotsNonConformes() ?></small></td>
+              <td><small><?php echo $degustation->getNbLotsConformes(true) + $degustation->getNbLotsNonConformes(true) ?></small></td>
+              <td><small><?php echo $degustation->getNbLotsConformes(true) ?></small></td>
+              <td><small><?php echo $degustation->getNbLotsNonConformes(true) ?></small></td>
             </tr>
             <tr>
               <th><small>Volumes total (hl)</small></th>
