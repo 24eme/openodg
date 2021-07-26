@@ -44,7 +44,7 @@ EOF;
                 }
             }
         }
-
+        $chgt->setLotOrigine($chgt->getLotOrigine(), false);
 
         $lots = $chgt->lots->toJson();
         $chgt->campagne = null;
