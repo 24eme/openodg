@@ -370,12 +370,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $lot = new stdClass;
         $lot->document_ordre = "00";
         $lot->volume = $this->origine_volume;
+        $lot->campagne = $this->campagne;
       }
       $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
       $lot->millesime = $this->origine_millesime;
       $lot->produit_libelle = $this->origine_produit_libelle;
       $lot->produit_hash = $this->origine_produit_hash;
-      $lot->campagne = $this->campagne;
       $lot->declarant_nom = $this->declarant->raison_sociale;
       $lot->declarant_identifiant = $this->identifiant;
 
@@ -397,6 +397,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           }
           $this->updateCepageCoherencyWithVolume($lotOrig);
           $lots[] = $lotOrig;
+          $lot->campagne = $this->campagne;
           $lot->numero_archive = null;
           $lot->unique_id = null;
           $lot->document_ordre = '01';
@@ -405,7 +406,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           $lot->volume = $this->changement_volume;
           $lot->produit_hash = $this->changement_produit_hash;
           $lot->produit_libelle = $this->changement_produit_libelle;
-          $lot->cepages = $this->changement_cepages;
+          $lot->cepages = $this->changement_cepages->getData();
 
           if ($this->exist('changement_affectable')) {
               $lot->affectable = $this->changement_affectable;
@@ -434,7 +435,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     private function updateCepageCoherencyWithVolume($lot) {
-        if (!$lot->cepages) {
+        if (!$lot->cepages || !count((array) $lot->cepages)) {
             return $lot;
         }
         if (!$lot->volume) {
