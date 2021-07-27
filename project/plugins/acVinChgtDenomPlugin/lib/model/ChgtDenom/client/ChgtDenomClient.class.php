@@ -4,7 +4,6 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "ChgtDenom";
     const TYPE_COUCHDB = "CHGTDENOM";
-    const ORIGINE_LOT = "DREV";
     const CHANGEMENT_TYPE_CHANGEMENT = "CHANGEMENT";
     const CHANGEMENT_TYPE_DECLASSEMENT = "DECLASSEMENT";
 
