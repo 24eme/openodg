@@ -862,7 +862,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $i = 0;
         foreach(LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id) as $id) {
             $i++;
-            if($id != $this->getDocument()->_id) {
+            if(preg_replace("/-M[0-9]+$/", "", $id) != preg_replace("/-M[0-9]+$/", "", $this->getDocument()->_id)) {
                 continue;
             }
 
