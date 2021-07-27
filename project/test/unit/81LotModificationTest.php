@@ -165,7 +165,7 @@ $t->is($lotDegustation->millesime, $values['millesime'],"Le millésime de la dé
 $t->is($lotDegustation->destination_type, $values['destination_type'],"La destination type de la dégustation a évolué");
 $t->is($lotDegustation->destination_date, date('Y-m-d'),"La date de destination de la dégustation a évolué");
 $t->is($lotDegustation->specificite, $values['specificite'],"La specificité de la dégustation a évolué");
-$t->is($lotDegustation->date, $degustation->date, "La date du lot est la même");
+$t->is($lotDegustation->date, preg_replace("/ .*$/", "", $degustation->date), "La date du lot est la même");
 $t->is($lotDegustation->id_document_provenance, $drevM01->_id, "Le document de provenance du lot de dégustation est la drev modificatrice");
 
 $lotFinal = LotsClient::getInstance()->find($lot->declarant_identifiant, $lot->campagne, $lot->numero_dossier, $lot->numero_archive);

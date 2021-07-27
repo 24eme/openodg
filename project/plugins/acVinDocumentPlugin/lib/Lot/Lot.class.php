@@ -180,6 +180,11 @@ abstract class Lot extends acCouchdbDocumentTree
         return  array('numero_logement_operateur', 'millesime', 'volume', 'destination_date', 'elevage', 'specificite', 'produit_hash');
     }
 
+    public function setDate($date) {
+
+        return $this->_set('date', preg_replace("/[ T].*$/", "", $date));
+    }
+
     public function isEmpty() {
       $defaults = $this->getDefaults();
       foreach($this->getFieldsToFill() as $field) {
