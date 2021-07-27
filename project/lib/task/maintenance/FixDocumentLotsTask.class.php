@@ -36,6 +36,8 @@ EOF;
     $doc = acCouchdbManager::getClient()->find($arguments['doc_id']);
 
     if($doc->exist('changement_origine_lot_unique_id')) {
+        $doc->campagne = null;
+        $doc->getCampagne();
         $doc->changement_origine_lot_unique_id = preg_replace('/a+$/', '', $doc->changement_origine_lot_unique_id);
     }
 
