@@ -59,6 +59,8 @@ EOF;
         $lots = $chgt->lots->toJson();
 
         if(count($lots) == 1) {
+            $documentOrdresToRewrite[] = $lots[0]->unique_id;
+            $lots[0]->document_ordre = sprintf("%0d2", 99);
             $lots[1] = $lots[0];
             $lots[0] = null;
         }
@@ -87,15 +89,15 @@ EOF;
                 $renameLot = $lots[1]->unique_id;
             }
             if($lots[1]->id_document_affectation && $lots[1]->document_ordre > 1) {
-                $updateAndSaveDocumentOrdre = $lots[1]->unique_id;
+                $documentOrdresToRewrite[] = $lots[1]->unique_id;
             }
         }
 
         $chgt->save(false);
 
-        if($updateAndSaveDocumentOrdre) {
-            LotsClient::getInstance()->updateAndSaveDocumentsOrdres($chgt->identifiant, $updateAndSaveDocumentOrdre);
-            echo $chgt->_id.";Mise à jour des documents d'ordre du lot $updateAndSaveDocumentOrdre, car il y a sans doute un trou dans les documents d'ordre\n";
+        foreach($documentOrdresToRewrite as $uniqueId) {
+            LotsClient::getInstance()->updateAndSaveDocumentsOrdres($chgt->identifiant, $uniqueId);
+            echo $chgt->_id.";Mise à jour des documents d'ordre du lot $uniqueId, car il y a sans doute un trou dans les documents d'ordre\n";
         }
 
         if($renameLot) {
