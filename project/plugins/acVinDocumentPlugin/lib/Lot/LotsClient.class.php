@@ -80,11 +80,20 @@ class LotsClient
     }
 
     public function getDocumentsIdsByDate($declarantIdentifiant, $uniqueId) {
+
+        $typePriorites = array(
+            DRevClient::TYPE_MODEL => "01",
+            ConditionnementClient::TYPE_MODEL => "01",
+            TransactionClient::TYPE_MODEL => "01",
+            DegustationClient::TYPE_MODEL => "02",
+            ChgtDenomClient::TYPE_MODEL => "03",
+        );
+
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
 
         $documents = array();
         foreach($mouvements->rows as $mouvement) {
-            $documents[$mouvement->value->date.$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
+            $documents[$mouvement->value->date.$typePriorites[$mouvement->value->document_type].$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
         }
 
         ksort($documents);

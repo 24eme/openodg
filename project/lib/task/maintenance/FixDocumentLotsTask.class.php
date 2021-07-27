@@ -43,6 +43,9 @@ EOF;
 
     if($doc->exist('lots')) {
         foreach($doc->lots as $lot) {
+            if(!$lot->unique_id) {
+                continue;
+            }
             if($doc->type == ChgtDenomClient::TYPE_MODEL) {
                 $lot->campagne = $doc->campagne;
             }
