@@ -78,7 +78,6 @@ EOF;
             $chgt->lots[0]->id_document_affectation = $lots[0]->id_document_affectation;
         } else {
             $documentOrdresToRewrite[] = $chgt->lots[0]->unique_id;
-            $chgt->lots[0]->document_ordre = sprintf("%0d2", 99);
         }
 
         if(isset($chgt->lots[1])) {
