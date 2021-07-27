@@ -1410,7 +1410,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function save($saveDependants = true) {
         $this->archiver();
         $this->updateAddressCurrentLots();
-        $this->generateMouvementsLots();
+        if ($this->isValideeOdg()) {
+            $this->generateMouvementsLots();
+        }
 
         parent::save();
 

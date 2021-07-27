@@ -96,7 +96,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $date = date('Y-m-d');
         }
         $this->validation = $date;
-        $this->generateLots();
     }
 
     public function devalidate() {
@@ -105,7 +104,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
         $this->validation = null;
         $this->validation_odg = null;
+        $this->clearLots();
         $this->clearMouvementsFactures();
+        $this->clearMouvementsLots();
+        $this->fillDocToSaveFromLots();
         if($this->exist('etape')) {
             $this->etape = null;
         }
@@ -317,12 +319,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function save($saveDependants = true) {
         $this->archiver();
-        $this->generateMouvementsLots();
-
+        if ($this->isApprouve()) {
+            if (!count($this->lots)) {
+                $this->generateLots();
+            }
+            $this->generateMouvementsLots();
+            $this->fillDocToSaveFromLots();
+        }
         parent::save();
 
-        if (count($this->lots) && $saveDependants) {
-            $this->fillDocToSaveFromLots();
+        if ($saveDependants) {
             $this->saveDocumentsDependants();
         }
     }
