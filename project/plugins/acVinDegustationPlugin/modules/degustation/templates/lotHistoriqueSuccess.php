@@ -76,6 +76,9 @@
                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_affectable', array('id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Retirer le "réputé conforme"</a></li>
                        <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
                 <?php endif; ?>
+                <?php if ($mouvement->value->statut == Lot::STATUT_CONFORME): ?>
+                    <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
+                <?php endif; ?>
                 <?php if ($mouvement->value->statut == Lot::STATUT_ATTENTE_PRELEVEMENT): ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous le retrait de la dégustation de ce lot pour qu\' il soit affectable à un autre moment ?')">Retirer de la dégustation</a></li>
                 <?php endif; ?>
