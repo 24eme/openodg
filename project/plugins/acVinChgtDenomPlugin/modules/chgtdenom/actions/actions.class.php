@@ -120,6 +120,7 @@ class chgtdenomActions extends sfActions
 
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+        $this->chgtDenom->generateLots();
         $this->secureIsValide($this->chgtDenom);
         $this->isAdmin = $this->getUser()->isAdmin();
 

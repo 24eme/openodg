@@ -55,8 +55,6 @@ class ChgtDenomForm extends acCouchdbObjectForm
               $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
           }
         }
-
-        $this->getObject()->generateLots();
     }
 
     protected function updateDefaultsFromObject() {

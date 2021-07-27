@@ -341,7 +341,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
         public function save($saveDependants = true) {
             $this->archiver();
-            $this->generateMouvementsLots();
+            if ($this->isValideeOdg()) {
+                $this->generateMouvementsLots();
+            }
 
             parent::save();
 

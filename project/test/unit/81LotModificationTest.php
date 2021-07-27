@@ -22,7 +22,8 @@ function countMouvements($degustation) {
 
 $t = new lime_test();
 
-$campagne = (date('Y')-1)."";
+$annee = (date('Y')-1)."";
+$campagne = $annee.'-'.($annee + 1);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
 
@@ -52,6 +53,16 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $chgtdenom->delete(false);
 }
 
+$template = TemplateFactureClient::getInstance()->findByCampagne($campagne);
+foreach($template->cotisations as $kg => $gcotis) {
+    foreach($gcotis->details as $kc => $cotis) {
+        if (!preg_match('/detail_identifiant/', $cotis->libelle)) {
+            $cotis->libelle .= ' %detail_identifiant%';
+        }
+    }
+}
+$template->save();
+
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
 $produitconfig2 = null;
@@ -75,7 +86,7 @@ $t->comment("Préparation de la DRev");
 
 $dateValidation = new DateTime();
 $dateValidation = $dateValidation->modify('-1 month')->format('Y-m-d');
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $annee);
 $drev->save();
 $produit1 = $drev->addProduit($produitconfig1->getHash());
 $produit1->superficie_revendique = 200;
@@ -195,5 +206,54 @@ $t->is($mouvementINAOM00->quantite, 1, "La quantité du mouvement de facturation
 $t->is($mouvementINAOM00->detail_identifiant, $lot->numero_dossier, "Le numéro de dossier facturé de la M00 est le même que celui du lot");
 $t->is($mouvementINAOM01->quantite, 10, "La quantité du mouvement de facturation de la M01 est de 10");
 $t->is($mouvementINAOM01->detail_identifiant, $lot->numero_dossier, "Le numéro de dossier facturé de la M01 est le même que celui du lot");
+$t->ok(strpos($mouvementINAOM01->detail_libelle, $lot->numero_dossier) !== false, "le détail identifiant est bien dans le libellé");
 
 
+$t->comment('Nouvelle modification du lot');
+
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
+$form = new LotModificationForm($lot);
+
+$values = array();
+$values['volume'] = 11;
+$values['produit_hash'] = $produitconfig1->getHash();
+$values['numero_logement_operateur'] = "A";
+$values['millesime'] = "2021";
+$values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
+$values['destination_date'] = date('d/m/Y');
+$values['specificite'] = 'bio';
+$values['cepage_0'] = 'CHENIN B';
+$values['repartition_hl_0'] = 11;
+$values['_revision'] = $lot->getDocument()->_rev;
+
+$form->bind($values);
+$t->ok($form->isValid(), "Le formulaire est valide");
+$form->save();
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
+$drevM02 = $lot->getDocument();
+$t->ok(preg_match('/M02$/', $drevM02->_id), "c'est bien la M02 qui représente maintenant le lot");
+$t->is($lot->produit_hash, $produitconfig1->getHash(), "c'est bien le premier produit qui est remis dans le lot");
+$t->is(count($drevM02->mouvements), 0, "la M02 n'a pas de mouvement facturable");
+
+
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
+$form = new LotModificationForm($lot);
+
+$values = array();
+$values['volume'] = 11;
+$values['produit_hash'] = $produitconfig1->getHash();
+$values['numero_logement_operateur'] = "A";
+$values['millesime'] = "2021";
+$values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
+$values['destination_date'] = date('d/m/Y');
+$values['specificite'] = 'bio';
+$values['cepage_0'] = 'CHENIN B';
+$values['repartition_hl_0'] = 11;
+$values['_revision'] = $lot->getDocument()->_rev;
+
+$form->bind($values);
+$t->ok($form->isValid(), "Le formulaire est valide");
+$form->save();
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
+$drevresteM02 = $lot->getDocument();
+$t->ok(preg_match('/M02$/', $drevresteM02->_id), "Une non modification du lot, ne change pas la version de la DREV qui reste M02");
