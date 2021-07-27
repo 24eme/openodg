@@ -44,7 +44,17 @@ EOF;
                 }
             }
         }
-        $chgt->setLotOrigine($chgt->getLotOrigine(), false);
+
+        $lotOrigine = $chgt->getLotOrigine();
+
+        $chgt->origine_millesime = $lotOrigine->millesime;
+        $chgt->origine_volume = $lotOrigine->volume;
+        $chgt->origine_specificite = $lotOrigine->specificite;
+        $chgt->origine_produit_hash = $lotOrigine->produit_hash;
+        $chgt->origine_cepages = $lotOrigine->cepages;
+        $chgt->origine_produit_libelle = $lotOrigine->produit_libelle;
+        $chgt->origine_numero_logement_operateur = $lotOrigine->numero_logement_operateur;
+        $chgt->origine_affectable = $lotOrigine->affectable;
 
         $lots = $chgt->lots->toJson();
 
