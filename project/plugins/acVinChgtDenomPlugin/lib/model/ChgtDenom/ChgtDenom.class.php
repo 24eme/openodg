@@ -166,11 +166,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
         $this->fillDocToSaveFromLots();
 
+        $this->changement_origine_id_document = $lot->id_document;
+        $this->changement_origine_lot_unique_id = $lot->unique_id;
+
         $this->campagne = null;
         $this->getCampagne();
 
-        $this->changement_origine_id_document = $lot->id_document;
-        $this->changement_origine_lot_unique_id = $lot->unique_id;
         $this->changement_millesime = $lot->millesime;
         $this->changement_volume = $lot->volume;
         $this->changement_specificite = preg_replace('/ *\d+ème dégustation/', '', $lot->specificite);
