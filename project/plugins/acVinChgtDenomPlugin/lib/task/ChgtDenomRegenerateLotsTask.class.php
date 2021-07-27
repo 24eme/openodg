@@ -98,11 +98,6 @@ EOF;
 
         $chgt->save(false);
 
-        foreach($documentOrdresToRewrite as $uniqueId) {
-            LotsClient::getInstance()->updateAndSaveDocumentsOrdres($chgt->identifiant, $uniqueId);
-            echo $chgt->_id.";Mise à jour des documents d'ordre du lot $uniqueId, car il y a sans doute un trou dans les documents d'ordre\n";
-        }
-
         if($renameLot) {
             foreach(LotsClient::getInstance()->getDocumentsIds($chgt->identifiant, $renameLot) as $id) {
                 $doc = DeclarationClient::getInstance()->find($id);

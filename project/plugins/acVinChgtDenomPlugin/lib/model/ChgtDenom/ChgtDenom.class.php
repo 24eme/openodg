@@ -214,7 +214,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getCampagne() {
-        if(is_null($this->campagne)) {
+        if(is_null($this->_get('campagne'))) {
             $firstOrigineLot = $this->getFirstOrigineLot();
             if($firstOrigineLot) {
                 $this->campagne = $firstOrigineLot->campagne;

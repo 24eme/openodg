@@ -79,21 +79,20 @@ class LotsClient
         return $doc->getLot($mouvement->value->lot_unique_id);
     }
 
-    public function updateAndSaveDocumentsOrdres($declarantIdentifiant, $uniqueId) {
-        $i = 1;
-        $ids = $this->getDocumentsIds($declarantIdentifiant, $uniqueId);
-        foreach($ids as $id) {
-            $doc = DeclarationClient::getInstance()->find($id);
-            $doc->getLot($uniqueId)->document_ordre = sprintf("%02d", $i);
-            $doc->save(false);
-            $i++;
+    public function getDocumentsIdsByDate($declarantIdentifiant, $uniqueId) {
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
+
+        $documents = array();
+        foreach($mouvements->rows as $mouvement) {
+            $documents[$mouvement->value->date.$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
         }
-        foreach($ids as $id) {
-            DeclarationClient::getInstance()->find($id)->save(false);
-        }
+
+        ksort($documents);
+
+        return $documents;
     }
 
-    public function getDocumentsIds($declarantIdentifiant, $uniqueId) {
+    public function getDocumentsIdsByOrdre($declarantIdentifiant, $uniqueId) {
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
 
         $documents = array();
@@ -107,7 +106,7 @@ class LotsClient
     }
 
     public function modifyAndSave($lot) {
-        $ids = $this->getDocumentsIds($lot->declarant_identifiant, $lot->unique_id);
+        $ids = $this->getDocumentsIdsByOrdre($lot->declarant_identifiant, $lot->unique_id);
 
         $nbDegustation = 0;
         foreach($ids as $id) {

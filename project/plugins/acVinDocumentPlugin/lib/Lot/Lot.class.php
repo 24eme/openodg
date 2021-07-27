@@ -853,6 +853,20 @@ abstract class Lot extends acCouchdbDocumentTree
 
     abstract public function getDocumentType();
 
+    public function getDocumentOrdreCalcule() {
+        $i = 0;
+        foreach(LotsClient::getInstance()->getDocumentsIdsByDate($this->declarant_identifiant, $this->unique_id) as $id) {
+            $i++;
+            if($id != $this->getDocument()->_id) {
+                continue;
+            }
+
+            return sprintf("%02d", $i);
+        }
+
+        return sprintf("%02d", ++$i);
+    }
+
     public function getVersion() {
 
         return $this->getDocument()->getVersion();

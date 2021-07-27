@@ -47,6 +47,11 @@ EOF;
                 $lot->campagne = $doc->campagne;
             }
             $lot->origine_type = null;
+            $documentOrdreCalcule = $lot->getDocumentOrdreCalcule();
+            if($documentOrdreCalcule != $lot->document_ordre) {
+                echo $doc->_id.":".$lot->unique_id.";Le document d'ordre passe de ".$lot->document_ordre." à ".$documentOrdreCalcule."\n";
+            }
+            $lot->document_ordre = $documentOrdreCalcule;
             $lot->numero_archive = preg_replace('/a+$/', '', $lot->numero_archive);
         }
     }
