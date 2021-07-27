@@ -59,8 +59,6 @@ EOF;
         $lots = $chgt->lots->toJson();
 
         if(count($lots) == 1) {
-            $documentOrdresToRewrite[] = $lots[0]->unique_id;
-            $lots[0]->document_ordre = sprintf("%0d2", 99);
             $lots[1] = $lots[0];
             $lots[0] = null;
         }
@@ -76,6 +74,9 @@ EOF;
             $chgt->lots[0]->unique_id = $lots[0]->unique_id;
             $chgt->lots[0]->id_document_provenance = $lots[0]->id_document_provenance;
             $chgt->lots[0]->id_document_affectation = $lots[0]->id_document_affectation;
+        } else {
+            $documentOrdresToRewrite[] = $chgt->lots[0]->unique_id;
+            $chgt->lots[0]->document_ordre = sprintf("%0d2", 99);
         }
 
         if(isset($chgt->lots[1])) {
