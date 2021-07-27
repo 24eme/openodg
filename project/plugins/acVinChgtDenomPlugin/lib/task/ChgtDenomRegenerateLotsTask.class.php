@@ -99,7 +99,7 @@ EOF;
         $chgt->save(false);
 
         if($renameLot) {
-            foreach(LotsClient::getInstance()->getDocumentsIds($chgt->identifiant, $renameLot) as $id) {
+            foreach(LotsClient::getInstance()->getDocumentsIdsByOrdre($chgt->identifiant, $renameLot) as $id) {
                 $doc = DeclarationClient::getInstance()->find($id);
                 $lot = $doc->getLot($renameLot);
                 if($lot->produit_hash != $chgt->lots[1]->produit_hash) {
