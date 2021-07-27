@@ -101,10 +101,10 @@ EOF;
         if($renameLot) {
             foreach(LotsClient::getInstance()->getDocumentsIds($chgt->identifiant, $renameLot) as $id) {
                 $doc = DeclarationClient::getInstance()->find($id);
-                $lot = $doc->getLot($uniqueId);
+                $lot = $doc->getLot($renameLot);
                 $lot->numero_archive = preg_replace('/a{1}$/', 'b', $lot->numero_archive);
                 $doc->save(false);
-                echo $doc->_id.";Réécriture du numéro de lot $renameLot en $lot->unique_id\n";
+                echo $doc->_id.";Réécriture du numéro de lot $renameLot en ".$lot->unique_id."\n";
             }
         }
 
