@@ -92,5 +92,5 @@
   </div>
 
     <div>
-        <a href="<?php echo url_for('degustation'); ?>" class=" btn btn-default" alt="Retour"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        <a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $lot->campagne)); ?>" class=" btn btn-default" alt="Retour"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
