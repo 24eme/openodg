@@ -88,8 +88,8 @@ EOF;
             $chgt->lots[1]->unique_id = $lots[1]->unique_id;
             $chgt->lots[1]->id_document_provenance = $lots[1]->id_document_provenance;
             $chgt->lots[1]->id_document_affectation = $lots[1]->id_document_affectation;
-            if(preg_match("/a$/", $lots[1]->numero_archive)) {
-                $renameLot = $lots[1]->unique_id;
+            if(preg_match("/a$/", $chgt->lots[1]->numero_archive)) {
+                $renameLot = $chgt->lots[1]->unique_id;
             }
             if($lots[1]->id_document_affectation && $lots[1]->document_ordre > 1) {
                 $documentOrdresToRewrite[] = $lots[1]->unique_id;
@@ -107,6 +107,9 @@ EOF;
             foreach(LotsClient::getInstance()->getDocumentsIds($chgt->identifiant, $renameLot) as $id) {
                 $doc = DeclarationClient::getInstance()->find($id);
                 $lot = $doc->getLot($renameLot);
+                if($lot->produit_hash != $chgt->lots[1]->produit_hash) {
+                    continue;
+                }
                 $lot->numero_archive = preg_replace('/a{1}$/', 'c', $lot->numero_archive);
                 $doc->save(false);
                 echo $doc->_id.";Réécriture du numéro de lot $renameLot en ".$lot->unique_id."\n";
