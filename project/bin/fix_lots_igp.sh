@@ -13,6 +13,8 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/archivage/_view/all?redu
 # Mise à jour des changements de dénominations
 cat /tmp/all_docs_igparlespreprod | grep CHGTDENOM | while read id; do echo $id; echo php symfony chgtdenom:regenerate-lots $id $SYMFONYTASKOPTIONS; done
 # Première correction des lots
-cat /tmp/all_docs_igparlespreprod | while read id; do echo "$id"; php symfony fix:document-lots $id $SYMFONYTASKOPTIONS; done
+cat /tmp/all_docs_$COUCHBASE | while read id; do echo "$id"; php symfony fix:document-lots $id $SYMFONYTASKOPTIONS; done
 # Second passage pour cohérence des numéros de lots
-cat /tmp/all_docs_igparlespreprod | while read id; do echo "$id"; php symfony fix:document-lots $id $SYMFONYTASKOPTIONS; done
+cat /tmp/all_docs_$COUCHBASE | while read id; do echo "$id"; php symfony fix:document-lots $id $SYMFONYTASKOPTIONS; done
+# Troisième passage par prudence cohérence des numéros de lots
+cat /tmp/all_docs_$COUCHBASE | while read id; do echo "$id"; php symfony fix:document-lots $id $SYMFONYTASKOPTIONS; done

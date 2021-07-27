@@ -49,7 +49,9 @@ EOF;
             if($doc->type == ChgtDenomClient::TYPE_MODEL) {
                 $lot->campagne = $doc->campagne;
             }
-            $lot->date = $lot->date;
+            $date = $lot->date;
+            $lot->date = $date;
+            $lot->getDate();
             $lot->origine_type = null;
             $documentOrdreCalcule = $lot->getDocumentOrdreCalcule();
             if($documentOrdreCalcule != $lot->document_ordre) {
