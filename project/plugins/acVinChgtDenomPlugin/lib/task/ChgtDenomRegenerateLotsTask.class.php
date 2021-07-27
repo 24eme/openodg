@@ -66,6 +66,8 @@ EOF;
         $chgt->getCampagne();
         $chgt->generateLots();
 
+        $documentOrdresToRewrite = array();
+
         if($lots[0]) {
             $chgt->lots[0]->document_ordre = $lots[0]->document_ordre;
             $chgt->lots[0]->campagne = $lots[0]->campagne;
@@ -105,7 +107,7 @@ EOF;
             foreach(LotsClient::getInstance()->getDocumentsIds($chgt->identifiant, $renameLot) as $id) {
                 $doc = DeclarationClient::getInstance()->find($id);
                 $lot = $doc->getLot($renameLot);
-                $lot->numero_archive = preg_replace('/a{1}$/', 'b', $lot->numero_archive);
+                $lot->numero_archive = preg_replace('/a{1}$/', 'c', $lot->numero_archive);
                 $doc->save(false);
                 echo $doc->_id.";Réécriture du numéro de lot $renameLot en ".$lot->unique_id."\n";
             }
