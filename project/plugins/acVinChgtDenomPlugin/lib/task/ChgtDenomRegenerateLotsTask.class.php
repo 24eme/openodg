@@ -83,7 +83,9 @@ EOF;
             $chgt->lots[1]->unique_id = $lots[1]->unique_id;
             $chgt->lots[1]->id_document_provenance = $lots[1]->id_document_provenance;
             $chgt->lots[1]->id_document_affectation = $lots[1]->id_document_affectation;
-
+            if(preg_match("/a$/", $lots[1]->numero_archive)) {
+                $renameLot = $lots[1]->unique_id;
+            }
             if($lots[1]->id_document_affectation && $lots[1]->document_ordre > 1) {
                 $updateAndSaveDocumentOrdre = $lots[1]->unique_id;
             }
@@ -94,6 +96,16 @@ EOF;
         if($updateAndSaveDocumentOrdre) {
             LotsClient::getInstance()->updateAndSaveDocumentsOrdres($chgt->identifiant, $updateAndSaveDocumentOrdre);
             echo $chgt->_id.";Mise à jour des documents d'ordre du lot $updateAndSaveDocumentOrdre, car il y a sans doute un trou dans les documents d'ordre\n";
+        }
+
+        if($renameLot) {
+            foreach(LotsClient::getInstance()->getDocumentsIds($chgt->identifiant, $renameLot) as $id) {
+                $doc = DeclarationClient::getInstance()->find($id);
+                $lot = $doc->getLot($uniqueId);
+                $lot->numero_archive = preg_replace('/a{1}$/', 'b', $lot->numero_archive);
+                $doc->save(false);
+                echo $doc->_id.";Réécriture du numéro de lot $renameLot en $lot->unique_id\n";
+            }
         }
 
     }
