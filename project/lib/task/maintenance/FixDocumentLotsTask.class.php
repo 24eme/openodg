@@ -43,6 +43,10 @@ EOF;
 
     if($doc->exist('lots')) {
         foreach($doc->lots as $lot) {
+            if($doc->type == ChgtDenomClient::TYPE_MODEL) {
+                $lot->campagne = null;
+                $lot->getCampagne();
+            }
             $lot->origine_type = null;
             $lot->numero_archive = preg_replace('/a+$/', '', $lot->numero_archive);
         }
