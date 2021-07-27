@@ -68,6 +68,7 @@ EOF;
 
         if($lots[0]) {
             $chgt->lots[0]->document_ordre = $lots[0]->document_ordre;
+            $chgt->lots[0]->campagne = $lots[0]->campagne;
             $chgt->lots[0]->numero_archive = $lots[0]->numero_archive;
             $chgt->lots[0]->numero_dossier = $lots[0]->numero_dossier;
             $chgt->lots[0]->unique_id = $lots[0]->unique_id;
@@ -76,6 +77,7 @@ EOF;
         }
 
         if(isset($chgt->lots[1])) {
+            $chgt->lots[1]->campagne = $lots[1]->campagne;
             $chgt->lots[1]->numero_archive = $lots[1]->numero_archive;
             $chgt->lots[1]->numero_dossier = $lots[1]->numero_dossier;
             $chgt->lots[1]->unique_id = $lots[1]->unique_id;
