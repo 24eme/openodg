@@ -763,7 +763,7 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->document_ordre = $this->getDocumentOrdre();
         $mouvement->document_type = $this->getDocumentType();
         $mouvement->document_id = $this->getDocument()->_id;
-        $mouvement->origine_type = $this->getOrigineType();
+        $mouvement->initial_type = $this->getInitialType();
         $mouvement->lot_unique_id = $this->getUniqueId();
         $mouvement->lot_hash = $this->getHash();
         $mouvement->declarant_identifiant = $this->declarant_identifiant;
@@ -813,23 +813,23 @@ abstract class Lot extends acCouchdbDocumentTree
         return LotsClient::getInstance()->find($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $numero_archive, sprintf("%02d", $documentOrdre));
     }
 
-    public function getOrigineType() {
-        if(is_null($this->_get('origine_type'))) {
+    public function getInitialType() {
+        if(is_null($this->_get('initial_type'))) {
             if ($this->document_ordre != 1) {
                 $original = $this->getLotDocumentOrdre(1);
                 if ($original) {
-                    $this->origine_type = $original->getOrigineType();
+                    $this->initial_type = $original->getInitialType();
                 }
             }else{
-                $this->origine_type = $this->getDocument()->type;
+                $this->initial_type = $this->getDocument()->type;
             }
         }
 
-        return $this->_get('origine_type');
+        return $this->_get('initial_type');
     }
 
     public function updateDocumentDependances() {
-        $this->getOrigineType();
+        $this->getInitialType();
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
             $this->id_document_affectation = $lotAffectation->getDocument()->_id;

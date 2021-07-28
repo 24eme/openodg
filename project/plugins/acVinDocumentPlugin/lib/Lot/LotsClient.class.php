@@ -4,7 +4,7 @@ class LotsClient
 {
     protected static $self = null;
 
-    const ORIGINE_TYPE_CHANGE = "Changé";
+    const INITIAL_TYPE_CHANGE = "Changé";
 
     public static function getInstance() {
         if(is_null(self::$self)) {

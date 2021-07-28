@@ -3,12 +3,12 @@
 
 class TransactionLot extends BaseTransactionLot
 {
-    public function getOrigineType() {
-        if(is_null($this->_get('origine_type'))) {
-            $this->origine_type = $this->getDocumentType();
+    public function getInitialType() {
+        if(is_null($this->_get('initial_type'))) {
+            $this->initial_type = $this->getDocumentType();
         }
 
-        return $this->_get('origine_type');
+        return $this->_get('initial_type');
     }
 
     public function getDocumentType() {
