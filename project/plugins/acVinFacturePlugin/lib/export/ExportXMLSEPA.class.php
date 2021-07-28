@@ -157,7 +157,7 @@ class ExportXMLSEPA {
       if($paiement->date == $d && ($paiement->type_reglement == FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) && ($paiement->execute == false || !$this->not_execute_only) ){
         $drctdbttxinf = $pmtInf->addChild("DrctDbtTxInf");
         $pmtid = $drctdbttxinf->addChild("PmtId");
-        $pmtid->addChild("EndToEndId", substr("Facture ".iconv('utf-8', 'us-ascii//TRANSLIT', Organisme::getInstance()->getNom()), 0, 35)); //intitule pour l'ODG
+        $pmtid->addChild("EndToEndId", "Facture ".$facture->numero_odg); //intitule pour l'ODG
         $montant = $drctdbttxinf->addChild("InstdAmt",$paiement->montant);  //montant
         $montant->addAttribute('Ccy', "EUR");
         $drctdbttx = $drctdbttxinf->addChild("DrctDbtTx");
@@ -173,7 +173,7 @@ class ExportXMLSEPA {
         $idDbtracct = $dbtracct->addChild('Id');
         $idDbtracct->addChild('IBAN',$mandatSepa->getIban()); //son iban
         $rmtinf = $drctdbttxinf->addChild("RmtInf");
-        $rmtinf->addChild("Ustrd","Facture"); //libelle bancaire pour lui
+        $rmtinf->addChild("Ustrd","Facture ".$facture->numero_odg); //libelle bancaire pour lui
       }
     }
   }
