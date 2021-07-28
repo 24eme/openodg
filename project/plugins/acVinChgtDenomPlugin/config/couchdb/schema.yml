@@ -29,6 +29,7 @@ ChgtDenom:
             '*': { type: float }
       changement_volume: { type: float }
       changement_affectable: {}
+      origine_statut: { }
       origine_produit_hash: {}
       origine_produit_libelle: { }
       origine_millesime: { }
