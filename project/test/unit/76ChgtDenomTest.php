@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(251);
+$t = new lime_test(255);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -308,7 +308,7 @@ $degustation->lots[1]->statut = Lot::STATUT_CONFORME;
 $degustation->lots[2]->statut = Lot::STATUT_CONFORME;
 $degustation->save();
 
-$t->comment("Création d'un Changement de Denom Total depuis une dégustation non conforme");
+$t->comment("Création d'un Changement de Denom Total depuis une dégustation");
 
 $lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null);
 $t->is(count($lots), 3, "3 mouvements disponibles au changement de dénomination");
@@ -370,8 +370,10 @@ $t->is($lotFromChgmtRes->statut, Lot::STATUT_NONAFFECTABLE, "Le statut du lot ch
 
 $t->ok($lotFromChgmtOrig->getMouvement(Lot::STATUT_CHANGE_DEST), "statut du lot change dest");
 $t->ok($lotFromChgmtOrig->getMouvement(Lot::STATUT_NONAFFECTABLE), "statut du lot affectable (provenant d'une non conformité)");
+$t->ok($lotFromChgmtOrig->getMouvement(Lot::STATUT_NONCONFORME), "mouvement du lot non conforme");
 $t->ok($lotFromChgmtRes->getMouvement(Lot::STATUT_CHANGEABLE), "statut du lot changeable");
 $t->ok($lotFromChgmtRes->getMouvement(Lot::STATUT_NONAFFECTABLE), "statut du lot affectable (provenant d'une non conformité)");
+$t->ok(!$lotFromChgmtRes->getMouvement(Lot::STATUT_NONCONFORME), "pas de mouvement du lot non conforme");
 
 $degustProvenance = $lotFromChgmtOrig->getLotProvenance();
 $t->is($degustProvenance->getDocument()->_id, $degustation->_id, 'la provenance du chgt est bien la dégustation '.$degustation->_id);
@@ -424,9 +426,11 @@ $t->is($chgtDenomFromDrev->lots[1]->specificite, 'Ma fausse', "La spécificité 
 
 $t->is($chgtDenom->lots->get(0)->statut, Lot::STATUT_CONFORME, "statut du lot orginel est bien conforme");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable");
+$t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CONFORME), "Mouvement lot restant conforme");
 $t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "Mouvement lot changé affectable ");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "Mouvement lot restant change dest");
 $t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_CHANGE_DEST), "Mouvement lot changé change dest");
+$t->ok(!$chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_CONFORME), "Pas de mouvement lot conforme");
 $t->ok($chgtDenom->getLotOrigine()->getMouvement(Lot::STATUT_CHANGE_SRC), "le lot originel a bien un mouvement au statut changé");
 $t->is($chgtDenom->lots->get(1)->statut, null, "statut du lot changé est vide");
 

@@ -617,6 +617,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
                 }
             }
+
+            if($lot->statut) {
+                $this->addMouvementLot($lot->buildMouvement($lot->statut));
+            }
         }
     }
 
