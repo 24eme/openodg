@@ -230,7 +230,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
     public function getFirstOrigineLot() {
-
+        if(!$this->changement_origine_lot_unique_id) {
+            return null;
+        }
         return LotsClient::getInstance()->findByUniqueId($this->identifiant, $this->changement_origine_lot_unique_id, "01");
     }
 
@@ -258,7 +260,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
            $lot->volume = $this->origine_volume;
            $lot->specificite = $this->origine_specificite;
            $lot->produit_hash = $this->origine_produit_hash;
-           $lot->cepages = $this->origine_cepages;
+           if(!is_null($this->origine_cepages)) {
+               $lot->cepages = $this->origine_cepages;
+           }
            $lot->produit_libelle = $this->origine_produit_libelle;
            $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
            $lot->affectable = $this->origine_affectable;
@@ -613,8 +617,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lot = $this->getLotOrigine();
       $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
       $libelle .= ($this->isTotal())? '' : ' partiel';
-      $libelle .= ' lot de '.$lot->produit_libelle.' '.$lot->millesime;
-      $libelle .= ' (logement '.$lot->numero_logement_operateur.')';
+      $libelle .= ' lot de '.$this->origine_produit_libelle.' '.$this->origine_millesime;
+      $libelle .= ' (logement '.$this->origine_numero_logement_operateur.')';
       $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
