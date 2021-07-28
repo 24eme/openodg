@@ -11,7 +11,7 @@ class ChgtDenomRegenerateLotsTask extends sfBaseTask
 
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
-            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
+            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
@@ -29,7 +29,7 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-
+        $renameLot = null;
         $chgt = ChgtDenomClient::getInstance()->find($arguments['doc_id']);
 
         if(count($chgt->origine_cepages)) {
@@ -45,16 +45,25 @@ EOF;
             }
         }
 
+        if(!$chgt->changement_origine_id_document) {
+            $chgt->changement_origine_lot_unique_id = null;
+        }
+
         $lotOrigine = $chgt->getLotOrigine();
 
-        $chgt->origine_millesime = $lotOrigine->millesime;
-        $chgt->origine_volume = $lotOrigine->volume;
-        $chgt->origine_specificite = $lotOrigine->specificite;
-        $chgt->origine_produit_hash = $lotOrigine->produit_hash;
-        $chgt->origine_cepages = $lotOrigine->cepages;
-        $chgt->origine_produit_libelle = $lotOrigine->produit_libelle;
-        $chgt->origine_numero_logement_operateur = $lotOrigine->numero_logement_operateur;
-        $chgt->origine_affectable = $lotOrigine->affectable;
+        if($lotOrigine) {
+            $chgt->origine_millesime = $lotOrigine->millesime;
+            $chgt->origine_volume = $lotOrigine->volume;
+            $chgt->origine_specificite = $lotOrigine->specificite;
+            $chgt->origine_produit_hash = $lotOrigine->produit_hash;
+            $chgt->origine_cepages = $lotOrigine->cepages;
+            $chgt->origine_produit_libelle = $lotOrigine->produit_libelle;
+            $chgt->origine_numero_logement_operateur = $lotOrigine->numero_logement_operateur;
+            $chgt->origine_affectable = $lotOrigine->affectable;
+        }
+
+        $chgt->origine_specificite = str_replace("UNDEFINED", "", $chgt->origine_specificite);
+        $chgt->changement_specificite = str_replace("UNDEFINED", "", $chgt->changement_specificite);
 
         $lots = $chgt->lots->toJson();
 

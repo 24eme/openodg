@@ -186,9 +186,9 @@ $form->save();
 
 $t->is(count($drev->lots), 2, "Les deux lots sont conservés dans la DRev");
 
-$t->is($drev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
-$drev->lots[0]->origine_type = null;
-$t->is($drev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($drev->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type par défaut est ".DRevClient::TYPE_MODEL);
+$drev->lots[0]->initial_type = null;
+$t->is($drev->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($drev->lots[0]->numero_logement_operateur, $valuesRev['lots']['0']['numero_logement_operateur'], "Le numéro de cuve du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->volume, $valuesRev['lots']['0']['volume'], "Le volume du lot 1 est bien enregistré");
 $t->is($drev->lots[0]->destination_type, $valuesRev['lots']['0']['destination_type'], "Le type de destination lot 1 est bien enregistré");
@@ -264,7 +264,7 @@ $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot à un mouvement affec
 $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), "Le lot à un mouvement revendique");
 $t->is($mouvement->getUnicityKey(), $lot->getUnicityKey()."-".KeyInflector::slugify(Lot::STATUT_REVENDIQUE), "Clé unique des mouvements");
 $t->is($mouvement->date, $lot->date, "Mouvement date");
-$t->is($mouvement->origine_type, $lot->origine_type, "Mouvement origine type");
+$t->is($mouvement->initial_type, $lot->initial_type, "Mouvement initial type");
 $t->is($mouvement->statut, Lot::STATUT_REVENDIQUE, "Mouvement statut");
 $t->is($mouvement->numero_dossier, $lot->numero_dossier, "Mouvement numero de dossier");
 $t->is($mouvement->numero_archive, $lot->numero_archive, "Mouvement numero d'archive");

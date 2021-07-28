@@ -151,10 +151,10 @@ $t->is($chgtDenomFromDrev->origine_specificite, "Ma fausse 2ème dégustation", 
 $t->is(count($chgtDenomFromDrev->lots), 2, "Le changement étant total, on a 2 lots");
 
 $t->is($chgtDenomFromDrev->lots[0]->campagne, $drev->campagne, "Le lot non changé à la campagne de la drev");
-$t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
-$chgtDenomFromDrev->lots[0]->origine_type = null;
-$t->is($chgtDenomFromDrev->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
-$t->is($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_NONAFFECTABLE)->origine_type, $chgtDenomFromDrev->lots[0]->origine_type, "L'origine type du mouvement");
+$t->is($chgtDenomFromDrev->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type par défaut est ".DRevClient::TYPE_MODEL);
+$chgtDenomFromDrev->lots[0]->initial_type = null;
+$t->is($chgtDenomFromDrev->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_NONAFFECTABLE)->initial_type, $chgtDenomFromDrev->lots[0]->initial_type, "L'initial type du mouvement");
 $t->is($chgtDenomFromDrev->lots[0]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
 $t->is($chgtDenomFromDrev->lots[0]->numero_archive, "00003", "Le lot du chgt a le même numéro d'archive que dans la drev");
 $t->is($chgtDenomFromDrev->lots[0]->unique_id, $lotFromDrev->unique_id, "Le 1er lot du chgt a le même unique id que celui de la drev");
@@ -170,10 +170,10 @@ $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le l
 $t->ok(!$chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le lot 1 du changement n'a pas de mouvement change src");
 
 $t->is($chgtDenomFromDrev->lots[1]->campagne, $drev->campagne, "Le lot changé à la campagne de la drev");
-$t->is($chgtDenomFromDrev->lots[1]->origine_type, DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE, "L'origine type par défaut est ".DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE);
-$chgtDenomFromDrev->lots[1]->origine_type = null;
-$t->is($chgtDenomFromDrev->lots[1]->origine_type, DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
-$t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->origine_type, DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE, "L'origine type du mouvement est  ".DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE);
+$t->is($chgtDenomFromDrev->lots[1]->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type par défaut est ".DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE);
+$chgtDenomFromDrev->lots[1]->initial_type = null;
+$t->is($chgtDenomFromDrev->lots[1]->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type du mouvement est  ".DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE);
 $t->is($chgtDenomFromDrev->lots[1]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
 $t->is($chgtDenomFromDrev->lots[1]->numero_archive, "00004", "Le lot changé (2d) a un nouveau numéro d'archive");
 $t->is($chgtDenomFromDrev->lots[1]->numero_dossier, $chgtDenomFromDrev->numero_archive, "Le lot changé a le même numéro de dossier que l'archive du chgmt");
@@ -295,9 +295,9 @@ $degustation->setLots($lotsPrelevables);
 $degustation->save();
 
 $t->is(count(MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows), 0, "0 lots prelevables");
-$t->is($degustation->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type du lot est ".DRevClient::TYPE_MODEL);
-$t->is($degustation->lots[1]->origine_type, DRevClient::TYPE_MODEL, "L'origine type du lot est ".DRevClient::TYPE_MODEL);
-$t->is($degustation->lots[2]->origine_type, DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE, "L'origine type du lot est ".DRevClient::TYPE_MODEL.":".LotsClient::ORIGINE_TYPE_CHANGE);
+$t->is($degustation->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type du lot est ".DRevClient::TYPE_MODEL);
+$t->is($degustation->lots[1]->initial_type, DRevClient::TYPE_MODEL, "L'initial type du lot est ".DRevClient::TYPE_MODEL);
+$t->is($degustation->lots[2]->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type du lot est ".DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE);
 
 $degustation->lots[0]->statut = Lot::STATUT_NONCONFORME;
 $degustation->lots[1]->statut = Lot::STATUT_CONFORME;

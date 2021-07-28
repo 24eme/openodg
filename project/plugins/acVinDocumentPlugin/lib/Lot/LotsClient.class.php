@@ -4,7 +4,7 @@ class LotsClient
 {
     protected static $self = null;
 
-    const ORIGINE_TYPE_CHANGE = "Changé";
+    const INITIAL_TYPE_CHANGE = "Changé";
 
     public static function getInstance() {
         if(is_null(self::$self)) {
@@ -93,6 +93,9 @@ class LotsClient
 
         $documents = array();
         foreach($mouvements->rows as $mouvement) {
+            if(in_array($mouvement->id, $documents)) {
+                continue;
+            }
             $documents[$mouvement->value->date.$typePriorites[$mouvement->value->document_type].$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
         }
 

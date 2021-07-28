@@ -52,7 +52,8 @@ EOF;
             $date = $lot->date;
             $lot->date = $date;
             $lot->getDate();
-            $lot->origine_type = null;
+            $lot->remove('origine_type');
+            $lot->initial_type = null;
             $documentOrdreCalcule = $lot->getDocumentOrdreCalcule();
             if($documentOrdreCalcule != $lot->document_ordre) {
                 echo $doc->_id.":".$lot->unique_id.";Le document d'ordre passe de ".$lot->document_ordre." à ".$documentOrdreCalcule."\n";

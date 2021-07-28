@@ -75,9 +75,9 @@ $lot = $transaction->addLot();
 $lot->volume = 12;
 $lot->specificite = null;
 
-$t->is($lot->origine_type, TransactionClient::TYPE_MODEL, "L'origine type par défaut est ".TransactionClient::TYPE_MODEL);
-$lot->origine_type = null;
-$t->is($lot->origine_type, TransactionClient::TYPE_MODEL, "L'origine type calculé est ".TransactionClient::TYPE_MODEL);
+$t->is($lot->initial_type, TransactionClient::TYPE_MODEL, "L'origine type par défaut est ".TransactionClient::TYPE_MODEL);
+$lot->initial_type = null;
+$t->is($lot->initial_type, TransactionClient::TYPE_MODEL, "L'origine type calculé est ".TransactionClient::TYPE_MODEL);
 $lot = $transaction->addLot();
 $lot->produit_hash = $produit->getHash();
 $transaction->save();
@@ -116,5 +116,5 @@ $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), 'Le lot est revendiqué');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 $t->ok($lot->getMouvement(Lot::STATUT_CHANGEABLE), 'Le lot est changeable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
-$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->origine_type, $lot->origine_type, "Mouvement origine type");
+$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->initial_type, $lot->initial_type, "Mouvement origine type");
 
