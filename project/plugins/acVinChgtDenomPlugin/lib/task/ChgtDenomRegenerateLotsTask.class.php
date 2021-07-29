@@ -91,6 +91,7 @@ EOF;
             $chgt->lots[0]->unique_id = $lots[0]->unique_id;
             $chgt->lots[0]->id_document_provenance = $lots[0]->id_document_provenance;
             $chgt->lots[0]->id_document_affectation = $lots[0]->id_document_affectation;
+            $chgt->lots[0]->affectable = $lots[0]->affectable;
         } else {
             $documentOrdresToRewrite[] = $chgt->lots[0]->unique_id;
         }
@@ -102,6 +103,12 @@ EOF;
             $chgt->lots[1]->unique_id = $lots[1]->unique_id;
             $chgt->lots[1]->id_document_provenance = $lots[1]->id_document_provenance;
             $chgt->lots[1]->id_document_affectation = $lots[1]->id_document_affectation;
+            $chgt->lots[1]->affectable = $lots[1]->affectable;
+            $chgt->changement_affectable = $lots[1]->affectable;
+            $chgt->lots[1]->statut = null;
+            if(!$chgt->lots[1]->affectable) {
+                $chgt->lots[1]->statut = Lot::STATUT_NONAFFECTABLE;
+            }
             if(preg_match("/a$/", $chgt->lots[1]->numero_archive)) {
                 $renameLot = $chgt->lots[1]->unique_id;
             }

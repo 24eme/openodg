@@ -40,6 +40,7 @@ EOF;
         $doc->changement_origine_lot_unique_id = preg_replace('/a+$/', '', $doc->changement_origine_lot_unique_id);
         $doc->campagne = null;
         $doc->getCampagne();
+        $doc->updateStatut();
         if($doc->changement_origine_lot_unique_id != $uniqueId) {
             echo "$doc->_id;fix:documents-lots;Réécriture du changement_origine_lot_unique_id $uniqueId en $doc->changement_origine_lot_unique_id\n";
         }

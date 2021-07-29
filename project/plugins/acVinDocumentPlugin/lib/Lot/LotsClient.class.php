@@ -104,6 +104,23 @@ class LotsClient
         return $documents;
     }
 
+    public function findStatut($declarantIdentifiant, $uniqueId, $untilDocId) {
+        $ids = $this->getDocumentsIdsByDate($declarantIdentifiant, $uniqueId);
+        $statut = null;
+        foreach($ids as $id) {
+            $doc = DeclarationClient::getInstance()->find($id);
+            $lot = $doc->getLot($uniqueId);
+            if($lot->statut) {
+                $statut = $lot->statut;
+            }
+            if($id == $untilDocId) {
+                break;
+            }
+        }
+
+        return $statut;
+    }
+
     public function getDocumentsIdsByOrdre($declarantIdentifiant, $uniqueId) {
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
 
