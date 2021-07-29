@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(127);
+$t = new lime_test(128);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -200,6 +200,7 @@ $t->is($drev->lots[0]->specificite, "", "La spécificité Aucune est enregistré
 $t->is($drev->lots[0]->id_document_provenance, null, "Le lot n'a pas de provenance");
 $t->is($drev->lots[0]->id_document_affectation, null, "Le lot n'a pas de fils");
 $t->ok($drev->lots[0]->isAffectable(), "Le lot est affectable");
+$t->is($drev->lots[0]->statut, null, "Le lot n'a pas de statut");
 $t->ok(!$drev->lots[0]->isAffecte(), "Le lot n'est pas affecté");
 $t->is($drev->lots[0]->getTypeProvenance(), null, "pas de provenance");
 

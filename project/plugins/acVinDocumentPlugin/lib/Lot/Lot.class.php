@@ -919,6 +919,24 @@ abstract class Lot extends acCouchdbDocumentTree
       return ($this->elevage);
     }
 
+    public function updateStatut() {
+        if($this->getDocumentOrdre() != 1) {
+            return;
+        }
+
+        $this->statut = null;
+
+        if($this->isInElevage()) {
+            $this->statut = Lot::STATUT_ELEVAGE_EN_ATTENTE;
+            return;
+        }
+
+        if(!$this->isAffectable()) {
+            $this->statut = Lot::STATUT_NONAFFECTABLE;
+            return;
+        }
+    }
+
     public function getAdresseLogement() {
         return Anonymization::hideIfNeeded($this->_get('adresse_logement'));
     }

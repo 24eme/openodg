@@ -189,9 +189,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->origine_affectable = $lot->affectable;
         $this->origine_statut = $lot->statut;
-        if(!$this->origine_statut && !$this->origine_affectable) {
-            $this->origine_statut = Lot::STATUT_NONAFFECTABLE;
-        }
     }
 
     public function getOrigineNumeroLogementOperateur()
