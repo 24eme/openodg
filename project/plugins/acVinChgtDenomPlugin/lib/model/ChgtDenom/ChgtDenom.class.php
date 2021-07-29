@@ -188,6 +188,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->origine_produit_libelle = $lot->produit_libelle;
         $this->origine_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->origine_affectable = $lot->affectable;
+        $this->origine_statut = $lot->statut;
+        if(!$this->origine_statut && !$this->origine_affectable) {
+            $this->origine_statut = Lot::STATUT_NONAFFECTABLE;
+        }
     }
 
     public function getOrigineNumeroLogementOperateur()
@@ -266,6 +270,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
            $lot->produit_libelle = $this->origine_produit_libelle;
            $lot->numero_logement_operateur = $this->origine_numero_logement_operateur;
            $lot->affectable = $this->origine_affectable;
+           $lot->statut = $this->origine_statut;
            return $lot ;
         }
 
@@ -410,6 +415,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lot->produit_hash = $this->origine_produit_hash;
       $lot->declarant_nom = $this->declarant->raison_sociale;
       $lot->declarant_identifiant = $this->identifiant;
+      $lot->statut = $this->origine_statut;
 
       $ordre = sprintf('%02d', intval($lot->document_ordre) + 1 );
       $lot->date = $this->date;
@@ -448,6 +454,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
           }
           if ($this->exist('changement_affectable')) {
               $lot->affectable = $this->changement_affectable;
+          }
+          $lot->statut = null;
+          if(!$lot->affectable) {
+              $lot->statut = Lot::STATUT_NONAFFECTABLE;
           }
 
           if ($this->exist('changement_numero_logement_operateur') && $this->changement_numero_logement_operateur) {
@@ -606,6 +616,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 }else{
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
                 }
+            }
+
+            if($lot->statut) {
+                $this->addMouvementLot($lot->buildMouvement($lot->statut));
             }
         }
     }

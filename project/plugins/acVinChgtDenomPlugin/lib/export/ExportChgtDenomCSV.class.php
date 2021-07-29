@@ -45,14 +45,12 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         }
 
         $lotOrigine = $this->document->getLotOrigine();
-        $lotChgt = $this->document->lots[0];
-        $lotChgtRestant = null;
-        if(count($this->document->lots) == 2) {
+        $lotChgtRestant = $this->document->lots[0];
+        if(isset($this->document->lots[1])) {
             $lotChgt = $this->document->lots[1];
-            $lotChgtRestant = $this->document->lots[0];
         }
 
-        $base = $this->document->type.";".
+        $base = $lotChgtRestant->initial_type.";".
         $this->document->campagne.";".
         $this->document->identifiant.";".
         $this->document->declarant->famille.";".
