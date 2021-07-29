@@ -12,6 +12,14 @@ foreach(ParcellaireAffectationClient::getInstance()->getHistory($viti->identifia
     $parcellaireAffectation->delete(false);
 }
 
+foreach (ParcellaireClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $parcellaire = ParcellaireClient::getInstance()->find($k);
+    $parcellaire->delete(false);
+}
+
+// Ajout du fichier ../data/PARCELLAIRE-7523700100
+
+
 $t->comment("Création d'une déclaration d'affectation parcellaire");
 
 $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne);
@@ -49,3 +57,27 @@ $t->comment("Étape Validation");
 $form = new ParcellaireAffectationValidationForm($parcellaireAffectation);
 
 $t->pass("Fomulaire étape Validation");
+
+////////////////////////////
+$t->comment("Création d'une déclaration d'affectation parcellaire crémant");
+
+$parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
+$parcellaireAffectationCremant->initProduitFromLastParcellaire();
+$parcellaireAffectationCremant->save();
+
+$t->is($parcellaireAffectationCremant->_id, "PARCELLAIRECREMANTAFFECTATION-".$viti->identifiant."-".$campagne, "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
+
+$t->comment("Étape Parcelles");
+
+$appellation = ParcellaireAffectationClient::getInstance()->getFirstAppellation($parcellaireAffectationCremant->getTypeParcellaire());
+$t->is($appellation, ParcellaireAffectationClient::APPELLATION_CREMANT, "L'appellation est $appellation");
+$appellationNode = $parcellaireAffectationCremant->getAppellationNodeFromAppellationKey($appellation, true);
+$parcelles = $appellationNode->getDetailsSortedByParcelle(false);
+
+$form = new ParcellaireAffectationAjoutParcelleForm($parcellaireAffectationCremant, $appellation);
+$form = new ParcellaireAffectationAppellationEditForm($parcellaireAffectationCremant, $appellation, $parcelles);
+
+$t->is(count($parcellaireAffectationCremant->getProduits()), 6, "Il y a 6 cépages");
+$t->is(count($parcelles), 69, "Il y a 69 parcelles");
+
+$t->pass("Fomulaires étape Parcelles");
