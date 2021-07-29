@@ -1119,7 +1119,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
             foreach ($cepages_autorises as $cepage_autorise) {
                 $c_a = strtoupper(trim($cepage_autorise));
                 if($c_a){
-                    if(!preg_match('/^[A-Z\.\ Ç0-9\-ÉéèÈêÊëËàÀÔôÜüûÛùÙÏïŒœ\=\(\)\']+$/',$c_a)){
+                    if(!preg_match('/^[A-Z\.\ Ç0-9\-ÉéèÈêÊëËàÀÔôÜüûÛùÙÏïŒœ\=\(\)\'’]+$/',$c_a)){
                         throw new sfException("Le cépage autorisé $c_a n'a pas un bon format. ");
                     }
                     $c_a_new[] = $c_a;
