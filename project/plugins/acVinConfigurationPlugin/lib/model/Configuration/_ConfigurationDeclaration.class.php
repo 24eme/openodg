@@ -1114,6 +1114,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function setCepagesAutorises($cepages_autorises_str){
         if($this->hasCepagesAutorises()){
+            $this->remove('cepages_autorises');
+            $this->add('cepages_autorises');
             $cepages_autorises = explode(',',$cepages_autorises_str);
             $c_a_new = array();
             foreach ($cepages_autorises as $cepage_autorise) {
