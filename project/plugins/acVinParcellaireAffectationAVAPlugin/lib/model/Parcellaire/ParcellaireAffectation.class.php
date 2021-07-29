@@ -111,6 +111,42 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (count($this->declaration) == 0) {
             $this->importProduitsFromLastParcellaire();
         }
+
+        if ($this->getTypeParcellaire() == ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT) {
+            $this->updateFromCVI();
+        }
+    }
+
+    public function updateFromCVI() {
+        $cepages_autorises = [
+            'cepage_PB' => 'PINOT BLANC',
+            'cepage_CD' => 'CHARDONNAY',
+            'cepage_BN' => 'PINOT NOIR BLANC',
+            'cepage_RI' => 'RIESLING',
+            'cepage_PG' => 'PINOT GRIS',
+            'cepage_PN' => 'PINOT NOIR ROSé',
+            'cepage_BLRS' => 'BLANC + ROSé',
+            'cepage_RB' => 'REBêCHES',
+            'cepage_PNRaisin' => 'PINOT NOIR',
+            'cepage_AU' => 'AUXERROIS'
+        ];
+
+        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $appellation) {
+            foreach ($appellation->detail as $parcelle) {
+                $c = false;
+                foreach ($cepages_autorises as $k => $cep) {
+                    if (strpos(strtolower($parcelle->getCepage()), strtolower($cep)) !== false) {
+                        $c = $k;
+                        break;
+                    }
+                }
+
+                if ($c) {
+                    $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
+                    $this->addProduitParcelle($hash, $parcelle->getKey(), $parcelle->getCommune(), $parcelle->getSection(), $parcelle->getNumeroParcelle(), $parcelle->getLieu());
+                }
+            }
+        }
     }
 
     public function getParcellaireLastCampagne() {
