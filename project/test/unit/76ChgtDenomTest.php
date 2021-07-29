@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(255);
+$t = new lime_test(256);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -86,6 +86,7 @@ $t->is(count($drev->lots), 3, "3 lots ont automatiquement été créés");
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le 1er lot est affectable");
 $t->ok($drev->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Le 2ème lot est affectable");
 $t->ok($drev->lots[2]->getMouvement(Lot::STATUT_NONAFFECTABLE), "Le 3ème lot est non affectable");
+$t->is($drev->lots[2]->statut, Lot::STATUT_NONAFFECTABLE, "Le 3ème lot à le statut non affectable");
 
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 1 est changeable");
 $t->ok($drev->lots[1]->getMouvement(Lot::STATUT_CHANGEABLE), "Le lot 2 aussi");

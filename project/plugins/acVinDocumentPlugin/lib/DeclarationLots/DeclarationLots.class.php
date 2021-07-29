@@ -536,6 +536,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               }
 
               $lot->updateDocumentDependances();
+              $lot->updateStatut();
 
               $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 

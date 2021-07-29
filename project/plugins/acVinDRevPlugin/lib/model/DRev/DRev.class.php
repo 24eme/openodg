@@ -1770,6 +1770,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $lot->updateDocumentDependances();
+            $lot->updateStatut();
 
             $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
