@@ -1629,4 +1629,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 			$lot->volume = $volume;
 		}
+
+        public function getBigDocumentSize() {
+
+            return 1000000;
+        }
 }
