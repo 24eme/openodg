@@ -36,13 +36,21 @@ EOF;
     $doc = acCouchdbManager::getClient()->find($arguments['doc_id']);
 
     if($doc->exist('changement_origine_lot_unique_id')) {
+        $uniqueId = $doc->changement_origine_lot_unique_id;
+        $doc->changement_origine_lot_unique_id = preg_replace('/a+$/', '', $doc->changement_origine_lot_unique_id);
         $doc->campagne = null;
         $doc->getCampagne();
-        $doc->changement_origine_lot_unique_id = preg_replace('/a+$/', '', $doc->changement_origine_lot_unique_id);
+        if($doc->changement_origine_lot_unique_id != $uniqueId) {
+            echo "$doc->_id;fix:documents-lots;Réécriture du changement_origine_lot_unique_id $uniqueId en $doc->changement_origine_lot_unique_id\n";
+        }
+        if($doc->save(false)) {
+            echo "$doc->_id;fix:documents-lots;Sauvegardé $doc->_rev\n";
+        }
     }
 
     if($doc->exist('lots')) {
         foreach($doc->lots as $lot) {
+            $uniqueId = $lot->unique_id;
             if(!$lot->unique_id) {
                 continue;
             }
@@ -54,17 +62,28 @@ EOF;
             $lot->getDate();
             $lot->remove('origine_type');
             $lot->initial_type = null;
+            $lot->numero_archive = preg_replace('/a+$/', '', $lot->numero_archive);
+            if($lot->unique_id != $uniqueId) {
+                echo "$doc->_id;fix:documents-lots;Réécriture du numéro lot $uniqueId en $lot->unique_id\n";
+            }
+        }
+        if($doc->save(false)) {
+            echo "$doc->_id;fix:documents-lots;Sauvegardé $doc->_rev\n";
+        }
+        foreach($doc->lots as $lot) {
+            if(!$lot->unique_id) {
+                continue;
+            }
             $documentOrdreCalcule = $lot->getDocumentOrdreCalcule();
             if($documentOrdreCalcule != $lot->document_ordre) {
-                echo $doc->_id.":".$lot->unique_id.";Le document d'ordre passe de ".$lot->document_ordre." à ".$documentOrdreCalcule."\n";
+                echo "$doc->_id;fix:documents-lots;".$lot->unique_id." l'ordre passe de ".$lot->document_ordre." à ".$documentOrdreCalcule."\n";
             }
             $lot->document_ordre = $documentOrdreCalcule;
-            $lot->numero_archive = preg_replace('/a+$/', '', $lot->numero_archive);
         }
     }
-
     if($doc->save(false)) {
-        echo "Document ".$doc->_id."@".$doc->_rev." saved\n";
+        echo "$doc->_id;fix:documents-lots;Sauvegardé $doc->_rev\n";
     }
+
   }
 }

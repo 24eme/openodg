@@ -63,7 +63,13 @@ EOF;
         }
 
         $chgt->origine_specificite = str_replace("UNDEFINED", "", $chgt->origine_specificite);
+        if(!$chgt->origine_specificite) {
+            $chgt->origine_specificite = null;
+        }
         $chgt->changement_specificite = str_replace("UNDEFINED", "", $chgt->changement_specificite);
+        if(!$chgt->changement_specificite) {
+            $chgt->changement_specificite = null;
+        }
 
         $lots = $chgt->lots->toJson();
 
@@ -104,7 +110,9 @@ EOF;
             }
         }
 
-        $chgt->save(false);
+        if($chgt->save(false)) {
+            echo "$chgt->_id;chgtdenom:regenerate-lots;Sauvegardé $chgt->_rev\n";
+        }
 
         if($renameLot) {
             foreach(LotsClient::getInstance()->getDocumentsIdsByOrdre($chgt->identifiant, $renameLot) as $id) {
@@ -114,8 +122,10 @@ EOF;
                     continue;
                 }
                 $lot->numero_archive = preg_replace('/a{1}$/', 'c', $lot->numero_archive);
-                $doc->save(false);
-                echo $doc->_id.";Réécriture du numéro de lot $renameLot en ".$lot->unique_id."\n";
+                echo $doc->_id.";chgtdenom:regenerate-lots;Réécriture du numéro de lot $renameLot en ".$lot->unique_id."\n";
+                if($doc->save(false)) {
+                    echo "$doc->_id;chgtdenom:regenerate-lots;Sauvegardé $doc->_rev\n";
+                }
             }
         }
 

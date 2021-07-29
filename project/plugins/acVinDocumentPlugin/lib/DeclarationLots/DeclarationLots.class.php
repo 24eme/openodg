@@ -345,11 +345,13 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                 $this->generateMouvementsLots();
             }
 
-            parent::save();
+            $saved = parent::save();
 
             if($saveDependants) {
                 $this->saveDocumentsDependants();
             }
+
+            return $saved;
         }
 
         public function saveDocumentsDependants() {

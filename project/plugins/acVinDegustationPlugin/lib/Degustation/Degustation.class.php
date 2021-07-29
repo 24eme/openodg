@@ -78,11 +78,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         $this->generateMouvementsLots();
 
-        parent::save();
+        $saved = parent::save();
 
         if($saveDependants) {
             $this->saveDocumentsDependants();
 		}
+
+        return $saved;
     }
 
 	public function storeEtape($etape) {

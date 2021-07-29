@@ -326,17 +326,19 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function save($saveDependants = true) {
         $this->archiver();
         if ($this->isApprouve()) {
-            if (!count($this->lots)) {
+            if (!count($this->lots->toArray(true, false))) {
                 $this->generateLots();
             }
             $this->generateMouvementsLots();
             $this->fillDocToSaveFromLots();
         }
-        parent::save();
+        $saved = parent::save();
 
         if ($saveDependants) {
             $this->saveDocumentsDependants();
         }
+
+        return $saved;
     }
 
     public function fillDocToSaveFromLots() {
@@ -569,7 +571,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function generateMouvementsLots()
     {
         $this->clearMouvementsLots();
-        if(!count($this->lots)) {
+        if(!count($this->lots->toArray(true, false))) {
             return;
         }
 
