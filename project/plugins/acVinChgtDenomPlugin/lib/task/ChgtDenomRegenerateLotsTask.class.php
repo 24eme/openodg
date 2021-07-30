@@ -124,15 +124,21 @@ EOF;
         if($renameLot) {
             foreach(LotsClient::getInstance()->getDocumentsIdsByOrdre($chgt->identifiant, $renameLot) as $id) {
                 $doc = DeclarationClient::getInstance()->find($id);
-                $lot = $doc->getLot($renameLot);
-                if($lot->produit_hash != $chgt->lots[1]->produit_hash) {
-                    continue;
+
+                foreach($doc->lots as $lot) {
+                    if($lot->unique_id != $renameLot) {
+                        continue;
+                    }
+                    if($lot->produit_hash != $chgt->lots[1]->produit_hash) {
+                        continue;
+                    }
+                    $lot->numero_archive = preg_replace('/a{1}$/', 'c', $lot->numero_archive);
+                    echo $doc->_id.";chgtdenom:regenerate-lots;Réécriture du numéro de lot $renameLot en ".$lot->unique_id."\n";
+                    if($doc->save(false)) {
+                        echo "$doc->_id;chgtdenom:regenerate-lots;Sauvegardé $doc->_rev\n";
+                    }
                 }
-                $lot->numero_archive = preg_replace('/a{1}$/', 'c', $lot->numero_archive);
-                echo $doc->_id.";chgtdenom:regenerate-lots;Réécriture du numéro de lot $renameLot en ".$lot->unique_id."\n";
-                if($doc->save(false)) {
-                    echo "$doc->_id;chgtdenom:regenerate-lots;Sauvegardé $doc->_rev\n";
-                }
+
             }
         }
 
