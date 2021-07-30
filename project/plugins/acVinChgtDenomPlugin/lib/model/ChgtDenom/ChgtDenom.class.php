@@ -194,9 +194,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function updateStatut() {
         $statut = LotsClient::getInstance()->findStatut($this->identifiant, $this->changement_origine_lot_unique_id, $this->changement_origine_id_document);
 
-        $this->origine_statut = null;
-        $this->lots[0]->statut = null;
-        $this->lots[0]->affectable = $this->origine_affectable;
+        if($this->origine_statut)
+            $this->origine_statut = null;
+            $this->lots[0]->statut = null;
+            $this->lots[0]->affectable = $this->origine_affectable;
+        }
 
         if(!$statut) {
             return;
@@ -205,6 +207,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $this->origine_statut = $statut;
         $this->lots[0]->statut = $statut;
         $this->lots[0]->affectable = false;
+        $this->origine_affectable = $this->lots[0]->affectable;
+
     }
 
     public function getOrigineNumeroLogementOperateur()

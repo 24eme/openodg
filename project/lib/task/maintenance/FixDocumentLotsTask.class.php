@@ -76,6 +76,14 @@ EOF;
                 continue;
             }
             $documentOrdreCalcule = $lot->getDocumentOrdreCalcule();
+            if($documentOrdreCalcule > 1 && in_array($doc->type, array("DRev", "Conditionnement", "Transaction"))) {
+                echo "$doc->_id;fix:documents-lots;".$lot->unique_id." le document d'ordre de ce doc est $documentOrdreCalcule il est forcé à 01\n";
+                $documentOrdreCalcule = sprintf("%02d", 1);
+            }
+            if($documentOrdreCalcule == 1 && in_array($doc->type, array("Degustation"))) {
+                echo "$doc->_id;fix:documents-lots;".$lot->unique_id." le document d'ordre de ce doc est $documentOrdreCalcule il est forcé à 02\n";
+                $documentOrdreCalcule = sprintf("%02d", 2);
+            }
             if($documentOrdreCalcule != $lot->document_ordre) {
                 echo "$doc->_id;fix:documents-lots;".$lot->unique_id." l'ordre passe de ".$lot->document_ordre." à ".$documentOrdreCalcule."\n";
             }
