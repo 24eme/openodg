@@ -29,6 +29,15 @@ $parcellaire->addParcelle(
     "MONTMARTRE"
 );
 $parcellaire->addParcelle(
+    $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
+    "RIESLING",
+    "1948-1949",
+    "PARIS",
+    "03",
+    "12",
+    "MONTMARTRE"
+);
+$parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
     "AUXERROIS",
     "1968-1969",
@@ -37,7 +46,6 @@ $parcellaire->addParcelle(
     "75",
     "MONTPARNASSE"
 );
-$parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire");
 
@@ -96,10 +104,6 @@ $parcelles = $appellationNode->getDetailsSortedByParcelle(false);
 $form = new ParcellaireAffectationAjoutParcelleForm($parcellaireAffectationCremant, $appellation);
 $form = new ParcellaireAffectationAppellationEditForm($parcellaireAffectationCremant, $appellation, $parcelles);
 
-$t->is(count($parcellaireAffectationCremant->getProduits()), 6, "Il y a 6 cépages");
-$t->is(count($parcelles), 69, "Il y a 69 parcelles");
+$t->is(count($parcellaireAffectationCremant->getProduits()), 2, "Il y a 2 cépages");
 
 $t->pass("Fomulaires étape Parcelles");
-
-$t->comment('On supprime le parcellaire');
-$parcellaire->delete();
