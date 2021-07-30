@@ -100,3 +100,6 @@ $t->is(count($parcellaireAffectationCremant->getProduits()), 6, "Il y a 6 cépag
 $t->is(count($parcelles), 69, "Il y a 69 parcelles");
 
 $t->pass("Fomulaires étape Parcelles");
+
+$t->comment('On supprime le parcellaire');
+$parcellaire->delete();
