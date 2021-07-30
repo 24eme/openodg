@@ -46,6 +46,7 @@ $parcellaire->addParcelle(
     "75",
     "MONTPARNASSE"
 );
+$parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire");
 
@@ -90,6 +91,7 @@ $t->comment("Création d'une déclaration d'affectation parcellaire crémant");
 
 $parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
 $parcellaireAffectationCremant->initProduitFromLastParcellaire();
+$parcellaireAffectationCremant->updateAffectationCremantFromCVI();
 $parcellaireAffectationCremant->save();
 
 $t->is($parcellaireAffectationCremant->_id, "PARCELLAIRECREMANTAFFECTATION-".$viti->identifiant."-".$campagne, "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
@@ -104,6 +106,56 @@ $parcelles = $appellationNode->getDetailsSortedByParcelle(false);
 $form = new ParcellaireAffectationAjoutParcelleForm($parcellaireAffectationCremant, $appellation);
 $form = new ParcellaireAffectationAppellationEditForm($parcellaireAffectationCremant, $appellation, $parcelles);
 
-$t->is(count($parcellaireAffectationCremant->getProduits()), 2, "Il y a 2 cépages");
+$t->is(count($parcellaireAffectationCremant->getProduits()), 3, "Il y a 3 cépages");
 
+$parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne+1);
+$parcellaire->addParcelle(
+    $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
+    "RIESLING",
+    "1958-1959",
+    "PARIS",
+    "04",
+    "95",
+    "MONTMARTRE"
+);
+$parcellaire->addParcelle(
+    $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_PG']->getHash(),
+    "PINOT GRIS",
+    "1999-2000",
+    "PARIS",
+    "13",
+    "16",
+    "MONTMARTRE"
+);
+$parcellaire->addParcelle(
+    $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
+    "AUXERROIS",
+    "1968-1969",
+    "PARIS",
+    "06",
+    "75",
+    "MONTPARNASSE"
+);
+$parcellaire->save();
+
+$t->comment("Création d'une déclaration d'affectation parcellaire crémant");
+
+$parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne+1, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
+$parcellaireAffectationCremant->initProduitFromLastParcellaire();
+$parcellaireAffectationCremant->updateAffectationCremantFromCVI();
+$parcellaireAffectationCremant->save();
+
+$t->is($parcellaireAffectationCremant->_id, "PARCELLAIRECREMANTAFFECTATION-".$viti->identifiant."-".($campagne+1), "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
+
+$t->comment("Étape Parcelles");
+
+$appellation = ParcellaireAffectationClient::getInstance()->getFirstAppellation($parcellaireAffectationCremant->getTypeParcellaire());
+$t->is($appellation, ParcellaireAffectationClient::APPELLATION_CREMANT, "L'appellation est $appellation");
+$appellationNode = $parcellaireAffectationCremant->getAppellationNodeFromAppellationKey($appellation, true);
+$parcelles = $appellationNode->getDetailsSortedByParcelle(false);
+
+$form = new ParcellaireAffectationAjoutParcelleForm($parcellaireAffectationCremant, $appellation);
+$form = new ParcellaireAffectationAppellationEditForm($parcellaireAffectationCremant, $appellation, $parcelles);
+
+$t->is(count($parcellaireAffectationCremant->getProduits()), 3, "Il y a 3 cépages");
 $t->pass("Fomulaires étape Parcelles");

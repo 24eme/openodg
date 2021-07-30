@@ -111,13 +111,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (count($this->declaration) == 0) {
             $this->importProduitsFromLastParcellaire();
         }
-
-        if ($this->getTypeParcellaire() == ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT) {
-            $this->updateFromCVI();
-        }
     }
 
-    public function updateFromCVI() {
+    public function updateAffectationCremantFromCVI() {
         $cepages_autorises = [
             'cepage_PB' => 'PINOT BLANC',
             'cepage_CD' => 'CHARDONNAY',
