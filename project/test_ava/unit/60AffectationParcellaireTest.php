@@ -17,8 +17,27 @@ foreach (ParcellaireClient::getInstance()->getHistory($viti->identifiant, acCouc
     $parcellaire->delete(false);
 }
 
-// Ajout du fichier ../data/PARCELLAIRE-7523700100
-
+$produits = ConfigurationClient::getCurrent()->getProduits();
+$parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$parcellaire->addParcelle(
+    $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
+    "RIESLING",
+    "1958-1959",
+    "PARIS",
+    "04",
+    "95",
+    "MONTMARTRE"
+);
+$parcellaire->addParcelle(
+    $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
+    "AUXERROIS",
+    "1968-1969",
+    "PARIS",
+    "06",
+    "75",
+    "MONTPARNASSE"
+);
+$parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire");
 
