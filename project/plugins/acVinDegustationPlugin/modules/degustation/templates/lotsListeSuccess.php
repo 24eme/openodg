@@ -31,12 +31,13 @@
         <thead>
           <th class="col-sm-1">Date</th>
           <th class="col-sm-1">Campagne</th>
-          <th class="col-sm-1">N° Dossier</th>
-          <th class="col-sm-1">N° Archive</th>
+          <th class="col-sm-1">Origine</th>
+          <th class="col-sm-1">N°&nbsp;Dossier</th>
+          <th class="col-sm-1">N°&nbsp;Archive</th>
           <th class="col-sm-4">Libellé</th>
           <th class="col-sm-1">Volume</th>
           <th class="col-sm-1">Document</th>
-          <th class="col-sm-2">Dernière étape</th>
+          <th class="col-sm-2">Dernière&nbsp;étape</th>
           <th class="col-sm-1 text-right">Detail</th>
         </thead>
         <tbody>
@@ -44,6 +45,7 @@
                 <tr>
                   <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
                   <td><?php echo $mouvement->value->campagne;  ?></td>
+                  <td><?php echo $mouvement->value->initial_type;  ?></td>
                   <td><?php echo $mouvement->value->numero_dossier;  ?></td>
                   <td><?php echo $mouvement->value->numero_archive;  ?></td>
                   <td><?php  echo str_replace(array("(", ")"), array("<span class='text-muted'> - ", "</span>"), $mouvement->value->libelle);  ?></td>
