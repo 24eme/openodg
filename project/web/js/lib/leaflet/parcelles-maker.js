@@ -24,7 +24,16 @@ var dlmJson = parseString(delimitationStr);
 var map = L.map('map');
 
 
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
+        '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
+        '&LAYER={ignLayer}&STYLE={style}&FORMAT={format}'+
+        '&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}',
+        {
+          ignApiKey: 'pratique',
+          ignLayer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+          style: 'normal',
+          format: 'image/jpeg',
+          service: 'WMTS',
     maxZoom: 30,
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> creator: ' +
         '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
@@ -77,7 +86,7 @@ function style(feature) {
         opacity: 2,
         color: 'white',
         dashArray: '5',
-        fillOpacity: 1
+        fillOpacity: 0.7
     };
 }
 
@@ -90,7 +99,7 @@ function styleDelimitation(){
         weight: 0,
         opacity: 2,
         color: 'white',
-        fillOpacity: 0.7
+        fillOpacity: 0.4
     }
 }
 
