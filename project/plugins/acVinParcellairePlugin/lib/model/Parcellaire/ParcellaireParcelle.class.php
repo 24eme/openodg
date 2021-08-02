@@ -161,6 +161,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return ($v) ? true : false;
     }
     public function setActive($value) {
+        $this->add('active');
         return $this->_set('active', $value * 1);
     }
     public function getVtsgn() {
