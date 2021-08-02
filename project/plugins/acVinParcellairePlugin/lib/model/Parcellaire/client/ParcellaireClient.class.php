@@ -58,10 +58,10 @@ class ParcellaireClient extends acCouchdbClient {
         $geojson = [];
         $files = '';
         foreach ($communes as $id => $commune) {
-            $file_name = $scrapydocs.'/delimitation-'.$commune.'.json';
+            $file_name = $scrapydocs.'/../communes/delimitation-'.$commune.'.json';
             $files = glob($file_name);
             if (!empty($files)) {
-                $contents = file_get_contents($file_name);
+                $contents = str_replace("\n", '', file_get_contents($file_name));
                 array_push($geojson, $contents);
             }
         }
@@ -88,7 +88,7 @@ class ParcellaireClient extends acCouchdbClient {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : pas de fichiers trouvés");
         }
         if ($status != 0) {
-            $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique");
+            $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique : $status");
         }
 
         return $file;
@@ -139,15 +139,16 @@ class ParcellaireClient extends acCouchdbClient {
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
-        
+
         if($scrapping) {
             $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
         }
+
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
-        
+
         $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
         if($scrapping) {
             $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
@@ -267,7 +268,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (!$parcellaire || $parcellaire->date != $date) {
             $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
-
+        
         if($path){
             $parcellaire->storeAttachment($path, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
             $parcellaire->save();
@@ -285,12 +286,12 @@ class ParcellaireClient extends acCouchdbClient {
         if (!$parcellaire || $parcellaire->date != $date) {
             $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
-
+        
         if($path){
             $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
             $parcellaire->save();
         }
-        return $parcellaire;
+        return $parcellaire;    
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {

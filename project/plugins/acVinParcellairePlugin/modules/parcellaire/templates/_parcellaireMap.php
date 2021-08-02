@@ -9,13 +9,13 @@
 
 
 
-<?php $parcellaire_client = ParcellaireClient::getInstance();
-$import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi());
-	$list_communes = implode("|", $parcellaire_client->getDelimitations($parcellaire->declaration->getCommunes()));
+<?php
+    $import = ParcellaireClient::getInstance()->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi());
+	$list_communes = implode("|", ParcellaireClient::getInstance()->getDelimitations($parcellaire->declaration->getCommunes()));
 ?>
 
 <script type="text/javascript">
-	var parcelles = JSON.parse('<?php echo addslashes($import); ?>');
+	var parcelles = '<?php echo addslashes($import); ?>';
 	var delimitation = '<?php echo addslashes($list_communes); ?>';
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>

@@ -8,7 +8,7 @@
         if (file_exists($img_path.$douane2app.'.gif')): ?>
     <?php else: ?>
         <img src="/images/douane2.gif" alt="Chargement en cours..." />
-        <img src="/images/<?= $douane2app ?>.png"/>
+        <img src="/images/<?= $douane2app ?>.png" width="150"/>
     <?php endif; ?>
     </span></p>
 </div>

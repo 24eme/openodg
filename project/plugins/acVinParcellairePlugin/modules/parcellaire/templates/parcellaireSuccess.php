@@ -58,7 +58,7 @@ $list_idu = [];
         <?php if($parcellaire): ?>
             <div class="well">
                 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>            
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -190,19 +190,11 @@ $list_idu = [];
     <?php endforeach; ?>
         </div>
     </div>
-<?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
-        </div>
-    </div>
-<?php endif; ?>
-
 <?php
 
     $synthese = $parcellaire->getSyntheseCepages();
 
-    if (count($synthese)): 
+    if (count($synthese)):
 ?>
 <h3>Synthèse par cépages</h3>
 
@@ -229,7 +221,7 @@ $list_idu = [];
 
 <?php
     $synthese = $parcellaire->getSyntheseProduitsCepages();
-    if (count($synthese)): 
+    if (count($synthese)):
 ?>
 <h3>Synthèse par produits habilités</h3>
 
@@ -279,6 +271,14 @@ $list_idu = [];
 </div>
 <?php endif; ?>
 
+<?php else: ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+        </div>
+    </div>
+<?php endif; ?>
+
 <?php if($sf_user->hasTeledeclaration()): ?>
 <div class="row row-margin row-button">
     <div class="col-xs-4">
@@ -290,4 +290,3 @@ $list_idu = [];
 <script type="text/javascript">
     var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
 </script>
-

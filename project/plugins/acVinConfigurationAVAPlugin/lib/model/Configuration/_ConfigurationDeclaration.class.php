@@ -412,9 +412,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement_vci_total');
     }
 
-    public function getNodeCahierDesCharges() {
+    public function getCepagesAutorises()
+    {
+        return array();
+    }
 
-        return $this->getLieu();
+    public function isCepageAutorise($cepage) {
+
+        return in_array($cepage, $this->getCepagesAutorises());
     }
 
 }
