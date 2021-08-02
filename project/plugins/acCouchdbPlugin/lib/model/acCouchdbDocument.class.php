@@ -167,8 +167,13 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
         return $final_json->diff($native_json);
     }
 
+    public function getBigDocumentSize() {
+
+        return self::BIG_DOCUMENT_SIZE;
+    }
+
     public function isModified() {
-        if(strlen($this->_serialize_loaded_json) > self::BIG_DOCUMENT_SIZE) {
+        if(strlen($this->_serialize_loaded_json) > $this->getBigDocumentSize()) {
 
             return true;
         };

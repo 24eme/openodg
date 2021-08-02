@@ -29,6 +29,7 @@ ChgtDenom:
             '*': { type: float }
       changement_volume: { type: float }
       changement_affectable: {}
+      origine_statut: { }
       origine_produit_hash: {}
       origine_produit_libelle: { }
       origine_millesime: { }
@@ -73,7 +74,8 @@ ChgtDenom:
                   date: { }
                   id_document: { }
                   unique_id: { }
-                  origine_type: { }
+                  origine_type: { required: false } #Obsolète gardé le temps de la conversion vers initial_type
+                  initial_type: { }
                   id_document_provenance: { }
                   id_document_affectation: { }
                   campagne: {}
@@ -159,7 +161,8 @@ ChgtDenom:
                         document_ordre: {  }
                         document_type: {  }
                         document_id: {  }
-                        origine_type: { }
+                        origine_type: { required: false } #Obsolète gardé le temps de la conversion vers initial_type
+                        initial_type: { }
                         lot_unique_id: {  }
                         lot_hash: {  }
                         declarant_identifiant: {  }

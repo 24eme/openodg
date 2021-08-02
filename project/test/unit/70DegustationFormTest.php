@@ -189,15 +189,15 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 3, 'Il y a 3 lots dans la dégustation');
 
-$t->is($degustation->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type par défaut est ".DRevClient::TYPE_MODEL);
-$degustation->lots[0]->origine_type = null;
-$t->is($degustation->lots[0]->origine_type, DRevClient::TYPE_MODEL, "L'origine type calculé est ".DRevClient::TYPE_MODEL);
-$t->is($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->origine_type, $degustation->lots[0]->origine_type, "L'origine type du mouvement");
+$t->is($degustation->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type par défaut est ".DRevClient::TYPE_MODEL);
+$degustation->lots[0]->initial_type = null;
+$t->is($degustation->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
+$t->is($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->initial_type, $degustation->lots[0]->initial_type, "L'initial type du mouvement");
 
-$t->is($degustation->lots[2]->origine_type, TransactionClient::TYPE_MODEL, "L'origine type par défaut est ".TransactionClient::TYPE_MODEL);
-$degustation->lots[2]->origine_type = null;
-$t->is($degustation->lots[2]->origine_type, TransactionClient::TYPE_MODEL, "L'origine type calculé est ".TransactionClient::TYPE_MODEL);
-$t->is($degustation->lots[2]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->origine_type, $degustation->lots[2]->origine_type, "L'origine type du mouvement");
+$t->is($degustation->lots[2]->initial_type, TransactionClient::TYPE_MODEL, "L'initial type par défaut est ".TransactionClient::TYPE_MODEL);
+$degustation->lots[2]->initial_type = null;
+$t->is($degustation->lots[2]->initial_type, TransactionClient::TYPE_MODEL, "L'initial type calculé est ".TransactionClient::TYPE_MODEL);
+$t->is($degustation->lots[2]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->initial_type, $degustation->lots[2]->initial_type, "L'initial type du mouvement");
 
 
 $t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");

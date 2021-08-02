@@ -51,23 +51,23 @@ class ChgtDenomLot extends BaseChgtDenomLot
         return false;
     }
 
-    public function getOrigineType() {
-        if(is_null($this->_get('origine_type'))) {
+    public function getInitialType() {
+        if(is_null($this->_get('initial_type'))) {
             $firstOrigineLot = $this->getDocument()->getFirstOrigineLot();
-            $origineType = null;
+            $initialType = null;
             if($firstOrigineLot) {
-                $origineType = $firstOrigineLot->getOrigineType();
+                $initialType = $firstOrigineLot->getInitialType();
             } else {
-                $origineType = $this->getDocument()->type;
+                $initialType = $this->getDocument()->type;
             }
 
-            if($this->produit_hash == $this->getDocument()->changement_produit_hash && strpos($origineType, LotsClient::ORIGINE_TYPE_CHANGE) === false) {
-                $origineType .= ":".LotsClient::ORIGINE_TYPE_CHANGE;
+            if($this->produit_hash == $this->getDocument()->changement_produit_hash && strpos($initialType, LotsClient::INITIAL_TYPE_CHANGE) === false) {
+                $initialType .= ":".LotsClient::INITIAL_TYPE_CHANGE;
             }
-            $this->origine_type = $origineType;
+            $this->initial_type = $initialType;
         }
 
-        return $this->_get('origine_type');
+        return $this->_get('initial_type');
     }
 
 }

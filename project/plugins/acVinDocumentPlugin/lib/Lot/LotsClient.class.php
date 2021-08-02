@@ -4,7 +4,7 @@ class LotsClient
 {
     protected static $self = null;
 
-    const ORIGINE_TYPE_CHANGE = "Changé";
+    const INITIAL_TYPE_CHANGE = "Changé";
 
     public static function getInstance() {
         if(is_null(self::$self)) {
@@ -86,7 +86,7 @@ class LotsClient
             ConditionnementClient::TYPE_MODEL => "01",
             TransactionClient::TYPE_MODEL => "01",
             DegustationClient::TYPE_MODEL => "02",
-            ChgtDenomClient::TYPE_MODEL => "03",
+            ChgtDenomClient::TYPE_MODEL => "02",
         );
 
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
@@ -96,12 +96,29 @@ class LotsClient
             if(in_array($mouvement->id, $documents)) {
                 continue;
             }
-            $documents[$mouvement->value->date.$typePriorites[$mouvement->value->document_type].$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
+            $documents[$typePriorites[$mouvement->value->document_type].$mouvement->value->date.$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
         }
 
         ksort($documents);
 
         return $documents;
+    }
+
+    public function findStatut($declarantIdentifiant, $uniqueId, $untilDocId) {
+        $ids = $this->getDocumentsIdsByDate($declarantIdentifiant, $uniqueId);
+        $statut = null;
+        foreach($ids as $id) {
+            $doc = DeclarationClient::getInstance()->find($id);
+            $lot = $doc->getLot($uniqueId);
+            if($lot->statut) {
+                $statut = $lot->statut;
+            }
+            if($id == $untilDocId) {
+                break;
+            }
+        }
+
+        return $statut;
     }
 
     public function getDocumentsIdsByOrdre($declarantIdentifiant, $uniqueId) {

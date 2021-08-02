@@ -41,11 +41,16 @@
   <?php endif; ?>
     <div class="row">
       <div class="col-xs-9">
-        <h4>Dossier <?php echo $lot->campagne; ?> n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> –
-          <?php if($lot->numero_archive):?>
-             <a href="<?php echo url_for('degustation_lot_historique',array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)); ?>">Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></a></strong>
+        <h4>Dossier <?php echo $lot->campagne; ?>
+          <?php if($k == (count($lots) - 1) && $chgtDenom->isDeclassement()): ?>
+              – <strong>déclassé</strong>
           <?php else: ?>
-            <strong>Nouveau lot</strong>
+              n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> –
+              <?php if($lot->numero_archive):?>
+                 <a href="<?php echo url_for('degustation_lot_historique',array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)); ?>">Lot n°&nbsp;<strong><?php echo $lot->numero_archive; ?></a></strong>
+              <?php else: ?>
+                <strong>Nouveau lot</strong>
+              <?php endif; ?>
           <?php endif; ?>
         </h4>
       </div>

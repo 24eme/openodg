@@ -8,7 +8,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Hash produit\n";
+        return "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Origine Num dossier;Origine Num lot;Origine logement Opérateur;Origine Certification;Origine Genre;Origine Appellation;Origine Mention;Origine Lieu;Origine Couleur;Origine Cepage;Origine Produit;Origine Cépages;Origine Millésime;Origine Spécificités;Origine Statut;Origine Volume;Type de changement;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume changé;Prelevable;Preleve;Mode de declaration;Date de validation;Date de validation ODG;Organisme;Origine Doc Id;Origin Lot unique Id;Origin Hash produit;Doc Id;Lot unique Id;Hash produit\n";
     }
 
     public function __construct($document, $header = true, $region = null) {
@@ -45,14 +45,12 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         }
 
         $lotOrigine = $this->document->getLotOrigine();
-        $lotChgt = $this->document->lots[0];
-        $lotChgtRestant = null;
-        if(count($this->document->lots) == 2) {
+        $lotChgtRestant = $this->document->lots[0];
+        if(isset($this->document->lots[1])) {
             $lotChgt = $this->document->lots[1];
-            $lotChgtRestant = $this->document->lots[0];
         }
 
-        $base = $this->document->type.";".
+        $base = $lotChgtRestant->initial_type.";".
         $this->document->campagne.";".
         $this->document->identifiant.";".
         $this->document->declarant->famille.";".
@@ -68,9 +66,10 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         $this->document->origine_numero_logement_operateur.";".
         DeclarationExportCsv::getProduitKeysCsv($this->document->getConfigProduitOrigine()).';'.
         $this->document->origine_produit_libelle.";".
-        $lotOrigine->getCepagesLibelle().";".
+        (($lotOrigine) ? $lotOrigine->getCepagesLibelle() : "").";".
         $this->document->origine_millesime.";".
         $this->document->origine_specificite.";".
+        $this->document->origine_statut.";".
         $this->formatFloat($this->document->origine_volume).";";
 
         if($this->document->changement_type == ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT) {

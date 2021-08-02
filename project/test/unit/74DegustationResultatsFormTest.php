@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(22);
+$t = new lime_test(26);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -111,6 +111,8 @@ $form->save();
 
 $lotConformes = $doc->getLotsConformesOrNot(true);
 $t->is(count($lotConformes), 2, 'Les 2 lots sont "CONFORMES", le 3eme étant un leurre');
+$t->is($doc->lots[0]->statut, Lot::STATUT_CONFORME, 'Le statut du lot 1 est "'.Lot::STATUT_CONFORME.'"');
+$t->is($doc->lots[1]->statut, Lot::STATUT_CONFORME, 'Le statut du lot 2 est "'.Lot::STATUT_CONFORME.'"');
 
 $form = new DegustationResultatsForm($doc, $options);
 $defaults = $form->getDefaults();
@@ -134,6 +136,7 @@ $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
+$t->is($doc->lots[1]->statut, Lot::STATUT_NONCONFORME, 'Le statut du lot 2 est "'.Lot::STATUT_NONCONFORME.'"');
 
 foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');
@@ -163,6 +166,7 @@ $lotNonConformes = $doc->getLotsConformesOrNot(false);
 
 $t->is(count($lotConformes), 1, '1 lot est "CONFORME"');
 $t->is(count($lotNonConformes), 1, 'Un lot est considéré comme "NON CONFORME"');
+$t->is($doc->lots[0]->statut, Lot::STATUT_NONCONFORME, 'Le statut du lot 1 est "'.Lot::STATUT_NONCONFORME.'"');
 
 foreach ($lotNonConformes as $lot) {
   $t->is($lot->motif, $motif , 'Le motif de non conformité est "'.$motif.'"');

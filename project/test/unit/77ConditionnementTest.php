@@ -69,9 +69,9 @@ foreach ($produits as $key => $produit) {
 $t->comment("création du lot 1");
 $lot1 = $conditionnement->addLot();
 
-$t->is($lot1->origine_type, ConditionnementClient::TYPE_MODEL, "L'origine type par défaut est ".ConditionnementClient::TYPE_MODEL);
-$lot1->origine_type = null;
-$t->is($lot1->origine_type, ConditionnementClient::TYPE_MODEL, "L'origine type calculé est ".ConditionnementClient::TYPE_MODEL);
+$t->is($lot1->initial_type, ConditionnementClient::TYPE_MODEL, "L'initial type par défaut est ".ConditionnementClient::TYPE_MODEL);
+$lot1->initial_type = null;
+$t->is($lot1->initial_type, ConditionnementClient::TYPE_MODEL, "L'initial type calculé est ".ConditionnementClient::TYPE_MODEL);
 $t->is($lot1->millesime, $year, "Le millésime est intialisé à $year d'après la campagne");
 $t->is($lot1->specificite, Lot::SPECIFICITE_UNDEFINED, "La spécificité est nul à la création du lot");
 $t->ok($lot1->isEmpty(), "Le lot est vide sans numéro et sans produit");
@@ -134,7 +134,7 @@ $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), 'Le lot est revendiqué');
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 $t->ok($lot->getMouvement(Lot::STATUT_CHANGEABLE), 'Le lot est changeable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
-$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->origine_type, $lot->origine_type, "Mouvement origine type");
+$t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->initial_type, $lot->initial_type, "Mouvement initial type");
 
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
 $lottransaction = $transaction->addLot();

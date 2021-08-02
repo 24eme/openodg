@@ -1114,12 +1114,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function setCepagesAutorises($cepages_autorises_str){
         if($this->hasCepagesAutorises()){
+            $this->remove('cepages_autorises');
+            $this->add('cepages_autorises');
             $cepages_autorises = explode(',',$cepages_autorises_str);
             $c_a_new = array();
             foreach ($cepages_autorises as $cepage_autorise) {
                 $c_a = strtoupper(trim($cepage_autorise));
                 if($c_a){
-                    if(!preg_match('/^[A-Z\.\ Ç0-9\-ÉéèÈÔôÜüûÛÏïŒœ\=\(\)\']+$/',$c_a)){
+                    if(!preg_match('/^[A-Z\.\ Ç0-9\-ÉéèÈêÊëËàÀÔôÜüûÛùÙÏïŒœ\=\(\)\'’]+$/',$c_a)){
                         throw new sfException("Le cépage autorisé $c_a n'a pas un bon format. ");
                     }
                     $c_a_new[] = $c_a;

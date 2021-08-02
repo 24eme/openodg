@@ -78,11 +78,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         $this->generateMouvementsLots();
 
-        parent::save();
+        $saved = parent::save();
 
         if($saveDependants) {
             $this->saveDocumentsDependants();
 		}
+
+        return $saved;
     }
 
 	public function storeEtape($etape) {
@@ -784,18 +786,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function isAnonymized(){
-			for($table = 1; true ; $table++) {
-				$lots = $this->getLotsByTable($table);
-				if (!count($lots)) {
-					return false;
-				}
-				foreach ($lots as $k => $lot){
-					if ($lot->numero_anonymat) {
-					return true;
-					}
-				}
-			}
-			return false;
+            if (!count($this->lots)) {
+			    return false;
+            }
+            return ($this->lots[0]->numero_anonymat);
 		}
 
         public function getLotsAnonymized(){
@@ -1635,4 +1629,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 			$lot->volume = $volume;
 		}
+
+        public function getBigDocumentSize() {
+
+            return 1000000;
+        }
 }

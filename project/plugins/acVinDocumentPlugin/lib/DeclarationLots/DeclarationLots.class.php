@@ -345,11 +345,13 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                 $this->generateMouvementsLots();
             }
 
-            parent::save();
+            $saved = parent::save();
 
             if($saveDependants) {
                 $this->saveDocumentsDependants();
             }
+
+            return $saved;
         }
 
         public function saveDocumentsDependants() {
@@ -536,6 +538,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               }
 
               $lot->updateDocumentDependances();
+              $lot->updateStatut();
 
               $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
