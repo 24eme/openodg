@@ -57,12 +57,17 @@ class declarationActions extends sfActions {
         $doc_id = $request->getParameter("id");
         $this->regionParam = $request->getParameter('region',null);
 
-        if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-MT]*$/", $doc_id, $matches)) {
+        if(!preg_match("/^([A-Z]+[1-2]{0,2})-([^-]+)/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
 
         $doc_type = $matches[1];
+
+        if ($doc_type == "DEGUSTATION") {
+            return $this->redirect('degustation_visualisation', ['id' => $doc_id]);
+        }
+
         $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$matches[2]);
 
         if(!$etablissement) {
@@ -110,6 +115,18 @@ class declarationActions extends sfActions {
         if($doc_type == "CHGTDENOM") {
 
             return $this->redirect("chgtdenom_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "CONDITIONNEMENT" ) {
+            return $this->redirect("conditionnement_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "TRANSACTION" ) {
+            return $this->redirect("transaction_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "SV12" || $doc_type == "DR") {
+            return $this->redirect('get_fichier', ['id' => $doc_id]);
         }
 
         return $this->forward404();
@@ -164,8 +181,9 @@ class declarationActions extends sfActions {
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
 
-        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        if(!$this->getUser()->hasDrevAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
+        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
+        $this->periode = preg_replace('/-.*/', '', $this->campagne);
+        if(!$this->getUser()->hasDrevAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent()) {
 
             return $this->forwardSecure();
         }
@@ -202,6 +220,7 @@ class declarationActions extends sfActions {
             $this->facets["Type"][$row->key[DeclarationTousView::KEY_TYPE]] += $row->value;
         }
         if (!isset($this->query['Campagne'])){
+            ksort($this->facets["Campagne"]);
             $campagnes = array_keys($this->facets["Campagne"]);
             $this->query['Campagne'] = "".array_pop($campagnes);
         }
