@@ -640,9 +640,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             }
 
             if($lot->statut) {
-                if ($lot->volume) {
-                    $this->addMouvementLot($lot->buildMouvement($lot->statut));
-                }
+                $this->addMouvementLot($lot->buildMouvement($lot->statut));
             }
         }
     }
