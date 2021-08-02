@@ -24,6 +24,20 @@ class MouvementLotHistoryView extends acCouchdbView
         return $this->getMouvements($declarant, LotsClient::getCampagneFromUniqueId($uniqueId), LotsClient::getNumeroDossierFromUniqueId($uniqueId), LotsClient::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre, $statut, $descending);
     }
 
+    public function getCampagneFromDeclarantMouvements($declarant) {
+        $campagnes = array();
+        foreach ($this->client
+                    ->endkey(array($declarant))
+                    ->startkey(array_merge(array($declarant,array())))
+                    ->descending(true)
+                    ->reduce(true)
+                    ->group_level(2)
+                    ->getView($this->design, $this->view)->rows as $r) {
+            $campagnes[] = $r->value->campagne;
+        }
+        return $campagnes;
+    }
+
     public function getMouvements($declarant, $campagne, $dossier, $archive, $documentOrdre = null, $statut = null, $descending = false)
     {
         $keys = array($declarant, $campagne, $dossier, $archive);
