@@ -107,7 +107,7 @@ $parcellaireAffectationCremant->initProduitFromLastParcellaire();
 $parcellaireAffectationCremant->updateAffectationCremantFromCVI();
 $parcellaireAffectationCremant->save();
 
-$t->is($parcellaireAffectationCremant->_id, "PARCELLAIRECREMANTAFFECTATION-".$viti->identifiant."-".$campagne, "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
+$t->is($parcellaireAffectationCremant->_id, "PARCELLAIREAFFECTATIONCREMANT-".$viti->identifiant."-".$campagne, "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
 
 $t->comment("Étape Parcelles");
 
@@ -168,7 +168,7 @@ $parcellaireAffectationCremant->initProduitFromLastParcellaire();
 $parcellaireAffectationCremant->updateAffectationCremantFromCVI();
 $parcellaireAffectationCremant->save();
 
-$t->is($parcellaireAffectationCremant->_id, "PARCELLAIRECREMANTAFFECTATION-".$viti->identifiant."-".($campagne+1), "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
+$t->is($parcellaireAffectationCremant->_id, "PARCELLAIREAFFECTATIONCREMANT-".$viti->identifiant."-".($campagne+1), "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
 
 $t->comment("Étape Parcelles");
 
