@@ -693,7 +693,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
     }
 
     public function getMouvementsFactures() {
