@@ -117,10 +117,6 @@ function closeDisplayer(){
 function loadGeoJson(){
     mygeojson = L.geoJSON(parcelles, {
     style: style,
-    filter:function (feature) {
-        //check if the parcelle is outer zone
-        return feature.properties.parcellaires[0].Produit.includes("Provence");
-    },
     onEachFeature: onEachFeature,
     }).addTo(map);
 
