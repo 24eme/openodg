@@ -171,4 +171,11 @@ $t->is(array_keys($parcellaireAffectationCremant->getAllParcellesByAppellation($
     "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_PG/detail/PINOT-GRIS-1999-2000-PARIS-13-16-00-MONTMARTRE"
 ], "Les clés de parcelles sont correctes");
 
+try {
+    $parcellaireAffectationCremant->get("/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_RI/detail/RIESLING-1948-1949-PARIS-03-12-00-MONTMARTRE");
+    $t->fail();
+} catch (Exception $e) {
+    $t->pass("L'ancienne parcelle n'est plus là");
+}
+
 $t->pass("Fomulaires étape Parcelles");
