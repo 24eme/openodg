@@ -5,7 +5,7 @@
   <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
   <?php endif; ?>
  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
-  <li class="active"><a href=""><?php echo $campagne ?>-<?php echo $campagne +1 ?></a></li>
+  <li class="active"><a href=""><?php echo $periode ?>-<?php echo $periode +1 ?></a></li>
 </ol>
 
 <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
@@ -21,8 +21,8 @@
         <form method="GET" class="form-inline" action="">
             Campagne :
             <select class="select2SubmitOnChange form-control" name="campagne">
-                <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
-                    <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
+                <?php for($i=ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+                    <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
                 <?php endfor; ?>
             </select>
             <button type="submit" class="btn btn-default">Changer</button>
