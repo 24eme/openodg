@@ -51,7 +51,7 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function getDelimitations($communes){
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
         $geojson = [];
         $files = '';
         foreach ($communes as $id => $commune) {
