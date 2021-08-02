@@ -23,6 +23,7 @@ class parcellaireAffectationCremantActions extends sfActions {
         $this->parcellaireCremant->add('papier', 1);
         $this->parcellaireCremant->initProduitFromLastParcellaire();
         $this->parcellaireCremant->updateAffectationCremantFromCVI();
+        $this->parcellaireCremant->updateAffectationCremantFromLastTwoIntentions();
         $this->parcellaireCremant->save();
 
         return $this->redirect('parcellaire_edit', $this->parcellaireCremant);
