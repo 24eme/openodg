@@ -9,9 +9,9 @@
 
 
 
-<?php $parcellaire_client = ParcellaireClient::getInstance();
-$import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi());
-	$list_communes = implode("|", $parcellaire_client->getDelimitations($parcellaire->declaration->getCommunes()));
+<?php
+    $import = ParcellaireClient::getInstance()->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi());
+	$list_communes = implode("|", ParcellaireClient::getInstance()->getDelimitations($parcellaire->declaration->getCommunes()));
 ?>
 
 <script type="text/javascript">
