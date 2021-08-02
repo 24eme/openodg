@@ -106,7 +106,7 @@ $parcelles = $appellationNode->getDetailsSortedByParcelle(false);
 $form = new ParcellaireAffectationAjoutParcelleForm($parcellaireAffectationCremant, $appellation);
 $form = new ParcellaireAffectationAppellationEditForm($parcellaireAffectationCremant, $appellation, $parcelles);
 
-$t->is(count($parcellaireAffectationCremant->getProduits()), 3, "Il y a 3 cépages");
+$t->is(count($parcellaireAffectationCremant->getProduits()), 2, "Il y a 2 cépages");
 
 $parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne+1);
 $parcellaire->addParcelle(
