@@ -3,7 +3,7 @@
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 
 <div class="page-header no-border">
-    <h2>Visualisation de votre <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcellaire<?php endif; ?><?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?> AOC Crémant d'Alsace<?php else: ?> Crémant<?php endif; ?><?php endif; ?> <?php echo $parcellaire->campagne; ?>
+    <h2>Visualisation de votre <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation<?php endif; ?><?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?> AOC Crémant d'Alsace<?php else: ?> Crémant<?php endif; ?><?php endif; ?> <?php echo $parcellaire->campagne; ?>
     <?php if($parcellaire->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> reçue le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
     <?php elseif($parcellaire->validation): ?>
