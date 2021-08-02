@@ -128,6 +128,7 @@ $t->is(array_keys($parcellaireAffectationCremant->getAllParcellesByAppellation($
 ], "Les clés de parcelles sont correctes");
 $t->is(current($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation))->superficie, 3, "On retrouve la superficie");
 
+$t->comment('Nouveau parcellaire (cvi)');
 $parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne+1);
 $nouvelle_parcelle = $parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
@@ -163,9 +164,14 @@ $parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire crémant");
 
+$intentionCremant = ParcellaireAffectationClient::getInstance()->createDoc($viti->identifiant, $campagne, ParcellaireAffectationClient::TYPE_COUCHDB_INTENTION_CREMANT);
+$intentionCremant->declaration = $parcellaireAffectationCremant->declaration;
+$intentionCremant->save();
+
 $parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne+1, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
 $parcellaireAffectationCremant->initProduitFromLastParcellaire();
 $parcellaireAffectationCremant->updateAffectationCremantFromCVI();
+$parcellaireAffectationCremant->updateAffectationCremantFromLastTwoIntentions();
 $parcellaireAffectationCremant->save();
 
 $t->is($parcellaireAffectationCremant->_id, "PARCELLAIREAFFECTATIONCREMANT-".$viti->identifiant."-".($campagne+1), "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
