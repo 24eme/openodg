@@ -1,4 +1,4 @@
-var parcelles = window.parcelles;
+var parcellesStr = window.parcelles;
 var delimitationStr = window.delimitation;
 var allIdu = window.all_idu;
 var myMarker;
@@ -18,8 +18,6 @@ function parseString(dlmString){
     });
     return mydlm;
 }
-
-var dlmJson = parseString(delimitationStr);
 
 var map = L.map('map');
 
@@ -115,7 +113,7 @@ function closeDisplayer(){
 * Use this function to load all map data (Geojson). ie add new Feature
 **/
 function loadGeoJson(){
-    mygeojson = L.geoJSON(parcelles, {
+    mygeojson = L.geoJSON(parseString(parcellesStr), {
     style: style,
     filter:function (feature) {
         //check if the parcelle is outer zone
@@ -136,7 +134,8 @@ function zoomOnMap(){
     map.fitBounds(mygeojson.getBounds());
 }
 
-mygeojson = L.geoJSON(dlmJson,{
+mygeojson = L.geoJSON(parseString(delimitationStr),
+{
     style: styleDelimitation
 }).addTo(map);
 zoomOnMap();
