@@ -58,7 +58,7 @@ class ParcellaireClient extends acCouchdbClient {
         $geojson = [];
         $files = '';
         foreach ($communes as $id => $commune) {
-            $file_name = $scrapydocs.'/delimitation-'.$commune.'.json';
+            $file_name = $scrapydocs.'/../communes/delimitation-'.$commune.'.json';
             $files = glob($file_name);
             if (!empty($files)) {
                 $contents = file_get_contents($file_name);
