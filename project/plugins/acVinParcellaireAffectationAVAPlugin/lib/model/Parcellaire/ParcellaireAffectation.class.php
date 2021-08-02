@@ -143,6 +143,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 if ($c) {
                     $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
                     $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie;
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
                 }
             }
         }
@@ -150,6 +152,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         // On vire les parcelles qui ne sont pas dans le parcellaire
         foreach (array_diff(array_keys($parcellesFromLastAffectation), array_keys($parcellesFromCurrentAffectation)) as $parcellesASuppr) {
             $this->remove($parcellesASuppr);
+        }
+
+        // On active les anciennes parcelles automatiquement
+        foreach (array_intersect(array_keys($parcellesFromLastAffectation), array_keys($parcellesFromCurrentAffectation)) as $parcellesAActiver) {
+            $this->get($parcellesAActiver)->active = 1;
         }
     }
 
