@@ -36,6 +36,7 @@ class Parcellaire extends BaseParcellaire {
     public function initDoc($identifiant, $date, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
         $this->date = $date;
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagne($date);
         $this->set('_id', ParcellaireClient::TYPE_COUCHDB."-".$identifiant."-".str_replace('-', '', $date));
         $this->storeDeclarant();
     }
@@ -61,7 +62,7 @@ class Parcellaire extends BaseParcellaire {
                 throw new sfException("produit $hash non trouvé et ajout de parcelle sans produit non disponible pour cette app");
             }
             if (!$pseudo_produit) {
-                $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+                $this->add('declaration')->add($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
             }else{
                 $this->add('declaration')->add($hashToAdd)->libelle = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE;
             }
