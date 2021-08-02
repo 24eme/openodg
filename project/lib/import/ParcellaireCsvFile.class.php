@@ -172,7 +172,9 @@ class ParcellaireCsvFile
                 $parcelle[self::CSV_FORMAT_NUMERO_PARCELLE],
                 $parcelle[self::CSV_FORMAT_LIEU_DIT]
             );
-
+            if ($parcelle[self::CSV_FORMAT_IDU] && substr($parcelle[self::CSV_FORMAT_IDU], 0, 2)) {
+                $new_parcelle->code_commune = substr($parcelle[self::CSV_FORMAT_IDU], 0, 5);
+            }
             $new_parcelle->ecart_rang = (float) $parcelle[self::CSV_FORMAT_ECART_RANG];
             $new_parcelle->ecart_pieds = (float) $parcelle[self::CSV_FORMAT_ECART_PIED];
             $new_parcelle->superficie = (float) $parcelle[self::CSV_FORMAT_SUPERFICIE];
