@@ -40,10 +40,10 @@
             <div class="panel-bottom">
                 <?php if ($sf_user->isAdmin()): ?>
                     <p>
-                        <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('parcellaire_cremant_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
+                        <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('parcellaire_cremant_create', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>">Démarrer la télédéclaration</a>
                     </p>
                     <p>
-                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('parcellaire_cremant_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('parcellaire_cremant_create_papier', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
             </div>
@@ -53,12 +53,12 @@
         </div>
         <div class="panel-bottom">
                 <p>
-                    <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_cremant_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
+                    <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_cremant_create', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>">Démarrer la télédéclaration</a>
                 </p>
 
                 <?php if ($sf_user->isAdmin()): ?>
                     <p>
-                        <a class="btn btn-xs btn-block btn-warning pull-right" href="<?php echo url_for('parcellaire_cremant_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                        <a class="btn btn-xs btn-block btn-warning pull-right" href="<?php echo url_for('parcellaire_cremant_create_papier', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
         </div>

@@ -111,13 +111,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (count($this->declaration) == 0) {
             $this->importProduitsFromLastParcellaire();
         }
-
-        if ($this->getTypeParcellaire() == ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT) {
-            $this->updateFromCVI();
-        }
     }
 
-    public function updateFromCVI() {
+    public function updateAffectationCremantFromCVI() {
         $cepages_autorises = [
             'cepage_PB' => 'PINOT BLANC',
             'cepage_CD' => 'CHARDONNAY',
@@ -131,11 +127,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             'cepage_AU' => 'AUXERROIS'
         ];
 
-        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $appellation) {
-            foreach ($appellation->detail as $parcelle) {
+        $parcellesFromLastAffectation = $this->getAllParcellesByAppellation("CREMANT");
+        $parcellesFromCurrentAffectation = [];
+
+        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
+            foreach ($CVIAppellation->detail as $CVIParcelle) {
                 $c = false;
                 foreach ($cepages_autorises as $k => $cep) {
-                    if (strpos(strtolower($parcelle->getCepage()), strtolower($cep)) !== false) {
+                    if (strpos(strtolower($CVIParcelle->getCepage()), strtolower($cep)) !== false) {
                         $c = $k;
                         break;
                     }
@@ -143,9 +142,21 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
                 if ($c) {
                     $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
-                    $this->addProduitParcelle($hash, $parcelle->getKey(), $parcelle->getCommune(), $parcelle->getSection(), $parcelle->getNumeroParcelle(), $parcelle->getLieu());
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie;
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
                 }
             }
+        }
+
+        // On vire les parcelles qui ne sont pas dans le parcellaire
+        foreach (array_diff(array_keys($parcellesFromLastAffectation), array_keys($parcellesFromCurrentAffectation)) as $parcellesASuppr) {
+            $this->remove($parcellesASuppr);
+        }
+
+        // On active les anciennes parcelles automatiquement
+        foreach (array_intersect(array_keys($parcellesFromLastAffectation), array_keys($parcellesFromCurrentAffectation)) as $parcellesAActiver) {
+            $this->get($parcellesAActiver)->active = 1;
         }
     }
 
