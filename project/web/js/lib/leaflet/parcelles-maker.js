@@ -32,7 +32,7 @@ L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
           style: 'normal',
           format: 'image/jpeg',
           service: 'WMTS',
-    maxZoom: 30,
+    maxZoom: 19,
     attribution: 'Map data &copy;' +
         '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
         '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
