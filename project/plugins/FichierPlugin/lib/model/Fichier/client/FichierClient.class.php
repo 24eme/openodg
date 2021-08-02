@@ -102,7 +102,7 @@ class FichierClient extends acCouchdbClient {
     private function getScrapyFiles($etablissement, $type, $annee, $context = null)
     {
     	$files = array();
-    	$directory = new DirectoryIterator(ProdouaneScrappyClient::getDocumentPath($context));
+    	$directory = new DirectoryIterator(ProdouaneScrappyClient::getDocumentPath());
     	$iterator = new IteratorIterator($directory);
     	$regex = new RegexIterator($directory, '/^'.$type.'-'.$annee.'-'.$etablissement->cvi.'\..+$/i', RegexIterator::MATCH);
     	foreach($regex as $file) {
