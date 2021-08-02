@@ -114,10 +114,12 @@ function(doc) {
 	    date = validation;
     }
 
-    if(doc._id.indexOf('PARCELLAIRECREMANT') > -1) {
-	    type = "Parcellaire Crémant";
+    if(doc._id.indexOf('PARCELLAIREAFFCTATIONCREMANT') > -1) {
+	    type = "Affectation Crémant";
     }
-
+    if(doc._id.indexOf('PARCELLAIREAFFCTATION') > -1) {
+	    type = "Affectation";
+    }
     if(doc._id.indexOf('INTENTIONCREMANT') > -1) {
 	    type = "Intention Crémant";
     }
