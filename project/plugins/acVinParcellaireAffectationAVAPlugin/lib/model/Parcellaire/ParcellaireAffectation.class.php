@@ -160,14 +160,51 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function getParcellaireLastCampagne() {
+    public function updateAffectationCremantFromLastTwoIntentions()
+    {
+        $intention = $this->getParcellaireLastCampagne("INTENTIONCREMANT");
+
+        if (! $intention) {
+            return;
+        }
+
+        $cepages_autorises = [
+            'cepage_PB' => 'PINOT BLANC',
+            'cepage_CD' => 'CHARDONNAY',
+            'cepage_BN' => 'PINOT NOIR BLANC',
+            'cepage_RI' => 'RIESLING',
+            'cepage_PG' => 'PINOT GRIS',
+            'cepage_PN' => 'PINOT NOIR ROSé',
+            'cepage_BLRS' => 'BLANC + ROSé',
+            'cepage_RB' => 'REBêCHES',
+            'cepage_PNRaisin' => 'PINOT NOIR',
+            'cepage_AU' => 'AUXERROIS'
+        ];
+
+        foreach ($intention->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleIntention) {
+            if (array_key_exists($parcelleIntention->getCepage()->getKey(), $cepages_autorises)) {
+                $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/".$parcelleIntention->getCepage()->getKey()."/detail/".$parcelleIntention->getKey();
+
+                if ($this->exist($hash)) {
+                    $this->get($hash)->superficie = $parcelleIntention->superficie;
+                    $this->get($hash)->active = 1;
+                }
+            }
+        }
+    }
+
+    public function getParcellaireLastCampagne($type = null) {
+        if ($type === null) {
+            $type = $this->getTypeParcellaire();
+        }
+
         $campagnePrec = $this->campagne - 1;
-        $parcellairePrevId = ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->getTypeParcellaire());
+        $parcellairePrevId = ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $campagnePrec, $type);
         $parcellaire = ParcellaireAffectationClient::getInstance()->find($parcellairePrevId);
 
         if (!$parcellaire) {
             $campagnePrec = $this->campagne - 2;
-            $parcellairePrevId = ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->getTypeParcellaire());
+            $parcellairePrevId = ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $campagnePrec, $type);
             $parcellaire = ParcellaireAffectationClient::getInstance()->find($parcellairePrevId);
         }
 
