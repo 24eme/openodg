@@ -3,7 +3,11 @@
 class parcellaireActions extends sfActions {
     public function executeIndex(sfWebRequest $request)
     {
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        } elseif(class_exists("LoginForm")) {
+            $this->form = new LoginForm();
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -35,9 +39,9 @@ class parcellaireActions extends sfActions {
     public function executeDeclarant(sfWebRequest $request) {
           $this->etablissement = $this->getRoute()->getEtablissement();
           $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
-
-          $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
-
+          if(class_exists("EtablissementChoiceForm")) {
+              $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+          }
           $this->setTemplate('parcellaire');
     }
 

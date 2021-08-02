@@ -7,7 +7,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($travauxmarc && $travauxmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-            <h3>Ouverture&nbsp;travaux&nbsp;de&nbsp;distillation Marc&nbsp;d'Alsace&nbsp;Gw&nbsp;<?php echo $campagne; ?></h3>
+            <h3>Ouverture&nbsp;travaux&nbsp;de&nbsp;distillation Marc&nbsp;d'Alsace&nbsp;Gw&nbsp;<?php echo $periode; ?></h3>
         </div>
         <?php if ($travauxmarc && $travauxmarc->validation): ?>
             <div class="panel-body">
@@ -46,10 +46,10 @@
             <div class="panel-bottom">
                 <?php if ($sf_user->isAdmin()): ?>
                     <p>
-                        <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('travauxmarc_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
+                        <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('travauxmarc_create', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>">Démarrer la télédéclaration</a>
                     </p>
                     <p>
-                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('travauxmarc_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('travauxmarc_create_papier', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
             </div>
@@ -59,11 +59,11 @@
             </div>
             <div class="panel-bottom">
                 <p>
-                    <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('travauxmarc_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
+                    <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('travauxmarc_create', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>">Démarrer la télédéclaration</a>
                 </p>
                 <?php if ($sf_user->isAdmin()): ?>
                     <p>
-                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('travauxmarc_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('travauxmarc_create_papier', array('sf_subject' => $etablissement, 'campagne' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
             </div>
