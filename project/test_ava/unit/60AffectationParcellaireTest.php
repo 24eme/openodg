@@ -7,12 +7,22 @@ $t = new lime_test();
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $campagne = (date('Y')-2)."";
 
-foreach(ParcellaireAffectationClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(ParcellaireAffectationClient::getInstance()->getHistory($viti->identifiant, ParcellaireAffectationClient::TYPE_COUCHDB, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($k);
     $parcellaireAffectation->delete(false);
 }
 
-foreach (ParcellaireClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(ParcellaireAffectationClient::getInstance()->getHistory($viti->identifiant, ParcellaireAffectationClient::TYPE_COUCHDB_INTENTION_CREMANT, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($k);
+    $parcellaireAffectation->delete(false);
+}
+
+foreach(ParcellaireAffectationClient::getInstance()->getHistory($viti->identifiant, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($k);
+    $parcellaireAffectation->delete(false);
+}
+
+foreach (ParcellaireClient::getInstance()->getHistory($viti->identifiant, '9999-99-99', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $parcellaire = ParcellaireClient::getInstance()->find($k);
     $parcellaire->delete(false);
 }
