@@ -19,7 +19,7 @@ foreach (ParcellaireClient::getInstance()->getHistory($viti->identifiant, acCouc
 
 $produits = ConfigurationClient::getCurrent()->getProduits();
 $parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     "RIESLING",
     "1958-1959",
@@ -28,7 +28,8 @@ $parcellaire->addParcelle(
     "95",
     "MONTMARTRE"
 );
-$parcellaire->addParcelle(
+$nouvelle_parcelle->superficie = 1;
+$nouvelle_parcelle = $parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     "RIESLING",
     "1948-1949",
@@ -37,7 +38,8 @@ $parcellaire->addParcelle(
     "12",
     "MONTMARTRE"
 );
-$parcellaire->addParcelle(
+$nouvelle_parcelle->superficie = 2;
+$nouvelle_parcelle = $parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
     "AUXERROIS",
     "1968-1969",
@@ -46,6 +48,7 @@ $parcellaire->addParcelle(
     "75",
     "MONTPARNASSE"
 );
+$nouvelle_parcelle->superficie = 3;
 $parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire");
@@ -113,9 +116,10 @@ $t->is(array_keys($parcellaireAffectationCremant->getAllParcellesByAppellation($
     "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_RI/detail/RIESLING-1958-1959-PARIS-04-95-00-MONTMARTRE",
     "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_RI/detail/RIESLING-1948-1949-PARIS-03-12-00-MONTMARTRE"
 ], "Les clés de parcelles sont correctes");
+$t->is(current($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation))->superficie, 3, "On retrouve la superficie");
 
 $parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne+1);
-$parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     "RIESLING",
     "1958-1959",
@@ -124,7 +128,8 @@ $parcellaire->addParcelle(
     "95",
     "MONTMARTRE"
 );
-$parcellaire->addParcelle(
+$nouvelle_parcelle->superficie = 1;
+$nouvelle_parcelle = $parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_PG']->getHash(),
     "PINOT GRIS",
     "1999-2000",
@@ -133,7 +138,8 @@ $parcellaire->addParcelle(
     "16",
     "MONTMARTRE"
 );
-$parcellaire->addParcelle(
+$nouvelle_parcelle->superficie = 4;
+$nouvelle_parcelle = $parcellaire->addParcelle(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
     "AUXERROIS",
     "1968-1969",
@@ -142,6 +148,7 @@ $parcellaire->addParcelle(
     "75",
     "MONTPARNASSE"
 );
+$nouvelle_parcelle->superficie = 3;
 $parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire crémant");
@@ -177,5 +184,9 @@ try {
 } catch (Exception $e) {
     $t->pass("L'ancienne parcelle n'est plus là");
 }
+$t->is($parcellaireAffectationCremant->get("/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_AU/detail/AUXERROIS-1968-1969-PARIS-06-75-00-MONTPARNASSE")->active, true, "L'ancienne parcelle d'auxerrois est active");
+$t->is($parcellaireAffectationCremant->get("/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_RI/detail/RIESLING-1958-1959-PARIS-04-95-00-MONTMARTRE")->active, true, "L'ancienne parcelle de riesling est active");
+$t->is($parcellaireAffectationCremant->get("/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_PG/detail/PINOT-GRIS-1999-2000-PARIS-13-16-00-MONTMARTRE")->active, 0, "La nouvelle parcelle n'est pas active");
+$t->is(end($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation))->superficie, 4, "On retrouve la superficie");
 
 $t->pass("Fomulaires étape Parcelles");
