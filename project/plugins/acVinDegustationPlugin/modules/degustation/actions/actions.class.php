@@ -644,14 +644,14 @@ class degustationActions extends sfActions {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
         $this->forward404Unless($this->etablissement);
-        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
-
+        $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
+        $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
     }
 
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
-      $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
+      $this->campagne = $request->getParameter('campagne', null);
       $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne);
     }
 
