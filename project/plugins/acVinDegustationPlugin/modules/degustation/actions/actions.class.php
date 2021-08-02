@@ -651,7 +651,7 @@ class degustationActions extends sfActions {
 
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
-      $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
+      $this->campagne = $request->getParameter('campagne', null);
       $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne);
     }
 
