@@ -14,9 +14,9 @@
       <form method="GET" class="form-inline" action="">
           Campagne :
           <select class="select2SubmitOnChange form-control" name="campagne">
-              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
-                  <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i; ?>-<?php echo $i+1 ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
-              <?php endfor; ?>
+              <?php foreach($campagnes as $campagne_i): ?>
+                  <option <?php if($campagne == $campagne_i): ?>selected="selected"<?php endif; ?> value="<?php echo $campagne_i; ?>"><?php echo $campagne_i; ?></option>
+              <?php endforeach; ?>
           </select>
           <button type="submit" class="btn btn-default">Changer</button>
       </form>
