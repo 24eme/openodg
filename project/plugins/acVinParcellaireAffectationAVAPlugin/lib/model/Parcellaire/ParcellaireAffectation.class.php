@@ -127,11 +127,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             'cepage_AU' => 'AUXERROIS'
         ];
 
-        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $appellation) {
-            foreach ($appellation->detail as $parcelle) {
+        $parcellesFromLastAffectation = $this->getAllParcellesByAppellation("CREMANT");
+        $parcellesFromCurrentAffectation = [];
+
+        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
+            foreach ($CVIAppellation->detail as $CVIParcelle) {
                 $c = false;
                 foreach ($cepages_autorises as $k => $cep) {
-                    if (strpos(strtolower($parcelle->getCepage()), strtolower($cep)) !== false) {
+                    if (strpos(strtolower($CVIParcelle->getCepage()), strtolower($cep)) !== false) {
                         $c = $k;
                         break;
                     }
@@ -139,9 +142,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
                 if ($c) {
                     $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
-                    $this->addProduitParcelle($hash, $parcelle->getKey(), $parcelle->getCommune(), $parcelle->getSection(), $parcelle->getNumeroParcelle(), $parcelle->getLieu());
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                 }
             }
+        }
+
+        // On vire les parcelles qui ne sont pas dans le parcellaire
+        foreach (array_diff(array_keys($parcellesFromLastAffectation), array_keys($parcellesFromCurrentAffectation)) as $parcellesASuppr) {
+            $this->remove($parcellesASuppr);
         }
     }
 

@@ -164,4 +164,11 @@ $form = new ParcellaireAffectationAjoutParcelleForm($parcellaireAffectationCrema
 $form = new ParcellaireAffectationAppellationEditForm($parcellaireAffectationCremant, $appellation, $parcelles);
 
 $t->is(count($parcellaireAffectationCremant->getProduits()), 3, "Il y a 3 cépages");
+$t->is(count($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation)), 3, "Il y a 3 parcelles");
+$t->is(array_keys($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation)), [
+    "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_AU/detail/AUXERROIS-1968-1969-PARIS-06-75-00-MONTPARNASSE",
+    "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_RI/detail/RIESLING-1958-1959-PARIS-04-95-00-MONTMARTRE",
+    "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_PG/detail/PINOT-GRIS-1999-2000-PARIS-13-16-00-MONTMARTRE"
+], "Les clés de parcelles sont correctes");
+
 $t->pass("Fomulaires étape Parcelles");
