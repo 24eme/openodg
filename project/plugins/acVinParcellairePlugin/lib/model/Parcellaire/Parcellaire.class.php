@@ -62,7 +62,7 @@ class Parcellaire extends BaseParcellaire {
                 throw new sfException("produit $hash non trouvé et ajout de parcelle sans produit non disponible pour cette app");
             }
             if (!$pseudo_produit) {
-                $this->add('declaration')->get($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
+                $this->add('declaration')->add($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
             }else{
                 $this->add('declaration')->add($hashToAdd)->libelle = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE;
             }
