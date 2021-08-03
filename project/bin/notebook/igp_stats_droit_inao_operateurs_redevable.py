@@ -18,6 +18,9 @@ changement_denomination = pd.read_csv("../../web/exports_igpgascogne/changement_
 
 
 def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changement_denomination):
+    
+    
+    lots_init = lots
 
     drev_lots = drev_lots.query("Campagne == @campagne");   
     drev_lots = drev_lots.fillna("")    
@@ -52,9 +55,7 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
     
     lots['Type'] = "VOLUME EN INSTANCE DE REVENDICATION"
     final = final.append(lots)    
-    
-    
-    
+        
     #CHANGEMENT DE DENO & DECLASSEMENT   
    
     
@@ -156,6 +157,22 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
 
     tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Lieu','type_vol_revendique','type_instance_conformite','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B']]
 
+    
+    tab_cal = pd.merge(tab_cal,drev_lots,how='left',left_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],right_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],suffixes=("", " info-operateur"))    
+    tab_cal = tab_cal[['Identifiant','Famille','CVI Opérateur','Siret Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Email Operateur','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_conformite','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B']]
+
+    
+    # Pour comparer A-B avec la somme des volumes de lots.csv
+    lots_init = lots_init.query("Campagne == @campagne")
+    lots_init = lots_init.fillna('')
+    lots_init = lots_init.groupby(['Id Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
+    lots_init = lots_init.reset_index(level=['Id Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Appellation','Couleur','Produit','Lieu'])
+    lots_init = lots_init.rename(columns = {'Id Opérateur':'Identifiant','Volume':'Somme Volume lots.csv'})
+    
+    tab_cal = pd.merge(tab_cal,lots_init,how='left', left_on=['Identifiant','Appellation','Couleur','Produit','Lieu'], right_on = ['Identifiant','Appellation','Couleur','Produit','Lieu'],suffixes=("", " lots"))
+ 
+    tab_cal = tab_cal[['Identifiant','Famille','CVI Opérateur','Siret Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Email Operateur','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_conformite','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
+   
 
     tab_cal.reset_index(drop=True).to_csv('../../web/exports/igp_stats_droit_inao_operateurs_redevable_22'+campagne+".csv", encoding="iso8859_15", sep=";",index=False,  decimal=",")
         
@@ -166,5 +183,17 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
 
 
 createCSVByCampagne("2019-2020",drev_lots,etablissements,societe,lots,changement_denomination)
-createCSVByCampagne("2020-2021",drev_lots,etablissements,societe,lots,changement_denomination)
+#createCSVByCampagne("2020-2021",drev_lots,etablissements,societe,lots,changement_denomination)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
