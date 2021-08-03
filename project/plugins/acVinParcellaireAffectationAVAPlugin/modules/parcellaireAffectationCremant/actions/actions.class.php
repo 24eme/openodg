@@ -21,9 +21,8 @@ class parcellaireAffectationCremantActions extends sfActions {
 
         $this->parcellaireCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()), ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
         $this->parcellaireCremant->add('papier', 1);
-        $this->parcellaireCremant->initAffectationCremantFromCVI();
+        $this->parcellaireCremant->initProduitsFromCVI();
         $this->parcellaireCremant->updateAffectationCremantFromLastAffectation();
-        $this->parcellaireCremant->updateAffectationCremantFromLastTwoIntentions();
         $this->parcellaireCremant->save();
 
         return $this->redirect('parcellaire_edit', $this->parcellaireCremant);
