@@ -531,7 +531,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_revendication_superficie', $this->drev);
         }

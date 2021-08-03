@@ -21,6 +21,10 @@ class ChgtDenomValidationForm extends acCouchdbForm
     {
       $values = $this->getValues();
       $dateValidation = date('c');
+      if ($this->getDocument()->isApprouve()) {
+          throw new sfException("On ne peut pas changer la validation d'un chgt déjà approuvé");
+      }
+      $this->getDocument()->clearLots();
 
       if($this->isAdmin) {
           if (isset($values['affectable']) && $values['affectable']) {

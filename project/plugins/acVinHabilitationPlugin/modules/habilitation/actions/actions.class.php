@@ -195,7 +195,7 @@ class habilitationActions extends sfActions {
         $values = $request->getParameter($this->ajoutForm->getName());
 
         if(!$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && !preg_match('/^DEMANDE_/', $values['statut'])) {
-            $this->getUser()->setFlash("erreur", "Vous n'êtes pas autorisé à ajouter une habilitation avec le statut : ".$values['statut']);
+            $this->getUser()->setFlash("error", "Vous n'êtes pas autorisé à ajouter une habilitation avec le statut : ".$values['statut']);
 
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
@@ -203,7 +203,7 @@ class habilitationActions extends sfActions {
         $this->ajoutForm->bind($values);
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
@@ -232,7 +232,7 @@ class habilitationActions extends sfActions {
         if(!$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
             foreach($values as $key => $value) {
                 if(preg_match('/^statut_/', $key) && !preg_match('/^(DEMANDE_|ANNULÉ)/', $value)) {
-                    $this->getUser()->setFlash("erreur", "Vous n'êtes pas autorisé à modifier une habilitation avec le statut : ".$value);
+                    $this->getUser()->setFlash("error", "Vous n'êtes pas autorisé à modifier une habilitation avec le statut : ".$value);
 
                     return $this->redirect('habilitation_declarant', $this->etablissement);
                 }
@@ -242,7 +242,7 @@ class habilitationActions extends sfActions {
         $this->editForm->bind($values);
 
         if (!$this->editForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
