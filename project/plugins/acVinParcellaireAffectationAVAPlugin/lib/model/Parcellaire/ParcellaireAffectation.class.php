@@ -113,7 +113,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function initAffectationCremantFromCVI() {
+    public function initProduitsFromCVI() {
         $cepages_autorises = [
             'cepage_PB' => 'PINOT BLANC',
             'cepage_CD' => 'CHARDONNAY',
@@ -180,7 +180,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function updateAffectationCremantFromLastTwoIntentions()
+    public function updateIntentionCremantFromLastTwoIntentions()
     {
         $intention = $this->getParcellaireLastCampagne("INTENTIONCREMANT");
 
