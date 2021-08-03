@@ -278,10 +278,10 @@ class Email {
             return;
         }
 
-        $csv = new ExportParcellaireCSV($parcellaire);
+        $csv = new ExportParcellaireAffectationCSV($parcellaire);
         $csvAttachment = new Swift_Attachment(utf8_decode($csv->export()), $csv->getFileName(true, $parcellaire->declarant->nom), 'text/csv');
 
-        $pdf = new ExportParcellairePDF($parcellaire);
+        $pdf = new ExportParcellaireAffectationPDF($parcellaire);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
@@ -317,10 +317,10 @@ class Email {
             return false;
         }
 
-        $csv = new ExportParcellaireCSV($parcellaire);
+        $csv = new ExportParcellaireAffectationCSV($parcellaire);
         $csvAttachment = new Swift_Attachment(utf8_decode($csv->export($acheteur->cvi)), $csv->getFileName(false, $acheteur->nom), 'text/csv');
 
-        $pdf = new ExportParcellairePDF($parcellaire);
+        $pdf = new ExportParcellaireAffectationPDF($parcellaire);
         $pdf->setCviFilter($acheteur->cvi, $acheteur->nom);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
