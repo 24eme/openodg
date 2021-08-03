@@ -1,6 +1,6 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "ChgtDenom" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation" && doc.type != "Parcellaire" && doc.type != "Conditionnement" && doc.type != "Transaction") {
+    if(doc.type != "DRev" && doc.type != "ChgtDenom" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation" && doc.type != "Conditionnement" && doc.type != "Transaction") {
 
         return;
     }
