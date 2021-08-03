@@ -17,20 +17,27 @@ changement_denomination = pd.read_csv("../../web/exports_igpgascogne/changement_
 # In[ ]:
 
 
-def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changement_denomination):
-    
-    
-    lots_init = lots
+print(etablissements.columns)
 
+
+# In[ ]:
+
+
+print(societe.columns)
+
+
+# In[ ]:
+
+
+def createCSVByCampagne(campagne,drev_lots,lots,changement_denomination,etablissements,societe):
+    
     drev_lots = drev_lots.query("Campagne == @campagne");   
     drev_lots = drev_lots.fillna("")    
-    
-    
+        
     #VOLUME REVENDIQUE  
     drev_lots = drev_lots.groupby(['Identifiant','Famille','CVI Opérateur','Siret Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Email Operateur','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
     drev_lots = drev_lots.reset_index()
-    drev_lots = pd.merge(drev_lots, etablissements, how='left',left_on=["Identifiant"], right_on=["Identifiant etablissement"],suffixes=("", " etablissement"))
-    drev_lots = pd.merge(drev_lots, societe , how ="left" , left_on ="Login", right_on ="Identifiant",suffixes=("", " societe"))
+             
     drev_lots = drev_lots[['Identifiant','Famille','CVI Opérateur','Siret Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Email Operateur','Appellation','Couleur','Produit','Lieu','Volume']]
     drev_lots['Type'] = "VOLUME REVENDIQUE"
     
@@ -41,7 +48,9 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
     conforme = "Conforme"
     rep_conforme = "Réputé conforme"
     
-    lots = lots.query("Campagne == @campagne");    
+    lots = lots.query("Campagne == @campagne");
+    lots = lots.fillna('')
+    lots_init = lots
     lots = lots.rename(columns = {'Statut de lot': 'Statut_de_lot'})
     lots = lots.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme");
     lots = lots.fillna("")    
@@ -70,7 +79,7 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
     changement_denomination_initial = changement_denomination
     
     
-     #DECLASSEMENT
+    #DECLASSEMENT
     
     type_de_changement = "DECLASSEMENT"
     changement_denomination_declassement = changement_denomination.query("Type_de_changement == @type_de_changement")
@@ -128,7 +137,7 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
 
     #CSV FINAL   
     
-    final.reset_index(drop=True).to_csv('../../web/exports/igp_stats_droit_inao_operateurs_redevable_2'+campagne+".csv", encoding="iso8859_15", sep=";",index=False, decimal=",")
+    final.reset_index(drop=True).to_csv('../../web/exports/igp_stats_droit_inao_operateurs_redevable_'+campagne+".csv", encoding="iso8859_15", sep=";",index=False, decimal=",")
     
     
     #tableau récapitulatif
@@ -163,8 +172,6 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
 
     
     # Pour comparer A-B avec la somme des volumes de lots.csv
-    lots_init = lots_init.query("Campagne == @campagne")
-    lots_init = lots_init.fillna('')
     lots_init = lots_init.groupby(['Id Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
     lots_init = lots_init.reset_index(level=['Id Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Appellation','Couleur','Produit','Lieu'])
     lots_init = lots_init.rename(columns = {'Id Opérateur':'Identifiant','Volume':'Somme Volume lots.csv'})
@@ -172,28 +179,30 @@ def createCSVByCampagne(campagne,drev_lots,etablissements,societe,lots,changemen
     tab_cal = pd.merge(tab_cal,lots_init,how='left', left_on=['Identifiant','Appellation','Couleur','Produit','Lieu'], right_on = ['Identifiant','Appellation','Couleur','Produit','Lieu'],suffixes=("", " lots"))
  
     tab_cal = tab_cal[['Identifiant','Famille','CVI Opérateur','Siret Opérateur','Nom Opérateur','Adresse Opérateur','Code postal Opérateur','Commune Opérateur','Email Operateur','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_conformite','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
-   
+      
+    etablissements = pd.merge(etablissements,societe,how='outer',left_on="Login",right_on='Identifiant',suffixes=('',' societe'))
 
-    tab_cal.reset_index(drop=True).to_csv('../../web/exports/igp_stats_droit_inao_operateurs_redevable_22'+campagne+".csv", encoding="iso8859_15", sep=";",index=False,  decimal=",")
+    etablissements['Login']= etablissements['Login']+'01'
+
+    tab_cal = pd.merge(tab_cal,etablissements,how='left',left_on=['Identifiant'],right_on=['Login'],suffixes=(''," etablissement"))
         
+    tab_cal = tab_cal[['Identifiant','Famille','CVI Opérateur','Siret Opérateur','Nom Opérateur','Raison sociale','Adresse societe','Adresse 2 societe','Adresse 3 societe','Code postal societe','Commune societe','Email Operateur','Téléphone portable','Fax societe','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_conformite','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
     
+    tab_cal = tab_cal.rename(columns = {'Raison sociale': 'Nom etablissement','Nom Opérateur':'Nom societe','Adresse societe':'Adresse','Adresse 2 societe':'Adresse 2','Adresse 3 societe':'Adresse 3','Code postal societe':'Code postal','Email Operateur':'Email','Fax societe':'Fax'})    
+
+    
+    tab_cal.reset_index(drop=True).to_csv('../../web/exports/igp_stats_droit_inao_operateurs_redevable_A_B_A-B'+campagne+".csv", encoding="iso8859_15", sep=";",index=False,  decimal=",")
+        
 
 
 # In[ ]:
 
 
-createCSVByCampagne("2019-2020",drev_lots,etablissements,societe,lots,changement_denomination)
-#createCSVByCampagne("2020-2021",drev_lots,etablissements,societe,lots,changement_denomination)
+createCSVByCampagne("2019-2020",drev_lots,lots,changement_denomination,etablissements,societe)
 
 
 # In[ ]:
 
 
-
-
-
-# In[ ]:
-
-
-
+#createCSVByCampagne("2020-2021",drev_lots,lots,changement_denomination,etablissements,societe)
 
