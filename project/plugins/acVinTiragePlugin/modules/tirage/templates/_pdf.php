@@ -1,5 +1,5 @@
 <?php use_helper("Date"); ?>
-<?php use_helper('Parcellaire') ?>
+<?php use_helper('ParcellaireAffectation') ?>
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
