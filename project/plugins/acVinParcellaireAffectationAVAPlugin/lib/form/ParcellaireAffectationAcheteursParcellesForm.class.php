@@ -24,7 +24,7 @@ class ParcellaireAffectationAcheteursParcellesForm extends ParcellaireAffectatio
 
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true), array('disabled' => 'disabled')));
             $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));
-            $this->getWidget($hash)->setLabel(ParcellaireAcheteursForm::buildLibelle($cepage, $hash));
+            $this->getWidget($hash)->setLabel(ParcellaireAffectationAcheteursForm::buildLibelle($cepage, $hash));
 
             foreach($cepage->getProduitsCepageDetails() as $parcelle) {
                 if($lieu_affecte && $parcelle->lieu != $lieu_affecte) {
