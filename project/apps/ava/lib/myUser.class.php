@@ -130,4 +130,13 @@ class myUser extends sfBasicSecurityUser
     public function hasDrevAdmin() {
         return $this->isAdmin();
     }
+
+    public function isStalker() {
+        return $this->hasCredential(self::CREDENTIAL_STALKER);
+    }
+
+    public function hasTeledeclaration() {
+
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin() && !$this->isStalker();
+    }
 }

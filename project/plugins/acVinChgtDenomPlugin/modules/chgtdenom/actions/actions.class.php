@@ -104,16 +104,21 @@ class chgtdenomActions extends sfActions
         $chgtDenom = $this->getRoute()->getChgtDenom();
         $this->secureIsValide($chgtDenom);
 
+        if ($chgtDenom->isValide()) {
+            $this->getUser()->setFlash("error", 'Le changement est validé');
+            return $this->redirect('chgtdenom_validation', $chgtDenom);
+        }
         $form = new ChgtDenomLogementForm($chgtDenom);
 
         $form->bind($request->getParameter($form->getName()));
 
         if (!$form->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue : '.strip_tags($form->renderGlobalErrors()));
             return $this->redirect('chgtdenom_validation', $chgtDenom);
         }
 
         $form->save();
+        exit;
         $this->getUser()->setFlash("notice", 'Le logement a été modifié avec succès.');
         return $this->redirect('chgtdenom_validation', $chgtDenom);
     }

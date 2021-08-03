@@ -54,14 +54,14 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function getDelimitations($communes){
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
+        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
         $geojson = [];
         $files = '';
         foreach ($communes as $id => $commune) {
-            $file_name = $scrapydocs.'/delimitation-'.$commune.'.json';
+            $file_name = $scrapydocs.'/../communes/delimitation-'.$commune.'.json';
             $files = glob($file_name);
             if (!empty($files)) {
-                $contents = file_get_contents($file_name);
+                $contents = str_replace("\n", '', file_get_contents($file_name));
                 array_push($geojson, $contents);
             }
         }
@@ -139,15 +139,16 @@ class ParcellaireClient extends acCouchdbClient {
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
-        
+
         if($scrapping) {
             $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
         }
-        $filePdf = str_replace('.csv', '.pdf', $fileCsv);
+
+        $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
-        
+
         $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
         if($scrapping) {
             $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);

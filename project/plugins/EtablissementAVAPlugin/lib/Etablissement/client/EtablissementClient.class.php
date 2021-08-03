@@ -1,5 +1,7 @@
 <?php
 
+// AVA //
+
 class EtablissementClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Etablissement";
@@ -49,6 +51,34 @@ class EtablissementClient extends acCouchdbClient {
     public function findByIdentifiant($identifiant) {
 
         return $this->find('ETABLISSEMENT-'.$identifiant);
+    }
+
+    /**
+     * Rechercher un établissment par id, identifiant, cvi, no accices, ppm
+     *
+     * @param string $anyIdentifiant Id, identifiant, cvi, no accices, ppm
+     * @param bool $withSuspendu Inclure les établissements suspendu
+     *
+     * @return Etablissement
+     */
+    public function findAny($anyIdentifiant) {
+        $etablissement = $this->find($this->getId($anyIdentifiant));
+
+        if($etablissement) {
+
+            return $etablissement;
+        }
+
+        return $this->findByCvi($anyIdentifiant);
+    }
+
+    public function getId($id_or_identifiant) {
+        $id = $id_or_identifiant;
+        if (strpos($id_or_identifiant, 'ETABLISSEMENT-') === false) {
+            $id = 'ETABLISSEMENT-' . $id_or_identifiant;
+        }
+
+        return $id;
     }
 
     public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
