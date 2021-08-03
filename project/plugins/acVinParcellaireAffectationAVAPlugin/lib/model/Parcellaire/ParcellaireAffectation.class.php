@@ -113,7 +113,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function updateAffectationCremantFromCVI() {
+    public function initProduitsFromCVI() {
         $cepages_autorises = [
             'cepage_PB' => 'PINOT BLANC',
             'cepage_CD' => 'CHARDONNAY',
@@ -126,9 +126,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             'cepage_PNRaisin' => 'PINOT NOIR',
             'cepage_AU' => 'AUXERROIS'
         ];
-
-        $parcellesFromLastAffectation = $this->getAllParcellesByAppellation("CREMANT");
-        $parcellesFromCurrentAffectation = [];
 
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
@@ -148,19 +145,42 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 }
             }
         }
+    }
 
-        // On vire les parcelles qui ne sont pas dans le parcellaire
-        foreach (array_diff(array_keys($parcellesFromLastAffectation), array_keys($parcellesFromCurrentAffectation)) as $parcellesASuppr) {
-            $this->remove($parcellesASuppr);
+    public function updateAffectationCremantFromLastAffectation()
+    {
+        $affectationCremant = $this->getParcellaireLastCampagne(ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
+
+        if (! $affectationCremant) {
+            return;
         }
 
-        // On active les anciennes parcelles automatiquement
-        foreach (array_intersect(array_keys($parcellesFromLastAffectation), array_keys($parcellesFromCurrentAffectation)) as $parcellesAActiver) {
-            $this->get($parcellesAActiver)->active = 1;
+        $cepages_autorises = [
+            'cepage_PB' => 'PINOT BLANC',
+            'cepage_CD' => 'CHARDONNAY',
+            'cepage_BN' => 'PINOT NOIR BLANC',
+            'cepage_RI' => 'RIESLING',
+            'cepage_PG' => 'PINOT GRIS',
+            'cepage_PN' => 'PINOT NOIR ROSé',
+            'cepage_BLRS' => 'BLANC + ROSé',
+            'cepage_RB' => 'REBêCHES',
+            'cepage_PNRaisin' => 'PINOT NOIR',
+            'cepage_AU' => 'AUXERROIS'
+        ];
+
+        foreach ($affectationCremant->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
+            if (array_key_exists($parcelleCremant->getCepage()->getKey(), $cepages_autorises)) {
+                foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
+                    // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
+                    if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
+                        $parcelleAActiver->active = 1;
+                    }
+                }
+            }
         }
     }
 
-    public function updateAffectationCremantFromLastTwoIntentions()
+    public function updateIntentionCremantFromLastTwoIntentions()
     {
         $intention = $this->getParcellaireLastCampagne("INTENTIONCREMANT");
 
@@ -183,11 +203,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach ($intention->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleIntention) {
             if (array_key_exists($parcelleIntention->getCepage()->getKey(), $cepages_autorises)) {
-                $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/".$parcelleIntention->getCepage()->getKey()."/detail/".$parcelleIntention->getKey();
-
-                if ($this->exist($hash)) {
-                    $this->get($hash)->superficie = $parcelleIntention->superficie;
-                    $this->get($hash)->active = 1;
+                foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
+                    // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
+                    if ($parcelleAActiver->section == $parcelleIntention->section && $parcelleAActiver->numero_parcelle == $parcelleIntention->numero_parcelle) {
+                        $parcelleAActiver->active = 1;
+                    }
                 }
             }
         }

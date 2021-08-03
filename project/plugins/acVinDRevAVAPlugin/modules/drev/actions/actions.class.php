@@ -334,7 +334,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -354,7 +354,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_revendication', $this->drev);
         }
@@ -421,7 +421,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_revendication_cepage', $this->noeud);
         }
@@ -509,7 +509,7 @@ class drevActions extends sfActions {
             $error_produit = str_replace($type_error, '', $request->getParameter('error_produit'));
             $this->error_produit = str_replace('-', '_', $error_produit);
             if ($type_error == 'erreur') {
-                $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
+                $this->getUser()->setFlash("error", "Pour supprimer un lot, il suffit de vider la case.");
             }
             if ($type_error == 'vigilancewithFlash') {
                 $this->getUser()->setFlash("warning", "Pour supprimer un lot, il suffit de vider la case.");
@@ -564,7 +564,7 @@ class drevActions extends sfActions {
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
             return $this->redirect('drev_lots', $this->prelevement);
         }

@@ -103,8 +103,8 @@ $t->pass("Fomulaire étape Validation");
 $t->comment("Création d'une déclaration d'affectation parcellaire crémant");
 
 $parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
-$parcellaireAffectationCremant->initProduitFromLastParcellaire();
-$parcellaireAffectationCremant->updateAffectationCremantFromCVI();
+$parcellaireAffectationCremant->initProduitsFromCVI();
+$parcellaireAffectationCremant->updateAffectationCremantFromLastAffectation();
 $parcellaireAffectationCremant->save();
 
 $t->is($parcellaireAffectationCremant->_id, "PARCELLAIREAFFECTATIONCREMANT-".$viti->identifiant."-".$campagne, "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
@@ -160,6 +160,18 @@ $nouvelle_parcelle = $parcellaire->addParcelle(
     "MONTPARNASSE"
 );
 $nouvelle_parcelle->superficie = 3;
+$nouvelle_parcelle->superficie_cadastrale = 9;
+$nouvelle_parcelle = $parcellaire->addParcelle(
+    $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
+    "AUXERROIS",
+    "1968-1969",
+    "PARIS",
+    "06",
+    "75",
+    "MONTPARNASSE"
+);
+$nouvelle_parcelle->superficie = 6;
+$nouvelle_parcelle->superficie_cadastrale = 9;
 $parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire crémant");
@@ -169,9 +181,8 @@ $intentionCremant->declaration = $parcellaireAffectationCremant->declaration;
 $intentionCremant->save();
 
 $parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne+1, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
-$parcellaireAffectationCremant->initProduitFromLastParcellaire();
-$parcellaireAffectationCremant->updateAffectationCremantFromCVI();
-$parcellaireAffectationCremant->updateAffectationCremantFromLastTwoIntentions();
+$parcellaireAffectationCremant->initProduitsFromCVI();
+$parcellaireAffectationCremant->updateAffectationCremantFromLastAffectation();
 $parcellaireAffectationCremant->save();
 
 $t->is($parcellaireAffectationCremant->_id, "PARCELLAIREAFFECTATIONCREMANT-".$viti->identifiant."-".($campagne+1), "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
@@ -187,9 +198,10 @@ $form = new ParcellaireAffectationAjoutParcelleForm($parcellaireAffectationCrema
 $form = new ParcellaireAffectationAppellationEditForm($parcellaireAffectationCremant, $appellation, $parcelles);
 
 $t->is(count($parcellaireAffectationCremant->getProduits()), 3, "Il y a 3 cépages");
-$t->is(count($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation)), 3, "Il y a 3 parcelles");
+$t->is(count($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation)), 4, "Il y a 4 parcelles");
 $t->is(array_keys($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation)), [
     "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_AU/detail/AUXERROIS-1968-1969-PARIS-06-75-00-MONTPARNASSE",
+    "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_AU/detail/AUXERROIS-1968-1969-PARIS-06-75-01-MONTPARNASSE",
     "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_RI/detail/RIESLING-1958-1959-PARIS-04-95-00-MONTMARTRE",
     "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_PG/detail/PINOT-GRIS-1999-2000-PARIS-13-16-00-MONTMARTRE"
 ], "Les clés de parcelles sont correctes");
@@ -203,6 +215,13 @@ try {
 $t->is($parcellaireAffectationCremant->get("/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_AU/detail/AUXERROIS-1968-1969-PARIS-06-75-00-MONTPARNASSE")->active, true, "L'ancienne parcelle d'auxerrois est active");
 $t->is($parcellaireAffectationCremant->get("/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_RI/detail/RIESLING-1958-1959-PARIS-04-95-00-MONTMARTRE")->active, true, "L'ancienne parcelle de riesling est active");
 $t->is($parcellaireAffectationCremant->get("/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_PG/detail/PINOT-GRIS-1999-2000-PARIS-13-16-00-MONTMARTRE")->active, 0, "La nouvelle parcelle n'est pas active");
-$t->is(end($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation))->superficie, 4, "On retrouve la superficie");
+
+$parcellesAffectationCremant = $parcellaireAffectationCremant->getAllParcellesByAppellation($appellation);
+$t->is(end($parcellesAffectationCremant)->superficie, 4, "On retrouve la superficie");
+reset($parcellesAffectationCremant);
+$t->is(key($parcellesAffectationCremant), "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_AU/detail/AUXERROIS-1968-1969-PARIS-06-75-00-MONTPARNASSE", "La clé est la clé 0");
+$t->is(current($parcellesAffectationCremant)->superficie, 3, "La superficie de la premiere parcelle est 3");
+$t->is(next($parcellesAffectationCremant)->superficie, 6, "La superficie de la deuxieme parcelle est 6");
+$t->is(key($parcellesAffectationCremant), "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_AU/detail/AUXERROIS-1968-1969-PARIS-06-75-01-MONTPARNASSE", "La clé est la clé 1");
 
 $t->pass("Fomulaires étape Parcelles");

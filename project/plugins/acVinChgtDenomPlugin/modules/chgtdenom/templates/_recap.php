@@ -40,8 +40,8 @@
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
   <?php endif; ?>
     <div class="row">
-      <div class="col-xs-9">
-        <h4>Dossier <?php echo $lot->campagne; ?>
+      <div class="col-xs-8">
+        <h4>Dos. <?php echo $lot->campagne; ?>
           <?php if($k == (count($lots) - 1) && $chgtDenom->isDeclassement()): ?>
               – <strong>déclassé</strong>
           <?php else: ?>
@@ -54,18 +54,18 @@
           <?php endif; ?>
         </h4>
       </div>
-      <div class="col-xs-3 text-right">
-      <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->validation_odg && $sf_user->isAdmin() && $lot->isLogementEditable()): ?>
+      <div class="col-xs-4 text-right">
+      <?php if ($chgtDenom->isChgtDenomination() && !$chgtDenom->validation_odg && $sf_user->isAdmin() && $lot->isLogementEditable() && !$lot->numero_archive): ?>
         <div style="margin-bottom: 0;" class="<?php if($form->hasErrors()): ?>has-error<?php endif; ?>">
           <?php echo $form['affectable']->renderError() ?>
-          <div class="col-xs-12">
-              dégustable :
+          <div class="">
+              Dégustable :
               <?php echo $form['affectable']->render(array('class' => "chgtDenom bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
           </div>
         </div>
       <?php else: ?>
         <?php if($chgtDenom->isChgtDenomination()): ?>
-          <span>Dgstable :</span>
+          <span>Dégustable :</span>
           <?php echo pictoDegustable($lot); ?>
         <?php endif; ?>
       <?php endif; ?>

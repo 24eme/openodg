@@ -53,6 +53,10 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
           $compte->tags->add('activite');
           $compte->tags->remove('statuts');
           $compte->tags->add('statuts');
+          $comptesociete = $etb->getSociete()->getMasterCompte();
+          $comptesociete->tags->remove('produit');
+          $comptesociete->tags->remove('activite');
+          $comptesociete->tags->remove('statuts');
           $activiteTags = array();
           $statutsTags = array();
           foreach ($h->getProduits(false) as $prod) {
@@ -82,6 +86,7 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
             echo "affecte au compte ".$compte->_id." le statut ".$statutTags."\n";
           }
           $compte->save();
+          $comptesociete->save();
         }
       }
 }
