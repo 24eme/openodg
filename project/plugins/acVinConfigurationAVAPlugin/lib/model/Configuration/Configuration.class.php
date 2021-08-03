@@ -1,5 +1,7 @@
 <?php
 
+// AVA //
+
 class Configuration extends BaseConfiguration {
 
     protected $identifyLibelleProduct = array();
@@ -7,6 +9,17 @@ class Configuration extends BaseConfiguration {
     public function getProduits() {
 
         return $this->declaration->getProduits();
+    }
+
+    public function getProduitsByCepage($cepage) {
+        $produits = array();
+        foreach($this->getProduits() as $p) {
+            if (in_array($cepage, $p->getCepagesAutorises())) {
+                $produits[] = $p;
+                continue;
+            }
+        }
+        return $produits;
     }
 
     public function getTemplatesFactures()

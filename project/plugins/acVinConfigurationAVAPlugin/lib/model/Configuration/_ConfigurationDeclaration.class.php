@@ -1,5 +1,7 @@
 <?php
 
+/* AVA */
+
 abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     protected $produits = array();
@@ -410,6 +412,31 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getRendementVciTotal() {
         return $this->getRendementByKey('rendement_vci_total');
+    }
+
+    public function getCepagesAutorises()
+    {
+        $cepages = array();
+        foreach($this->getProduits() as $p) {
+            if(!$p->getLibelle()) {
+                continue;
+            }
+            $cepages[] = $p->getLibelle();
+        }
+
+        return $cepages;
+    }
+
+    public function isCepageAutorise($cepage) {
+        foreach($this->getCepagesAutorises() as $c) {
+            if(strpos(KeyInflector::slugify($cepage), KeyInflector::slugify($c)) === false) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
 }
