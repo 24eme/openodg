@@ -109,11 +109,12 @@ class chgtdenomActions extends sfActions
         $form->bind($request->getParameter($form->getName()));
 
         if (!$form->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
             return $this->redirect('chgtdenom_validation', $chgtDenom);
         }
 
         $form->save();
+        exit;
         $this->getUser()->setFlash("notice", 'Le logement a été modifié avec succès.');
         return $this->redirect('chgtdenom_validation', $chgtDenom);
     }
