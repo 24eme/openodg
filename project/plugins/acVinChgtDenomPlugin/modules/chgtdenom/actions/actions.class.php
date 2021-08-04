@@ -118,7 +118,6 @@ class chgtdenomActions extends sfActions
         }
 
         $form->save();
-        exit;
         $this->getUser()->setFlash("notice", 'Le logement a été modifié avec succès.');
         return $this->redirect('chgtdenom_validation', $chgtDenom);
     }
