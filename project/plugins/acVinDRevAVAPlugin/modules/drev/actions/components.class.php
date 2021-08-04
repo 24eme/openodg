@@ -3,8 +3,8 @@
 class drevComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $this->periode = substr($this->campagne, 0, 5);
-        $this->drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
+        $this->campagne = $this->periode.'-'.($this->periode + 1);
+        $this->drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->periode);
     }
 
     public function executeStepRevendication(sfWebRequest $request) {
