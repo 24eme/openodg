@@ -174,10 +174,18 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/pr
 rm $EXPORTDIR/produits.csv.part
 
 
+
+rmdir $EXPORTDIR/stats
 mkdir $EXPORTDIR/stats
 
 cd bin/notebook/
+
+if [$APPLICATION == igp*];then
+ls igp_*.py | while read script; do python3 $script $APPLICATION;done
+else
 ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+fi
+
 cd -
 
 find $EXPORTDIR -type f -empty -delete
