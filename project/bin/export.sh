@@ -178,11 +178,11 @@ mkdir $EXPORTDIR/stats
 
 cd bin/notebook/
 
-if [[ $APPLICATION == igp* ]];then
-ls igp_*.py | while read script; do python3 $script $APPLICATION;done
-else
+#if [[ $APPLICATION == igp* ]];then
+#  ls igp_*.py | while read script; do python3 $script $APPLICATION;done
+#else
 ls "$APPLICATION"_*.py | while read script; do python3 $script;done
-fi
+#fi
 
 cd -
 
