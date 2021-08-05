@@ -171,7 +171,9 @@ class chgtdenomActions extends sfActions
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-
+            if (!$this->chgtDenom->isApprouve()) {
+                $this->chgtDenom->generateLots();
+            }
             return sfView::SUCCESS;
         }
 
@@ -229,6 +231,9 @@ class chgtdenomActions extends sfActions
     public function executeChgtDenomPDF(sfWebRequest $request)
     {
         $chgtDenom = $this->getRoute()->getChgtDenom();
+        if (!$chgtDenom->isApprouve()) {
+            $chgtDenom->generateLots();
+        }
         $this->secureEtablissement(null, $chgtDenom->getEtablissementObject());
 
         $this->document = new ExportChgtDenomPDF($chgtDenom, $request->getParameter('output', 'pdf'), false);
