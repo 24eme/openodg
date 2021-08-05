@@ -19,6 +19,8 @@ class FactureClient extends acCouchdbClient {
     public static $origines = array( self::TYPE_DOCUMENT_TOUS => self::TYPE_DOCUMENT_TOUS,
                                      DRevClient::TYPE_MODEL => DRevClient::TYPE_MODEL,
                                     'DR' => 'DR',
+                                    'SV11' => 'SV11',
+                                    'SV12' => 'SV12',
                                     'Degustation' => 'Degustation',
                                     'ChgtDenom' => 'ChgtDenom'
                                     );

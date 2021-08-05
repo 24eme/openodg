@@ -21,7 +21,8 @@ class intentionCremantActions extends sfActions {
 
         $this->intentionCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()), ParcellaireAffectationClient::TYPE_COUCHDB_INTENTION_CREMANT);
         $this->intentionCremant->add('papier', 1);
-        $this->intentionCremant->initProduitFromLastParcellaire();
+        $this->intentionCremant->initProduitsFromCVI();
+        $this->intentionCremant->updateIntentionCremantFromLastTwoIntentions();
         $this->intentionCremant->save();
 
         return $this->redirect('parcellaire_edit', $this->intentionCremant);
