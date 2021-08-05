@@ -5,11 +5,23 @@
 
 
 import pandas as pd
+import sys
+
 pd.set_option('display.max_columns', None)
 
-drev_lots = pd.read_csv("../../web/exports_igpgascogne/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
-lots = pd.read_csv("../../web/exports_igpgascogne/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
-changement_deno = pd.read_csv("../../web/exports_igpgascogne/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
+dossier_igp = "exports_"+sys.argv[1]
+igp = sys.argv[1].replace('igp',"")
+
+#dossier_igp = "exports_igpgascogne"
+#igp = "gascogne"
+
+drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
+lots = pd.read_csv("../../web/"+dossier_igp+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
+changement_deno = pd.read_csv("../../web/"+dossier_igp+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
+    
+lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
+drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
+changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changement_deno["Type"] == "DRev:Changé") ]
 
 
 # In[ ]:
@@ -135,8 +147,8 @@ tab_cal['type_declassement'] =  final.query("Type == @type_declassement").groupb
 tab_cal = tab_cal.fillna(0)
 
 tab_cal['A'] = tab_cal['type_vol_revendique'] - tab_cal['type_instance_conformite']
-tab_cal ['B'] = tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']
-tab_cal['A-B'] =  tab_cal['A'] + tab_cal ['B']
+tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1) 
+tab_cal['A-B'] =  tab_cal['A'] - tab_cal ['B']
 tab_cal = tab_cal.reset_index(level=['Appellation','Lieu','Couleur','Produit'])
 
 tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique','type_instance_conformite','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B']]
@@ -145,11 +157,11 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/exports/stats_bilan_millesime.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 # In[ ]:
 
 
-tab_cal.reset_index(drop=True).to_csv('../../web/exports/stats_bilan_millesime_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
