@@ -173,14 +173,12 @@ php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.c
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part
 
-
-
 rmdir $EXPORTDIR/stats
 mkdir $EXPORTDIR/stats
 
 cd bin/notebook/
 
-if [$APPLICATION == igp*];then
+if [[ $APPLICATION == igp* ]];then
 ls igp_*.py | while read script; do python3 $script $APPLICATION;done
 else
 ls "$APPLICATION"_*.py | while read script; do python3 $script;done
