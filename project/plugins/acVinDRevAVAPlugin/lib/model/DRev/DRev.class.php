@@ -1287,5 +1287,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         throw new sfException("Not implemented");
     }
 
+    public function getPeriode() {
+        $periode = $this->_get('campagne');
+        if (strpos($periode, '-') !== false) {
+            $periode = substr($periode, 0, 4);
+        }
+        return $periode;
+    }
+
+    public function getDate() {
+        return $this->getPeriode().'-12-15';
+    }
+
     /**** FIN DE VERSION ****/
 }

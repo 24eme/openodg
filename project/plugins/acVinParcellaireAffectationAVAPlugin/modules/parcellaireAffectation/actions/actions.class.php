@@ -459,7 +459,7 @@ class parcellaireAffectationActions extends sfActions {
     }
 
     public function sendParcellaireValidation($parcellaire) {
-        $pdf = new ExportParcellairePdf($parcellaire, 'pdf', true);
+        $pdf = new ExportParcellaireAffectationPDF($parcellaire, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();
