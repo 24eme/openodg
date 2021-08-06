@@ -93,7 +93,7 @@ changement_denomination = changement_denomination.groupby(['Origine Appellation'
 changement_denomination = changement_denomination.reset_index()
 changement_denomination['Type'] = "CHANGEMENT DENOMINATION SRC = PRODUIT"
 changement_denomination = changement_denomination.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
-changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
+changement_denomination['Libelle'] = str(changement_denomination['Produit'])+' en '+str(changement_denomination['Nv Produit'])
 changement_denomination = changement_denomination[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
 final = final.append(changement_denomination,sort= True)
 
@@ -113,7 +113,7 @@ changement_deno = changement_deno.groupby(['Appellation','Couleur','Lieu','Produ
 changement_deno = changement_deno.reset_index()
 
 changement_deno['Type'] = "CHANGEMENT DENOMINATION DEST = PRODUIT"
-changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changement_deno['Produit']
+changement_deno['Libelle'] = str(changement_deno['Origine Produit'])+' en '+str(changement_deno['Produit'])
 
 changement_deno= changement_deno.rename(columns = {'Volume changé':'Volume'})
 changement_deno = changement_deno[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
