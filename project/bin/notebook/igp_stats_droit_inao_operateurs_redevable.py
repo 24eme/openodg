@@ -182,8 +182,9 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     
     changement_denomination_initial = changement_denomination_initial[['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origin Lot unique Id']]
     
-    changement_denomination_initial.drop_duplicates(keep = 'first', inplace=True)  
     
+    changement_denomination_initial.drop_duplicates(keep = 'first')  
+        
     incoherent = pd.merge(incoherent,changement_denomination_initial,how='left',left_on = ['Identifiant','Appellation','Couleur','Produit'], right_on = ['Identifiant','Origine Appellation','Origine Couleur','Origine Produit'], suffixes=('',' plus'))
 
     incoherent = incoherent[['Identifiant','Appellation','Couleur','Produit','type_vol_revendique','type_instance_conformite','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv','Difference A-B / Somme Lots.csv','Origin Lot unique Id']]
@@ -201,18 +202,6 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
 
 createCSVByCampagne(dossier_igp,igp,"2019-2020",drev_lots,lots,changement_denomination,etablissements,societe)
 #createCSVByCampagne(dossier_igp,igp,"2020-2021",drev_lots,lots,changement_denomination,etablissements,societe) 
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
 
 # In[ ]:
