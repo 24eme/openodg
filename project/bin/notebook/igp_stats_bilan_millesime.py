@@ -59,7 +59,7 @@ lots['Lieu'] = lots['Lieu'].fillna('')
 lots = lots.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
 lots ['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
 lots = lots.reset_index()
-final = final.append(lots,,sort= True)
+final = final.append(lots,sort= True)
 
 
 # In[ ]:
