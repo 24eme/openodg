@@ -59,7 +59,7 @@ lots['Lieu'] = lots['Lieu'].fillna('')
 lots = lots.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
 lots ['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
 lots = lots.reset_index()
-final = final.append(lots)
+final = final.append(lots,,sort= True)
 
 
 # In[ ]:
@@ -81,7 +81,7 @@ changement_denomination_declassement = changement_denomination_declassement.grou
 changement_denomination_declassement  = changement_denomination_declassement.reset_index()
 changement_denomination_declassement['Type']= 'DECLASSEMENT'
 changement_denomination_declassement = changement_denomination_declassement.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit'})
-final = final.append(changement_denomination_declassement)
+final = final.append(changement_denomination_declassement,sort= True)
 
 
 # In[ ]:
@@ -95,7 +95,7 @@ changement_denomination['Type'] = "CHANGEMENT DENOMINATION SRC = PRODUIT"
 changement_denomination = changement_denomination.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
 changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
 changement_denomination = changement_denomination[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
-final = final.append(changement_denomination)
+final = final.append(changement_denomination,sort= True)
 
 
 # In[ ]:
@@ -118,7 +118,7 @@ changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changemen
 changement_deno= changement_deno.rename(columns = {'Volume changé':'Volume'})
 changement_deno = changement_deno[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
 
-final = final.append(changement_deno)
+final = final.append(changement_deno,sort= True)
 
 
 # In[ ]:
