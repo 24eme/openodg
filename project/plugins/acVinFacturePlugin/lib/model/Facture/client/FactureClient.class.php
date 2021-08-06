@@ -22,7 +22,8 @@ class FactureClient extends acCouchdbClient {
                                     'SV11' => 'SV11',
                                     'SV12' => 'SV12',
                                     'Degustation' => 'Degustation',
-                                    'ChgtDenom' => 'ChgtDenom'
+                                    'ChgtDenom' => 'ChgtDenom',
+                                    'Conditionnement' => 'Conditionnement'
                                     );
 
     public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
