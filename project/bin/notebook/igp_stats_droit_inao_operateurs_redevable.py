@@ -73,7 +73,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     lots = lots[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu']]
     lots['Type'] = "VOLUME EN INSTANCE DE REVENDICATION"
     
-    final = final.append(lots)    
+    final = final.append(lots,sort= True)    
         
     #CHANGEMENT DE DENO & DECLASSEMENT   
    
@@ -92,7 +92,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_denomination_declassement['Type']= 'DECLASSEMENT'
     changement_denomination_declassement = changement_denomination_declassement[['Identifiant','Appellation','Couleur','Produit','Lieu','Volume','Type']]
     
-    final = final.append(changement_denomination_declassement)
+    final = final.append(changement_denomination_declassement,sort= True)
     
     
     #CHANGEMENT DENOMINATION SRC = PRODUIT
@@ -106,7 +106,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_deno['Type']= 'CHANGEMENT DENOMINATION SRC = PRODUIT'
     changement_deno = changement_deno[['Identifiant','Appellation','Couleur','Produit','Volume','Type','Libelle','Lieu']]
     
-    final = final.append(changement_deno)
+    final = final.append(changement_deno,sort= True)
     
     #CHANGEMENT DENOMINATION DEST = PRODUIT
        
@@ -119,7 +119,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_deno_dest['Type']= 'CHANGEMENT DENOMINATION DEST = PRODUIT'
     changement_deno_dest = changement_deno_dest[['Identifiant','Appellation','Couleur','Produit','Volume','Type','Libelle','Lieu']]
     
-    final = final.append(changement_deno_dest)
+    final = final.append(changement_deno_dest,sort= True)
 
     #CSV FINAL
     final = final.sort_values(by=['Identifiant','Appellation','Couleur'])
@@ -201,6 +201,12 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
 
 createCSVByCampagne(dossier_igp,igp,"2019-2020",drev_lots,lots,changement_denomination,etablissements,societe)
 #createCSVByCampagne(dossier_igp,igp,"2020-2021",drev_lots,lots,changement_denomination,etablissements,societe) 
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
