@@ -173,7 +173,7 @@ php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.c
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part
 
-rmdir $EXPORTDIR/stats
+rm -Rf $EXPORTDIR/stats
 mkdir $EXPORTDIR/stats
 
 cd bin/notebook/
