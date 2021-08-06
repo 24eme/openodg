@@ -140,7 +140,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 if ($c) {
                     $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
                     $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie;
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie * 100; // hectare -> are
                     $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
                 }
             }

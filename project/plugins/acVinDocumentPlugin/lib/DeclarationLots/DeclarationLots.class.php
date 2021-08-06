@@ -489,6 +489,18 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $this->exist('lecture_seule') && $this->get('lecture_seule');
       }
 
+      public function getVolumeRevendiqueLots($produitFilter = null){
+        $total = 0;
+        foreach($this->lots as $lot) {
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
+
+            $total += $lot->volume;
+        }
+        return $total;
+      }
+
       /**** MOUVEMENTS LOTS ****/
 
       public function clearMouvementsLots(){

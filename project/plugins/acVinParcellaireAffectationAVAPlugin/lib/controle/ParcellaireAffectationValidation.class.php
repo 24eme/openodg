@@ -16,7 +16,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
          */
         $this->addControle(self::TYPE_WARNING, 'parcellaire_complantation', 'Attention');
         $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
-        $this->addControle(self::TYPE_ERROR, 'parcelle_doublon', 'Parcelle doublonnée');
+        $this->addControle(self::TYPE_WARNING, 'parcelle_doublon', 'Parcelle doublonnée');
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition', "La répartition des acheteurs n'est pas complète");
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition_parcelles', "La répartition des acheteurs par parcelles n'est pas complète");
 
@@ -60,7 +60,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             }
             $keyParcelle = $detail->getCepage()->getHash() . '/' . $detail->getCommune() . '-' . $detail->getSection() . '-' . $detail->getNumeroParcelle();
             if (array_key_exists($keyParcelle, $uniqParcelles)) {
-                $this->addPoint(self::TYPE_ERROR, 'parcelle_doublon', 'parcelle n°' . $detail->getSection() . ' ' . $detail->getNumeroParcelle() . ' à ' . $detail->getCommune() . ' déclarée en ' . $detail->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
+                $this->addPoint(self::TYPE_WARNING, 'parcelle_doublon', 'parcelle n°' . $detail->getSection() . ' ' . $detail->getNumeroParcelle() . ' à ' . $detail->getCommune() . ' déclarée en ' . $detail->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
                             'erreur' => $detail->getHashForKey())));
             } else {
