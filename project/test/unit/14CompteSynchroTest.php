@@ -16,7 +16,7 @@ $nomModifieSociete = "société viti test contacts modifiées";
 $nomEtablissement = "établissement viti test contacts";
 $nomModifieEtablissement = "établissement viti test contacts modifiés";
 
-$t = new lime_test(41);
+$t = new lime_test(48);
 $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
@@ -82,7 +82,7 @@ $t->is($societe->getMasterCompte()->nom, $societe->getMasterCompte()->nom_a_affi
 $t->isnt($societe->getMasterCompte()->_id, $etablissement->getMasterCompte()->_id, "La société et l'établissement ont le même id");
 $t->ok(!in_array("etablissement", CompteClient::getInstance()->find($societe->getMasterCompte()->_id)->tags->automatique->toArray(true, false)), "Le compte de la société ne possède pas le tag \"etablissement\"");
 
-$t->comment("Test synchro des suspension");
+$t->comment("Test synchro des suspension pour un etablissement");
 
 $etbId = $etablissement->_id;
 $etablissement->statut = CompteClient::STATUT_SUSPENDU;
@@ -102,7 +102,6 @@ $etablissement->save();
 $t->is($etablissement->statut, CompteClient::STATUT_ACTIF, "L'établissement est actif");
 $etbCompte = $etablissement->getMasterCompte();
 $t->is($etbCompte->statut, CompteClient::STATUT_ACTIF, "Le compte est actif");
-
 
 $t->comment("Modification de la raison sociale de la société");
 
@@ -153,3 +152,24 @@ $compteStandalone = CompteClient::getInstance()->find($etablissement->getMasterC
 
 $t->is($compteStandalone->code_postal, $etablissement->code_postal, "Le code postal du compte et de la société sont identiques");
 $t->is($compteStandalone->telephone_mobile, $etablissement->telephone_mobile, "Le téléphone mobile du compte et de la société sont identiques");
+
+$t->comment("Test synchro des suspension pour une societe");
+$socId = $societe->_id;
+$societe->switchStatusAndSave();
+
+$socCompte = $societe->getMasterCompte();
+$t->is($societe->statut, CompteClient::STATUT_SUSPENDU, "La société est suspendue");
+$etablissement = EtablissementClient::getInstance()->find($etbId);
+$t->is($etablissement->statut, CompteClient::STATUT_SUSPENDU, "L'établissement est suspendu");
+$t->is($socCompte->statut, CompteClient::STATUT_SUSPENDU, "Le compte de la societe est suspendu");
+$t->is($etablissement->getMasterCompte()->statut, CompteClient::STATUT_SUSPENDU, "Le compte de l'établissement est suspendu");
+
+$societe = SocieteClient::getInstance()->find($socId);
+$societe->switchStatusAndSave();
+
+$t->is($societe->statut, CompteClient::STATUT_ACTIF, "Le societe est active");
+$socCompte = $societe->getMasterCompte();
+$t->is($socCompte->statut, CompteClient::STATUT_ACTIF, "Le compte est actif");
+$etablissement = EtablissementClient::getInstance()->find($etbId);
+$t->is($etablissement->statut, CompteClient::STATUT_ACTIF, "L'établissement est actif");
+

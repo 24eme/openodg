@@ -581,13 +581,20 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
       foreach($toberemoved as $keyCompte) {
           $this->removeContact($keyCompte);
       }
+      $compte = $this->getMasterCompte();
+      $compte->setStatut($newStatus);
+      $etablissementtobesaved = array();
       foreach ($this->etablissements as $keyEtablissement => $etablissement) {
           $etablissement = EtablissementClient::getInstance()->find($keyEtablissement);
           $etablissement->setStatut($newStatus);
           $this->addCompte($etablissement->getMasterCompte());
+          $etablissementtobesaved[] = $etablissement;
       }
       $this->setStatut($newStatus);
       $this->save();
+      foreach($etablissementtobesaved as $etablissement) {
+          $etablissement->save();
+      }
     }
 
     /***
