@@ -6,11 +6,20 @@
 
 import pandas as pd
 import sys
+from datetime import datetime
+import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 
-dossier_igp = "exports_"+sys.argv[1]
-igp = sys.argv[1].replace('igp',"")
+#dossier_igp = "exports_"+sys.argv[1]
+#igp = sys.argv[1].replace('igp',"")
+
+if(len(sys.argv)<2):
+    print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
+    exit()
+    
+dossier_igp = "exports_igp13"
+igp = '13'
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 etablissements = pd.read_csv("../../web/"+dossier_igp+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
@@ -133,8 +142,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     type_changement_deno_src_produit = "CHANGEMENT DENOMINATION SRC = PRODUIT"
     type_changement_deno_dest_produit = "CHANGEMENT DENOMINATION DEST = PRODUIT"
     type_declassement = "DECLASSEMENT"
-
-    
+   
     tab_cal = final.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
 
     tab_cal['type_vol_revendique'] =  final.query("Type == @type_vol_revendique").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()      
@@ -201,8 +209,14 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
 # In[ ]:
 
 
-createCSVByCampagne(dossier_igp,igp,"2019-2020",drev_lots,lots,changement_denomination,etablissements,societe)
-#createCSVByCampagne(dossier_igp,igp,"2020-2021",drev_lots,lots,changement_denomination,etablissements,societe) 
+if(len(sys.argv)>2):
+    campagne = sys.argv[2]+'-'+ str(int(sys.argv[2])+1)
+else:
+    today= datetime.now()
+    huitmoisavant = today - dateutil.relativedelta.relativedelta(months=8)
+    campagne = str(huitmoisavant.year)+ '-'+ str(huitmoisavant.year+1)
+
+createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denomination,etablissements,societe)
 
 
 # In[ ]:

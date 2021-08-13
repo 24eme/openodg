@@ -6,9 +6,14 @@
 
 import pandas as pd
 import sys
+from datetime import datetime
+import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 
+if(len(sys.argv)<2):
+    print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
+    exit()
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
 
@@ -28,8 +33,16 @@ changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changem
 
 
 drev_lots = drev_lots.rename(columns = {'Date lot': 'Date_lot'})
-millesime = "2019"
-datemax = "2021"
+
+
+if(len(sys.argv)>2):
+    millesime = sys.argv[2]
+else:
+    today= datetime.now()
+    huitmoisavant = today - dateutil.relativedelta.relativedelta(months=8)
+    millesime = str(huitmoisavant.year)
+    
+datemax = str(int(millesime)+2)
 drev_lots['Millesime']= millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
@@ -157,11 +170,11 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 # In[ ]:
 
 
-tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
