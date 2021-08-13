@@ -255,6 +255,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $template = $this->getTemplate();
             if ($template) {
                 foreach ($template->getCotisations() as $cotisName => $cotis) {
+                    $cotisName = str_replace("%detail_identifiant%",$mouvement_agreges->value->detail_identifiant,$cotisName);
                     if($cotis->code_comptable && $mouvement_agreges->value->categorie == $cotisName){
                         $ligne->produit_identifiant_analytique = $cotis->code_comptable;
                         break;
