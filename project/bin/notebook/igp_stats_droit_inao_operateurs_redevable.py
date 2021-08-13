@@ -18,8 +18,8 @@ if(len(sys.argv)<2):
     print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
     exit()
     
-#dossier_igp = "exports_igp13"
-#igp = '13'
+#dossier_igp = "exports_igpgascogne"
+#igp = 'gascogne'
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 etablissements = pd.read_csv("../../web/"+dossier_igp+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
@@ -53,17 +53,17 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     
     drev_lots = drev_lots.query("Campagne == @campagne");
 
-    #print(drev_lots['Lieu'].unique())
-    drev_lots = drev_lots.fillna("")    #ne foncrionne pas pour 2020-2021 pk ?
-        
+    drev_lots['Volume'] = drev_lots['Volume'].fillna(0)
+    drev_lots = drev_lots.fillna("")   
+
     #VOLUME REVENDIQUE  
     drev_lots = drev_lots.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
     drev_lots = drev_lots.reset_index()             
     drev_lots = drev_lots[['Identifiant','Appellation','Couleur','Produit','Lieu','Volume']]
     drev_lots['Type'] = "VOLUME REVENDIQUE"
-    
+
     final = drev_lots
-        
+           
     #VOLUME EN INSTANCE DE REVENDICATION
         
     lots = lots.query("Campagne == @campagne");
@@ -76,6 +76,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     lots = lots[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu']]
     lots['Type'] = "VOLUME EN INSTANCE DE REVENDICATION"
     
+
     final = final.append(lots,sort= True)    
         
     #CHANGEMENT DE DENO & DECLASSEMENT   
