@@ -6,11 +6,20 @@
 
 import pandas as pd
 import sys
+from datetime import datetime
+import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
+
+if(len(sys.argv)<2):
+    print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
+    exit()
+    
+#dossier_igp = "exports_igpgascogne"
+#igp = 'gascogne'
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 etablissements = pd.read_csv("../../web/"+dossier_igp+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
@@ -44,17 +53,17 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     
     drev_lots = drev_lots.query("Campagne == @campagne");
 
-    #print(drev_lots['Lieu'].unique())
-    drev_lots = drev_lots.fillna("")    #ne foncrionne pas pour 2020-2021 pk ?
-        
+    drev_lots['Volume'] = drev_lots['Volume'].fillna(0)
+    drev_lots = drev_lots.fillna("")   
+
     #VOLUME REVENDIQUE  
     drev_lots = drev_lots.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
     drev_lots = drev_lots.reset_index()             
     drev_lots = drev_lots[['Identifiant','Appellation','Couleur','Produit','Lieu','Volume']]
     drev_lots['Type'] = "VOLUME REVENDIQUE"
-    
+
     final = drev_lots
-        
+           
     #VOLUME EN INSTANCE DE REVENDICATION
         
     lots = lots.query("Campagne == @campagne");
@@ -67,6 +76,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     lots = lots[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu']]
     lots['Type'] = "VOLUME EN INSTANCE DE REVENDICATION"
     
+
     final = final.append(lots,sort= True)    
         
     #CHANGEMENT DE DENO & DECLASSEMENT   
@@ -96,12 +106,16 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_deno = changement_deno.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Appellation','Couleur','Lieu','Produit'])[["Volume changé"]].sum()
     changement_deno  = changement_deno.reset_index()
     changement_deno = changement_deno.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
-    changement_deno['Libelle'] = str(changement_deno['Produit'])+'en'+ str(changement_deno['Nv Produit'])
+        
+   
+    changement_deno['Libelle'] = changement_deno['Produit'] +' en '+ changement_deno['Nv Produit']
+      
+    
     changement_deno['Type']= 'CHANGEMENT DENOMINATION SRC = PRODUIT'
     changement_deno = changement_deno[['Identifiant','Appellation','Couleur','Produit','Volume','Type','Libelle','Lieu']]
     
     final = final.append(changement_deno,sort= True)
-    
+        
     #CHANGEMENT DENOMINATION DEST = PRODUIT
        
     changement_deno_dest = changement_denomination[changement_denomination['Type de changement'] == "CHANGEMENT"]
@@ -109,14 +123,17 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_deno_dest = changement_deno_dest.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Appellation','Couleur','Lieu','Produit'])[["Volume changé"]].sum()
     changement_deno_dest  = changement_deno_dest.reset_index()
     changement_deno_dest = changement_deno_dest.rename(columns = {'Volume changé':'Volume'})
-    changement_deno_dest['Libelle'] = str(changement_deno_dest['Origine Produit'])+'en'+ str(changement_deno_dest['Produit'])
+        
+    changement_deno_dest['Libelle'] = changement_deno_dest['Origine Produit']+' en '+ changement_deno_dest['Produit']
     changement_deno_dest['Type']= 'CHANGEMENT DENOMINATION DEST = PRODUIT'
     changement_deno_dest = changement_deno_dest[['Identifiant','Appellation','Couleur','Produit','Volume','Type','Libelle','Lieu']]
+    
     
     final = final.append(changement_deno_dest,sort= True)
 
     #CSV FINAL
     final = final.sort_values(by=['Identifiant','Appellation','Couleur'])
+    
     final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/igp_stats_droit_inao_operateurs_redevable_'+campagne+".csv", encoding="iso8859_15", sep=";",index=False, decimal=",")
     
     #tableau récapitulatif
@@ -126,8 +143,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     type_changement_deno_src_produit = "CHANGEMENT DENOMINATION SRC = PRODUIT"
     type_changement_deno_dest_produit = "CHANGEMENT DENOMINATION DEST = PRODUIT"
     type_declassement = "DECLASSEMENT"
-
-    
+   
     tab_cal = final.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
 
     tab_cal['type_vol_revendique'] =  final.query("Type == @type_vol_revendique").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()      
@@ -194,8 +210,20 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
 # In[ ]:
 
 
-createCSVByCampagne(dossier_igp,igp,"2019-2020",drev_lots,lots,changement_denomination,etablissements,societe)
-#createCSVByCampagne(dossier_igp,igp,"2020-2021",drev_lots,lots,changement_denomination,etablissements,societe) 
+if(len(sys.argv)>2):
+    campagne = sys.argv[2]+'-'+ str(int(sys.argv[2])+1)
+else:
+    today= datetime.now()
+    huitmoisavant = today - dateutil.relativedelta.relativedelta(months=8)
+    campagne = str(huitmoisavant.year)+ '-'+ str(huitmoisavant.year+1)
+
+createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denomination,etablissements,societe)
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:

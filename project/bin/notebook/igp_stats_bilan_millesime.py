@@ -6,14 +6,19 @@
 
 import pandas as pd
 import sys
+from datetime import datetime
+import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 
+if(len(sys.argv)<2):
+    print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
+    exit()
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
 
-#dossier_igp = "exports_igpgascogne"
-#igp = "gascogne"
+#dossier_igp = "exports_igp13"
+#igp = "13"
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
 lots = pd.read_csv("../../web/"+dossier_igp+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
@@ -28,8 +33,16 @@ changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changem
 
 
 drev_lots = drev_lots.rename(columns = {'Date lot': 'Date_lot'})
-millesime = "2019"
-datemax = "2021"
+
+
+if(len(sys.argv)>2):
+    millesime = sys.argv[2]
+else:
+    today= datetime.now()
+    huitmoisavant = today - dateutil.relativedelta.relativedelta(months=8)
+    millesime = str(huitmoisavant.year)
+    
+datemax = str(int(millesime)+2)
 drev_lots['Millesime']= millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
@@ -93,7 +106,7 @@ changement_denomination = changement_denomination.groupby(['Origine Appellation'
 changement_denomination = changement_denomination.reset_index()
 changement_denomination['Type'] = "CHANGEMENT DENOMINATION SRC = PRODUIT"
 changement_denomination = changement_denomination.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
-changement_denomination['Libelle'] = str(changement_denomination['Produit'])+' en '+str(changement_denomination['Nv Produit'])
+changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
 changement_denomination = changement_denomination[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
 final = final.append(changement_denomination,sort= True)
 
@@ -113,7 +126,7 @@ changement_deno = changement_deno.groupby(['Appellation','Couleur','Lieu','Produ
 changement_deno = changement_deno.reset_index()
 
 changement_deno['Type'] = "CHANGEMENT DENOMINATION DEST = PRODUIT"
-changement_deno['Libelle'] = str(changement_deno['Origine Produit'])+' en '+str(changement_deno['Produit'])
+changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changement_deno['Produit']
 
 changement_deno= changement_deno.rename(columns = {'Volume changé':'Volume'})
 changement_deno = changement_deno[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
@@ -157,11 +170,11 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 # In[ ]:
 
 
-tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
