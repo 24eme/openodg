@@ -12,8 +12,8 @@ pd.set_option('display.max_columns', None)
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
 
-#dossier_igp = "exports_igpgascogne"
-#igp = "gascogne"
+#dossier_igp = "exports_igp13"
+#igp = "13"
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
 lots = pd.read_csv("../../web/"+dossier_igp+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
@@ -93,7 +93,7 @@ changement_denomination = changement_denomination.groupby(['Origine Appellation'
 changement_denomination = changement_denomination.reset_index()
 changement_denomination['Type'] = "CHANGEMENT DENOMINATION SRC = PRODUIT"
 changement_denomination = changement_denomination.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
-changement_denomination['Libelle'] = str(changement_denomination['Produit'])+' en '+str(changement_denomination['Nv Produit'])
+changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
 changement_denomination = changement_denomination[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
 final = final.append(changement_denomination,sort= True)
 
