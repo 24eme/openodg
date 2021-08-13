@@ -96,12 +96,21 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_deno = changement_deno.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Appellation','Couleur','Lieu','Produit'])[["Volume changé"]].sum()
     changement_deno  = changement_deno.reset_index()
     changement_deno = changement_deno.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
-    changement_deno['Libelle'] = str(changement_deno['Produit'])+'en'+ str(changement_deno['Nv Produit'])
+        
+   
+    produit = changement_deno['Produit']
+    nv_produit = changement_deno['Nv Produit']
+
+    changement_deno['Libelle'] = produit +'en'+ nv_produit
+    
+    #changement_deno['Libelle'] = str(changement_deno['Libe'])
+    
+    
     changement_deno['Type']= 'CHANGEMENT DENOMINATION SRC = PRODUIT'
     changement_deno = changement_deno[['Identifiant','Appellation','Couleur','Produit','Volume','Type','Libelle','Lieu']]
     
     final = final.append(changement_deno,sort= True)
-    
+        
     #CHANGEMENT DENOMINATION DEST = PRODUIT
        
     changement_deno_dest = changement_denomination[changement_denomination['Type de changement'] == "CHANGEMENT"]
@@ -113,10 +122,12 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_deno_dest['Type']= 'CHANGEMENT DENOMINATION DEST = PRODUIT'
     changement_deno_dest = changement_deno_dest[['Identifiant','Appellation','Couleur','Produit','Volume','Type','Libelle','Lieu']]
     
+    
     final = final.append(changement_deno_dest,sort= True)
 
     #CSV FINAL
     final = final.sort_values(by=['Identifiant','Appellation','Couleur'])
+    
     final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/igp_stats_droit_inao_operateurs_redevable_'+campagne+".csv", encoding="iso8859_15", sep=";",index=False, decimal=",")
     
     #tableau récapitulatif
@@ -196,6 +207,12 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
 
 createCSVByCampagne(dossier_igp,igp,"2019-2020",drev_lots,lots,changement_denomination,etablissements,societe)
 #createCSVByCampagne(dossier_igp,igp,"2020-2021",drev_lots,lots,changement_denomination,etablissements,societe) 
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
