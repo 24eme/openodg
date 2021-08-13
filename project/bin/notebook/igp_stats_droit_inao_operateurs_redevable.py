@@ -11,15 +11,15 @@ import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 
-#dossier_igp = "exports_"+sys.argv[1]
-#igp = sys.argv[1].replace('igp',"")
+dossier_igp = "exports_"+sys.argv[1]
+igp = sys.argv[1].replace('igp',"")
 
 if(len(sys.argv)<2):
     print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
     exit()
     
-dossier_igp = "exports_igp13"
-igp = '13'
+#dossier_igp = "exports_igp13"
+#igp = '13'
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 etablissements = pd.read_csv("../../web/"+dossier_igp+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
