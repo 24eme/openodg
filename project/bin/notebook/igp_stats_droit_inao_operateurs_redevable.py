@@ -98,13 +98,8 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     changement_deno = changement_deno.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
         
    
-    produit = changement_deno['Produit']
-    nv_produit = changement_deno['Nv Produit']
-
-    changement_deno['Libelle'] = produit +'en'+ nv_produit
-    
-    #changement_deno['Libelle'] = str(changement_deno['Libe'])
-    
+    changement_deno['Libelle'] = changement_deno['Produit'] +'en'+ changement_deno['Nv Produit']
+      
     
     changement_deno['Type']= 'CHANGEMENT DENOMINATION SRC = PRODUIT'
     changement_deno = changement_deno[['Identifiant','Appellation','Couleur','Produit','Volume','Type','Libelle','Lieu']]
