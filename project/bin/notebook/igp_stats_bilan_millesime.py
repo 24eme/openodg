@@ -113,7 +113,7 @@ changement_deno = changement_deno.groupby(['Appellation','Couleur','Lieu','Produ
 changement_deno = changement_deno.reset_index()
 
 changement_deno['Type'] = "CHANGEMENT DENOMINATION DEST = PRODUIT"
-changement_deno['Libelle'] = str(changement_deno['Origine Produit'])+' en '+str(changement_deno['Produit'])
+changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changement_deno['Produit']
 
 changement_deno= changement_deno.rename(columns = {'Volume changé':'Volume'})
 changement_deno = changement_deno[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
