@@ -52,10 +52,11 @@ changement_denomination = changement_denomination[(changement_denomination["Type
 def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denomination,etablissements,societe):
     
     drev_lots = drev_lots.query("Campagne == @campagne");
-
-    drev_lots = drev_lots.fillna("")  
-    drev_lots.loc[drev_lots['Volume'] ==  "", 'Volume'] = 0
-
+    
+    drev_lots['Volume'] = drev_lots['Volume'].fillna(0)
+    drev_lots = drev_lots.fillna("") 
+    
+    #drev_lots.loc[drev_lots.Volume ==  '', 'Volume'] = 0 
 
     #VOLUME REVENDIQUE  
     drev_lots = drev_lots.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
@@ -229,16 +230,4 @@ else:
     campagne = str(huitmoisavant.year)+ '-'+ str(huitmoisavant.year+1)
 
 createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denomination,etablissements,societe)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
