@@ -18,8 +18,8 @@ if(len(sys.argv)<2):
     print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
     exit()
     
-#dossier_igp = "exports_igploire"
-#igp = 'loire'
+#dossier_igp = "exports_igpgascogne"
+#igp = 'gascogne'
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 etablissements = pd.read_csv("../../web/"+dossier_igp+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
@@ -53,8 +53,9 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     
     drev_lots = drev_lots.query("Campagne == @campagne");
 
-    drev_lots['Volume'] = drev_lots['Volume'].fillna(0)
-    drev_lots = drev_lots.fillna("")
+    drev_lots = drev_lots.fillna("")  
+    drev_lots.loc[drev_lots['Volume'] ==  "", 'Volume'] = 0
+
 
     #VOLUME REVENDIQUE  
     drev_lots = drev_lots.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
