@@ -43,7 +43,7 @@ else:
     millesime = str(huitmoisavant.year)
     
 datemax = str(int(millesime)+2)
-drev_lots['Millesime']= millesime
+drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
 drev_lots['Lieu'] = drev_lots['Lieu'].fillna('')
@@ -106,7 +106,12 @@ changement_denomination = changement_denomination.groupby(['Origine Appellation'
 changement_denomination = changement_denomination.reset_index()
 changement_denomination['Type'] = "CHANGEMENT DENOMINATION SRC = PRODUIT"
 changement_denomination = changement_denomination.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
-changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
+
+if(changement_denomination.empty):
+    changement_denomination['Libelle'] = ""
+else:
+    changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
+
 changement_denomination = changement_denomination[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
 final = final.append(changement_denomination,sort= True)
 
@@ -126,9 +131,13 @@ changement_deno = changement_deno.groupby(['Appellation','Couleur','Lieu','Produ
 changement_deno = changement_deno.reset_index()
 
 changement_deno['Type'] = "CHANGEMENT DENOMINATION DEST = PRODUIT"
-changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changement_deno['Produit']
 
-changement_deno= changement_deno.rename(columns = {'Volume changé':'Volume'})
+if(changement_deno.empty):
+    changement_deno['Libelle'] = ""
+else:
+    changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changement_deno['Produit']
+
+changement_deno = changement_deno.rename(columns = {'Volume changé':'Volume'})
 changement_deno = changement_deno[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
 
 final = final.append(changement_deno,sort= True)
@@ -151,10 +160,10 @@ type_declassement = "DECLASSEMENT"
 
 tab_cal = final.groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
 
-tab_cal['type_vol_revendique'] =  final.query("Type == @type_vol_revendique").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
-tab_cal['type_instance_conformite'] =  final.query("Type == @type_instance_conformite").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
-tab_cal['type_changement_deno_src_produit'] =  final.query("Type == @type_changement_deno_src_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
-tab_cal['type_changement_deno_dest_produit'] =  final.query("Type == @type_changement_deno_dest_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_vol_revendique'] = final.query("Type == @type_vol_revendique").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_instance_conformite'] = final.query("Type == @type_instance_conformite").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_changement_deno_src_produit'] = final.query("Type == @type_changement_deno_src_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_changement_deno_dest_produit'] = final.query("Type == @type_changement_deno_dest_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
 tab_cal['type_declassement'] =  final.query("Type == @type_declassement").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
 
 tab_cal = tab_cal.fillna(0)
