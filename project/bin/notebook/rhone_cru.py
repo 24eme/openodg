@@ -34,7 +34,8 @@ dr["Bailleur PPM"] = dr['Bailleur PPM'].fillna("")
 
 
 #dr avec en colonnes les differentes categorie, et en lignes chaque identifiant
-dr = pd.pivot_table(dr, values= 'Valeur', index=['Identifiant',"Appellation",'Bailleur PPM','CVI'],columns=['Categorie'], aggfunc=np.sum)
+dr = pd.pivot_table(dr, values= 'Valeur', index=['Identifiant',"Appellation",'Bailleur PPM','CVI'],columns=['Code'], aggfunc=np.sum)
+
 
 dr = dr.reset_index(level=['Bailleur PPM','CVI'])
 
@@ -58,16 +59,16 @@ drev_cru_with_dr['DREV_SURF'] = drev_cru_with_dr['Superficie revendiqué']
 drev_cru_with_dr['DREV_VOL'] = drev_cru_with_dr['Volume revendiqué net total']
 
 
-#compare plusieurs categories qui ont la même signification et prend le plus grand d'entre eux
-drev_cru_with_dr['DR_SURF'] = drev_cru_with_dr[[' Superficie de récolte','Superficie de recolte','Superficie de récolte','Superificie de récolte originale']].max(axis=1)
-drev_cru_with_dr['DR_REC_TOTALE'] = drev_cru_with_dr[['Recolte totale','Récolte totale','Recolte totale',' Récolte totale']].max(axis=1)
-drev_cru_with_dr['DR_VF RAISIN'] = drev_cru_with_dr[['Récolte vendue sous forme de raisins. Volume de vins obtenu','Recolte vendue sous forme de raisins. Volume de vins obtenu',' Récolte vendue sous forme de raisins. Volume de vins obtenu']].max(axis=1)
-drev_cru_with_dr['DR_VF MOUT'] = drev_cru_with_dr[['Recolte vendue sous forme de mouts. Volume de mout obtenu','Récolte vendue sous forme de moûts. Volume de moût obtenu']].max(axis=1)
-drev_cru_with_dr['DR_CAVE COOP'] = drev_cru_with_dr[[" Récolte apportée en cave coopérative par l'adhérent. Volume obtenu",'Recolte apportee en cave cooperative par l?adherent. Volume obtenu',"Récolte apportée en cave coopérative par l'adhérent. Volume obtenu"]].max(axis=1)
-drev_cru_with_dr['DR_CAVE PART'] = drev_cru_with_dr[[' Récolte en cave particulière. Volume obtenu','Recolte en cave particuliere. Volume obtenu','Récolte en cave particulière. Volume obtenu']].max(axis=1)
-drev_cru_with_dr['DR_VOL VINIF'] = drev_cru_with_dr[['Volume en vinification',' Volume en vinification']].max(axis=1)
-drev_cru_with_dr['DR_VOL AOC'] = drev_cru_with_dr[['Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé',' Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé','Vol. de vin avec AO/IGP avec/sans cepage dans la limite du rdt autorise']].max(axis=1)
-drev_cru_with_dr['DR_VOL UI'] = drev_cru_with_dr[[' Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels','Vol. vin depassement du rdt autorise en AOP a livrer aux usages industriels','Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels']].max(axis=1)
+#par code 
+drev_cru_with_dr['DR_SURF'] = drev_cru_with_dr['04']
+drev_cru_with_dr['DR_REC_TOTALE'] = drev_cru_with_dr['05']
+drev_cru_with_dr['DR_VF RAISIN'] = drev_cru_with_dr['06']
+drev_cru_with_dr['DR_VF MOUT'] = drev_cru_with_dr['07']
+drev_cru_with_dr['DR_CAVE COOP'] = drev_cru_with_dr["08"]
+drev_cru_with_dr['DR_CAVE PART'] = drev_cru_with_dr['09']
+drev_cru_with_dr['DR_VOL VINIF'] = drev_cru_with_dr['10']
+drev_cru_with_dr['DR_VOL AOC'] = drev_cru_with_dr['15']
+drev_cru_with_dr['DR_VOL UI'] = drev_cru_with_dr['16']
 
 #drev_cru_with_dr['AOC'] = drev_cru_with_dr['Appellation']
 
@@ -122,7 +123,13 @@ drev_cru_with_dr.loc[drev_cru_with_dr.AOCIDBAIL == "" , 'AOCIDBAIL'] = drev_cru_
 #colonnes à avoir dans le csv final
 drev_cru_with_dr = drev_cru_with_dr[['AOCIDBAIL','AOCID','Appellation', 'DREV_SURF' , 'DREV_VOL', 'DR_SURF', 'DR_REC_TOTALE','DR_VF RAISIN','DR_VF MOUT',"DR_CAVE COOP",'DR_CAVE PART','DR_VOL VINIF','DR_VOL AOC','DR_VOL UI','ID','ID_BAIL','CVI_OPERATEUR','Raison sociale','Adresse','Adresse 2','Adresse 3','Code postal','Commune','Téléphone','Téléphone portable','Email']]
 
-drev_cru_with_dr.to_csv('../../web/exports/COTIDREV'+campagne+'CRU.csv', encoding="iso8859_15", sep=";", decimal=",")
+drev_cru_with_dr.to_csv('../../web/exports/facturation_cotisations_cru_'+campagne, encoding="iso8859_15", sep=";", decimal=",")
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
