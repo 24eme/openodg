@@ -497,9 +497,12 @@ class FactureClient extends acCouchdbClient {
       return $avoir;
     }
 
-    public function defactureCreateAvoirAndSaveThem(Facture $f) {
+    public function defactureCreateAvoirAndSaveThem(Facture $f, $date = null) {
       if (!$f->isRedressable()) {
 	       return ;
+      }
+      if (!$date) {
+          $date = date('Y-m-d');
       }
       $avoir = clone $f;
       $compte = CompteClient::getInstance()->find("COMPTE-".$avoir->identifiant);
@@ -521,7 +524,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->remove('echeances');
       $avoir->add('echeances');
       $avoir->statut = self::STATUT_NONREDRESSABLE;
-      $avoir->storeDatesCampagne(date('Y-m-d'));
+      $avoir->storeDatesCampagne($date);
       $avoir->numero_archive = null;
       $avoir->numero_odg = null;
       $avoir->versement_comptable = 0;
