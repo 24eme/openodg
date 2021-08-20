@@ -13,10 +13,11 @@ drev = drev[drev['Campagne'] == '2020'].fillna(0)
 drev = drev.query("Appellation == 'CVG' or Appellation=='CDR'") 
 drev = drev.groupby(['Appellation']).sum() 
 total = drev.sum()
-drev.reset_index() 
+drev = drev.reset_index() 
 
 
 # In[ ]:
+
 
 
 drev_cvg = drev_cvg[['Appellation','Produit','Campagne','VCI Stock précédent', 'VCI Destruction', 'VCI Complément', 'VCI Substitution', 'VCI Rafraichi', 'VCI Constitué', 'VCI Stock final']]
@@ -27,12 +28,15 @@ drev_cvg = drev_cvg.drop('Campagne',axis=1)
 drev_cvg = drev_cvg.groupby(['Appellation','Produit']).sum()
 drev_cvg = drev_cvg.reset_index()
 
+
 drev = drev.append(drev_cvg)
+
+
 column = drev.pop("Appellation")
 column_P = drev.pop("Produit")
 drev.insert(0,'Appellation',column)
 drev.insert(1,'Produit',column_P)  
-drev.reset_index().to_csv("../../web/exports/rhone_stats_drev_VCI.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+drev.reset_index(drop=True).to_csv("../../web/exports/rhone_stats_drev_VCI.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 
 
 # In[ ]:
