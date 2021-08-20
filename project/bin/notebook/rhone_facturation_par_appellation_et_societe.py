@@ -198,5 +198,5 @@ drev_cru_with_dr = drev_cru_with_dr.groupby(drev_cru_with_dr['AOCIDBAIL']).aggre
 # In[ ]:
 
 
-drev_cru_with_dr.to_csv('../../web/exports/facturation_cotisations_cru+cdr+cdrv_'+campagne, encoding="iso8859_15", sep=";", decimal=",", index=False)
+drev_cru_with_dr.to_csv('../../web/exports/facturation_cotisations_par_appellation_et_societe_'+campagne+'.csv', encoding="iso8859_15", sep=";", decimal=",", index=False)
 
