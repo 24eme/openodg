@@ -18,3 +18,4 @@ web/export
 web/export_data
 web/statuts/xml
 web/statuts/index.php
+web/export*
