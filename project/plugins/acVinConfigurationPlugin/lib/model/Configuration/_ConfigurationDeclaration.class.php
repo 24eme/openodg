@@ -742,17 +742,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getRendementByKey('rendement_conseille');
     }
 
-    public function getRendementDrL5() {
-        if($this->exist('attributs') && $this->attributs->exist('rendement_dr_l5')){
-          return $this->getRendementByKey('rendement_dr_l5');
-        }
-
+    public function getRendementDR() {
         return $this->getRendementByKey('rendement_dr');
-    }
-
-    public function getRendementDrL15() {
-
-        return $this->getRendementByKey('rendement_dr_l15');
     }
 
     public function getRendementNoeud() {
