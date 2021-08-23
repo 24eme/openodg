@@ -19,7 +19,6 @@ drev = drev.reset_index()
 # In[ ]:
 
 
-
 drev_cvg = drev_cvg[['Appellation','Produit','Campagne','VCI Stock précédent', 'VCI Destruction', 'VCI Complément', 'VCI Substitution', 'VCI Rafraichi', 'VCI Constitué', 'VCI Stock final']]
 drev_cvg = drev_cvg[drev_cvg['Campagne'] == '2020'].fillna(0) 
 drev_cvg = drev_cvg.query("Appellation == 'CVG'")   
@@ -54,10 +53,4 @@ drev = drev.append(drev_cdr)
 drev.loc['Total'] = total 
 
 drev.reset_index(drop=True).to_csv("../../web/exports/stats_drev_vci_2020.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
-
-
-# In[ ]:
-
-
-
 
