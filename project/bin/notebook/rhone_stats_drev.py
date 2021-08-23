@@ -24,8 +24,10 @@ def createCSVStatByCampagne(campagne,drev):
     drev.loc[drev.Appellation != 'CVG','Lieu Libelle'] = 'DEFAUT' 
     
     drev_groupby = drev.groupby(['Couleur','Appellation','Appellation Libelle','Lieu','Lieu Libelle']).sum()
+    
     drev_total = drev.groupby(['Appellation','Appellation Libelle', 'Lieu','Lieu Libelle']).sum()
     drev_total['Couleur'] = 'total'
+    
 
     drev_groupby = pd.concat([drev_groupby, drev_total.reset_index().set_index(['Couleur','Appellation','Appellation Libelle','Lieu','Lieu Libelle'])])
     drev_groupby['Rendement'] = drev_groupby['Volume revendiqué net total'] / drev_groupby['Superficie revendiqué']
