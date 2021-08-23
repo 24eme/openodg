@@ -18,7 +18,7 @@ societe = pd.read_csv("../../web/exports/societe.csv", encoding="iso8859_15", de
 # In[ ]:
 
 
-campagne = "2020"   
+campagne = dr['Campagne'].unique()[-1]
 
 drev = drev.query("Campagne == @campagne");
 
