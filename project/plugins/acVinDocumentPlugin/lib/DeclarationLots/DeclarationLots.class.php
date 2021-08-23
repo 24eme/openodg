@@ -128,7 +128,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $couleurs;
       }
 
-      public function addLot() {
+      public function addLot($imported = false) {
           $lot = $this->add('lots')->add();
           $lot->id_document = $this->_id;
           $lot->campagne = $this->getCampagne();
