@@ -253,12 +253,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
             $quantite = 0;
             $template = $this->getTemplate();
+            $code_comptable = false;
             if ($template) {
                 foreach ($template->getCotisations() as $cotisName => $cotis) {
-                    $cotisName = str_replace("%detail_identifiant%",$mouvement_agreges->value->detail_identifiant,$cotisName);
-                    if($cotis->code_comptable && $mouvement_agreges->value->categorie == $cotisName){
-                        $ligne->produit_identifiant_analytique = $cotis->code_comptable;
-                        break;
+                    if($cotis->code_comptable) {
+                        $code_comptable = true;
+                        if ($mouvement_agreges->value->categorie == $cotisName) {
+                            $ligne->produit_identifiant_analytique = $cotis->code_comptable;
+                            break;
+                        }
                     }
                 }
             }
@@ -272,6 +275,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             }
             $detail->quantite = $mouvement_agreges->value->quantite;
             $ligne->updateTotaux();
+            if ($code_comptable && !$ligne->produit_identifiant_analytique) {
+                throw new sfException("Pas d'identifiant analytique trouvé pour ".$mouvement_agreges->value->categorie." (".$mouvement_agreges->id.")");
+            }
     }
 
     public function orderLignesByCotisationsKeys() {
