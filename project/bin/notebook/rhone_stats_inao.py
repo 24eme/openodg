@@ -69,7 +69,7 @@ stats_drev_vci.reset_index().to_csv("../../web/exports/inao_vci_drev_"+campagne+
 
 
 dr_campagne = pd.read_csv("../../web/exports/dr.csv", encoding="iso8859_15", delimiter=";", decimal=",",
-    dtype={'CVI': 'str', 'CVI Tiers': 'str', 'Identifiant': 'str', 'Code': 'str', 'Campagne': 'str'}) #, low_memory=False)
+    dtype={'CVI': 'str', 'CVI Tiers': 'str', 'Identifiant': 'str', 'Code': 'str', 'Campagne': 'str'}, low_memory=False) 
 dr_campagne = dr_campagne[(dr_campagne['Campagne'] == campagne) & ((dr_campagne['Appellation'] == 'CVG') | (dr_campagne['Appellation'] == 'CDR'))]
 dr_campagne['Produit'] = dr_campagne['Appellation'] + dr_campagne['Couleur'] + dr_campagne['Lieu']
 
