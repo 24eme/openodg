@@ -28,7 +28,7 @@ drev_cvg = drev_cvg.groupby(['Appellation','Produit']).sum()
 drev_cvg = drev_cvg.reset_index()
 
 
-drev = drev.append(drev_cvg)
+drev = drev.append(drev_cvg, sort=False)
 
 
 column = drev.pop("Appellation")
@@ -49,7 +49,7 @@ drev_cdr = drev_cdr.drop('Campagne',axis=1)
 drev_cdr = drev_cdr.groupby(['Appellation','Produit']).sum()
 drev_cdr = drev_cdr.reset_index()
 
-drev = drev.append(drev_cdr) 
+drev = drev.append(drev_cdr, sort=True) 
 drev.loc['Total'] = total 
 
 drev.reset_index(drop=True).to_csv("../../web/exports/stats_drev_vci_2020.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
