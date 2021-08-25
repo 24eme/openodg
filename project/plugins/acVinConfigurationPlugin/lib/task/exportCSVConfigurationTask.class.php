@@ -35,7 +35,10 @@ EOF;
 
     $produits = ConfigurationClient::getCurrent()->getProduits();
 
-    echo sprintf("hash;libelle;catégorie;genre;appellation;dénomination;mention;lieu;lieu libelle;couleur;cépage;code douane;réserve interpro;rend conseil;rend;rend DR;Rend VCI;Rend VCI total;code OI;code produit;code comptable;cvo\n");
+    echo sprintf("hash;libelle;catégorie;genre;appellation;dénomination;lieu;couleur;code douane;réserve interpro;rend conseil;rend;rend DR;Rend VCI;Rend VCI total;code OI;code produit;code comptable;cvo\n");
+//mention;
+//lieu libelle;
+//cépage;
 
     foreach($produits as $hash => $produit) {
         try {
@@ -43,18 +46,19 @@ EOF;
         } catch(Exception $e) {
             $droit_cvo = null;
         }
-        echo sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+        echo sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+        //%s;%s;%s;
         $hash,
         $produit->getLibelleFormat(),
         $produit->getCertification()->getLibelle(),
         $produit->getGenre()->getLibelle(),
         $produit->getAppellation()->getKey(),
         $produit->getAppellation()->getLibelle(),
-        $produit->getMention()->getLibelle(),
+        #$produit->getMention()->getLibelle(),
         $produit->getLieu()->getKey(),
-        $produit->getLieu()->getLibelle(),
+        #$produit->getLieu()->getLibelle(),
         $produit->getCouleur()->getLibelle(),
-        $produit->getCepage()->getLibelle(),
+        #$produit->getCepage()->getLibelle(),
         $produit->getCodeDouane(),
         $produit->getRendementReserveInterpro(),
         $produit->getRendementConseille(),
