@@ -23,29 +23,31 @@ def createCSVStatByCampagne(campagne,drev):
     drev.loc[drev.Appellation != 'CVG','Lieu'] = 'DEFAUT' 
     drev.loc[drev.Appellation != 'CVG','Lieu Libelle'] = 'DEFAUT' 
     
+   
     drev_groupby = drev.groupby(['Couleur','Appellation','Appellation Libelle','Lieu','Lieu Libelle']).sum()
     
     drev_total = drev.groupby(['Appellation','Appellation Libelle', 'Lieu','Lieu Libelle']).sum()
     drev_total['Couleur'] = 'total'
+    
 
     drev_groupby = pd.concat([drev_groupby, drev_total.reset_index().set_index(['Couleur','Appellation','Appellation Libelle','Lieu','Lieu Libelle'])])
     
     drev_groupby['Rendement'] = drev_groupby['Volume revendiqué net total'] / drev_groupby['Superficie revendiqué']
    
-    drev_appellation_lieu_couleur = drev_groupby[['Superficie revendiqué', 'Volume revendiqué net total', 'Volume revendiqué issu du vci', 'Rendement']].reset_index()
+    drev_appellation_lieu_couleur = drev_groupby[['Superficie revendiqué', 'Volume revendiqué net total', 'Volume revendiqué issu du vci', 'Rendement']].reset_index().pivot_table(columns=['Couleur'], index=['Appellation','Appellation Libelle','Lieu','Lieu Libelle']).fillna(0)
+    #, values=['Superficie revendiqué', 'Volume revendiqué net total', 'Volume revendiqué issu du vci', 'Rendement']
     
-    #.pivot(columns=['Couleur'], index=['Appellation','Appellation Libelle', 'Lieu','Lieu Libelle']).fillna(0)
+    drev_appellation_lieu_couleur = drev_appellation_lieu_couleur.reset_index()
     
-    drev_appellation_lieu_couleur = drev_appellation_lieu_couleur.pivot(columns=['Couleur'], index=['Appellation','Appellation Libelle', 'Lieu','Lieu Libelle']).fillna(0)
+    #print(drev_appellation_lieu_couleur.columns.tolist())
+    #columns = [('Appellation', ''), ('Appellation Libelle', ''), ('Lieu', ''), ('Lieu Libelle', ''), ('Rendement', 'blanc'), ('Rendement', 'rose'), ('Rendement', 'rouge'), ('Rendement', 'total'), ('Superficie revendiqué', 'blanc'), ('Superficie revendiqué', 'rose'), ('Superficie revendiqué', 'rouge'), ('Superficie revendiqué', 'total'), ('Volume revendiqué issu du vci', 'blanc'), ('Volume revendiqué issu du vci', 'rose'), ('Volume revendiqué issu du vci', 'rouge'), ('Volume revendiqué issu du vci', 'total'), ('Volume revendiqué net total', 'blanc'), ('Volume revendiqué net total', 'rose'), ('Volume revendiqué net total', 'rouge'), ('Volume revendiqué net total', 'total')]
+
+    columns = [('Superficie revendiqué', 'rouge'), ('Superficie revendiqué', 'rose'), ('Superficie revendiqué', 'blanc'), ('Superficie revendiqué', 'total'), ('Volume revendiqué net total', 'rouge'), ('Volume revendiqué net total', 'rose'), ('Volume revendiqué net total', 'blanc'), ('Volume revendiqué net total', 'total'), ('Volume revendiqué issu du vci', 'rouge'), ('Volume revendiqué issu du vci', 'rose'), ('Volume revendiqué issu du vci', 'blanc'), ('Volume revendiqué issu du vci', 'total'), ('Rendement', 'rouge'), ('Rendement', 'rose'), ('Rendement', 'blanc'), ('Rendement', 'total'),('Appellation', ''), ('Appellation Libelle', ''), ('Lieu', ''), ('Lieu Libelle', '')]
     
-    print(drev_appellation_lieu_couleur)
-    #print(drev_appellation_lieu_couleur)
-    
-    #print(drev_2020_appellation_lieu_couleur.columns.tolist())
-    columns = [('Superficie revendiqué', 'rouge'), ('Superficie revendiqué', 'rose'), ('Superficie revendiqué', 'blanc'), ('Superficie revendiqué', 'total'), ('Volume revendiqué net total', 'rouge'), ('Volume revendiqué net total', 'rose'), ('Volume revendiqué net total', 'blanc'), ('Volume revendiqué net total', 'total'), ('Volume revendiqué issu du vci', 'rouge'), ('Volume revendiqué issu du vci', 'rose'), ('Volume revendiqué issu du vci', 'blanc'), ('Volume revendiqué issu du vci', 'total'), ('Rendement', 'rouge'), ('Rendement', 'rose'), ('Rendement', 'blanc'), ('Rendement', 'total')]
     drev_appellation_lieu_couleur = drev_appellation_lieu_couleur[columns]
-       
-    drev_appellation_lieu_couleur.reset_index().to_csv("../../web/exports/stats_drev_"+ campagne +".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+           
+    drev_appellation_lieu_couleur.to_csv("../../web/exports/stats_drev_"+ campagne +".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+    
 
 
 # In[ ]:
