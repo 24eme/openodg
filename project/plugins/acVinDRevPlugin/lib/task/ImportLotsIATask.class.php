@@ -205,8 +205,7 @@ EOF;
             }
 
             $this->storeAddresseLogt($document, $logementNom, $logementAddress, $logementCP, $logementCommune);
-            $lot = $document->addLot();
-
+            $lot = $document->addLot(true);
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
             $lot->cepages = $cepages;

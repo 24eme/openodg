@@ -6,6 +6,13 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $handler = fopen($this->filePath, 'r');
 
         $csvFile = new CsvFile($this->filePath);
+
+        $premierChamp  =  $csvFile->getPremierChamp();
+
+        if(isset($premierChamp) && $premierChamp != "Apporteur"){
+          return;
+        }
+
         $csv = $csvFile->getCsv();
 
         $doc = array();

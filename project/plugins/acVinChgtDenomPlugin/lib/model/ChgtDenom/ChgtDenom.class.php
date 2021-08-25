@@ -276,7 +276,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
            $lot->millesime = $this->changement_millesime;
            $lot->volume = $this->changement_volume;
            $lot->numero_logement_operateur = $this->changement_numero_logement_operateur;
-           $lot->affectable = $this->changement_affectable;
            $lot->millesime = $this->origine_millesime;
            $lot->volume = $this->origine_volume;
            $lot->specificite = $this->origine_specificite;
@@ -606,7 +605,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }else{
             if ($this->isDeclassement()) {
                 $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non déclassée de ".$this->lots[0]->volume." hl"));
-                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé pour ".($this->origine_volume - $this->changement_volume)." hl"));
+                $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_DECLASSE, "Déclassé de ".$this->changement_volume." hl"));
             }else{
                 $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Partie non changée de ".$this->lots[0]->volume." hl"));
                 $this->addMouvementLot($this->lots[1]->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changé pour : ".$this->lots[1]->getLibelle().", ".$this->lots[1]->volume." hl"));
@@ -693,7 +692,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
     }
 
     public function getMouvementsFactures() {

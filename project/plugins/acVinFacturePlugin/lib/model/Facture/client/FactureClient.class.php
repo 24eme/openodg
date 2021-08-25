@@ -19,8 +19,11 @@ class FactureClient extends acCouchdbClient {
     public static $origines = array( self::TYPE_DOCUMENT_TOUS => self::TYPE_DOCUMENT_TOUS,
                                      DRevClient::TYPE_MODEL => DRevClient::TYPE_MODEL,
                                     'DR' => 'DR',
+                                    'SV11' => 'SV11',
+                                    'SV12' => 'SV12',
                                     'Degustation' => 'Degustation',
-                                    'ChgtDenom' => 'ChgtDenom'
+                                    'ChgtDenom' => 'ChgtDenom',
+                                    'Conditionnement' => 'Conditionnement'
                                     );
 
     public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
@@ -494,9 +497,12 @@ class FactureClient extends acCouchdbClient {
       return $avoir;
     }
 
-    public function defactureCreateAvoirAndSaveThem(Facture $f) {
+    public function defactureCreateAvoirAndSaveThem(Facture $f, $date = null) {
       if (!$f->isRedressable()) {
 	       return ;
+      }
+      if (!$date) {
+          $date = date('Y-m-d');
       }
       $avoir = clone $f;
       $compte = CompteClient::getInstance()->find("COMPTE-".$avoir->identifiant);
@@ -518,7 +524,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->remove('echeances');
       $avoir->add('echeances');
       $avoir->statut = self::STATUT_NONREDRESSABLE;
-      $avoir->storeDatesCampagne(date('Y-m-d'));
+      $avoir->storeDatesCampagne($date);
       $avoir->numero_archive = null;
       $avoir->numero_odg = null;
       $avoir->versement_comptable = 0;

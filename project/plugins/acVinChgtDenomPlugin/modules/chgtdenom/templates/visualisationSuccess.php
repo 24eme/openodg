@@ -45,6 +45,7 @@
                   <a tabindex="-1" href="<?php echo url_for("declaration_etablissement", array('identifiant' => $chgtDenom->identifiant, 'campagne' => $chgtDenom->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
               </div>
               <div class="col-xs-6 text-right">
+                  <a href="<?php echo url_for("chgtdenom_devalidation", $chgtDenom); ?>" class="btn btn-default"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;Réouvrir</a>
                   <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#confirmation-validation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Approuver le changement</button>
               </div>
           </div>

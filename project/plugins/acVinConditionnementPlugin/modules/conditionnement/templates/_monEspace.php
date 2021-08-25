@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<?php if ($campagne !== ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent()): ?>
+<?php if ($sf_user->isAdmin() && ($campagne !== ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent())): ?>
     <?php return ?>
 <?php endif ?>
 

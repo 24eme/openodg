@@ -12,7 +12,12 @@ fi
 
 i=0
 mkdir  -p couchdbdoc2git && cd couchdbdoc2git && git init .
-curl "$url?open_revs=all&revs=true" | grep '^\{' | jq ._revisions.ids  | tac | grep ' "' | awk -F '"' '{print $2}'  | while read rev ; do
+curl -s "$url?open_revs=all&revs=true" > .revisions.json
+if grep 'Content-Type: multipart' .revisions.json 2> /dev/null ; then
+        grep -a -A 2 json .revisions.json  | tail -n 1 > .revisions.json.tmp
+        mv .revisions.json.tmp .revisions.json
+fi
+cat .revisions.json | grep '^\{' | jq ._revisions.ids  | tac | grep ' "' | awk -F '"' '{print $2}'  | while read rev ; do
 	i=$(( $i + 1 )) ;
 	echo $i"-"$rev ;
 	curl -s $url"?rev="$i"-"$rev | jq . > $doc".json" ;

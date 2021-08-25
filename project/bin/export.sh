@@ -173,8 +173,16 @@ php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.c
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part
 
+mkdir -p $EXPORTDIR/stats
+
 cd bin/notebook/
-ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+
+if [[ $APPLICATION == igp* ]];then
+  ls igp_*.py | while read script; do python3 $script $APPLICATION;done
+else
+  ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+fi
+
 cd -
 
 find $EXPORTDIR -type f -empty -delete
