@@ -132,3 +132,8 @@ if os.path.exists(sys.argv[2]+"/lots.csv"):
     sys.stderr.write(sys.argv[2]+"/lots.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
     csv.to_sql('lots', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/factures.csv"):
+    sys.stderr.write(sys.argv[2]+"/factures.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/factures.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('factures', con=engine, if_exists='replace')
