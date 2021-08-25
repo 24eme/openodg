@@ -133,6 +133,21 @@ if os.path.exists(sys.argv[2]+"/lots.csv"):
     csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
     csv.to_sql('lots', con=engine, if_exists='replace')
 
+if os.path.exists(sys.argv[2]+"/lots-historique.csv"):
+    sys.stderr.write(sys.argv[2]+"/lots-historique.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/lots-historique.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('lots-historique', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/drev_lots.csv"):
+    sys.stderr.write(sys.argv[2]+"/drev_lots.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/drev_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('drev_lots', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/changement_denomination.csv"):
+    sys.stderr.write(sys.argv[2]+"/changement_denomination.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/changement_denomination.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('changement_denomination', con=engine, if_exists='replace')
+
 if os.path.exists(sys.argv[2]+"/factures.csv"):
     sys.stderr.write(sys.argv[2]+"/factures.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/factures.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
