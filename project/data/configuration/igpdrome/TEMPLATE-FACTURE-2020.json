@@ -94,7 +94,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": []
         },
         "controleinterne": {
@@ -107,7 +107,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": []
         },
         "controleexterne": {
@@ -120,14 +120,13 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": []
         },
         "lots": {
           "modele": "Cotisation",
           "prix": 10,
           "tva": 0.2,
-          "unite": "hl",
           "libelle": "Nombre lots prelevés",
           "complement_libelle": "",
           "docs": [
@@ -145,7 +144,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueLots"
         }
       }
     },
@@ -159,8 +158,9 @@
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0.2,
+          "unite": "hl",
           "libelle": "Cotisation Igp méditerrannée",
-          "callback": "getVolumeLotsFacturables",
+          "callback": "getVolumeRevendiqueLots",
           "callback_parameters": [
             "/appellations/MED"
           ],
@@ -171,7 +171,26 @@
         }
       }
     },
-    "cotisationModificatrice": {
+    "cotisationRevendication": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 25,
+          "tva": 0.2,
+          "libelle": "Cotisation sur revendication DRev",
+          "callback": "isMaster",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ]
+        }
+      }
+    },
+    "cotisationRevendicationModificatrice": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Modification",
@@ -181,7 +200,7 @@
           "modele": "CotisationFixe",
           "prix": 25,
           "tva": 0.2,
-          "libelle": "Cotisation sur modification DRev",
+          "libelle": "Cotisation sur revendication DRev",
           "callback": "isModificative",
           "complement_libelle": "",
           "docs": [
