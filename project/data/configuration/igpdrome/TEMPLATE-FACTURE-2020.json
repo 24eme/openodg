@@ -5,7 +5,8 @@
   "template": "IGP",
   "libelle": "2020 - IGP Drôme",
   "docs": [
-    "DRev"
+    "DRev",
+    "Degustation"
   ],
   "cotisations": {
     "forfaitBas": {
@@ -16,7 +17,7 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "prix": 100,
+          "prix": 50,
           "tva": 0.2,
           "libelle": "Cotisation sur volume DRev",
           "callback": "isVolumeLotsFacturablesInRange",
@@ -39,7 +40,7 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "prix": 150,
+          "prix": 100,
           "tva": 0.2,
           "libelle": "Cotisation sur volume DRev",
           "callback": "isVolumeLotsFacturablesInRange",
@@ -62,7 +63,7 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "prix": 200,
+          "prix": 150,
           "tva": 0.2,
           "libelle": "Cotisation sur volume DRev",
           "callback": "isVolumeLotsFacturablesInRange",
@@ -88,7 +89,7 @@
           "prix": 0.05,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Volume lots DRev",
+          "libelle": "Cotisation syndicale sur les volumes lots DRev",
           "complement_libelle": "",
           "docs": [
             "DRev"
@@ -98,7 +99,7 @@
         },
         "controleinterne": {
           "modele": "CotisationVariable",
-          "prix": 0.21,
+          "prix": 0.16,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "Contrôle interne",
@@ -135,7 +136,7 @@
           "callback": "buildMouvementsNbLotsDegustes",
           "callback_parameters": []
         },
-        "cotisation": {
+        "cotisationInao": {
           "modele": "CotisationVariable",
           "prix": 0.03,
           "tva": 0,
