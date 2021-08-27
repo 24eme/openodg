@@ -58,7 +58,20 @@ EOF;
 
         $region = $options['region'];
 
+        rsort($ids);
+
+        $ids_master = array();
         foreach($ids as $id) {
+            $key = preg_replace('/-M[0-9]+$/', '', $id);
+
+            if(array_key_exists($key, $ids_master)) {
+                continue;
+            }
+
+            $ids_master[$key] = $id;
+        }
+
+        foreach($ids_master as $id) {
             $tobeexported = true;
             while ($tobeexported) {
                 try {
