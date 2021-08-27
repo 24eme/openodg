@@ -40,6 +40,9 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
         }
 
         foreach($this->document->getLots() as $lot) {
+            if(!$this->document->validation && $lot->isCurrent()) {
+                continue;
+            }
             $csv .= $this->document->type.";".
             $this->document->campagne.";".
             $this->document->identifiant.";".

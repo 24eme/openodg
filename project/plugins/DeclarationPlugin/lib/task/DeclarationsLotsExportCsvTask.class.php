@@ -81,11 +81,8 @@ EOF;
                     }catch(sfException $e){
                       continue 2;
                     }
-                    $export = new ExportDeclarationLotsCSV($doc, false, $region);
 
-                    if(!$doc->validation) {
-                        continue 2;
-                    }
+                    $export = new ExportDeclarationLotsCSV($doc, false, $region);
 
                     echo $export->export();
 
