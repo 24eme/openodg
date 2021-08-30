@@ -16,6 +16,7 @@ class DeclarationsLotsExportCsvTask extends sfBaseTask
             new sfCommandOption('sleep_second', null, sfCommandOption::PARAMETER_REQUIRED, 'secont to wait', false),
             new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', 1000),
             new sfCommandOption('region', null, sfCommandOption::PARAMETER_REQUIRED, "region de l'ODG (si non renseignée toutes les régions sont utilisées)", null),
+            new sfCommandOption('doc_id', null, sfCommandOption::PARAMETER_OPTIONAL, "Permet de lancer la tâche pour un doc", null),
         ));
 
         $this->namespace = 'declarations';
@@ -35,11 +36,18 @@ EOF;
             echo ExportDeclarationLotsCSV::getHeaderCsv();
         }
 
+
+	if(isset($options['doc_id']) && $options['doc_id']) {
+		$ids = [$options['doc_id']];
+	}
+
+	if(!isset($ids)) {
         $ids = array_merge(
             DeclarationClient::getInstance()->getIds(DRevClient::TYPE_MODEL),
             DeclarationClient::getInstance()->getIds(ConditionnementClient::TYPE_MODEL),
             DeclarationClient::getInstance()->getIds(TransactionClient::TYPE_MODEL)
-        );
+    	);
+	}
 
         $sleepSecond = false;
         if($options['sleep_second']) {
@@ -50,7 +58,20 @@ EOF;
 
         $region = $options['region'];
 
+        rsort($ids);
+
+        $ids_master = array();
         foreach($ids as $id) {
+            $key = preg_replace('/-M[0-9]+$/', '', $id);
+
+            if(array_key_exists($key, $ids_master)) {
+                continue;
+            }
+
+            $ids_master[$key] = $id;
+        }
+
+        foreach($ids_master as $id) {
             $tobeexported = true;
             while ($tobeexported) {
                 try {
@@ -60,11 +81,8 @@ EOF;
                     }catch(sfException $e){
                       continue 2;
                     }
-                    $export = new ExportDeclarationLotsCSV($doc, false, $region);
 
-                    if(!$doc->validation) {
-                        continue 2;
-                    }
+                    $export = new ExportDeclarationLotsCSV($doc, false, $region);
 
                     echo $export->export();
 
