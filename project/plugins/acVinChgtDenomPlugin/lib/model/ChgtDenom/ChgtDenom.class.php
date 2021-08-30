@@ -132,6 +132,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return ($this->validation_odg);
     }
 
+    public function isExcluExportCsv() {
+        return !$this->isApprouve();
+    }
+
     public function validateOdg($date = null, $region = NULL) {
         if(is_null($date)) {
             $date = date('c');
