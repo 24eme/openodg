@@ -44,6 +44,10 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
             $mode = 'AUTOMATIQUE';
         }
 
+        if (!$this->document->isApprouve()) {
+            $this->document->generateLots();
+        }
+
         $lotOrigine = $this->document->getLotOrigine();
         $lotChgtRestant = $this->document->lots[0];
         if(isset($this->document->lots[1])) {
