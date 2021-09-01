@@ -226,8 +226,8 @@ if(len(sys.argv)>2):
     campagne = sys.argv[2]+'-'+ str(int(sys.argv[2])+1)
 else:
     today= datetime.now()
-    huitmoisavant = today - dateutil.relativedelta.relativedelta(months=8)
-    campagne = str(huitmoisavant.year)+ '-'+ str(huitmoisavant.year+1)
+    debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
+    campagne = str(debutcampagne.year)+ '-'+ str(debutcampagne.year+1)
 
 createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denomination,etablissements,societe)
 
