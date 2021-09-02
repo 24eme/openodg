@@ -39,9 +39,9 @@ if(len(sys.argv)>2):
     millesime = sys.argv[2]
 else:
     today= datetime.now()
-    huitmoisavant = today - dateutil.relativedelta.relativedelta(months=8)
-    millesime = str(huitmoisavant.year)
-    
+    debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
+    debutcampagne = str(debutcampagne.year)
+
 datemax = str(int(millesime)+2)
 drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
