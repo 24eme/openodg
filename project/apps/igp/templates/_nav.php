@@ -48,11 +48,11 @@
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
                 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                    <?php if(sfConfig::get('app_nav_stats_igpvaucluse')): ?>
+                    <?php if(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app'))): ?>
                     <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-stats"></span><span class="caret"></span></a>
                       <ul class="dropdown-menu">
-                        <?php foreach(sfConfig::get('app_nav_stats_igpvaucluse') as $i => $navItem): ?>
+                        <?php foreach(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app')) as $i => $navItem): ?>
                          <?php if($i > 0 && isset($navItem['title'])): ?><li role="separator" class="divider"></li><?php endif; ?>
                          <li>
                              <a href="<?php echo $navItem['url'] ?>">
@@ -68,9 +68,6 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
-                    <?php if(sfConfig::get('app_export_webpath')): ?>
-                    <li><a href="<?php echo preg_replace('/%app%/', sfConfig::get('sf_app'), sfConfig::get('app_export_webpath')) ?>">Export</a></li>
-                    <?php endif; ?>
                   </ul>
                 </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
