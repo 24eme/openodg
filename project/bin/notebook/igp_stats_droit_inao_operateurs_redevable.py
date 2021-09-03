@@ -31,13 +31,13 @@ if(len(sys.argv)>3):
     datelimite = sys.argv[3]
 else:
     datelimite = str(year+1)+'-08-01'
-    
 
-#dossier_igp = "exports_igpgascogne"
-#igp = 'gascogne'
-#campagne ="2020-2021"
-#datelimite = '2021-08-01'
-
+    """
+dossier_igp = "exports_igpgascogne"
+igp = 'gascogne'
+campagne ="2020-2021"
+datelimite = '2021-08-01'
+"""
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 drev_lots = drev_lots[drev_lots["Date lot"] < datelimite]
 
@@ -82,6 +82,11 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     lignes_volume_revendique = lignes_volume_revendique[['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id','Volume']]
     lignes_volume_revendique['Type'] = "VOLUME REVENDIQUE"
 
+
+    drev_lots = drev_lots.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
+    drev_lots = drev_lots.reset_index()             
+    drev_lots = drev_lots[['Identifiant','Appellation','Couleur','Produit','Lieu','Volume']]
+    
     final = lignes_volume_revendique
     
            
@@ -96,7 +101,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     degustations = degustations.query("Campagne == @campagne");
     degustations = degustations.fillna("")
     
-    lignes_volume_instance_controle = pd.merge(drev_lots,degustations, how='left', left_on = ["Identifiant",'Lot unique Id'], right_on = ["Id Opérateur",'Lot unique Id'],suffixes=("", " lots"))
+    lignes_volume_instance_controle = pd.merge(lignes_volume_revendique,degustations, how='left', left_on = ["Identifiant",'Lot unique Id'], right_on = ["Id Opérateur",'Lot unique Id'],suffixes=("", " lots"))
     lignes_volume_instance_controle = lignes_volume_instance_controle[(lignes_volume_instance_controle['Statut de lot'] != "Conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Réputé conforme")]
        
     lignes_volume_instance_controle = lignes_volume_instance_controle.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id'])[["Volume"]].sum()
@@ -176,14 +181,18 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     
     #CSV FINAL
     
+
+    
     #on mets en commun chaque volume d'un lot par opérateur en fonction du produit et de son type (volume revendique, en cours de controle ...) 
-    final = final.groupby(['Identifiant','Appellation','Couleur','Produit','Type','Libelle','Lieu'])[["Volume"]].sum()
-        
+    final = final.groupby(['Identifiant','Appellation','Couleur','Produit','Type','Lieu'])[["Volume"]].sum()
+    final = final.reset_index()  
+
     final = final.sort_values(by=['Identifiant','Appellation','Couleur'])
     
     
     final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/igp_stats_droit_inao_operateurs_redevable_'+campagne+".csv", encoding="iso8859_15", sep=";",index=False, decimal=",")
-      
+    
+
     #tableau récapitulatif
     
     type_vol_revendique = "VOLUME REVENDIQUE"
@@ -194,7 +203,8 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
    
     tab_cal = final.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
 
-        
+    
+
     tab_cal['type_vol_revendique'] =  final.query("Type == @type_vol_revendique").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()      
     tab_cal['type_instance_controle'] =  final.query("Type == @type_instance_controle").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
     tab_cal['type_changement_deno_src_produit'] =  final.query("Type == @type_changement_deno_src_produit").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
@@ -213,9 +223,11 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
 
     tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B']]
 
+    
     tab_cal = pd.merge(tab_cal,drev_lots,how='left',left_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],right_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],suffixes=("", " info-operateur"))    
     tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B']]
-
+    
+    #print(tab_cal)
     
     # Pour comparer A-B avec la somme des volumes de lots.csv
     
