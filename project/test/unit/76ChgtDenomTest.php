@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(257);
+$t = new lime_test(272);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -442,6 +442,41 @@ $historiqueDuLot = LotsClient::getInstance()->getHistory($chgtDenom->identifiant
 $t->is(strpos($historiqueDuLot[0]->id, 'DREV') === 0, true, "On remonte jusqu'à l'origine");
 $t->is($chgtDenom->lots->get(1)->isRedegustationDejaConforme(), true, "Le lot est déjà conforme");
 
+$t->comment("Gestion de l'affectation du lot changé");
+$chgtDenom->devalidate();
+$chgtDenom->validate();
+$chgtDenom->changement_affectable = false;
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+$t->is($chgtDenom->changement_affectable, false, "Le changement n'est plus affectable car changement_affectable = false");
+$t->is($chgtDenom->lots[1]->affectable, false, "Le lot changé n'est plus affectable car changement_affectable = false");
+$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable car changement_affectable = false");
+$t->ok(!$chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "Mouvement lot changé affectable car changement_affectable = false");
+
+$chgtDenom->devalidate();
+$chgtDenom->validate();
+$chgtDenom->changement_affectable = true;
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+$t->is($chgtDenom->changement_affectable, true, "Le changement n'est plus affectable car changement_affectable = true");
+$t->is($chgtDenom->lots[1]->affectable, true, "Le lot changé n'est plus affectable car changement_affectable = true");
+$t->ok(!$chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable car changement_affectable = true");
+$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "Mouvement lot changé affectable car changement_affectable = true");
+
+$chgtDenom->lots->get(1)->affectable = false;
+$chgtDenom->save();
+$t->is($chgtDenom->changement_affectable, false, "Le changement n'est plus affectable car lot affectable = false");
+$t->is($chgtDenom->lots[1]->affectable, false, "Le lot changé n'est plus affectable car lot affectable = false");
+$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable car lot affectable = false");
+$t->ok(!$chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "Mouvement lot changé affectable car lot affectable = false");
+
+$chgtDenom->lots->get(1)->affectable = true;
+$chgtDenom->save();
+$t->is($chgtDenom->changement_affectable, true, "Le changement n'est plus affectable car lot affectable = true");
+$t->is($chgtDenom->lots[1]->affectable, true, "Le lot changé n'est plus affectable car lot affectable = true");
+$t->ok(!$chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_NONAFFECTABLE), "Mouvement lot restant affectable car lot affectable = true");
+$t->ok($chgtDenom->lots->get(1)->getMouvement(Lot::STATUT_AFFECTABLE), "Mouvement lot changé affectable car lot affectable = true");
+
 $t->comment("Création d'un Declassement Total");
 
 $chgtDenom->clearMouvementsLots();
@@ -466,7 +501,6 @@ $t->is(count($chgtDenom->lots), 1, "Dans un declassement total, on a bien un seu
 $t->ok(!$chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGE_DEST), "le mouvement du lot n'a pas de statut changé dest");
 $t->ok(!$chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_CHANGEABLE), "le mouvement de lot n'est pas changeable");
 $t->ok($chgtDenom->lots->get(0)->getMouvement(Lot::STATUT_DECLASSE), "le mouvement de lot indique le déclassement");
-$t->is($chgtDenom->lots->get(0)->affectable, ! $chgtDenom->changement_affectable, "Le lot n'est pas affectable");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
