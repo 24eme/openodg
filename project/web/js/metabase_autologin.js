@@ -32,6 +32,8 @@ function metabase_login_and_redirect(username, password, remember = true, metaba
   if(!urlRedirect) {
 
     window.history.back();
+
+    return;
   }
 
   var urlRedirect = new URL(urlRedirect);
