@@ -187,11 +187,11 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'au_'+datemax+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 # In[ ]:
 
 
-tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'au_'+datemax+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'_au_'+datemax+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
