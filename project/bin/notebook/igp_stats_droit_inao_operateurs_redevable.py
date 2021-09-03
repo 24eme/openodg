@@ -246,7 +246,7 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     tab_cal = tab_cal[['Identifiant','Nom de la société','Raison sociale',"Adresse societe","Adresse 2 societe",'Adresse 3 societe','Code postal societe','Commune societe', 'Pays', 'Code comptable societe','Téléphone',"Téléphone portable",'Fax societe','Email societe','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
     tab_cal = tab_cal.rename(columns = {'Raison sociale': 'Nom etablissement','Nom Opérateur':'Nom societe','Adresse societe':'Adresse','Adresse 2 societe':'Adresse 2','Adresse 3 societe':'Adresse 3','Code postal societe':'Code postal','Email Operateur':'Email','Fax societe':'Fax'})    
     
-    tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/igp_stats_droit_inao_operateurs_redevable_A_B_A-B1'+campagne+".csv", encoding="iso8859_15", sep=";",index=False,  decimal=",")
+    tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/igp_stats_droit_inao_operateurs_redevable_A_B_A-B_'+campagne+".csv", encoding="iso8859_15", sep=";",index=False,  decimal=",")
     
     
     needincoherence = (len(lots) == len(lots_ini))
