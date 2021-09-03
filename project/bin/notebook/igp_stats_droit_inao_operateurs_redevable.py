@@ -92,10 +92,6 @@ def createCSVByCampagne(dossier_igp,igp,campagne,drev_lots,lots,changement_denom
     lots_ini = lots
     
     lots = lots[lots["Date lot"] < datelimite]  
- 
-    lots.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/lots.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
-    lots_ini.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/lots_ini.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
-    
     
     degustations = degustations.query("Campagne == @campagne");
     degustations = degustations.fillna("")
