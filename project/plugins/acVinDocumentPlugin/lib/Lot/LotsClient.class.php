@@ -62,7 +62,7 @@ class LotsClient
 
     public function find($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $documentOrdre = null) {
         $numOrdre = ($documentOrdre)? sprintf("%02d", $documentOrdre) : null;
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $numOrdre);
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $numOrdre, null, true);
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;

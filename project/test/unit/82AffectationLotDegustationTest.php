@@ -127,3 +127,9 @@ $degustationAnonyme = DegustationClient::getInstance()->find($degustation->_id);
 $degustationAnonyme->anonymize();
 $degustationAnonyme->save();
 $t->ok($degustationAnonyme->isAnonymized(),"La dégustation a été anonymisé");
+
+$t->comment('Récupération du lot');
+
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id);
+
+$t->is($lot->getDocument()->_id, $degustation->_id, "Le lot récupéré est le dernier de l'historique (plus grand document d'ordre)");
