@@ -35,7 +35,7 @@ foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication
     $doc = acCouchdbManager::getClient()->find($r->id);
     $doc->delete();
 }
-$t = new lime_test();
+$t = new lime_test(38);
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
