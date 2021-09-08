@@ -167,6 +167,10 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
   		}
 
         $produits = $this->getConfig()->getProduits();
+        if (defined('_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION')) {
+            $produits = array_merge($this->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationAppellation"), $produits);
+        }
+
         if (!$only_config) {
             $produits[ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH] = null;
         }
