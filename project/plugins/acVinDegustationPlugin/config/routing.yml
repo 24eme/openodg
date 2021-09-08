@@ -204,16 +204,6 @@ degustation_preleve_update_logement:
   requirements:
     sf_method: [get, post]
 
-degustation_update_lot:
-  url: /degustation/:id/update-lot/:lot
-  param: { module: degustation, action: updateLot }
-  class: DegustationRoute
-  options:
-    model:    Degustation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
 degustation_degustateurs_confirmation:
   url: /degustation/:id/degustateurs-confirmation
   param: { module: degustation, action: degustateursConfirmation }
