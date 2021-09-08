@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(128);
+$t = new lime_test(126);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -322,10 +322,10 @@ $drev_modif->validate();
 $drev_modif->validateOdg();
 $drev_modif->save();
 $drev = $drev_modif->getMother();
+$drev = DRevClient::getInstance()->find($drev->_id);
 $t->is(count($drev_modif->lots), 0, "Le Lot de la DRev modificatrice est correctement supprimé");
 $t->ok(!$drev_modif->mouvements_lots->exist($drev_modif->identifiant), "Aucun mouvement de lot dans la modificatrice");
-$t->is(count($drev->lots[0]->getMouvements()), 1, "Un seul mouvement pour le lot supprimé");
-$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE), "Mouvement revendication suprimée");
+$t->is(count($drev->lots[0]->getMouvements()), 0, "Pas de mouvement pour le lot supprimé");
 
 $t->comment("Dévalidation de ".$drev->_id."-M01");
 $drev_modif = $drev->findMaster();
@@ -341,8 +341,8 @@ $drev_modif->validate();
 $drev_modif->validateOdg();
 $drev_modif->save();
 $drev = $drev_modif->getMother();
-$t->is(count($drev->lots[0]->getMouvements()), 1, "Un seul mouvement pour le lot supprimé");
-$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE), "Mouvement revendication suprimée");
+$drev = DRevClient::getInstance()->find($drev->_id);
+$t->is(count($drev->lots[0]->getMouvements()), 0, "Pas de mouvement pour le lot supprimé");
 
 $t->comment("Suppression de la drev modif ".$drev_modif->_id);
 $drev_modif = $drev->findMaster();
