@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(126);
+$t = new lime_test(127);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -414,7 +414,8 @@ $validation = new DRevValidation($drev_modif);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->is($erreurs, null, "pas d'erreur");
+$t->is(count($erreurs), 1, "une erreur");
+$t->ok($erreurs['lot_volume_total_depasse'], "un point bloquant car le volume revendiqué des lots est supérieurs à celui déclaré dans la DR");
 $t->is(count($vigilances), 1, "un point de vigilances");
 $t->ok(isset($vigilances['lot_igp_inexistant_dans_dr_warn']), "le point vigilance indique que le produit du 2d lot ne fait pas partie de la DR comme attendu");
 
