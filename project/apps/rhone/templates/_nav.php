@@ -91,11 +91,6 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
-                    <li><a href="<?php echo url_for('export'); ?>">Génération</a></li>
-                    <?php if(sfConfig::get('app_export_webpath', null)): ?>
-                    <li><a href="<?php echo sfConfig::get('app_export_webpath', null) ?>">Export</a></li>
-                    <li><a href="/metabase/">Metabase</a></li>
-                    <?php endif; ?>
                   </ul>
                 </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>
