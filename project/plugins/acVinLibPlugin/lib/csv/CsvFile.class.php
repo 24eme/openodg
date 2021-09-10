@@ -83,6 +83,11 @@ class CsvFile
     return $this->csvdata;
   }
 
+
+  public function getPremierChamp(){
+    return ($this->getCsv()[3][0]);
+  }
+
   private function getCharset($file) {
     if(preg_match('/^http/', $file)) {
         $fileTmp = stream_get_meta_data(tmpfile())['uri'];

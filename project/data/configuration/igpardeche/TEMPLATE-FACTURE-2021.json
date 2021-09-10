@@ -1,9 +1,9 @@
 {
-  "_id": "TEMPLATE-FACTURE-2020",
+  "_id": "TEMPLATE-FACTURE-2021",
   "type": "TemplateFacture",
-  "campagne": 2020,
+  "campagne": 2021,
   "template": "IGP",
-  "libelle": "2020 - IGPArdeche",
+  "libelle": "2021 - IGPArdeche",
   "docs": [
     "DRev",
     "DR",

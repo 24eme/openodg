@@ -17,7 +17,10 @@ class LotForm extends acCouchdbObjectForm
             $this->setDefault('repartition_pc_'.$i, $repartition);
             $i++;
         }
-        $this->setDefault("millesime", preg_replace('/-.*/', '', $this->getObject()->campagne));
+
+        if(!$this->getObject()->millesime) {
+            $this->setDefault("millesime", preg_replace('/-.*/', '', $this->getObject()->campagne));
+        }
     }
 
     public function configure() {

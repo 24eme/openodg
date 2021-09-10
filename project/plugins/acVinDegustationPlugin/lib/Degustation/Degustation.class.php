@@ -328,6 +328,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     	return $this->piece_document->generatePieces();
     }
 
+    public function verifyGenerateModificative() {
+
+        return true;
+    }
+
     public function generateUrlPiece($source = null) {
         if (strpos($source, 'conforme') === 0) {
             $url =  'degustation_conformite_pdf' ;

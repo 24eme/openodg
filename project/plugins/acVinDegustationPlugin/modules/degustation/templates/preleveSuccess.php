@@ -54,7 +54,7 @@
         <td class="edit"><?= $lot->numero_logement_operateur ?>
           <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
-              <a class= "ajax" title="Modifier le logement" data-href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+              <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
             </span>
           <?php endif; ?>
         </td>

@@ -173,8 +173,16 @@ php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.c
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part
 
+mkdir -p $EXPORTDIR/stats
+
 cd bin/notebook/
-ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+
+if [[ $APPLICATION == igp* ]];then
+  ls igp_*.py | while read script; do python3 $script $APPLICATION;done
+else
+  ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+fi
+
 cd -
 
 find $EXPORTDIR -type f -empty -delete
@@ -182,4 +190,8 @@ find $EXPORTDIR -type f -empty -delete
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
+    if test -d $EXPORTDIR"/GLOBAL" ; then
+        python3 bin/csv2sql.py $METABASE_SQLITE".global.tmp" $EXPORTDIR"/GLOBAL"
+        mv $METABASE_SQLITE".global.tmp" $METABASE_SQLITE".global"
+    fi
 fi

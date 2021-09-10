@@ -960,8 +960,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
          $this->add('lots', $lotsToKeep);
     }
 
-    public function addLot() {
-        if($this->isValidee()) {
+    public function addLot($imported = false) {
+        if(!$imported && $this->isValidee()) {
             return null;
         }
         $lot = $this->add('lots')->add();

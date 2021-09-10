@@ -202,8 +202,11 @@ class facturationActions extends sfActions
 
           return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
       }
-
-      $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture);
+      $date = $request->getParameter('date');
+      if ($date && ($date > date('Y-m-d') || count(explode('-', $date)) != 3)) {
+          throw sfException('wrong date format '+$date);
+      }
+      $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture, $date);
       return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
     }
 

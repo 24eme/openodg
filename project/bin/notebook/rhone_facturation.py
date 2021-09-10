@@ -61,9 +61,3 @@ def createCSVFacturationByCampagne(campagne,drev,etablissements,dr,societe):
 createCSVFacturationByCampagne(dr['Campagne'].unique()[-1],drev,etablissements,dr,societe)
 createCSVFacturationByCampagne(dr['Campagne'].unique()[-2],drev,etablissements,dr,societe)
 
-
-# In[ ]:
-
-
-
-

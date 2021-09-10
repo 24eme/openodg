@@ -31,7 +31,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
               $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." - Produit", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
             }
-            if(!$lot->volume){
+            if(!$lot->volume && $lot->volume !== 0){
               $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', "Lot n° ".($key+1)." - Volume", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
             }

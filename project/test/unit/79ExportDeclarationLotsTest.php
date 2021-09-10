@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test();
+$t = new lime_test(8);
 
 $periode = (date('Y')-1)."";
 $campagne = $periode."-".($periode + 1);
