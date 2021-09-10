@@ -22,5 +22,5 @@ drev_campagne = drev_campagne[drev_campagne['has_stock'] > 0]
 drev_campagne = drev_campagne.rename(columns={'VCI Stock précédent': 'VCI N-1','Superficie revendiqué':'Surface (L4)','Volume revendiqué issu du mutage': 'Vol AOC (L15)','Volume revendiqué issu du vci':'Vol VCI (L19)', 'VCI Complément': 'Complément','VCI Substitution':'Substitution','VCI Rafraichi':'Rafraichissement','VCI Destruction':'Destruction','Volume revendiqué issu de la récolte':'Vol AOC issu de la récolte'}) 
 drev_campagne = drev_campagne.drop(['has_stock', 'Campagne','VCI Stock final'],axis=1) 
 drev_campagne.loc['Total'] = drev_campagne[['Complément','VCI N-1','Rafraichissement','Destruction','VCI N-1 revendiqué']].sum()
-drev_campagne.reset_index(drop=True).to_csv("../../web/exports/inao_vci_suivi_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+drev_campagne.reset_index(drop=True).to_csv("../../web/exports/stats/inao_vci_suivi_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 

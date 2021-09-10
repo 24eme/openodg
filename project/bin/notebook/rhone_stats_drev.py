@@ -46,7 +46,7 @@ def createCSVStatByCampagne(campagne,drev):
     
     drev_appellation_lieu_couleur = drev_appellation_lieu_couleur[columns]
     
-    drev_appellation_lieu_couleur.to_csv("../../web/exports/stats_drev_"+ campagne +".csv", encoding="iso8859_15", sep=";", index=False, decimal=",",header=['Appellation','Appellation Libelle','Lieu','Lieu Libelle','Superficie revendiqué rouge','Superficie revendiqué rose','Superficie revendiqué blanc','Superficie revendiqué total','Volume revendiqué net total rouge','Volume revendiqué net total rose','Volume revendiqué net total blanc','Volume revendiqué net total total','Volume revendiqué issu du vci rouge','Volume revendiqué issu du vci rose','Volume revendiqué issu du vci blanc','Volume revendiqué issu du vci total','Rendement rouge','Rendement rose','Rendement blanc','Rendement total'])
+    drev_appellation_lieu_couleur.to_csv("../../web/exports/stats/stats_drev_"+ campagne +".csv", encoding="iso8859_15", sep=";", index=False, decimal=",",header=['Appellation','Appellation Libelle','Lieu','Lieu Libelle','Superficie revendiqué rouge','Superficie revendiqué rose','Superficie revendiqué blanc','Superficie revendiqué total','Volume revendiqué net total rouge','Volume revendiqué net total rose','Volume revendiqué net total blanc','Volume revendiqué net total total','Volume revendiqué issu du vci rouge','Volume revendiqué issu du vci rose','Volume revendiqué issu du vci blanc','Volume revendiqué issu du vci total','Rendement rouge','Rendement rose','Rendement blanc','Rendement total'])
     
 
 
