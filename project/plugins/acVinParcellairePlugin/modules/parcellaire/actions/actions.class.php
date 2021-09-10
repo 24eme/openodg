@@ -42,6 +42,7 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        $this->forward404Unless(method_exists($this->getRoute(), 'getParcellaire'));
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($this->etablissement);
