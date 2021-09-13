@@ -30,8 +30,8 @@ class degustationActions extends sfActions {
 
     public function executeListe(sfWebRequest $request)
     {
-        $this->campagne = $request->getParameter('campagne');
-        $this->degustations = DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_JSON);
+        $this->annee = $request->getParameter('campagne');
+        $this->degustations = DegustationClient::getInstance()->getHistory(9999, $this->annee, acCouchdbClient::HYDRATE_JSON);
     }
 
     public function executeListeDeclarant(sfWebRequest $request)
