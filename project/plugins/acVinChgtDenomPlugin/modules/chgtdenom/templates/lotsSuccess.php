@@ -42,8 +42,8 @@
         <tr>
             <td class="text-center"><?php echo format_date($lot->date, 'dd/MM/yyyy'); ?></td>
             <td><?php echo $lot->numero_dossier; ?></td>
-            <td><?php echo $lot->numero_archive; ?></td>
-            <td><a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>"><?php echo $lot->type_document; ?></a></td>
+            <td><a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)); ?>"><?php echo $lot->numero_archive; ?></a></td>
+            <td><?php echo str_replace('DRev:Changé', 'Changé', $lot->initial_type); ?></td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
             <td><?php echo showProduitCepagesLot($lot->getRawValue()) ?></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
