@@ -6,7 +6,6 @@
 
 <div class="page-header">
   <div class="pull-right">
-      <?php if ($sf_user->hasDrevAdmin()): ?>
       <form method="GET" class="form-inline" action="">
           Campagne :
           <select class="select2SubmitOnChange form-control" name="campagne_switch">
@@ -16,9 +15,6 @@
           </select>
           <button type="submit" class="btn btn-default">Changer</button>
       </form>
-      <?php else: ?>
-          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne; ?></span>
-      <?php endif; ?>
   </div>
     <h2>Changement de dénomination / Déclassement <?php echo $campagne; ?></h2>
     <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
