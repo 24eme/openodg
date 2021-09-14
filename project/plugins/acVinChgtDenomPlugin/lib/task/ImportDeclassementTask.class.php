@@ -62,13 +62,22 @@ EOF;
 
 
             if ($data[self::CSV_DATE_DECLARATION]) {
-                $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+                if (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m)) {
+                    $dateDeclaration = $m[3].'-'.$m[2].'-'.$m[1];
+                }elseif (preg_match('/^[0-9\-]+$/', trim($data[self::CSV_DATE_DECLARATION]))) {
+                    $dateDeclaration = trim($data[self::CSV_DATE_DECLARATION]);
+                }else{
+                    echo "WARNING: wrong date format :".trim($data[self::CSV_DATE_DECLARATION])."\n";
+                }
             }else{
                 echo "WARNING: pas de date de Déclaration trouvée : ".$data[self::CSV_DATE_DECLARATION]."\n";
                 continue;
             }
 
             $etablissement = $this->identifyEtablissement($data[self::CSV_RAISON_SOCIALE], $data[self::CSV_CVI], $data[self::CSV_CODE_POSTAL]);
+            if (!$etablissement) {
+                $etablissement = EtablissementClient::getInstance()->find($data[self::CSV_CVI]);
+            }
             if (!$etablissement) {
                echo "ERROR;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
                continue;
@@ -84,11 +93,17 @@ EOF;
             $volumeInitial = str_replace(',','.',trim($data[self::CSV_VOLUME_INITIAL])) * 1;
             $volumeDeclasse = str_replace(',','.',trim($data[self::CSV_VOLUME_DECLASSE])) * 1;
 
+
             $numeroDossier = sprintf("%05d", trim($data[self::CSV_NUM_DOSSIER]));
             $numeroLogementOperateur = $data[self::CSV_NUM_LOT_OPERATEUR];
             $millesime = trim($data[self::CSV_MILLESIME]);
 
-            $mouvementsLot = MouvementLotView::getInstance()->getMouvements($etablissement->identifiant,
+            if (preg_match('/[0-9]{4}-[0-9]{4}/', trim($data[self::CSV_NUM_DOSSIER]))) {
+                $mouvementsLot = MouvementLotView::getInstance()->getMouvementsByStatutIdentifiantAndUniqueId(Lot::STATUT_MANQUEMENT_EN_ATTENTE, $etablissement->identifiant, trim($data[self::CSV_NUM_DOSSIER]));
+            }
+
+            if(!$mouvementsLot) {
+                $mouvementsLot = MouvementLotView::getInstance()->getMouvements($etablissement->identifiant,
                      array(
                             'numero_dossier' => $numeroDossier,
                             'numero_logement_operateur' => $numeroLogementOperateur,
@@ -97,7 +112,8 @@ EOF;
                             'produit_hash' => $produitInitial->getHash(),
                             'statut' => Lot::STATUT_CHANGEABLE
                           )
-            );
+                 );
+            }
 
             if(!$mouvementsLot) {
                 $mouvementsLot = MouvementLotView::getInstance()->getMouvements($etablissement->identifiant,
@@ -112,14 +128,13 @@ EOF;
             }
 
             if ((count($mouvementsLot) > 1) || !count($mouvementsLot)) {
-                echo "WARNING: Pas de mouvements trouvés\n";
+                echo "WARNING: Pas de mouvements trouvés ".$data[self::CSV_NUM_DOSSIER]."\n";
                 echo "\t$line\n";
                 continue;
             }
             $mouvementLot = $mouvementsLot[0];
-
             if($mouvementLot->volume - $volumeDeclasse < 0) {
-                echo "Volume final négatif\n";
+                echo "Volume final négatif (".$mouvementLot->volume." - $volumeDeclasse)\n";
                 echo "\t$line\n";
                 continue;
             }

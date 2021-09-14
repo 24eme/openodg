@@ -31,6 +31,32 @@ class MouvementLotView extends acCouchdbView
     }
 
 
+    public function getMouvementsByStatutIdentifiantAndUniqueId($statut, $declarant_identifiant, $uniqueId) {
+        $mouvements = $this->client
+                           ->startkey([
+                               $statut,
+                               $declarant_identifiant,
+                               substr($uniqueId, 0, 9),
+                               $uniqueId,
+                           ])
+                           ->endkey([
+                               $statut,
+                               $declarant_identifiant,
+                               substr($uniqueId, 0, 9),
+                               $uniqueId,
+                               array()
+                           ])
+                           ->getView($this->design, $this->view);
+        if (!count($mouvements->rows)) {
+            return null;
+        }
+        $mvt = [];
+        foreach($mouvements->rows as $r) {
+            $mvt[] = $r->value;
+        }
+        return $mvt;
+    }
+
     public function getAffecteSourceAvantMoi($lot)
     {
         if((get_class($lot) == 'stdClass' && isset($lot->leurre) && $lot->leurre) || (get_class($lot) != 'stdClass' && $lot->isLeurre())) {
