@@ -21,37 +21,26 @@ class degustationActions extends sfActions {
         $this->form = new TourneeCreationForm($this->tournee);
 
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
-        $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
-            'ALSACE', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
-
-        $this->demandes_alsace = array();
-        $this->demandes_vtsgn = array();
-        $total = 0;
-        foreach($prelevements as $prelevement) {
-            $total = $total + 1;
-            $dateObject = new DateTime($prelevement->date);
-            if(!isset($this->demandes_alsace[$dateObject->format('M Y')])) {
-                $this->demandes_alsace[$dateObject->format('M Y')] = 0;
-                $this->demandes_vtsgn[$dateObject->format('M Y')] = 0;
+        
+        $this->graphs = array(
+            'ALSACE' => array("name" => "AOC Alsace", "color" => '120,120,220', "data" => array()),
+            'CREMANT' => array("name" => "AOC Crémant Alsace", "color" => '220,178,29', "data" => array()),
+            'VTSGN' => array("name" => "VT / SGN", "color" => '0,220,220', "data" => array()),
+        );
+        
+        foreach($this->graphs as $key => $graph) {
+            $dateObject = new DateTime($campagne."-10-01");
+            for($i = 0; $i <= 12; $i++) {
+                $this->graphs[$key]['data'][$dateObject->format('M Y')] = 0;
+                $dateObject = $dateObject->modify("+ 1 month");
             }
-            $this->demandes_alsace[$dateObject->format('M Y')] += 1;
+            $prelevements = DRevPrelevementsView::getInstance()->getPrelevements($key, $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+            foreach($prelevements as $prelevement) {
+                $dateObject = new DateTime($prelevement->date);
+                $this->graphs[$key]['data'][$dateObject->format('M Y')] += 1;
+            }
         }
-
-        $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
-            'VTSGN', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
-        $total = 0;
-        foreach($prelevements as $prelevement) {
-            $total = $total + 1;
-            $dateObject = new DateTime($prelevement->date);
-            if(!isset($this->demandes_vtsgn[$dateObject->format('M Y')])) {
-                $this->demandes_vtsgn[$dateObject->format('M Y')] = 0;
-            }
-            if(!isset($this->demandes_alsace[$dateObject->format('M Y')])) {
-                $this->demandes_alsace[$dateObject->format('M Y')] = 0;
-            }
-            $this->demandes_vtsgn[$dateObject->format('M Y')] = $total;
-        }
-
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
