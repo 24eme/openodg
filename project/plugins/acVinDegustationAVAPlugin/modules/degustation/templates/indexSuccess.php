@@ -63,47 +63,30 @@
 <div class="row">
     <div class="col-xs-12">
         <legend><small><small>Demandes de prélevements dans le temps</small></small></legend>
-        <?php if(array_keys($demandes_alsace->getRawValue())): ?>
-          <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
-        <?php else: ?>
-          <div>
-            <p class="text-muted">Pas encore de demande de prélèvement pour la campagne <?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?>.</p>
-          </div>
-        <?php endif; ?>
+         <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
     </div>
 </div>
 <script type="text/javascript">
-<?php if(array_keys($demandes_alsace->getRawValue())): ?>
   window.onload = function () {
           var ctx = document.getElementById("graphique").getContext("2d");
+          var datasets = [];
+          <?php foreach($graphs as $graph): ?>
+            datasets.push({
+                label: "<?php echo $graph['name'] ?>",
+                fillColor: "rgba(<?php echo $graph['color'] ?>,0.2)",
+                strokeColor: "rgba(<?php echo $graph['color'] ?>,1)",
+                pointColor: "rgba(<?php echo $graph['color'] ?>,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(120,120,220,1)",
+                data: <?php echo json_encode(array_values($graph['data']->getRawValue())) ?>
+            });
+          <?php endforeach; ?>
           myNewChart = new Chart(ctx).Bar({
-              labels: <?php echo json_encode(array_keys($demandes_alsace->getRawValue())) ?>,
-              datasets: [
-                  {
-                      label: "AOC Alsace",
-                      fillColor: "rgba(120,120,220,0.2)",
-                      strokeColor: "rgba(120,120,220,1)",
-                      pointColor: "rgba(120,120,220,1)",
-                      pointStrokeColor: "#fff",
-                      pointHighlightFill: "#fff",
-                      pointHighlightStroke: "rgba(120,120,220,1)",
-                      data: <?php echo json_encode(array_values($demandes_alsace->getRawValue())) ?>
-                  },
-                  {
-                      label: "VT / SGN",
-                      fillColor: "rgba(0,220,220,0.2)",
-                      strokeColor: "rgba(0,220,220,1)",
-                      pointColor: "rgba(0,220,220,1)",
-                      pointStrokeColor: "#fff",
-                      pointHighlightFill: "#fff",
-                      pointHighlightStroke: "rgba(0,220,220,1)",
-                      data: <?php echo json_encode(array_values($demandes_vtsgn->getRawValue())) ?>
-                  },
-              ]
+              labels: <?php echo json_encode(array_keys($graphs['ALSACE']['data']->getRawValue())) ?>,
+              datasets: datasets
           }, {multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"} );
   };
-<?php endif;?>
-
 </script>
 
 <h3>Liste des tournées de dégustation</h3>
