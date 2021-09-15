@@ -32,12 +32,14 @@ class DegustationClient extends acCouchdbClient {
 
     public static $appellations = array(
         "ALSACE" => "AOC Alsace",
+        "CREMANT" => "AOC Crémant d'Alsace",
         "VTSGN" => "VT / SGN",
         "GRDCRU" => "AOC Alsace Grand Cru",
     );
 
     public static $note_type_by_appellation = array(
         'ALSACE' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE),
+        'CREMANT' => array(self::NOTE_TYPE_MATIERE),
         'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_CONCENTRATION, self::NOTE_TYPE_EQUILIBRE),
         'GRDCRU' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_TYPICITE),
     );
