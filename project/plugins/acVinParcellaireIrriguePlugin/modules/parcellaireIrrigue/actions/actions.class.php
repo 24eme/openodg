@@ -7,7 +7,7 @@ class parcellaireIrrigueActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
 
 		$this->papier = $request->getParameter('papier', false);
-		$this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
+		$this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() + 1);
 
         $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
 

@@ -575,7 +575,7 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     protected function respecteReglesEncepagement($parcelle)
     {
         $dgc = null;
-        $currentCampagne = intval(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 3);
+        $currentCampagne = intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - 3);
         if (intval(substr($parcelle->campagne_plantation, 0, 4)) > $currentCampagne) {
             return false;
         }
