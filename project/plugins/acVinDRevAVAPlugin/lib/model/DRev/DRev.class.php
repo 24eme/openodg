@@ -9,6 +9,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
     const CUVE_ALSACE = 'cuve_ALSACE';
+    const CUVE_CREMANT = 'cuve_CREMANT';
     const CUVE_GRDCRU = 'cuve_GRDCRU';
     const CUVE_VTSGN = 'cuve_VTSGN';
     const BOUTEILLE_ALSACE = 'bouteille_ALSACE';
@@ -31,6 +32,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     );
     public static $prelevement_keys = array(
         self::CUVE_ALSACE,
+        self::CUVE_CREMANT,
         self::CUVE_GRDCRU,
         self::CUVE_VTSGN,
         self::BOUTEILLE_ALSACE,
