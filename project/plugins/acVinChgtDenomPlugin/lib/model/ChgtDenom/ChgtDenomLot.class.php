@@ -70,11 +70,11 @@ class ChgtDenomLot extends BaseChgtDenomLot
         return $this->_get('initial_type');
     }
 
-    public function setAffectable($b) {
-        $this->_set('affectable', $b);
-        if (!$this->isLotOrigine() && $this->getDocument()->isApprouve()) {
-            $this->getDocument()->changement_affectable = $b;
+    public function setAffectable($a) {
+        if ($this->getDocument()->changement_origine_lot_unique_id != $this->unique_id) {
+            $this->getDocument()->changement_affectable = $a;
         }
+        return $this->_set('affectable', $a);
     }
 
 }
