@@ -2,7 +2,7 @@ all:
   configuration:
     facture:
       aggregateLignes: true
-      ligneMsg: "Cotisation incluant les droits INAO, la cotisation O.D.G, la cotisation de défense du nom et la cotisation pour l’O.I"
+      ligneDetailWithTitle: false
       echeances:
         1ertiers:
           libelle_date: "A réception"

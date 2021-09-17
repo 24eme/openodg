@@ -111,7 +111,7 @@
   \hline
   Désignation & Volume revendiqué (en hl) & Px unitaire (en €/hl) & Montant \rule[-7pt]{0pt}{20pt} \tabularnewline
   \hline
-   \rule[7pt]{0pt}{11pt}<?php echo FactureConfiguration::getInstance()->getAggregateLignesMsg(); ?> & & & \tabularnewline
+   \rule[7pt]{0pt}{11pt}Cotisation incluant les droits INAO, la cotisation O.D.G, la cotisation de défense du nom et la cotisation pour l’O.I & & & \tabularnewline
 
   \small{\textit{Volume net revendiqué total}} & \small{\textbf{<?php echo number_format($uniqLigne->quantite, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($uniqLigne->prix_unitaire, 2, '.', ' '); ?>}} & \small{\textbf{<?php echo number_format($uniqLigne->montant_ht, 2, '.', ' '); ?>~€}}  \tabularnewline
 
