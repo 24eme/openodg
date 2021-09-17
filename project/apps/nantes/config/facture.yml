@@ -1,8 +1,8 @@
 all:
   configuration:
     facture:
-      aggregateMouvements: false
-      ligneMsg: false
+      ligneUnique: false
+      ligneDetailWithTitle: true
       echeances: false
       all_etablissements: false
       uniq_template_prefix: false

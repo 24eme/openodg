@@ -387,9 +387,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNbLignesMouvements() {
-      $nbLigne = 0 ;
+        $nbLigne = 0 ;
+        if (FactureConfiguration::getInstance()->isLigneUnique()) {
+            return 1;
+        }
         foreach ($this->lignes as $lignesType) {
-            $nbLigne += count($lignesType->details) + 1;
+            $nbLigne += count($lignesType->details) + FactureConfiguration::getInstance()->isLigneDetailWithTitle() * 1;
         }
         return $nbLigne;
     }
