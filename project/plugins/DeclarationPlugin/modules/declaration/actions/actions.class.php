@@ -129,6 +129,18 @@ class declarationActions extends sfActions {
             return $this->redirect('get_fichier', ['id' => $doc_id]);
         }
 
+        // Doc sans page de visu
+        if($doc_type == "PARCELLAIREIRRIGUE") {
+
+            return $this->redirect('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigue'));
+        }
+
+        // Doc sans page de visu et ne remontant pas dans les documents
+        if(in_array($doc_type, array("PARCELLAIREINTENTIONAFFECTATION"))) {
+
+            return $this->redirect('declaration_etablissement', $etablissement);
+        }
+
         return $this->forward404();
     }
 
