@@ -78,6 +78,10 @@ EOF;
             continue;
         }
 
+        if(preg_match("/^\+[0-9]+$/", $value)) {
+            $value = + str_replace("+", "", $value);
+        }
+
         $output[] = $hash.":\"".$value."\" (".$doc->get($hash).")";
         $doc->set($hash, $value);
     }
