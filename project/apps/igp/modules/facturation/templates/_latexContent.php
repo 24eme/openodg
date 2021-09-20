@@ -29,7 +29,11 @@
 \definecolor{vertclair}{rgb}{0.70,0.70,0.70}
 \definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
+<?php if(file_exists(sfConfig::get('sf_web_dir')."/images/logo_".strtolower($facture->region)."_facturation.png")): ?>
+  \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_<?php echo strtolower($facture->region); ?>_facturation.png}
+<?php else: ?>
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_<?php echo strtolower($facture->region); ?>.png}
+<?php endif; ?>
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Facture<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_odg; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
