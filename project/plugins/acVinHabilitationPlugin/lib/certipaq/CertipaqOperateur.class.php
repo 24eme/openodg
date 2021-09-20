@@ -5,20 +5,6 @@ class CertipaqOperateur extends CertipaqService
     const ENDPOINT_RECHERCHE = 'operateur';
     const ENDPOINT_RECUPERATION = 'operateur/{id_operateur}';
 
-    private function query($endpoint, $method = 'GET', $payload = null)
-    {
-        $response = $this->httpQuery(
-            $this->configuration['apiurl'].$endpoint,
-            [
-                'http' => $this->getQueryHttpRequest($this->getToken(), $method, $payload)
-            ]
-        );
-
-        $response = json_decode($response);
-
-        return ($response->results) ?: $response;
-    }
-
     /**
      * @param Array $params Il faut renseigner au moins : raison_sociale et
      * code_postal, ou siret ou cvi ou dr_cdc_famille ou dr_cdc ou
