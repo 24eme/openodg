@@ -28,7 +28,7 @@ stats_vci = vci.groupby(['Produit']).sum()
 # In[ ]:
 
 
-stats_vci.reset_index().to_csv("../../web/exports/inao_vci_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+stats_vci.reset_index().to_csv("../../web/exports/stats/inao_vci_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 
 
 # In[ ]:
@@ -62,7 +62,7 @@ stats_drev_vci = stats_drev_vci.fillna(0)
 # In[ ]:
 
 
-stats_drev_vci.reset_index().to_csv("../../web/exports/inao_vci_drev_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+stats_drev_vci.reset_index().to_csv("../../web/exports/stats/inao_vci_drev_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 
 
 # In[ ]:
@@ -128,5 +128,5 @@ stats_dr_vci = stats_dr_vci[['Produit','libelle','Superficie en production - L4'
 # In[ ]:
 
 
-stats_dr_vci.reset_index(drop=True).to_csv("../../web/exports/inao_vci_dr_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+stats_dr_vci.reset_index(drop=True).to_csv("../../web/exports/stats/inao_vci_dr_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 

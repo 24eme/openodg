@@ -74,7 +74,7 @@ class RegistreVCIClient extends acCouchdbClient implements FacturableClient {
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()."";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent()."";
 
         return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, $campagne_from))
         ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))

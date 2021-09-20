@@ -93,7 +93,7 @@ class ConfigurationClient extends acCouchdbClient {
 
 	public function getCampagneManager($format = CampagneManager::FORMAT_PREMIERE_ANNEE) {
 
-		return new CampagneManager('10-01', $format);
+		return new CampagneManager('09-01', $format);
 	}
 
     public function getCampagneVinicole() {

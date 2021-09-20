@@ -17,16 +17,33 @@ if(len(sys.argv)<2):
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
 
-#dossier_igp = "exports_igp13"
-#igp = "13"
+if(len(sys.argv)>2):
+    millesime = sys.argv[2]
+else:
+    today= datetime.now()
+    debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
+    millesime = str(debutcampagne.year)
+
+if(len(sys.argv)>3):
+    datemax = sys.argv[3]
+else:
+    datemax = str(int(millesime)+1)+'-08-01'
+
+#dossier_igp = "exports_igpgascogne"
+#igp = "gascogne"
+#datemax = "2022-01-01"
+#millesime = "2019"
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
 lots = pd.read_csv("../../web/"+dossier_igp+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
 changement_deno = pd.read_csv("../../web/"+dossier_igp+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
-    
-lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
+
+#lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
 changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changement_deno["Type"] == "DRev:Changé") ]
+changement_deno = changement_deno[changement_deno["Date de validation ODG"] < datemax]
+
+degustations = pd.read_csv("../../web/"+dossier_igp+"/degustations.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 
 
 # In[ ]:
@@ -34,15 +51,6 @@ changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changem
 
 drev_lots = drev_lots.rename(columns = {'Date lot': 'Date_lot'})
 
-
-if(len(sys.argv)>2):
-    millesime = sys.argv[2]
-else:
-    today= datetime.now()
-    huitmoisavant = today - dateutil.relativedelta.relativedelta(months=8)
-    millesime = str(huitmoisavant.year)
-    
-datemax = str(int(millesime)+2)
 drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
@@ -56,23 +64,23 @@ final = drev_lots
 # In[ ]:
 
 
-lots = lots.rename(columns = {'Date lot': 'Date_lot'})
-lots = lots.query("Millésime == @millesime")
-lots = lots.query("Date_lot < @datemax")
+
+degustations = degustations.query("Millésime == @millesime")
+degustations = degustations[degustations["Date"] < datemax]
 
 conforme = "Conforme"
 rep_conforme = "Réputé conforme"
 #en_recours="En recours OC"
 
-lots = lots.rename(columns = {'Statut de lot': 'Statut_de_lot'})
-lots = lots.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme");      
+degustations = degustations.rename(columns = {'Statut de lot': 'Statut_de_lot'})
+degustations = degustations.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme");
 # & Statut_de_lot != @en_recours
 
-lots['Lieu'] = lots['Lieu'].fillna('')
-lots = lots.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
-lots ['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
-lots = lots.reset_index()
-final = final.append(lots,sort= True)
+degustations['Lieu'] = degustations['Lieu'].fillna('')
+degustations = degustations.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
+degustations['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
+degustations = degustations.reset_index()
+final = final.append(degustations,sort= True)
 
 
 # In[ ]:
@@ -169,7 +177,7 @@ tab_cal['type_declassement'] =  final.query("Type == @type_declassement").groupb
 tab_cal = tab_cal.fillna(0)
 
 tab_cal['A'] = tab_cal['type_vol_revendique'] - tab_cal['type_instance_conformite']
-tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1) 
+tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1)
 tab_cal['A-B'] =  tab_cal['A'] - tab_cal ['B']
 tab_cal = tab_cal.reset_index(level=['Appellation','Lieu','Couleur','Produit'])
 
@@ -179,11 +187,10 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 # In[ ]:
 
 
-tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime'+millesime+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
-
+tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")

@@ -190,4 +190,8 @@ find $EXPORTDIR -type f -empty -delete
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
+    if test -d $EXPORTDIR"/GLOBAL" ; then
+        python3 bin/csv2sql.py $METABASE_SQLITE".global.tmp" $EXPORTDIR"/GLOBAL"
+        mv $METABASE_SQLITE".global.tmp" $METABASE_SQLITE".global"
+    fi
 fi

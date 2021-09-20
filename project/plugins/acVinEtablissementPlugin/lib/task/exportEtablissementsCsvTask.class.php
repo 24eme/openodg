@@ -62,6 +62,9 @@ EOF;
                         }
                         $activites[$activiteKey] = $activiteKey;
                         $habilitationStatut = self::$statuts_libelles_export[$activite->statut];
+                        if($activite->statut == HabilitationClient::STATUT_HABILITE) {
+                            break;
+                        }
                     }
                 }
             }

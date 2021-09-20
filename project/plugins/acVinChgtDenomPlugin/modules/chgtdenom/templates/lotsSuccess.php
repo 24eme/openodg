@@ -6,19 +6,15 @@
 
 <div class="page-header">
   <div class="pull-right">
-      <?php if ($sf_user->hasDrevAdmin()): ?>
       <form method="GET" class="form-inline" action="">
           Campagne :
           <select class="select2SubmitOnChange form-control" name="campagne_switch">
-              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
+              <?php for($i=ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - 5; $i--): ?>
                   <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
               <?php endfor; ?>
           </select>
           <button type="submit" class="btn btn-default">Changer</button>
       </form>
-      <?php else: ?>
-          <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne; ?></span>
-      <?php endif; ?>
   </div>
     <h2>Changement de dénomination / Déclassement <?php echo $campagne; ?></h2>
     <p class="text-muted">Sélectionnez ci-dessous le lot que vous souhaitez changer</p>
@@ -42,8 +38,8 @@
         <tr>
             <td class="text-center"><?php echo format_date($lot->date, 'dd/MM/yyyy'); ?></td>
             <td><?php echo $lot->numero_dossier; ?></td>
-            <td><?php echo $lot->numero_archive; ?></td>
-            <td><a href="<?php  echo url_for(strtolower(strtok($lot->id_document, '-')).'_visualisation', array('id' => $lot->id_document));  ?>"><?php echo $lot->type_document; ?></a></td>
+            <td><a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)); ?>"><?php echo $lot->numero_archive; ?></a></td>
+            <td><?php echo str_replace('DRev:Changé', 'Changé', $lot->initial_type); ?></td>
             <td><?php echo $lot->numero_logement_operateur; ?></td>
             <td><?php echo showProduitCepagesLot($lot->getRawValue()) ?></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>

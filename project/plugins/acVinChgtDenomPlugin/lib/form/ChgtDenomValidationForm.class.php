@@ -7,7 +7,13 @@ class ChgtDenomValidationForm extends acCouchdbForm
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
       parent::__construct($doc, $defaults, $options, $CSRFSecret);
       $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
+      $this->updateDefaults();
     }
+
+    public function updateDefaults() {
+        $this->setDefault('affectable', $this->getDocument()->get('changement_affectable'));
+    }
+
 
     public function configure()
     {

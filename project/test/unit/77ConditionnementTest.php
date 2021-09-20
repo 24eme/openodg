@@ -14,6 +14,12 @@ $t = new lime_test(37);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
 $centilisations_bib_key = key($centilisations["bib"]);
+$year = date('Y');
+if (date('m') < 8) {
+    $year = $year - 1;
+}
+$campagne = sprintf("%04d-%04d", $year , $year + 1 );
+$mydate = $year.'-11-01';
 
 //Suppression des Conditioinnement (et drev et transaction) précédents
 foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
@@ -32,20 +38,17 @@ foreach(DrevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev = DrevClient::getInstance()->find($k);
     $drev->delete(false);
 }
-foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(100, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {
     $doc = acCouchdbManager::getClient()->find($r->id);
     $doc->delete();
 }
-
-$year = date('Y');
-if (date('m') < 8) {
-    $year = $year - 1;
+foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Lot', $campagne, 0, 99999, "%05d") as $r) {
+    $doc = acCouchdbManager::getClient()->find($r->id);
+    $doc->delete();
 }
-$campagne = sprintf("%04d-%04d", $year , $year + 1 );
-$mydate = $year.'-11-01';
 
 //Début des tests
 $t->comment("Création d'un Conditionnement");

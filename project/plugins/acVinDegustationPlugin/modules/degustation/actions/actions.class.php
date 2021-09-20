@@ -30,8 +30,8 @@ class degustationActions extends sfActions {
 
     public function executeListe(sfWebRequest $request)
     {
-        $this->campagne = $request->getParameter('campagne');
-        $this->degustations = DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_JSON);
+        $this->annee = $request->getParameter('campagne');
+        $this->degustations = DegustationClient::getInstance()->getHistory(9999, $this->annee, acCouchdbClient::HYDRATE_JSON);
     }
 
     public function executeListeDeclarant(sfWebRequest $request)
@@ -110,24 +110,6 @@ class degustationActions extends sfActions {
         }
 
         return $this->redirect('degustation_prelevements_etape', $this->degustation);
-    }
-
-    public function executeUpdateLot(sfWebRequest $request)
-    {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->lotkey = $request->getParameter('lot');
-        $this->lot = $this->degustation->lots->get($request->getParameter('lot'));
-
-        $this->form = new DegustationLotForm($this->lot);
-
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-
-            if ($this->form->isValid()) {
-                $this->form->save();
-                return $this->redirect('degustation_preleve', $this->degustation);
-            }
-        }
     }
 
     public function executeSupprimerLotNonPreleve(sfWebRequest $request) {

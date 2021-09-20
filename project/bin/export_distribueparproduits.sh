@@ -32,3 +32,11 @@ do
   fi
   cat $file | grep -E $HASHPRODUIT --binary-files=text >> $EXPORTDIRFORGLOBAL/$FILENAME
 done
+
+for type in dr sv11 sv12 ; do
+    doc_output=$EXPORTDIRFORGLOBAL"/"$type".csv.tmp"
+    doc_globalfile=$EXPORTGLOBALDIR"/"$type".csv"
+    head -n 1 $doc_globalfile > $doc_output
+    cat $doc_globalfile | iconv -f iso88591 | tail -n +2 | awk -F ';' '{if ( $4 ~ /[0-9]/ ) print "if ! grep -a "$4" '$doc_output' | grep -a '"'"'"$1";"$2"'"'"' > /dev/null ; then grep -a '"'"'"$1";"$2";"$3";"$4"'"'"' '$doc_globalfile' >> '$doc_output'  ; fi " }' | bash
+    mv $doc_output $EXPORTDIRFORGLOBAL"/"$type".csv"
+done

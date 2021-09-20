@@ -37,9 +37,8 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $degustation;
     }
 
-    public function getHistory($limit = 10, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-
-        return $this->startkey(self::TYPE_COUCHDB."Z")->endkey(self::TYPE_COUCHDB)->descending(true)->limit($limit)->execute($hydrate);
+    public function getHistory($limit = 10, $annee = "", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        return $this->startkey(self::TYPE_COUCHDB."-".$annee."Z")->endkey(self::TYPE_COUCHDB."-".$annee)->descending(true)->limit($limit)->execute($hydrate);
     }
 
     public function getHistoryEncours() {
@@ -58,7 +57,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function getHistoryLieux($limit = 50) {
-        $degusts = $this->getHistory($limit, acCouchdbClient::HYDRATE_JSON);
+        $degusts = $this->getHistory($limit, '', acCouchdbClient::HYDRATE_JSON);
         $lieux = array();
         foreach ($degusts as $d) {
             $lieux[$d->lieu] = $d->lieu;

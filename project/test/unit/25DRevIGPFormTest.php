@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(128);
+$t = new lime_test(127);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -42,7 +42,7 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $cd = ChgtDenomClient::getInstance()->find($k);
     $cd->delete(false);
 }
-foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(100, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
@@ -322,10 +322,10 @@ $drev_modif->validate();
 $drev_modif->validateOdg();
 $drev_modif->save();
 $drev = $drev_modif->getMother();
+$drev = DRevClient::getInstance()->find($drev->_id);
 $t->is(count($drev_modif->lots), 0, "Le Lot de la DRev modificatrice est correctement supprimé");
 $t->ok(!$drev_modif->mouvements_lots->exist($drev_modif->identifiant), "Aucun mouvement de lot dans la modificatrice");
-$t->is(count($drev->lots[0]->getMouvements()), 1, "Un seul mouvement pour le lot supprimé");
-$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE), "Mouvement revendication suprimée");
+$t->is(count($drev->lots[0]->getMouvements()), 0, "Pas de mouvement pour le lot supprimé");
 
 $t->comment("Dévalidation de ".$drev->_id."-M01");
 $drev_modif = $drev->findMaster();
@@ -341,8 +341,8 @@ $drev_modif->validate();
 $drev_modif->validateOdg();
 $drev_modif->save();
 $drev = $drev_modif->getMother();
-$t->is(count($drev->lots[0]->getMouvements()), 1, "Un seul mouvement pour le lot supprimé");
-$t->ok($drev->lots[0]->getMouvement(Lot::STATUT_REVENDICATION_SUPPRIMEE), "Mouvement revendication suprimée");
+$drev = DRevClient::getInstance()->find($drev->_id);
+$t->is(count($drev->lots[0]->getMouvements()), 0, "Pas de mouvement pour le lot supprimé");
 
 $t->comment("Suppression de la drev modif ".$drev_modif->_id);
 $drev_modif = $drev->findMaster();
@@ -414,7 +414,8 @@ $validation = new DRevValidation($drev_modif);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->is($erreurs, null, "pas d'erreur");
+$t->is(count($erreurs), 1, "une erreur");
+$t->ok($erreurs['lot_volume_total_depasse'], "un point bloquant car le volume revendiqué des lots est supérieurs à celui déclaré dans la DR");
 $t->is(count($vigilances), 1, "un point de vigilances");
 $t->ok(isset($vigilances['lot_igp_inexistant_dans_dr_warn']), "le point vigilance indique que le produit du 2d lot ne fait pas partie de la DR comme attendu");
 

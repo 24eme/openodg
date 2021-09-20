@@ -20,9 +20,9 @@ class degustationActions extends sfActions {
 
         $this->form = new TourneeCreationForm($this->tournee);
 
-        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $annee = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
         $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
-            'ALSACE', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+            'ALSACE', $annee."-10-01", ($annee+1)."-10-01", $annee);
 
         $this->demandes_alsace = array();
         $this->demandes_vtsgn = array();
@@ -38,7 +38,7 @@ class degustationActions extends sfActions {
         }
 
         $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
-            'VTSGN', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+            'VTSGN', $annee."-10-01", ($annee+1)."-10-01", $annee);
         $total = 0;
         foreach($prelevements as $prelevement) {
             $total = $total + 1;

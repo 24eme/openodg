@@ -34,7 +34,7 @@ foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->id
     $fichier->delete();
 }
 
-foreach(DegustationClient::getInstance()->getHistory(999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
     $degustation->delete();
 }
