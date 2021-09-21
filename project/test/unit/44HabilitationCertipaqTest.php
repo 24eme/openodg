@@ -46,3 +46,12 @@ $t->is($certipaq_produit_res->id, $certipaq_produit->id, "Depuis la configuratio
 
 $habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($infos_operateur, $ceertipaq_produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
 $t->ok($habilitation->dr_cdc_famille_id, "L'habilitation du produit de test (".$certipaq_produit->libelle.") pour l'activité producteur a bien un cdc_famille_id");
+
+$etablissement = new Etablissement();
+$etablissement->raison_sociale = $infos_operateur->raison_sociale;
+$etablissement->cvi = $infos_operateur->cvi;
+$etablissement->siret = str_replace(' ', '', $infos_operateur->siret);
+
+$op = CertipaqOperateur::getInstance()->findByEtablissement($etablissement);
+$t->is($op->id, $infos_operateur->id, "Récupère les infos d'un opérateur depuis établissement");
+$t->ok($op->sites, "Les infos de l'opérateur depuis établissement contienne les infos de leurs sites");
