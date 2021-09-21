@@ -76,4 +76,28 @@ class CertipaqDeroulant extends CertipaqService
         }
         return null;
     }
+
+    public function getCertipaqProduitFromConfigurationProduit($conf) {
+        $produits = $this->getListeProduitsCahiersDesCharges();
+        foreach($produits as $p) {
+            if ($p->libelle == $conf->getLibelleComplet()) {
+                return $p;
+            }
+        }
+        foreach($produits as $p) {
+            $c = $this->getConfigurationProduitFromProduitId($p->id);
+            if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
+                return $p;
+            }
+        }
+        return null;
+    }
+
+    public function getConfigurationProduitFromProduitId($pid) {
+        $produits = $this->getListeProduitsCahiersDesCharges();
+        if (!isset($produits[$pid]) || !$produits[$pid]) {
+            return null;
+        }
+        return ConfigurationClient::getCurrent()->identifyProductByLibelle($produits[$pid]->libelle);
+    }
 }

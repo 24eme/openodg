@@ -8,7 +8,7 @@ if(!sfConfig::get('app_certipaq_oauth')) {
     return;
 }
 
-$t = new lime_test(14);
+$t = new lime_test(16);
 
 $t->ok(CertipaqService::getInstance()->getToken(), "CertipaqService arrive à récupérer un token");
 $profil = (array) CertipaqService::getInstance()->getProfil();
@@ -37,3 +37,9 @@ $t->ok(count($infos_operateur['sites']), "Il a des sites");
 $t->ok(count($infos_operateur['sites'][0]->habilitations), "Il a des habilitations");
 
 $t->ok($infos_operateur['sites'][0]->habilitations[0]->dr_statut_habilitation->cle, "On récupère le statut de l'habilitation ".$infos_operateur['sites'][0]->dr_statut_habilitation->libelle);
+
+$certiq_produit = array_shift(CertipaqDeroulant::getInstance()->getListeProduitsCahiersDesCharges());
+$produit_conf = CertipaqDeroulant::getInstance()->getConfigurationProduitFromProduitId($certiq_produit->id);
+$t->ok($produit_conf, "retrouve la conf du produit depuis le premier id de la liste renvoyée par l'API (".$certiq_produit->libelle.")");
+$certipaq_produit_res = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($produit_conf);
+$t->is($certipaq_produit_res->id, $certiq_produit->id, "Depuis la configuration, on retrouve bien l'id certipaq");
