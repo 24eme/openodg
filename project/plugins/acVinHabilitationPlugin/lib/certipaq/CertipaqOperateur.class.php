@@ -30,7 +30,7 @@ class CertipaqOperateur extends CertipaqService
     {
         $endpoint = str_replace('{id_operateur}', $operateur_certipaq_id, self::ENDPOINT_RECUPERATION);
         $res = $this->query($endpoint);
-        foreach ($res['sites'] as $site_id => $value) {
+        foreach ($res->sites as $site_id => $value) {
             $outils_production = array();
             foreach($value->outils_production as $obj) {
                 $outils_production[$obj->id] = $obj;
@@ -82,9 +82,23 @@ class CertipaqOperateur extends CertipaqService
     public function findByCviOrSiret($siret_ou_cvi) {
         $siret_ou_cvi = str_replace(' ', '', $siret_ou_cvi);
         $res = $this->recherche(array('cvi' => $siret_ou_cvi));
-        if (count($res)) {
-            return $res;
+        if (!$res || !count($res)) {
+            $res = $this->recherche(array('siret' => $siret_ou_cvi));
         }
-        return $this->recherche(array('siret' => $siret_ou_cvi));
+        if (!$res || !isset($res[0]) || count($res) > 1) {
+            return null;
+        }
+        return $res[0];
+    }
+
+    public function findByEtablissement($etablissement) {
+        $op = null;
+        if ($etablissement->cvi) {
+            $op = $this->findByCviOrSiret($etablissement->cvi);
+        }
+        if (!$op && $etablissement->siret) {
+            $op = $this->findByCviOrSiret($etablissement->siret);
+        }
+        return $op;
     }
 }
