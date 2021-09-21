@@ -40,3 +40,8 @@ for type in dr sv11 sv12 ; do
     cat $doc_globalfile | iconv -f iso88591 | tail -n +2 | awk -F ';' '{if ( $4 ~ /[0-9]/ ) print "if ! grep -a "$4" '$doc_output' | grep -a '"'"'"$1";"$2"'"'"' > /dev/null ; then grep -a '"'"'"$1";"$2";"$3";"$4"'"'"' '$doc_globalfile' >> '$doc_output'  ; fi " }' | bash
     mv $doc_output $EXPORTDIRFORGLOBAL"/"$type".csv"
 done
+
+cut -d ";" -f 2 $EXPORTDIRFORGLOBAL/lots.csv | sort | uniq | sed -r 's/[0-9]{2}$//' > $EXPORTDIRFORGLOBAL/etablissements_ids.tmp
+
+head -n 1 $EXPORTGLOBALDIR"/etablissements.csv" > $EXPORTDIRFORGLOBAL/etablissements.csv
+cat $EXPORTGLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 1 -2 1 - $EXPORTDIRFORGLOBAL/etablissements_ids.tmp >> $EXPORTDIRFORGLOBAL/etablissements.csv
