@@ -2,13 +2,6 @@
 
 class CertipaqDeroulant extends CertipaqService
 {
-    const ENDPOINT_ACTIVITE_OPERATEUR = 'dr/activites_operateurs';
-    const ENDPOINT_TYPE_CONTROLE = 'dr/type_controle';
-    const ENDPOINT_HABILITATION = 'dr/statut_habilitation';
-    const ENDPOINT_CDC = 'dr/cdc';
-    const ENDPOINT_CDC_FAMILLE = 'dr/cdc_famille';
-    const ENDPOINT_DR_INFO = 'dr/infos';
-
     private function res2hashid($res) {
         $objs = array();
         foreach($res as $o) {
@@ -17,62 +10,70 @@ class CertipaqDeroulant extends CertipaqService
         return $objs;
     }
 
+    private function queryAndRes2hashid($endpoint) {
+        $res = $this->queryWithCache($endpoint);
+        return $this->res2hashid($res);
+    }
+
     public function getListeActivitesOperateurs()
     {
-        $res = $this->queryWithCache(self::ENDPOINT_ACTIVITE_OPERATEUR);
-        return $this->res2hashid($res);
+        return $this->queryAndRes2hashid('dr/activites_operateurs');
     }
 
     public function getListeTypeControle()
     {
-        $res = $this->queryWithCache(self::ENDPOINT_TYPE_CONTROLE);
-        return $this->res2hashid($res);
+        return $this->queryAndRes2hashid('dr/type_controle');
     }
 
     public function getListeHabilitation()
     {
-        $res = $this->queryWithCache(self::ENDPOINT_HABILITATION);
-        return $this->res2hashid($res);
+        return $this->queryAndRes2hashid('dr/statut_habilitation');
     }
 
     public function getListeCahiersDesCharges()
     {
-        $res = $this->queryWithCache(self::ENDPOINT_CDC);
-        return $this->res2hashid($res);
+        return $this->queryAndRes2hashid('dr/cdc');
     }
 
     public function getListeFamilleCahiersDesCharges()
     {
-        $res = $this->queryWithCache(self::ENDPOINT_CDC_FAMILLE);
-        return $this->res2hashid($res);
+        return $this->queryAndRes2hashid('dr/cdc_famille');
     }
 
     public function getListeDRInfo()
     {
-        $res = $this->queryWithCache(self::ENDPOINT_DR_INFO);
-        return $this->res2hashid($res);
+        return $this->queryAndRes2hashid('dr/infos');
+    }
+
+    public function getListeProdtuitCahiersDesCharges() {
+        return $this->queryAndRes2hashid('dr/cdc_produit');
     }
 
     public function keyid2obj($k, $id) {
-        if ($k == 'dr_statut_habilitation_id') {
-            $h = $this->getListeHabilitation();
-            return $h[$id];
+        $hash = array();
+        switch ($k) {
+            case 'dr_statut_habilitation_id':
+                $hash = $this->getListeHabilitation();
+                break;
+            case 'dr_cdc_id':
+                $hash = $this->getListeCahiersDesCharges();
+                break;
+            case 'dr_activites_operateurs_id':
+                $hash = $this->getListeActivitesOperateurs();
+                break;
+            case 'dr_cdc_famille_id':
+                $hash = $this->getListeFamilleCahiersDesCharges();
+                break;
+            case 'dr_infos_id':
+                $hash = $this->getListeDRInfo();
+                break;
+            case 'dr_cdc_produit_id':
+                $hash = $this->getListeProdtuitCahiersDesCharges();
+                break;
         }
-        if ($k == 'dr_cdc_id') {
-            $c = $this->getListeCahiersDesCharges();
-            return $c[$id];
+        if (isset($hash[$id])) {
+            return $hash[$id];
         }
-        if ($k == 'dr_activites_operateurs_id') {
-            $a = $this->getListeActivitesOperateurs();
-            return $a[$id];
-        }
-        if ($k == 'dr_cdc_famille_id') {
-            $f = $this->getListeFamilleCahiersDesCharges();
-            return $f[$id];
-        }
-        if ($k == 'dr_infos_id') {
-            $i = $this->getListeDRInfo();
-            return $i[$id];
-        }
+        return null;
     }
 }
