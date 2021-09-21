@@ -2,9 +2,6 @@
 
 class CertipaqOperateur extends CertipaqService
 {
-    const ENDPOINT_RECHERCHE = 'operateur';
-    const ENDPOINT_RECUPERATION = 'operateur/{id_operateur}';
-
     /**
      * @param Array $params Il faut renseigner au moins : raison_sociale et
      * code_postal, ou siret ou cvi ou dr_cdc_famille ou dr_cdc ou
@@ -23,12 +20,12 @@ class CertipaqOperateur extends CertipaqService
             throw new Exception("CertipaqOperateur Error : la raison sociale et le cp doivent être renseignés ensemble");
         }
 
-        return $this->query(self::ENDPOINT_RECHERCHE, 'GET', $params);
+        return $this->query('operateur', 'GET', $params);
     }
 
     public function recuperation($operateur_certipaq_id)
     {
-        $endpoint = str_replace('{id_operateur}', $operateur_certipaq_id, self::ENDPOINT_RECUPERATION);
+        $endpoint = str_replace('{id_operateur}', $operateur_certipaq_id, 'operateur/{id_operateur}');
         $res = $this->query($endpoint);
         foreach ($res->sites as $site_id => $value) {
             $outils_production = array();
@@ -60,7 +57,7 @@ class CertipaqOperateur extends CertipaqService
     }
 
     public function getHabilitationFromOperateurProduitAndActivite($certipaq_operateur, $certipaq_produit, $activite) {
-        foreach($certipaq_operateur['sites'] as $s) {
+        foreach($certipaq_operateur->sites as $s) {
             foreach($s->habilitations as $h) {
                 if ($h->dr_cdc_id = $certipaq_produit->id && $h->dr_activites_operateurs->libelle == $activite) {
                     return $h;
@@ -98,6 +95,9 @@ class CertipaqOperateur extends CertipaqService
         }
         if (!$op && $etablissement->siret) {
             $op = $this->findByCviOrSiret($etablissement->siret);
+        }
+        if ($op) {
+            $op = $this->recuperation($op->id);
         }
         return $op;
     }
