@@ -2,6 +2,10 @@
 
 class CertipaqDeroulant extends CertipaqService
 {
+    public const ACTIVITE_PRODUCTEUR = "Producteur de raisins";
+    public const ACTIVITE_VINIFICATEUR = "Vinificateur";
+    public const ACTIVITE_VENTE_VRAC = "Vente de vin en vrac";
+
     private function res2hashid($res) {
         $objs = array();
         foreach($res as $o) {

@@ -8,7 +8,7 @@ if(!sfConfig::get('app_certipaq_oauth')) {
     return;
 }
 
-$t = new lime_test(16);
+$t = new lime_test(17);
 
 $t->ok(CertipaqService::getInstance()->getToken(), "CertipaqService arrive à récupérer un token");
 $profil = (array) CertipaqService::getInstance()->getProfil();
@@ -38,8 +38,11 @@ $t->ok(count($infos_operateur['sites'][0]->habilitations), "Il a des habilitatio
 
 $t->ok($infos_operateur['sites'][0]->habilitations[0]->dr_statut_habilitation->cle, "On récupère le statut de l'habilitation ".$infos_operateur['sites'][0]->dr_statut_habilitation->libelle);
 
-$certiq_produit = array_shift(CertipaqDeroulant::getInstance()->getListeProduitsCahiersDesCharges());
-$produit_conf = CertipaqDeroulant::getInstance()->getConfigurationProduitFromProduitId($certiq_produit->id);
-$t->ok($produit_conf, "retrouve la conf du produit depuis le premier id de la liste renvoyée par l'API (".$certiq_produit->libelle.")");
+$certipaq_produit = array_shift(CertipaqDeroulant::getInstance()->getListeProduitsCahiersDesCharges());
+$produit_conf = CertipaqDeroulant::getInstance()->getConfigurationProduitFromProduitId($certipaq_produit->id);
+$t->ok($produit_conf, "retrouve la conf du produit depuis le premier id de la liste renvoyée par l'API (".$certipaq_produit->libelle.")");
 $certipaq_produit_res = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($produit_conf);
-$t->is($certipaq_produit_res->id, $certiq_produit->id, "Depuis la configuration, on retrouve bien l'id certipaq");
+$t->is($certipaq_produit_res->id, $certipaq_produit->id, "Depuis la configuration, on retrouve bien l'id certipaq");
+
+$habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($infos_operateur, $ceertipaq_produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
+$t->ok($habilitation->dr_cdc_famille_id, "L'habilitation du produit de test (".$certipaq_produit->libelle.") pour l'activité producteur a bien un cdc_famille_id");

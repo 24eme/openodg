@@ -59,6 +59,17 @@ class CertipaqOperateur extends CertipaqService
         return $res;
     }
 
+    public function getHabilitationFromOperateurProduitAndActivite($certipaq_operateur, $certipaq_produit, $activite) {
+        foreach($certipaq_operateur['sites'] as $s) {
+            foreach($s->habilitations as $h) {
+                if ($h->dr_cdc_id = $certipaq_produit->id && $h->dr_activites_operateurs->libelle == $activite) {
+                    return $h;
+                }
+            }
+        }
+        return $h;
+    }
+
     public function getAll() {
         $cdcs = CertipaqDeroulant::getInstance()->getListeCahiersDesCharges();
         $ids = array();
