@@ -57,14 +57,19 @@ class CertipaqOperateur extends CertipaqService
     }
 
     public function getHabilitationFromOperateurProduitAndActivite($certipaq_operateur, $certipaq_produit, $activite) {
+        $habilitation = null;
         foreach($certipaq_operateur->sites as $s) {
             foreach($s->habilitations as $h) {
-                if ($h->dr_cdc_id = $certipaq_produit->id && $h->dr_activites_operateurs->libelle == $activite) {
-                    return $h;
+                if ($h->dr_cdc_id = $certipaq_produit->dr_cdc_id && $h->dr_activites_operateurs->libelle == $activite) {
+                    $habilitation = $h;
                 }
             }
         }
-        return $h;
+        if ($habilitation) {
+            $habilitation->dr_cdc_produit_id = $certipaq_produit->id;
+            $habilitation->dr_cdc_produit = $certipaq_produit;
+        }
+        return $habilitation;
     }
 
     public function getAll() {
