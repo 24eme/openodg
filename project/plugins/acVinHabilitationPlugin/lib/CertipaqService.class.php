@@ -149,7 +149,7 @@ class CertipaqService
                 "Authorization: Bearer $token"
             ),
             'method'  => $method,
-            'content' => ($payload) ? json_encode($payload) : null
+            'content' => ($payload) ? json_encode($payload, JSON_PRESERVE_ZERO_FRACTION) : null
         );
     }
 
