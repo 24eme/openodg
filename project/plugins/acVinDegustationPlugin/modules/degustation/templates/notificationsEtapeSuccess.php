@@ -108,6 +108,5 @@
      mailto.target = '_blank';
      document.body.appendChild(mailto);
      mailto.click();
-     console.log(mailto);
  </script>
  <?php endif ?>
