@@ -2,9 +2,6 @@
 
 class CertipaqOperateur extends CertipaqService
 {
-    const ENDPOINT_RECHERCHE = 'operateur';
-    const ENDPOINT_RECUPERATION = 'operateur/{id_operateur}';
-
     /**
      * @param Array $params Il faut renseigner au moins : raison_sociale et
      * code_postal, ou siret ou cvi ou dr_cdc_famille ou dr_cdc ou
@@ -23,14 +20,14 @@ class CertipaqOperateur extends CertipaqService
             throw new Exception("CertipaqOperateur Error : la raison sociale et le cp doivent être renseignés ensemble");
         }
 
-        return $this->query(self::ENDPOINT_RECHERCHE, 'GET', $params);
+        return $this->query('operateur', 'GET', $params);
     }
 
     public function recuperation($operateur_certipaq_id)
     {
-        $endpoint = str_replace('{id_operateur}', $operateur_certipaq_id, self::ENDPOINT_RECUPERATION);
+        $endpoint = str_replace('{id_operateur}', $operateur_certipaq_id, 'operateur/{id_operateur}');
         $res = $this->query($endpoint);
-        foreach ($res['sites'] as $site_id => $value) {
+        foreach ($res->sites as $site_id => $value) {
             $outils_production = array();
             foreach($value->outils_production as $obj) {
                 $outils_production[$obj->id] = $obj;
@@ -59,6 +56,17 @@ class CertipaqOperateur extends CertipaqService
         return $res;
     }
 
+    public function getHabilitationFromOperateurProduitAndActivite($certipaq_operateur, $certipaq_produit, $activite) {
+        foreach($certipaq_operateur->sites as $s) {
+            foreach($s->habilitations as $h) {
+                if ($h->dr_cdc_id = $certipaq_produit->id && $h->dr_activites_operateurs->libelle == $activite) {
+                    return $h;
+                }
+            }
+        }
+        return $h;
+    }
+
     public function getAll() {
         $cdcs = CertipaqDeroulant::getInstance()->getListeCahiersDesCharges();
         $ids = array();
@@ -71,9 +79,26 @@ class CertipaqOperateur extends CertipaqService
     public function findByCviOrSiret($siret_ou_cvi) {
         $siret_ou_cvi = str_replace(' ', '', $siret_ou_cvi);
         $res = $this->recherche(array('cvi' => $siret_ou_cvi));
-        if (count($res)) {
-            return $res;
+        if (!$res || !count($res)) {
+            $res = $this->recherche(array('siret' => $siret_ou_cvi));
         }
-        return $this->recherche(array('siret' => $siret_ou_cvi));
+        if (!$res || !isset($res[0]) || count($res) > 1) {
+            return null;
+        }
+        return $res[0];
+    }
+
+    public function findByEtablissement($etablissement) {
+        $op = null;
+        if ($etablissement->cvi) {
+            $op = $this->findByCviOrSiret($etablissement->cvi);
+        }
+        if (!$op && $etablissement->siret) {
+            $op = $this->findByCviOrSiret($etablissement->siret);
+        }
+        if ($op) {
+            $op = $this->recuperation($op->id);
+        }
+        return $op;
     }
 }

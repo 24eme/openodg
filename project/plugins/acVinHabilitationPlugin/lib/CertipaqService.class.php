@@ -127,9 +127,9 @@ class CertipaqService
 
         $response = json_decode($response);
         if (isset($response->results)) {
-            return (array) $response->results;
+            return $response->results;
         }
-        return (array) $response ;
+        return $response ;
     }
 
     protected function queryWithCache($endpoint, $method = 'GET', $payload = null) {
