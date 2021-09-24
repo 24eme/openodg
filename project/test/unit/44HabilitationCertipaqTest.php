@@ -8,7 +8,7 @@ if(!sfConfig::get('app_certipaq_oauth')) {
     return;
 }
 
-$t = new lime_test(17);
+$t = new lime_test(20);
 
 $t->ok(CertipaqService::getInstance()->getToken(), "CertipaqService arrive à récupérer un token");
 $profil = (array) CertipaqService::getInstance()->getProfil();
@@ -44,7 +44,7 @@ $t->ok($produit_conf, "retrouve la conf du produit depuis le premier id de la li
 $certipaq_produit_res = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($produit_conf);
 $t->is($certipaq_produit_res->id, $certipaq_produit->id, "Depuis la configuration, on retrouve bien l'id certipaq");
 
-$habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($infos_operateur, $ceertipaq_produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
+$habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($infos_operateur, $certipaq_produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
 $t->ok($habilitation->dr_cdc_famille_id, "L'habilitation du produit de test (".$certipaq_produit->libelle.") pour l'activité producteur a bien un cdc_famille_id");
 
 $etablissement = new Etablissement();
@@ -55,3 +55,10 @@ $etablissement->siret = str_replace(' ', '', $infos_operateur->siret);
 $op = CertipaqOperateur::getInstance()->findByEtablissement($etablissement);
 $t->is($op->id, $infos_operateur->id, "Récupère les infos d'un opérateur depuis établissement");
 $t->ok($op->sites, "Les infos de l'opérateur depuis établissement contienne les infos de leurs sites");
+$millesime = date('Y') -1;
+try {
+    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $millesime, 0, 650);
+    throw new sfException("ne passe pas ici");
+} catch (Exception $e) {
+    $t->is($e->getMessage(), 'HTTP Error 400 : {"errors":["Le param\u00e8tre surface_ha est manquant"]}', "La création d'une ligne de DR impossible car la superficie 0");
+}
