@@ -826,12 +826,12 @@ class degustationActions extends sfActions {
 
         $cc = Organisme::getInstance(null, 'degustation')->getEmail();
         $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($degustation->date, "P", "fr_FR")));
-        $body = rawurlencode(strip_tags(get_partial('degustation/notificationEmail', [
+        $body = rawurlencode(strip_tags(str_replace("\n", "\r\n", get_partial('degustation/notificationEmail', [
             'degustation' => $degustation,
             'identifiant' => $identifiant,
             'lotsConformes' => $lotsConformes,
             'lotsNonConformes' => $lotsNonConformes
-        ])));
+        ]))));
 
 
         $mailto = "mailto:$email?cc=$cc&subject=$subject&body=$body";
