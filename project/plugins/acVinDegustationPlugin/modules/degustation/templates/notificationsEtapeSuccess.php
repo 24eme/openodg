@@ -59,7 +59,9 @@
                               </button>
                               <ul class="dropdown-menu text-left">
                                 <li>
-                                  <?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $identifiant, 'lots' => $lots]) ?>
+                                    <a class="btn link-mail-auto" href="<?php echo url_for('degustation_envoi_mail_resultats', array('id' => $degustation->_id, 'identifiant' => $identifiant)); ?>">
+                                      <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
+                                    </a>
                                 </li>
                                 <li>
                                   <a href="<?php echo url_for('degustation_mail_resultats_previsualisation', array('id' => $degustation->_id, 'identifiant' => $identifiant)); ?>" class="btn btn-mail-previsualisation">
@@ -98,12 +100,13 @@
     include_component('degustation','previewMailPopup', array('degustation' => $degustation, 'identifiant' => $identifiant_operateur, 'lots' => $lotsOperateur));
  endif;
   ?>
-  <?php // mailto si param dans la requete ?>
-  <?php if ($mailto): ?>
-  <script>
-      var mailto = document.createElement('a');
-      mailto.href = "<?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $mailto, 'lots' => $degustation->getLotsByOperateurs($mailto)[$mailto], 'notemplate' => true]); ?>";
-      mailto.click();
-  </script>
-  <?php endif ?>
 
+ <?php if (isset($mail_to_identifiant) && $mail_to_identifiant): ?>
+ <script>
+     var mailto = document.createElement('a');
+     mailto.href = "<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $mail_to_identifiant)); ?>";
+     mailto.target = '_blank';
+     document.body.appendChild(mailto);
+     mailto.click();
+ </script>
+ <?php endif ?>

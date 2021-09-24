@@ -311,6 +311,8 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
 
+        $this->mail_to_identifiant = $request->getParameter('mail_to_identifiant');
+
         if (!$this->degustation->areAllLotsSaisis()) {
             $this->getUser()->setFlash('error', "Il reste des lots sans résultats (conformes/non-conformes). Merci de les saisir !");
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_RESULTATS), $this->degustation);
@@ -319,8 +321,6 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
-
-        $this->mailto = $request->getParameter('mailto', null);
     }
 
 
@@ -795,10 +795,54 @@ class degustationActions extends sfActions {
       $this->degustation->save();
 
       if ($mailto) {
-          return $this->redirect('degustation_notifications_etape', ['id' => $this->degustation->_id, 'mailto' => $mailto]);
+          return $this->redirect('degustation_notifications_etape', array('id' => $this->degustation->_id, 'mail_to_identifiant' => $identifiant));
       } else {
           return $this->redirect('degustation_notifications_etape', $this->degustation);
       }
+    }
+
+    public function executeMailToNotification(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $identifiant = $request->getParameter('identifiant');
+        $lots = $degustation->getLotsByOperateurs()[$identifiant];
+        sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date', 'Partial'));
+
+        $lotsConformes = [];
+        $lotsNonConformes = [];
+
+        foreach ($lots as $lot) {
+            switch ($lot->statut) {
+                case Lot::STATUT_CONFORME:
+                    $lotsConformes[] = $lot;
+                    break;
+                case Lot::STATUT_NONCONFORME:
+                    $lotsNonConformes[] = $lot;
+                    break;
+            }
+        }
+
+        $email = EtablissementClient::getInstance()->find($identifiant)->getEmail();
+        $email = trim($email);
+
+        $cc = Organisme::getInstance(null, 'degustation')->getEmail();
+        $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($degustation->date, "P", "fr_FR")));
+        $body = rawurlencode(strip_tags(str_replace("\n", "\r\n", get_partial('degustation/notificationEmail', [
+            'degustation' => $degustation,
+            'identifiant' => $identifiant,
+            'lotsConformes' => $lotsConformes,
+            'lotsNonConformes' => $lotsNonConformes
+        ]))));
+
+
+        $mailto = "mailto:$email?cc=$cc&subject=$subject&body=$body";
+
+        $this->getResponse()->clearHttpHeaders();
+        $this->getResponse()->setStatusCode(302);
+        $this->getResponse()->setHttpHeader('Location', $mailto);
+        $this->getResponse()->setContent(sprintf('<html><head><meta http-equiv="refresh" content="%d;url=%s"/></head></html>', 0, htmlspecialchars($mailto, ENT_QUOTES, sfConfig::get('sf_charset'))));
+        $this->getResponse()->send();
+
+        throw new sfStopException();
     }
 
     public function executeTriTable(sfWebRequest $request) {
