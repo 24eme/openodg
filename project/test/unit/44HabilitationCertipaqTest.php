@@ -7,11 +7,11 @@ if(!sfConfig::get('app_certipaq_oauth')) {
     $t->ok(true, "Test disabled (not configured)");
     return;
 }
-if ($readonly) {
-    $t = new lime_test(21);
-}else{
-    $t = new lime_test(29);
+$nb_tests = 27;
+if (!$readonly) {
+    $nb_tests += 8;
 }
+$t = new lime_test($nb_tests);
 
 $millesime = date('Y') - 1;
 
@@ -92,3 +92,11 @@ if (!$readonly) {
   $t->is($drev->operateurs_sites->id, $op->sites[0]->id, "le site est bien résolus");
   $t->is($drev->operateurs_sites->id, $drev->entrepot_operateurs_sites->id, "le site et l'entrepot ont les même id (et sont bien résolus)");
 }
+$res = CertipaqDRev::getInstance()->findbyOperateurAndMillesime($infos_operateur->id, $millesime);
+$drev = array_pop($res);
+$t->is($drev->dr_cdc_produit->libelle, $certipaq_produit->libelle, "la première drev contient bien  une résolution du produit choisi : ".$certipaq_produit->libelle);
+$t->ok($drev->dr_cdc->libelle, "la première drev contient bien une résolution du cdc");
+$t->ok($drev->dr_cdc_famille->libelle, "la première drev contient bien une résolution de la famille");
+$t->is($drev->operateur->id, $infos_operateur->id, "la première drev contient bien un résolution de l'operateur");
+$t->is($drev->operateurs_sites->id, $op->sites[0]->id, "le site de la 1ère drev est bien résolus");
+$t->is($drev->operateurs_sites->id, $drev->entrepot_operateurs_sites->id, "le site et l'entrepot de la 1ère drev ont les même id (et sont bien résolus)");

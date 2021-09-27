@@ -83,7 +83,7 @@ class CertipaqDeroulant extends CertipaqService
                 $hash = $this->getListeProduitsCahiersDesCharges();
                 break;
             case 'operateur_id':
-                $o = CertipaqOperateur::getInstance()->find($id);
+                $o = CertipaqOperateur::getInstance()->find($id, true);
                 $hash[$id] = $o;
                 break;
             case 'operateurs_sites_id':
