@@ -23,6 +23,10 @@ class CertipaqOperateur extends CertipaqService
         return $this->query('operateur', 'GET', $params);
     }
 
+    public function find($id) {
+        return $this->recuperation($id);
+     }
+
     public function recuperation($operateur_certipaq_id)
     {
         $endpoint = str_replace('{id_operateur}', $operateur_certipaq_id, 'operateur/{id_operateur}');
@@ -70,6 +74,17 @@ class CertipaqOperateur extends CertipaqService
             $habilitation->dr_cdc_produit = $certipaq_produit;
         }
         return $habilitation;
+    }
+
+    public function getSiteFromIdAndOperateur($site_id, $certipaq_operateur) {
+        foreach($certipaq_operateur->sites as $s) {
+            if($s->id == $site_id) {
+                $res = clone $s;
+                unset($res->habilitations);
+                return $res;
+            }
+        }
+        return null;
     }
 
     public function getAll() {
