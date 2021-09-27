@@ -19,18 +19,21 @@ class CertipaqOperateur extends CertipaqService
         {
             throw new Exception("CertipaqOperateur Error : la raison sociale et le cp doivent être renseignés ensemble");
         }
-
         return $this->query('operateur', 'GET', $params);
     }
 
-    public function find($id) {
-        return $this->recuperation($id);
+    public function find($id, $withCache = false) {
+        return $this->recuperation($id, $withCache);
      }
 
-    public function recuperation($operateur_certipaq_id)
+    public function recuperation($operateur_certipaq_id, $withCache = false)
     {
         $endpoint = str_replace('{id_operateur}', $operateur_certipaq_id, 'operateur/{id_operateur}');
-        $res = $this->query($endpoint);
+        if ($withCache) {
+            $res = $this->queryWithCache($endpoint);
+        }else{
+            $res = $this->query($endpoint);
+        }
         foreach ($res->sites as $site_id => $value) {
             $outils_production = array();
             foreach($value->outils_production as $obj) {
