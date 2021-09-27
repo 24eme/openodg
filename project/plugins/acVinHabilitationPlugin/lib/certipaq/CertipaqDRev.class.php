@@ -42,6 +42,7 @@ class CertipaqDRev extends CertipaqService
         $params['volume_hl'] = floatval($volume);
         $params['surface_ha'] = floatval($superficie);
         $params['dr_cdc_produit_id'] = $habilitation->dr_cdc_produit_id;
+        $params['entrepot_operateurs_sites_id'] = $habilitation->site_id;
 
         return $this->query('declaration/revendication', 'POST', $params);
     }
