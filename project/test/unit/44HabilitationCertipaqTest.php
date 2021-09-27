@@ -100,3 +100,12 @@ $t->ok($drev->dr_cdc_famille->libelle, "la première drev contient bien une rés
 $t->is($drev->operateur->id, $infos_operateur->id, "la première drev contient bien un résolution de l'operateur");
 $t->is($drev->operateurs_sites->id, $op->sites[0]->id, "le site de la 1ère drev est bien résolus");
 $t->is($drev->operateurs_sites->id, $drev->entrepot_operateurs_sites->id, "le site et l'entrepot de la 1ère drev ont les même id (et sont bien résolus)");
+
+
+$res = CertipaqDI::getInstance()->getAll();
+$res = CertipaqDI::getInstance()->findByOperateurId($infos_operateur->id);
+CertipaqDI::getInstance()->sendNouvelOperateur();
+CertipaqDI::getInstance()->sendExtentionHabilitation();
+CertipaqDI::getInstance()->sendNouveauSite();
+CertipaqDI::getInstance()->sendModificationIdentite();
+CertipaqDI::getInstance()->sendModificationOutil();
