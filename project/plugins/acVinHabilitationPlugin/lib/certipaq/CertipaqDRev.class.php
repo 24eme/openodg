@@ -9,8 +9,17 @@ class CertipaqDRev extends CertipaqService
 
     public function find($id)
     {
-        $endpoint = str_replace('{id_declaration}', $id, self::ENDPOINT_RECUPERATION);
-        return $this->query($endpoint);
+        $endpoint = 'declaration/revendication/{id_declaration}';
+        $endpoint = str_replace('{id_declaration}', $id, $endpoint);
+        $line = $this->query($endpoint);
+        $line->operateur = CertipaqDeroulant::getInstance()->keyid2obj('operateur_id', $line->operateur_id);
+        $line->dr_cdc_famille = CertipaqDeroulant::getInstance()->keyid2obj('dr_cdc_famille_id', $line->dr_cdc_famille_id);
+        $line->dr_cdc = CertipaqDeroulant::getInstance()->keyid2obj('dr_cdc_id', $line->dr_cdc_id);
+        $line->dr_cdc_produit = CertipaqDeroulant::getInstance()->keyid2obj('dr_cdc_produit_id', $line->dr_cdc_produit_id);
+        $line->dr_etat_demande = CertipaqDeroulant::getInstance()->keyid2obj('dr_etat_demande_id', $line->dr_etat_demande_id);
+        $line->operateurs_sites = CertipaqDeroulant::getInstance()->keyid2obj('operateurs_sites_id', $line->operateurs_sites_id, $line->operateur);
+        $line->entrepot_operateurs_sites = CertipaqDeroulant::getInstance()->keyid2obj('operateurs_sites_id', $line->entrepot_operateurs_sites_id, $line->operateur);
+        return $line;
     }
 
     public function createUneLigne($etablissement, $produit_conf, $millesime, $superficie, $volume) {
