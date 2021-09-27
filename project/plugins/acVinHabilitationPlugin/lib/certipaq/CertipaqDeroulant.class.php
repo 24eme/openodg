@@ -58,7 +58,7 @@ class CertipaqDeroulant extends CertipaqService
         return $this->queryAndRes2hashid('dr/cdc_produit');
     }
 
-    public function keyid2obj($k, $id) {
+    public function keyid2obj($k, $id, $obj = null) {
         $hash = array();
         switch ($k) {
             case 'dr_statut_habilitation_id':
@@ -82,6 +82,15 @@ class CertipaqDeroulant extends CertipaqService
             case 'dr_cdc_produit_id':
                 $hash = $this->getListeProduitsCahiersDesCharges();
                 break;
+            case 'operateur_id':
+                $o = CertipaqOperateur::getInstance()->find($id);
+                $hash[$id] = $o;
+                break;
+            case 'operateurs_sites_id':
+            case 'entrepot_operateurs_sites_id':
+                if ($obj) {
+                    $hash[$id] = CertipaqOperateur::getInstance()->getSiteFromIdAndOperateur($id, $obj);
+                }
         }
         if (isset($hash[$id])) {
             return $hash[$id];

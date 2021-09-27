@@ -1,5 +1,5 @@
 <?php
-
+$readonly = !(getenv('WRITE'));
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 if(!sfConfig::get('app_certipaq_oauth')) {
@@ -7,8 +7,13 @@ if(!sfConfig::get('app_certipaq_oauth')) {
     $t->ok(true, "Test disabled (not configured)");
     return;
 }
+if ($readonly) {
+    $t = new lime_test(21);
+}else{
+    $t = new lime_test(29);
+}
 
-$t = new lime_test(20);
+$millesime = date('Y') - 1;
 
 $t->ok(CertipaqService::getInstance()->getToken(), "CertipaqService arrive à récupérer un token");
 $profil = (array) CertipaqService::getInstance()->getProfil();
@@ -55,10 +60,35 @@ $etablissement->siret = str_replace(' ', '', $infos_operateur->siret);
 $op = CertipaqOperateur::getInstance()->findByEtablissement($etablissement);
 $t->is($op->id, $infos_operateur->id, "Récupère les infos d'un opérateur depuis établissement");
 $t->ok($op->sites, "Les infos de l'opérateur depuis établissement contienne les infos de leurs sites");
-$millesime = date('Y') -1;
 try {
     $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $millesime, 0, 650);
-    throw new sfException("ne passe pas ici");
+    throw new sfException("Erreur DR non détectée");
 } catch (Exception $e) {
     $t->is($e->getMessage(), 'HTTP Error 400 : {"errors":["Le param\u00e8tre surface_ha est manquant"]}', "La création d'une ligne de DR impossible car la superficie 0");
+}
+
+try {
+    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, 0, 50, 650);
+    throw new sfException("Erreur millesime non détectée");
+} catch (Exception $e) {
+    $t->is($e->getMessage(), 'HTTP Error 400 : {"errors":["Le param\\u00e8tre millesime est invalide"]}', "La création d'une ligne de DR impossible avec un millesime à 0");
+}
+
+if (!$readonly) {
+  try {
+    $res = CertipaqDRev::getInstance()->createUneLigne($etablissement, $produit_conf, $millesime, 50, 650);
+    $t->ok($res->id, "La création d'une ligne de DR ne provoque pas d'erreur");
+  } catch (Exception $e) {
+    $t->fail($e->getMessage(), "La création d'une ligne de DR ne provoque pas d'erreur");
+  }
+  $res = new stdClass();
+  $res->id = 35;
+  $drev = CertipaqDRev::getInstance()->find($res->id);
+  $t->is($drev->dr_cdc_produit->libelle, $certipaq_produit->libelle, "la drev contient bien  une résolution du produit choisi : ".$certipaq_produit->libelle);
+  $t->ok($drev->dr_cdc->libelle, "la drev contient bien une résolution du cdc");
+  $t->ok($drev->dr_cdc_famille->libelle, "la drev contient bien une résolution de la famille");
+  $t->is($drev->dr_etat_demande->libelle, "Validée", "la ligne de DR est bien validée");
+  $t->is($drev->operateur->id, $infos_operateur->id, "la drev contient bien un résolution de l'operateur");
+  $t->is($drev->operateurs_sites->id, $op->sites[0]->id, "le site est bien résolus");
+  $t->is($drev->operateurs_sites->id, $drev->entrepot_operateurs_sites->id, "le site et l'entrepot ont les même id (et sont bien résolus)");
 }
