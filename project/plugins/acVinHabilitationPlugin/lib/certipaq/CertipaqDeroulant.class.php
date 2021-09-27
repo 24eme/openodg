@@ -49,6 +49,11 @@ class CertipaqDeroulant extends CertipaqService
         return $this->queryAndRes2hashid('dr/infos');
     }
 
+    public function getListeDREtatDemande()
+    {
+        return $this->queryAndRes2hashid('dr/etat_demande');
+    }
+
     public function getListeProduitsCahiersDesCharges() {
         return $this->queryAndRes2hashid('dr/cdc_produit');
     }
@@ -67,6 +72,9 @@ class CertipaqDeroulant extends CertipaqService
                 break;
             case 'dr_cdc_famille_id':
                 $hash = $this->getListeFamilleCahiersDesCharges();
+                break;
+            case 'dr_etat_demande_id':
+                $hash = $this->getListeDREtatDemande();
                 break;
             case 'dr_infos_id':
                 $hash = $this->getListeDRInfo();
