@@ -39,8 +39,8 @@ class DouaneCsvFile
 
   public static function getCategories() {
       return array(
-          '04' => "4. Superficie de récolte",
-          '04b' => "4b. Superficie de récolte",
+          '04' => "4. Superficie de récolte calculée (ratio bailleur/metayer)",
+          '04b' => "4b. Superificie de récolte originale",
           '05' => "5. Récolte totale",
           '06' => "6. Récolte vendue sous forme de raisins. Volume de vins obtenu",
           '07' => "7. Récolte vendue sous forme de moûts. Volume de moût obtenu",
