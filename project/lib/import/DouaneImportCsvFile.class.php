@@ -102,4 +102,72 @@ class DouaneImportCsvFile {
       $this->campagne = $c;
     }
 
+    public function convertByDonnees() {
+        if (!$this->doc->exist('donnees') || count($this->doc->donnees) < 1) {
+            return null;
+        }
+        $csv = '';
+        $configuration = ConfigurationClient::getCurrent();
+        $categories = DouaneCsvFile::getCategories();
+        $this->etablissement = EtablissementClient::getInstance()->find($this->doc->identifiant);
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($this->doc->campagne);
+        if (!$this->etablissement) {
+            return null;
+        }
+
+        $produits = array();
+        $colonnesid = array();
+        $colonneid = 0;
+        try {
+            foreach ($this->doc->donnees as $donnee) {
+                if ($produit = $configuration->declaration->get($donnee->produit)) {
+                    $p = array();
+                    if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
+                        $p[] = $b->raison_sociale;
+                        $p[] = $b->ppm;
+                    } else {
+                        $p[] = null;
+                        $p[] = null;
+                    }
+                    $p[] = $produit->getCertification()->getKey();
+                    $p[] = $produit->getGenre()->getKey();
+                    $p[] = $produit->getAppellation()->getKey();
+                    $p[] = $produit->getMention()->getKey();
+                    $p[] = $produit->getLieu()->getKey();
+                    $p[] = $produit->getCouleur()->getKey();
+                    $p[] = $produit->getCepage()->getKey();
+                    $p[] = $produit->code_douane;
+                    $p[] = $produit->getLibelleFormat();
+                    $p[] = $donnee->complement;
+                    $produitid = join("", $p);
+                    if (!isset($colonnesid[$produitid]) || !$colonnesid[$produitid]) {
+                        $colonnesid[$produitid] = ++$colonneid;
+                    }
+                    $p[] = $donnee->categorie;
+                    $p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
+                    $p[] = str_replace('.', ',', $donnee->valeur);
+                    if ($donnee->tiers && $t = EtablissementClient::getInstance()->find($donnee->tiers)) {
+                        $p[] = $t->cvi;
+                        $p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
+                        $p[] = null;
+                        $p[] = $t->siege->commune;
+                    } else {
+                        $p[] = null;
+                        $p[] = null;
+                        $p[] = null;
+                        $p[] = null;
+                    }
+                    $p[] = $colonnesid[$produitid];
+                    $produits[] = $p;
+                }
+            }
+        }catch(Exception $e) {
+            throw new sfException('problem with '.$this->doc->_id.' : '.$e);
+        }
+        $drInfos = $this->getEtablissementRows();
+        foreach ($produits as $k => $p) {
+            $csv .= implode(';', $drInfos).';'.implode(';', $p)."\n";
+        }
+        return $csv;
+    }
 }

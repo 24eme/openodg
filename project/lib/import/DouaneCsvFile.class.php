@@ -37,6 +37,10 @@ class DouaneCsvFile
   protected $csvdata = null;
   protected $ignore = null;
 
+  public static function getCategories() {
+      return sfConfig::get('app_dr_categories');
+  }
+
   public function getFileName() {
     return $this->file;
   }
