@@ -65,6 +65,15 @@ class HabilitationDemande extends BaseHabilitationDemande {
         return $historiques;
     }
 
+    public function getExtractHistoriqueFromStatut($statut) {
+        foreach($this->getFullHistorique() as $h) {
+            if ($h->statut == $statut) {
+                return $h;
+            }
+        }
+        return $h;
+    }
+
     public function getHistoriquePrecedent($statut, $date) {
         $prev = null;
         $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);

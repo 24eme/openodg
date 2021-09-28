@@ -21,7 +21,34 @@ class CertipaqDeroulant extends CertipaqService
 
     public function getListeActivitesOperateurs()
     {
+        /*
+        (  [id] => 211 , [libelle] => ODG ),
+        (  [id] => 355 , [libelle] => Conditionneur ),
+        (  [id] => 461 , [libelle] => Vinificateur ),
+        (  [id] => 462 , [libelle] => Producteur de raisins ),
+        (  [id] => 498 , [libelle] => Vente de vin à la tireuse ),
+        (  [id] => 528 , [libelle] => Vente de vin en vrac ),
+        */
         return $this->queryAndRes2hashid('dr/activites_operateurs');
+    }
+
+    public function findActivite($activite_libelle) {
+        $activites = $this->getListeActivitesOperateurs();
+        foreach (str_explode(' ', $activite_libelle) as $mot) {
+            $to_delete = array();
+            foreach($activites as $id => $a) {
+                if (strpos(strtoupper($a->libelle), strtoupper($mot)) === false) {
+                    $to_delete[] = $id;
+                }
+            }
+            foreach($to_delete as $id) {
+                unset($activites[$id]);
+            }
+        }
+        if (count($activites) == 1) {
+            return array_values($activites)[0];
+        }
+        return null;
     }
 
     public function getListeTypeControle()
@@ -56,6 +83,16 @@ class CertipaqDeroulant extends CertipaqService
 
     public function getListeProduitsCahiersDesCharges() {
         return $this->queryAndRes2hashid('dr/cdc_produit');
+    }
+
+    public function getListeTypesAdresses() {
+        /*
+          [1] => ([id] => 1 , [libelle] => Courrier),
+          [2] => ([id] => 2 , [libelle] => Facturation),
+          [3] => ([id] => 3 , [libelle] => Prélèvement),
+          [4] => ([id] => 4 , [libelle] => Siège social),
+        */
+        return $this->queryAndRes2hashid('dr/adresse_type');
     }
 
     public function keyid2obj($k, $id, $obj = null) {

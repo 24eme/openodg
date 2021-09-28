@@ -104,8 +104,11 @@ $t->is($drev->operateurs_sites->id, $drev->entrepot_operateurs_sites->id, "le si
 
 $res = CertipaqDI::getInstance()->getAll();
 $res = CertipaqDI::getInstance()->findByOperateurId($infos_operateur->id);
-CertipaqDI::getInstance()->sendNouvelOperateur();
-CertipaqDI::getInstance()->sendExtentionHabilitation();
-CertipaqDI::getInstance()->sendNouveauSite();
-CertipaqDI::getInstance()->sendModificationIdentite();
-CertipaqDI::getInstance()->sendModificationOutil();
+$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
+$demande = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
+
+CertipaqDI::getInstance()->getParamNouvelOperateurFromDemande($demande);
+CertipaqDI::getInstance()->getParamExtentionHabilitationFromDemande($demande);
+CertipaqDI::getInstance()->getParamNouveauSiteFromDemande($demande);
+CertipaqDI::getInstance()->getParamModificationIdentiteFromDemande($demande);
+CertipaqDI::getInstance()->getParamModificationOutilFromDemande($demande);
