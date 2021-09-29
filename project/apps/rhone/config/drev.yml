@@ -42,10 +42,9 @@ all:
           produits:
             - "TRANQ/appellations/LIR"
         GIGONDAS:
-          nom: "Syndicat ODG Cru Gigondas "
-          adresse: "8 rue du Fond du Sac, 84190 Gigondas"
+          nom: "Syndicat de Gigondas "
+          adresse: "8 rue du fond du sac, 84190 Gigondas"
           telephone: "%app_drev_GIGONDAS_telephone%"
           email: "%app_drev_GIGONDAS_email%"
           produits:
             - "TRANQ/appellations/GIG"
-
