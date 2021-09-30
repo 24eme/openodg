@@ -36,11 +36,15 @@ class GenerationClient extends acCouchdbClient {
     }
 
     public function findHistory($limit = 10) {
-        return acCouchdbManager::getClient()
+        $rows = acCouchdbManager::getClient()
         ->limit($limit)
         ->descending(true)
         ->getView("generation", "history")
         ->rows;
+
+        uasort($rows, "GenerationClient::sortHistory");
+
+        return $rows;
     }
 
     public function findHistoryWithType($type, $limit = 100) {

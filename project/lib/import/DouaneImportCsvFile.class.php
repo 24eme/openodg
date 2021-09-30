@@ -112,7 +112,7 @@ class DouaneImportCsvFile {
         }
         $csv = '';
         $configuration = ConfigurationClient::getCurrent();
-        $categories = sfConfig::get('app_dr_categories');
+        $categories = DouaneCsvFile::getCategories();
         $this->etablissement = EtablissementClient::getInstance()->find($this->doc->identifiant);
         $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($this->doc->campagne);
         if (!$this->etablissement) {

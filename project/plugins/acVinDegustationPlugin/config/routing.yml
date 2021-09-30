@@ -477,6 +477,16 @@ degustation_envoi_mail_resultats:
   requirements:
     sf_method: [get]
 
+degustation_mail_to_resultats:
+  url: /degustation/:id/:identifiant/mail_to_resultat
+  param: { module: degustation, action: mailToNotification }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 retrait_non_conformite_pdf:
   url: /degustation/:id/:identifiant/:lot_dossier/RetraitNonConformite/pdf
   param: { module: degustation, action: retraitNonConformitePDF }

@@ -21,6 +21,9 @@ all:
           TRANSMIS_OIVR: "Transmis à l'OIVR"
           AVIS_CONFORME_OIVR: "Avis conforme de l'OIVR"
           AVIS_NONCONFORME_OIVR: "Avis non conforme de l'OIVR"
+          TRANSMIS_VINO: "Transmis à VINOMED"
+          AVIS_CONFORME_VINO: "Avis conforme de VINOMED"
+          AVIS_NONCONFORME_VINO: "Avis non conforme de VINOMED"
           TRANSMIS_ODG: "Transmis à une autre ODG"
           VALIDE_ODG: "Validé par une autre ODG"
           REFUSE_ODG: "Refusé par une autre ODG"
@@ -38,6 +41,8 @@ all:
           COMPLET: ENREGISTREMENT
           AVIS_CONFORME_OIVR: TRANSMIS_INAO
           AVIS_NONCONFORME_OIVR: TRANSMIS_INAO
+          AVIS_CONFORME_VINO: TRANSMIS_INAO
+          AVIS_NONCONFORME_VINO: TRANSMIS_INAO
           VALIDE_ODG: VALIDE
           REFUSE_ODG: REFUSE
           VALIDE_INAO: VALIDE

@@ -2,42 +2,123 @@
 
 class CertipaqDeroulant extends CertipaqService
 {
-    const ENDPOINT_ACTIVITE_OPERATEUR = 'dr/activites_operateurs';
-    const ENDPOINT_TYPE_CONTROLE = 'dr/type_controle';
-    const ENDPOINT_HABILITATION = 'dr/statut_habilitation';
-    const ENDPOINT_CDC = 'dr/cdc';
+    public const ACTIVITE_PRODUCTEUR = "Producteur de raisins";
+    public const ACTIVITE_VINIFICATEUR = "Vinificateur";
+    public const ACTIVITE_VENTE_VRAC = "Vente de vin en vrac";
 
-    private function query($endpoint)
-    {
-        $result = $this->httpQuery(
-            $this->configuration['apiurl'].$endpoint,
-            [
-                'http' => $this->getQueryHttpRequest($this->getToken())
-            ]
-        );
+    private function res2hashid($res) {
+        $objs = array();
+        foreach($res as $o) {
+            $objs[$o->id] = $o;
+        }
+        return $objs;
+    }
 
-        $result = json_decode($result);
-
-        return $result->results;
+    private function queryAndRes2hashid($endpoint) {
+        $res = $this->queryWithCache($endpoint);
+        return $this->res2hashid($res);
     }
 
     public function getListeActivitesOperateurs()
     {
-        return $this->query(self::ENDPOINT_ACTIVITE_OPERATEUR);
+        return $this->queryAndRes2hashid('dr/activites_operateurs');
     }
 
     public function getListeTypeControle()
     {
-        return $this->query(self::ENDPOINT_TYPE_CONTROLE);
+        return $this->queryAndRes2hashid('dr/type_controle');
     }
 
-    public function getListeStatutHabilitation()
+    public function getListeHabilitation()
     {
-        return $this->query(self::ENDPOINT_HABILITATION);
+        return $this->queryAndRes2hashid('dr/statut_habilitation');
     }
 
     public function getListeCahiersDesCharges()
     {
-        return $this->query(self::ENDPOINT_CDC);
+        return $this->queryAndRes2hashid('dr/cdc');
+    }
+
+    public function getListeFamilleCahiersDesCharges()
+    {
+        return $this->queryAndRes2hashid('dr/cdc_famille');
+    }
+
+    public function getListeDRInfo()
+    {
+        return $this->queryAndRes2hashid('dr/infos');
+    }
+
+    public function getListeDREtatDemande()
+    {
+        return $this->queryAndRes2hashid('dr/etat_demande');
+    }
+
+    public function getListeProduitsCahiersDesCharges() {
+        return $this->queryAndRes2hashid('dr/cdc_produit');
+    }
+
+    public function keyid2obj($k, $id, $obj = null) {
+        $hash = array();
+        switch ($k) {
+            case 'dr_statut_habilitation_id':
+                $hash = $this->getListeHabilitation();
+                break;
+            case 'dr_cdc_id':
+                $hash = $this->getListeCahiersDesCharges();
+                break;
+            case 'dr_activites_operateurs_id':
+                $hash = $this->getListeActivitesOperateurs();
+                break;
+            case 'dr_cdc_famille_id':
+                $hash = $this->getListeFamilleCahiersDesCharges();
+                break;
+            case 'dr_etat_demande_id':
+                $hash = $this->getListeDREtatDemande();
+                break;
+            case 'dr_infos_id':
+                $hash = $this->getListeDRInfo();
+                break;
+            case 'dr_cdc_produit_id':
+                $hash = $this->getListeProduitsCahiersDesCharges();
+                break;
+            case 'operateur_id':
+                $o = CertipaqOperateur::getInstance()->find($id, true);
+                $hash[$id] = $o;
+                break;
+            case 'operateurs_sites_id':
+            case 'entrepot_operateurs_sites_id':
+                if ($obj) {
+                    $hash[$id] = CertipaqOperateur::getInstance()->getSiteFromIdAndOperateur($id, $obj);
+                }
+        }
+        if (isset($hash[$id])) {
+            return $hash[$id];
+        }
+        return null;
+    }
+
+    public function getCertipaqProduitFromConfigurationProduit($conf) {
+        $produits = $this->getListeProduitsCahiersDesCharges();
+        foreach($produits as $p) {
+            if ($p->libelle == $conf->getLibelleComplet()) {
+                return $p;
+            }
+        }
+        foreach($produits as $p) {
+            $c = $this->getConfigurationProduitFromProduitId($p->id);
+            if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
+                return $p;
+            }
+        }
+        return null;
+    }
+
+    public function getConfigurationProduitFromProduitId($pid) {
+        $produits = $this->getListeProduitsCahiersDesCharges();
+        if (!isset($produits[$pid]) || !$produits[$pid]) {
+            return null;
+        }
+        return ConfigurationClient::getCurrent()->identifyProductByLibelle($produits[$pid]->libelle);
     }
 }

@@ -20,7 +20,9 @@
           </button>
           <ul class="dropdown-menu text-left">
             <li>
-                <?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $identifiant, 'lots' => $lots[$identifiant]]) ?>
+                <a class="btn link-mail-auto" href="<?php echo url_for('degustation_envoi_mail_resultats', array('id' => $degustation->_id, 'identifiant' => $identifiant)); ?>">
+                  <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
+                </a>
             </li>
             <?php if (count($lotsConformes)): ?>
             <li>

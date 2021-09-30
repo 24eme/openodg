@@ -107,12 +107,37 @@ class CertipaqService
 
     public function getProfil()
     {
-        return $this->httpQuery(
+        $json = $this->httpQuery(
             $this->configuration['apiurl'].'profil',
             [
                 'http' => $this->getQueryHttpRequest($this->getToken())
             ]
         );
+        return json_decode($json);
+    }
+
+    protected function query($endpoint, $method = 'GET', $payload = null)
+    {
+        $response = $this->httpQuery(
+            $this->configuration['apiurl'].$endpoint,
+            [
+                'http' => $this->getQueryHttpRequest($this->getToken(), $method, $payload)
+            ]
+        );
+
+        $response = json_decode($response);
+        if (isset($response->results)) {
+            return $response->results;
+        }
+        return $response ;
+    }
+
+    protected function queryWithCache($endpoint, $method = 'GET', $payload = null) {
+        $cache_id = $endpoint.$method.serialize($payload);
+        if (!isset($this->cache[$cache_id])) {
+            $this->cache[$cache_id] = $this->query($endpoint, $method, $payload);
+        }
+        return $this->cache[$cache_id];
     }
 
     protected function getQueryHttpRequest($token, $method = 'GET', $payload = null)
@@ -124,7 +149,7 @@ class CertipaqService
                 "Authorization: Bearer $token"
             ),
             'method'  => $method,
-            'content' => ($payload) ? json_encode($payload) : null
+            'content' => ($payload) ? json_encode($payload, JSON_PRESERVE_ZERO_FRACTION) : null
         );
     }
 
