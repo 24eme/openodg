@@ -9,6 +9,10 @@ function showOnlyProduit($lot, $show_always_specificite = true)
       if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
           $text .= ' - '.$lot->specificite;
       }
+  }else{
+      if (strpos($lot->specificite, 'primeur') !== false) {
+          $text .= ' - primeur';
+      }
   }
 
   $text .= "</small>";
