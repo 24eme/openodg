@@ -4,7 +4,7 @@ class tirageComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
         if(!$this->periode) {
-            $this->periode = $this->campagne;
+            $this->periode = preg_replace("/-.+/", "", $this->campagne);
         }
         $this->nbDeclaration = TirageClient::getInstance()->getLastNumero($this->etablissement->identifiant, $this->campagne);
         $nextNumero = $this->nbDeclaration + 1;
