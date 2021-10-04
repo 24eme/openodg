@@ -27,7 +27,10 @@ class DegustationOrganisationTableForm extends acCouchdbObjectForm {
     }
 
     public function getWidgetNameFromLot($lot){
-      return 'numero_lot_'.preg_replace("|/lots/|", '', $lot->getHash());
+        if ($lot->isLeurre()) {
+            return 'lot_leure-'.$lot->getKey().'_'.$lot->position;
+        }
+        return 'lot_'.$lot->declarant_identifiant."-".$lot->unique_id.'_'.$lot->position;
     }
 
     protected function doUpdateObject($values) {
