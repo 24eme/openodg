@@ -13,3 +13,7 @@ all:
       degustation: false
       engagement_pdf: false
       logement_adresse: true
+      specificites:
+        bio: "bio"
+        HVE: "HVE"
+        primeur: "primeur"

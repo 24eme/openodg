@@ -136,7 +136,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos['nbLotsPreleves'] = $this->getNbLotsPreleves();
 		$infos['nbLotsPrelevesSansLeurre'] = $this->getNbLotsPreleves() - $infos["nbLotsLeurre"];
 		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
-  	$infos["nbAdherentsLotsRestantAPrelever"] = count($this->getAdherentsByLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT));
+  	$infos["nbAdherentsLotsRestantAPrelever"] = count($this->getAdherentsByLotsWithoutStatut(Lot::STATUT_PRELEVE));
 		$infos["nbAdherentsPreleves"] = count($this->getAdherentsPreleves());
 		$infos["degustateursConfirmes"] = $this->getDegustateursConfirmes();
 		$infos["nbDegustateursConfirmes"] = count($infos["degustateursConfirmes"]);
@@ -292,7 +292,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function getAllPieces() {
     	$pieces = array();
 
-        $base_libelle = 'Résultat de la dégustation du ' . $this->getDateFormat('d/m/Y H:i');				
+        $base_libelle = 'Résultat de la dégustation du ' . $this->getDateFormat('d/m/Y H:i');
 
         $declarants = [];
 
@@ -416,17 +416,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 	 }
 
-	 public function getAdherentsByLotsWithStatut($statut = null){
-		 $lots = $this->getLotsWithStatut($statut);
-		 $lotsByAdherents = array();
-		 foreach ($lots as $lot) {
-			 if(!array_key_exists($lot->getDeclarantIdentifiant(),$lotsByAdherents)){
-				 	$lotsByAdherents[$lot->getDeclarantIdentifiant()] = array();
-				}
-				$lotsByAdherents[$lot->getDeclarantIdentifiant()][] = $lot;
-		 }
-
- 	 	return $lotsByAdherents;
+	 public function getAdherentsByLotsWithoutStatut($statut){
+ 			$adherents = array();
+ 			foreach ($this->getLots() as $lot) {
+ 							if ($lot->isLeurre()) {
+ 									continue;
+ 							}
+ 							if(!$lot->getMouvement($statut)) {
+ 									$adherents[$lot->getDeclarantIdentifiant()] = $lot->getDeclarantIdentifiant();
+ 							}
+ 			}
+ 		return $adherents;
 	}
 
 	public function getAdherentsPreleves(){
@@ -1041,7 +1041,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $degustateurs;
-		}		
+		}
 
 		public function getDegustateursATable(){
 			$degustateurs = array();
