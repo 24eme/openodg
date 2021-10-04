@@ -486,6 +486,9 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function setNumeroTable($numero) {
+        if ($numero == $this->_get('numero_table') && $this->position) {
+            return true;
+        }
         $ret = $this->_set('numero_table', $numero);
         $this->position = '999999';
         $this->generateAndSetPosition();
