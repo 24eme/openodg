@@ -37,6 +37,8 @@ for type in dr sv11 sv12 ; do
     doc_output=$EXPORTDIRFORGLOBAL"/"$type".csv.tmp"
     doc_globalfile=$EXPORTGLOBALDIR"/"$type".csv"
     head -n 1 $doc_globalfile > $doc_output
+    # si le CVI et la campagne ne sont pas présent dans le fichier final alors on les y met :
+    # if ! grep -a CVI  doc_output | grep -a 'DR;2019-2020' > /dev/null ; then grep -a 'DR;2019-2020;IDENTIFIANT;CVI'  >>  doc_output ; fi
     cat $doc_globalfile | iconv -f iso88591 | tail -n +2 | awk -F ';' '{if ( $4 ~ /[0-9]/ ) print "if ! grep -a "$4" '$doc_output' | grep -a '"'"'"$1";"$2"'"'"' > /dev/null ; then grep -a '"'"'"$1";"$2";"$3";"$4"'"'"' '$doc_globalfile' >> '$doc_output'  ; fi " }' | bash
     mv $doc_output $EXPORTDIRFORGLOBAL"/"$type".csv"
 done
