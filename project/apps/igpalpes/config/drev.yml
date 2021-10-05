@@ -1,0 +1,13 @@
+all:
+  configuration:
+    drev:
+      prelevements: false
+      mentions_complementaire: true
+      import_with_mentions_complementaire: true
+      validation_odg: 'auto'
+      habilitation_inao: true
+      etape_superficie: false
+      dr_douane_required: false
+      degustation: true
+      specificite_lot: true
+      engagement_pdf: true
