@@ -240,10 +240,8 @@ EOF;
 
         // Check si le Volume est le même que celui d'un autre Lot
         foreach ($drev->getLots() as $lot) {
-            if (
-                  ($lot->volume == $volume) && ($numero_cuve == $lot->numero_logement_operateur) &&
-                  ($lot->destination_type == $type_destination) && ($lot->destination_date == $date_destination)
-                ) {
+            if (  ($lot->volume == $volume) &&
+                  ( ($ligne[ExportDRevCSV::CSV_DATE_VALIDATION_ODG] < '2021-08-00') || ($numero_cuve == $lot->numero_logement_operateur) ) ) {
                 return true;
             }
         }

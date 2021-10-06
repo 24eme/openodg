@@ -13,7 +13,10 @@ then
     exit;
 fi
 
-php symfony drev:import $URL_EXPORT_REMOTE_OPENDOG/drev.csv --application=$1 --byLots=1 > $TMPDIR"/import_lots_from_openodg_$DATE.log"
+ANNEE=$(date +%Y)
+curl $URL_EXPORT_REMOTE_OPENDOG/drev.csv | grep $ANNEE"-" > $TMPDIR/drev_$1_$ANNEE.csv
+
+php symfony drev:import $TMPDIR/drev_$1_$ANNEE.csv --application=$1 --byLots=1 > $TMPDIR"/import_lots_from_openodg_$DATE.log"
 
 RAPPORTBODY=$TMPDIR"/import_lots_from_openodg_$DATE.mail"
 
