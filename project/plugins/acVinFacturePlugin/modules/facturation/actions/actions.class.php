@@ -118,6 +118,8 @@ class facturationActions extends sfActions
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
 
+            usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
+
             $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
             $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
 
