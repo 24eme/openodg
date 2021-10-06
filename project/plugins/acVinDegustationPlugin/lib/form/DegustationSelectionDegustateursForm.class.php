@@ -71,7 +71,11 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
                 if (count($comptes) > 0) {
                     $result = array();
                     foreach ($comptes as $compte) {
-                        $result[$compte->id] = CompteClient::getInstance()->find($compte->id);
+                        $c = CompteClient::getInstance()->find($compte->id);
+                        if ($c->isSuspendu()) {
+                            continue;
+                        }
+                        $result[$c->_id] = $c;
                     }
                     $this->degustateurs = $result;
                 }
