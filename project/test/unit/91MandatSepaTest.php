@@ -109,7 +109,7 @@ $drev->save();
 //Création de la facture
 $mouvementsBySoc = array($societe->identifiant => FactureClient::getInstance()->getFacturationForSociete($societe));
 $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,array("date_mouvement" => date('Y-m-d')));
-$facture = FactureClient::getInstance()->createDocFromView($mouvementsBySoc[$societe->getIdentifiant()],$societe->getMasterCompte());
+$facture = FactureClient::getInstance()->createDocFromView($mouvementsBySoc[$societe->getIdentifiant()],$societe->getMasterCompte(), null, null, null, TemplateFactureClient::getInstance()->findByCampagne($drev->campagne));
 
 $facture->save();
 $t->is(count($facture->paiements), 1, "La facture générée a bien un paiement");
