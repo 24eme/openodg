@@ -233,7 +233,7 @@ EOF;
     }
 
     protected function isLotInDrev($drev, $ligne){
-        $volume = trim($ligne[ExportDRevCSV::CSV_VOLUME_REVENDIQUE]);
+        $volume = $this->formatFloat(trim($ligne[ExportDRevCSV::CSV_VOLUME_REVENDIQUE]));
         $numero_cuve = trim($ligne[ExportDRevCSV::CSV_LOT_NUMERO_CUVE]);
         $type_destination = self::$destinationsTypes[preg_replace("/([A-Z_]+).+/","$1",$ligne[ExportDRevCSV::CSV_LOT_DESTINATION])];
         $date_destination = preg_replace("/([A-Z_]* )?([0-9\/]+)/","$2",$ligne[ExportDRevCSV::CSV_LOT_DESTINATION]);
