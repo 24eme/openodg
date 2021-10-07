@@ -8,7 +8,8 @@ class changeStatutLotTask extends sfBaseTask
         $this->addArguments(array(
             new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Doc ID"),
             new sfCommandArgument('lot_unique_id', sfCommandArgument::REQUIRED, "lot id"),
-            new sfCommandArgument('affectable', sfCommandArgument::REQUIRED, "affectable (true/false)")
+            new sfCommandArgument('affectable', sfCommandArgument::REQUIRED, "affectable (true/false)"),
+            new sfCommandArgument('statut', sfCommandArgument::OPTIONAL, "statut"),
         ));
 
         $this->addOptions(array(
@@ -38,6 +39,9 @@ EOF;
         $doc = acCouchdbManager::getClient()->find($arguments['doc_id']);
         $lot = $doc->getLot($arguments['lot_unique_id']);
         $lot->affectable = $affecte;
+        if (isset($arguments['statut']) && $arguments['statut']) {
+          $lot->statut = $arguments['statut'];
+        }
         $doc->save();
 
     }
