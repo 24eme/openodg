@@ -66,22 +66,7 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
 
     public function getDegustateursByCollege() {
         if (!$this->degustateurs) {
-            $this->degustateurs = array();
-                $comptes = CompteTagsView::getInstance()->listByTags('automatique', $this->college);
-                if (count($comptes) > 0) {
-                    $result = array();
-                    foreach ($comptes as $compte) {
-                        $c = CompteClient::getInstance()->find($compte->id);
-                        if ($c->isSuspendu()) {
-                            continue;
-                        }
-                        $result[$c->_id] = $c;
-                    }
-                    $this->degustateurs = $result;
-                }
-                uasort($this->degustateurs, function ($deg1, $deg2) {
-                    return strcasecmp($deg1->nom, $deg2->nom);
-                });
+            $this->degustateurs = $this->getDocument()->listeDegustateurs($this->college);
         }
         return $this->degustateurs;
     }
