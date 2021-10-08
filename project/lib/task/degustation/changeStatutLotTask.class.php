@@ -10,6 +10,7 @@ class changeStatutLotTask extends sfBaseTask
             new sfCommandArgument('lot_unique_id', sfCommandArgument::REQUIRED, "lot id"),
             new sfCommandArgument('affectable', sfCommandArgument::REQUIRED, "affectable (true/false)"),
             new sfCommandArgument('statut', sfCommandArgument::OPTIONAL, "statut"),
+            new sfCommandArgument('elevage', sfCommandArgument::OPTIONAL, "elevage", "-1"),
         ));
 
         $this->addOptions(array(
@@ -40,7 +41,15 @@ EOF;
         $lot = $doc->getLot($arguments['lot_unique_id']);
         $lot->affectable = $affecte;
         if (isset($arguments['statut']) && $arguments['statut']) {
-          $lot->statut = $arguments['statut'];
+            $lot->statut = $arguments['statut'];
+        }
+        if ($arguments['elevage'] != '-1') {
+            if ($arguments['elevage'] == 1 || strtolower($arguments['elevage']) == "true") {
+                $lot->elevage = true;
+            }else{
+                $lot->elevage = false;
+            }
+
         }
         $doc->save();
 
