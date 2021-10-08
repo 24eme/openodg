@@ -5,9 +5,15 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
     done
-    rm -f web/exports_igp/*.csv
-    bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
-    bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
+    PROJECTDIR=$(echo $0 | sed 's/[^\/]*$//')..;
+    METABASE_SQLITE=$PROJECTDIR/../../metabaseigp/db/igp.sqlite
+    EXPORTDIR=$PROJECTDIR/web/exports_igp
+    rm -f $EXPORTDIR/*.csv
+    bash $PROJECTDIR/bin/export_globalisefichiers.sh;
+    bash $PROJECTDIR/bin/export_distribueparproduits.sh;
+    ls igp_*.py | while read script; do python3 $script igp;done
+    python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
+    mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
     exit 0;
 fi
 
