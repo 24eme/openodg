@@ -981,6 +981,32 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Gestion dégustateurs ****/
 
+        public function listeDegustateurs($college, $adresse_only = false)
+        {
+            $degustateurs = [];
+            $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college);
+
+            if (count($comptes_degustateurs) > 0) {
+                foreach ($comptes_degustateurs as $compte) {
+                    $degustateur = CompteClient::getInstance()->find($compte->id);
+
+                    if ($degustateur->isSuspendu()) {
+                        continue;
+                    }
+
+                    $degustateurs[$degustateur->_id] = ($adresse_only) ? $degustateur->getLibelleWithAdresse() : $degustateur;
+                }
+            }
+
+            uasort($degustateurs, function ($deg1, $deg2) use ($adresse_only) {
+                return ($adresse_only)
+                     ? strcasecmp($deg1, $deg2)
+                     : strcasecmp($deg1->nom, $deg2->nom);
+            });
+
+            return $degustateurs;
+        }
+
 		public function getNbDegustateursStatutWithCollege($confirme = true ,$college = null){
 			return count($this->getDegustateursStatutWithCollege($confirme,$college));
 		}
