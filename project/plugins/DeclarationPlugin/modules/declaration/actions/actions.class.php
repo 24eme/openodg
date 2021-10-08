@@ -195,7 +195,7 @@ class declarationActions extends sfActions {
 
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
         $this->periode = preg_replace('/-.*/', '', $this->campagne);
-        if(!$this->getUser()->hasDrevAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent()) {
+        if(!$this->getUser()->hasDrevAdmin() && intval($this->campagne) < intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent()) - 1 ) {
 
             return $this->forwardSecure();
         }

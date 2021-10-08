@@ -17,19 +17,16 @@
 <?php endif; ?>
 <div class="page-header">
     <div class="pull-right">
-        <?php if ($sf_user->hasDrevAdmin()): ?>
+        <?php if ($sf_user->hasDrevAdmin()) $nb_campagne = 5 ; else $nb_campagne = 2; ?>
         <form method="GET" class="form-inline" action="">
             Campagne :
             <select class="select2SubmitOnChange form-control" name="campagne">
-                <?php for($i=ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - 5; $i--): ?>
+                <?php for($i=ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - $nb_campagne ; $i--): ?>
                     <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
                 <?php endfor; ?>
             </select>
             <button type="submit" class="btn btn-default">Changer</button>
         </form>
-        <?php else: ?>
-            <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne; ?></span>
-        <?php endif; ?>
     </div>
     <h2>Eléments déclaratifs</h2>
     <?php include_partial('global/flash'); ?>
