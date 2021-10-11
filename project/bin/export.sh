@@ -11,6 +11,7 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     rm -f $EXPORTDIR/*.csv
     bash $PROJECTDIR/bin/export_globalisefichiers.sh;
     bash $PROJECTDIR/bin/export_distribueparproduits.sh;
+    mkdir $EXPORTDIR/stats
     ls igp_*.py | while read script; do python3 $script igp;done
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
