@@ -568,7 +568,9 @@ abstract class Lot extends acCouchdbDocumentTree
       if (!$this->numero_table) {
         return;
       }
-      $this->getDocument()->tri = DegustationClient::DEGUSTATION_TRI_MANUEL;
+      if (strpos($this->getDocument()->tri, DegustationClient::DEGUSTATION_TRI_MANUEL) !== 0) {
+          $this->getDocument()->tri = DegustationClient::DEGUSTATION_TRI_MANUEL.'|'.$this->getDocument()->tri;
+      }
       if ($sens > 0) {
           return $this->switchPosition($this, $this->getLotInPrevPosition());
       }else {

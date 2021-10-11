@@ -48,7 +48,7 @@ $t->comment('Test du up sur l4_t1');
 $l4_t1->changePosition(1);
 $t->is($l3_t1->getPosition(), '010040', 'l3_t1 a pris comme position celle de l4_t1');
 $t->is($l4_t1->getPosition(), '010030', 'l4_t1 a pris comme position celle de l3_t1');
-$t->is($degustation->tri, DegustationClient::DEGUSTATION_TRI_MANUEL, "Après un changement de position, le tri de la dégustation est Manuel");
+$t->is($degustation->tri, DegustationClient::DEGUSTATION_TRI_MANUEL."|Couleur|Appellation|Cépage", "Après un changement de position, le tri de la dégustation est Manuel");
 
 
 $t->comment('Test du down sur l4_t1');
