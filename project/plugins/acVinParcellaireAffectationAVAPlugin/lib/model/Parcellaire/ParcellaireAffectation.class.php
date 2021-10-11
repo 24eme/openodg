@@ -8,6 +8,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    protected $repartition_par_parcelle = [];
 
     public function __construct() {
         parent::__construct();
@@ -38,6 +39,27 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->campagne = $campagne;
         $this->set('_id', ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, $type));
         $this->storeDeclarant();
+    }
+
+    public function hasRepartitionParParcelle($cepage)
+    {
+        if (array_key_exists($cepage, $this->repartition_par_parcelle)) {
+            return $this->repartition_par_parcelle[$cepage];
+        }
+
+        $this->repartition_par_parcelle[$cepage] = [];
+
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if ($parcelle->getCepage()->getKey() !== $cepage) {
+                continue;
+            }
+
+            if ($parcelle->exist('acheteurs')) {
+                $this->repartition_par_parcelle[$cepage] = $this->repartition_par_parcelle[$cepage] + $parcelle->acheteurs->toArray(true, false);
+            }
+        }
+
+        return $this->repartition_par_parcelle[$cepage];
     }
 
     public function getAcheteursByCVI() {
