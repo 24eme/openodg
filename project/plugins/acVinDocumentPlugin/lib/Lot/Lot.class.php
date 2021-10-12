@@ -490,7 +490,7 @@ abstract class Lot extends acCouchdbDocumentTree
             return true;
         }
         $ret = $this->_set('numero_table', $numero);
-        $this->position = '999999';
+        $this->position = '999900';
         $this->generateAndSetPosition();
         return $ret;
     }
@@ -546,8 +546,12 @@ abstract class Lot extends acCouchdbDocumentTree
           return false;
         }
         $toPos = $toLot->getPosition();
-        $toLot->position =  $fromLot->getPosition();
-        $fromLot->position = $toPos;
+        $toPos = ($toPos % 2) ? $toPos : $toPos + 1;
+        $fromPos = $fromLot->getPosition();
+        $fromPos = ($fromPos % 2) ? $fromPos : $fromPos + 1;
+        $toLot->position =  sprintf('%06d', $fromPos);
+        $fromLot->position = sprintf('%06d', $toPos);
+        $this->generateAndSetPosition();
         return true;
     }
 

@@ -828,12 +828,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-		public function getLotsTableOrFreeLotsCustomSort($numero_table, $free = true){
-			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
-			$this->array_tri = $this->getTriArray();
-			uasort($lots, array($this, 'sortLotsByThisTri'));
-			return $lots;
-		}
+        public function getLotsTableOrFreeLotsCustomSort($numero_table, $free = true, $with_manual = true){
+            $lots = $this->getLotsTableOrFreeLots($numero_table, $free);
+            $this->array_tri = $this->getTriArray();
+            if ($with_manual) {
+                uasort($lots, array($this, 'sortLotsByThisTri'));
+            }else{
+                $atri = $this->array_tri;
+                if(($key = array_search(DegustationClient::DEGUSTATION_TRI_MANUEL, $this->array_tri)) !== false){
+                     unset($this->array_tri[$key]);
+                }
+                uasort($lots, array($this, 'sortLotsByThisTri'));
+                $this->array_tri = $atri;
+            }
+            return $lots;
+        }
 
         public function getLotsTableCustomSort($numero_table){
             return $this->getLotsTableOrFreeLotsCustomSort($numero_table, false);
@@ -855,17 +864,33 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
         }
 
+        public function getTheoriticalPosition($table) {
+            $lots_theoritical = $this->getLotsTableOrFreeLotsCustomSort($table, ($table == 99), false);
+            $theoritical_position = array();
+            foreach ($lots_theoritical as $lot) {
+                $i++;
+                $theoritical_position[$lot->getKey()] = $i;
+            }
+            return $theoritical_position;
+        }
+
         public function generateAndSetPositionsForTable($table) {
             $table = ($table) ? $table : 99;
             $i = 0;
             $position = 0;
+            $i = 0;
+            $theoritical_position = $this->getTheoriticalPosition($table);
             $lots = $this->getLotsTableOrFreeLotsCustomSort($table, ($table == 99));
             foreach($lots as $lot) {
                 $i++;
                 if ($table == 99) {
-                    $lot->position = '999999';
+                    $lot->position = '999900';
                 }else{
-                    $lot->position = sprintf("%02d%03d0", $table, $i);
+                    if (($lot->position % 2) && ($theoritical_position[$lot->getKey()] != $i)) {
+                        $lot->position = sprintf("%02d%03d1", $table, $i);
+                    }else{
+                        $lot->position = sprintf("%02d%03d0", $table, $i);
+                    }
                 }
             }
         }
@@ -960,6 +985,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
       return 0;
       }
+
     public function addLeurre($hash, $cepages, $numero_table)
         {
             if (! $this->exist('lots')) {
