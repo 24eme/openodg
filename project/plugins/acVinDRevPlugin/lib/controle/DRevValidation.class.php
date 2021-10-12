@@ -344,7 +344,7 @@ class DRevValidation extends DeclarationLotsValidation
             if (! isset($synthese[$couleur])) {
                 continue;
             }
-            if (isset($synthese[$couleur]['volume_restant_max']) && round($synthese[$couleur]['volume_restant_max'], 4) < -0.0001) {
+            if ($this->document->hasDR() && isset($synthese[$couleur]['volume_restant_max']) && round($synthese[$couleur]['volume_restant_max'], 4) < -0.0001) {
                 if ($this->document->exist('achat_tolerance') && $this->document->get('achat_tolerance')) {
                     $this->addPoint(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', $couleur, $this->generateUrl('drev_lots', array('id' => $this->document->_id)));
                 }else{
