@@ -50,7 +50,10 @@
                     <ul class="dropdown-menu">
                         <?php foreach ($parcellaire->getAcheteursByCVI() as $cvi => $acheteur): ?>
                         <li>
-                            <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?></a>
+                            <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (PDF)</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo url_for("parcellaire_export_csv", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (CSV)</a>
                         </li>
                         <?php endforeach; ?>
                     </ul>

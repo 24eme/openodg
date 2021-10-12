@@ -11,6 +11,7 @@ class chgtdenomActions extends sfActions
         $drev->addLot();
         $this->lot = $drev->lots[0] ;
         $this->lot->getUniqueId();
+        $this->lot->id_document = null;
 
         $papier = ($this->getUser()->isAdmin()) ? 1 : 0;
 

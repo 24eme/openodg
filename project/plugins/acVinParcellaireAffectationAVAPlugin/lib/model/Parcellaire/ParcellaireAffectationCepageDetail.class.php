@@ -66,15 +66,8 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         }
 
         $acheteurs = $this->getAcheteursCepageByCVI();
-        foreach($acheteurs as $acheteur) {
-            if($acheteur->cvi == $this->getDocument()->identifiant) {
-                unset($acheteurs[$acheteur->cvi]);
-            }
-
-        }
 
         if(count($acheteurs) <= 1) {
-
             return false;
         }
 
