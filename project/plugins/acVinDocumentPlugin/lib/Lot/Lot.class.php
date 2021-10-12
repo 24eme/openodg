@@ -485,12 +485,27 @@ abstract class Lot extends acCouchdbDocumentTree
         $this->affectable = true;
     }
 
+    public function isWithoutTable() {
+        return ($this->position == '999900') || !$this->numero_table || ($this->numero_table == 99);
+    }
+
     public function setNumeroTable($numero) {
         if ($numero == $this->_get('numero_table') && $this->position) {
             return true;
         }
-        $ret = $this->_set('numero_table', $numero);
-        $this->position = '999900';
+        $old_numero = $this->_get('numero_table');
+        if ($numero && $numero < 99) {
+            $ret = $this->_set('numero_table', $numero);
+            $this->position = sprintf('%02d0000', $numero);
+            $theoritical_position = $this->getDocument()->getTheoriticalPosition($numero, true);
+            $this->position = sprintf('%02d%03d0', $numero, $theoritical_position[$this->getKey()]);
+        }else{
+            $ret = $this->_set('numero_table', null);
+            $this->position = '999900';
+        }
+        if ($old_numero){
+            $this->getDocument()->generateAndSetPositionsForTable($old_numero);
+        }
         $this->generateAndSetPosition();
         return $ret;
     }
@@ -546,11 +561,21 @@ abstract class Lot extends acCouchdbDocumentTree
           return false;
         }
         $toPos = $toLot->getPosition();
-        $toPos = ($toPos % 2) ? $toPos : $toPos + 1;
+        $toManuel = ($toPos % 2);
+        if ($toLot != $this) {
+            $toManuelTarget = 1;
+        }else{
+            $toManuelTarget = $fromManuel;
+        }
         $fromPos = $fromLot->getPosition();
-        $fromPos = ($fromPos % 2) ? $fromPos : $fromPos + 1;
-        $toLot->position =  sprintf('%06d', $fromPos);
-        $fromLot->position = sprintf('%06d', $toPos);
+        $fromManuel = ($fromPos % 2);
+        if ($fromLot != $this) {
+            $fromManuelTarget = 1;
+        }else{
+            $fromManuelTarget = $toManuel;
+        }
+        $toLot->position =  sprintf('%05d%d', $fromPos / 10, $fromManuelTarget);
+        $fromLot->position = sprintf('%05d%d', $toPos / 10, $toManuelTarget);
         $this->generateAndSetPosition();
         return true;
     }
@@ -568,6 +593,10 @@ abstract class Lot extends acCouchdbDocumentTree
       }else {
           return $this->switchPosition($this->getLotInNextPosition(), $this);
       }
+    }
+
+    public function isPositionManuel() {
+        return ($this->position % 2);
     }
 
     public function getLotInLastPosition($numeroTable) {

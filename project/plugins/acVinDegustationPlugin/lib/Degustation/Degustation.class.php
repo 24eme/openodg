@@ -812,7 +812,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lotsAnon;
         }
 
-		public function getLotsTableOrFreeLots($numero_table, $free = true){
+		public function getLotsTableOrFreeLots($numero_table, $free_table = true){
 			$lots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
 				if(($lot->numero_table == $numero_table)){
@@ -820,7 +820,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 
-				if($free && !$lot->numero_table)  {
+				if($free_table && !$lot->numero_table)  {
 					$lots[] = $lot;
 					continue;
 				}
@@ -828,10 +828,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-        public function getLotsTableOrFreeLotsCustomSort($numero_table, $free = true, $with_manual = true){
-            $lots = $this->getLotsTableOrFreeLots($numero_table, $free);
+        public function getLotsTableOrFreeLotsCustomSort($numero_table, $free_table = true, $with_tri_manual = true){
+            $lots = $this->getLotsTableOrFreeLots($numero_table, $free_table);
             $this->array_tri = $this->getTriArray();
-            if ($with_manual) {
+            if ($with_tri_manual) {
                 uasort($lots, array($this, 'sortLotsByThisTri'));
             }else{
                 $atri = $this->array_tri;
@@ -864,10 +864,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
         }
 
-        public function getTheoriticalPosition($table) {
-            $lots_theoritical = $this->getLotsTableOrFreeLotsCustomSort($table, ($table == 99), false);
+        public function getTheoriticalPosition($table, $without_manual = false) {
+            $lots_theoritical = $this->getLotsTableOrFreeLotsCustomSort($table, false, false);
             $theoritical_position = array();
             foreach ($lots_theoritical as $lot) {
+                if ($without_manual && $lot->isPositionManuel()) {
+                    continue;
+                }
                 $i++;
                 $theoritical_position[$lot->getKey()] = $i;
             }
