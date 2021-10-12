@@ -741,13 +741,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$this->generateMouvementsLots();
         }
 
-		public function getTri() {
-			$tri = $this->_get('tri');
-			if (!$tri) {
-				$tri = 'Couleur|Appellation|Cépage';
-			}
-			return $tri;
-		}
+        public function getTri() {
+            $tri = $this->_get('tri');
+            if (!$tri) {
+                $tri = 'Couleur|Appellation|Cépage';
+                $this->_set('tri', $tri);
+            }
+            return $tri;
+        }
 
 		public function anonymize(){
             $this->cleanLotsNonAnonymisable();
