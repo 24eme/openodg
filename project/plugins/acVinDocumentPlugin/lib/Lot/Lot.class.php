@@ -496,19 +496,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function generateAndSetPosition() {
-        $table = ($this->numero_table) ? $this->numero_table : 99;
-        $i = 0;
-        $position = 0;
-        foreach($this->getDocument()->getLotsTableOrFreeLotsCustomSort($table, !($this->numero_table)) as $lot) {
-            $i++;
-            if ($lot == $this) {
-                $position = $i;
-                break;
-            }
-        }
-        if ($position) {
-            $this->position = sprintf("%02d%03d0", $table, $position);
-        }
+        $this->getDocument()->generateAndSetPositionsForTable($this->numero_table);
     }
 
     public function getPosition()

@@ -28,7 +28,7 @@ foreach($produits as $produit) {
 }
 
 
-$t = new lime_test(43);
+$t = new lime_test(45);
 
 $degustation = new Degustation();
 
@@ -64,11 +64,11 @@ $t->is($l4_t1->getPosition(), '010070', 'l4_t1 position 010070');
 $t->is($l5_t1->getPosition(), '010010', 'l5_t1 position 010010');
 $t->is($l6_t2->getPosition(), '020030', 'l6_t2 position 020030');
 $t->is($l7_t2->getPosition(), '020040', 'l7_t2 position 020040');
-$t->is($l8_t2->getPosition(), '020010', 'l8_t2 position 020010');
-$t->is($l9_t2->getPosition(), '020020', 'l9_t2 position 020020');
-$t->is($l10_t1->getPosition(), '010020', 'l10_t2 position 020020');
-$t->is($l11_t1->getPosition(), '010030', 'l11_t2 position 020030');
-$t->is($l12_sanstable->getPosition(), '990010', 'l12 non attablée position 990010');
+$t->is($l8_t2->getPosition(), '020020', 'l8_t2 position 020020');
+$t->is($l9_t2->getPosition(), '020010', 'l9_t2 position 020010');
+$t->is($l10_t1->getPosition(), '010020', 'l10_t2 position 010020');
+$t->is($l11_t1->getPosition(), '010030', 'l11_t2 position 010030');
+$t->is($l12_sanstable->getPosition(), '999999', 'l12 non attablée position 999999');
 
 $t->comment('Test du up sur l4_t1');
 $l4_t1->changePosition(1);
@@ -83,23 +83,24 @@ $t->is($l3_t1->getPosition(), '010060', "l3_t1 a repris sa position d'originie")
 $t->is($l4_t1->getPosition(), '010070', "l4_t1 a repris sa position d'originie");
 
 $t->comment('Test des bornes');
-$l8_t2->changePosition(1);
-$t->is($l7_t2->getPosition(), '020040', 'down sur l7_t2 ne le fait pas bouger');
+$t->is($l7_t2->getPosition(), '020040', 'l7_t2 n a pas bougé');
 $l7_t2->changePosition(-1);
-$t->is($l8_t2->getPosition(), '020010', 'up sur l8_t2 ne le fait pas bouger');
+$t->is($l7_t2->getPosition(), '020040', 'down sur l7_t2 ne le fait pas bouger');
+$t->is($l9_t2->getPosition(), '020010', 'l9_t2 pas bougé');
+$l9_t2->changePosition(1);
+$t->is($l9_t2->getPosition(), '020010', 'up sur l9_t2 ne le fait pas bouger');
 
 $t->comment('Test deplacement table');
 $l4_t1->numero_table = null;
-$t->is($l4_t1->getPosition(), '990020', 'l4_t1 en attente d\'attribution de table');
-$t->is($l12_sanstable->getPosition(), '990010', "le leure sans table n'a pas changé de position");
+$t->is($l4_t1->getPosition(), '999999', 'l4_t1 en attente d\'attribution de table');
+$t->is($l12_sanstable->getPosition(), '999999', "le leure sans table n'a pas changé de position");
 $l4_t1->numero_table = 2;
 $t->is($l4_t1->getPosition(), '020050', 'l4_t1 attribué a la table 2');
-$t->is($l8_t2->getPosition(), '020010', "l8_t2 qui est sur la table 2 n'a pas changé de position (020010)");
-$t->is($l9_t2->getPosition(), '020020', "l9_t2 qui est sur la table 2 n'a pas changé de position (020020)");
+$t->is($l8_t2->getPosition(), '020020', "l8_t2 qui est sur la table 2 n'a pas changé de position (020020)");
+$t->is($l9_t2->getPosition(), '020010', "l9_t2 qui est sur la table 2 n'a pas changé de position (020010)");
 $t->is($l6_t2->getPosition(), '020030', "l6_t2 qui est sur la table 2 n'a pas changé de position (010030)");
 $t->is($l7_t2->getPosition(), '020040', "l7_t2 qui est sur la table 2 n'a pas changé de position (020040)");
-$t->is($l12_sanstable->getPosition(), '990010', "le lot sans table n'a pas changé de position (990010)");
-
+$t->is($l12_sanstable->getPosition(), '999999', "le lot sans table n'a pas changé de position (999999)");
 
 $t->comment('Changement de tri');
 $degustation->setTri("Cépage|Appellation|Couleur");
