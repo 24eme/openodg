@@ -43,7 +43,7 @@ endif;
     <?php if ($sf_user->hasFlash('erreur')): ?>
     <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
     <?php endif; ?>
-    <p>Dans le cadre de la DRev, vous devez indiquer ici l'utilisation de votre VCI stocké en <?php echo($drev->campagne - 1) ?>. Les informations présentée ici ont été initialisées depuis votre registre VCI.</p>
+    <p>Veuillez indiquer l'utilisation de votre VCI stocké en <?php echo($drev->campagne - 1) ?>. Les informations proviennent de votre registre VCI.</p>
     <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
         	<tr>
@@ -66,9 +66,9 @@ endif;
             <?php endforeach; ?>
         </tbody>
     </table>
-    <p>Pour le VCI constitué cette année pour la récolte <?php echo($drev->campagne) ?>, pas d'inquiétude, il est automatiquement repris dans votre registre VCI <?php echo($drev->campagne) ?>.</p>
+    <p>Pour le VCI constitué cette année, il sera automatiquement repris dans votre registre <?php echo($drev->campagne) ?>.</p>
 <?php else: //pas de registrevci ?>
-<p>Vous ne disposez pas de registre VCI, vous ne pouvez donc pas revendiquer de volume issu du VCI.</p><p>Si il s'agit d'une erreur, contactez l'AVA.</p>
+<p>Vous ne disposez pas de registre VCI, vous ne pouvez donc pas revendiquer de volume issu du VCI.</p><p>S'il s'agit d'une erreur, contactez l'AVA.</p>
 <?php endif; ?>
 
     <div class="row row-margin row-button">
