@@ -28,14 +28,13 @@ class DegustationOrganisationTableForm extends acCouchdbObjectForm {
 
     public function getWidgetNameFromLot($lot){
         if ($lot->isLeurre()) {
-            return 'lot_leure-'.$lot->getKey().'_'.$lot->position;
+            return 'lot_leure-'.$lot->getKey();
         }
-        return 'lot_'.$lot->declarant_identifiant."-".$lot->unique_id.'_'.$lot->position;
+        return 'lot_'.$lot->declarant_identifiant."-".$lot->unique_id;
     }
 
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
-
         foreach ($this->tableLots as $lot) {
           $name = $this->getWidgetNameFromLot($lot);
           if($values[$name]){

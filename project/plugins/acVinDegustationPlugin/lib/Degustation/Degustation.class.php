@@ -750,6 +750,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $tri;
         }
 
+        public function isTriManuel() {
+            return strpos($this->getTri(), DegustationClient::DEGUSTATION_TRI_MANUEL) === 0;
+        }
+
 		public function anonymize(){
             $this->cleanLotsNonAnonymisable();
 
@@ -841,7 +845,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
         public function updatePositionLots() {
-            if ($this->getTri() == DegustationClient::DEGUSTATION_TRI_MANUEL) {
+            if ($this->isTriManuel()) {
                 return;
             }
             $t = 0;
