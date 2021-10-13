@@ -19,18 +19,12 @@ class ParcellaireAffectationValidationForm extends acCouchdbObjectForm {
     }
 
     protected function doUpdateObject($values) {
-        if(!$this->getObject()->isPapier()) {
+        if(! $this->getObject()->isPapier()) {
             $this->getObject()->autorisation_acheteur = $values['autorisation_acheteur'];
             $this->getObject()->validate();
-
-            return;
-        }
-
-        if($this->getObject()->isPapier()) {
+        } else {
             $this->getObject()->autorisation_acheteur = false;
             $this->getObject()->validate($values['date']);
-
-            return;
         }
     }
 
