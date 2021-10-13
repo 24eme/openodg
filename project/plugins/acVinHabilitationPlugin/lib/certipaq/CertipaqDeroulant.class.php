@@ -198,9 +198,13 @@ class CertipaqDeroulant extends CertipaqService
 
     public function getCertipaqProduitFromConfigurationProduit($conf) {
         $produits = $this->getListeProduitsCahiersDesCharges();
+        $certipaq_produits = array();
         foreach($produits as $p) {
             if ($p->libelle == $conf->getLibelleComplet()) {
                 return $p;
+            }
+            if (strpos($p->libelle, $conf->getLibelleComplet()) !== false) {
+                $certipaq_produits[] = $p;
             }
         }
         foreach($produits as $p) {
@@ -208,8 +212,11 @@ class CertipaqDeroulant extends CertipaqService
             if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
                 return $p;
             }
+            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) !== false) {
+                $certipaq_produits[] = $p;
+            }
         }
-        return null;
+        return array_pop($certipaq_produits);
     }
 
     public function getConfigurationProduitFromProduitId($pid) {
