@@ -655,6 +655,13 @@ class degustationActions extends sfActions {
                 }
 
                 $p->cuve = $prelevement->cuve;
+                if(isset($prelevement->cepage)) {
+                $p->cepage = $prelevement->cepage;
+                }
+                $p->remove('fermentation_lactique');
+                if(isset($prelevement->fermentation_lactique)) {
+                    $p->add('fermentation_lactique', (bool) $prelevement->fermentation_lactique);
+                }
                 $p->volume_revendique = $prelevement->volume_revendique;
                 $p->hash_produit = $prelevement->hash_produit;
                 $p->anonymat_prelevement = $prelevement->anonymat_prelevement;

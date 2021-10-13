@@ -166,6 +166,22 @@
                                         <input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />
                                     </div>
                                 </div>
+                                <div ng-class="{ 'has-error': prelevement.erreurs['cepage'] }" class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                    <label for="cepage_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-5 control-label">Cépage&nbsp;:</label>
+                                    <div class="col-xs-7">
+                                        <input id="cepage_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.cepage" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                        <input id="cepage_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.cepage" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                    </div>
+                                </div>
+                                <?php if($tournee->appellation == "CREMANT"): ?>
+                                <div ng-class="{ 'has-error': prelevement.erreurs['fermentation_lactique'] }" class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                    <label for="fermentation_lactique_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-5 col-md-10 control-label">Malo-lactique&nbsp;:</label>
+                                    <div class="col-xs-7 col-md-2">
+                                        <input id="fermentation_lactique_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.fermentation_lactique" type="checkbox" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                        <input id="fermentation_lactique_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.fermentation_lactique" type="checkbox" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                    </div>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
