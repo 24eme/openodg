@@ -82,7 +82,42 @@ class CertipaqDeroulant extends CertipaqService
     }
 
     public function getListeProduitsCahiersDesCharges() {
-        return $this->queryAndRes2hashid('dr/cdc_produit');
+        /*
+        Array
+        (    [21] => stdClass Object (
+                [id] => 21
+                [dr_cdc_id] => 677
+                [dr_couleur_id] => 1
+                [libelle] => Crozes Hermitage Rouge
+                [dr_cdc_produit_cepage] => Array()
+            )
+            ///
+        */
+        $produits = $this->queryAndRes2hashid('dr/cdc_produit');
+        foreach($produits as $k => $v) {
+            $v->dr_cdc_famille_id = $this->getCdcFamilleIdFromCdcId($v->dr_cdc_id);
+        }
+        return $produits;
+    }
+
+    public function getCdcFamilleIdFromCdcId($id) {
+        if (!isset($this->cacheFamille)) {
+            $this->cacheFamille = array();
+        }
+        if (isset($this->cacheFamille[$id])) {
+            return $this->cacheFamille[$id];
+        }
+        $ops = CertipaqOperateur::getInstance()->recherche(array('dr_cdc' => array($id)));
+        $op = CertipaqOperateur::getInstance()->find($ops[0]->id);
+        foreach($op->sites as $site) {
+            foreach($site->habilitations as $h) {
+                if ($h->dr_cdc_id == $id) {
+                    $this->cacheFamille[$id] = $h->dr_cdc_famille_id;
+                    return $h->dr_cdc_famille_id;
+                }
+            }
+        }
+        return null;
     }
 
     public function getListeTypesAdresses() {
