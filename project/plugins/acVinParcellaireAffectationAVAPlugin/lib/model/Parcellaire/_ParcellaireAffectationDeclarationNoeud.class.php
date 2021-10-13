@@ -183,6 +183,7 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
     }
 
     public function cleanNode() {
+        $this->getDocument()->cleanProduitsAcheteurs();
         $hash_to_delete = array();
         foreach ($this->getChildrenNode() as $children) {
             $children->cleanNode();
