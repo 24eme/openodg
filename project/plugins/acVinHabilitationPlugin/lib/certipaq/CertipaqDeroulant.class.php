@@ -132,6 +132,9 @@ class CertipaqDeroulant extends CertipaqService
 
     public function keyid2obj($k, $id, $obj = null) {
         $hash = array();
+        if (!$id) {
+            return null;
+        }
         switch ($k) {
             case 'dr_statut_habilitation_id':
                 $hash = $this->getListeHabilitation();
@@ -163,11 +166,34 @@ class CertipaqDeroulant extends CertipaqService
                 if ($obj) {
                     $hash[$id] = CertipaqOperateur::getInstance()->getSiteFromIdAndOperateur($id, $obj);
                 }
+                break;
+            case 'dr_adresse_type_id':
+                $hash = $this->getListeTypesAdresses();
+                break;
         }
         if (isset($hash[$id])) {
             return $hash[$id];
         }
         return null;
+    }
+
+    public function getParamWithObjFromIds($param) {
+        if (!$param || (!is_array($param) && !($param instanceof stdClass))) {
+            return $param;
+        }
+        $newparam = $param;
+        foreach ($param as $k => $v) {
+            if (strpos($k, '_id') !== false) {
+                $name = str_replace('_id', '', $k);
+                $o = $this->keyid2obj($k, $v);
+                if ($o) {
+                    $newparam[$name] = $o;
+                }
+                continue;
+            }
+            $newparam[$k] = $this->getParamWithObjFromIds($param[$k]);
+        }
+        return $newparam;
     }
 
     public function getCertipaqProduitFromConfigurationProduit($conf) {
