@@ -4375,7 +4375,8 @@
                                    "no_dr": 1,
                                    "auto_drev": 1,
                                    "no_acces": {
-                                       "PARCELLAIRE": 1
+                                       "PARCELLAIRE": 1,
+                                       "TIRAGE": 1
                                    }
                                },
                                "cepage_RB": {
@@ -4395,7 +4396,8 @@
                                    "no_motif_non_recolte": 1,
                                    "exclude_total": 1,
                                    "no_acces": {
-                                       "PARCELLAIRE": 1
+                                       "PARCELLAIRE": 1,
+                                       "TIRAGE": 1
                                    }
                                },
                                "cepage_PNRaisin": {
