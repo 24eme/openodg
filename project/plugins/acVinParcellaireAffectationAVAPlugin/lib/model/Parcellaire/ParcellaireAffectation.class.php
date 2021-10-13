@@ -453,6 +453,31 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $acheteur;
     }
 
+    public function cleanProduitsAcheteurs()
+    {
+        $toClean = [];
+
+        foreach ($this->getProduits() as $produit) {
+            if (! $produit->exist('acheteurs')) {
+                continue;
+            }
+
+            foreach ($produit->acheteurs as $lieu => $destinations) {
+                foreach ($destinations as $destination => $operateurs) {
+                    foreach ($operateurs as $id => $operateur) {
+                        if (array_key_exists($id, $this->acheteurs->$destination->toArray(true, false)) === false) {
+                            $toClean[] = $operateur->getHash();
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($toClean as $hash) {
+            $this->remove($hash);
+        }
+    }
+
     public function hasParcelleForAppellationKey($appellationKey) {
         $allParcelles = $this->getAllParcellesByAppellations();
         foreach ($allParcelles as $hash => $appellation) {
