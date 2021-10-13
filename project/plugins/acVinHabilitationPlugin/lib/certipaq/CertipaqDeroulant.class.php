@@ -34,7 +34,7 @@ class CertipaqDeroulant extends CertipaqService
 
     public function findActivite($activite_libelle) {
         $activites = $this->getListeActivitesOperateurs();
-        foreach (str_explode(' ', $activite_libelle) as $mot) {
+        foreach (explode(' ', $activite_libelle) as $mot) {
             $to_delete = array();
             foreach($activites as $id => $a) {
                 if (strpos(strtoupper($a->libelle), strtoupper($mot)) === false) {
