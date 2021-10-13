@@ -79,11 +79,11 @@ class CertipaqDI extends CertipaqService
         foreach($demande->getActivitesLibelle() as $activite) {
             $habilitation['dr_cdc_famille_id'] = $certipaq_produit->dr_cdc_famille_id;
             $habilitation['dr_activites_operateurs'] = array();
-            $habilitation['dr_activites_operateurs']['dr_activites_operateurs_id'] = CertipaqDeroulant::getInstance()->findActivite($activite);
+            $a = CertipaqDeroulant::getInstance()->findActivite($activite);
+            $habilitation['dr_activites_operateurs']['dr_activites_operateurs_id'] = $a->id;
             $habilitation['dr_activites_operateurs']['num_habilitation'] = $demande->getKey();
             $habilitation['dr_cdc'] = array();
-            $habilitation['dr_cdc'][0] = array();
-            $habilitation['dr_cdc'][0]['dr_cdc_id'] = $certipaq_produit->id;
+            $habilitation['dr_cdc'][] = array('dr_cdc_id' => $certipaq_produit->dr_cdc_id);
             $habilitation['date_dossier_complet'] = $h->date;
             $habilitations[] = $habilitation;
         }
@@ -97,8 +97,8 @@ class CertipaqDI extends CertipaqService
         $param['operateur'] = $this->fillOperateur($habilitation);
         $param['adresses'] = $this->fillAdresses($habilitation);
         $param['sites'] = $this->fillSites($habilitation);
-        //$param['habilitations'] = $this->fillHabilitations($demande);
-        //$param['informations_autres'] = $demande->commentaire;
+        $param['habilitations'] = $this->fillHabilitations($demande);
+        $param['informations_autres'] = $demande->commentaire;
         return $param;
     }
 
@@ -106,8 +106,8 @@ class CertipaqDI extends CertipaqService
         $param = array();
         $param["dr_demande_identification_type_id"] = "declaration_identification_extension_habilitation_request";
         $param["operateur_id"] = 0;
-        //$param['habilitations'] = $this->fillHabilitations($demande);
-        //$param['informations_autres'] = $demande->commentaire;
+        $param['habilitations'] = $this->fillHabilitations($demande);
+        $param['informations_autres'] = $demande->commentaire;
         return $param;
     }
 
@@ -117,8 +117,8 @@ class CertipaqDI extends CertipaqService
         $param["dr_demande_identification_type_id"] =  "declaration_identification_nouveau_site_production_request";
         $param["operateur_id"] =  0;
         $param['sites'] = $this->fillSites($habilitation);
-        //$param['habilitations'] = $this->fillHabilitations($demande);
-        //$param['informations_autres'] = $demande->commentaire;
+        $param['habilitations'] = $this->fillHabilitations($demande);
+        $param['informations_autres'] = $demande->commentaire;
         return $param;
     }
 
@@ -139,10 +139,11 @@ class CertipaqDI extends CertipaqService
         $param = array();
         $param["dr_demande_identification_type_id"] = "declaration_identification_modification_outil_request";
         $param["id"] = 0;
-        $param["objet_modification"] = $demande->commentaire;
         $param["nom_outil"] = "";
         $param["portee_habilitation"] = "";
+        $h = $demande->getExtractHistoriqueFromStatut('COMPLET');
         $param["date_dossier_complet"] = $h->date;
+        $param["objet_modification"] = $demande->commentaire;
         $param["informations_autres"] = $demande->commentaire;
         return $param;
     }

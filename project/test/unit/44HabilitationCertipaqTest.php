@@ -7,11 +7,18 @@ if(!sfConfig::get('app_certipaq_oauth')) {
     $t->ok(true, "Test disabled (not configured)");
     return;
 }
-$nb_tests = 27;
+$nb_tests = 49;
 if (!$readonly) {
     $nb_tests += 8;
 }
 $t = new lime_test($nb_tests);
+
+
+$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
+foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
+  $habilitation = HabilitationClient::getInstance()->find($k);
+  $habilitation->delete(false);
+}
 
 $millesime = date('Y') - 1;
 
@@ -48,6 +55,8 @@ $produit_conf = CertipaqDeroulant::getInstance()->getConfigurationProduitFromPro
 $t->ok($produit_conf, "retrouve la conf du produit depuis le premier id de la liste renvoyée par l'API (".$certipaq_produit->libelle.")");
 $certipaq_produit_res = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($produit_conf);
 $t->is($certipaq_produit_res->id, $certipaq_produit->id, "Depuis la configuration, on retrouve bien l'id certipaq");
+$t->is($certipaq_produit_res->dr_cdc_id, $certipaq_produit->dr_cdc_id, "Le certipaq produit contient le cdc_id");
+$t->is($certipaq_produit_res->dr_cdc_famille_id, $certipaq_produit->dr_cdc_famille_id, "Le certipaq produit contient le cdc_famille_id");
 
 $habilitation = CertipaqOperateur::getInstance()->getHabilitationFromOperateurProduitAndActivite($infos_operateur, $certipaq_produit, CertipaqDeroulant::ACTIVITE_PRODUCTEUR);
 $t->ok($habilitation->dr_cdc_famille_id, "L'habilitation du produit de test (".$certipaq_produit->libelle.") pour l'activité producteur a bien un cdc_famille_id");
@@ -104,11 +113,34 @@ $t->is($drev->operateurs_sites->id, $drev->entrepot_operateurs_sites->id, "le si
 
 $res = CertipaqDI::getInstance()->getAll();
 $res = CertipaqDI::getInstance()->findByOperateurId($infos_operateur->id);
-$viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
-$demande = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
+$t->comment("Création d'une demande");
+$date = (new DateTime("-6 month"))->format('Y-m-d');
+$habilitation_produit = $produit_conf->getAppellation();
+$activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $habilitation_produit->getHash(), $activites, "COMPLET", $date, "commentaire",  "Syndicat pour certipaq", false);
 
-CertipaqDI::getInstance()->getParamNouvelOperateurFromDemande($demande);
-CertipaqDI::getInstance()->getParamExtentionHabilitationFromDemande($demande);
-CertipaqDI::getInstance()->getParamNouveauSiteFromDemande($demande);
-CertipaqDI::getInstance()->getParamModificationIdentiteFromDemande($demande);
-CertipaqDI::getInstance()->getParamModificationOutilFromDemande($demande);
+$param = CertipaqDI::getInstance()->getParamNouvelOperateurFromDemande($demande);
+$param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);
+$t->is($param['operateur']['pays'], 'FR', "Le pays de l'opérateur est bien France (FR)");
+$t->is($param['operateur']['pays'], 'FR', "Le pays de l'opérateur est bien France (FR)");
+$t->is(count($param['adresses']), 3, "il y a bien trois adresse");
+$t->is($param['adresses'][0]['dr_adresse_type']->libelle, "Siège social", "La première adresse est bien une adresse de siège");
+$t->is($param['adresses'][1]['dr_adresse_type']->libelle, "Facturation", "La première adresse est bien une adresse de facturation");
+$t->is($param['adresses'][2]['dr_adresse_type']->libelle, "Prélèvement", "La première adresse est bien une adresse de prélèvement");
+$t->is(count($param['sites']), 1, "la demande d'habilitation a bien un site");
+$t->is(count($param['habilitations']), 3, "la demande d'habilitation contient bien 6 habilitations (une par activité et produit)");
+$t->ok($param['habilitations'][0]['dr_cdc_famille_id'], "la 1ère demande a une famille de cahier des charges");
+$t->ok($param['habilitations'][0]['dr_cdc'][0]['dr_cdc_id'], "la 1ère demande a un 1er produit de cahier des charges");
+$t->ok($param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs_id'], "la 1ère demande a une activité");
+$t->ok($param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 1ère demande a une activité résolue (".$param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
+$t->ok($param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 2eme demande a une activité résolue (".$param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
+$t->ok($param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 3eme demande a une activité résolue (".$param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
+
+$param = CertipaqDI::getInstance()->getParamExtentionHabilitationFromDemande($demande);
+$param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);
+$t->ok($param['habilitations'][0]['dr_cdc_famille_id'], "la 1ère demande a une famille de cahier des charges");
+$t->ok($param['habilitations'][0]['dr_cdc'][0]['dr_cdc_id'], "la 1ère demande a un 1er produit de cahier des charges");
+$t->ok($param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs_id'], "la 1ère demande a une activité");
+$t->ok($param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 1ère demande a une activité résolue (".$param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
+$t->ok($param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 2eme demande a une activité résolue (".$param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
+$t->ok($param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 3eme demande a une activité résolue (".$param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
