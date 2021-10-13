@@ -42,7 +42,7 @@
                     <h3>AOC Crémant</h3>
                     <div class="col-xs-offset-1">
                         <p>
-                            Semaine à partir de laquelle le vin est prêt à être dégusté :
+                            Semaine à partir de laquelle le vin de base est prêt à être dégusté :
                             <a title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
                         </p>
                         <div class="form-group <?php if ($form[DRev::CUVE_CREMANT]["date"]->hasError()): ?>has-error<?php endif; ?>">
