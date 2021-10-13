@@ -27,7 +27,12 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
             return;
         }
 
-        $this->libelle_produit = $this->getConfigProduit()->getCouleur()->getLibelleComplet();
+        $this->libelle_produit = $this->getConfigProduit()->getLibelleComplet();
+
+        if($this->getConfigProduit() instanceof ConfigurationCepage) {
+            $this->libelle_produit = $this->getConfigProduit()->getCouleur()->getLibelleComplet();
+        }
+
     }
 
     public function getLibelleProduit() {
