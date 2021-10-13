@@ -65,9 +65,10 @@ class CertipaqDI extends CertipaqService
     }
 
     public function fillSites($habilitation) {
-        $sites[0] = array();
+        $sites = array();
         $sites[0]['nom_site'] = $habilitation->getEtablissementObject()->getNom();
         $this->fillAdresseAndContact($sites[0], $habilitation->getEtablissementObject());
+        return $sites;
     }
 
     public function fillHabilitations($demande) {
