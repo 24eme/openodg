@@ -58,39 +58,22 @@ class ParcellaireAffectationDestinationForm extends acCouchdbForm {
     }
 
     public function updateAcheteurs($type, $values) {
-        $acheteurs_to_delete = array();
+        $this->getDocument()->acheteurs->remove($type);
 
         if(!isset($values["declarant"]) || !$values["declarant"]) {
-
-            $this->getDocument()->acheteurs->remove($type);
             return;
         }
 
         if($type == ParcellaireAffectationClient::DESTINATION_SUR_PLACE) {
-            $values["acheteurs"] = array($this->getDocument()->identifiant);
+            $values["acheteurs"][] = $this->getDocument()->identifiant;
         }
 
-        $noeud = $this->getDocument()->acheteurs->add($type);
-
-        $values_acheteurs = array();
+        $this->getDocument()->acheteurs->add($type);
 
         if(isset($values["acheteurs"]) && is_array($values["acheteurs"])) {
-
-           $values_acheteurs = $values["acheteurs"];
-        }
-
-        foreach($noeud as $acheteur) {
-            if(!in_array($acheteur->getKey(), $values) && !count($acheteur->produits)) {
-                $acheteurs_to_delete[] = $acheteur->getKey();
+            foreach($values["acheteurs"] as $cvi) {
+                $this->getDocument()->getDocument()->addAcheteur($type, $cvi);
             }
-        }
-
-        foreach($acheteurs_to_delete as $cvi) {
-            $noeud->remove($cvi);
-        }
-
-        foreach($values["acheteurs"] as $cvi) {
-            $this->getDocument()->getDocument()->addAcheteur($type, $cvi);
         }
 
     }
