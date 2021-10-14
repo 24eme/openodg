@@ -12,7 +12,7 @@
   <li class="active"><a href="">Tournée du <?php echo ucfirst(format_date($date, "P", "fr_FR")) ?></a></li>
 </ol>
 
-<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
+<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue(),  JSON_HEX_APOS) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
 <div ng-controller="tourneeCtrl">
 
     <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
@@ -131,8 +131,8 @@
                         <div class="form-group col-xs-12" >
                             <label class="control-label col-xs-3 lead" for="motif_preleve_{{ operateur._id }}_{{ prelevement_key }}">Motif :</label>
                             <div class="col-xs-9">
-                                <select ng-change="updateMotifPrelevement(prelevment)" ng-model="prelevement.motif_non_prelevement" id="motif_preleve_{{ operateur._id }}_{{ prelevement_key }}" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-options="key as value for (key , value) in motifs"></select>
-                                <select ng-change="updateMotifPrelevement(prelevment)" ng-model="prelevement.motif_non_prelevement" id="motif_preleve_{{ operateur._id }}_{{ prelevement_key }}" class="form-control input-lg hidden-xs" ng-options="key as value for (key , value) in motifs"></select>
+                                <select ng-change="updateMotifPrelevement(prelevement)" ng-model="prelevement.motif_non_prelevement" id="motif_preleve_{{ operateur._id }}_{{ prelevement_key }}" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-options="key as value for (key , value) in motifs"></select>
+                                <select ng-change="updateMotifPrelevement(prelevement)" ng-model="prelevement.motif_non_prelevement" id="motif_preleve_{{ operateur._id }}_{{ prelevement_key }}" class="form-control input-lg hidden-xs" ng-options="key as value for (key , value) in motifs"></select>
                             </div>
                         </div>
                     </div>
@@ -166,11 +166,11 @@
                                         <input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />
                                     </div>
                                 </div>
-                                <div ng-class="{ 'has-error': prelevement.erreurs['cepage'] }" class="form-group col-xs-12 col-sm-6 col-md-4 lead">
-                                    <label for="cepage_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-5 control-label">Cépage&nbsp;:</label>
+                                <div ng-show="isAssemblage(prelevement)" ng-class="{ 'has-error': prelevement.erreurs['composition_cepages'] }" class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                    <label for="composition_cepages_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-5 control-label">Compo cépages&nbsp;:</label>
                                     <div class="col-xs-7">
-                                        <input id="cepage_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.cepage" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                                        <input id="cepage_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.cepage" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                        <input id="composition_cepages_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.composition_cepages" type="text" ng-change="updateProduit(prelevement)" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                        <input ng-change="updateProduit(prelevement)" id="composition_cepages_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.composition_cepages" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                                     </div>
                                 </div>
                                 <?php if($tournee->appellation == "CREMANT"): ?>
