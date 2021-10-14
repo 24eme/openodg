@@ -103,6 +103,10 @@ class Tournee extends BaseTournee {
             return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
         }
 
+        if($this->appellation == "CREMANT") {
+            return $this->getConfiguration()->declaration->certification->genre->appellation_CREMANT->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+        }
+
         return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 

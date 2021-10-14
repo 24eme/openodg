@@ -238,11 +238,24 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.updateActive('recapitulatif');
     }
 
+    $scope.isAssemblage = function(prelevement) {
+      if(!prelevement.hash_produit) {
+
+        return false;
+      }
+
+      return prelevement.hash_produit.search("cepage_ED") > -1;
+    }
+
     $scope.updateProduit = function(prelevement) {
         prelevement.libelle = prelevement.produit.libelle;
         prelevement.libelle_produit = prelevement.produit.libelle_produit;
         prelevement.hash_produit = prelevement.produit.hash_produit;
         prelevement.vtsgn = prelevement.produit.vtsgn;
+
+        if(!$scope.isAssemblage(prelevement) && prelevement.composition_cepages) {
+          prelevement.composition_cepages = null;
+        }
 
         var code_cepage = prelevement.hash_produit.substr(-2);
 
