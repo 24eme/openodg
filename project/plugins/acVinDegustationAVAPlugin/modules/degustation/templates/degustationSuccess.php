@@ -30,9 +30,9 @@
                             </div>
                             <div class="col-xs-5">
                                 <span class="lead" ng-show="prelevement.libelle">{{ prelevement.libelle }}</span>
-                                <span class="text-muted" ng-show="prelevement.fermentation_lactique"><br />Malo-lactique</span>
-                                <span class="text-muted" ng-show="prelevement.composition_cepages"><br /> {{prelevement.composition_cepages}}</span>
-                                <span ng-show="!prelevement.libelle && !prelevement.composition_cepages">(Sans mention de cépage)</span>
+                                <span class="text-muted" ng-show="prelevement.fermentation_lactique"><br />FML</span>
+                                <span class="text-muted" ng-show="prelevement.composition"><br /> {{prelevement.composition}}</span>
+                                <span ng-show="!prelevement.libelle && !prelevement.composition">(Sans mention de cépage)</span>
                             </div>
                             <div class="col-xs-5 text-left">
                                 <span ng-show="prelevement.termine" ng-repeat="note_key in notes_key"><span>{{ notes[note_key] }} : <span>{{ prelevement.notes[note_key].note }}</span> <small ng-show="prelevement.notes[note_key].defauts.length">({{ prelevement.notes[note_key].defauts.join(', ') }})</small></span><br /></span>
@@ -69,9 +69,9 @@
         <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation + prelevement.degustation_id + prelevement.hash_produit">
             <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Lot n° {{ prelevement.anonymat_degustation }} <span ng-show="prelevement.libelle">de {{ prelevement.libelle }}</span> <small class="text-muted-alt" ng-show="prelevement.fermentation_lactique"> - Malo-lactique</small>
-                <small class="text-muted-alt" ng-show="prelevement.composition_cepages"> - {{prelevement.composition_cepages}}</small>
-                <small ng-show="!prelevement.libelle && !prelevement.composition_cepages">(Sans mention de cépage)</small></h2>
+                <h2>Lot n° {{ prelevement.anonymat_degustation }} <span ng-show="prelevement.libelle">de {{ prelevement.libelle }}</span> <small class="text-muted-alt" ng-show="prelevement.fermentation_lactique"> - FML</small>
+                <small class="text-muted-alt" ng-show="prelevement.composition"> - {{prelevement.composition}}</small>
+                <small ng-show="!prelevement.libelle && !prelevement.composition">(Sans mention de cépage)</small></h2>
             </div>
             <div class="row">
                 <div class="col-xs-12">

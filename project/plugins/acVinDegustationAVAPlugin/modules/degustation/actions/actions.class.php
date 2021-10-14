@@ -655,10 +655,7 @@ class degustationActions extends sfActions {
                 }
 
                 $p->cuve = $prelevement->cuve;
-                $p->remove('composition_cepages');
-                if(isset($prelevement->composition_cepages)) {
-                    $p->add('composition_cepages', $prelevement->composition_cepages);
-                }
+                $p->composition = $prelevement->composition;
                 $p->remove('fermentation_lactique');
                 if(isset($prelevement->fermentation_lactique)) {
                     $p->add('fermentation_lactique', (bool) $prelevement->fermentation_lactique);

@@ -57,7 +57,7 @@ Degustation:
                   anonymat_degustation: { type: integer }
                   motif_non_prelevement: { }
                   cuve: { }
-                  composition_cepages: { required: false }
+                  composition: { }
                   fermentation_lactique: { required: false }
                   preleve: { }
                   commission: { type: integer }

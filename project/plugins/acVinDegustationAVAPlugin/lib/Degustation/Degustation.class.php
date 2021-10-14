@@ -112,7 +112,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
                 $produitConfig = $this->getConfiguration()->get($produit->getHash()."/cepage_ED");
 
                 $lot = $prelevement->lots->add(str_replace("/", "-", $produitConfig->getHash()));
-                $lot->libelle = $produitConfig->getLibelleComplet();
+                $lot->libelle = $produitConfig->getLibelle();
                 $lot->hash_produit = $produitConfig->getHash();
                 $lot->volume_revendique = $produit->volume_revendique;
                 $lot->nb_hors_vtsgn = 1;

@@ -47,7 +47,7 @@ Objet : Dégustation conseil <?php echo str_replace(" ".$degustation->getMillesi
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 200px; font-weight: bold;"><?php echo tdStart() ?>&nbsp;Produit</th>
-        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->getLibelleComplet(); ?><?php if($prelevement->exist('fermentation_lactique') || $prelevement->exist('composition_cepages')): ?><br />&nbsp;<?php endif; ?><?php if($prelevement->exist('fermentation_lactique')): ?><small>Malo-lactique</small><?php endif; ?><?php if($prelevement->exist('composition_cepages')): ?><small><?php if($prelevement->exist('fermentation_lactique')): ?> - <?php endif; ?><?php echo $prelevement->get('composition_cepages'); ?></small><?php endif; ?></td>
+        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->getLibelleComplet(); ?><?php if($prelevement->exist('fermentation_lactique') || $prelevement->composition): ?><br />&nbsp;<?php endif; ?><?php if($prelevement->exist('fermentation_lactique')): ?><small>Fermentation Malo-Lactique</small><?php endif; ?><?php if($prelevement->composition): ?><small><?php if($prelevement->exist('fermentation_lactique')): ?> - <?php endif; ?><?php echo $prelevement->composition; ?></small><?php endif; ?></td>
     </tr>
 
     <tr>
