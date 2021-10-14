@@ -64,7 +64,7 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
 
         foreach (EtablissementAllView::getInstance()->findByInterproStatutAndFamilleVIEW('INTERPRO-declaration', EtablissementClient::STATUT_ACTIF, null) as $e) {
             $id = $e->key[EtablissementAllView::KEY_ETABLISSEMENT_ID];
-            $tags = array('export' => array(), 'produit' => array(), 'domaines' => array());
+            $tags = array('export' => array(), 'produit' => array(), 'domaines' => array(), 'documents' => array());
 
             $mvts = SV12MouvementsConsultationView::getInstance()->getByIdentifiantAndCampagne($id, $campagne);
             foreach ($mvts as $m) {
@@ -73,6 +73,7 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
                     continue;
                 }
                 $tags['produit'][$produit_libelle] = 1;
+                $tags['documents']['SV12'] = 1;
             }
             $mvts = DRMMouvementsConsultationView::getInstance()->getByIdentifiantAndCampagne($id, $campagne);
             foreach ($mvts as $m) {
@@ -81,11 +82,13 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
                     continue;
                 }
                 $tags['produit'][$produit_libelle] = 1;
+                $tags['documents']['DRM'] = 1;
                 if ($m->detail_libelle && preg_match("/Export/", $m->type_libelle)) {
-                    $tags['export'][$m->detail_libelle] = 1;
+                    $tags['export'][$this->replaceAccents($m->detail_libelle)] = 1;
                 }
             }
-            $contratDomaines = VracDomainesView::getInstance()->findDomainesByVendeur(str_replace('ETABLISSEMENT-', '', $id));
+
+            $contratDomaines = VracDomainesView::getInstance()->findDomainesByVendeur(str_replace('ETABLISSEMENT-', '', $id), date('Y'), 1000);
             foreach ($contratDomaines->rows as $domaineView) {
                 $domaine = $this->replaceAccents($domaineView->key[VracDomainesView::KEY_DOMAINE]);
                 $tags['domaines'][$domaine] = 1;
@@ -95,6 +98,11 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
             if (!$etablissement) {
                 throw new sfException("etablissement $id non trouvé");
             }
+            $factures = FactureSocieteView::getInstance()->getYearFaturesBySociete($etablissement->getSociete());
+            if (count($factures)) {
+                $tags['documents']['Facture'] = 1;
+            }
+
             $compte = $etablissement->getContact();
             if ($options['reinitialisation_tags_export']) {
                 $compte->tags->remove('export');
@@ -136,6 +144,8 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
 
     public function getProduitLibelle($hash) {
         $configuration = ConfigurationClient::getInstance()->getCurrent();
+
+        $hash = preg_replace('|^(.*)/details[a-zA-Z0-9]*/[a-zA-Z0-9]+$|', '\1', $hash);
 
         if(!$configuration->exist($hash)) {
             echo "Hash non trouvé :".$hash."\n";
