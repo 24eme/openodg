@@ -3,7 +3,7 @@
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 
 <?php if (isset($form)): ?>
-  <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
+  <form id="documentForm" action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
@@ -95,7 +95,7 @@
                 <?php if($drev->hasCompleteDocuments()): ?>
                 <a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
                 <?php else: ?>
-                    <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
+                    <button type="submit" form="documentForm" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
                 <?php endif; ?>
         <?php endif; ?>
         <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::MODIFICATRICE)): ?>
