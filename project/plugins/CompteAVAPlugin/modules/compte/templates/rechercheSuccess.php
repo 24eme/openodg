@@ -41,7 +41,7 @@
                     <p class="list-group-item-text">
                     <div class="pull-right">
                      <?php if ($data['telephone_bureau']):?>
-                                    <abbr class="text-muted" title="Mobile"><i>Bureau</abbr>&nbsp;:</i>&nbsp;&nbsp;<?php echo Anonymization::hideIfNeeded($data['telephone_bureau']) ?><br />
+                                    <abbr class="text-muted" title="Bureau"><i>Bureau</abbr>&nbsp;:</i>&nbsp;&nbsp;<?php echo Anonymization::hideIfNeeded($data['telephone_bureau']) ?><br />
                                 <?php endif; ?>
                                 <?php if ($data['telephone_mobile']):?>
                                     <abbr class="text-muted" title="Mobile"><i>Mobile</abbr>&nbsp;:</i>&nbsp;&nbsp;&nbsp;<?php echo Anonymization::hideIfNeeded($data['telephone_mobile']) ?><br />
