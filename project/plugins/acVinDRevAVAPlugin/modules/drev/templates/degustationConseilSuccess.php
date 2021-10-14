@@ -37,6 +37,31 @@
                     </div>
                 </div>
             <?php endif; ?>
+            <?php if (isset($form[DRev::CUVE_CREMANT])): ?>
+                <div class="row-margin">
+                    <h3>AOC Crémant</h3>
+                    <div class="col-xs-offset-1">
+                        <p>
+                            Semaine à partir de laquelle le vin de base est prêt à être dégusté :
+                            <a title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
+                        </p>
+                        <div class="form-group <?php if ($form[DRev::CUVE_CREMANT]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                            <?php if ($form[DRev::CUVE_CREMANT]["date"]->hasError()): ?>
+                                <div class="alert alert-danger" role="alert"><?php echo $form[DRev::CUVE_CREMANT]["date"]->getError(); ?></div>
+                            <?php endif; ?>
+                            <?php echo $form[DRev::CUVE_CREMANT]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
+                            <div class="col-xs-7">
+                                <div class="input-group date-picker-week">
+                                    <?php echo $form[DRev::CUVE_CREMANT]["date"]->render(array("class" => "form-control")); ?>
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
             <?php if (isset($form[DRev::CUVE_VTSGN])): ?>
                 <div class="row-margin">
                     <h3>VT / SGN</h3>

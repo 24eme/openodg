@@ -71,7 +71,6 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
     }
 
     public function getCodeCepage() {
-
         $code_cepage = substr($this->hash_produit, -2);
         if(!$code_cepage) {
 

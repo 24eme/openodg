@@ -26,7 +26,7 @@ foreach ($drev->getPrelevementsOrdered() as $prelevementsOrdered):
                         <td class="text-center"><?php echo format_date($prelevement->date, "D", "fr_FR") ?></td>
                         <?php if ($sf_user->isAdmin() && $hasForce): ?>
                         <td class="text-center">
-                            <?php if ($prelevement->libelle_produit == 'AOC Alsace') { ?>
+                            <?php if (in_array($prelevement->getKey(), array(DRev::CUVE_ALSACE, DRev::CUVE_CREMANT))) { ?>
                             <input onChange="$(this).parents('form').submit()" type="checkbox" name="forceprelevement<?php echo $prelevement->getHashForKey(); ?>" value="<?php echo $prelevement->getHash() ?>" <?php if ($prelevement->exist('force') && $prelevement->force) { echo " CHECKED"; } ?>/>
                             <?php } else {echo " &nbsp; ";} ?>
                         </td>
