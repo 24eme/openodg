@@ -376,7 +376,7 @@ class parcellaireAffectationActions extends sfActions {
             $this->parcellaire->save();
         }
 
-
+        $this->parcellaire->declaration->cleanNode();
         $this->form = new ParcellaireAffectationValidationForm($this->parcellaire);
         $this->validation = new ParcellaireAffectationValidation($this->parcellaire);
 

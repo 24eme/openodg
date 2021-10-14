@@ -34,7 +34,7 @@ class CertipaqDeroulant extends CertipaqService
 
     public function findActivite($activite_libelle) {
         $activites = $this->getListeActivitesOperateurs();
-        foreach (str_explode(' ', $activite_libelle) as $mot) {
+        foreach (explode(' ', $activite_libelle) as $mot) {
             $to_delete = array();
             foreach($activites as $id => $a) {
                 if (strpos(strtoupper($a->libelle), strtoupper($mot)) === false) {
@@ -82,7 +82,42 @@ class CertipaqDeroulant extends CertipaqService
     }
 
     public function getListeProduitsCahiersDesCharges() {
-        return $this->queryAndRes2hashid('dr/cdc_produit');
+        /*
+        Array
+        (    [21] => stdClass Object (
+                [id] => 21
+                [dr_cdc_id] => 677
+                [dr_couleur_id] => 1
+                [libelle] => Crozes Hermitage Rouge
+                [dr_cdc_produit_cepage] => Array()
+            )
+            ///
+        */
+        $produits = $this->queryAndRes2hashid('dr/cdc_produit');
+        foreach($produits as $k => $v) {
+            $v->dr_cdc_famille_id = $this->getCdcFamilleIdFromCdcId($v->dr_cdc_id);
+        }
+        return $produits;
+    }
+
+    public function getCdcFamilleIdFromCdcId($id) {
+        if (!isset($this->cacheFamille)) {
+            $this->cacheFamille = array();
+        }
+        if (isset($this->cacheFamille[$id])) {
+            return $this->cacheFamille[$id];
+        }
+        $ops = CertipaqOperateur::getInstance()->recherche(array('dr_cdc' => array($id)));
+        $op = CertipaqOperateur::getInstance()->find($ops[0]->id);
+        foreach($op->sites as $site) {
+            foreach($site->habilitations as $h) {
+                if ($h->dr_cdc_id == $id) {
+                    $this->cacheFamille[$id] = $h->dr_cdc_famille_id;
+                    return $h->dr_cdc_famille_id;
+                }
+            }
+        }
+        return null;
     }
 
     public function getListeTypesAdresses() {
@@ -97,6 +132,9 @@ class CertipaqDeroulant extends CertipaqService
 
     public function keyid2obj($k, $id, $obj = null) {
         $hash = array();
+        if (!$id) {
+            return null;
+        }
         switch ($k) {
             case 'dr_statut_habilitation_id':
                 $hash = $this->getListeHabilitation();
@@ -128,6 +166,10 @@ class CertipaqDeroulant extends CertipaqService
                 if ($obj) {
                     $hash[$id] = CertipaqOperateur::getInstance()->getSiteFromIdAndOperateur($id, $obj);
                 }
+                break;
+            case 'dr_adresse_type_id':
+                $hash = $this->getListeTypesAdresses();
+                break;
         }
         if (isset($hash[$id])) {
             return $hash[$id];
@@ -135,11 +177,34 @@ class CertipaqDeroulant extends CertipaqService
         return null;
     }
 
+    public function getParamWithObjFromIds($param) {
+        if (!$param || (!is_array($param) && !($param instanceof stdClass))) {
+            return $param;
+        }
+        $newparam = $param;
+        foreach ($param as $k => $v) {
+            if (strpos($k, '_id') !== false) {
+                $name = str_replace('_id', '', $k);
+                $o = $this->keyid2obj($k, $v);
+                if ($o) {
+                    $newparam[$name] = $o;
+                }
+                continue;
+            }
+            $newparam[$k] = $this->getParamWithObjFromIds($param[$k]);
+        }
+        return $newparam;
+    }
+
     public function getCertipaqProduitFromConfigurationProduit($conf) {
         $produits = $this->getListeProduitsCahiersDesCharges();
+        $certipaq_produits = array();
         foreach($produits as $p) {
             if ($p->libelle == $conf->getLibelleComplet()) {
                 return $p;
+            }
+            if (strpos($p->libelle, $conf->getLibelleComplet()) !== false) {
+                $certipaq_produits[] = $p;
             }
         }
         foreach($produits as $p) {
@@ -147,8 +212,11 @@ class CertipaqDeroulant extends CertipaqService
             if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
                 return $p;
             }
+            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) !== false) {
+                $certipaq_produits[] = $p;
+            }
         }
-        return null;
+        return array_pop($certipaq_produits);
     }
 
     public function getConfigurationProduitFromProduitId($pid) {
