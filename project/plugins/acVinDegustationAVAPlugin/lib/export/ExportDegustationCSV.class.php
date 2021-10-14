@@ -6,7 +6,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
     protected $header = false;
 
     public static function getHeaderCsv() {
-        $header = "Millésime;CVI Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Date de la dégustation;Organisme dégustateur;Produit;Dénomination complémentaire;N° anonymat;N° prélévement;Cuve;Volume";
+        $header = "Millésime;CVI Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Date de la dégustation;Organisme dégustateur;Produit;Dénomination complémentaire;Malo-lactique;Composition cepages;N° anonymat;N° prélévement;Cuve;Volume";
 
         foreach(DegustationClient::$note_type_libelles as $keyNote => $libelleNote) {
             $header .= ";".$libelleNote." note;".$libelleNote." défauts";
@@ -43,7 +43,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
 
         foreach($this->degustation->prelevements as $prelevement) {
             $libelle_complet = $prelevement->getLibelleComplet();
-            $csv .= sprintf("%s;%s;\"%s\";%s;%s;%s;%s", $ligne_base, trim($libelle_complet), $prelevement->denomination_complementaire, $prelevement->anonymat_degustation, $prelevement->anonymat_prelevement_complet, $prelevement->cuve, $this->formatFloat($prelevement->volume_revendique));
+            $csv .= sprintf("%s;%s;\"%s\";%s;%s;%s;%s;%s;%s", $ligne_base, trim($libelle_complet), $prelevement->denomination_complementaire, $prelevement->exist('fermentation_lactique') && $prelevement->get('fermentation_lactique') ? "Malo-lactique" : null, $prelevement->exist('composition_cepages') ? $prelevement->get('composition_cepages') : null, $prelevement->anonymat_degustation, $prelevement->anonymat_prelevement_complet, $prelevement->cuve, $this->formatFloat($prelevement->volume_revendique));
             foreach(DegustationClient::$note_type_libelles as $keyNote => $libelleNote) {
                 $note = null;
                 $defauts = null;
