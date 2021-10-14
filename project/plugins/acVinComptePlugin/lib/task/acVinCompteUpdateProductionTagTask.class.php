@@ -103,6 +103,13 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
                 $tags['documents']['Facture'] = 1;
             }
 
+            $types_view = DeclarationIdentifiantView::getInstance()->getByIdentifiant($id);
+            foreach($types_view->rows as $t) {
+                if ($t->key[DeclarationIdentifiantView::KEY_CAMPAGNE] >= date('Y') - 1) {
+                    $tags['documents'][$t->key[DeclarationIdentifiantView::KEY_TYPE]] = 1;
+                }
+            }
+
             $compte = $etablissement->getContact();
             if ($options['reinitialisation_tags_export']) {
                 $compte->tags->remove('export');
