@@ -102,7 +102,7 @@ function pictoDegustable($lot) {
     }
 
     if($lot->affectable) {
-        return '<span title="À déguster" class="glyphicon glyphicon-time"></span>';
+        return '<span title="À déguster" class="glyphicon glyphicon-time text-success"></span>';
     }
 
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
