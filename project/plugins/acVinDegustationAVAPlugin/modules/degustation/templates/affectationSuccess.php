@@ -73,7 +73,10 @@
                     <div class="list-group">
                         <li class="list-group-item list-group-item-success lead" href="" ng-repeat="prelevement in prelevements | filter: { commission: commission } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' } | orderBy: ['anonymat_degustation']"><a ng-click="remove(prelevement)" class="btn btn-danger btn-sm pull-right" href=""><span class="glyphicon glyphicon-trash"></span></a>N° {{ prelevement.anonymat_degustation }} - {{ prelevement.libelle }} <small>({{ prelevement.anonymat_prelevement_complet }}) <label ng-show="degustations[prelevement.degustation_id].transmission_collision" class="btn btn-xs btn-danger">Collision</label></small>
                         </li>
-                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (prelevements | filter: { commission: null } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' })" ng-click="ajouter(prelevement)"><span class="text-muted-alt">{{ getCodeCepageNumero(prelevement.anonymat_prelevement_complet) }}</span> {{ getIncrementalNumero(prelevement.anonymat_prelevement_complet) }} <span class="text-muted-alt">{{ getCodeVerifNumero(prelevement.anonymat_prelevement_complet) }}</span> <label ng-show="degustations[prelevement.degustation_id].transmission_collision" class="btn btn-xs btn-danger">Collision</label></a>
+                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (prelevements | filter: { commission: null } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' })" ng-click="ajouter(prelevement)"><span class="text-muted-alt">{{ getCodeCepageNumero(prelevement.anonymat_prelevement_complet) }}</span> {{ getIncrementalNumero(prelevement.anonymat_prelevement_complet) }} <span class="text-muted-alt">{{ getCodeVerifNumero(prelevement.anonymat_prelevement_complet) }}</span>
+                        <small class="text-muted" ng-show="prelevement.fermentation_lactique">- MALO</small>
+                        <small class="text-muted" ng-show="prelevement.composition_cepages">- {{prelevement.composition_cepages}}</small>
+                        <label ng-show="degustations[prelevement.degustation_id].transmission_collision" class="btn btn-xs btn-danger">Collision</label></a>
                     </div>
                 </div>
             </div>
@@ -95,6 +98,8 @@
                     <p class="text-center"><span  style="font-size: 36px;" class="text-muted">N° </span><strong style="font-size: 40px;">{{ anonymat_degustation }}</strong></p>
 
                     <p class="text-muted text-center lead"> {{ prelevement.libelle }} - {{ prelevement.anonymat_prelevement_complet }} </p>
+                    <p ng-show="prelevement.fermentation_lactique || prelevement.composition_cepages" class="text-center text-muted-alt lead"> <span ng-show="prelevement.fermentation_lactique">MALO</span> <span ng-show="prelevement.composition_cepages"><span ng-show="prelevement.fermentation_lactique">-</span> {{prelevement.composition_cepages}}</span></p>
+
                 </div>
             </div>
             <div class="row row-margin">
