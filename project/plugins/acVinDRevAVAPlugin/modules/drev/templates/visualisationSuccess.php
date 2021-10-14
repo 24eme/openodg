@@ -51,11 +51,27 @@
     </div>
 </div>
 
-<?php if($drev->exist('commentaire') && $drev->commentaire): ?>
+<?php if (isset($form)): ?>
+</form>
+<?php endif; ?>
+
+<?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire') && $drev->commentaire): ?>
 <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
-<pre>
-<?php echo $drev->commentaire; ?>
-</pre>
+    <?php if ($drev->getValidationOdg()): ?>
+        <pre>
+        <?php echo $drev->commentaire; ?>
+        </pre>
+    <?php else: ?>
+      <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
+            <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
+            <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
+            <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+            <br/>
+            <div class="form-group">
+                <button type="submit" form="formUpdateCommentaire" class="btn btn-default btn-lg btn-upper">Modifier le commentaire</button>
+            </div>
+      </form>
+    <?php endif; ?>
 <?php endif; ?>
 
 <div class="row row-margin row-button">
@@ -89,6 +105,3 @@
     </div>
 </div>
 
-<?php if (isset($form)): ?>
-</form>
-<?php endif; ?>

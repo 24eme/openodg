@@ -714,6 +714,26 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
     }
 
+    public function executeUpdateCommentaire(sfWebRequest $request)
+    {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
+
+        $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
+        $this->drevCommentaireValidationForm->bind($request->getParameter($this->drevCommentaireValidationForm->getName()));
+
+        if (! $this->drevCommentaireValidationForm->isValid()) {
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        if($this->drevCommentaireValidationForm->getValue("commentaire")) {
+            $this->drev->commentaire = $this->drevCommentaireValidationForm->getValue("commentaire");
+        }
+
+        $this->drev->save();
+        return $this->redirect('drev_visualisation', $this->drev);
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
@@ -724,6 +744,7 @@ class drevActions extends sfActions {
 
         if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
             $this->validation = new DRevValidation($this->drev);
+            $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
         }
 
         $this->form = ($this->getUser()->isAdmin()) ? new DRevDocumentsForm($documents) : null;
