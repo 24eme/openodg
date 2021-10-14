@@ -28,15 +28,17 @@
                             <div class="col-xs-1">
                                 <strong style="font-size: 32px;">{{ prelevement.anonymat_degustation }}</strong>
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-xs-5">
                                 <span class="lead" ng-show="prelevement.libelle">{{ prelevement.libelle }}</span>
-                                <span ng-show="!prelevement.libelle">(Sans mention de cépage)</span>
+                                <span class="text-muted" ng-show="prelevement.fermentation_lactique"><br />Malo-lactique</span>
+                                <span class="text-muted" ng-show="prelevement.composition_cepages"><br /> {{prelevement.composition_cepages}}</span>
+                                <span ng-show="!prelevement.libelle && !prelevement.composition_cepages">(Sans mention de cépage)</span>
                             </div>
                             <div class="col-xs-5 text-left">
                                 <span ng-show="prelevement.termine" ng-repeat="note_key in notes_key"><span>{{ notes[note_key] }} : <span>{{ prelevement.notes[note_key].note }}</span> <small ng-show="prelevement.notes[note_key].defauts.length">({{ prelevement.notes[note_key].defauts.join(', ') }})</small></span><br /></span>
                                 <div ng-show="prelevement.appreciations "><small><i>{{ prelevement.appreciations }}</i></small></div>
                             </div>
-                            <div class="col-xs-2 text-right">
+                            <div class="col-xs-1 text-right">
                                 <span ng-show="!prelevement.termine" class="glyphicon glyphicon-unchecked" style="font-size: 32px; margin-top: 6px;"></span>
                                 <span ng-show="prelevement.termine" class="glyphicon glyphicon-check" style="font-size: 32px; margin-top: 6px;"></span>
                             </div>
@@ -67,7 +69,9 @@
         <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation + prelevement.degustation_id + prelevement.hash_produit">
             <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Lot n° {{ prelevement.anonymat_degustation }} <span ng-show="prelevement.libelle">de {{ prelevement.libelle }}</span><small ng-show="!prelevement.libelle">(Sans mention de cépage)</small></h2>
+                <h2>Lot n° {{ prelevement.anonymat_degustation }} <span ng-show="prelevement.libelle">de {{ prelevement.libelle }}</span> <small class="text-muted-alt" ng-show="prelevement.fermentation_lactique"> - Malo-lactique</small>
+                <small class="text-muted-alt" ng-show="prelevement.composition_cepages"> - {{prelevement.composition_cepages}}</small>
+                <small ng-show="!prelevement.libelle && !prelevement.composition_cepages">(Sans mention de cépage)</small></h2>
             </div>
             <div class="row">
                 <div class="col-xs-12">
