@@ -58,3 +58,9 @@ all:
     param:
       session_name: openodg
 
+  mailer:
+    class: AppMailer
+    param:
+      transport:
+        class: Swift_MailTransport
+
