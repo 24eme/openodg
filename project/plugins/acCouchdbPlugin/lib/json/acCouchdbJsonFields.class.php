@@ -427,18 +427,19 @@ abstract class acCouchdbJsonFields {
     }
 
     private function addNumeric($key) {
-        if ($key === null) {
-           $this->loadData(); 
-        }
         if ($key !== null && $this->_exist($key)) {
             
             return $key;
         }
-        
-        $field = $this->getDefinition()->get('*')->getDefaultValue($this->_document, $this->_hash . '/' . count($this->_fields));
-        $this->_fields[count($this->_fields)] = $field;
-        
-        return count($this->_fields)-1;
+
+        $this->loadData();
+
+        $this->_fields[] = null;
+        $key = array_key_last($this->_fields);
+        $field = $this->getDefinition()->get('*')->getDefaultValue($this->_document, $this->_hash . '/'.$key);
+        $this->_fields[$key] = $field;
+
+        return $key;
     }
 
     /**
@@ -493,6 +494,13 @@ abstract class acCouchdbJsonFields {
             return true;
         }
         return false;
+    }
+
+    public function reindex() {
+        if(!$this->_is_array) {
+            return;
+        }
+        $this->_fields = array_values($this->_fields);
     }
 
     private function hasFieldNormal($key) {
