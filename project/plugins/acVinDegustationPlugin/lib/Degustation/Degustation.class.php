@@ -738,7 +738,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             foreach ($this->getLotsNonAnonymisable() as $hashLot => $lot) {
                 $this->remove($hashLot);
             }
-			$this->generateMouvementsLots();
+            $this->lots->reindex();
         }
 
         public function getTri() {
