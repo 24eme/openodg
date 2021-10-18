@@ -192,8 +192,23 @@ class TourneeClient extends acCouchdbClient {
     }
 
     public function getPrelevementsFiltered($appellation, $date_from, $date_to, $campagne = null) {
+        $prelevements = [];
 
-        return $this->filterPrelevements($appellation, DRevPrelevementsView::getInstance()->getPrelevements($appellation, $date_from, $date_to, $campagne), $campagne);
+        $prelevements = array_merge($prelevements, $this->filterPrelevements(
+            $appellation,
+            DRevPrelevementsView::getInstance()
+                ->getPrelevements(1, $appellation, null, null, $campagne),
+            $campagne
+        ));
+
+        $prelevements = array_merge($prelevements, $this->filterPrelevements(
+            $appellation,
+            DRevPrelevementsView::getInstance()
+                ->getPrelevements(0, $appellation, $date_from, $date_to, $campagne),
+            $campagne
+        ));
+
+        return $prelevements;
     }
 
     public function getReportes($appellation, $campagne = null) {
