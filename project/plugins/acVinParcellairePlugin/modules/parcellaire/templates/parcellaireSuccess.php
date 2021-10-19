@@ -5,6 +5,7 @@ $parcellaire_client = ParcellaireClient::getInstance();
 $last = null;
 $list_communes = [];
 $list_idu = [];
+$superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres()) ? 100 : 1;
 ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
@@ -251,7 +252,7 @@ $list_idu = [];
     <tr>
         <th class="col-xs-4">Produit</th>
         <th class="col-xs-4">Cépage</th>
-        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
   </thead>
   <tbody>
@@ -264,17 +265,17 @@ $list_idu = [];
                 <th><?php echo $produit_libelle ; ?></th>
                 <th><?php echo $cepage_libelle ; ?></th>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <th class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></th>
+                <th class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></th>
                 <?php else: ?>
-                <th class="text-right"><?php echoLongFloat($s['superficie_min']); ?></th><th class="text-right"><?php echoLongFloat($s['superficie_max']); ?></th>
+                <th class="text-right"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></th><th class="text-right"><?php echoLongFloat($s['superficie_max'] * $superficie_multiplicateur); ?></th>
                 <?php endif; ?>
             <?php else: ?>
                 <td><?php echo $produit_libelle ; ?></td>
                 <td><?php echo $cepage_libelle ; ?></td>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <td class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></td>
+                <td class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></td>
                 <?php else: ?>
-                <td class="text-right"><?php echoLongFloat($s['superficie_min']); ?></td><td class="text-right"><?php echoLongFloat($s['superficie_max']); ?></td>
+                <td class="text-right"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></td><td class="text-right"><?php echoLongFloat($s['superficie_max'] * $superficie_multiplicateur); ?></td>
                 <?php endif; ?>
             <?php endif; ?>
         </tr>
