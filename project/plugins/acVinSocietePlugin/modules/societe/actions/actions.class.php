@@ -297,8 +297,19 @@ class societeActions extends sfCredentialActions {
       $json = array();
       foreach ($res as $key => $one_row) {
         $data = $one_row->getData();
-
-        $text = $data['doc']['nom_a_afficher'];
+        $text = '';
+        switch ($data['doc']['compte_type']) {
+            case 'INTERLOCUTEUR':
+                $text = '👤 ';
+                break;
+            case 'SOCIETE':
+                $text = '🏢 ';
+                break;
+            case 'ETABLISSEMENT':
+                $text = '🏠 ';
+                break;
+        }
+        $text .= $data['doc']['nom_a_afficher'];
         $text .= ' ('.$data['doc']['adresse'];
         $text .= ($data['doc']['adresse_complementaire'])? ' - '.$data['doc']['adresse_complementaire'] : "";
         $text .= ' / '.$data['doc']['commune'].' / '.$data['doc']['code_postal'].') ' ;
