@@ -115,10 +115,18 @@ class CompteAllView extends acCouchdbView {
 
     public static function makeLibelle($datas) {
         $libelle = '';
+        switch ($datas[self::KEY_COMPTE_TYPE]) {
+            case 'INTERLOCUTEUR':
+                $libelle = '👤 ';
+                break;
+            case 'SOCIETE':
+                $libelle = '🏢 ';
+                break;
+            case 'ETABLISSEMENT':
+                $libelle = '🏠 ';
+                break;
+        }
         if (isset($datas[self::KEY_NOM_A_AFFICHER]) && $nom = $datas[self::KEY_NOM_A_AFFICHER]) {
-            if ($libelle) {
-                $libelle .= ' / ';
-            }
             $libelle .= Anonymization::hideIfNeeded($nom);
         }
 
