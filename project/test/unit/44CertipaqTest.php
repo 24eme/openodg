@@ -7,7 +7,7 @@ if(!sfConfig::get('app_certipaq_oauth')) {
     $t->ok(true, "Test disabled (not configured)");
     return;
 }
-$nb_tests = 49;
+$nb_tests = 56;
 if (!$readonly) {
     $nb_tests += 8;
 }
@@ -119,6 +119,7 @@ $habilitation_produit = $produit_conf->getAppellation();
 $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE);
 $demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $habilitation_produit->getHash(), $activites, "COMPLET", $date, "commentaire",  "Syndicat pour certipaq", false);
 
+$t->comment('Demande convertie en nouvel opérateur');
 $param = CertipaqDI::getInstance()->getParamNouvelOperateurFromDemande($demande);
 $param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);
 $t->is($param['operateur']['pays'], 'FR', "Le pays de l'opérateur est bien France (FR)");
@@ -136,6 +137,7 @@ $t->ok($param['habilitations'][0]['dr_activites_operateurs']['dr_activites_opera
 $t->ok($param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 2eme demande a une activité résolue (".$param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
 $t->ok($param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 3eme demande a une activité résolue (".$param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
 
+$t->comment("Demande convertie en extention d'habilitation");
 $param = CertipaqDI::getInstance()->getParamExtentionHabilitationFromDemande($demande);
 $param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);
 $t->ok($param['habilitations'][0]['dr_cdc_famille_id'], "la 1ère demande a une famille de cahier des charges");
@@ -144,3 +146,23 @@ $t->ok($param['habilitations'][0]['dr_activites_operateurs']['dr_activites_opera
 $t->ok($param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 1ère demande a une activité résolue (".$param['habilitations'][0]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
 $t->ok($param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 2eme demande a une activité résolue (".$param['habilitations'][1]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
 $t->ok($param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle, "la 3eme demande a une activité résolue (".$param['habilitations'][2]['dr_activites_operateurs']['dr_activites_operateurs']->libelle.")");
+
+$t->comment("Demande convertie en Nouveau site");
+$param = CertipaqDI::getInstance()->getParamNouveauSiteFromDemande($demande);
+$param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);
+$t->is(count($param['sites']), 1, "la demande d'habilitation a bien un site");
+$t->is(count($param['habilitations']), 3, "la demande d'habilitation contient bien 6 habilitations (une par activité et produit)");
+
+$t->comment("Demande convertie en modification d'identite");
+$param = CertipaqDI::getInstance()->getParamModificationIdentiteFromDemande($demande);
+$param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);
+$t->ok($param['operateur'], "il y a objet opérateur");
+$t->ok($param['operateur']["objet_modification"], 'a un objet de modification');
+$t->ok($param['operateur']["raison_sociale"], 'a raison_sociale');
+$t->ok($param['operateur']["nom_entreprise"], 'a nom_entreprise');
+$t->ok($param['operateur']["siret"], 'a siret');
+
+/*
+$param = CertipaqDI::getInstance()->getParamModificationOutilFromDemande($demande);
+$param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);
+*/
