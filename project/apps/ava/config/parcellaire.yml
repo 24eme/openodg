@@ -2,3 +2,4 @@ all:
   configuration:
     parcellaire:
       limit_produits_configuration: false
+      unit: "ares"
