@@ -178,7 +178,7 @@ class EtablissementAllView extends acCouchdbView
     }
 
 		public static function makeLibelle($row) {
-			$libelle = '';
+            $libelle = '🏠 ';
 
 			if ($nom = $row->key[self::KEY_NOM]) {
 				$libelle .= Anonymization::hideIfNeeded($nom);
