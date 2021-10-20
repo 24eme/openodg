@@ -877,10 +877,10 @@ class degustationActions extends sfActions {
       return $this->mutualExcecutePDF($request);
     }
 
-    public function executeEtiquettesTablesEchantillonsParAnonymatPDF(sfWebRequest $request) {
+    public function executeEtiquettesTablesEchantillonsAnonymesPDF(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
       $this->redirectIfIsNotAnonymized();
-      $this->document = new ExportDegustationEtiquettesTablesEchantillonsParAnonymatPDF($this->degustation, $request->getParameter('output', 'pdf'), false);
+      $this->document = new ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDF($this->degustation, $request->getParameter('output', 'pdf'), $request->getParameter('tri', 'numero_anonymat'), false);
       return $this->mutualExcecutePDF($request);
     }
 

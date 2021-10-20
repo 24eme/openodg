@@ -387,8 +387,18 @@ degustation_etiquette_csv:
     sf_method: [get]
 
 degustation_etiquettes_tables_echantillons_par_anonymat_pdf:
-  url: /degustation/:id/etiquettesAnonymes/pdf
-  param: { module: degustation, action: etiquettesTablesEchantillonsParAnonymatPDF }
+  url: /degustation/:id/etiquettesAnonymesParAnonymat/pdf
+  param: { module: degustation, action: etiquettesTablesEchantillonsAnonymesPDF, tri: numero_anonymat }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_etiquettes_tables_echantillons_par_unique_id_pdf:
+  url: /degustation/:id/etiquettesAnonymesParUniqueid/pdf
+  param: { module: degustation, action: etiquettesTablesEchantillonsAnonymesPDF, tri: unique_id }
   class: DegustationRoute
   options:
     model:    Degustation
