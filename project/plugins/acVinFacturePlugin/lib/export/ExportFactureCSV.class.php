@@ -92,7 +92,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->floatHelper->formatFr($this->facture->getMontantPaiement()).";";
         $csv .= $this->facture->versement_comptable.';';
         $csv .= $this->facture->_id.";";
-        $csv .= $this->facture->campagne.";";
+        $csv .= preg_replace("|/[0-9]+$|", "", $this->facture->campagne).";";
         $csv .= $this->facture->getNumeroOdg();
         $csv .= "\n";
 
