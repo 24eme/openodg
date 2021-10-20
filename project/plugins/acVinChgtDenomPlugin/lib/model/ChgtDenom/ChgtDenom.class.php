@@ -795,25 +795,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getFirstChgtDenomFacturable()
+    public function getFirstChgtDenomFacturable($produitFilter = null)
     {
-      $chgtdenom = $this->getChgtDenomToday();
+      $chgtdenom = $this->getChgtDenomToday($produitFilter);
       $first = current($chgtdenom);
       return (!$first||$first->_id == $this->_id)? true : false;
     }
 
-    public function getSecondChgtDenomFacturable()
+    public function getSecondChgtDenomFacturable($produitFilter = null)
     {
-        return !$this->getFirstChgtDenomFacturable();
-    }
-
-    public function calculFraisJournalier($produitFilter = null)
-    {
-        if ($this->nbChgtDenomToday($produitFilter) > 0) {
-            return;
-        }
-
-        return $this->getVolumeFacturable($produitFilter);
+        return !$this->getFirstChgtDenomFacturable($produitFilter);
     }
 
     public function matchFilter($produitFilter = null, $chgtdenom = null)
@@ -896,11 +887,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         return false;
-    }
-
-    private function nbChgtDenomToday($produitFilter = null)
-    {
-        return count($this->getChgtDenomToday($produitFilter));
     }
 
     private function getChgtDenomToday($produitFilter = null)
