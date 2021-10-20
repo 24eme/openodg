@@ -907,7 +907,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     {
         $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
             $this->identifiant,
-            substr($this->campagne, 0, 4)
+            substr($this->date, 0, 4)
         );
 
         $today = [];
