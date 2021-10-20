@@ -141,7 +141,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "/appellations/MED"
+            "/appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -225,7 +225,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-              "/appellations/MED"
+              "/appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
