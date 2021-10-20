@@ -245,7 +245,7 @@
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "calculFraisJournalier",
+          "callback": "getFirstChgtDenomFacturable",
           "callback_parameters": [
             "/appellations/MED AND NOT NEGOCIANT"
           ]
