@@ -2,7 +2,7 @@
 
 class SV12DouaneCsvFile extends DouaneImportCsvFile {
 
-    public function convert() {
+    public function convert($extraFields = false) {
         $handler = fopen($this->filePath, 'r');
 
         $csvFile = new CsvFile($this->filePath);
@@ -75,7 +75,13 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
-                        $produit[] = $cpt;
+                $produit[] = $cpt;
+                if ($extraFields) {
+                  $produit[] = Organisme::getCurrentOrganisme();
+                  $produit[] = ($this->doc)? $this->doc->_id : '';
+                  $produit[] = '';
+                  $produit[] = ($p)? $p->getHash() : '';
+                }
 	        			$produits[] = $produit;
                     }
                     $cpt++;

@@ -106,7 +106,7 @@ class DouaneImportCsvFile {
       $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($c);
     }
 
-    public function convertByDonnees() {
+    public function convertByDonnees($extraFields = false) {
         if (!$this->doc->exist('donnees') || count($this->doc->donnees) < 1) {
             return null;
         }
@@ -162,6 +162,12 @@ class DouaneImportCsvFile {
                         $p[] = null;
                     }
                     $p[] = $colonnesid[$produitid];
+                    if ($extraFields) {
+                      $p[] = Organisme::getCurrentOrganisme();
+                      $p[] = $this->doc->_id;
+                      $p[] = '';
+                      $p[] = $produit->getHash();
+                    }
                     $produits[] = $p;
                 }
             }

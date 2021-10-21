@@ -15,15 +15,19 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
 
     protected $constats = null;
     protected $header = false;
+    protected $region = null;
+    protected $extraFields = false;
 
     public static function getHeaderCsv() {
 
         return "Campagne;CVI;Nom;Adresse;Code postal;Commune;Email;Statut;Raison du refus;Date de signature;Appellation;Lieu/Lieu-dit;Couleur;Cépage;Dénomination;Type VT/SGN;Date RDV raisin;Agent RDV Raisin;Quantité Raisin;Degré potentiel Raisin;Date RDV volume;Agent RDV volume;Volume obtenu;Degré potentiel Volume;Mail envoyé\n";
     }
 
-    public function __construct($constats, $header = true) {
+    public function __construct($constats, $header = true, $region = null, $extraFields = false) {
         $this->constats = $constats;
         $this->header = $header;
+        $this->region = $region;
+        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {

@@ -4,16 +4,20 @@ class ExportRegistreVCICSV implements InterfaceDeclarationExportCsv {
 
     protected $registre = null;
     protected $header = false;
+    protected $region = null;
+    protected $extraFields = false;
 
     public static function getHeaderCsv() {
 
         return "Campagne;CVI;SIRET;Raison sociale;Adresse;Code postal;Commune;Email;Produit;Dénomination complémentaire;Stockage;Stock précédent;Destruction;Complément;Substitution;Rafraichi;Constitue;Stock\n";
     }
 
-    public function __construct($registre, $header = true) {
+    public function __construct($registre, $header = true, $region = null, $extraFields = false) {
         $this->registre = $registre;
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->registre->identifiant, acCouchdbClient::HYDRATE_JSON);
         $this->header = $header;
+        $this->region = $region;
+        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {
