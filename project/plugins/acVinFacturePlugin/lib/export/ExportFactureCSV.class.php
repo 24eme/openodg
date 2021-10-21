@@ -4,10 +4,12 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
+    protected $region = null;
+    protected $extraFields = false;
 
     protected $floatHelper = null;
 
-    public function __construct($doc_or_id, $header = true) {
+    public function __construct($doc_or_id, $header = true, $region = null, $extraFields = false) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
@@ -21,6 +23,8 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
        $this->floatHelper = FloatHelper::getInstance();
 
         $this->header = $header;
+        $this->region = $region;
+        $this->extraFields = $extraFields;
     }
 
     public static function getHeaderCsv() {
@@ -90,7 +94,9 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->floatHelper->formatFr($this->facture->total_ht).";";
         $csv .= $this->floatHelper->formatFr($this->facture->total_taxe).";";
         $csv .= $this->floatHelper->formatFr($this->facture->total_ttc).";";
-        $csv .= $this->floatHelper->formatFr($this->facture->getMontantPaiement()).";";
+        $csv .= (
+            ($this->floatHelper->formatFr($this->facture->getMontantPaiement())) ?: 0
+        ).";";
         $csv .= $this->facture->versement_comptable.';';
         $csv .= $this->facture->_id.";";
         $csv .= $campagne.";";

@@ -5,6 +5,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     protected $drev = null;
     protected $header = false;
     protected $region = null;
+    protected $extraFields = false;
 
     const CSV_CAMPAGNE = 0;
     const CSV_CVI = 2;
@@ -39,10 +40,11 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
         return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Certification Libelle;Genre;Genre Libelle;Appellation;Appellation Libelle;Mention;Mention Libelle;Lieu;Lieu Libelle;Couleur;Couleur Libelle;Cepage;Cepage Libelle;INAO;Dénomination complémentaire;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué issu du mutage;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination;Date de validation Déclarant;Date de validation ODG;Doc ID\n";
     }
 
-    public function __construct($drev, $header = true, $region = null) {
+    public function __construct($drev, $header = true, $region = null, $extraFields = false) {
         $this->drev = $drev;
         $this->header = $header;
         $this->region = $region;
+        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {

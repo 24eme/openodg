@@ -127,9 +127,9 @@ class DeclarationClient
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
-    public function getExportCsvObject($doc, $header = true, $region = null) {
+    public function getExportCsvObject($doc, $header = true, $region = null, $extraFields = false) {
         $className = $this->getExportCsvClassName($doc->type);
-        return new $className($doc, $header, $region);
+        return new $className($doc, $header, $region, $extraFields);
     }
 
     public function getTypesAndCampagneForExport() {

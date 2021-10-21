@@ -15,15 +15,19 @@ class ExportTravauxMarcCSV implements InterfaceDeclarationExportCsv {
 
     protected $travauxmarc = null;
     protected $header = false;
+    protected $region = null;
+    protected $extraFields = false;
 
     public static function getHeaderCsv() {
 
         return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Date de distillation;Distillation par un prestataire;Alambic décrit dans la DI;Adresse de distillation;Code postal de distillation;Commune de distillation;Nom du fournisseur;Date de livraison;Quantité de marc livré (en kg);Type de déclaration\n";
     }
 
-    public function __construct($travauxmarc, $header = true) {
+    public function __construct($travauxmarc, $header = true, $region = null, $extraFields = false) {
         $this->travauxmarc = $travauxmarc;
         $this->header = $header;
+        $this->region = $region;
+        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {

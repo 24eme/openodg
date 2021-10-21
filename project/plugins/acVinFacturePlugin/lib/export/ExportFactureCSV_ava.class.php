@@ -4,6 +4,8 @@ class ExportFactureCSV_ava implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
+    protected $region = null;
+    protected $extraFields = false;
 
     const TYPE_LIGNE_LIGNE = 'LIGNE';
     const TYPE_LIGNE_PAIEMENT = 'PAIEMENT';
@@ -12,7 +14,7 @@ class ExportFactureCSV_ava implements InterfaceDeclarationExportCsv {
     const CODE_JOURNAL_FACTURE = "VE00";
     const CODE_JOURNAL_PAIEMENT = "5200";
 
-    public function __construct($doc_or_id, $header = true) {
+    public function __construct($doc_or_id, $header = true, $region = null, $extraFields = false) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
@@ -25,6 +27,8 @@ class ExportFactureCSV_ava implements InterfaceDeclarationExportCsv {
         }
 
         $this->header = $header;
+        $this->region = $region;
+        $this->extraFields = $extraFields;
     }
 
     public static function getHeaderCsv() {
