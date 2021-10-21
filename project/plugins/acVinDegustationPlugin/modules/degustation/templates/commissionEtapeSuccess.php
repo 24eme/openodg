@@ -32,7 +32,13 @@
                 <ul class="list-group">
                   <li class="list-group-item"><a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>" ><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (triés par Numéro de dossier)</a></li>
                   <li class="list-group-item"><a id="btn_pdf_degustation_fiche_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_anonymat_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (triés par Numéro d'anonymat)</a></li>
-                  <li class="list-group-item"><a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_anonymat_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes pour tables (triées par Numéro d'anonymat)</a></li>
+                  <li class="list-group-item">
+                      <span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes pour tables (
+                      <a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_anonymat_pdf', $degustation) ?>">triées par Numéro d'anonymat </a>
+                       -
+                      <a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_unique_id_pdf', $degustation) ?>">triées par Numéro de dossier</a>
+                      )
+                  </li>
                 </ul>
                 <br/>
             </div>
