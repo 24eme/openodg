@@ -35,9 +35,15 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $extraFields = $options['extra_fields'];
+
         if($options["header"]) {
             $className = DeclarationClient::getInstance()->getExportCsvClassName($arguments['type']);
-            echo $className::getHeaderCsv();
+            if ($extraFields) {
+              echo str_replace(PHP_EOL,"", $className::getHeaderCsv()).";".$className::getExtraFieldsHeaderCsv();
+            } else {
+              echo $className::getHeaderCsv();
+            }
         }
 
         $ids = DeclarationClient::getInstance()->getIds($arguments['type'], $arguments['campagne']);
@@ -50,8 +56,6 @@ EOF;
         $step = 0;
 
         $region = $options['region'];
-
-        $extraFields = $options['extra_fields'];
 
         foreach($ids as $id) {
             $tobeexported = true;
