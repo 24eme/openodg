@@ -90,7 +90,9 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->floatHelper->formatFr($this->facture->total_ht).";";
         $csv .= $this->floatHelper->formatFr($this->facture->total_taxe).";";
         $csv .= $this->floatHelper->formatFr($this->facture->total_ttc).";";
-        $csv .= $this->floatHelper->formatFr($this->facture->getMontantPaiement()).";";
+        $csv .= (
+            ($this->floatHelper->formatFr($this->facture->getMontantPaiement())) ?: 0
+        ).";";
         $csv .= $this->facture->versement_comptable.';';
         $csv .= $this->facture->_id.";";
         $csv .= $campagne.";";
