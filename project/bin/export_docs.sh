@@ -11,7 +11,6 @@ fi
 DOC_TYPE=$1
 WAITSLEEP=$2
 REGION=$3
-EXTRA=$4
 
 if ! test "$DOC_TYPE" ; then
 	echo "USAGE: $0 DOC_TYPE_TYPE";
@@ -21,9 +20,6 @@ fi
 OPTIONS=""
 if test "$REGION" ; then
 	OPTIONS="--region=$REGION";
-fi
-if test "$EXTRA" ; then
-	OPTIONS="--extra_fields=1";
 fi
 
 header=1
