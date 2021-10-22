@@ -15,6 +15,14 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls igp_*.py | while read script; do python3 $script igp;done
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
+
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        . $(echo $0 | sed 's/[^\/]*$//')config_"$app".inc
+        if test -d $EXPORTDIR"/GLOBAL" ; then
+            python3 bin/csv2sql.py $METABASE_SQLITE".global.tmp" $EXPORTDIR"/GLOBAL"
+            mv $METABASE_SQLITE".global.tmp" $METABASE_SQLITE".global"
+        fi
+    done
     exit 0;
 fi
 
@@ -201,8 +209,4 @@ find $EXPORTDIR -type f -empty -delete
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
-    if test -d $EXPORTDIR"/GLOBAL" ; then
-        python3 bin/csv2sql.py $METABASE_SQLITE".global.tmp" $EXPORTDIR"/GLOBAL"
-        mv $METABASE_SQLITE".global.tmp" $METABASE_SQLITE".global"
-    fi
 fi
