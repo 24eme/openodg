@@ -98,15 +98,15 @@ rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_in
 
 sleep 60
 
-bash bin/export_docs.sh DR 30 $1 1 > $EXPORTDIR/dr.csv.part
+bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
 rm $EXPORTDIR/dr.csv.part
 
-bash bin/export_docs.sh SV12 30 $1 1 > $EXPORTDIR/sv12.csv.part
+bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
 rm $EXPORTDIR/sv12.csv.part
 
-bash bin/export_docs.sh SV11 30 $1 1 > $EXPORTDIR/sv11.csv.part
+bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
 rm $EXPORTDIR/sv11.csv.part
 
