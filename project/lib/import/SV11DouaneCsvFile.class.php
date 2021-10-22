@@ -2,7 +2,7 @@
 
 class SV11DouaneCsvFile extends DouaneImportCsvFile {
 
-    public function convert($extraFields = false) {
+    public function convert() {
         $handler = fopen($this->filePath, 'r');
 
         $csvFile = new CsvFile($this->filePath);
@@ -78,12 +78,9 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
                 $produit[] = $cpt;
-                if ($extraFields) {
-                  $produit[] = Organisme::getCurrentOrganisme();
-                  $produit[] = ($this->doc)? $this->doc->_id : '';
-                  $produit[] = '';
-                  $produit[] = ($p)? $p->getHash() : '';
-                }
+                $produit[] = Organisme::getCurrentOrganisme();
+                $produit[] = ($p)? $p->getHash() : '';
+                $produit[] = ($this->doc)? $this->doc->_id : '';
 	        			$produits[] = $produit;
         			}
                     $cpt++;

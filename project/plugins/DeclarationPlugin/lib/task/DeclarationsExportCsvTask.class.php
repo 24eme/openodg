@@ -19,7 +19,6 @@ class DeclarationsExportCsvTask extends sfBaseTask
             new sfCommandOption('sleep_second', null, sfCommandOption::PARAMETER_REQUIRED, 'secont to wait', false),
             new sfCommandOption('sleep_step', null, sfCommandOption::PARAMETER_REQUIRED, 'nb doc before wait', 1000),
             new sfCommandOption('region', null, sfCommandOption::PARAMETER_REQUIRED, "region de l'ODG (si non renseignée toutes les régions sont utilisées)", null),
-            new sfCommandOption('extra_fields', null, sfCommandOption::PARAMETER_REQUIRED, 'Add extra fields (organisme, doc id, item id, hash produit) in CSV', false),
         ));
 
         $this->namespace = 'declarations';
@@ -35,15 +34,9 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $extraFields = $options['extra_fields'];
-
         if($options["header"]) {
             $className = DeclarationClient::getInstance()->getExportCsvClassName($arguments['type']);
-            if ($extraFields) {
-              echo str_replace(PHP_EOL,"", $className::getHeaderCsv()).";".$className::getExtraFieldsHeaderCsv();
-            } else {
-              echo $className::getHeaderCsv();
-            }
+            echo $className::getHeaderCsv();
         }
 
         $ids = DeclarationClient::getInstance()->getIds($arguments['type'], $arguments['campagne']);
@@ -70,7 +63,7 @@ EOF;
                     }catch(sfException $e){
                       continue 2;
                     }
-                    $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false, $region, $extraFields);
+                    $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false, $region);
 
                     if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
                         continue 2;

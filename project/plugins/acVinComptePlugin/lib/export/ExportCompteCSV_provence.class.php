@@ -10,18 +10,16 @@ class ExportCompteCsv_provence implements InterfaceDeclarationExportCsv {
     protected $compte = null;
     protected $header = false;
     protected $region = null;
-    protected $extraFields = false;
 
     public static function getHeaderCsv() {
 
         return "numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;n° identifiant;n° siret;statut;téléphone;fax;email;site\n";
     }
 
-    public function __construct($compte, $header = true, $region = null, $extraFields = false) {
+    public function __construct($compte, $header = true, $region = null) {
         $this->compte = $compte;
         $this->header = $header;
         $this->region = $region;
-        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {

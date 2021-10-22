@@ -5,7 +5,6 @@ class ExportDegustationsManquantes implements InterfaceDeclarationExportCsv {
     protected $tournee = null;
     protected $header = false;
     protected $region = null;
-    protected $extraFields = false;
 
     public static function getHeaderCsv() {
         $header = "Millésime;CVI Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Produit";
@@ -13,11 +12,10 @@ class ExportDegustationsManquantes implements InterfaceDeclarationExportCsv {
         return $header."\n";
     }
 
-    public function __construct($tournee, $header = true, $region = null, $extraFields = false) {
+    public function __construct($tournee, $header = true, $region = null) {
         $this->tournee = $tournee;
         $this->header = $header;
         $this->region = $region;
-        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {

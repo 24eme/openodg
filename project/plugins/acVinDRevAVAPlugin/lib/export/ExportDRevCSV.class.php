@@ -5,18 +5,16 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     protected $drev = null;
     protected $header = false;
     protected $region = null;
-    protected $extraFields = false;
 
     public static function getHeaderCsv() {
 
         return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Produit;Superficie revendiqué;Superficie Vinifiee;Volume revendiqué issu du VCI;Volume revendiqué;prelevement à partir du;nombre de lots;Adresse du chai;Code postal du Chai;Commune du Chai;Type de déclaration\n";
     }
 
-    public function __construct($drev, $header = true, $region = null, $extraFields = false) {
+    public function __construct($drev, $header = true, $region = null) {
         $this->drev = $drev;
         $this->header = $header;
         $this->region = $region;
-        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {

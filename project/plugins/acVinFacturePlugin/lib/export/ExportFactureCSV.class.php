@@ -5,11 +5,10 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
     protected $facture = null;
     protected $header = false;
     protected $region = null;
-    protected $extraFields = false;
 
     protected $floatHelper = null;
 
-    public function __construct($doc_or_id, $header = true, $region = null, $extraFields = false) {
+    public function __construct($doc_or_id, $header = true, $region = null) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
@@ -24,7 +23,6 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
         $this->header = $header;
         $this->region = $region;
-        $this->extraFields = $extraFields;
     }
 
     public static function getHeaderCsv() {

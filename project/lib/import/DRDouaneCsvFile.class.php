@@ -2,7 +2,7 @@
 
 class DRDouaneCsvFile extends DouaneImportCsvFile {
 
-    public function convert($extraFields = false) {
+    public function convert() {
     	if (!$this->filePath) {
     		throw new sfException("La cible du fichier n'est pas spécifiée.");
     	}
@@ -206,13 +206,11 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $csv = '';
         $doc = $this->getEtablissementRows();
         foreach ($produits as $k => $p) {
-          $extra = '';
-          if ($extraFields) {
-            $extra .= ';'.Organisme::getCurrentOrganisme();
-            $extra .= ($this->doc)? ';'.$this->doc->_id : ';';
-            $extra .= ';';
-            $extra .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
-          }
+
+          $colExtraIds = ';'.Organisme::getCurrentOrganisme();
+          $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
+          $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
+
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;
                 if($e[0] == 4) {
@@ -237,24 +235,23 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     array_unshift($bailleur[$k], $e);
                     $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale - $superficiemetayer, 4);
                 }
-	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k].$extra."\n";
+	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k].$colExtraIds."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
-	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$coloneid[$k].$extra."\n";
+	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$coloneid[$k].$colExtraIds."\n";
 	        		unset($bailleur[$k][$sk]);
 	        	}
                 if(isset($eOrigin)) {
-                    $csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $eOrigin).';'.$coloneid[$k].$extra."\n";
+                    $csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $eOrigin).';'.$coloneid[$k].$colExtraIds."\n";
                 }
 	        }
 	        if (isset($baillage[$k]) && isset($bailleur[$k])) {
 	        	foreach ($bailleur[$k] as $b) {
-	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b).';'.$coloneid[$k].$extra."\n";
+	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b).';'.$coloneid[$k].$colExtraIds."\n";
 	        	}
 	        }
         }
         foreach ($achats as $a) {
-            $extra = ($extraFields)? ';;;;' : '';
-            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999".$extra."\n";
+            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999;;;;"."\n";
         }
         return $csv;
     }

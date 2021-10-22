@@ -6,10 +6,10 @@ class ExportDRCSV extends ExportDouaneCSV
         $csv = parent::export();
         if ($this->doc->exist('donnees') && count($this->doc->donnees) >= 1) {
           $c = new DRDouaneCsvFile(null, $this->doc);
-        	$csv .= $c->convertByDonnees($this->extraFields);
+        	$csv .= $c->convertByDonnees();
         } elseif ($file = $this->doc->getFichier('csv')) {
         	$c = new DRDouaneCsvFile($file, $this->doc);
-        	$csv .= $c->convert($this->extraFields);
+        	$csv .= $c->convert();
         }
         return $csv;
     }

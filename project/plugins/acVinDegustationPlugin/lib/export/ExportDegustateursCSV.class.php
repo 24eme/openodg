@@ -5,17 +5,15 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
     protected $degustation = null;
     protected $header = false;
     protected $region = null;
-    protected $extraFields = false;
 
     public static function getHeaderCsv() {
         return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Collège;Dégustateur;Adresse;Code postal;Commune;Date de convocation;Présent;Num table;Organisme;Doc Id;\n";
     }
 
-    public function __construct($degustation, $header = true, $region = null, $extraFields = false) {
+    public function __construct($degustation, $header = true, $region = null) {
         $this->degustation = $degustation;
         $this->header = $header;
         $this->region = $region;
-        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {

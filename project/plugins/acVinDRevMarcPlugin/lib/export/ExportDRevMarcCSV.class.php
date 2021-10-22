@@ -16,18 +16,16 @@ class ExportDRevMarcCSV implements InterfaceDeclarationExportCsv {
     protected $drevmarc = null;
     protected $header = false;
     protected $region = null;
-    protected $extraFields = false;
 
     public static function getHeaderCsv() {
 
         return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Début Distillation;Fin Distillation;Quantité de Marc (kg);Volume total obtenu (hl);Titre alcoométrique volumique (Degré);Type de déclaration\n";
     }
 
-    public function __construct($drevmarc, $header = true, $region = null, $extraFields = false) {
+    public function __construct($drevmarc, $header = true, $region = null) {
         $this->drevmarc = $drevmarc;
         $this->header = $header;
         $this->region = $region;
-        $this->extraFields = $extraFields;
     }
 
     public function getFileName() {
