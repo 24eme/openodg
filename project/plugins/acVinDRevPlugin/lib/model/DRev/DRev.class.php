@@ -1618,6 +1618,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $rienAFacturer = true;
 
       foreach($cotisations as $cotisation) {
+          if (
+              (strpos($cotisation->getHash(), '%detail_identifiant%') !== false) &&
+              ($cotisation->getConfigCallback() == 'getVolumeLotsFacturables') || $cotisation->getConfigCallback() == 'getVolumeRevendiqueLots')
+             ) {
+              throw new sfException("getVolumeLotsFacturables/getVolumeRevendiqueLots incompatibles avec %detail_identifiant%");
+          }
+
           $mouvement = DRevMouvementFactures::freeInstance($this);
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
