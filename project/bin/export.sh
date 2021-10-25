@@ -80,9 +80,11 @@ head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv.part
 
-grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
-rm $EXPORTDIR/drev_lots.csv.part
+if [ -z $IS_NO_VINIF ]; then
+  grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
+  rm $EXPORTDIR/drev_lots.csv.part
+fi
 
 grep "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/conditionnement_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv
@@ -106,17 +108,19 @@ rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_in
 
 sleep 60
 
-bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
-rm $EXPORTDIR/dr.csv.part
+if [ -z $IS_NO_VINIF ]; then
+  bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
+  rm $EXPORTDIR/dr.csv.part
 
-bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
-rm $EXPORTDIR/sv12.csv.part
+  bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
+  rm $EXPORTDIR/sv12.csv.part
 
-bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
-rm $EXPORTDIR/sv11.csv.part
+  bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
+  rm $EXPORTDIR/sv11.csv.part
+fi
 
 bash bin/export_docs.sh ParcellaireIrrigable 30 $1 > $EXPORTDIR/parcellaireirrigable.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigable.csv.part > $EXPORTDIR/parcellaireirrigable.csv
