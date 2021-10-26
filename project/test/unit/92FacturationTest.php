@@ -91,11 +91,18 @@ $drev->validate();
 $drev->validateOdg();
 $drev->save();
 
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
 foreach($drev->mouvements->get($drev->identifiant) as $m) {
-    if($m->type_hash == 'volume_revendique_numero_dossier') {
-        $t->is($m->quantite, 100, "La quantité du mouvement a facturer \"volume_revendique_numero_dossier\" est 100");
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
     }
 }
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 100, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" est 100");
+$t->is($getVolumeLotsFacturables_quantite, 100, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" est 100");
+
 
 $t->comment("Création d'une drev modificatrice avec un nouveau lot");
 
@@ -110,11 +117,17 @@ $drevM01->validate();
 $drevM01->validateOdg();
 $drevM01->save();
 
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
 foreach($drevM01->mouvements->get($drev->identifiant) as $m) {
-    if($m->type_hash == 'volume_revendique_numero_dossier') {
-        $t->is($m->quantite, 50, "La quantité du mouvement a facturer \"volume_revendique_numero_dossier\" est 50");
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
     }
 }
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 50, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M01 : 50");
+$t->is($getVolumeLotsFacturables_quantite, 50, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M01 : 50");
 
 $t->comment("Réduction du volume de la drev");
 
@@ -127,8 +140,15 @@ $drevM02 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->i
 
 $t->is($drevM02->_id, $drev->_id."-M02", "La modification du lot a engendré une modificatrice");
 
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
 foreach($drevM02->mouvements->get($drev->identifiant) as $m) {
-    if($m->type_hash == 'volume_revendique_numero_dossier') {
-        $t->is($m->quantite, -10, "La quantité du mouvement à facturer \"volume_revendique_numero_dossier\" est -10");
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
     }
 }
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, -10, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M01 : -10");
+$t->is($getVolumeLotsFacturables_quantite, -10, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M01 : -10");
+

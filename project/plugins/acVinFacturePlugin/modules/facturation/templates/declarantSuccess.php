@@ -38,6 +38,7 @@
                 </option>
                 <?php endforeach ?>
             </select>
+            <button type="submit" class="btn btn-default">Changer</button>
         </form>
     </div>
     <h3 style="display: inline-block">Liste des factures</h3>
