@@ -649,7 +649,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $produitsImporte = array();
-        $has_bio = false;
+        $has_bio_in_dr = false;
+        $has_hve_in_dr = false;
 
         $has_bailleurs_or_multiple = 0;
         $first_cvi = $csv[0][DRCsvFile::CSV_RECOLTANT_CVI];
@@ -711,13 +712,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $complement = null;
-
-            if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
-                  ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
-                ) {
-              $has_bio = true;
-              $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
-          } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+            if (DRevConfiguration::getInstance()->hasDenominationAuto() && preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) ) {
+                $has_bio_in_dr = true;
+                $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
+            } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && preg_match('/ hve|^hve/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) ) {
+                $has_hve_in_dr = true;
+                $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
+            }elseif(DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO, true)){
+                $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
+            }elseif(DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_HVE, true)){
+                $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
+            } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
                 $complement = $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT];
             }
 
@@ -862,9 +867,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->remove($del);
         }
 
-        if (!$has_bio && DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_PARTIEL)) {
-            foreach ($this->declaration->getProduits() as $hash => $p) {
-                $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+        if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
+            if (!$has_hve_in_dr && !$has_bio_in_dr) {
+                if ($this->hasDenominationAuto(DRevClient::DENOMINATION_BIO)) {
+                    foreach ($this->declaration->getProduits() as $hash => $p) {
+                        $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+                    }
+                }
+                if ($this->hasDenominationAuto(DRevClient::DENOMINATION_HVE)) {
+                    foreach ($this->declaration->getProduits() as $hash => $p) {
+                        $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_HVE_LIBELLE_AUTO);
+                    }
+                }
             }
         }
 
@@ -2078,8 +2092,37 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $this->periode.'-12-10';
     }
 
-    public function hasDenominationAuto($const) {
-      return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
+    public function hasDenominationAuto($const, $total = false) {
+        if(!$this->exist("denomination_auto")) {
+            return false;
+        }
+        if (!$total) {
+            return strpos($this->getDenominationAuto(false), $const) !== false;
+        }
+        return $this->getDenominationAuto(false) == $const;
+    }
+
+    public function getDenominationAuto($to_array = true ){
+        $d = $this->_get('denomination_auto');
+        if (strpos($d, DRevClient::DENOMINATION_BIO_PARTIEL_DEPRECATED) !== false) {
+            $d = DRevClient::DENOMINATION_BIO.'|'.DRevClient::DENOMINATION_CONVENTIONNEL;
+            $this->_set('denomination_auto', $d);
+        }
+        if (strpos($d, DRevClient::DENOMINATION_BIO_TOTAL_DEPRECATED) !== false) {
+            $d = DRevClient::DENOMINATION_BIO;
+            $this->_set('denomination_auto', $d);
+        }
+        if ($to_array){
+            return explode('|', $d);
+        }
+        return $d;
+    }
+
+    public function setDenominationAuto($d) {
+        if (is_array($d)) {
+            $d = implode('|', $d);
+        }
+        return $this->_set('denomination_auto', $d);
     }
 
     public function getDocumentsAEnvoyer() {
