@@ -1620,7 +1620,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       foreach($cotisations as $cotisation) {
           if (
               (strpos($cotisation->getHash(), '%detail_identifiant%') !== false) &&
-              ($cotisation->getConfigCallback() == 'getVolumeLotsFacturables') || $cotisation->getConfigCallback() == 'getVolumeRevendiqueLots')
+              ($cotisation->getConfigCallback() == 'getVolumeLotsFacturables' || $cotisation->getConfigCallback() == 'getVolumeRevendiqueLots')
              ) {
               throw new sfException("getVolumeLotsFacturables/getVolumeRevendiqueLots incompatibles avec %detail_identifiant%");
           }
