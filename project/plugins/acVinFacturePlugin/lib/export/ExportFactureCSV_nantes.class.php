@@ -4,10 +4,11 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
+    protected $region = null;
 
     protected $floatHelper = null;
 
-    public function __construct($doc_or_id, $header = true) {
+    public function __construct($doc_or_id, $header = true, $region = null) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
@@ -21,6 +22,7 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
        $this->floatHelper = FloatHelper::getInstance();
 
         $this->header = $header;
+        $this->region = $region;
     }
 
     public static function getHeaderCsv() {

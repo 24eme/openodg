@@ -15,6 +15,14 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls igp_*.py | while read script; do python3 $script igp;done
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
+
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        . $(echo $0 | sed 's/[^\/]*$//')config_"$app".inc
+        if test -d $EXPORTDIR"/GLOBAL" ; then
+            python3 bin/csv2sql.py $METABASE_SQLITE".global.tmp" $EXPORTDIR"/GLOBAL"
+            mv $METABASE_SQLITE".global.tmp" $METABASE_SQLITE".global"
+        fi
+    done
     exit 0;
 fi
 
@@ -72,9 +80,11 @@ head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv.part
 
-grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
-rm $EXPORTDIR/drev_lots.csv.part
+if [ -z $IS_NO_VINIF ]; then
+  grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
+  rm $EXPORTDIR/drev_lots.csv.part
+fi
 
 grep "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/conditionnement_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv
@@ -98,17 +108,19 @@ rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_in
 
 sleep 60
 
-bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
-rm $EXPORTDIR/dr.csv.part
+if [ -z $IS_NO_VINIF ]; then
+  bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
+  rm $EXPORTDIR/dr.csv.part
 
-bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
-rm $EXPORTDIR/sv12.csv.part
+  bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
+  rm $EXPORTDIR/sv12.csv.part
 
-bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
-rm $EXPORTDIR/sv11.csv.part
+  bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
+  rm $EXPORTDIR/sv11.csv.part
+fi
 
 bash bin/export_docs.sh ParcellaireIrrigable 30 $1 > $EXPORTDIR/parcellaireirrigable.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigable.csv.part > $EXPORTDIR/parcellaireirrigable.csv
@@ -148,6 +160,10 @@ rm $EXPORTDIR/comptes.csv.part
 php symfony export:facture $SYMFONYTASKOPTIONS >  $EXPORTDIR/factures.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/factures.csv.part > $EXPORTDIR/factures.csv
 rm $EXPORTDIR/factures.csv.part
+
+php symfony export:facture-paiements $SYMFONYTASKOPTIONS >  $EXPORTDIR/paiements.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/paiements.csv.part > $EXPORTDIR/paiements.csv
+rm $EXPORTDIR/paiements.csv.part
 
 php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
@@ -197,8 +213,4 @@ find $EXPORTDIR -type f -empty -delete
 if test "$METABASE_SQLITE"; then
     python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
     mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
-    if test -d $EXPORTDIR"/GLOBAL" ; then
-        python3 bin/csv2sql.py $METABASE_SQLITE".global.tmp" $EXPORTDIR"/GLOBAL"
-        mv $METABASE_SQLITE".global.tmp" $METABASE_SQLITE".global"
-    fi
 fi

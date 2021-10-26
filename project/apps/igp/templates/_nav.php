@@ -55,7 +55,11 @@
                         <?php foreach(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app')) as $i => $navItem): ?>
                          <?php if($i > 0 && isset($navItem['title'])): ?><li role="separator" class="divider"></li><?php endif; ?>
                          <li>
-                             <a href="<?php echo $navItem['url'] ?>">
+                             <?php if (isset($navItem['etablissement']) && $etablissement): ?>
+                                 <a href="<?php echo sprintf($navItem['url'].'?op%%25C3%%25A9rateur=%s', $etablissement->raison_sociale) ?>">
+                             <?php else: ?>
+                                 <a href="<?php echo $navItem['url'] ?>">
+                             <?php endif ?>
                                  <?php if(isset($navItem['icon'])): ?><span class="glyphicon glyphicon-<?php echo $navItem['icon'] ?>"></span><?php endif; ?>
                                  <?php if(isset($navItem['title'])): ?><strong><?php endif; ?><?php echo $navItem['name'] ?><?php if(isset($navItem['title'])): ?></strong><?php endif; ?>
                              </a>

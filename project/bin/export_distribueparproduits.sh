@@ -35,7 +35,7 @@ done
 
 for type in dr sv11 sv12 ; do
     doc_output=$EXPORTDIRFORGLOBAL"/"$type".csv.tmp"
-    doc_globalfile=$EXPORTGLOBALDIR"/"$type".csv"
+    doc_globalfile=$EXPORTDIRFORGLOBAL"/"$type".csv"
     head -n 1 $doc_globalfile > $doc_output
     # si le CVI et la campagne ne sont pas présent dans le fichier final alors on les y met :
     # if ! grep -a CVI  doc_output | grep -a 'DR;2019-2020' > /dev/null ; then grep -a 'DR;2019-2020;IDENTIFIANT;CVI'  >>  doc_output ; fi
