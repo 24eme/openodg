@@ -4,9 +4,10 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
 
     protected $degustation = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
-        $header = "Millésime;CVI Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Date de la dégustation;Organisme dégustateur;Produit;Dénomination complémentaire;N° anonymat;N° prélévement;Cuve;Volume";
+        $header = "Millésime;CVI Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Date de la dégustation;Organisme dégustateur;Produit;Dénomination complémentaire;Malo-lactique;Composition cepages;N° anonymat;N° prélévement;Cuve;Volume";
 
         foreach(DegustationClient::$note_type_libelles as $keyNote => $libelleNote) {
             $header .= ";".$libelleNote." note;".$libelleNote." défauts";
@@ -15,9 +16,10 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
         return $header."\n";
     }
 
-    public function __construct($degustation, $header = true) {
+    public function __construct($degustation, $header = true, $region = null) {
         $this->degustation = $degustation;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {
@@ -43,7 +45,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
 
         foreach($this->degustation->prelevements as $prelevement) {
             $libelle_complet = $prelevement->getLibelleComplet();
-            $csv .= sprintf("%s;%s;\"%s\";%s;%s;%s;%s", $ligne_base, trim($libelle_complet), $prelevement->denomination_complementaire, $prelevement->anonymat_degustation, $prelevement->anonymat_prelevement_complet, $prelevement->cuve, $this->formatFloat($prelevement->volume_revendique));
+            $csv .= sprintf("%s;%s;\"%s\";%s;%s;%s;%s;%s;%s", $ligne_base, trim($libelle_complet), $prelevement->denomination_complementaire, $prelevement->exist('fermentation_lactique') && $prelevement->get('fermentation_lactique') ? "FML" : null, $prelevement->composition, $prelevement->anonymat_degustation, $prelevement->anonymat_prelevement_complet, $prelevement->cuve, $this->formatFloat($prelevement->volume_revendique));
             foreach(DegustationClient::$note_type_libelles as $keyNote => $libelleNote) {
                 $note = null;
                 $defauts = null;

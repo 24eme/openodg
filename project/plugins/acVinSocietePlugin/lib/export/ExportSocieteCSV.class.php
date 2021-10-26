@@ -4,15 +4,17 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
 
     protected $societe = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
         return "Identifiant;Titre;Raison sociale;Adresse;Adresse 2;Adresse 3;Code postal;Commune;Pays;Code comptable;Code NAF;Siret;TVA Intra;Téléphone;Téléphone portable;Fax;Email;Site;Région;Type;Statut;Date de modification;Observation\n";
     }
 
-    public function __construct($societe, $header = true) {
+    public function __construct($societe, $header = true, $region = null) {
         $this->societe = $societe;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {

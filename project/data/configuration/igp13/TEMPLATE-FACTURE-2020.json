@@ -199,28 +199,6 @@
         }
       }
     },
-    "07_mediterrannee_ancien": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Changement de dénomination Méd. N+1 - N° %detail_identifiant%",
-      "code_comptable": "",
-      "details": {
-        "changement_millesime_ancien": {
-          "modele": "CotisationFixe",
-          "prix": 40,
-          "tva": 0.2,
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "ChgtDenom"
-          ],
-          "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "/appellations/MED AND NOT /millesime/courant"
-          ]
-        }
-      }
-    },
     "08_inao": {
       "modele": "CotisationsCollection",
       "callback": "",

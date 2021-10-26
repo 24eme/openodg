@@ -31,8 +31,8 @@ EOF;
         $context->set('routing', $routing);
 
         $this->rows = acCouchdbManager::getClient()
-                    ->startkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), array()))
-                    ->endkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()))
+                    ->startkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent(), array()))
+                    ->endkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent()))
                     ->descending(true)
                     ->reduce(false)
                     ->getView('declaration', 'tous')->rows;

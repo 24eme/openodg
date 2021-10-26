@@ -12,7 +12,7 @@ class TirageCreationForm extends BaseForm
 
     public function getCampagnes() {
         $campagnes = array();
-        $year = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()*1;
+        $year = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent()*1;
 
         while($year >= 2014) {
             $campagnes[$year.""] = $year."";

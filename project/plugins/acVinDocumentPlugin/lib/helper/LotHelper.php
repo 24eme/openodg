@@ -9,6 +9,10 @@ function showOnlyProduit($lot, $show_always_specificite = true)
       if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
           $text .= ' - '.$lot->specificite;
       }
+  }else{
+      if (strpos($lot->specificite, 'primeur') !== false) {
+          $text .= ' - primeur';
+      }
   }
 
   $text .= "</small>";
@@ -94,11 +98,11 @@ function getUrlEtapeFromMvtLot($mvtLot)
 
 function pictoDegustable($lot) {
         if($lot->id_document_affectation) {
-        return '<span title="Dégusté" class="glyphicon glyphicon-ok text-success"></span>';
+        return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
 
     if($lot->affectable) {
-        return '<span title="À déguster" class="glyphicon glyphicon-time"></span>';
+        return '<span title="À déguster" class="glyphicon glyphicon-time text-success"></span>';
     }
 
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';

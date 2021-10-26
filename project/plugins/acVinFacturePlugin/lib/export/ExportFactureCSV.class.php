@@ -4,10 +4,11 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
+    protected $region = null;
 
     protected $floatHelper = null;
 
-    public function __construct($doc_or_id, $header = true) {
+    public function __construct($doc_or_id, $header = true, $region = null) {
         if ($doc_or_id instanceof Facture) {
             $this->facture = $doc_or_id;
         } else {
@@ -21,10 +22,11 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
        $this->floatHelper = FloatHelper::getInstance();
 
         $this->header = $header;
+        $this->region = $region;
     }
 
     public static function getHeaderCsv() {
-        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;Export comptable;id facture\n";
+        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;Export comptable;id facture;Campagne;Numero\n";
     }
 
     public function export() {
@@ -43,6 +45,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
         $declarant = $this->facture->declarant;
         $societe = $this->facture->getSociete();
+        $campagne = preg_replace("|/[0-9]+$|", "", $this->facture->campagne);
         $csv = '';
         $csv_line = $this->facture->date_facturation.";"
               .$societe->identifiant.";"
@@ -74,7 +77,9 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
                 $csv .= $this->floatHelper->formatFr($detail->montant_tva).";";
                 $csv .= $this->floatHelper->formatFr($detail->montant_ht + $detail->montant_tva).";";
                 $csv .= ";;";
-                $csv .= $this->facture->_id;
+                $csv .= $this->facture->_id.";";
+                $csv .= $campagne.";";
+                $csv .= $this->facture->getNumeroOdg();
                 $csv .= "\n";
             }
         }
@@ -87,11 +92,14 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->floatHelper->formatFr($this->facture->total_ht).";";
         $csv .= $this->floatHelper->formatFr($this->facture->total_taxe).";";
         $csv .= $this->floatHelper->formatFr($this->facture->total_ttc).";";
-        $csv .= $this->floatHelper->formatFr($this->facture->getMontantPaiement()).";";
+        $csv .= (
+            ($this->floatHelper->formatFr($this->facture->getMontantPaiement())) ?: 0
+        ).";";
         $csv .= $this->facture->versement_comptable.';';
-        $csv .= $this->facture->_id;
+        $csv .= $this->facture->_id.";";
+        $csv .= $campagne.";";
+        $csv .= $this->facture->getNumeroOdg();
         $csv .= "\n";
-
 
         return $csv;
     }

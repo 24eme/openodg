@@ -17,11 +17,55 @@
     <div class="row">
       <div class="form-group">
           <label class="col-xs-4 control-label">Montant à payer</label>
-          <div class="col-xs-5">
+          <div class="col-xs-8">
               <div class="form-control-static"><?php echo echoFloat($facture->total_ttc); ?> € TTC</div>
+          </div>
+          <label class="col-xs-4 control-label">Restant à payer</label>
+          <div class="col-xs-8">
+              <div class="form-control-static"><?php echo echoFloat($facture->total_ttc - $facture->montant_paiement); ?> €</div>
           </div>
       </div>
     </div>
+    <?php foreach($facture->paiements as $p): if ($p->versement_comptable):?>
+        <hr/>
+        <div class="row">
+          <div class="form-group col-xs-12">
+            <div class="col-xs-3 form-control-static">
+              <strong><?php echo "Reglement numéro ".($p->getKey()+1) ?></strong>
+            </div>
+            <div class="col-xs-9">
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Montant</label>
+                  <div class="col-xs-8 form-control-static">
+                      <p><?php echo $p->montant; ?> €</p>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Date</label>
+                  <div class="col-xs-8 form-control-static">
+                      <?php echo $p->date; ?>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <label class="col-xs-4 control-label">Type de règlement</label>
+                  <div class="col-xs-8 form-control-static">
+                      <?php echo $p->type_reglement; ?>
+                  </div>
+             </div>
+              <div class="form-group">
+              <label class="col-xs-4 control-label">Commentaire</label>
+              <div class="col-xs-8 form-control-static">
+                  <?php echo $p->commentaire; ?>
+              </div>
+            </div>
+            <div class="form-group">
+            <label class="col-xs-4 control-label">Versé comptablement</label>
+            <div class="col-xs-8 form-control-static">Oui</div>
+          </div>
+            </div>
+          </div>
+        </div>
+    <?php endif; endforeach; ?>
     <?php foreach($form['paiements'] as $key_paiement => $paiementForm): ?>
       <hr/>
           <div class="row">

@@ -9,7 +9,7 @@ class parcellaireIntentionAffectationActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
 
         $this->papier = 1;
-        $this->periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() * 1);
+        $this->periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
 
         $this->parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier);
 

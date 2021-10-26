@@ -40,4 +40,8 @@ class ParcellaireConfiguration {
         return !$this->getLimitProduitsConfiguration();
     }
 
+    public function isAres()
+    {
+        return $this->configuration['unit'] == "ares";
+    }
 }

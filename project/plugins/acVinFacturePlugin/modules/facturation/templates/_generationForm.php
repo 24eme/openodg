@@ -1,5 +1,5 @@
 
-<h3><?php if($massive): ?>Génération massive<?php else: ?>Génération de facture<?php endif; ?></h3>
+<h3><?php if($massive): ?>Génération massive <small> (<a href="<?php echo url_for('facturation_en_attente'); ?>">mvt en attente</a>)</small><?php else: ?>Génération de facture<?php endif; ?></h3>
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>

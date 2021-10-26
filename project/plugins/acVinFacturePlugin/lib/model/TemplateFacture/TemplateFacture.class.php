@@ -22,10 +22,10 @@ class TemplateFacture extends BaseTemplateFacture
 					continue;
 				}
                 $cle = $cotisation->getHash();
-                if ((strpos('%detail_identifiant%', $cle) !== false) && !$document->exist('numero_archive')) {
+                if ((strpos($cle, '%detail_identifiant%') !== false) && !$document->exist('numero_archive')) {
                     throw new sfException('pas de %detail_identifiant% possible pour la clé '.$cle.' : '.get_class($document)." n'a pas de champs numero_archive");
                 }
-                if (strpos('%detail_identifiant%', $cle) !== false) {
+                if (strpos($cle, '%detail_identifiant%') !== false) {
                     $cle = str_replace('%detail_identifiant%', $document->numero_archive, $cle);
                 }
 				$cotisations[$cle] = $cotisation;

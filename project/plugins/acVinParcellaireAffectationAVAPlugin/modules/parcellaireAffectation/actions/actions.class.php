@@ -376,18 +376,17 @@ class parcellaireAffectationActions extends sfActions {
             $this->parcellaire->save();
         }
 
-
+        $this->parcellaire->declaration->cleanNode();
         $this->form = new ParcellaireAffectationValidationForm($this->parcellaire);
+        $this->validation = new ParcellaireAffectationValidation($this->parcellaire);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-            $this->validation = new ParcellaireAffectationValidation($this->parcellaire);
-
             return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
-        if (!$this->form->isValid()) {
+        if (!$this->form->isValid() || ! $this->validation->isValide()) {
 
             return sfView::SUCCESS;
         }

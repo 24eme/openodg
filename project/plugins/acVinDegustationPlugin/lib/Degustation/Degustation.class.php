@@ -136,7 +136,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$infos['nbLotsPreleves'] = $this->getNbLotsPreleves();
 		$infos['nbLotsPrelevesSansLeurre'] = $this->getNbLotsPreleves() - $infos["nbLotsLeurre"];
 		$infos["nbAdherents"] = count($this->getAdherentsPreleves());
-  	$infos["nbAdherentsLotsRestantAPrelever"] = count($this->getAdherentsByLotsWithStatut(Lot::STATUT_ATTENTE_PRELEVEMENT));
+  	$infos["nbAdherentsLotsRestantAPrelever"] = count($this->getAdherentsByLotsWithoutStatut(Lot::STATUT_PRELEVE));
 		$infos["nbAdherentsPreleves"] = count($this->getAdherentsPreleves());
 		$infos["degustateursConfirmes"] = $this->getDegustateursConfirmes();
 		$infos["nbDegustateursConfirmes"] = count($infos["degustateursConfirmes"]);
@@ -292,7 +292,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function getAllPieces() {
     	$pieces = array();
 
-        $base_libelle = 'Résultat de la dégustation du ' . $this->getDateFormat('d/m/Y H:i');				
+        $base_libelle = 'Résultat de la dégustation du ' . $this->getDateFormat('d/m/Y H:i');
 
         $declarants = [];
 
@@ -326,6 +326,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
+    }
+
+    public function verifyGenerateModificative() {
+
+        return true;
     }
 
     public function generateUrlPiece($source = null) {
@@ -411,17 +416,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 	 }
 
-	 public function getAdherentsByLotsWithStatut($statut = null){
-		 $lots = $this->getLotsWithStatut($statut);
-		 $lotsByAdherents = array();
-		 foreach ($lots as $lot) {
-			 if(!array_key_exists($lot->getDeclarantIdentifiant(),$lotsByAdherents)){
-				 	$lotsByAdherents[$lot->getDeclarantIdentifiant()] = array();
-				}
-				$lotsByAdherents[$lot->getDeclarantIdentifiant()][] = $lot;
-		 }
-
- 	 	return $lotsByAdherents;
+	 public function getAdherentsByLotsWithoutStatut($statut){
+ 			$adherents = array();
+ 			foreach ($this->getLots() as $lot) {
+ 							if ($lot->isLeurre()) {
+ 									continue;
+ 							}
+ 							if(!$lot->getMouvement($statut)) {
+ 									$adherents[$lot->getDeclarantIdentifiant()] = $lot->getDeclarantIdentifiant();
+ 							}
+ 			}
+ 		return $adherents;
 	}
 
 	public function getAdherentsPreleves(){
@@ -733,16 +738,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             foreach ($this->getLotsNonAnonymisable() as $hashLot => $lot) {
                 $this->remove($hashLot);
             }
-			$this->generateMouvementsLots();
+            $this->lots->reindex();
         }
 
-		public function getTri() {
-			$tri = $this->_get('tri');
-			if (!$tri) {
-				$tri = 'Couleur|Appellation|Cépage';
-			}
-			return $tri;
-		}
+        public function getTri() {
+            $tri = $this->_get('tri');
+            if (!$tri) {
+                $tri = 'Couleur|Appellation|Cépage';
+                $this->_set('tri', $tri);
+            }
+            return $tri;
+        }
+
+        public function isTriManuel() {
+            return strpos($this->getTri(), DegustationClient::DEGUSTATION_TRI_MANUEL) === 0;
+        }
 
 		public function anonymize(){
             $this->cleanLotsNonAnonymisable();
@@ -802,7 +812,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lotsAnon;
         }
 
-		public function getLotsTableOrFreeLots($numero_table, $free = true){
+		public function getLotsTableOrFreeLots($numero_table, $free_table = true){
 			$lots = array();
 			foreach ($this->getLotsPreleves() as $lot) {
 				if(($lot->numero_table == $numero_table)){
@@ -810,7 +820,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					continue;
 				}
 
-				if($free && !$lot->numero_table)  {
+				if($free_table && !$lot->numero_table)  {
 					$lots[] = $lot;
 					continue;
 				}
@@ -818,12 +828,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-		public function getLotsTableOrFreeLotsCustomSort($numero_table, $free = true){
-			$lots = $this->getLotsTableOrFreeLots($numero_table, $free);
-			$this->array_tri = $this->getTriArray();
-			uasort($lots, array($this, 'sortLotsByThisTri'));
-			return $lots;
-		}
+        public function getLotsTableOrFreeLotsCustomSort($numero_table, $free_table = true, $with_tri_manual = true){
+            $lots = $this->getLotsTableOrFreeLots($numero_table, $free_table);
+            $this->array_tri = $this->getTriArray();
+            if ($with_tri_manual) {
+                uasort($lots, array($this, 'sortLotsByThisTri'));
+            }else{
+                $atri = $this->array_tri;
+                if(($key = array_search(DegustationClient::DEGUSTATION_TRI_MANUEL, $this->array_tri)) !== false){
+                     unset($this->array_tri[$key]);
+                }
+                uasort($lots, array($this, 'sortLotsByThisTri'));
+                $this->array_tri = $atri;
+            }
+            return $lots;
+        }
 
         public function getLotsTableCustomSort($numero_table){
             return $this->getLotsTableOrFreeLotsCustomSort($numero_table, false);
@@ -835,14 +854,46 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
         public function updatePositionLots() {
-            if ($this->getTri() == DegustationClient::DEGUSTATION_TRI_MANUEL) {
+            if ($this->isTriManuel()) {
                 return;
             }
             $t = 0;
             foreach($this->getTablesWithFreeLots() as $table) {
                 $t++;
-                foreach($this->getLotsTableOrFreeLotsCustomSort($t) as $lot) {
-                    $lot->generateAndSetPosition();
+                $this->generateAndSetPositionsForTable($t);
+            }
+        }
+
+        public function getTheoriticalPosition($table, $without_manual = false) {
+            $lots_theoritical = $this->getLotsTableOrFreeLotsCustomSort($table, false, false);
+            $theoritical_position = array();
+            foreach ($lots_theoritical as $lot) {
+                if ($without_manual && $lot->isPositionManuel()) {
+                    continue;
+                }
+                $i++;
+                $theoritical_position[$lot->getKey()] = $i;
+            }
+            return $theoritical_position;
+        }
+
+        public function generateAndSetPositionsForTable($table) {
+            $table = ($table) ? $table : 99;
+            $i = 0;
+            $position = 0;
+            $i = 0;
+            $theoritical_position = $this->getTheoriticalPosition($table);
+            $lots = $this->getLotsTableOrFreeLotsCustomSort($table, ($table == 99));
+            foreach($lots as $lot) {
+                $i++;
+                if ($table == 99) {
+                    $lot->position = '999900';
+                }else{
+                    if (($lot->position % 2) && ($theoritical_position[$lot->getKey()] != $i)) {
+                        $lot->position = sprintf("%02d%03d1", $table, $i);
+                    }else{
+                        $lot->position = sprintf("%02d%03d0", $table, $i);
+                    }
                 }
             }
         }
@@ -937,6 +988,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
       return 0;
       }
+
     public function addLeurre($hash, $cepages, $numero_table)
         {
             if (! $this->exist('lots')) {
@@ -975,6 +1027,32 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 
 		/**** Gestion dégustateurs ****/
+
+        public function listeDegustateurs($college, $adresse_only = false)
+        {
+            $degustateurs = [];
+            $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college);
+
+            if (count($comptes_degustateurs) > 0) {
+                foreach ($comptes_degustateurs as $compte) {
+                    $degustateur = CompteClient::getInstance()->find($compte->id);
+
+                    if ($degustateur->isSuspendu()) {
+                        continue;
+                    }
+
+                    $degustateurs[$degustateur->_id] = ($adresse_only) ? $degustateur->getLibelleWithAdresse() : $degustateur;
+                }
+            }
+
+            uasort($degustateurs, function ($deg1, $deg2) use ($adresse_only) {
+                return ($adresse_only)
+                     ? strcasecmp($deg1, $deg2)
+                     : strcasecmp($deg1->nom, $deg2->nom);
+            });
+
+            return $degustateurs;
+        }
 
 		public function getNbDegustateursStatutWithCollege($confirme = true ,$college = null){
 			return count($this->getDegustateursStatutWithCollege($confirme,$college));
@@ -1036,7 +1114,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $degustateurs;
-		}		
+		}
 
 		public function getDegustateursATable(){
 			$degustateurs = array();

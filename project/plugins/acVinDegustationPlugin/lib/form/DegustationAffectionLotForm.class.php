@@ -3,10 +3,10 @@
 class DegustationAffectionLotForm extends BaseForm
 {
 
-    public function __construct(Lot $lot)
+    public function __construct(Lot $lot, $que_desgustation_en_cours = true)
     {
         $this->lot = $lot;
-
+        $this->en_cours = $que_desgustation_en_cours;
         parent::__construct();
     }
     public function configure() {
@@ -28,9 +28,13 @@ class DegustationAffectionLotForm extends BaseForm
 
     public function getDegustationChoices() {
         $degustations = array();
-        $degustationsEnCours = DegustationClient::getInstance()->getHistoryEncours();
+        if ($this->en_cours) {
+            $listeDegustations = DegustationClient::getInstance()->getHistoryEncours();
+        }else{
+            $listeDegustations = DegustationClient::getInstance()->getHistory(100);
+        }
 
-        foreach ($degustationsEnCours as $degustation_id => $degustation) {
+        foreach ($listeDegustations as $degustation_id => $degustation) {
           $degustations[$degustation_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
         }
         return $degustations;

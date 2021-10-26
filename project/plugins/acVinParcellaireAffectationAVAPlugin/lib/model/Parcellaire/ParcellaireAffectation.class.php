@@ -8,6 +8,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    protected $repartition_par_parcelle = [];
 
     public function __construct() {
         parent::__construct();
@@ -38,6 +39,27 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->campagne = $campagne;
         $this->set('_id', ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, $type));
         $this->storeDeclarant();
+    }
+
+    public function hasRepartitionParParcelle($cepage)
+    {
+        if (array_key_exists($cepage, $this->repartition_par_parcelle)) {
+            return $this->repartition_par_parcelle[$cepage];
+        }
+
+        $this->repartition_par_parcelle[$cepage] = [];
+
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if ($parcelle->getCepage()->getKey() !== $cepage) {
+                continue;
+            }
+
+            if ($parcelle->exist('acheteurs')) {
+                $this->repartition_par_parcelle[$cepage] = $this->repartition_par_parcelle[$cepage] + $parcelle->acheteurs->toArray(true, false);
+            }
+        }
+
+        return $this->repartition_par_parcelle[$cepage];
     }
 
     public function getAcheteursByCVI() {
@@ -140,7 +162,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 if ($c) {
                     $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
                     $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie;
+                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie * 100; // hectare -> are
                     $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
                 }
             }
@@ -429,6 +451,31 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $acheteur->email = $etablissement->email;
 
         return $acheteur;
+    }
+
+    public function cleanProduitsAcheteurs()
+    {
+        $toClean = [];
+
+        foreach ($this->getProduits() as $produit) {
+            if (! $produit->exist('acheteurs')) {
+                continue;
+            }
+
+            foreach ($produit->acheteurs as $lieu => $destinations) {
+                foreach ($destinations as $destination => $operateurs) {
+                    foreach ($operateurs as $id => $operateur) {
+                        if (array_key_exists($id, $this->acheteurs->$destination->toArray(true, false)) === false) {
+                            $toClean[] = $operateur->getHash();
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($toClean as $hash) {
+            $this->remove($hash);
+        }
     }
 
     public function hasParcelleForAppellationKey($appellationKey) {

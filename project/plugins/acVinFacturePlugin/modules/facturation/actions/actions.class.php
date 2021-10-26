@@ -115,8 +115,19 @@ class facturationActions extends sfActions
 
             $this->identifiant = $request->getParameter('identifiant');
 
-            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
+            $this->campagnes = [];
+            $campagne_actuelle = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
+            for ($i = $campagne_actuelle; $i > $campagne_actuelle - 5; $i--) {
+                $this->campagnes[] = implode('-', [$i, $i+1]);
+            }
+            $this->campagne = $request->getParameter('campagne', null);
+            $campagne_requete = ($this->campagne) ? strstr($this->campagne, "-", true) : null;
+
+
+            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $campagne_requete);
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
+
+            usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
 
             $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
             $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
@@ -202,8 +213,11 @@ class facturationActions extends sfActions
 
           return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
       }
-
-      $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture);
+      $date = $request->getParameter('date');
+      if ($date && ($date > date('Y-m-d') || count(explode('-', $date)) != 3)) {
+          throw sfException('wrong date format '+$date);
+      }
+      $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture, $date);
       return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
     }
 

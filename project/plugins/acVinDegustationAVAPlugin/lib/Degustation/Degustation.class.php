@@ -104,6 +104,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
             }
         }
 
+        if($this->appellation == "CREMANT") {
+            foreach($drev->declaration->getProduits() as $produit) {
+                if(str_replace("appellation_", "", $produit->getAppellation()->getKey()) != $this->appellation) {
+                    continue;
+                }
+                $produitConfig = $this->getConfiguration()->get($produit->getHash()."/cepage_ED");
+
+                $lot = $prelevement->lots->add(str_replace("/", "-", $produitConfig->getHash()));
+                $lot->libelle = $produitConfig->getLibelle();
+                $lot->hash_produit = $produitConfig->getHash();
+                $lot->volume_revendique = $produit->volume_revendique;
+                $lot->nb_hors_vtsgn = 1;
+            }
+        }
+
         foreach($prelevement->lots as $l_key => $l) {
             $lot = $this->lots->add($l_key);
             $lot->hash_produit = $l->hash_produit;

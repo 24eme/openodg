@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test();
+$t = new lime_test(56);
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
@@ -43,7 +43,7 @@ foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouch
     $conditionnement->delete(false);
 }
 
-foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation1 = DegustationClient::getInstance()->find($k);
     $degustation1->delete(false);
 }
@@ -218,7 +218,7 @@ $values = array();
 $values['volume'] = 11;
 $values['produit_hash'] = $produitconfig1->getHash();
 $values['numero_logement_operateur'] = "A";
-$values['millesime'] = "2021";
+$values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
 $values['specificite'] = 'bio';
@@ -239,11 +239,13 @@ $t->is(count($drevM02->mouvements), 0, "la M02 n'a pas de mouvement facturable")
 $lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
 $form = new LotModificationForm($lot);
 
+$t->is($form->getDefault("millesime"), ($annee+2)."", "Le millésime par défaut du form est ".($annee+2));
+
 $values = array();
 $values['volume'] = 11;
 $values['produit_hash'] = $produitconfig1->getHash();
 $values['numero_logement_operateur'] = "A";
-$values['millesime'] = "2021";
+$values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
 $values['specificite'] = 'bio';

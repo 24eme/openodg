@@ -57,12 +57,12 @@ class LotsClient
 
     public function findByUniqueId($declarantIdentifiant, $uniqueId, $documentOrdre = null) {
 
-        return $this->find($declarantIdentifiant, self::getCampagneFromUniqueId($uniqueId), self::getNumeroDossierFromUniqueId($uniqueId), self::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre);
+        return $this->find($declarantIdentifiant, self::getCampagneFromUniqueId($uniqueId), self::getNumeroDossierFromUniqueId($uniqueId), self::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre, true);
     }
 
-    public function find($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $documentOrdre = null) {
+    public function find($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $documentOrdre = null, $descending = false) {
         $numOrdre = ($documentOrdre)? sprintf("%02d", $documentOrdre) : null;
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $numOrdre);
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvements($declarantIdentifiant, $campagne, $numeroDossier, $numeroArchive, $numOrdre, null, $descending);
         $docId = null;
         foreach($mouvements->rows as $mouvement) {
             $docId = $mouvement->id;

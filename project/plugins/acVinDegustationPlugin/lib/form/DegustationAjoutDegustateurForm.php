@@ -33,31 +33,14 @@ class DegustationAjoutDegustateurForm extends acCouchdbForm {
     $doc->save();
   }
 
-
-
   public function getDegustateursByCollege() {
     if (!$this->degustateurs) {
-        $this->degustateurs = array();
+        $this->degustateurs = [];
         foreach (DegustationConfiguration::getInstance()->getColleges() as $key => $college) {
-          $comptes = CompteTagsView::getInstance()->listByTags('automatique', $key);
-
-          if (count($comptes) > 0) {
-              $result = array();
-              foreach ($comptes as $compte) {
-                  $libelle = (isset($compte->key[CompteTagsView::KEY_LIBELLEWITHADRESSE_COMPTE]))? $compte->key[CompteTagsView::KEY_LIBELLEWITHADRESSE_COMPTE] : null;
-                  if (!$libelle) {
-                    $degustateur = CompteClient::getInstance()->find($compte->id);
-                    $libelle = $degustateur->getLibelleWithAdresse();
-                  }
-                  $this->degustateurs[$compte->id] = $libelle;
-              }
-          }
+            $this->degustateurs = $this->degustateurs + $this->getDocument()->listeDegustateurs($key, true);
         }
-
-        uasort($this->degustateurs, function ($deg1, $deg2) {
-            return strcasecmp($deg1, $deg2);
-        });
     }
+
     return $this->degustateurs;
   }
 

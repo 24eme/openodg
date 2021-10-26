@@ -14,6 +14,7 @@ class DeclarationExportCsvTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
+            new sfCommandOption('no-warnings', null, sfCommandOption::PARAMETER_REQUIRED, 'do not print warnings', false),
         ));
 
         $this->namespace = 'declaration';
@@ -32,8 +33,15 @@ EOF;
         $doc = DeclarationClient::getInstance()->find($arguments['doc_id']);
 
         if(!$doc) {
-                
             throw new sfException(sprintf("Document %s introuvable", $arguments['doc_id']));
+        }
+
+        if (!$options['no-warnings'] && $doc->exist('validation') && !$doc->validation) {
+            fwrite(STDERR, "WARNING: document non validé, ne sera pas exporté via la tache d'export global\n");
+        }
+
+        if(!$options['no-warnings'] && method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
+            fwrite(STDERR, "WARNING: document exclu de la tache d'export global (via ".get_class($doc)."::isExcluExportCsv())\n");
         }
 
         if($options["header"]) {
@@ -42,7 +50,6 @@ EOF;
         }
 
         $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
-         
         echo $export->export();
     }
 }

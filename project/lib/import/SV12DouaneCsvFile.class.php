@@ -75,7 +75,10 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
-                        $produit[] = $cpt;
+                $produit[] = $cpt;
+                $produit[] = Organisme::getCurrentOrganisme();
+                $produit[] = ($p)? $p->getHash() : '';
+                $produit[] = ($this->doc)? $this->doc->_id : '';
 	        			$produits[] = $produit;
                     }
                     $cpt++;

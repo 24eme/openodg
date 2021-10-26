@@ -37,8 +37,4 @@ class FacturePaiementEmbedForm extends acCouchdbObjectForm {
       return array_merge(array("" => ""),FactureClient::$types_paiements);
     }
 
-    protected function doUpdateObject($values) {
-        parent::doUpdateObject($values);
-    }
-
 }

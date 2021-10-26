@@ -1,0 +1,32 @@
+{
+  "_id": "TEMPLATE-FACTURE-%periode%",
+  "type": "TemplateFacture",
+  "campagne": "%periode%",
+  "template": "IGP",
+  "libelle": "%periode% - IGP",
+  "docs": [
+    "DRev"
+  ],
+  "cotisations": {
+    "00_%detail_identifiant%_00_volume_revendique_numero_dossier": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "DRev Volume revendique numéro de dossier",
+      "code_comptable": "70630000",
+      "details": {
+        "volume_revendique_numero_dossier": {
+          "modele": "CotisationVariable",
+          "prix": 2,
+          "tva": 0,
+          "unite": "hl",
+          "libelle": "- %detail_identifiant%",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeRevendiqueNumeroDossier"
+        }
+      }
+    }
+  }
+}

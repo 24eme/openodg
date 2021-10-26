@@ -72,10 +72,19 @@ EOF;
         if($value === "null") {
             $value = null;
         }
+        if ($value === "false") {
+            $value = false;
+        }elseif ($value === "true") {
+            $value = true;
+        }
 
         if($doc->get($hash) === $value) {
 
             continue;
+        }
+
+        if(preg_match("/^\+[0-9]+$/", $value)) {
+            $value = + str_replace("+", "", $value);
         }
 
         $output[] = $hash.":\"".$value."\" (".$doc->get($hash).")";

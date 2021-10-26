@@ -66,6 +66,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $date_campagne = $date_campagne->modify('-7 months');
             $this->campagne = $date_campagne->format('Y');
         }
+
+        if (FactureConfiguration::getInstance()->getExercice() == 'recolte') {
+            $date_campagne = new DateTime($this->date_facturation);
+            $date_campagne = $date_campagne->modify('-9 months');
+            $this->campagne = $date_campagne->format('Y');
+        }
     }
 
     public function setModalitePaiement($modalitePaiement) {
@@ -97,6 +103,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
+        if($this->exist('numero_odg') && $this->_get('numero_odg')) {
+            return $this->_get('numero_odg');
+        }
+
         return $this->campagne . $this->numero_archive;
     }
 
@@ -253,15 +263,21 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
             $quantite = 0;
             $template = $this->getTemplate();
-            if ($template) {
-                foreach ($template->getCotisations() as $cotisName => $cotis) {
-                    if($cotis->code_comptable && $mouvement_agreges->value->categorie == $cotisName){
+            $code_comptable = false;
+            if (!$template) {
+                throw new sfException("No template found (".$mouvement_agreges->id.")");
+            }
+
+            foreach ($template->getCotisations() as $cotisName => $cotis) {
+                if($cotis->code_comptable) {
+                    $code_comptable = true;
+                    $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
+                    if ($mouvement_agreges->value->categorie == $cotisName) {
                         $ligne->produit_identifiant_analytique = $cotis->code_comptable;
                         break;
                     }
                 }
             }
-
             $detail = $ligne->details->add();
             $detail->prix_unitaire = $mouvement_agreges->value->taux;
             $detail->taux_tva = $mouvement_agreges->value->tva;
@@ -271,6 +287,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             }
             $detail->quantite = $mouvement_agreges->value->quantite;
             $ligne->updateTotaux();
+            if ($code_comptable && !$ligne->produit_identifiant_analytique) {
+                throw new sfException("Pas d'identifiant analytique trouvé pour ".$mouvement_agreges->value->categorie." (".$mouvement_agreges->id.")");
+            }
     }
 
     public function orderLignesByCotisationsKeys() {
@@ -380,9 +399,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNbLignesMouvements() {
-      $nbLigne = 0 ;
+        $nbLigne = 0 ;
+        if (FactureConfiguration::getInstance()->isLigneUnique()) {
+            return 1;
+        }
         foreach ($this->lignes as $lignesType) {
-            $nbLigne += count($lignesType->details) + 1;
+            $nbLigne += count($lignesType->details) + FactureConfiguration::getInstance()->isLigneDetailWithTitle() * 1;
         }
         return $nbLigne;
     }

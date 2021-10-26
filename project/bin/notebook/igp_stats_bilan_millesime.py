@@ -6,31 +6,52 @@
 
 import pandas as pd
 import sys
+from datetime import datetime
+import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 
+if(len(sys.argv)<2):
+    print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
+    exit()
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
 
+if(len(sys.argv)>2):
+    millesime = sys.argv[2]
+else:
+    today= datetime.now()
+    debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
+    millesime = str(debutcampagne.year)
+
+if(len(sys.argv)>3):
+    datemax = sys.argv[3]
+else:
+    datemax = str(int(millesime)+1)+'-08-01'
+
 #dossier_igp = "exports_igpgascogne"
 #igp = "gascogne"
+#datemax = "2022-01-01"
+#millesime = "2019"
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
 lots = pd.read_csv("../../web/"+dossier_igp+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
 changement_deno = pd.read_csv("../../web/"+dossier_igp+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
-    
-lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
+
+#lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
 changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changement_deno["Type"] == "DRev:Changé") ]
+changement_deno = changement_deno[changement_deno["Date de validation ODG"] < datemax]
+
+degustations = pd.read_csv("../../web/"+dossier_igp+"/degustations.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 
 
 # In[ ]:
 
 
 drev_lots = drev_lots.rename(columns = {'Date lot': 'Date_lot'})
-millesime = "2019"
-datemax = "2021"
-drev_lots['Millesime']= millesime
+
+drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
 drev_lots['Lieu'] = drev_lots['Lieu'].fillna('')
@@ -43,23 +64,23 @@ final = drev_lots
 # In[ ]:
 
 
-lots = lots.rename(columns = {'Date lot': 'Date_lot'})
-lots = lots.query("Millésime == @millesime")
-lots = lots.query("Date_lot < @datemax")
+
+degustations = degustations.query("Millésime == @millesime")
+degustations = degustations[degustations["Date"] < datemax]
 
 conforme = "Conforme"
 rep_conforme = "Réputé conforme"
 #en_recours="En recours OC"
 
-lots = lots.rename(columns = {'Statut de lot': 'Statut_de_lot'})
-lots = lots.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme");      
+degustations = degustations.rename(columns = {'Statut de lot': 'Statut_de_lot'})
+degustations = degustations.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme");
 # & Statut_de_lot != @en_recours
 
-lots['Lieu'] = lots['Lieu'].fillna('')
-lots = lots.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
-lots ['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
-lots = lots.reset_index()
-final = final.append(lots)
+degustations['Lieu'] = degustations['Lieu'].fillna('')
+degustations = degustations.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
+degustations['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
+degustations = degustations.reset_index()
+final = final.append(degustations,sort= True)
 
 
 # In[ ]:
@@ -81,7 +102,7 @@ changement_denomination_declassement = changement_denomination_declassement.grou
 changement_denomination_declassement  = changement_denomination_declassement.reset_index()
 changement_denomination_declassement['Type']= 'DECLASSEMENT'
 changement_denomination_declassement = changement_denomination_declassement.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit'})
-final = final.append(changement_denomination_declassement)
+final = final.append(changement_denomination_declassement,sort= True)
 
 
 # In[ ]:
@@ -93,9 +114,14 @@ changement_denomination = changement_denomination.groupby(['Origine Appellation'
 changement_denomination = changement_denomination.reset_index()
 changement_denomination['Type'] = "CHANGEMENT DENOMINATION SRC = PRODUIT"
 changement_denomination = changement_denomination.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Volume changé':'Volume','Origine Produit':'Produit','Appellation':'Nv Appellation','Couleur':'Nv Couleur','Lieu':'NV Lieu','Produit':'Nv Produit'})
-changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
+
+if(changement_denomination.empty):
+    changement_denomination['Libelle'] = ""
+else:
+    changement_denomination['Libelle'] = changement_denomination['Produit']+' en '+changement_denomination['Nv Produit']
+
 changement_denomination = changement_denomination[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
-final = final.append(changement_denomination)
+final = final.append(changement_denomination,sort= True)
 
 
 # In[ ]:
@@ -113,12 +139,16 @@ changement_deno = changement_deno.groupby(['Appellation','Couleur','Lieu','Produ
 changement_deno = changement_deno.reset_index()
 
 changement_deno['Type'] = "CHANGEMENT DENOMINATION DEST = PRODUIT"
-changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changement_deno['Produit']
 
-changement_deno= changement_deno.rename(columns = {'Volume changé':'Volume'})
+if(changement_deno.empty):
+    changement_deno['Libelle'] = ""
+else:
+    changement_deno['Libelle'] = changement_deno['Origine Produit']+' en '+changement_deno['Produit']
+
+changement_deno = changement_deno.rename(columns = {'Volume changé':'Volume'})
 changement_deno = changement_deno[['Appellation','Couleur','Lieu','Volume','Type','Libelle','Produit']]
 
-final = final.append(changement_deno)
+final = final.append(changement_deno,sort= True)
 
 
 # In[ ]:
@@ -138,16 +168,16 @@ type_declassement = "DECLASSEMENT"
 
 tab_cal = final.groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
 
-tab_cal['type_vol_revendique'] =  final.query("Type == @type_vol_revendique").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
-tab_cal['type_instance_conformite'] =  final.query("Type == @type_instance_conformite").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
-tab_cal['type_changement_deno_src_produit'] =  final.query("Type == @type_changement_deno_src_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
-tab_cal['type_changement_deno_dest_produit'] =  final.query("Type == @type_changement_deno_dest_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_vol_revendique'] = final.query("Type == @type_vol_revendique").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_instance_conformite'] = final.query("Type == @type_instance_conformite").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_changement_deno_src_produit'] = final.query("Type == @type_changement_deno_src_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
+tab_cal['type_changement_deno_dest_produit'] = final.query("Type == @type_changement_deno_dest_produit").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
 tab_cal['type_declassement'] =  final.query("Type == @type_declassement").groupby(['Appellation','Lieu','Couleur','Produit'])[["Volume"]].sum()
 
 tab_cal = tab_cal.fillna(0)
 
 tab_cal['A'] = tab_cal['type_vol_revendique'] - tab_cal['type_instance_conformite']
-tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1) 
+tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1)
 tab_cal['A-B'] =  tab_cal['A'] - tab_cal ['B']
 tab_cal = tab_cal.reset_index(level=['Appellation','Lieu','Couleur','Produit'])
 
@@ -157,11 +187,10 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 # In[ ]:
 
 
-tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
-
+tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")

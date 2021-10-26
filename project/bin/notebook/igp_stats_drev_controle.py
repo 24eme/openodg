@@ -5,65 +5,79 @@
 
 
 import pandas as pd
+import sys
+import re
+from datetime import datetime
 
-lots = pd.read_csv("../../web/exports_igp/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", 
-                   dtype={'Code postal Opérateur': 'str', 'Campagne': 'str', 'Num dossier': 'str', 
-                          'Num lot': 'str', 'Millésime': 'str'}, low_memory=False)
-lots['Lieu'].fillna('', inplace=True)
-#lots.columns
+path_igp = "../../web/exports_igp"
+
+if(len(sys.argv) > 1 and re.search("^igp", sys.argv[1])):
+     path_igp = "../../web/exports_"+sys.argv[1]
+
+millesime = str(datetime.now().year - 1)
+
+if(len(sys.argv) > 2 and re.search("^[0-9]{4}$", sys.argv[2])):
+    millesime = sys.argv[2]
+    
+millesime_precedent = str(int(millesime) - 1)
+
+moisjour = "07-31"
+    
+if(len(sys.argv) > 3 and re.search("^[0-9]{2}-[0-9]{2}$", sys.argv[3])):
+    moisjour = sys.argv[3]
+    
+date_debut_courant = millesime + '-08-01'
+date_fin_courant = str(int(millesime) + 1) + '-' + moisjour
+
+date_debut_precedent = millesime_precedent + '-08-01'
+date_fin_precedent = str(int(millesime_precedent) + 1) + '-' + moisjour
 
 
 # In[ ]:
 
 
-historique = pd.read_csv("../../web/exports_igp/lots-historique.csv", encoding="iso8859_15", delimiter=";", decimal=",", 
+historique = pd.read_csv(path_igp+ "/lots-historique.csv",  encoding="iso8859_15", delimiter=";", decimal=",", 
                    dtype={'Campagne': 'str', 'Num dossier': 'str', 
                           'Num lot': 'str', 'Millésime': 'str'}, low_memory=False)
-#historique['Doc Type'].unique()
+
+historique = historique[(historique['Origine'] == 'DRev') | (historique['Origine'] == 'DRev:Changé')]
+historique = historique[((historique['Libellé du lot'].str.contains(" " + millesime + " ")) & (historique['Date lot'] >= date_debut_courant) & (historique['Date lot'] <= date_fin_courant)) | ((historique['Libellé du lot'].str.contains(" " + millesime_precedent + " ")) & (historique['Date lot'] >= date_debut_precedent) & (historique['Date lot'] <= date_fin_precedent))]
+
+historique["unique_id"] = historique['Id Opérateur'] + historique['Lot unique Id']
+
+historique_conforme_unique_id = historique[(historique['Statut'] == 'Conforme') | (historique['Statut'] == 'Réputé conforme') | (historique['Statut'] == 'Conforme en appel')]['unique_id'].unique()
+historique_revendique_unique_id = historique['unique_id'].unique()
+
+historique = historique.sort_values(by=['Date lot', 'Doc Ordre'], ascending=False)
+historique = historique.drop_duplicates(subset=['Id Opérateur', 'Lot unique Id'], keep='first')
+
+historique_revendique = historique[historique['unique_id'].isin(historique_revendique_unique_id)]
+historique_conforme = historique[historique['unique_id'].isin(historique_conforme_unique_id)]
 
 
 # In[ ]:
 
 
-uniq_id = historique[ 
-    (historique['Doc Type'] != 'Conditionnement') & 
-    (historique['Doc Type'] != 'Transaction') & 
-    (historique['Campagne'] >= '2019-2020')
-]['Lot unique Id'].unique()
-lots = lots[lots['Lot unique Id'].isin(uniq_id)]
-#lots = lots[lots['Appellation'] == 'MED']
+lots = pd.read_csv(path_igp+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",",
+                   dtype={'Code postal Opérateur': 'str', 'Campagne': 'str', 'Num dossier': 'str',
+                          'Num lot': 'str', 'Millésime': 'str'}, low_memory=False)
+lots['Lieu'].fillna('', inplace=True)
+lots_revendique = lots.merge(historique_revendique, how='inner', on=['Id Opérateur', 'Lot unique Id'])
+lots_conforme = lots.merge(historique_conforme, how='inner', on=['Id Opérateur', 'Lot unique Id'])
 
 
 # In[ ]:
 
 
-lots_2020 = lots[(lots['Millésime'] == '2020') & (lots['Date lot'] >= '2020-08-01') & (lots['Date lot'] <= '2021-06-15')]
-lots_2019 = lots[(lots['Millésime'] == '2019') & (lots['Date lot'] >= '2019-08-01') & (lots['Date lot'] <= '2020-06-15')]
-
-#group = ['Produit']
 group = ['Produit', 'Appellation', 'Couleur', 'Lieu']
-
-stat_igp = lots_2020.groupby(group)[['Volume']].sum().rename(columns={"Volume": "VRT 2020"})
-stat_igp['VRT 2019'] = lots_2019.groupby(group)[['Volume']].sum()
-
-#stat_igp
-
-
-# In[ ]:
-
-
-lots_conformes = lots[(lots['Statut de lot'] == 'Conforme') | (lots['Statut de lot'] == 'Réputé conforme')]
-lots_conformes_2020 = lots_conformes[(lots_conformes['Millésime'] == '2020') & (lots_conformes['Date lot'] >= '2020-08-01') & (lots_conformes['Date lot'] <= '2021-06-15')]
-lots_conformes_2019 = lots_conformes[(lots_conformes['Millésime'] == '2019') & (lots_conformes['Date lot'] >= '2019-08-01') & (lots_conformes['Date lot'] <= '2020-06-15')]
-
-stat_igp['VRC 2020'] = lots_conformes_2020.groupby(group)[['Volume']].sum()
-stat_igp['VRC 2019'] = lots_conformes_2019.groupby(group)[['Volume']].sum()
-
-#stat_igp
+stat_igp = lots_revendique[(lots_revendique['Millésime'] == millesime)].groupby(group)[['Volume_y']].sum().rename(columns={"Volume_y": "VRT " + millesime})
+stat_igp['VRT ' + millesime_precedent] = lots_revendique[(lots_revendique['Millésime'] == millesime_precedent)].groupby(group)[['Volume_y']].sum()
+stat_igp['VRC ' + millesime] = lots_conforme[(lots_conforme['Millésime'] == millesime)].groupby(group)[['Volume_y']].sum()
+stat_igp['VRC ' + millesime_precedent] = lots_conforme[(lots_conforme['Millésime'] == millesime_precedent)].groupby(group)[['Volume_y']].sum()
 
 
 # In[ ]:
 
 
-stat_igp.reset_index().to_csv("../../web/exports_igp/igp_stats_vrc-vrt_2020.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+stat_igp.reset_index().to_csv(path_igp+"/stats/igp_stats_vrc-vrt_"+millesime+"_"+date_fin_courant+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 

@@ -10,9 +10,11 @@ prod:
 
   mailer:
     param:
-      delivery_strategy: spool
-      spool_class: Swift_FileSpool
-      spool_arguments: [%SF_DATA_DIR%/mails]
+      delivery_strategy: realtime
+#      delivery_strategy: single_address
+#      delivery_address: [logs@24eme.fr]
+      transport:
+        class: Swift_MailTransport
 
 test:
   storage:
@@ -46,7 +48,18 @@ all:
     param:
       cache_key_use_vary_headers: true
       cache_key_use_host_name:    true
-  
+
   user:
     param:
       timeout:         3600
+
+  storage:
+    class: sfSessionStorage
+    param:
+      session_name: openodg
+
+  mailer:
+    class: AppMailer
+    param:
+      transport:
+        class: Swift_MailTransport
