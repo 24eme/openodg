@@ -23,18 +23,23 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
 
         $this->setWidgets(array(
             'hashref' => new sfWidgetFormChoice(array('choices' => $produits)),
-            'cepages' => new sfWidgetFormTextarea()
+            'cepages' => new sfWidgetFormTextarea(),
+            'millesime' => new sfWidgetFormInput()
         ));
 
         $this->widgetSchema->setLabels(array(
             'hashref' => 'Appellation: ',
-            'cepages' => 'Cépages: '
+            'cepages' => 'Cépages: ',
+            'millesime' => 'Millésime: '
         ));
 
         $this->setValidators(array(
             'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie.")),
-            'cepages' => new sfValidatorString(array('required' => false))
+            'cepages' => new sfValidatorString(array('required' => false)),
+            'millesime' => new sfValidatorInteger(['min' => 0, 'required' => true])
         ));
+
+        $this->setDefault('millesime', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent());
 
         $this->widgetSchema['table'] = new sfWidgetFormInputHidden();
         $this->validatorSchema['table'] = new sfValidatorInteger(['required' => true, 'min' => 0]);
@@ -67,9 +72,11 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $degust = $this->getObject();
         $hash = ($values['hashref']) ?: null;
         $cepages = ($values['cepages']) ?: null;
+        $millesime = $values['millesime'];
 
         if (isset($hash) && !empty($hash) && array_key_exists($hash, $this->getProduits())) {
-            $degust->addLeurre($hash, $cepages, $values['table']);
+            $leurre = $degust->addLeurre($hash, $cepages, $values['table']);
+            $leurre->millesime = $millesime;
         }
     }
 

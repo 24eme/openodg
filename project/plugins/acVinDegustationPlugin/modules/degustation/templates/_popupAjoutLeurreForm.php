@@ -24,6 +24,10 @@
 								</label>
 							</div>
 						</div>
+						<div class="col-xs-5">
+                            <?php echo $form['millesime']->renderLabel(); ?>
+                            <?php echo $form['millesime']->render(['placeholder' => 'Millésime', 'required' => true]); ?>
+						</div>
 					</div>
 					<div style="display:none;" id="cepages_choice">
 					<span class="error"><?php echo $form['cepages']->renderError() ?></span>
