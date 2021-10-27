@@ -14,7 +14,7 @@
       <div class="panel-heading">
         <h2 class="panel-title">
           <div class="row">
-            <div class="col-xs-12">Pdf et documents nécessaires à l'organisation d'une commission</div>
+            <div class="col-xs-12">Documents nécessaires à l'organisation d'une commission</div>
           </div>
         </h2>
       </div>
@@ -66,6 +66,24 @@
             <br/>
           </div>
         </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <br/>
+            <strong>Documents tiers</strong>
+            <br/>
+          </div>
+        </div>
+        <div class="row">
+        <div class="col-xs-12">
+          <br/>
+          <ul class="list-group">
+            <li class="list-group-item">
+                <a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des lots pour labo</a>
+            </li>
+          </ul>
+          <br/>
+        </div>
+      </div>
       </div>
     </div>
   </div>

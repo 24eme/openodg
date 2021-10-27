@@ -865,7 +865,6 @@ class degustationActions extends sfActions {
 
     public function executeEtiquettesPrlvmtCsv(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
       $this->getResponse()->setHttpHeader('Content-Type', 'text/csv; charset=ISO-8859-1');
       $this->setLayout(false);
     }
