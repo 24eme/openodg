@@ -28,7 +28,7 @@ class TirageValidation extends DocumentValidation {
         $isRoseCepageNonPN = false;
         if ($this->document->couleur == TirageClient::COULEUR_ROSE) {
             foreach ($this->document->getCepagesSelectionnes() as $cepage) {
-                if ($cepage->libelle != 'Pinot noir') {
+                if ($cepage->libelle != 'Pinot Noir') {
                     $isRoseCepageNonPN = true;
                     break;
                 }
