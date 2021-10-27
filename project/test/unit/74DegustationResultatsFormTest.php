@@ -85,7 +85,7 @@ $doc->setLots($lots);
 foreach ($doc->getLots() as $lot) {
     $lot->numero_table = 1;
 }
-$doc->addLeurre($doc->lots[0]->getProduitHash(), null, 1);
+$doc->addLeurre($doc->lots[0]->getProduitHash(), null, date('Y'), 1);
 
 $t->comment('Résultat de conformité / non conformité');
 $lotConformes = $doc->getLotsConformesOrNot(true);

@@ -111,9 +111,9 @@ $t->is($degust->lots[1]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le 2ème lot 
 $t->is($degust->lots[2]->statut, Lot::STATUT_ATTABLE, "Le 3ème lot est attablé");
 
 $t->comment('On ajoute deux leurres en 4ème et 5ème lot');
-$lot4 = $degust->addLeurre($lot1->produit_hash, null, 1);
+$lot4 = $degust->addLeurre($lot1->produit_hash, null, date('Y'), 1);
 $t->is($lot4->numero_archive, null, "le lot leurre n'a pas de numero d'archive");
-$lot5 = $degust->addLeurre($lot1->produit_hash, null, 1);
+$lot5 = $degust->addLeurre($lot1->produit_hash, null, date('Y'), 1);
 $t->is($lot5->numero_archive, null, "le lot leurre n'a pas de numero d'archive");
 $degust->save();
 $degust = DegustationClient::getInstance()->find($degustid);

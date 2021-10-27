@@ -94,7 +94,7 @@ $nom = "Degustation du ".$degustationTeste->date." au ".$degustationTeste->lieu;
 $t->is($form->getDegustationChoices(),array($degustationTeste->_id => $nom),"Exemple : Degustation n°2021102 du 21/05/2021 à 10h30 au Syndicat des Vignerons");
 
 $t->comment('On ajoute un leurre');
-$leurre = $degustationTeste->addLeurre($produitLeurreHash, 'Cepage leurre', 1);
+$leurre = $degustationTeste->addLeurre($produitLeurreHash, 'Cepage leurre', date('Y'), 1);
 
 $t->is($leurre->leurre, true, 'C\'est un leurre');
 $t->is($leurre->getProduitHash(), $produitLeurreHash, 'Le hash est le même');

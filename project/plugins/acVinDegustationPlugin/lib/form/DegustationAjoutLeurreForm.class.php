@@ -75,8 +75,7 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $millesime = $values['millesime'];
 
         if (isset($hash) && !empty($hash) && array_key_exists($hash, $this->getProduits())) {
-            $leurre = $degust->addLeurre($hash, $cepages, $values['table']);
-            $leurre->millesime = $millesime;
+            $leurre = $degust->addLeurre($hash, $cepages, $millesime, $values['table']);
         }
     }
 
