@@ -26,7 +26,23 @@
 </div>
 <?php endif; ?>
 
-<h3>Liste des factures</h3>
+<div class="clearfix">
+    <div class="pull-right" style="display: inline-block">
+        <form method="GET" class="form-inline" style="margin-bottom: 0">
+            Campagne :
+            <select class="select2SubmitOnChange form-control" name="campagne">
+                <option value="">Toutes</option>
+                <?php foreach ($campagnes as $c): ?>
+                <option <?php echo ($campagne == $c) ? "selected" : "" ?> value="<?php echo $c ?>">
+                    <?php echo $c ?>
+                </option>
+                <?php endforeach ?>
+            </select>
+            <button type="submit" class="btn btn-default">Changer</button>
+        </form>
+    </div>
+    <h3 style="display: inline-block">Liste des factures</h3>
+</div>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>

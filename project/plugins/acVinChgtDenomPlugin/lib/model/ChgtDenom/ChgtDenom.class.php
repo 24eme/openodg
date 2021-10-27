@@ -795,25 +795,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getFirstChgtDenomFacturable()
+    public function getFirstChgtDenomFacturable($produitFilter = null)
     {
-      $chgtdenom = $this->getChgtDenomToday();
+      $chgtdenom = $this->getChgtDenomToday($produitFilter);
       $first = current($chgtdenom);
       return (!$first||$first->_id == $this->_id)? true : false;
     }
 
-    public function getSecondChgtDenomFacturable()
+    public function getSecondChgtDenomFacturable($produitFilter = null)
     {
-        return !$this->getFirstChgtDenomFacturable();
-    }
-
-    public function calculFraisJournalier($produitFilter = null)
-    {
-        if ($this->nbChgtDenomToday($produitFilter) > 0) {
-            return;
-        }
-
-        return $this->getVolumeFacturable($produitFilter);
+        return !$this->getFirstChgtDenomFacturable($produitFilter);
     }
 
     public function matchFilter($produitFilter = null, $chgtdenom = null)
@@ -898,21 +889,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
-    private function nbChgtDenomToday($produitFilter = null)
-    {
-        return count($this->getChgtDenomToday($produitFilter));
-    }
-
     private function getChgtDenomToday($produitFilter = null)
     {
         $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
             $this->identifiant,
-            substr($this->campagne, 0, 4)
+            substr($this->date, 0, 4)
         );
 
         $today = [];
         foreach ($chgtdenoms as $chgt) {
-            if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
+            if ($chgt->validation_odg && substr($chgt->validation, 0, 10) === substr($this->validation, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
                 $today[$chgt->_id] = $chgt;
             }
         }

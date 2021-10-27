@@ -20,7 +20,7 @@ function(doc) {
         if(prelevement.date) {
             force = 0;
             if (prelevement.force) {force = prelevement.force;}
-            emit([key, prelevement.date, doc.identifiant, doc.declarant.raison_sociale, chai.adresse, chai.code_postal, chai.commune, force], prelevement.total_lots);
+            emit([force, key, prelevement.date, doc.identifiant, doc.declarant.raison_sociale, chai.adresse, chai.code_postal, chai.commune], prelevement.total_lots);
         }
     }
 }

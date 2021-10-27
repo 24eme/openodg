@@ -66,6 +66,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $date_campagne = $date_campagne->modify('-7 months');
             $this->campagne = $date_campagne->format('Y');
         }
+
+        if (FactureConfiguration::getInstance()->getExercice() == 'recolte') {
+            $date_campagne = new DateTime($this->date_facturation);
+            $date_campagne = $date_campagne->modify('-9 months');
+            $this->campagne = $date_campagne->format('Y');
+        }
     }
 
     public function setModalitePaiement($modalitePaiement) {
@@ -97,6 +103,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
+        if($this->exist('numero_odg') && $this->_get('numero_odg')) {
+            return $this->_get('numero_odg');
+        }
+
         return $this->campagne . $this->numero_archive;
     }
 

@@ -21,26 +21,27 @@ class degustationActions extends sfActions {
         $this->form = new TourneeCreationForm($this->tournee);
 
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
-        
+
         $this->graphs = array(
             'ALSACE' => array("name" => "AOC Alsace", "color" => '120,120,220', "data" => array()),
             'CREMANT' => array("name" => "AOC Crémant Alsace", "color" => '220,178,29', "data" => array()),
             'VTSGN' => array("name" => "VT / SGN", "color" => '0,220,220', "data" => array()),
         );
-        
+
         foreach($this->graphs as $key => $graph) {
             $dateObject = new DateTime($campagne."-10-01");
             for($i = 0; $i <= 12; $i++) {
                 $this->graphs[$key]['data'][$dateObject->format('M Y')] = 0;
                 $dateObject = $dateObject->modify("+ 1 month");
             }
-            $prelevements = DRevPrelevementsView::getInstance()->getPrelevements($key, $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+            $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(1, $key, $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+            $prelevements = array_merge($prelevements, DRevPrelevementsView::getInstance()->getPrelevements(0, $key, $campagne."-10-01", ($campagne+1)."-10-01", $campagne));
             foreach($prelevements as $prelevement) {
                 $dateObject = new DateTime($prelevement->date);
                 $this->graphs[$key]['data'][$dateObject->format('M Y')] += 1;
             }
         }
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -655,10 +656,7 @@ class degustationActions extends sfActions {
                 }
 
                 $p->cuve = $prelevement->cuve;
-                $p->remove('composition_cepages');
-                if(isset($prelevement->composition_cepages)) {
-                    $p->add('composition_cepages', $prelevement->composition_cepages);
-                }
+                $p->composition = $prelevement->composition;
                 $p->remove('fermentation_lactique');
                 if(isset($prelevement->fermentation_lactique)) {
                     $p->add('fermentation_lactique', (bool) $prelevement->fermentation_lactique);

@@ -162,6 +162,9 @@ class DouaneImportCsvFile {
                         $p[] = null;
                     }
                     $p[] = $colonnesid[$produitid];
+                    $p[] = Organisme::getCurrentOrganisme();
+                    $p[] = $produit->getHash();
+                    $p[] = $this->doc->_id;
                     $produits[] = $p;
                 }
             }

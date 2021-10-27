@@ -15,15 +15,17 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
     protected $parcellaire = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
         return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;Campagne;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN\n";
     }
 
-    public function __construct($parcellaire, $header = true) {
+    public function __construct($parcellaire, $header = true, $region = null) {
         $this->parcellaire = $parcellaire;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName($with_rev = true, $nomFilter = null) {

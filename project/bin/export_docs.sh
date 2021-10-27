@@ -11,6 +11,7 @@ fi
 DOC_TYPE=$1
 WAITSLEEP=$2
 REGION=$3
+EXTRA=$4
 
 if ! test "$DOC_TYPE" ; then
 	echo "USAGE: $0 DOC_TYPE_TYPE";

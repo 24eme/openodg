@@ -114,21 +114,8 @@ class degustationActions extends sfActions {
 
     public function executeSupprimerLotNonPreleve(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->lot = $request->getParameter('lot');
-
-        $lots = $this->degustation->lots;
-
-        foreach ($lots as $key => $value) {
-          if($this->lot <= $key && isset($this->degustation->lots[$key+1])){
-            $this->degustation->lots[$key] = $this->degustation->lots[$key+1];
-          }
-          if(!isset($this->degustation->lots[$key+1])){
-            unset($this->degustation->lots[$key]);
-            break;
-          }
-        }
-
-
+        $this->degustation->lots->remove($request->getParameter('lot'));
+        $this->degustation->lots->reindex();
         $this->degustation->save();
         return $this->redirect('degustation_preleve', $this->degustation);
 
@@ -890,10 +877,10 @@ class degustationActions extends sfActions {
       return $this->mutualExcecutePDF($request);
     }
 
-    public function executeEtiquettesTablesEchantillonsParAnonymatPDF(sfWebRequest $request) {
+    public function executeEtiquettesTablesEchantillonsAnonymesPDF(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
       $this->redirectIfIsNotAnonymized();
-      $this->document = new ExportDegustationEtiquettesTablesEchantillonsParAnonymatPDF($this->degustation, $request->getParameter('output', 'pdf'), false);
+      $this->document = new ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDF($this->degustation, $request->getParameter('output', 'pdf'), $request->getParameter('tri', 'numero_anonymat'), false);
       return $this->mutualExcecutePDF($request);
     }
 

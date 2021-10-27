@@ -166,11 +166,11 @@
                                         <input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />
                                     </div>
                                 </div>
-                                <div ng-show="isAssemblage(prelevement)" ng-class="{ 'has-error': prelevement.erreurs['composition_cepages'] }" class="form-group col-xs-12 col-sm-6 col-md-4 lead">
-                                    <label for="composition_cepages_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-5 control-label">Compo cépages&nbsp;:</label>
-                                    <div class="col-xs-7">
-                                        <input id="composition_cepages_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.composition_cepages" type="text" ng-change="updateProduit(prelevement)" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                                        <input ng-change="updateProduit(prelevement)" id="composition_cepages_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.composition_cepages" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                <div ng-class="{ 'has-error': prelevement.erreurs['composition'] }" class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                    <label for="composition_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-5 col-md-6 control-label">Composition&nbsp;:</label>
+                                    <div class="col-xs-7 col-md-6">
+                                        <input id="composition_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.composition" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                        <input id="composition_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.composition" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                                     </div>
                                 </div>
                                 <?php if($tournee->appellation == "CREMANT"): ?>

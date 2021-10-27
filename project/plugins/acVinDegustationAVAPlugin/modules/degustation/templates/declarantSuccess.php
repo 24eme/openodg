@@ -26,7 +26,7 @@
                     <?php if(!$prelevement->isDegustationTerminee()): continue; endif; ?>
                     <tr>
                         <td><a href="<?php echo url_for("degustation_visualisation", array('id' => str_replace("DEGUSTATION-".$degustation->identifiant."-", "TOURNEE-", $degustation->_id))) ?>"><?php echo format_date($degustation->date_degustation, "P", "fr_FR") ?></a></td>
-                        <td><?php echo $prelevement->libelle; ?> <?php echo $degustation->millesime ?><small class="text-muted"><br /><?php echo $prelevement->libelle_produit ?>  </small></td>
+                        <td><?php echo $prelevement->libelle; ?><?php if($prelevement->exist('fermentation_lactique')): ?><small><br />FML</small><?php endif; ?><?php if($prelevement->composition): ?><small><br /><?php echo $prelevement->composition; ?></small><?php endif; ?><?php if($prelevement->libelle_produit): ?><small class="text-muted"><br /><?php echo $prelevement->libelle_produit ?></small><?php endif; ?></td>
                         <td><ul style="margin: 0; padding: 0" >
                             <?php
                             foreach ($prelevement->notes as $noteType => $noteQualifie):
