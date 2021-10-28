@@ -251,7 +251,7 @@ $t->ok(!$degustation->lots[2]->getMouvement(Lot::STATUT_AFFECTABLE), "Il a un mo
 $t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 0, "Il n'y a plus de mouvement prélevable");
 
 $t->comment('on ajoute un leurre, on revient pour décocher un lot, le leurre ne doit pas avoir disparu');
-$degustation->addLeurre($degustation->lots[0]->produit_hash, null, 1);
+$degustation->addLeurre($degustation->lots[0]->produit_hash, null, date('Y'), 1);
 $degustation->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
