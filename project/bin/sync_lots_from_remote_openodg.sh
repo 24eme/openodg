@@ -14,7 +14,7 @@ then
 fi
 
 ANNEE=$(date +%Y)
-curl $URL_EXPORT_REMOTE_OPENDOG/drev.csv | grep $ANNEE"-" > $TMPDIR/drev_$1_$ANNEE.csv
+curl $URL_EXPORT_REMOTE_OPENDOG/drev.csv | iconv -f iso88591 -t utf8 | grep $ANNEE"-" > $TMPDIR/drev_$1_$ANNEE.csv
 
 php symfony drev:import $TMPDIR/drev_$1_$ANNEE.csv --application=$1 --byLots=1 > $TMPDIR"/import_lots_from_openodg_$DATE.log"
 
