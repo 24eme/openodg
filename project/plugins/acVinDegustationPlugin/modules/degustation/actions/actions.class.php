@@ -682,7 +682,7 @@ class degustationActions extends sfActions {
         $doc = acCouchdbManager::getClient()->find($docid);
         $lot = $doc->getLot($unique_id);
         if (!$lot->getMouvement(Lot::STATUT_AFFECTABLE)) {
-            throw sfException("Action impossible");
+            throw new sfException("Action impossible");
         }
         $lot->affectable = false;
         $doc->save();
@@ -695,7 +695,7 @@ class degustationActions extends sfActions {
         $doc = acCouchdbManager::getClient()->find($docid);
         $lot = $doc->getLot($unique_id);
         if (!$lot->getMouvement(Lot::STATUT_NONAFFECTABLE)) {
-            throw sfException("Action impossible");
+            throw new sfException("Action impossible");
         }
         $lot->affectable = true;
         $doc->save();
