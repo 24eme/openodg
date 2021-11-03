@@ -181,7 +181,7 @@ class ExportXMLSEPA {
   public function getFacturesId(){
       $ids = [];
       foreach($this->factures as $facture){
-        $ids[] = $facture->id;
+        $ids[] = $facture->_id;
       }
       return $ids;
   }
