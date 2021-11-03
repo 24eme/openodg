@@ -46,7 +46,7 @@
               </div>
               <div class="col-xs-6 text-right">
                   <a href="<?php echo url_for("chgtdenom_devalidation", $chgtDenom); ?>" class="btn btn-default"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;Réouvrir</a>
-                  <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#confirmation-validation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Approuver le changement</button>
+                  <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#chgtDenom-confirmation-approbation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Approuver le changement</button>
               </div>
           </div>
       </form>
