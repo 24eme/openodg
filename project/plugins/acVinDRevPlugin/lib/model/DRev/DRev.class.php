@@ -1566,6 +1566,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
 
+    public function getVolumeVinFromSV11Precedente($produitFilter = null) {
+        $sv11 = $this->getDR($this->getPeriode()-1);
+        if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
+            return ;
+        }
+        return $sv11->getTotalValeur("10");
+    }
+
     public function getNbApporteursPlusOneFromDouane() {
         $douane = $this->getDR();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
