@@ -227,7 +227,7 @@ class FactureClient extends acCouchdbClient {
         $facture->orderLignesByCotisationsKeys();
         $facture->updateTotaux();
 
-        if($facture->getSociete()->hasMandatSepa()){    // si il a un mandat sepa j'ajoute directement le noeud
+        if($facture->getSociete()->hasMandatSepaActif()){    // si il a un mandat sepa j'ajoute directement le noeud
             $facture->addPrelevementAutomatique();
         }
 
