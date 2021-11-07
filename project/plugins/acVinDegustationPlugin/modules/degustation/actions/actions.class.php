@@ -779,7 +779,7 @@ class degustationActions extends sfActions {
       }
 
       $this->degustation->setMailEnvoyeEtablissement($identifiant, $date);
-      $this->degustation->save();
+      $this->degustation->save(false);
 
       if ($mailto) {
           return $this->redirect('degustation_notifications_etape', array('id' => $this->degustation->_id, 'mail_to_identifiant' => $identifiant));
