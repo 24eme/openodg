@@ -826,7 +826,7 @@ class degustationActions extends sfActions {
         $this->getResponse()->clearHttpHeaders();
         $this->getResponse()->setStatusCode(302);
         $this->getResponse()->setHttpHeader('Location', $mailto);
-        $this->getResponse()->setContent(sprintf('<html><head><meta http-equiv="refresh" content="%d;url=%s"/></head></html>', 0, htmlspecialchars($mailto, ENT_QUOTES, sfConfig::get('sf_charset'))));
+        $this->getResponse()->setContent(sprintf('<html><head><meta http-equiv="refresh" content="%d;url=%s"/></head></html>', 0, $mailto));
         $this->getResponse()->send();
 
         throw new sfStopException();
