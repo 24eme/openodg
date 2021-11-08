@@ -1,7 +1,19 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation" && doc.type != "Parcellaire") {
-
+    if(
+        doc.type != "ChgtDenom" &&
+        doc.type != "Conditionnement" &&
+        doc.type != "DRev" &&
+        doc.type != "DRevMarc" &&
+        doc.type != "ParcellaireAffectation" &&
+        doc.type != "ParcellaireIntentionAffectation" &&
+        doc.type != "ParcellaireIrrigable" &&
+        doc.type != "ParcellaireIrrigue" &&
+        doc.type != "RegistreVCI" &&
+        doc.type != "Tirage" &&
+        doc.type != "Transaction" &&
+        doc.type != "TravauxMarc"
+    ) {
         return;
     }
 
@@ -90,7 +102,7 @@ function(doc) {
 	    statut = "Approuvé";
         infos = null;
         if(validation_odg !== false && validation_odg !== true) {
-            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)(T.*)/, "$3/$2/$1");
+            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)(T.*)?/, "$3/$2/$1");
         }
     }
 
