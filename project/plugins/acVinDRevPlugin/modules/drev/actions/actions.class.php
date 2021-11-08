@@ -743,7 +743,11 @@ class drevActions extends sfActions {
             throw sfException("Une DREV validée par une région ne peut être mise en attente par celle-ci");
         }
 
-        $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        if ($this->drev->isMiseEnAttenteOdg()) {
+            $this->drev->remove('statut_odg');
+        }else{
+            $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        }
         $this->drev->save();
 
         $service = $request->getParameter("service", null);
