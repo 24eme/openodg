@@ -115,6 +115,10 @@ function(doc) {
 	    }
     }
 
+     if (doc.statut_odg) {
+       statut = doc.statut_odg;
+     }
+
     var type = doc.type;
 
     var date = null;
@@ -122,10 +126,12 @@ function(doc) {
 	    date = validation;
     }
 
-    if(doc._id.indexOf('PARCELLAIRECREMANT') > -1) {
-	    type = "Parcellaire Crémant";
+    if(doc._id.indexOf('PARCELLAIREAFFECTATIONCREMANT') > -1) {
+	    type = "Affectation Crémant";
     }
-
+    if(doc._id.indexOf('PARCELLAIREAFFECTATION') > -1) {
+	    type = "Affectation";
+    }
     if(doc._id.indexOf('INTENTIONCREMANT') > -1) {
 	    type = "Intention Crémant";
     }
@@ -139,6 +145,9 @@ function(doc) {
                 if(doc.declaration[key][detailKey].validation_odg){
                   statutProduit = "Approuvé";
                 }
+                if(doc.declaration[key][detailKey].statut_odg){
+                   statutProduit = doc.declaration[key][detailKey].statut_odg;
+                 }
     	          emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
                   nb_emits = nb_emits + 1;
               }
