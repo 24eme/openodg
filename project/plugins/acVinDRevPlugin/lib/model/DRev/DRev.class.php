@@ -1387,7 +1387,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function constructAdresseLogement(){
-        $completeAdresse = sprintf("%s — %s %s  %s",$this->declarant->nom, ltrim($this->declarant->adresse." "),$this->declarant->code_postal,$this->declarant->commune);
+        $completeAdresse = sprintf("%s — %s  %s  %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
         $completeAdresse .= $this->declarant->telephone_mobile ? " — ".$this->declarant->telephone_mobile : "";
         $completeAdresse .= $this->declarant->telephone_bureau ? " — ".$this->declarant->telephone_bureau : "";
 
