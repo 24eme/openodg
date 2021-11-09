@@ -15,7 +15,7 @@ L'ensemble de vos lots sont :
 <?php endif; ?>
 
 <?php if(count($lotsConformes)): ?>
-Conforme(s) et apte(s) à la commercialisation. Vous trouverez ci-dessous le lien vers le courrier confirmant la conformité du(des) lot(s) présenté(s) (<?= count($lotsConformes) ?>) :
+- Conforme(s) et apte(s) à la commercialisation. Vous trouverez ci-dessous le lien vers le courrier confirmant la conformité du(des) lot(s) présenté(s) (<?= count($lotsConformes) ?>) :
 <a href="<?php echo url_for('degustation_get_courrier_auth_conforme', [
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
@@ -29,22 +29,21 @@ Conforme(s) et apte(s) à la commercialisation. Vous trouverez ci-dessous le lie
 
 <?php endif; ?>
 <?php if(count($lotsNonConformes)): ?>
-Non conforme(s) et bloqué(s) à la commercialisation. Vous trouverez en cliquant sur le(s) lien(s) ci-dessous le courrier concernant chacun des lots présentant une non conformité :
+- Non conforme(s) et bloqué(s) à la commercialisation. Vous trouverez en cliquant sur le(s) lien(s) ci-dessous le courrier concernant chacun des lots présentant une non conformité :
+
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
-* <?= showProduitCepagesLot($lotNonConforme) . ", NON CONFORMITÉ de type : " . $lotNonConforme->getShortLibelleConformite() ?>
-<a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
+    <?= showProduitCepagesLot($lotNonConforme) . ", NON CONFORMITÉ de type " . $lotNonConforme->getShortLibelleConformite() ?> : <a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
-), true); ?>">
-<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
+), true); ?>"><?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
-), true); ?>
-</a>
+), true); ?></a>
+
 <?php endforeach; ?>
 
 Si vous décidez de déclasser, vous pouvez télécharger la déclaration de changement de dénomination (DICD) :
