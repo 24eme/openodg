@@ -15,3 +15,4 @@ curl -s http://$COUCHDBDOMAIN:5984/_all_dbs | jq . | grep '_prod"' | awk -F '"' 
         curl -s http://$COUCHDBDOMAIN:5984/$instance"_prod/"$couchdbobj | jq . | sed '3d' > data/configuration/$instance/$couchdbobj".json"
     done
 done
+rm $TMPFILE
