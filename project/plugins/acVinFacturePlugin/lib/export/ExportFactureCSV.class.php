@@ -26,7 +26,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;Export comptable;id facture;Campagne;Numero\n";
+        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;Export comptable;id facture;Campagne;Numero;Numéro Avoir\n";
     }
 
     public function export() {
@@ -79,7 +79,8 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
                 $csv .= ";;";
                 $csv .= $this->facture->_id.";";
                 $csv .= $campagne.";";
-                $csv .= $this->facture->getNumeroOdg();
+                $csv .= $this->facture->getNumeroOdg().";";
+                $csv .= $this->facture->exist('avoir') ? $this->facture->avoir : null;
                 $csv .= "\n";
             }
         }
@@ -98,7 +99,8 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $csv .= $this->facture->versement_comptable.';';
         $csv .= $this->facture->_id.";";
         $csv .= $campagne.";";
-        $csv .= $this->facture->getNumeroOdg();
+        $csv .= $this->facture->getNumeroOdg().";";
+        $csv .= $this->facture->exist('avoir') ? $this->facture->avoir : null;
         $csv .= "\n";
 
         return $csv;
