@@ -26,7 +26,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         }
       }
     },
@@ -46,7 +46,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         },
         "controleinterne": {
           "modele": "CotisationVariable",
@@ -58,7 +58,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         },
         "controleexterne": {
           "modele": "CotisationVariable",
@@ -70,7 +70,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         }
       }
     },
@@ -131,7 +131,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/APL"
           ]
@@ -154,7 +154,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/D13/mentions/DEFAUT/lieux/TDC"
           ]
@@ -177,7 +177,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/MED"
           ]
@@ -237,7 +237,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         }
       }
     }

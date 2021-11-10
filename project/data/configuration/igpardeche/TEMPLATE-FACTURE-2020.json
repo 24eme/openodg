@@ -84,7 +84,7 @@
             "DRev",
             "Conditionnement"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         },
         "lots": {
           "modele": "Cotisation",
@@ -115,7 +115,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "NOT /appellations/CDR/"
           ]
@@ -139,7 +139,7 @@
             "DRev",
             "Conditionnement"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         }
       }
     },
