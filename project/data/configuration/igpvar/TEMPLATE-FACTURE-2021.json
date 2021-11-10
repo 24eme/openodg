@@ -1,9 +1,9 @@
 {
-  "_id": "TEMPLATE-FACTURE-2020",
+  "_id": "TEMPLATE-FACTURE-2021",
   "type": "TemplateFacture",
-  "campagne": 2020,
+  "campagne": 2021,
   "template": "IGP",
-  "libelle": "2020 - IGP Var",
+  "libelle": "2021 - IGP Var",
   "docs": [
     "DR",
     "SV12",
@@ -23,7 +23,7 @@
           "prix": 10,
           "tva": 0.2,
           "unite": "ha",
-          "libelle": "Cotisation technique et syndicale récolte 2020",
+          "libelle": "Cotisation technique et syndicale récolte 2021",
           "complement_libelle": "",
           "docs": [
             "DR"
@@ -66,7 +66,7 @@
           "prix": 10,
           "tva": 0.2,
           "unite": "ha",
-          "libelle": "Cotisation technique et syndicale récolte 2020",
+          "libelle": "Cotisation technique et syndicale récolte 2021",
           "complement_libelle": "",
           "docs": [
             "SV12"

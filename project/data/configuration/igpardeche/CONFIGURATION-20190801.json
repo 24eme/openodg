@@ -15,6 +15,937 @@
         "libelle": "IGP",
         "format_libelle": "%a% %m% %l% %co% %ce%",
         "code": "",
+        "code_produit": null,
+        "code_comptable": null,
+        "code_douane": null,
+        "departements": [],
+        "interpro": {
+          "INTERPRO-declaration": {
+            "labels": [],
+            "droits": {
+              "douane": [],
+              "cvo": []
+            }
+          }
+        },
+        "genres": {
+          "TRANQ": {
+            "libelle": "Tranquilles",
+            "format_libelle": null,
+            "code": "TRANQ",
+            "code_produit": null,
+            "code_comptable": null,
+            "code_douane": null,
+            "interpro": {
+              "INTERPRO-declaration": {
+                "labels": [],
+                "droits": {
+                  "douane": [],
+                  "cvo": []
+                }
+              }
+            },
+            "departements": [],
+            "appellations": {
+              "ARD": {
+                "libelle": "Ardèche",
+                "format_libelle": "",
+                "code": "",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": null,
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": "",
+                        "format_libelle": null,
+                        "code": "",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": null,
+                                "code": "",
+                                "code_produit": null,
+                                "code_comptable": null,
+                                "code_douane": "3R071",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "rose": {
+                            "libelle": "Rosé",
+                            "format_libelle": "",
+                            "code": "",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3S071",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 110,
+                              "rendement_dr_l5": 120,
+                              "rendement_dr_l15": 110,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
+                          },
+                          "rose_doux": {
+                            "libelle": "Rosé moelleux doux",
+                            "format_libelle": "",
+                            "code": "",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3S071Doux",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 110,
+                              "rendement_dr_l5": 120,
+                              "rendement_dr_l15": 110,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
+                          },
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3B071",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "blanc_doux": {
+                            "libelle": "Blanc moelleux doux",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3B071Doux",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "CDA": {
+                        "libelle": "Coteaux de l'Ardèche",
+                        "format_libelle": null,
+                        "code": "",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": null,
+                                "code": "",
+                                "code_produit": null,
+                                "code_comptable": null,
+                                "code_douane": "3R072",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "rose": {
+                            "libelle": "Rosé",
+                            "format_libelle": "",
+                            "code": "",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3S072",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 110,
+                              "rendement_dr_l5": 120,
+                              "rendement_dr_l15": 110,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
+                          },
+                          "rose_doux": {
+                            "libelle": "Rosé moelleux doux",
+                            "format_libelle": "",
+                            "code": "",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3S072Doux",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 110,
+                              "rendement_dr_l5": 120,
+                              "rendement_dr_l15": 110,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
+                          },
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3B072",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "blanc_doux": {
+                            "libelle": "Blanc moelleux doux",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3B072Doux",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 90,
+                  "rendement_dr_l5": 100,
+                  "rendement_dr_l15": 90,
+                  "rendement_conseille": null,
+                  "rendement_dr": null,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null
+                }
+              },
+              "CDR": {
+                "libelle": "Comtés Rhodaniens",
+                "format_libelle": "",
+                "code": "",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": null,
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": "",
+                        "format_libelle": null,
+                        "code": "",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": null,
+                                "code": "",
+                                "code_produit": null,
+                                "code_comptable": null,
+                                "code_douane": "3R004",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "rose": {
+                            "libelle": "Rosé",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3S004",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
+                                }
+                              }
+                            }
+                          },
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3B004",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement": 98,
+                  "rendement_dr_l5": 105,
+                  "rendement_dr_l15": 98,
+                  "rendement_conseille": null,
+                  "rendement_dr": null,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null
+                }
+              },
+              "MED": {
+                "libelle": "Méditerranée",
+                "format_libelle": "",
+                "code": "MED",
+                "code_produit": null,
+                "code_comptable": null,
+                "code_douane": null,
+                "densite": null,
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
+                "mentions": {
+                  "DEFAUT": {
+                    "libelle": null,
+                    "format_libelle": null,
+                    "code": null,
+                    "code_produit": null,
+                    "code_comptable": null,
+                    "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
+                    "lieux": {
+                      "DEFAUT": {
+                        "libelle": "",
+                        "format_libelle": null,
+                        "code": "",
+                        "code_produit": null,
+                        "code_comptable": null,
+                        "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
+                        "couleurs": {
+                          "rouge": {
+                            "libelle": "Rouge",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": null,
+                                "code": "",
+                                "code_produit": null,
+                                "code_comptable": null,
+                                "code_douane": "3R007",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "rose": {
+                            "libelle": "Rosé",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3S007",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
+                                }
+                              }
+                            }
+                          },
+                          "blanc": {
+                            "libelle": "Blanc",
+                            "format_libelle": null,
+                            "code": null,
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
+                                "code_douane": "3B007",
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "attributs": {
+                  "rendement_dr_l5": 130,
+                  "rendement_dr_l15": 120,
+                  "rendement_dr": null,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null
+                }
+              }
+            }
+          },
+          "EFF": {
+            "libelle": "Effervescent",
+            "format_libelle": "%a% %g% %m% %l% %co% %ce%",
+            "code": "EFF",
+            "code_produit": null,
+            "code_comptable": null,
+            "code_douane": null,
+            "interpro": {
+              "INTERPRO-declaration": {
+                "labels": [],
+                "droits": {
+                  "douane": [],
+                  "cvo": []
+                }
+              }
+            },
+            "departements": [],
+            "appellations": {}
+          }
+        },
         "attributs": {
           "rendement": 120,
           "rendement_dr_l5": 130,
@@ -311,736 +1242,7 @@
           "VILLARD NOIR N",
           "VIOGNIER B",
           "VOLTIS B"
-        ],
-        "code_produit": null,
-        "code_comptable": null,
-        "code_douane": null,
-        "departements": [],
-        "interpro": {
-          "INTERPRO-declaration": {
-            "labels": [],
-            "droits": {
-              "douane": [],
-              "cvo": []
-            }
-          }
-        },
-        "genres": {
-          "TRANQ": {
-            "libelle": "Tranquilles",
-            "format_libelle": null,
-            "code": "TRANQ",
-            "code_produit": null,
-            "code_comptable": null,
-            "code_douane": null,
-            "interpro": {
-              "INTERPRO-declaration": {
-                "labels": [],
-                "droits": {
-                  "douane": [],
-                  "cvo": []
-                }
-              }
-            },
-            "departements": [],
-            "appellations": {
-              "ARD": {
-                "libelle": "Ardèche",
-                "format_libelle": "",
-                "code": "",
-                "code_produit": null,
-                "code_comptable": null,
-                "code_douane": null,
-                "densite": null,
-                "interpro": {
-                  "INTERPRO-declaration": {
-                    "labels": [],
-                    "droits": {
-                      "douane": [],
-                      "cvo": []
-                    }
-                  }
-                },
-                "departements": [],
-                "mentions": {
-                  "DEFAUT": {
-                    "libelle": null,
-                    "format_libelle": null,
-                    "code": null,
-                    "code_produit": null,
-                    "code_comptable": null,
-                    "code_douane": null,
-                    "interpro": {
-                      "INTERPRO-declaration": {
-                        "labels": [],
-                        "droits": {
-                          "douane": [],
-                          "cvo": []
-                        }
-                      }
-                    },
-                    "departements": [],
-                    "lieux": {
-                      "DEFAUT": {
-                        "libelle": "",
-                        "format_libelle": null,
-                        "code": "",
-                        "code_produit": null,
-                        "code_comptable": null,
-                        "code_douane": null,
-                        "interpro": {
-                          "INTERPRO-declaration": {
-                            "labels": [],
-                            "droits": {
-                              "douane": [],
-                              "cvo": []
-                            }
-                          }
-                        },
-                        "departements": [],
-                        "couleurs": {
-                          "rouge": {
-                            "libelle": "Rouge",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": null,
-                                "code": "",
-                                "code_produit": null,
-                                "code_comptable": null,
-                                "code_douane": "3R071",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "rose": {
-                            "libelle": "Rosé",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3S071",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "blanc": {
-                            "libelle": "Blanc",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3B071",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      },
-                      "CDA": {
-                        "libelle": "Coteaux de l'Ardèche",
-                        "format_libelle": null,
-                        "code": "",
-                        "code_produit": null,
-                        "code_comptable": null,
-                        "code_douane": null,
-                        "interpro": {
-                          "INTERPRO-declaration": {
-                            "labels": [],
-                            "droits": {
-                              "douane": [],
-                              "cvo": []
-                            }
-                          }
-                        },
-                        "departements": [],
-                        "couleurs": {
-                          "rouge": {
-                            "libelle": "Rouge",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": null,
-                                "code": "",
-                                "code_produit": null,
-                                "code_comptable": null,
-                                "code_douane": "3R072",
-                                "cepages_autorises": [],
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "rose": {
-                            "libelle": "Rosé",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3S072",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "blanc": {
-                            "libelle": "Blanc",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3B072",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "attributs": {
-                  "rendement": 90,
-                  "rendement_dr_l5": 110,
-                  "rendement_dr_l15": 90
-                }
-              },
-              "CDR": {
-                "libelle": "Comtés Rhodaniens",
-                "format_libelle": "",
-                "code": "",
-                "code_produit": null,
-                "code_comptable": null,
-                "code_douane": null,
-                "densite": null,
-                "interpro": {
-                  "INTERPRO-declaration": {
-                    "labels": [],
-                    "droits": {
-                      "douane": [],
-                      "cvo": []
-                    }
-                  }
-                },
-                "departements": [],
-                "mentions": {
-                  "DEFAUT": {
-                    "libelle": null,
-                    "format_libelle": null,
-                    "code": null,
-                    "code_produit": null,
-                    "code_comptable": null,
-                    "code_douane": null,
-                    "interpro": {
-                      "INTERPRO-declaration": {
-                        "labels": [],
-                        "droits": {
-                          "douane": [],
-                          "cvo": []
-                        }
-                      }
-                    },
-                    "departements": [],
-                    "lieux": {
-                      "DEFAUT": {
-                        "libelle": "",
-                        "format_libelle": null,
-                        "code": "",
-                        "code_produit": null,
-                        "code_comptable": null,
-                        "code_douane": null,
-                        "interpro": {
-                          "INTERPRO-declaration": {
-                            "labels": [],
-                            "droits": {
-                              "douane": [],
-                              "cvo": []
-                            }
-                          }
-                        },
-                        "departements": [],
-                        "couleurs": {
-                          "rouge": {
-                            "libelle": "Rouge",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": null,
-                                "code": "",
-                                "code_produit": null,
-                                "code_comptable": null,
-                                "code_douane": "3R004",
-                                "cepages_autorises": [],
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "rose": {
-                            "libelle": "Rosé",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3S004",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
-                                }
-                              }
-                            }
-                          },
-                          "blanc": {
-                            "libelle": "Blanc",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3B004",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "attributs": {
-                  "rendement": 91,
-                  "rendement_dr_l5": 98,
-                  "rendement_dr_l15": 91
-                }
-              },
-              "MED": {
-                "libelle": "Méditerranée",
-                "format_libelle": "",
-                "code": "MED",
-                "code_produit": null,
-                "code_comptable": null,
-                "code_douane": null,
-                "densite": null,
-                "interpro": {
-                  "INTERPRO-declaration": {
-                    "labels": [],
-                    "droits": {
-                      "douane": [],
-                      "cvo": []
-                    }
-                  }
-                },
-                "departements": [],
-                "mentions": {
-                  "DEFAUT": {
-                    "libelle": null,
-                    "format_libelle": null,
-                    "code": null,
-                    "code_produit": null,
-                    "code_comptable": null,
-                    "code_douane": null,
-                    "interpro": {
-                      "INTERPRO-declaration": {
-                        "labels": [],
-                        "droits": {
-                          "douane": [],
-                          "cvo": []
-                        }
-                      }
-                    },
-                    "departements": [],
-                    "lieux": {
-                      "DEFAUT": {
-                        "libelle": "",
-                        "format_libelle": null,
-                        "code": "",
-                        "code_produit": null,
-                        "code_comptable": null,
-                        "code_douane": null,
-                        "interpro": {
-                          "INTERPRO-declaration": {
-                            "labels": [],
-                            "droits": {
-                              "douane": [],
-                              "cvo": []
-                            }
-                          }
-                        },
-                        "departements": [],
-                        "couleurs": {
-                          "rouge": {
-                            "libelle": "Rouge",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": null,
-                                "code": "",
-                                "code_produit": null,
-                                "code_comptable": null,
-                                "code_douane": "3R007",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "rose": {
-                            "libelle": "Rosé",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3S007",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
-                                }
-                              }
-                            }
-                          },
-                          "blanc": {
-                            "libelle": "Blanc",
-                            "format_libelle": null,
-                            "code": null,
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": null,
-                            "interpro": {
-                              "INTERPRO-declaration": {
-                                "labels": [],
-                                "droits": {
-                                  "douane": [],
-                                  "cvo": []
-                                }
-                              }
-                            },
-                            "departements": [],
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": "",
-                                "format_libelle": "",
-                                "code": "",
-                                "code_produit": "",
-                                "code_comptable": "",
-                                "code_douane": "3B007",
-                                "interpro": {
-                                  "INTERPRO-declaration": {
-                                    "droits": {
-                                      "douane": [],
-                                      "cvo": []
-                                    }
-                                  }
-                                },
-                                "attributs": {
-                                  "rendement": null,
-                                  "rendement_conseille": null,
-                                  "rendement_dr": null,
-                                  "rendement_vci": null,
-                                  "rendement_vci_total": null
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "attributs": {
-                  "rendement_dr_l5": 130,
-                  "rendement_dr_l15": 120,
-                  "rendement_dr": null,
-                  "rendement_vci": null,
-                  "rendement_vci_total": null
-                }
-              }
-            }
-          },
-          "EFF": {
-            "libelle": "Effervescent",
-            "format_libelle": "%a% %g% %m% %l% %co% %ce%",
-            "code": "EFF",
-            "code_produit": null,
-            "code_comptable": null,
-            "code_douane": null,
-            "interpro": {
-              "INTERPRO-declaration": {
-                "labels": [],
-                "droits": {
-                  "douane": [],
-                  "cvo": []
-                }
-              }
-            },
-            "departements": [],
-            "appellations": {}
-          }
-        }
+        ]
       }
     }
   }
