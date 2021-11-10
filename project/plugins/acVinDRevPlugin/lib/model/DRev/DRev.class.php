@@ -1509,7 +1509,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	public function getVolumeFacturable($produitFilter = null)
 	{
-		return $this->declaration->getTotalVolumeRevendique($produitFilter);
+		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
+        foreach($this->getDeletedLots() as $lot) {
+            $volume -= $lot->volume;
+        }
+        return $volume;
 	}
 
 	public function getSurfaceVinifieeFacturable()
@@ -1532,14 +1536,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
     {
         $lots = [];
-
+        $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
             if ($lot->numero_dossier === $this->numero_archive) {
                 $lots[] = $lot;
+                $volume_mod += $lot->getOriginalVolumeIfModifying();
             }
         }
+        $volume = $this->getInternalVolumeRevendique($lots, $produitFilter);
 
-        return $this->getInternalVolumeRevendique($lots, $produitFilter);
+        foreach($this->getDeletedLots() as $lot) {
+            $volume_mod += $lot->volume;
+        }
+
+        return $volume - $volume_mod;
     }
 
     public function getVolumeRevendiqueLots($produitFilter = null){
@@ -1586,9 +1596,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $apporteurs + 1;
     }
 
-    /**
-    * @deprecated use getVolumeRevendiqueLots instead
-    */
     public function getVolumeLotsFacturables($produitFilter = null){
 
         return $this->getVolumeRevendiqueLots($produitFilter);
@@ -1621,7 +1628,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
-
       $templateFacture = $this->getTemplateFacture();
       if(!$templateFacture) {
           return array();
@@ -1673,6 +1679,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       return array($identifiantCompte => $mouvements);
+    }
+
+    public function getDeletedLots() {
+        $deleted = array();
+        foreach($this->getDiffLotVolume() as $k => $v) {
+            if (strpos($k, '/unique_id') === false) {
+                continue;
+            }
+            if (!$this->getLot($unique_id)) {
+                $deleted[] = $v;
+            }
+        }
+        $lots = array();
+        foreach($deleted as $unique_id) {
+            $lots[] = $this->getMother()->getLot($unique_id);
+        }
+        return $lots;
     }
 
     public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
@@ -2035,12 +2058,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
-    public function getDiffWithMother() {
-
-        return $this->version_document->getDiffWithMother();
+    public function getDiffLotVolume() {
+        $diff = $this->getDiffWithMother(true);
+        $diffLot = array();
+        foreach($diff as $k => $v) {
+            if (strpos($k, '/lots/') !== false && (strpos($k, '/volume') || strpos($k, '/unique_id'))) {
+                $diffLot[$k] = $v;
+            }
+        }
+        return $diffLot;
     }
 
-    public function isModifiedMother($hash_or_object, $key = null) {
+    public function getDiffWithMother($both_directions = false) {
+
+        return $this->version_document->getDiffWithMother($both_directions);
+    }
+
+    public function isModifiedMother($hash_or_object, $key = null, $both_directions = false) {
 
         return $this->version_document->isModifiedMother($hash_or_object, $key);
     }
