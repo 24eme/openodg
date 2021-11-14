@@ -63,8 +63,10 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV12));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VCI));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_MUTAGE_DECLARATION));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
 
@@ -158,15 +160,17 @@ class DRevValidation extends DeclarationLotsValidation
             if(!$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')) {
                 continue;
             }
-            $produits_manquants[$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
+            @$produits_manquants[$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
         }
 
         if(!count($produits_manquants)) {
             return;
         }
 
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF, implode(", ", $produits_manquants));
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP, implode(", ", $produits_manquants));
+        foreach($produits_manquants as $pourcentage => $produits) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF"), implode(", ", $produits));
+            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP"), implode(", ", $produits));
+        }
     }
     protected function controleEngagementSv()
     {
