@@ -141,6 +141,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->millesime != $this->getPeriode()) {
                 continue;
             }
+            if(!$lot->produit_hash) {
+                continue;
+            }
             $couleur = $lot->getConfig()->getCouleur()->getLibelleDR();
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
