@@ -1,4 +1,5 @@
 <?php use_helper('Date') ?>
+<?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('global/flash'); ?>
@@ -49,7 +50,7 @@
 
 <?php if ($sf_user->isAdmin() && $drev->isMiseEnAttenteOdg()): ?>
     <div class="alert alert-info">
-        Cette déclaration a été <strong>mise en attente</strong> par l'ODG
+        Cette déclaration a été <strong>mise en attente</strong> par l'ODG (<a href="<?php echo url_for("drev_enattente_admin", $params); ?>">annuler la mise en attente</a>)
     </div>
 <?php endif; ?>
 
@@ -97,7 +98,6 @@
         <?php elseif(!$drev->validation_odg && ( $sf_user->isAdmin() ||
                                                  ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))
                                                )): ?>
-        <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
         <?php if (!$drev->isMiseEnAttenteOdg()): ?>
                 <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
         <?php endif; ?>

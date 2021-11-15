@@ -56,7 +56,7 @@
         <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><label>Rendements</label></h3>
+                        <h3 class="panel-title"><label>Rendements <?php echo preg_replace("/CONFIGURATION-([0-9]{4}).+/", '\1', $form->getObject()->getDocument()->_id) ?></label></h3>
                     </div>
                     <div class="panel-body">
                     	<div class="col-sm-4">

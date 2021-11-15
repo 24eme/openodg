@@ -2,6 +2,13 @@
   "_id": "CONFIGURATION-20190801",
   "type": "Configuration",
   "campagne": null,
+  "labels": {},
+  "contenances": {},
+  "droits": {},
+  "mvts_favoris": {},
+  "correspondances": {},
+  "libelle_detail_ligne": {},
+  "alias": {},
   "declaration": {
     "certifications": {
       "IGP_VALDELOIRE": {
@@ -12,54 +19,13 @@
         "code_comptable": null,
         "code_douane": null,
         "departements": [],
-        "cepages_autorises": [
-          "ABOURIOU N",
-          "AUXERROIS B",
-          "CABERNET FRANC N",
-          "CABERNET SAUVIGNON N",
-          "CEPAGE",
-          "CHARDONNAY B",
-          "CHASSELAS B",
-          "CHASSE3B583LAS RS",
-          "CHENIN B",
-          "COT N",
-          "EGIODOLA N",
-          "FOLLE BLANCHE B",
-          "GAMARET N",
-          "GAMAY DE BOUZE N",
-          "GAMAY DE CHAUDENAY N",
-          "GAMAY N",
-          "GEWURZTRAMINER RS",
-          "GROLLEAU GRIS G",
-          "GROLLEAU N",
-          "MELON B",
-          "MERLOT N",
-          "MEUNIER N",
-          "MÜLLER-THURGAU B",
-          "MUSCAT H N",
-          "MUSCAT OTTONEL B",
-          "MUSCAT PG B",
-          "MUSCAT PG RG",
-          "MUSCAT PG RS",
-          "NEGRETTE N",
-          "ORBOIS B",
-          "PINEAU D'AUNIS N",
-          "PINOT BLANC B",
-          "PINOT GRIS G",
-          "PINOT NOIR N",
-          "PORTUGAIS BLEU N",
-          "POULSARD N",
-          "RIESLING B",
-          "SACY B",
-          "SAUVIGNON B",
-          "SAUVIGNON GRIS G",
-          "SAVAGNIN BLANC B",
-          "SAVAGNIN ROSE RS"
-        ],
         "interpro": {
           "INTERPRO-inter-loire": {
             "labels": [],
-            "droits": {}
+            "droits": {
+              "douane": [],
+              "cvo": []
+            }
           },
           "INTERPRO-declaration": {
             "labels": [],
@@ -203,6 +169,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -217,8 +184,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -227,6 +193,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -241,8 +208,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "DEFAUT": {
                                 "libelle": null,
@@ -251,6 +217,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -265,8 +232,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau gris",
@@ -275,6 +241,7 @@
                                 "code_produit": "5101",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 CU",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -289,8 +256,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MEL": {
                                 "libelle": "Melon",
@@ -299,6 +265,7 @@
                                 "code_produit": "5121",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 DK",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -313,8 +280,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MULTI": {
                                 "libelle": "Multi cépage",
@@ -323,6 +289,7 @@
                                 "code_produit": "5991",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 00",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -337,8 +304,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIB": {
                                 "libelle": "Pinot blanc",
@@ -347,6 +313,7 @@
                                 "code_produit": "5151",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 59",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -361,8 +328,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIG": {
                                 "libelle": "Pinot gris",
@@ -371,6 +337,7 @@
                                 "code_produit": "5161",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 AA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -385,8 +352,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -395,6 +361,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -409,8 +376,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ORB": {
                                 "libelle": "Orbois",
@@ -419,6 +385,7 @@
                                 "code_produit": "5201",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 AY",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -433,8 +400,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SACY": {
                                 "libelle": "Sacy",
@@ -443,6 +409,7 @@
                                 "code_produit": "5211",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 EM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -457,8 +424,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHE": {
                                 "libelle": "Chenin",
@@ -467,6 +433,7 @@
                                 "code_produit": "5051",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 CF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -481,8 +448,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "FBL": {
                                 "libelle": "Folle blanche",
@@ -491,6 +457,7 @@
                                 "code_produit": "5081",
                                 "code_comptable": "9300",
                                 "code_douane": "3B009 CL",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -505,8 +472,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "FLO": {
                                 "libelle": "Floréal",
@@ -515,6 +481,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3B009 JB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -529,8 +496,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SOR": {
                                 "libelle": "Soreli",
@@ -539,6 +505,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3B009 IV",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -553,8 +520,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SVGGR": {
                                 "libelle": "Souvignier gris",
@@ -563,6 +529,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3B009 IH",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -577,8 +544,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "VOL": {
                                 "libelle": "Voltis",
@@ -587,6 +553,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3B009 JC",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -601,8 +568,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -638,6 +604,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -652,8 +619,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MULTI": {
                                 "libelle": "Multi cépage",
@@ -662,6 +628,7 @@
                                 "code_produit": "5993",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 00",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -676,8 +643,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -686,6 +652,7 @@
                                 "code_produit": "5173",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -700,8 +667,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "EGI": {
                                 "libelle": "Egiodola",
@@ -710,6 +676,7 @@
                                 "code_produit": "5073",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 AI",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -724,8 +691,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc",
@@ -734,6 +700,7 @@
                                 "code_produit": "5023",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -748,8 +715,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon",
@@ -758,6 +724,7 @@
                                 "code_produit": "5033",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -772,8 +739,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -782,6 +748,7 @@
                                 "code_produit": "5093",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -796,8 +763,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAMB": {
                                 "libelle": "Gamay de Bouze noir",
@@ -806,6 +772,7 @@
                                 "code_produit": "5223",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 CN",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -820,8 +787,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAMC": {
                                 "libelle": "Gamay de Chaudenay noir",
@@ -830,6 +796,7 @@
                                 "code_produit": "5233",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 CP",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -844,8 +811,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -854,6 +820,7 @@
                                 "code_produit": "5113",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -868,8 +835,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "COT": {
                                 "libelle": "Cot ",
@@ -878,6 +844,7 @@
                                 "code_produit": "5063",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 CZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -892,8 +859,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -902,6 +868,7 @@
                                 "code_produit": "5133",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -916,8 +883,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "NEG": {
                                 "libelle": "Negrette noir",
@@ -926,6 +892,7 @@
                                 "code_produit": "5243",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 DL",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -940,8 +907,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ABO": {
                                 "libelle": "Abouriou ",
@@ -950,6 +916,7 @@
                                 "code_produit": "5013",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 35",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -964,8 +931,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PINAU": {
                                 "libelle": "Pineau d'Aunis",
@@ -974,6 +940,7 @@
                                 "code_produit": "5143",
                                 "code_comptable": "9300",
                                 "code_douane": "3S009 58",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -988,8 +955,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ART": {
                                 "libelle": "Artaban",
@@ -998,6 +964,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3S009 JA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1012,8 +979,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CCOR": {
                                 "libelle": "Cabernet cortis",
@@ -1022,6 +988,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3S009 HX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1036,8 +1003,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "VID": {
                                 "libelle": "Vidoc",
@@ -1046,6 +1012,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3S009 IZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1060,8 +1027,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -1097,6 +1063,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1111,8 +1078,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MULTI": {
                                 "libelle": "Multi cépage",
@@ -1121,6 +1087,7 @@
                                 "code_produit": "5992",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 00",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1135,8 +1102,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -1145,6 +1111,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1159,8 +1126,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "EGI": {
                                 "libelle": "Egiodola noir",
@@ -1169,6 +1135,7 @@
                                 "code_produit": "5072",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 AT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1183,8 +1150,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -1193,6 +1159,7 @@
                                 "code_produit": "5022",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1207,8 +1174,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon ",
@@ -1217,6 +1183,7 @@
                                 "code_produit": "5032",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1231,8 +1198,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -1241,6 +1207,7 @@
                                 "code_produit": "5092",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1255,8 +1222,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAMB": {
                                 "libelle": "Gamay de Bouze noir",
@@ -1265,6 +1231,7 @@
                                 "code_produit": "5222",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 CN",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1279,8 +1246,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAMC": {
                                 "libelle": "Gamay de Chaudenay noir",
@@ -1289,6 +1255,7 @@
                                 "code_produit": "5232",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 CP",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1303,8 +1270,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -1313,6 +1279,7 @@
                                 "code_produit": "5112",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1327,8 +1294,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "COT": {
                                 "libelle": "Cot",
@@ -1337,6 +1303,7 @@
                                 "code_produit": "5062",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 CZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1351,8 +1318,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -1361,6 +1327,7 @@
                                 "code_produit": "5132",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1375,8 +1342,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "NEG": {
                                 "libelle": "Negrette noir",
@@ -1385,6 +1351,7 @@
                                 "code_produit": "5242",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 DL",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1399,8 +1366,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ABO": {
                                 "libelle": "Abouriou",
@@ -1409,6 +1375,7 @@
                                 "code_produit": "5012",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 35",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1423,8 +1390,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PINAU": {
                                 "libelle": "Pineau d'Aunis",
@@ -1433,6 +1399,7 @@
                                 "code_produit": "5142",
                                 "code_comptable": "9300",
                                 "code_douane": "3R009 58",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1447,8 +1414,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ART": {
                                 "libelle": "Artaban",
@@ -1457,6 +1423,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3R009 JA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1471,8 +1438,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CCOR": {
                                 "libelle": "Cabernet cortis",
@@ -1481,6 +1447,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3R009 HX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1495,8 +1462,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "VID": {
                                 "libelle": "Vidoc",
@@ -1505,6 +1471,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "3R009 IZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1519,8 +1486,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -1583,6 +1549,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R181",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1597,8 +1564,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -1607,6 +1573,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R181 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1621,8 +1588,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -1658,6 +1624,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B181",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1672,8 +1639,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -1682,6 +1648,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B181 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1696,8 +1663,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -1733,6 +1699,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S181",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1747,8 +1714,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -1811,6 +1777,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R371",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1825,8 +1792,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -1835,6 +1801,7 @@
                                 "code_produit": "5112",
                                 "code_comptable": "9300",
                                 "code_douane": "3R371 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1849,8 +1816,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "COT": {
                                 "libelle": "Cot",
@@ -1859,6 +1825,7 @@
                                 "code_produit": "5062",
                                 "code_comptable": "9300",
                                 "code_douane": "3R371 CZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1873,8 +1840,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -1910,6 +1876,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B371 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1924,8 +1891,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -1934,6 +1900,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B371 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1948,8 +1915,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -1958,6 +1924,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B371 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1972,8 +1939,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "DEFAUT": {
                                 "libelle": null,
@@ -1982,6 +1948,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B371",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -1996,8 +1963,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2033,6 +1999,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S371",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2047,8 +2014,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -2111,6 +2077,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R361",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2125,8 +2092,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2162,6 +2128,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B361",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2176,8 +2143,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -2186,6 +2152,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B361 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2200,8 +2167,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2237,10 +2203,12 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S361",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
-                                      "douane": []
+                                      "douane": [],
+                                      "cvo": []
                                     },
                                     "produit_non_interpro": false
                                   },
@@ -2250,8 +2218,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -2314,6 +2281,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R031",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2328,8 +2296,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2365,6 +2332,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B031",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2379,8 +2347,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2416,6 +2383,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S031",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2430,8 +2398,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -2494,6 +2461,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R441",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2508,8 +2476,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -2518,6 +2485,7 @@
                                 "code_produit": "5132",
                                 "code_comptable": "9300",
                                 "code_douane": "3R441 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2532,8 +2500,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -2542,6 +2509,7 @@
                                 "code_produit": "5022",
                                 "code_comptable": "9300",
                                 "code_douane": "3R441 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2556,8 +2524,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -2566,6 +2533,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R441 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2580,8 +2548,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -2590,6 +2557,7 @@
                                 "code_produit": "5092",
                                 "code_comptable": "9300",
                                 "code_douane": "3R441 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2604,8 +2572,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2641,6 +2608,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B441",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2655,8 +2623,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -2665,6 +2632,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B441 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2679,8 +2647,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -2689,6 +2656,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B441 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2703,8 +2671,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2740,6 +2707,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S441",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2754,8 +2722,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau",
@@ -2764,6 +2731,7 @@
                                 "code_produit": "5113",
                                 "code_comptable": "9300",
                                 "code_douane": "3S441 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2778,8 +2746,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -2788,6 +2755,7 @@
                                 "code_produit": "5023",
                                 "code_comptable": "9300",
                                 "code_douane": "3S441 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2802,8 +2770,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ABO": {
                                 "libelle": "Abouriou ",
@@ -2812,6 +2779,7 @@
                                 "code_produit": "5013",
                                 "code_comptable": "9300",
                                 "code_douane": "3S441 35",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2826,8 +2794,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -2890,6 +2857,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R451",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2904,8 +2872,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -2941,6 +2908,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B451",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2955,8 +2923,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -2965,6 +2932,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B451 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -2979,8 +2947,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -2989,6 +2956,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B451 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3003,8 +2971,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -3013,6 +2980,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B451 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3027,8 +2995,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHE": {
                                 "libelle": "Chenin",
@@ -3037,6 +3004,7 @@
                                 "code_produit": "5051",
                                 "code_comptable": "9300",
                                 "code_douane": "3B451 CF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3051,8 +3019,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -3088,6 +3055,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S451",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3102,8 +3070,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -3166,6 +3133,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R411",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3180,8 +3148,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -3190,6 +3157,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R411 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3204,8 +3172,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "COT": {
                                 "libelle": "Cot",
@@ -3214,6 +3181,7 @@
                                 "code_produit": "5062",
                                 "code_comptable": "9300",
                                 "code_douane": "3R411 CZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3228,8 +3196,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PINAU": {
                                 "libelle": "Pineau d'Aunis",
@@ -3238,6 +3205,7 @@
                                 "code_produit": "5142",
                                 "code_comptable": "9300",
                                 "code_douane": "3R411 58",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3252,8 +3220,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon ",
@@ -3262,6 +3229,7 @@
                                 "code_produit": "5032",
                                 "code_comptable": "9300",
                                 "code_douane": "3R411 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3276,8 +3244,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -3286,6 +3253,7 @@
                                 "code_produit": "5092",
                                 "code_comptable": "9300",
                                 "code_douane": "3R411 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3300,8 +3268,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -3337,6 +3304,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B411",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3351,8 +3319,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -3361,6 +3328,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B411 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3375,8 +3343,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -3385,6 +3352,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B411 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3399,8 +3367,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ORB": {
                                 "libelle": "Orbois",
@@ -3409,6 +3376,7 @@
                                 "code_produit": "5201",
                                 "code_comptable": "9300",
                                 "code_douane": "3B411 AY",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3423,8 +3391,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -3460,6 +3427,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S411",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3474,8 +3442,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -3484,6 +3451,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3S411 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3498,8 +3466,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -3562,6 +3529,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R491 ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3576,8 +3544,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -3586,6 +3553,7 @@
                                 "code_produit": "5132",
                                 "code_comptable": "9300",
                                 "code_douane": "3R491 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3600,8 +3568,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -3610,6 +3577,7 @@
                                 "code_produit": "5022",
                                 "code_comptable": "9300",
                                 "code_douane": "3R491 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3624,8 +3592,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -3634,6 +3601,7 @@
                                 "code_produit": "5112",
                                 "code_comptable": "9300",
                                 "code_douane": "3R491 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3648,8 +3616,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon ",
@@ -3658,6 +3625,7 @@
                                 "code_produit": "5032",
                                 "code_comptable": "9300",
                                 "code_douane": "3R491 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3672,8 +3640,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -3709,6 +3676,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B491",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3723,8 +3691,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -3733,6 +3700,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B491 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3747,8 +3715,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -3757,6 +3724,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B491 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3771,8 +3739,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -3781,6 +3748,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B491 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3795,8 +3763,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHE": {
                                 "libelle": "Chenin",
@@ -3805,6 +3772,7 @@
                                 "code_produit": "5051",
                                 "code_comptable": "9300",
                                 "code_douane": "3B491 CF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3819,8 +3787,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -3856,6 +3823,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S491",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3870,8 +3838,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -3880,6 +3847,7 @@
                                 "code_produit": "5023",
                                 "code_comptable": "9300",
                                 "code_douane": "3S491 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3894,8 +3862,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -3958,6 +3925,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R493",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3972,8 +3940,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -3982,6 +3949,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R493 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -3996,8 +3964,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -4006,6 +3973,7 @@
                                 "code_produit": "5022",
                                 "code_comptable": "9300",
                                 "code_douane": "3R493 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4020,8 +3988,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -4030,6 +3997,7 @@
                                 "code_produit": "5112",
                                 "code_comptable": "9300",
                                 "code_douane": "3R493 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4044,8 +4012,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "COT": {
                                 "libelle": "Cot",
@@ -4054,6 +4021,7 @@
                                 "code_produit": "5062",
                                 "code_comptable": "9300",
                                 "code_douane": "3R493 CZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4068,8 +4036,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ABO": {
                                 "libelle": "Abouriou",
@@ -4078,6 +4045,7 @@
                                 "code_produit": "5012",
                                 "code_comptable": "9300",
                                 "code_douane": "3R493 35",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4092,8 +4060,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -4102,6 +4069,7 @@
                                 "code_produit": "5132",
                                 "code_comptable": "9300",
                                 "code_douane": "3R493 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4116,8 +4084,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -4153,6 +4120,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B493",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4167,8 +4135,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIG": {
                                 "libelle": "Pinot gris",
@@ -4177,6 +4144,7 @@
                                 "code_produit": "5161",
                                 "code_comptable": "9300",
                                 "code_douane": "3B493 AA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4191,8 +4159,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -4201,6 +4168,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B493 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4215,8 +4183,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -4225,6 +4192,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B493 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4239,8 +4207,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -4249,6 +4216,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B493 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4263,8 +4231,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "FBL": {
                                 "libelle": "Folle blanche",
@@ -4273,6 +4240,7 @@
                                 "code_produit": "5081",
                                 "code_comptable": "9300",
                                 "code_douane": "3B493 CL",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4287,8 +4255,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -4324,6 +4291,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S493",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4338,8 +4306,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -4348,6 +4315,7 @@
                                 "code_produit": "5173",
                                 "code_comptable": "9300",
                                 "code_douane": "3S493 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4362,8 +4330,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "COT": {
                                 "libelle": "Cot",
@@ -4372,6 +4339,7 @@
                                 "code_produit": "5063",
                                 "code_comptable": "9300",
                                 "code_douane": "3S493 CZ",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4386,8 +4354,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ABO": {
                                 "libelle": "Abouriou",
@@ -4396,6 +4363,7 @@
                                 "code_produit": "5013",
                                 "code_comptable": "9300",
                                 "code_douane": "3S493 35",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4410,8 +4378,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -4474,6 +4441,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R581",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4488,8 +4456,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -4498,6 +4465,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R581 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4512,8 +4480,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -4549,6 +4516,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B581",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4563,8 +4531,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -4573,6 +4540,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B581 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4587,8 +4555,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -4597,6 +4564,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B581 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4611,8 +4579,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MEL": {
                                 "libelle": "Melon",
@@ -4621,6 +4588,7 @@
                                 "code_produit": "5121",
                                 "code_comptable": "9300",
                                 "code_douane": "3B581 DK",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4635,8 +4603,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -4672,6 +4639,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S581",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4686,8 +4654,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -4696,6 +4663,7 @@
                                 "code_produit": "5173",
                                 "code_comptable": "9300",
                                 "code_douane": "3S581 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4710,8 +4678,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -4720,6 +4687,7 @@
                                 "code_produit": "5093",
                                 "code_comptable": "9300",
                                 "code_douane": "3S581 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4734,8 +4702,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -4798,6 +4765,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R494",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4812,8 +4780,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -4822,6 +4789,7 @@
                                 "code_produit": "5022",
                                 "code_comptable": "9300",
                                 "code_douane": "3R494 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4836,8 +4804,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon ",
@@ -4846,6 +4813,7 @@
                                 "code_produit": "5032",
                                 "code_comptable": "9300",
                                 "code_douane": "3R494 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4860,8 +4828,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -4870,6 +4837,7 @@
                                 "code_produit": "5132",
                                 "code_comptable": "9300",
                                 "code_douane": "3R494 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4884,8 +4852,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -4894,6 +4861,7 @@
                                 "code_produit": "5092",
                                 "code_comptable": "9300",
                                 "code_douane": "3R494 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4908,8 +4876,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ABO": {
                                 "libelle": "Abouriou",
@@ -4918,6 +4885,7 @@
                                 "code_produit": "5012",
                                 "code_comptable": "9300",
                                 "code_douane": "3R494 35",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4932,8 +4900,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -4942,6 +4909,7 @@
                                 "code_produit": "5112",
                                 "code_comptable": "9300",
                                 "code_douane": "3R494 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -4956,8 +4924,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -4993,6 +4960,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B494",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5007,8 +4975,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -5017,6 +4984,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B494 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5031,8 +4999,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -5041,6 +5008,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B494 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5055,8 +5023,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -5065,6 +5032,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B494 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5079,8 +5047,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau gris",
@@ -5089,6 +5056,7 @@
                                 "code_produit": "5101",
                                 "code_comptable": "9300",
                                 "code_douane": "3B494 CU",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5103,8 +5071,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIG": {
                                 "libelle": "Pinot gris",
@@ -5113,6 +5080,7 @@
                                 "code_produit": "5161",
                                 "code_comptable": "9300",
                                 "code_douane": "3B494 AA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5127,8 +5095,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -5164,6 +5131,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S494",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5178,8 +5146,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -5188,6 +5155,7 @@
                                 "code_produit": "5173",
                                 "code_comptable": "9300",
                                 "code_douane": "3S494 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5202,8 +5170,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -5212,6 +5179,7 @@
                                 "code_produit": "5023",
                                 "code_comptable": "9300",
                                 "code_douane": "3S494 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5226,8 +5194,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -5236,6 +5203,7 @@
                                 "code_produit": "5133",
                                 "code_comptable": "9300",
                                 "code_douane": "3S494 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5250,8 +5218,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -5260,6 +5227,7 @@
                                 "code_produit": "5093",
                                 "code_comptable": "9300",
                                 "code_douane": "3S494 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5274,8 +5242,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -5284,6 +5251,7 @@
                                 "code_produit": "5113",
                                 "code_comptable": "9300",
                                 "code_douane": "3S494 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5298,8 +5266,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -5362,6 +5329,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R721",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5376,8 +5344,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -5413,6 +5380,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B721",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5427,8 +5395,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -5464,6 +5431,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S721",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5478,8 +5446,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -5542,6 +5509,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R851",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5556,8 +5524,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -5566,6 +5533,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R851 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5580,8 +5548,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -5590,6 +5557,7 @@
                                 "code_produit": "5022",
                                 "code_comptable": "9300",
                                 "code_douane": "3R851 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5604,8 +5572,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon ",
@@ -5614,6 +5581,7 @@
                                 "code_produit": "5032",
                                 "code_comptable": "9300",
                                 "code_douane": "3R851 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5628,8 +5596,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -5638,6 +5605,7 @@
                                 "code_produit": "5132",
                                 "code_comptable": "9300",
                                 "code_douane": "3R851 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5652,8 +5620,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "NEG": {
                                 "libelle": "Negrette noir",
@@ -5662,6 +5629,7 @@
                                 "code_produit": "5242",
                                 "code_comptable": "9300",
                                 "code_douane": "3R851 DL",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5676,8 +5644,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -5686,6 +5653,7 @@
                                 "code_produit": "5092",
                                 "code_comptable": "9300",
                                 "code_douane": "3R851 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5700,8 +5668,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -5737,6 +5704,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B851",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5751,8 +5719,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -5761,6 +5728,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B851 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5775,8 +5743,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -5785,6 +5752,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B851 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5799,8 +5767,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -5809,6 +5776,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B851 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5823,8 +5791,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau gris",
@@ -5833,6 +5800,7 @@
                                 "code_produit": "5101",
                                 "code_comptable": "9300",
                                 "code_douane": "3B851 CU",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5847,8 +5815,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHE": {
                                 "libelle": "Chenin",
@@ -5857,6 +5824,7 @@
                                 "code_produit": "5051",
                                 "code_comptable": "9300",
                                 "code_douane": "3B851 CF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5871,8 +5839,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIG": {
                                 "libelle": "Pinot gris",
@@ -5881,6 +5848,7 @@
                                 "code_produit": "5161",
                                 "code_comptable": "9300",
                                 "code_douane": "3B851 AA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5895,8 +5863,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -5932,6 +5899,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S851",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5946,8 +5914,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -5956,6 +5923,7 @@
                                 "code_produit": "5173",
                                 "code_comptable": "9300",
                                 "code_douane": "3S851 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5970,8 +5938,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -5980,6 +5947,7 @@
                                 "code_produit": "5093",
                                 "code_comptable": "9300",
                                 "code_douane": "3S851 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -5994,8 +5962,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -6004,6 +5971,7 @@
                                 "code_produit": "5133",
                                 "code_comptable": "9300",
                                 "code_douane": "3S851 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6018,8 +5986,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "ABO": {
                                 "libelle": "Abouriou ",
@@ -6028,6 +5995,7 @@
                                 "code_produit": "5013",
                                 "code_comptable": "9300",
                                 "code_douane": "3S851 35",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6042,8 +6010,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -6052,6 +6019,7 @@
                                 "code_produit": "5113",
                                 "code_comptable": "9300",
                                 "code_douane": "3S851 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6066,8 +6034,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -6130,6 +6097,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R861",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6144,8 +6112,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -6154,6 +6121,7 @@
                                 "code_produit": "5172",
                                 "code_comptable": "9300",
                                 "code_douane": "3R861 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6168,8 +6136,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -6178,6 +6145,7 @@
                                 "code_produit": "5022",
                                 "code_comptable": "9300",
                                 "code_douane": "3R861 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6192,8 +6160,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon ",
@@ -6202,6 +6169,7 @@
                                 "code_produit": "5032",
                                 "code_comptable": "9300",
                                 "code_douane": "3R861 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6216,8 +6184,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GRO": {
                                 "libelle": "Grolleau noir",
@@ -6226,6 +6193,7 @@
                                 "code_produit": "5112",
                                 "code_comptable": "9300",
                                 "code_douane": "3R861 CT",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6240,8 +6208,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -6250,6 +6217,7 @@
                                 "code_produit": "5093",
                                 "code_comptable": "9300",
                                 "code_douane": "3R861 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6264,8 +6232,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -6301,6 +6268,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B861",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6315,8 +6283,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHA": {
                                 "libelle": "Chardonnay",
@@ -6325,6 +6292,7 @@
                                 "code_produit": "5041",
                                 "code_comptable": "9300",
                                 "code_douane": "3B861 CA",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6339,8 +6307,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CHE": {
                                 "libelle": "Chenin",
@@ -6349,6 +6316,7 @@
                                 "code_produit": "5051",
                                 "code_comptable": "9300",
                                 "code_douane": "3B861 CF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6363,8 +6331,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIB": {
                                 "libelle": "Pinot blanc",
@@ -6373,6 +6340,7 @@
                                 "code_produit": "5151",
                                 "code_comptable": "9300",
                                 "code_douane": "3B861 59",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6387,8 +6355,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUB": {
                                 "libelle": "Sauvignon blanc",
@@ -6397,6 +6364,7 @@
                                 "code_produit": "5181",
                                 "code_comptable": "9300",
                                 "code_douane": "3B861 AE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6411,8 +6379,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "SAUG": {
                                 "libelle": "Sauvignon gris",
@@ -6421,6 +6388,7 @@
                                 "code_produit": "5191",
                                 "code_comptable": "9300",
                                 "code_douane": "3B861 AF",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6435,8 +6403,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -6472,6 +6439,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S861",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6486,8 +6454,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "PIN": {
                                 "libelle": "Pinot noir",
@@ -6496,6 +6463,7 @@
                                 "code_produit": "5173",
                                 "code_comptable": "9300",
                                 "code_douane": "3S861 AB",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6510,8 +6478,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBF": {
                                 "libelle": "Cabernet franc ",
@@ -6520,6 +6487,7 @@
                                 "code_produit": "5023",
                                 "code_comptable": "9300",
                                 "code_douane": "3S861 BW",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6534,8 +6502,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "CBS": {
                                 "libelle": "Cabernet sauvignon ",
@@ -6544,6 +6511,7 @@
                                 "code_produit": "5033",
                                 "code_comptable": "9300",
                                 "code_douane": "3S861 BX",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6558,8 +6526,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "MERL": {
                                 "libelle": "Merlot",
@@ -6568,6 +6535,7 @@
                                 "code_produit": "5133",
                                 "code_comptable": "9300",
                                 "code_douane": "3S861 DE",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6582,8 +6550,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               },
                               "GAM": {
                                 "libelle": "Gamay noir",
@@ -6592,6 +6559,7 @@
                                 "code_produit": "5033",
                                 "code_comptable": "9300",
                                 "code_douane": "3S861 CM",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6606,8 +6574,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -6627,7 +6594,7 @@
               },
               "CALV": {
                 "libelle": "Calvados",
-                "format_libelle": null,
+                "format_libelle": "",
                 "code": "CALV",
                 "code_produit": null,
                 "code_comptable": null,
@@ -6733,6 +6700,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B141",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6747,8 +6715,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -6784,6 +6751,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S141",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6798,8 +6766,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -6835,6 +6802,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R141",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6849,8 +6817,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -6862,16 +6829,17 @@
                 "attributs": {
                   "rendement": 90,
                   "rendement_conseille": null,
-                  "rendement_dr_l5": 120,
+                  "rendement_dr_l5": 95,
                   "rendement_dr_l15": 90,
                   "rendement_vci": null,
-                  "rendement_vci_total": null
+                  "rendement_vci_total": null,
+                  "rendement_dr": null
                 }
               },
               "CHERAR": {
                 "libelle": "Coteaux du Cher et de l'Arnon",
-                "format_libelle": null,
-                "code": "CHERAR",
+                "format_libelle": "",
+                "code": "",
                 "code_produit": null,
                 "code_comptable": null,
                 "code_douane": null,
@@ -6946,7 +6914,7 @@
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "3",
                             "code_produit": null,
                             "code_comptable": null,
@@ -6976,6 +6944,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B182",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -6990,9 +6959,17 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 80,
+                              "rendement_dr_l5": 90,
+                              "rendement_dr_l15": 80,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
@@ -7027,6 +7004,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S182",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7041,8 +7019,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -7078,6 +7055,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R182",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7092,8 +7070,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -7105,15 +7082,16 @@
                 "attributs": {
                   "rendement": 80,
                   "rendement_conseille": null,
-                  "rendement_dr_l5": 120,
+                  "rendement_dr_l5": 85,
                   "rendement_dr_l15": 80,
                   "rendement_vci": null,
-                  "rendement_vci_total": null
+                  "rendement_vci_total": null,
+                  "rendement_dr": null
                 }
               },
               "CDLC": {
                 "libelle": "Cotes de la Charité",
-                "format_libelle": null,
+                "format_libelle": "",
                 "code": "CDLC",
                 "code_produit": null,
                 "code_comptable": null,
@@ -7219,6 +7197,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B582",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7233,8 +7212,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -7270,6 +7248,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S582",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7284,26 +7263,17 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
                           "rouge": {
                             "libelle": "Rouge",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "1",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
-                            "attributs": {
-                              "rendement": 65,
-                              "rendement_conseille": null,
-                              "rendement_dr_l5": 120,
-                              "rendement_dr_l15": 65,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
-                            },
                             "interpro": {
                               "INTERPRO-inter-loire": {
                                 "labels": [],
@@ -7329,6 +7299,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R582",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7343,9 +7314,17 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_conseille": null,
+                              "rendement_dr_l5": 70,
+                              "rendement_dr_l15": 65,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null,
+                              "rendement_dr": null
                             }
                           }
                         }
@@ -7356,15 +7335,16 @@
                 "attributs": {
                   "rendement": 80,
                   "rendement_conseille": null,
-                  "rendement_dr_l5": 120,
+                  "rendement_dr_l5": 85,
                   "rendement_dr_l15": 80,
                   "rendement_vci": null,
-                  "rendement_vci_total": null
+                  "rendement_vci_total": null,
+                  "rendement_dr": null
                 }
               },
               "CTXT": {
                 "libelle": "Coteaux de Tannay",
-                "format_libelle": null,
+                "format_libelle": "",
                 "code": "CTXT",
                 "code_produit": null,
                 "code_comptable": null,
@@ -7440,7 +7420,7 @@
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "3",
                             "code_produit": null,
                             "code_comptable": null,
@@ -7470,6 +7450,7 @@
                                 "code_produit": "5001",
                                 "code_comptable": "9300",
                                 "code_douane": "3B583",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7484,9 +7465,17 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 80,
+                              "rendement_dr_l5": 90,
+                              "rendement_dr_l15": 80,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
@@ -7521,6 +7510,7 @@
                                 "code_produit": "5003",
                                 "code_comptable": "9300",
                                 "code_douane": "3S583",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7535,8 +7525,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           },
@@ -7572,6 +7561,7 @@
                                 "code_produit": "5002",
                                 "code_comptable": "9300",
                                 "code_douane": "3R583",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -7586,8 +7576,7 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
                             }
                           }
@@ -7599,15 +7588,60 @@
                 "attributs": {
                   "rendement": 80,
                   "rendement_conseille": null,
-                  "rendement_dr_l5": 120,
+                  "rendement_dr_l5": 85,
                   "rendement_dr_l15": 80,
                   "rendement_vci": null,
-                  "rendement_vci_total": null
+                  "rendement_vci_total": null,
+                  "rendement_dr": null
                 }
               }
             }
           }
-        }
+        },
+        "cepages_autorises": [
+          "ABOURIOU N",
+          "AUXERROIS B",
+          "CABERNET FRANC N",
+          "CABERNET SAUVIGNON N",
+          "CEPAGE",
+          "CHARDONNAY B",
+          "CHASSELAS B",
+          "CHASSE3B583LAS RS",
+          "CHENIN B",
+          "COT N",
+          "EGIODOLA N",
+          "FOLLE BLANCHE B",
+          "GAMARET N",
+          "GAMAY DE BOUZE N",
+          "GAMAY DE CHAUDENAY N",
+          "GAMAY N",
+          "GEWURZTRAMINER RS",
+          "GROLLEAU GRIS G",
+          "GROLLEAU N",
+          "MELON B",
+          "MERLOT N",
+          "MEUNIER N",
+          "MÜLLER-THURGAU B",
+          "MUSCAT H N",
+          "MUSCAT OTTONEL B",
+          "MUSCAT PG B",
+          "MUSCAT PG RG",
+          "MUSCAT PG RS",
+          "NEGRETTE N",
+          "ORBOIS B",
+          "PINEAU D'AUNIS N",
+          "PINOT BLANC B",
+          "PINOT GRIS G",
+          "PINOT NOIR N",
+          "PORTUGAIS BLEU N",
+          "POULSARD N",
+          "RIESLING B",
+          "SACY B",
+          "SAUVIGNON B",
+          "SAUVIGNON GRIS G",
+          "SAVAGNIN BLANC B",
+          "SAVAGNIN ROSE RS"
+        ]
       }
     }
   }

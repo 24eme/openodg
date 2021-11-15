@@ -125,6 +125,11 @@ class chgtdenomActions extends sfActions
 
     public function executeValidation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
+
+        if ($this->chgtDenom->isValide()) {
+            return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
+        }
+
         $this->chgtDenom->generateLots();
         $this->secureIsValide($this->chgtDenom);
         $this->isAdmin = $this->getUser()->isAdmin();
@@ -135,7 +140,7 @@ class chgtdenomActions extends sfActions
 
         $this->validation = new ChgtDenomValidation($this->chgtDenom);
 
-        $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin));
+        $this->form = new ChgtDenomValidationForm($this->chgtDenom, array(), array('isAdmin' => $this->isAdmin, 'withDate' => $this->isAdmin));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -165,6 +170,10 @@ class chgtdenomActions extends sfActions
     public function executeVisualisation(sfWebRequest $request) {
         $this->chgtDenom = $this->getRoute()->getChgtDenom();
         $this->isAdmin = $this->getUser()->isAdmin();
+
+        if (!$this->chgtDenom->isValide()) {
+            return $this->redirect('chgtdenom_validation', $this->chgtDenom);
+        }
 
         $this->form = null;
         if ($this->isAdmin && !$this->chgtDenom->isApprouve()) {

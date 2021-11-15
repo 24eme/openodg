@@ -355,6 +355,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function save($saveDependants = true) {
         $this->archiver();
+        $this->piece_document->generatePieces();
         if ($this->isApprouve()) {
             if (!count($this->lots->toArray(true, false))) {
                 $this->generateLots();
@@ -898,7 +899,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         $today = [];
         foreach ($chgtdenoms as $chgt) {
-            if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
+            if ($chgt->validation_odg && substr($chgt->validation, 0, 10) === substr($this->validation, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
                 $today[$chgt->_id] = $chgt;
             }
         }

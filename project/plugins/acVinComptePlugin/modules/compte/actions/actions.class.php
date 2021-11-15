@@ -391,7 +391,7 @@ class compteActions extends sfCredentialActions {
     }
 
     private function addTagFacetsToQuerry($q) {
-      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique','relations' => 'doc.tags.relations');
+      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique','relations' => 'doc.tags.relations', 'documents' => 'doc.tags.documents');
       foreach($facets as $nom => $f) {
         $elasticaFacet 	= new acElasticaFacetTerms($nom);
         $elasticaFacet->setField($f);

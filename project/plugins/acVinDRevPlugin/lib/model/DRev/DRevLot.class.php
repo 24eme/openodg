@@ -149,4 +149,24 @@ class DRevLot extends BaseDRevLot
         return $drevSource->getLotByNumArchive($this->numero_archive);
     }
 
+    public function getOriginalVolumeIfModifying() {
+        $diff = $this->getDocument()->getDiffLotVolume();
+        if (!count($diff)) {
+            return false;
+        }
+        if ($this->getHash() === '') {
+            return false;
+        }
+        if (isset($diff[$this->getHash()."/unique_id"])) {
+            $hash = intval($this->getKey() * 1) - 1;
+            $hash = "/lots/$hash";
+            if (isset($diff[$hash . "/unique_id"]) &&
+                    $diff[$hash . "/unique_id"] == $this->unique_id) {
+                return $diff[$hash . "/volume"];
+            }
+            return false;
+        }
+        return $diff[$this->getHash()."/volume"];
+    }
+
 }

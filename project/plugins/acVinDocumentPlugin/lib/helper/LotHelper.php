@@ -156,12 +156,12 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
 
     $adresseSplit = explode('—',$adresseLogement);
     $adresse['nom'] = trim($adresseSplit[0]);
-    $adresse['adresse_totale'] = trim($adresseSplit[1]);
-    if (!$adresse['adresse_totale']) {
+    $adresse['adresse_totale'] = $adresseSplit[1];
+    if (!trim($adresse['adresse_totale'])) {
         return $logementEtablissement;
     }
     //Hack des premières version de logement : devra être supprimé
-    if (preg_match('/^[0-9 ]+$/', $adresse['adresse_totale'])) {
+    if (preg_match('/^[0-9 ]+$/', trim($adresse['adresse_totale']))) {
         $adresse['telephone'] = $adresse['adresse_totale'];
         $adresse['adresse_totale'] = $adresse['nom'];
         $adresse['nom'] = '';
@@ -172,8 +172,9 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
         $adresse['code_postal'] = trim($m[2]);
         $adresse['commune'] = trim($m[3]);
     }else{
-        $adresse['adresse'] = $adresse['adresse_totale'];
+        $adresse['adresse'] = trim($adresse['adresse_totale']);
     }
+
     $adresse['telephone'] = trim($adresseSplit[2]);
     $adresse['portable'] = trim($adresseSplit[3]);
     //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé

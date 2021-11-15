@@ -21,7 +21,7 @@ if(len(sys.argv) > 2 and re.search("^[0-9]{4}$", sys.argv[2])):
     
 millesime_precedent = str(int(millesime) - 1)
 
-moisjour = "07-31"
+moisjour = "12-31"
     
 if(len(sys.argv) > 3 and re.search("^[0-9]{2}-[0-9]{2}$", sys.argv[3])):
     moisjour = sys.argv[3]

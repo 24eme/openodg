@@ -682,7 +682,7 @@ class degustationActions extends sfActions {
         $doc = acCouchdbManager::getClient()->find($docid);
         $lot = $doc->getLot($unique_id);
         if (!$lot->getMouvement(Lot::STATUT_AFFECTABLE)) {
-            throw sfException("Action impossible");
+            throw new sfException("Action impossible");
         }
         $lot->affectable = false;
         $doc->save();
@@ -695,7 +695,7 @@ class degustationActions extends sfActions {
         $doc = acCouchdbManager::getClient()->find($docid);
         $lot = $doc->getLot($unique_id);
         if (!$lot->getMouvement(Lot::STATUT_NONAFFECTABLE)) {
-            throw sfException("Action impossible");
+            throw new sfException("Action impossible");
         }
         $lot->affectable = true;
         $doc->save();
@@ -779,7 +779,7 @@ class degustationActions extends sfActions {
       }
 
       $this->degustation->setMailEnvoyeEtablissement($identifiant, $date);
-      $this->degustation->save();
+      $this->degustation->save(false);
 
       if ($mailto) {
           return $this->redirect('degustation_notifications_etape', array('id' => $this->degustation->_id, 'mail_to_identifiant' => $identifiant));
@@ -826,7 +826,7 @@ class degustationActions extends sfActions {
         $this->getResponse()->clearHttpHeaders();
         $this->getResponse()->setStatusCode(302);
         $this->getResponse()->setHttpHeader('Location', $mailto);
-        $this->getResponse()->setContent(sprintf('<html><head><meta http-equiv="refresh" content="%d;url=%s"/></head></html>', 0, htmlspecialchars($mailto, ENT_QUOTES, sfConfig::get('sf_charset'))));
+        $this->getResponse()->setContent(sprintf('<html><head><meta http-equiv="refresh" content="%d;url=%s"/></head></html>', 0, $mailto));
         $this->getResponse()->send();
 
         throw new sfStopException();
@@ -865,7 +865,6 @@ class degustationActions extends sfActions {
 
     public function executeEtiquettesPrlvmtCsv(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
       $this->getResponse()->setHttpHeader('Content-Type', 'text/csv; charset=ISO-8859-1');
       $this->setLayout(false);
     }

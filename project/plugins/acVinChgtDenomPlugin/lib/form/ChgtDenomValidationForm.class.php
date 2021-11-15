@@ -3,10 +3,12 @@
 class ChgtDenomValidationForm extends acCouchdbForm
 {
     public $isAdmin = null;
+    public $withDate = null;
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+      $this->isAdmin = (isset($options['isAdmin']) && $options['isAdmin']);
+      $this->withDate = (isset($options['withDate']) && $options['withDate']);
       parent::__construct($doc, $defaults, $options, $CSRFSecret);
-      $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
       $this->updateDefaults();
     }
 
@@ -19,6 +21,11 @@ class ChgtDenomValidationForm extends acCouchdbForm
     {
         $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
         $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
+        if ($this->withDate) {
+            $this->setWidget('validation', new sfWidgetFormInput([], ['required' => true]));
+            $this->setValidator('validation', new sfValidatorDate(['date_output' => 'c', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true, 'with_time' => false]));
+            $this->widgetSchema->setLabel('validation', "Date de validation");
+        }
 
         $this->widgetSchema->setNameFormat('chgt_denom_validation[%s]');
     }
@@ -26,7 +33,7 @@ class ChgtDenomValidationForm extends acCouchdbForm
     public function save()
     {
       $values = $this->getValues();
-      $dateValidation = date('c');
+      $dateValidation = $values['validation'];
       if ($this->getDocument()->isApprouve()) {
           throw new sfException("On ne peut pas changer la validation d'un chgt déjà approuvé");
       }

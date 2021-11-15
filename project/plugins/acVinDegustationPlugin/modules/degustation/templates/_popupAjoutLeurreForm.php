@@ -16,13 +16,17 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<div class="col-xs-10 col-xs-offset-1">
+						<div class="col-xs-5 col-xs-offset-1">
 							<div class="checkbox">
 								<input type="checkbox" value="0" id="vin_sans_cepage" checked="checked">
 								<label for="vin_sans_cepage">
 									vin sans cépage
 								</label>
 							</div>
+						</div>
+						<div class="col-xs-5">
+                            <?php echo $form['millesime']->renderLabel(); ?>
+                            <?php echo $form['millesime']->render(['placeholder' => 'Millésime', 'required' => true]); ?>
 						</div>
 					</div>
 					<div style="display:none;" id="cepages_choice">

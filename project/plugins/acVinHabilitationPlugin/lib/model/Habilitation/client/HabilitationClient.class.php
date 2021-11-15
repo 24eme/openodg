@@ -280,8 +280,7 @@ class HabilitationClient extends acCouchdbClient {
         public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activites, $statut, $commentaire = "") {
             $last = $this->getLastHabilitation($etablissementIdentifiant);
             $habilitation = $this->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
-
-            if($last && $habilitation->_id < $last->_id) {
+            if($habilitation && $last && $habilitation->_id < $last->_id) {
                 foreach($activites as $activiteKey) {
                     if(!$last->exist($hash_produit)) {
                         continue;

@@ -36,19 +36,19 @@ $t = new lime_test(110);
 
 $degustation = new Degustation();
 
-$l1_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 1 table 1 rouge', null);
-$l2_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 2 table 1 rouge', null);
-$l3_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 3 table 1 rouge', null);
-$l4_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 4 table 1 rouge', null);
-$l5_t1_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 5 table 1 blanc', null);
-$l6_t2_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 6 table 2 rouge', 2);
-$l7_t2_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 7 table 2 rouge', 2);
-$l8_t2_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 8 table 2 blanc', 2);
-$l9_t2_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 9 table 2 blanc', 2);
-$l10_t1_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 10 table 1 blanc', null);
-$l11_t1_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 11 table 1 blanc', null);
-$l12_sanstable_rose = $degustation->addLeurre($produit_rose, 'leure sans table rosé', null);
-$l13_sanstable_blanc = $degustation->addLeurre($produit_blanc, 'leure sans table blanc', null);
+$l1_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 1 table 1 rouge', date('Y'), null);
+$l2_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 2 table 1 rouge', date('Y'), null);
+$l3_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 3 table 1 rouge', date('Y'), null);
+$l4_t1_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 4 table 1 rouge', date('Y'), null);
+$l5_t1_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 5 table 1 blanc', date('Y'), null);
+$l6_t2_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 6 table 2 rouge', date('Y'), 2);
+$l7_t2_rouge = $degustation->addLeurre($produit_rouge, 'Leurre 7 table 2 rouge', date('Y'), 2);
+$l8_t2_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 8 table 2 blanc', date('Y'), 2);
+$l9_t2_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 9 table 2 blanc', date('Y'), 2);
+$l10_t1_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 10 table 1 blanc', date('Y'), null);
+$l11_t1_blanc = $degustation->addLeurre($produit_blanc, 'Leurre 11 table 1 blanc', date('Y'), null);
+$l12_sanstable_rose = $degustation->addLeurre($produit_rose, 'leure sans table rosé', date('Y'), null);
+$l13_sanstable_blanc = $degustation->addLeurre($produit_blanc, 'leure sans table blanc', date('Y'), null);
 
 $l11_t1_blanc->setNumeroTable(1);
 $l10_t1_blanc->setNumeroTable(1);
@@ -147,10 +147,10 @@ $t->is($l11_t1_blanc->getPosition(), '010040', 'l11_t1_blanc '.$l11_t1_blanc->de
 $t->is($l1_t1_rouge->getPosition(), '010050', 'l1_t1_rouge '.$l1_t1_rouge->details.' position 010050');
 $t->is($l2_t1_rouge->getPosition(), '010060', 'l2_t1_rouge '.$l2_t1_rouge->details.' position 010060');
 
-$autrelot1_sanstable_blanc = $degustation->addLeurre($produit_blanc, 'leure sans table blanc', null);
-$autrelot2_sanstable_blanc = $degustation->addLeurre($produit_blanc, 'leure sans table blanc', null);
-$autrelot3_sanstable_rouge = $degustation->addLeurre($produit_rouge, 'leure sans table rouge', null);
-$autrelot4_sanstable_rouge = $degustation->addLeurre($produit_rouge, 'leure sans table rouge', null);
+$autrelot1_sanstable_blanc = $degustation->addLeurre($produit_blanc, 'leure sans table blanc', date('Y'), null);
+$autrelot2_sanstable_blanc = $degustation->addLeurre($produit_blanc, 'leure sans table blanc', date('Y'), null);
+$autrelot3_sanstable_rouge = $degustation->addLeurre($produit_rouge, 'leure sans table rouge', date('Y'), null);
+$autrelot4_sanstable_rouge = $degustation->addLeurre($produit_rouge, 'leure sans table rouge', date('Y'), null);
 $t->comment("on ajout deux lots de deux couleurs différentes");
 $l12_sanstable_rose->setNumeroTable(1);
 $l13_sanstable_blanc->setNumeroTable(1);

@@ -141,6 +141,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->millesime != $this->getPeriode()) {
                 continue;
             }
+            if(!$lot->produit_hash) {
+                continue;
+            }
             $couleur = $lot->getConfig()->getCouleur()->getLibelleDR();
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
@@ -649,7 +652,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $produitsImporte = array();
-        $has_bio = false;
+        $has_bio_in_dr = false;
+        $has_hve_in_dr = false;
 
         $has_bailleurs_or_multiple = 0;
         $first_cvi = $csv[0][DRCsvFile::CSV_RECOLTANT_CVI];
@@ -711,13 +715,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $complement = null;
-
-            if (DRevConfiguration::getInstance()->hasDenominationAuto() &&
-                  ( $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_TOTAL) || preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) )
-                ) {
-              $has_bio = true;
-              $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
-          } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+            if (DRevConfiguration::getInstance()->hasDenominationAuto() && preg_match('/ bio|^bio| ab$/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) ) {
+                $has_bio_in_dr = true;
+                $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
+            } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && preg_match('/ hve|^hve/i', $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) ) {
+                $has_hve_in_dr = true;
+                $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
+            }elseif(DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO, true)){
+                $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
+            }elseif(DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_HVE, true)){
+                $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
+            } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
                 $complement = $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT];
             }
 
@@ -862,9 +870,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->remove($del);
         }
 
-        if (!$has_bio && DRevConfiguration::getInstance()->hasDenominationAuto() && $this->hasDenominationAuto(DRevClient::DENOMINATION_BIO_PARTIEL)) {
-            foreach ($this->declaration->getProduits() as $hash => $p) {
-                $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+        if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
+            if (!$has_hve_in_dr && !$has_bio_in_dr) {
+                if ($this->hasDenominationAuto(DRevClient::DENOMINATION_BIO)) {
+                    foreach ($this->declaration->getProduits() as $hash => $p) {
+                        $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_BIO_LIBELLE_AUTO);
+                    }
+                }
+                if ($this->hasDenominationAuto(DRevClient::DENOMINATION_HVE)) {
+                    foreach ($this->declaration->getProduits() as $hash => $p) {
+                        $produitBio = $this->addProduit($p->getParent()->getHash(), DRevClient::DENOMINATION_HVE_LIBELLE_AUTO);
+                    }
+                }
             }
         }
 
@@ -1495,7 +1512,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	public function getVolumeFacturable($produitFilter = null)
 	{
-		return $this->declaration->getTotalVolumeRevendique($produitFilter);
+		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
+        foreach($this->getDeletedLots() as $lot) {
+            $volume -= $lot->volume;
+        }
+        return $volume;
 	}
 
 	public function getSurfaceVinifieeFacturable()
@@ -1518,14 +1539,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
     {
         $lots = [];
-
+        $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
             if ($lot->numero_dossier === $this->numero_archive) {
                 $lots[] = $lot;
+                $volume_mod += $lot->getOriginalVolumeIfModifying();
             }
         }
+        $volume = $this->getInternalVolumeRevendique($lots, $produitFilter);
 
-        return $this->getInternalVolumeRevendique($lots, $produitFilter);
+        foreach($this->getDeletedLots() as $lot) {
+            $volume_mod += $lot->volume;
+        }
+
+        return $volume - $volume_mod;
     }
 
     public function getVolumeRevendiqueLots($produitFilter = null){
@@ -1552,6 +1579,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
 
+    public function getVolumeVinFromSV11Precedente($produitFilter = null) {
+        $sv11 = $this->getDR($this->getPeriode()-1);
+        if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
+            return ;
+        }
+        return $sv11->getTotalValeur("10");
+    }
+
     public function getNbApporteursPlusOneFromDouane() {
         $douane = $this->getDR();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
@@ -1564,9 +1599,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $apporteurs + 1;
     }
 
-    /**
-    * @deprecated use getVolumeRevendiqueLots instead
-    */
     public function getVolumeLotsFacturables($produitFilter = null){
 
         return $this->getVolumeRevendiqueLots($produitFilter);
@@ -1599,7 +1631,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
-
       $templateFacture = $this->getTemplateFacture();
       if(!$templateFacture) {
           return array();
@@ -1618,6 +1649,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $rienAFacturer = true;
 
       foreach($cotisations as $cotisation) {
+          if (
+              (strpos($cotisation->getHash(), '%detail_identifiant%') !== false) &&
+              ($cotisation->getConfigCallback() == 'getVolumeLotsFacturables' || $cotisation->getConfigCallback() == 'getVolumeRevendiqueLots')
+             ) {
+              throw new sfException("getVolumeLotsFacturables/getVolumeRevendiqueLots incompatibles avec %detail_identifiant%");
+          }
+
           $mouvement = DRevMouvementFactures::freeInstance($this);
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
@@ -1644,6 +1682,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       return array($identifiantCompte => $mouvements);
+    }
+
+    public function getDeletedLots() {
+        $deleted = array();
+        foreach($this->getDiffLotVolume() as $k => $v) {
+            if (strpos($k, '/unique_id') === false) {
+                continue;
+            }
+            if (!$this->getLot($unique_id)) {
+                $deleted[] = $v;
+            }
+        }
+        $lots = array();
+        foreach($deleted as $unique_id) {
+            $lots[] = $this->getMother()->getLot($unique_id);
+        }
+        return $lots;
     }
 
     public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
@@ -2006,12 +2061,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
-    public function getDiffWithMother() {
-
-        return $this->version_document->getDiffWithMother();
+    public function getDiffLotVolume() {
+        $diff = $this->getDiffWithMother(true);
+        $diffLot = array();
+        foreach($diff as $k => $v) {
+            if (strpos($k, '/lots/') !== false && (strpos($k, '/volume') || strpos($k, '/unique_id'))) {
+                $diffLot[$k] = $v;
+            }
+        }
+        return $diffLot;
     }
 
-    public function isModifiedMother($hash_or_object, $key = null) {
+    public function getDiffWithMother($both_directions = false) {
+
+        return $this->version_document->getDiffWithMother($both_directions);
+    }
+
+    public function isModifiedMother($hash_or_object, $key = null, $both_directions = false) {
 
         return $this->version_document->isModifiedMother($hash_or_object, $key);
     }
@@ -2078,8 +2144,37 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $this->periode.'-12-10';
     }
 
-    public function hasDenominationAuto($const) {
-      return $this->exist("denomination_auto") && ($this->denomination_auto == $const);
+    public function hasDenominationAuto($const, $total = false) {
+        if(!$this->exist("denomination_auto")) {
+            return false;
+        }
+        if (!$total) {
+            return strpos($this->getDenominationAuto(false), $const) !== false;
+        }
+        return $this->getDenominationAuto(false) == $const;
+    }
+
+    public function getDenominationAuto($to_array = true ){
+        $d = $this->_get('denomination_auto');
+        if (strpos($d, DRevClient::DENOMINATION_BIO_PARTIEL_DEPRECATED) !== false) {
+            $d = DRevClient::DENOMINATION_BIO.'|'.DRevClient::DENOMINATION_CONVENTIONNEL;
+            $this->_set('denomination_auto', $d);
+        }
+        if (strpos($d, DRevClient::DENOMINATION_BIO_TOTAL_DEPRECATED) !== false) {
+            $d = DRevClient::DENOMINATION_BIO;
+            $this->_set('denomination_auto', $d);
+        }
+        if ($to_array){
+            return explode('|', $d);
+        }
+        return $d;
+    }
+
+    public function setDenominationAuto($d) {
+        if (is_array($d)) {
+            $d = implode('|', $d);
+        }
+        return $this->_set('denomination_auto', $d);
     }
 
     public function getDocumentsAEnvoyer() {

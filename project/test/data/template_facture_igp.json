@@ -1,32 +1,52 @@
 {
-  "_id": "TEMPLATE-FACTURE-%periode%",
-  "type": "TemplateFacture",
-  "campagne": "%periode%",
-  "template": "IGP",
-  "libelle": "%periode% - IGP",
-  "docs": [
-    "DRev"
-  ],
-  "cotisations": {
-    "00_%detail_identifiant%_00_volume_revendique_numero_dossier": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "DRev Volume revendique numéro de dossier",
-      "code_comptable": "70630000",
-      "details": {
-        "volume_revendique_numero_dossier": {
-          "modele": "CotisationVariable",
-          "prix": 2,
-          "tva": 0,
-          "unite": "hl",
-          "libelle": "- %detail_identifiant%",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeRevendiqueNumeroDossier"
+    "_id": "TEMPLATE-FACTURE-%periode%",
+    "type": "TemplateFacture",
+    "campagne": "%periode%",
+    "template": "IGP",
+    "libelle": "%periode% - IGP",
+    "docs": [
+        "DRev"
+    ],
+    "cotisations": {
+        "00_%detail_identifiant%_00_volume_revendique_numero_dossier": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "DRev Volume revendique numéro de dossier",
+            "code_comptable": "70630000",
+            "details": {
+                "01_getVolumeRevendiqueNumeroDossier": {
+                    "modele": "CotisationVariable",
+                    "prix": 2,
+                    "tva": 0,
+                    "unite": "hl",
+                    "libelle": "- %detail_identifiant%",
+                    "complement_libelle": "",
+                    "docs": [
+                        "DRev"
+                    ],
+                    "callback": "getVolumeRevendiqueNumeroDossier"
+                }
+            }
+        },
+        "01_volumes_01_cotisationOdg_02": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "ODG",
+            "code_comptable": "70610000",
+            "details": {
+                "02_getVolumeLotsFacturables": {
+                    "modele": "CotisationVariable",
+                    "prix": 0.1,
+                    "tva": 0.2,
+                    "unite": "hl",
+                    "libelle": "Cotisation",
+                    "complement_libelle": "",
+                    "docs": [
+                        "DRev"
+                    ],
+                    "callback": "getVolumeLotsFacturables"
+                }
+            }
         }
-      }
     }
-  }
 }
