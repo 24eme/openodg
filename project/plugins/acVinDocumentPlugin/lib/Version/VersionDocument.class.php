@@ -9,7 +9,7 @@ class VersionDocument
 
     public function __construct(acCouchdbDocument $document) {
         $this->document = $document;
-        $this->$diff_with_mother = array();
+        $this->diff_with_mother = array();
     }
 
     public static function buildVersion($rectificative, $modificative) {
