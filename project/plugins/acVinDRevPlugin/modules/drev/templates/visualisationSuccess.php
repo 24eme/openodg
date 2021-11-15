@@ -87,7 +87,7 @@
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION) && !$drev->hasLotsUtilises()):
                 if (!$drev->validation_odg): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin() &&  !$drev->hasLotsUtilises()): ?>
+            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin() &&  !$drev->hasLotsUtilises() && $drev->isMaster()): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
             <?php elseif ($drev->isFactures()): ?>
                 <span class="text-muted">DRev facturée</span>
