@@ -103,6 +103,10 @@ class drevActions extends sfActions {
             throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
         }
 
+        if(!$drev->isMaster()) {
+            throw new Exception("Dévalidation impossible car cette déclaration n'est pas la dernière version");
+        }
+
         $drev->validation = null;
         $drev->validation_odg = null;
         foreach ($drev->getProduits() as $produit) {
