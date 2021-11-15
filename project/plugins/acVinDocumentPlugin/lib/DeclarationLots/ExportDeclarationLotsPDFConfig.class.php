@@ -14,7 +14,7 @@ class ExportDeclarationLotsPDFConfig extends acTCPDFConfig
         $this->margin_left = 15;
         $this->margin_right = 15;
 
-        $this->margin_top = 40;
+        $this->margin_top = 45;
         $this->margin_header = 5;
 
         $this->margin_bottom = 30;
