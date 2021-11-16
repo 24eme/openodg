@@ -10,7 +10,7 @@ class degustationActions extends sfActions {
 
         $this->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
 
-        $this->degustations = DegustationClient::getInstance()->getHistory();
+        $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
