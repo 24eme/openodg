@@ -84,8 +84,8 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
     <div class="row">
       <div class="col-xs-5">
-          <h6><strong>Accès rapide</strong></h6>
-          <ul class="list-unstyled">
+          <h3>Accès rapide</h3>
+          <ul>
             <?php foreach (array_keys($parcellesByCommune->getRawValue()) as $commune): ?>
               <li><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
             <?php endforeach ?>
