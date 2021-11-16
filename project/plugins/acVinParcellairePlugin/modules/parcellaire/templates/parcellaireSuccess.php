@@ -84,16 +84,14 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
     <div class="row">
       <div class="col-xs-5">
-        <div class="well">
-          <h6 class="text-center"><strong>Sections</strong></h6>
-          <ul>
+          <h6><strong>Accès rapide</strong></h6>
+          <ul class="list-unstyled">
             <?php foreach (array_keys($parcellesByCommune->getRawValue()) as $commune): ?>
               <li><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
             <?php endforeach ?>
             <li><a href="#synthese_cepage">Synthèse par cépages</a></li>
             <li><a href="#synthese_produit">Synthèse par produits</a></li>
           </ul>
-        </div>
       </div>
     </div>
 
