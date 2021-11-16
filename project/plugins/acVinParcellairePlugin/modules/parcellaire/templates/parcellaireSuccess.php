@@ -82,19 +82,25 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
         </div>
     <?php endif; ?>
 
-    <div class="row text-center">
-      <div class="col-xs-6">
-        <a class="btn btn-default" href="#synthese_cepage"><i class="glyphicon glyphicon-chevron-right"></i> Aller à la synthèse par cépages</a>
-      </div>
-      <div class="col-xs-6">
-        <a class="btn btn-default" href="#synthese_produit"><i class="glyphicon glyphicon-chevron-right"></i> Aller à la synthèse par produits</a>
+    <div class="row">
+      <div class="col-xs-4">
+        <div class="well">
+          <h6 class="text-center"><strong>Sections</strong></h6>
+          <ul>
+            <?php foreach (array_keys($parcellesByCommune->getRawValue()) as $commune): ?>
+              <li><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
+            <?php endforeach ?>
+            <li><a href="#synthese_cepage">Synthèse par cépages</a></li>
+            <li><a href="#synthese_produit">Synthèse par produits</a></li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <div class="row">
         <div class="col-xs-12">
             <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
-            	<h3><?php echo $commune ?></h3>
+                <h3 id="parcelles_<?php echo $commune ?>"><?php echo $commune ?></h3>
 
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
