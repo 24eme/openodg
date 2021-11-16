@@ -119,10 +119,10 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant)) ?>" class="btn btn-danger btn-lg btn-upper">Annuler</a>
+            <a tabindex="-1" href="<?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant)) ?>" class="btn btn-default">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper">Valider</a>
+            <button type="submit" class="btn btn-primary">Valider</a>
         </div>
     </div>
 </form>

@@ -64,12 +64,16 @@
             <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
-            <td class="text-right"><?php echo echoFloat($facture->getMontantPaiement()); ?>&nbsp;€</td>
+            <td class="text-right"><?php if(!$facture->isAvoir()): ?><a href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><?php endif; ?><?php echo echoFloat($facture->getMontantPaiement()); ?>&nbsp;€<?php if(!$facture->isAvoir()): ?></a><?php endif; ?></td>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <td class="text-center dropdown">
               <button type="button" class="btn btn-default btn-default-step btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-                  <li>
+                  <?php if(!$facture->isAvoir()): ?>
+                    <li><a href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>">Saisir / modifier les paiements</a></li>
+                  <?php else: ?>
+                      <li class="disabled"><a href="">Saisir / modifier les paiements</a></li>
+                  <?php endif; ?>
                   <?php if(!$facture->isAvoir() && !$facture->exist('avoir')): ?>
                     <li>
                       <a href="<?php echo url_for("facturation_avoir_defacturant", array("id" => $facture->_id)) ?>" onclick='return confirm("Étes vous sûr de vouloir créer un avoir ?");' >
@@ -77,15 +81,8 @@
                     </a>
                   </li>
                   <?php else: ?>
-                    <li  class="disabled"><a href=""><span class="glyphicon glyphicon-repeat"></span> Créér un avoir</a></li>
+                    <li class="disabled"><a href=""><span class="glyphicon glyphicon-repeat"></span> Créér un avoir</a></li>
                   <?php endif; ?>
-
-                  <?php if(!$facture->isAvoir()): ?>
-                    <li><a href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>">Saisir / modifier les paiements</a></li>
-                  <?php else: ?>
-                    <li class="disabled"><a href="">Saisir / modifier les paiements</a></li>
-                  <?php endif; ?>
-
               </ul>
             </td>
            <?php endif; ?>

@@ -184,7 +184,7 @@ $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
-$t->is(count($drev->lots), 2, "Les deux lots sont conservés dans la DRev");
+$t->is(count($drev->lots), 1, "Seulement le lot non vide est conservé");
 
 $t->is($drev->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type par défaut est ".DRevClient::TYPE_MODEL);
 $drev->lots[0]->initial_type = null;

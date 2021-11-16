@@ -72,8 +72,10 @@ $b->click('button[type="submit"]', array('import_dr_prodouane' => false))->follo
 $b->isForwardedTo('drev', 'lots');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
 
-$b->click('button[id="lots_ajout"]')->followRedirect();
-$b->click('button[id="lots_ajout"]')->followRedirect();
+$b->with('response')->begin()->checkElement('.bloc-lot', 1)->end();
+$b->click('button[id="lots_ajout"]', array("drev_lots" => array("lots" => array(
+    array("produit_hash" => $produit->getHash(), "volume" => 100),
+))))->followRedirect();
 $b->with('response')->begin()->checkElement('.bloc-lot', 2)->end();
 $b->click('button[id="lots_continue"]', array("drev_lots" => array("lots" => array(
     array("produit_hash" => $produit->getHash(), "volume" => 100),
