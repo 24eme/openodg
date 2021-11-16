@@ -73,6 +73,14 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
         </div>
     <?php endif; ?>
 
+    <div class="row text-center">
+      <div class="col-xs-6">
+        <a class="btn btn-default" href="#synthese_cepage"><i class="glyphicon glyphicon-chevron-right"></i> Aller à la synthèse par cépages</a>
+      </div>
+      <div class="col-xs-6">
+        <a class="btn btn-default" href="#synthese_produit"><i class="glyphicon glyphicon-chevron-right"></i> Aller à la synthèse par produits</a>
+      </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-12">
@@ -192,7 +200,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
     if (count($synthese)):
 ?>
-<h3>Synthèse par cépages</h3>
+<h3 id="synthese_cepage">Synthèse par cépages</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -223,7 +231,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     }
     if (count($synthese)):
 ?>
-<h3>Synthèse par produits habilités</h3>
+<h3 id="synthese_produit">Synthèse par produits habilités</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
