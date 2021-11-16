@@ -41,10 +41,13 @@
           </div>
         <?php endif; ?>
           <div style="margin-top: 20px;" class="row row-margin row-button">
-              <div class="col-xs-6">
+              <div class="col-xs-4">
                   <a tabindex="-1" href="<?php echo url_for("declaration_etablissement", array('identifiant' => $chgtDenom->identifiant, 'campagne' => $chgtDenom->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
               </div>
-              <div class="col-xs-6 text-right">
+              <div class="col-xs-4 text-center">
+                  <a href="<?php echo url_for('chgtdenom_pdf', ['id' => $chgtDenom->_id]) ?>" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Voir le PDF en attente</a>
+              </div>
+              <div class="col-xs-4 text-right">
                   <a href="<?php echo url_for("chgtdenom_devalidation", $chgtDenom); ?>" class="btn btn-default"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;Réouvrir</a>
                   <button type="submit" id="btn-validation-document" data-toggle="modal" data-target="#chgtDenom-confirmation-approbation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Approuver le changement</button>
               </div>
@@ -58,6 +61,7 @@
         </div>
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('chgtdenom_pdf', ['id' => $chgtDenom->_id]) ?>" class="btn btn-default"><i class="glyphicon glyphicon-file"></i> Voir le PDF</a>
+        </div>
         <div class="col-xs-4 text-right">
           <?php if ($chgtDenom->validation_odg && $sf_user->isAdmin() && !$chgtDenom->hasLotsUtilises()):?>
               <a class="btn btn-default" href="<?php echo url_for('chgtdenom_devalidation', $chgtDenom) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider ce Changement de dénomination ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
