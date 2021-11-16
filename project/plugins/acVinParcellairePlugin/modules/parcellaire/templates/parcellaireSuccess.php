@@ -87,10 +87,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
           <h3>Accès rapide</h3>
           <ul>
             <?php foreach (array_keys($parcellesByCommune->getRawValue()) as $commune): ?>
-              <li><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
+              <li style="list-style-type: disclosure-closed"><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
             <?php endforeach ?>
-            <li><a href="#synthese_cepage">Synthèse par cépages</a></li>
-            <li><a href="#synthese_produit">Synthèse par produits</a></li>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_cepage">Synthèse par cépages</a></li>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_produit">Synthèse par produits</a></li>
           </ul>
       </div>
     </div>
