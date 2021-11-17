@@ -153,3 +153,26 @@ $parcellaireloader->save();
 $parcellaire = $parcellaireloader->getParcellaire();
 $t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
 $t->is(count($parcellaire->declaration), 0, "Le nouveau parcellaire n'a pas de produit");
+
+$t->comment("import des parcelles ayant la même clé");
+$csv_same_parcelles = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-10 day"))."-");
+$handle = fopen($csv_same_parcelles, "w");
+fputcsv($handle, explode(";", "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut"));
+$array = [
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0036', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', '', 'Propriétaire'],
+    [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0036', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2017-2018','100','250', '', 'Propriétaire'],
+];
+$array[] = explode(";", "7523700100;33223322332233;Gaec de l'etablissement;7 Lieu-dit;49310;NEUILLY;a@b.com;492110000C1359;VILLARS-SUR-VAR;Mauvais Patis;C;1359;VAL LOIRE blanc;SAUVIGNON B;0.4409;0.819;2016-2017;100;185;;Fermier");
+$array[] = explode(";", "7523700100;33223322332233;Gaec de l'etablissement;7 Lieu-dit;49310;NEUILLY;a@b.com;492110000C1359;VILLARS-SUR-VAR;Mauvais Patis;C;1359;VAL LOIRE blanc;SAUVIGNON B;0.3781;0.819;2016-2017;100;185;;Fermier");
+
+foreach ($array as $l) {
+    fputcsv($handle, $l, ";");
+}
+fclose($handle);
+
+$csv = new Csv($csv_same_parcelles, ';');
+$parcellaireLoader = new ParcellaireCsvFile($viti, $csv);
+$parcellaireLoader->convert();
+
+$parcellaire = $parcellaireLoader->getParcellaire();
+$t->is(count($parcellaire->getParcelles()), 4, "Il y a quatre parcelles");
