@@ -29,7 +29,7 @@
     <form method="GET" class="form-inline pull-right" style="margin-bottom: 10px; display: inline-block;">
         Campagne :
         <select class="select2SubmitOnChange form-control" name="campagne">
-            <option value="">Toutes</option>
+            <option value="tous">Toutes</option>
             <?php foreach ($campagnes as $c): ?>
             <option <?php echo ($campagne == $c) ? "selected" : "" ?> value="<?php echo $c ?>">
                 <?php echo $c ?>
@@ -62,7 +62,7 @@
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
             <td class="text-right">
-                <?php if(!$facture->isAvoir()): ?>
+                <?php if($facture->getMontantPaiement() != 0 || (!$facture->isAvoir() && !$facture->isRedressee())): ?>
                     <a class="<?php if(!$facture->getMontantPaiement()): ?>transparence-xs<?php endif ?>" title="<?php if(!$facture->getMontantPaiement()): ?>Saisir un paiement<?php else: ?>Voir ou modifier le(s) paiements<?php endif ?>" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><?php echo echoFloat($facture->getMontantPaiement()*1); ?>&nbsp;€</a>
                 <?php endif; ?>
             </td>
