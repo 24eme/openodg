@@ -10,7 +10,7 @@ if (in_array($application, array('nantes', 'loire'))) {
 
 $toutes_les_parcelles = !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration();
 
-$t = new lime_test(26 + $toutes_les_parcelles * 2);
+$t = new lime_test(27 + $toutes_les_parcelles * 2);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = date('Y-m-d');
 
