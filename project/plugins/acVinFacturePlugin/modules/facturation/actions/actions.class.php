@@ -123,6 +123,10 @@ class facturationActions extends sfActions
 
             $this->campagne = $request->getParameter('campagne', FactureClient::getInstance()->getCampagneByDate(date('Y-m-d')));
 
+            if($this->campagne == "tous") {
+                $this->campagne = null;
+            }
+
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne);
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
 
