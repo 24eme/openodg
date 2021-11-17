@@ -118,13 +118,12 @@ class facturationActions extends sfActions
             $this->campagnes = [];
             $campagne_actuelle = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
             for ($i = $campagne_actuelle; $i > $campagne_actuelle - 5; $i--) {
-                $this->campagnes[] = implode('-', [$i, $i+1]);
+                $this->campagnes[] = $i;
             }
-            $this->campagne = $request->getParameter('campagne', null);
-            $campagne_requete = ($this->campagne) ? strstr($this->campagne, "-", true) : null;
 
+            $this->campagne = $request->getParameter('campagne', FactureClient::getInstance()->getCampagneByDate(date('Y-m-d')));
 
-            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $campagne_requete);
+            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne);
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
 
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });

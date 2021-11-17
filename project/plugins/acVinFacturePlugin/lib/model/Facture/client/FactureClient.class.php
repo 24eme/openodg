@@ -575,4 +575,18 @@ class FactureClient extends acCouchdbClient {
     {
         return hash('md5', $id . sfConfig::get('app_secret'));
     }
+
+    public function getCampagneByDate($dateFacturation) {
+        $dateCampagne = new DateTime($dateFacturation);
+
+        if (FactureConfiguration::getInstance()->getExercice() == 'viticole') {
+            $dateCampagne = $dateCampagne->modify('-7 months');
+        }
+
+        if (FactureConfiguration::getInstance()->getExercice() == 'recolte') {
+            $dateCampagne = $dateCampagne->modify('-9 months');
+        }
+
+        return $dateCampagne->format('Y');
+    }
 }

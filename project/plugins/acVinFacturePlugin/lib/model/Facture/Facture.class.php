@@ -58,20 +58,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $this->date_echeance = $date_facturation_object->modify(FactureConfiguration::getInstance()->getDelaisPaiement())->format('Y-m-d');
         }
 
-        $dateFacturation = explode('-', $this->date_facturation);
-        $this->campagne = $dateFacturation[0];
-
-        if (FactureConfiguration::getInstance()->getExercice() == 'viticole') {
-            $date_campagne = new DateTime($this->date_facturation);
-            $date_campagne = $date_campagne->modify('-7 months');
-            $this->campagne = $date_campagne->format('Y');
-        }
-
-        if (FactureConfiguration::getInstance()->getExercice() == 'recolte') {
-            $date_campagne = new DateTime($this->date_facturation);
-            $date_campagne = $date_campagne->modify('-9 months');
-            $this->campagne = $date_campagne->format('Y');
-        }
+        $this->campagne = FactureClient::getInstance()->getCampagneByDate($this->date_facturation);
     }
 
     public function setModalitePaiement($modalitePaiement) {
@@ -685,7 +672,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return (bool) $this->date_telechargement;
     }
 
-    public function getNbPaiementsAutomatique(){ 
+    public function getNbPaiementsAutomatique(){
         if($this->paiements){
           return count($this->paiements);
         }

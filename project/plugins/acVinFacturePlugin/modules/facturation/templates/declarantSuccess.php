@@ -25,23 +25,20 @@
     <?php endif; ?>
 </div>
 <?php endif; ?>
-
-<div class="clearfix">
-    <div class="pull-right" style="display: inline-block">
-        <form method="GET" class="form-inline" style="margin-bottom: 0">
-            Campagne :
-            <select class="select2SubmitOnChange form-control" name="campagne">
-                <option value="">Toutes</option>
-                <?php foreach ($campagnes as $c): ?>
-                <option <?php echo ($campagne == $c) ? "selected" : "" ?> value="<?php echo $c ?>">
-                    <?php echo $c ?>
-                </option>
-                <?php endforeach ?>
-            </select>
-            <button type="submit" class="btn btn-default">Changer</button>
-        </form>
-    </div>
-    <h3 style="display: inline-block">Liste des factures</h3>
+<div style="margin-top: 5px;">
+    <form method="GET" class="form-inline pull-right" style="margin-bottom: 10px; display: inline-block;">
+        Campagne :
+        <select class="select2SubmitOnChange form-control" name="campagne">
+            <option value="">Toutes</option>
+            <?php foreach ($campagnes as $c): ?>
+            <option <?php echo ($campagne == $c) ? "selected" : "" ?> value="<?php echo $c ?>">
+                <?php echo $c ?>
+            </option>
+            <?php endforeach ?>
+        </select>
+        <button type="submit" class="btn btn-default">Changer</button>
+    </form>
+    <h3 style="display: inline-block; margin-top: 10px;">Liste des factures <?php echo $campagne ?></h3>
 </div>
 <table class="table table-bordered table-striped">
     <thead>
@@ -64,7 +61,11 @@
             <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
-            <td class="text-right"><?php if(!$facture->isAvoir()): ?><a href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><?php endif; ?><?php echo echoFloat($facture->getMontantPaiement()); ?>&nbsp;€<?php if(!$facture->isAvoir()): ?></a><?php endif; ?></td>
+            <td class="text-right">
+                <?php if(!$facture->isAvoir()): ?>
+                    <a class="<?php if(!$facture->getMontantPaiement()): ?>transparence-xs<?php endif ?>" title="<?php if(!$facture->getMontantPaiement()): ?>Saisir un paiement<?php else: ?>Voir ou modifier le(s) paiements<?php endif ?>" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><?php echo echoFloat($facture->getMontantPaiement()*1); ?>&nbsp;€</a>
+                <?php endif; ?>
+            </td>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <td class="text-center dropdown">
               <button type="button" class="btn btn-default btn-default-step btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
