@@ -800,7 +800,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     {
       $chgtdenom = $this->getChgtDenomToday($produitFilter);
       $first = current($chgtdenom);
-      return (!$first||$first->_id == $this->_id)? true : false;
+      return $first !== false && $first->_id == $this->_id;
     }
 
     public function getSecondChgtDenomFacturable($produitFilter = null)
