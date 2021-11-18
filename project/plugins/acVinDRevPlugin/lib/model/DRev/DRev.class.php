@@ -1690,7 +1690,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if (strpos($k, '/unique_id') === false) {
                 continue;
             }
-            if (!$this->getLot($unique_id)) {
+            if (!$this->getLot($v)) {
                 $deleted[] = $v;
             }
         }
@@ -2065,7 +2065,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $diff = $this->getDiffWithMother(true);
         $diffLot = array();
         foreach($diff as $k => $v) {
-            if (strpos($k, '/lots/') !== false && (strpos($k, '/volume') || strpos($k, '/unique_id'))) {
+            if (strpos($k, '/lots/') !== false && (strpos($k, '/volume') !== false || strpos($k, '/unique_id') !== false)) {
                 $diffLot[$k] = $v;
             }
         }
