@@ -75,6 +75,7 @@ EOF;
                 }
 
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
+                $drev->constructId();
                 if(!$drev->getDocumentDouanier()) {
                     echo "ERROR;$etablissement->_id ($etablissement->cvi);pas de document douanier\n";
                     continue;
