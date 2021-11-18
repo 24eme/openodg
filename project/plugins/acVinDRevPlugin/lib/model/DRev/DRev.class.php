@@ -1541,9 +1541,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lots = [];
         $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
-                continue;
-            }
             if ($lot->numero_dossier === $this->numero_archive) {
                 $lots[] = $lot;
                 $volume_mod += $lot->getOriginalVolumeIfModifying();
@@ -1690,7 +1687,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getDeletedLots() {
         $deleted = array();
         foreach($this->getDiffLotVolume() as $k => $v) {
-            if (strpos($k, '/unique_id') !== false) {
+            if (strpos($k, '/unique_id') === false) {
                 continue;
             }
             if (!$this->getLot($v)) {
