@@ -10,7 +10,7 @@ if (in_array($application, array('nantes', 'loire'))) {
 
 $toutes_les_parcelles = !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration();
 
-$t = new lime_test(27 + $toutes_les_parcelles * 2);
+$t = new lime_test(28 + $toutes_les_parcelles * 2);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = date('Y-m-d');
 
@@ -106,7 +106,9 @@ if ($toutes_les_parcelles) {
 $synthese = $parcellaire->getSyntheseCepages();
 $t->is(count(array_keys($synthese)), 2, "La synthese produits a le bon nombre de cepages");
 $synthese_cepage_1_key = array_shift(array_keys($synthese));
-$t->is($synthese[$synthese_cepage_1_key]['superficie'], ($toutes_les_parcelles) ? 1.2 : 0.1, "La synthese cepage du premier cépage (".$synthese_cepage_1_key.") a la bonne superficie");
+
+$t->is(array_keys($synthese), ['GRENACHE N', 'SYRAH N'], "La synthèse est triée par cépage");
+$t->is($synthese[$synthese_cepage_1_key]['superficie'], ($toutes_les_parcelles) ? 1.7 : 0.6, "La synthese cepage du premier cépage (".$synthese_cepage_1_key.") a la bonne superficie");
 
 
 
