@@ -48,6 +48,10 @@ class drevActions extends sfActions {
 
 
     public function executeCreate(sfWebRequest $request) {
+        if (! DRevClient::getInstance()->isOpen()) {
+            throw new sfException("La DRev n'est pas ouverte");
+        }
+
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 

@@ -25,11 +25,7 @@
             </div>
         <?php elseif (!DRevClient::getInstance()->isOpen()): ?>
             <div class="panel-body">
-                <?php if(date('Y-m-d') > DRevClient::getInstance()->getDateOuvertureFin()): ?>
-                <p>Le Téléservice est fermé. Pour toute question, veuillez contacter directement l'ODG.</p>
-                <?php else: ?>
-                <p>Le Téléservice sera ouvert à partir du <?php echo format_date(DRevClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
-                <?php endif; ?>
+                La télédéclaration de revendication 2021 s’effectue sur le nouveau portail : <a href="https://drev.vinsvaldeloire.pro">https://drev.vinsvaldeloire.pro</a>
                 <?php if ($sf_user->isAdmin()): ?>
                 <div style="margin-top: 50px;">
                     <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
@@ -39,13 +35,12 @@
             </div>
         <?php else: ?>
             <div class="panel-body">
-                <p>Votre déclaration de revendication viticole pour cette année n'a pas encore été déclarée.</p>
-                <div style="margin-top: 50px;">
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
+                La télédéclaration de revendication 2021 s’effectue sur le nouveau portail : <a href="https://drev.vinsvaldeloire.pro">https://drev.vinsvaldeloire.pro</a>
                     <?php if ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()): ?>
+                      <div style="margin-top: 50px;">
                         <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la drev papier</a>
+                      </div>
                     <?php endif; ?>
-                </div>
             </div>
         <?php endif; ?>
     </div>
