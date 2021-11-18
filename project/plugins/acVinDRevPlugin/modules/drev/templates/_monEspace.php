@@ -25,7 +25,7 @@
             </div>
         <?php elseif (!DRevClient::getInstance()->isOpen()): ?>
             <div class="panel-body">
-                La télédéclaration de revendication 2021 s’effectue sur le nouveau portail : <a href="https://drev.vinsvaldeloire.pro">https://drev.vinsvaldeloire.pro</a>
+                La télédéclaration de revendication 2021 s’effectue sur le nouveau portail : <a class="btn btn-link" href="https://drev.vinsvaldeloire.pro">https://drev.vinsvaldeloire.pro</a>
                 <?php if ($sf_user->isAdmin()): ?>
                 <div style="margin-top: 50px;">
                     <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
@@ -35,7 +35,7 @@
             </div>
         <?php else: ?>
             <div class="panel-body">
-                La télédéclaration de revendication 2021 s’effectue sur le nouveau portail : <a href="https://drev.vinsvaldeloire.pro">https://drev.vinsvaldeloire.pro</a>
+                La télédéclaration de revendication 2021 s’effectue sur le nouveau portail : <a class="btn btn-link" href="https://drev.vinsvaldeloire.pro">https://drev.vinsvaldeloire.pro</a>
                     <?php if ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()): ?>
                       <div style="margin-top: 50px;">
                         <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la drev papier</a>
