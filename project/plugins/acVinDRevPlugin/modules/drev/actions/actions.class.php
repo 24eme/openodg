@@ -48,7 +48,7 @@ class drevActions extends sfActions {
 
 
     public function executeCreate(sfWebRequest $request) {
-        if (! DRevClient::getInstance()->isOpen()) {
+        if (! $this->getUser()->isAdmin() && ! DRevClient::getInstance()->isOpen()) {
             throw new sfException("La DRev n'est pas ouverte");
         }
 
