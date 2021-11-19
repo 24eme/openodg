@@ -117,7 +117,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED AND NOT /deja/CONFORME"
+            "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
           ]
         }
       }
@@ -141,7 +141,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "/appellations/MED AND NOT /deja/CONFORME"
+            "/appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
           ]
         }
       }
@@ -164,7 +164,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED AND NOT /deja/CONFORME"
+            "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
           ]
         }
       }
@@ -187,7 +187,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED AND NOT /deja/CONFORME"
+            "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
           ]
         }
       }
@@ -210,7 +210,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "NOT /appellations/MED AND NOT /deja/CONFORME"
+            "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
           ]
         },
         "inao_med": {
@@ -225,7 +225,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "/appellations/MED AND NOT /deja/CONFORME"
+            "/appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
           ]
         }
       }
@@ -359,7 +359,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "NOT /appellations/MED AND NOT /deja/CONFORME"
+            "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
           ]
         }
       }
@@ -383,7 +383,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeRedeguste",
           "callback_parameters": [
-            "/appellations/MED"
+            "/appellations/MED AND NOT NEGOCIANT"
           ]
         }
       }
