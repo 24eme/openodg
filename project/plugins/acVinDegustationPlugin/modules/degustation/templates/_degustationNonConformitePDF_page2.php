@@ -78,8 +78,8 @@
 
 <table border="1">
 <tr>
-  <td style="width: 32%;"><strong>Date&nbsp;d'envoi&nbsp;fiche&nbsp;:</strong> <?php echo format_date($lot->email_envoye, 'dd/MM/yyyy') ?></td>
-  <td style="width: 32%;"><strong>Date&nbsp;de&nbsp;Notification&nbsp;:</strong> <?php echo format_date($lot->email_envoye, 'dd/MM/yyyy') ?></td>
+  <td style="width: 32%;"><strong>Date&nbsp;d'envoi&nbsp;de&nbsp;la&nbsp;fiche&nbsp;:</strong><br /><?php echo format_date($lot->email_envoye, 'dd/MM/yyyy') ?></td>
+  <td style="width: 32%;"><strong>Date&nbsp;de&nbsp;Notification&nbsp;:</strong><br /><?php echo format_date($lot->email_envoye, 'dd/MM/yyyy') ?></td>
   <td style="width: 36%"><strong>Signature&nbsp;du&nbsp;responsable&nbsp;de&nbsp;l'ODG&nbsp;:</strong><br/><?php echo Organisme::getInstance(null, 'degustation')->getResponsable() ?></td>
 </tr>
 </table>
