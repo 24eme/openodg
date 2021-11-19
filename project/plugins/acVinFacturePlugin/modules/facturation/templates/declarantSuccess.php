@@ -101,14 +101,8 @@
     </tbody>
 </table>
 
-<hr />
-
-<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-    <?php include_partial('facturation/generationForm', array('form' => $form, 'massive' => false)); ?>
-<?php endif; ?>
-
 <?php if(count($mouvements) && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-  <h3>Mouvements en attente de facturation</h3>
+  <h3 style="margin-top: 30px;">Mouvements en attente de facturation</h3>
   <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -138,4 +132,8 @@
   <?php endforeach; ?>
   </tbody>
 </table>
+<?php endif; ?>
+
+<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+    <?php include_partial('facturation/generationForm', array('form' => $form, 'massive' => false)); ?>
 <?php endif; ?>
