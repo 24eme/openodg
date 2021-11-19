@@ -14,7 +14,7 @@ class FacturePaiementsMultipleForm extends acCouchdbForm {
         $values = $this->getValues();
         $facture = $this->getDocument();
         foreach($values['paiements'] as $k => $v) {
-            if ($v['montant'] <= 0 || !($v['type_reglement'])) {
+            if ($v['montant'] == 0 || !($v['type_reglement'])) {
                 continue;
             }
             $facture->paiements[$k]->montant = $v['montant'];
@@ -22,7 +22,7 @@ class FacturePaiementsMultipleForm extends acCouchdbForm {
             $facture->paiements[$k]->type_reglement = $v['type_reglement'];
             $facture->paiements[$k]->commentaire = $v['commentaire'];
         }
-        if ($facture->paiements[$k]->montant <= 0 || !($facture->paiements[$k]->date) || !($facture->paiements[$k]->type_reglement)) {
+        if ($facture->paiements[$k]->montant == 0 || !($facture->paiements[$k]->date) || !($facture->paiements[$k]->type_reglement)) {
             $facture->paiements->remove($k);
         }
         $facture->updateMontantPaiement();

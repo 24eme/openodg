@@ -60,7 +60,7 @@
             <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
               <tr style="line-height:20px;">
                  <th rowspan="2" class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong>N° Dossier</strong></th>
-                 <th rowspan="2" class="bg-white" style="width:22%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
+                 <th rowspan="2" class="bg-white" style="width:22%; "><?php echo tdStart() ?><strong>Raison Sociale</strong></th>
                  <th class="bg-white" colspan="6"style="width:67%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(trié par n° de dossier et n° d'anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
@@ -80,13 +80,13 @@
               }
               ?>
               <td rowspan="<?php echo $affiche; ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?><br/><span style="color:grey;"><?php echo $lot->campagne; ?></span></small></td>
-              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle;"><small><?php echo substrUtf8($lot->getRawValue()->declarant_nom, 0, 20)."<br>".$lot->declarant_identifiant;?></small></td>
+              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle; text-align: left;"><small><?php echo $lot->getRawValue()->declarant_nom ?><br><span style="color:grey;"><?php echo $lot->declarant_identifiant;?></span></small></td>
             <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_anonymat?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2, ',', ' ') ?>&nbsp;hl </small></td>
-            <td style="height:25px;"><small><?php echo showProduitCepagesLot($lot, false); ?></small></td>
+            <td style="height:25px; text-align: left;"><small><?php echo showProduitCepagesLot($lot, false); ?></small></td>
           </tr>
           <?php $i++; ?>
       <?php endforeach; ?>

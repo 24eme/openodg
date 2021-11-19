@@ -72,7 +72,7 @@
               <tr style="line-height:20px;">
                  <th rowspan="2" class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong>N° Anonymat</strong></th>
                  <th rowspan="2" class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong>Table</strong></th>
-                 <th rowspan="2" class="bg-white" style="width:24%; "><?php echo tdStart() ?><strong>Raison Sociale<br>N°CVI</strong></th>
+                 <th rowspan="2" class="bg-white" style="width:24%; "><?php echo tdStart() ?><strong>Raison Sociale</strong></th>
                  <th colspan="6" class="bg-white" style="width:56%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(Trié par table et n° anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
@@ -86,13 +86,13 @@
           <tr class="<?php echo $class; ?>" >
             <td><small><?php echo $lot->numero_anonymat ?></small></td>
             <td><small><?php echo DegustationClient::getNumeroTableStr($table) ?></small></td>
-            <td><small><?php echo substrUtf8($lot->declarant_nom, 0, 33)."<br>".$lot->declarant_identifiant;?></small></td>
+            <td style="text-align: left;"><small><?php echo substrUtf8($lot->declarant_nom, 0, 33) ?><br /><span style="color:grey;"><?php echo $lot->declarant_identifiant;?></span></small></td>
 
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
             <td style="text-align: right;"><small><?php echo number_format($lot->volume, 2) ?>&nbsp;hl &nbsp;</small></td>
-            <td><small><?php echo showOnlyProduit($lot, false) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>
+            <td style="text-align: left;"><small><?php echo showOnlyProduit($lot, false) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>
           </tr>
           <?php $i++; endforeach; ?>
         <?php endforeach; ?>

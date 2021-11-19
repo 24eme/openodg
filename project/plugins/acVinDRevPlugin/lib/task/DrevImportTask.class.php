@@ -172,6 +172,7 @@ EOF;
                 echo "ERREUR;$cvi;$campagne;pas d'import, pas de validation declarant et odg\n";
             }
             $volume = trim($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE]);
+            $millesime = trim($data[ExportDRevCSV::CSV_LOT_MILLESIME]);
             $numero_cuve = trim($data[ExportDRevCSV::CSV_LOT_NUMERO_CUVE]);
             $type_destination = self::$destinationsTypes[preg_replace("/([A-Z_]+).+/","$1",$data[ExportDRevCSV::CSV_LOT_DESTINATION])];
             $date_destination = preg_replace("/([A-Z_]* )?([0-9\/]+)/","$2",$data[ExportDRevCSV::CSV_LOT_DESTINATION]);
@@ -204,6 +205,7 @@ EOF;
                 $lot->affectable = false;
                 $lot->volume = $this->formatFloat($volume);
                 $lot->produit_hash = $produit_line->getHash();
+                $lot->millesime = $millesime;
                 $libelleProduit = $produit_line->getLibelle();
                 $lotsAdded = true;
                 echo "Ajout d'un lot;$drev->_id;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
