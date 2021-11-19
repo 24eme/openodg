@@ -314,7 +314,7 @@ class facturationActions extends sfActions
 
         $this->getUser()->setFlash("notice", "Les paiements ont bien été enregistrés");
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant, "campagne" => $this->facture->campagne));
     }
 
     public function executeLatex(sfWebRequest $request) {
