@@ -106,6 +106,14 @@ class facturationActions extends sfActions
             if($this->compte->exist('id_societe')){
               $identifiant = $this->compte->getSociete()->identifiant;
             }
+
+            if(!$request->getParameter('campagne')) {
+                foreach(FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_JSON, null, 1) as $facture) {
+
+                    return $this->redirect('facturation_declarant', array('id' => $this->compte->_id, 'campagne' => $facture->campagne));
+                }
+            }
+
             $this->societe = $this->compte->getSociete();
             $this->form = new FactureGenerationForm();
 
@@ -121,13 +129,14 @@ class facturationActions extends sfActions
                 $this->campagnes[] = $i;
             }
 
-            $this->campagne = $request->getParameter('campagne', FactureClient::getInstance()->getCampagneByDate(date('Y-m-d')));
+            $this->campagne = $request->getParameter('campagne', null);
 
             if($this->campagne == "tous") {
                 $this->campagne = null;
             }
 
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne);
+
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
 
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });

@@ -537,10 +537,16 @@ class FactureClient extends acCouchdbClient {
       return $avoir;
     }
 
-    public function getFacturesByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $campagne = null) {
-        $ids = $this->startkey(sprintf("FACTURE-%s-%s", $identifiant, "0000000000"))
-                    ->endkey(sprintf("FACTURE-%s-%s", $identifiant, "9999999999"))
-                    ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+    public function getFacturesByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $campagne = null, $limit = null) {
+        $this->startkey(sprintf("FACTURE-%s-%s", $identifiant, "9999999999"))
+             ->endkey(sprintf("FACTURE-%s-%s", $identifiant, "0000000000"))
+             ->descending(true);
+
+        if($limit) {
+            $this->limit($limit);
+        }
+
+        $ids = $this->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
         $factures = array();
 
