@@ -62,6 +62,7 @@ class facturationActions extends sfActions
 
             $this->mouvements[$m->key[MouvementFactureView::KEY_ETB_ID]][] = $m->value;
         }
+        $this->withDetails = $request->getParameter('details', false);
     }
 
     public function executeMassive(sfWebRequest $request)
