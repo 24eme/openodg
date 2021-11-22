@@ -60,8 +60,10 @@ class facturationActions extends sfActions
                 continue;
             }
 
-            $this->mouvements[$m->key[MouvementFactureView::KEY_ETB_ID]][] = $m->value;
+            $this->mouvements[$m->key[MouvementFactureView::KEY_ETB_ID]][] = $m;
         }
+
+
         $this->withDetails = $request->getParameter('details', false);
     }
 

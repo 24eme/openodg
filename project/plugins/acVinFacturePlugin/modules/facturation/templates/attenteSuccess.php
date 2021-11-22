@@ -15,14 +15,19 @@
     <table class="table table-striped table-condensed">
       <thead>
         <tr><th>Établissements</th><th></th></tr>
+      </thead>
       <tbody>
         <?php foreach ($mouvements->getRawValue() as $id => $mouvements): ?>
             <tr>
-                <td colspan="4" title="<?php echo $id ?>"><?php echo EtablissementClient::getInstance()->retrieveById($id)->raison_sociale ?></td>
+                <td colspan="4" title="<?php echo $id ?>"><?php echo EtablissementClient::getInstance()->retrieveById($id, acCouchdbClient::HYDRATE_JSON)->raison_sociale ?></td>
                 <td colspan="3">
-                    <a href="<?php echo url_for('facturation_declarant', ['id' => $id]) ?>" class="btn btn-xs btn-default pull-right">
+                    <a href="<?php echo url_for('facturation_declarant', ['id' => $id]) ?>#mouvements" class="btn btn-xs btn-default pull-right">
+                        <?php if($withDetails): ?>
+                        Voir l'espace facture
+                        <?php else: ?>
                         Voir le<?php echo (count($mouvements) > 1) ? 's' : '' ?> <?php echo count($mouvements) ?> mouvement<?php echo (count($mouvements) > 1) ? 's' : '' ?>
                         <span class="glyphicon glyphicon-chevron-right"></span>
+                        <?php endif; ?>
                     </a>
                 </td>
             </tr>

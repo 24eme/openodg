@@ -101,7 +101,8 @@
     </tbody>
 </table>
 
-<?php if(count($mouvements) && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+  <a name="mouvements"></a>
   <h3 style="margin-top: 30px;">Mouvements en attente de facturation</h3>
   <table class="table table-bordered table-striped">
     <thead>
@@ -130,10 +131,17 @@
         <td class="text-right"><?php echo echoFloat($valueMvt->taux * $valueMvt->quantite); ?>&nbsp;€</td>
     </tr>
   <?php endforeach; ?>
+  <?php if(!count($mouvements)): ?>
+        <tr>
+            <td colspan="7">Aucun mouvement en attente de facturation</td>
+        </tr>
+  <?php endif; ?>
   </tbody>
 </table>
 <?php endif; ?>
 
 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+    <div style="margin-top: 30px;">
     <?php include_partial('facturation/generationForm', array('form' => $form, 'massive' => false)); ?>
+    </div>
 <?php endif; ?>
