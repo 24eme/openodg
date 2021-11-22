@@ -42,9 +42,9 @@
     <?php endif; ?>
 
     <?php if (TransactionConfiguration::getInstance()->hasDegustation()): ?>
-        <h3>Dégustation</h3>
+        <h3>Controle</h3>
         <div class="form-group" style="margin-bottom: 20px;">
-            Les vins seront prêt à être dégustés à partir du :
+            Date de controle souhaitée :
             <div class="input-group">
             <?php echo date("d/m/Y"); ?>
             </div>

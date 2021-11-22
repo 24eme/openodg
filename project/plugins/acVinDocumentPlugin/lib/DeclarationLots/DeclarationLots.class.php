@@ -36,11 +36,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       }
 
       public function getConfiguration() {
-          $configuration = ConfigurationClient::getInstance()->getConfiguration($this->date);
-          if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
-            $configuration->setEffervescentVindebaseActivate();
-          }
-          return $configuration;
+          return ConfigurationClient::getInstance()->getConfiguration($this->date);
       }
 
       public function getConfigProduits() {
