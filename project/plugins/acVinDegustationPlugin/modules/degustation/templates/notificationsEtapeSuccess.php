@@ -52,6 +52,7 @@
                         <?php endforeach; ?>
                       </td>
                       <td>
+                          <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
                         <?php if ($lot->email_envoye === null): ?>
                             <div class="btn-group">
                               <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
