@@ -25,9 +25,11 @@
     <?php endif; ?>
 </div>
 <?php endif; ?>
+
+<h3>Liste des Factures <?php echo $campagne ?></h3>
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#factures" aria-controls="factures" role="tab" data-toggle="tab">Factures <?php echo $campagne ?></a></li>
-  <!--<li><a href="#lignes" aria-controls="lignes" role="tab" data-toggle="tab">Lignes de facture</a></li>-->
+  <li class="active"><a href="#factures" aria-controls="factures" role="tab" data-toggle="tab">Factures</a></li>
+  <!--<li><a href="#lignes" aria-controls="lignes" role="tab" data-toggle="tab">Lignes</a></li>-->
   <form method="GET" class="form-inline pull-right" style="display: inline-block;">
       Campagne :
       <select class="select2SubmitOnChange form-control" name="campagne">
@@ -123,7 +125,7 @@
                 <?php foreach ($facture->lignes as $ligne): ?>
                     <?php foreach ($ligne->details as $detail): ?>
                         <tr>
-                            <td class="<?php if(!$first): ?>transparence-md<?php endif; ?>"><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
+                            <td class="<?php if(!$first): ?>transparence-lg<?php endif; ?>"><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
                             <td class="<?php if(!$first): ?>transparence-lg<?php endif; ?>">N°&nbsp;<?php echo $facture->numero_archive ?></td>
                             <td><?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?></td>
                             <td class="text-right"><?php echoFloat($detail->prix_unitaire); ?> €</td>
