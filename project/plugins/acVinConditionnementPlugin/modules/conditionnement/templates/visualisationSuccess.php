@@ -47,8 +47,8 @@
 <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form, 'dr' => $dr)); ?>
 
 <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
-    <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($conditionnement->exist('date_degustation_voulue') && $conditionnement->date_degustation_voulue) ? date_format(date_create($conditionnement->validation), 'd/m/Y') : '<i>non saisi</i>';?></p>
+    <h3>Controle</h3>
+    <p style="margin-bottom: 30px;">Date de controle souhaitée : <?php echo ($conditionnement->exist('date_degustation_voulue') && $conditionnement->date_degustation_voulue) ? date_format(date_create($conditionnement->validation), 'd/m/Y') : '<i>non saisi</i>';?></p>
 <?php endif ?>
 <div class="row row-margin row-button">
     <div class="col-xs-4">
