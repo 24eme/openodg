@@ -29,7 +29,7 @@
 <h3>Liste des Factures <?php echo $campagne ?></h3>
 <ul class="nav nav-tabs">
   <li class="active"><a href="#factures" aria-controls="factures" role="tab" data-toggle="tab">Factures</a></li>
-  <!--<li><a href="#lignes" aria-controls="lignes" role="tab" data-toggle="tab">Lignes</a></li>-->
+  <li><a href="#lignes" aria-controls="lignes" role="tab" data-toggle="tab">Lignes</a></li>
   <form method="GET" class="form-inline pull-right" style="display: inline-block;">
       Campagne :
       <select class="select2SubmitOnChange form-control" name="campagne">

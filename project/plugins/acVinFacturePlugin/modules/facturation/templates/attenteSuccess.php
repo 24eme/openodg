@@ -14,7 +14,7 @@
 
     <table class="table table-striped table-condensed">
       <thead>
-        <tr><th>Établissements</th><th></th></tr>
+        <tr><th colspan="7">Établissements <a href="<?php echo url_for('facturation_en_attente', array('details' => 1)) ?>" class="btn btn-xs btn-link pull-right"><span class="glyphicon glyphicon-eye-open"></span > Voir tous les mouvements</th><th></th></tr>
       </thead>
       <tbody>
         <?php foreach ($mouvements->getRawValue() as $id => $mouvements): ?>
