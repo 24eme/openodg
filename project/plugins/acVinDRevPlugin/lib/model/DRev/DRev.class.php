@@ -76,11 +76,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfiguration() {
-        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->getPeriode().'-10-01');
-        if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
-          $configuration->setEffervescentVindebaseActivate();
-        }
-        return $configuration;
+        return ConfigurationClient::getInstance()->getConfiguration($this->getPeriode().'-10-01');
     }
 
     public function getPeriode() {

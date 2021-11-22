@@ -336,12 +336,4 @@ class Configuration extends BaseConfiguration {
         return false;
     }
 
-    public function setEffervescentVindebaseActivate(){
-      $this->effervescent_vindebase_active = true;
-    }
-
-    public function isEffervescentVindebaseActivate(){
-      return $this->effervescent_vindebase_active;
-    }
-
 }
