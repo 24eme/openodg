@@ -821,7 +821,7 @@ class degustationActions extends sfActions {
         ])));
 
         $mailto = "mailto:$email?cc=$cc&subject=$subject&body=$body";
-        $mailto = substr($mailto, 0, 1600);
+        $mailto = substr($mailto, 0, 1600); // Chrome limite les mailto à un certain nombre de caractères 1600 semblent être le max
 
         $this->getResponse()->clearHttpHeaders();
         $this->getResponse()->setStatusCode(302);
