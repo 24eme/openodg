@@ -47,6 +47,6 @@ Si vous décidez de déclasser, vous pouvez télécharger la déclaration de cha
     'identifiant' => $identifiant,
     'campagne' => $degustation->campagne
 ], true) ?>%3E</a>
-<?php endif; ?>
 
+<?php endif; ?>
 Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.
