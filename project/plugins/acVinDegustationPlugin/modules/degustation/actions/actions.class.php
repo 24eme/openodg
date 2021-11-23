@@ -871,7 +871,6 @@ class degustationActions extends sfActions {
 
     public function executeEtiquettesPrlvmtPdf(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
       $this->document = new ExportDegustationEtiquettesPrlvmtPDF($this->degustation, $request->getParameter('anonymat4labo', false), $request->getParameter('output', 'pdf'), false);
       return $this->mutualExcecutePDF($request);
     }
@@ -956,14 +955,12 @@ class degustationActions extends sfActions {
 
     public function executeFicheLotsAPreleverPDF(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
       $this->document = new ExportDegustationFicheLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
 
     public function executeFicheIndividuelleLotsAPreleverPDF(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
       $this->document = new ExportDegustationFicheIndividuelleLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
     }
