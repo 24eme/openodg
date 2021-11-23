@@ -224,8 +224,8 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     endforeach;
 ?>
     <tr>
-        <th>Total</th>
-        <th class="text-right"><?php echo array_sum(array_column($synthese->getRawValue(), 'superficie')) ?></th>
+        <td><strong>Total</strong></td>
+        <td class="text-right"><strong><?php echo array_sum(array_column($synthese->getRawValue(), 'superficie')) ?></strong></td>
     </tr>
   </tbody>
 </table>
