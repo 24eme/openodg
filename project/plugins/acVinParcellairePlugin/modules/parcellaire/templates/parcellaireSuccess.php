@@ -215,6 +215,10 @@ $list_idu = [];
 <?php
     endforeach;
 ?>
+    <tr>
+        <th>Total</th>
+        <th class="text-right"><?php echo array_sum(array_column($synthese->getRawValue(), 'superficie')) ?></th>
+    </tr>
   </tbody>
 </table>
 <?php endif; ?>
