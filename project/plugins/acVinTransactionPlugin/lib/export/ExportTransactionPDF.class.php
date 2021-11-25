@@ -10,4 +10,8 @@ class ExportTransactionPDF extends ExportDeclarationLotsPDF {
   public function create() {
       @$this->printable_document->addPage($this->getPartial('transaction/pdf', array('document' => $this->declaration, 'etablissement' => $this->etablissement)));
   }
+
+    protected function getConfig() {
+        return new ExportTransactionPDFConfig();
+    }
 }
