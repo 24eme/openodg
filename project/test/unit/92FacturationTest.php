@@ -85,6 +85,10 @@ $lot = $drev->addLot();
 $lot->numero_logement_operateur = 'CUVE A';
 $lot->produit_hash = $produit_hash;
 $lot->volume = 100;
+$lot = $drev->addLot();
+$lot->numero_logement_operateur = 'CUVE Abis';
+$lot->produit_hash = $produit_hash;
+$lot->volume = 10;
 $drev->save();
 
 $drev->validate();
@@ -100,8 +104,8 @@ foreach($drev->mouvements->get($drev->identifiant) as $m) {
         $getVolumeLotsFacturables_quantite = $m->quantite;
     }
 }
-$t->is($getVolumeRevendiqueNumeroDossier_quantite, 100, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" est 100");
-$t->is($getVolumeLotsFacturables_quantite, 100, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" est 100");
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 110, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" est 100");
+$t->is($getVolumeLotsFacturables_quantite, 110, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" est 100");
 
 
 $t->comment("Création d'une drev modificatrice avec un nouveau lot");
@@ -159,7 +163,7 @@ $t->is($getVolumeLotsFacturables_quantite, -10, "La quantité du mouvement a fac
 
 $t->comment("suppression d'un lot de la drev");
 $drevM03 = $drevM02->generateModificative();
-unset($drevM03->lots[1]);
+unset($drevM03->lots[2]);
 $drevM03->save();
 $drevM03->validate();
 $drevM03->validateOdg();
@@ -167,12 +171,12 @@ $drevM03->save();
 
 $diff = $drevM03->getDiffLotVolume();
 $t->is(count($diff), 2, "la modification a bien généré trois différences (2 de volumes, un unique_id)");
-$t->is($diff['/lots/1/volume'], 50, "la diff de volume donnne bien l'ancien volume du lot 1");
-$t->ok(isset($diff['/lots/1/unique_id']), "la diff de volume a bien un unique_id car il est supprimé");
+$t->is($diff['/lots/2/volume'], 50, "la diff de volume donnne bien l'ancien volume du lot 1");
+$t->ok(isset($diff['/lots/2/unique_id']), "la diff de volume a bien un unique_id car il est supprimé");
 
 $deletedlots = $drevM03->getDeletedLots();
 $t->is(count($deletedlots), 1, "on repère bien le supprimé");
-$t->is($deletedlots[0]->unique_id, $diff['/lots/1/unique_id'], "c'est le bon unique_id supprimé");
+$t->is($deletedlots[0]->unique_id, $diff['/lots/2/unique_id'], "c'est le bon unique_id supprimé");
 $t->is($deletedlots[0]->volume, 50, "c'est le bon volume supprimé");
 
 $getVolumeRevendiqueNumeroDossier_quantite = null;
@@ -201,7 +205,7 @@ $drevM04->validateOdg();
 $drevM04->save();
 
 $diff = $drevM04->getDiffLotVolume();
-$t->is(count($diff), 2, "la modification a bien généré trois différences (2 de volumes, un unique_id)");
+$t->is(count($diff), 4, "la modification a bien généré 4 différences (2 de volumes, 2 unique_id car décallage d'index)");
 $t->is($diff['/lots/0/volume'], 90, "la diff de volume donnne bien l'ancien volume du lot 1");
 $t->ok(isset($diff['/lots/0/unique_id']), "la diff de volume a bien un unique_id car il est supprimé");
 
