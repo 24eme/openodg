@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test(26);
+$t = new lime_test(35);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
@@ -226,3 +226,47 @@ foreach($drevM04->mouvements->get($drev->identifiant) as $m) {
 $t->is($getVolumeRevendiqueNumeroDossier_quantite, 78, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M01 : -50");
 $t->is($getVolumeLotsFacturables_quantite, 78, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M01 : -50");
 
+$t->comment("Création d'un changement de dénomination");
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $drevM04->lots[0], $drevM04->getDate(), null);
+$chgtDenom->changement_volume = 4;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+$chgtDenom->validate();
+$chgtDenom->save();
+
+$t->ok(!$chgtDenom->exist($chgtDenom->identifiant), "Aucun mouvement de facture avant la validation par l'ODG");
+
+$chgtDenom->validateODG();
+$chgtDenom->save();
+
+$t->is(count($chgtDenom->mouvements->get($chgtDenom->identifiant)->toArray()), 1, "Le mouvement de facturation a été généré après la validation par l'ODG");
+$mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst();
+$t->is($mouvChgtDenom->taux, 15, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 1er changement de dénomination est de 15 €");
+$t->is($mouvChgtDenom->detail_identifiant, $chgtDenom->numero_archive, "Le numéro d'archive du changement de dénomination est repris dans le mouvement \"03_getFirstChgtDenomFacturable\"");
+$t->is($mouvChgtDenom->detail_libelle, "N° ".$chgtDenom->numero_archive, "Le libellé du mouvement \"03_getFirstChgtDenomFacturable\" contient le numéro d'archive");
+
+$t->comment("Création d'un second changement de dénomination le même jour");
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $chgtDenom->lots[0], $drevM04->getDate()." 00:00:01", null);
+$chgtDenom->changement_volume = 2;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+$chgtDenom->validate();
+$chgtDenom->validateODG();
+$chgtDenom->save();
+
+$mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst();
+$t->is($mouvChgtDenom->taux, 10, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 2ème changement de dénomination est de 10 €");
+$t->is($mouvChgtDenom->detail_identifiant, $chgtDenom->numero_archive, "Le numéro d'archive du changement de dénomination est repris dans le mouvement \"03_getFirstChgtDenomFacturable\"");
+$t->is($mouvChgtDenom->detail_libelle, "N° ".$chgtDenom->numero_archive, "Le libellé du mouvement \"03_getFirstChgtDenomFacturable\" contient le numéro d'archive");
+
+$t->comment("Création d'un troisième changement de dénomination le lendemain");
+
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $chgtDenom->lots[0], preg_replace("/.{2}$/", "01", $drevM04->getDate()), null);
+$chgtDenom->changement_volume = 1;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+$chgtDenom->validate();
+$chgtDenom->validateODG();
+$chgtDenom->save();
+
+$mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst();
+$t->is($mouvChgtDenom->taux, 15, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 2ème changement de dénomination est de 15 €");
