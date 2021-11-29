@@ -43,7 +43,7 @@ function showOnlyCepages($lot, $maxcars = null) {
     }
   }
   if (!$text) {
-    return null;
+    return "<small>&nbsp;</small>";
   }
   if ($maxcars) {
       $text = substr($text, 0, $maxcars);
