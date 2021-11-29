@@ -274,8 +274,7 @@ class conditionnementActions extends sfActions {
         }
 
         if($this->conditionnement->validation_odg) {
-            Email::getInstance()->sendConditionnementValidation($this->conditionnement);
-            $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
+            $this->getUser()->setFlash("notice", "La déclaration a été approuvée.");
         }
 
         $service = $request->getParameter("service");

@@ -268,8 +268,7 @@ class transactionActions extends sfActions {
         }
 
         if($this->transaction->validation_odg) {
-            Email::getInstance()->sendTransactionValidation($this->transaction);
-            $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
+            $this->getUser()->setFlash("notice", "La déclaration a été approuvée.");
         }
 
         $service = $request->getParameter("service");
