@@ -38,7 +38,7 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "Login,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut,PPM,Identifiant etablissement\n";
+        echo "Login,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut,PPM,Organisme,Identifiant etablissement\n";
 
        $cpt = 0;
         foreach($results->rows as $row) {
@@ -130,6 +130,7 @@ EOF;
             $compte->date_modification.",".
             $etablissement->statut.",".
             $etablissement->ppm.",\"".
+            Organisme::getCurrentOrganisme().",".
             $etablissement->identifiant."\",".
             "\n";
         }
