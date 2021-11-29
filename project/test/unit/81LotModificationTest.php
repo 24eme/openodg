@@ -52,6 +52,12 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $chgtdenom = ChgtDenomClient::getInstance()->find($k);
     $chgtdenom->delete(false);
 }
+//Suppression des templates de facturation
+foreach(TemplateFactureClient::getInstance()->findAll() as $k => $doc) {
+    TemplateFactureClient::getInstance()->delete($doc);
+}
+
+acCouchdbManager::getClient()->storeDoc(json_decode(file_get_contents(sfConfig::get('sf_data_dir')."/configuration/".$application."/TEMPLATE-FACTURE-2020.json")));
 
 $template = TemplateFactureClient::getInstance()->findByCampagne($campagne);
 foreach($template->cotisations as $kg => $gcotis) {
