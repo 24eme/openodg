@@ -162,9 +162,11 @@ $b->click('#btn_organisation_table')->followRedirect();
 $b->isForwardedTo('degustation', 'organisationTable');
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'organisation des tables");
 
-$table1 = ['numero_lot_0' => 1, 'numero_lot_1' => 1];
+$degustation = DegustationClient::getInstance()->find(preg_replace("/.*(DEGUSTATION-[0-9]+).*/", '\1', $b->getRequest()->getUri()));
+
+$table1 = ["lot_".$degustation->lots[0]->declarant_identifiant."-".$degustation->lots[0]->unique_id => 1, "lot_".$degustation->lots[1]->declarant_identifiant."-".$degustation->lots[1]->unique_id => 1];
 for($i = 2; $i < 10; $i++) {
-    $table1['numero_lot_'.$i] = 1;
+    $table1['lot_leure-'.$i] = 1;
     $b->click('#leurre_ajout', ['degustation_ajout_leurre' => ['table' => '1', 'hashref' => '/declaration/certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT']])->followRedirect();
 }
 
@@ -253,9 +255,15 @@ $t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche lots ventilés (Anony
 
 $b->back();
 $b->click('#btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf');
-$b->isForwardedTo('degustation', 'etiquettesTablesEchantillonsParAnonymatPDF');
+$b->isForwardedTo('degustation', 'etiquettesTablesEchantillonsAnonymesPDF');
 $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
-$t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes (Anonymisés)");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes par numéro d'anonymat (Anonymisés)");
+
+$b->back();
+$b->click('#btn_pdf_degustation_etiquettes_tables_echantillons_par_unique_id_pdf');
+$b->isForwardedTo('degustation', 'etiquettesTablesEchantillonsAnonymesPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes par numéro de dossier (Anonymisés)");
 
 $b->back();
 $b->click('#btn_pdf_presence_degustateurs');

@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(21);
+$t = new lime_test(23);
 
 $annee = (date('Y')-1)."";
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -51,7 +51,7 @@ $produitLeurre = $degust->addLeurre($produitLeurreHash, null, date('Y'), 1);
 
 $t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
 $t->is($produitLeurre->produit_hash, $produitLeurreHash, "Le hash produit est $produitLeurreHash");
-$t->is($produitLeurre->getIntitulePartiel(), 'lot LEURRE de Alpilles Rouge', 'Le libellé est correct');
+$t->is($produitLeurre->getIntitulePartiel(), 'lot LEURRE de Alpilles Rouge ('.date('Y').')', 'Le libellé est correct');
 $t->is($produitLeurre->millesime, date('Y'), "Le millesime est setté à l'année courante");
 $t->is($degust->hasFreeLots(), false, "Le leurre est assigné");
 

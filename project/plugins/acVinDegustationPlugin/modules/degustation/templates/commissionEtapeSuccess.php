@@ -36,7 +36,7 @@
                       <span class="glyphicon glyphicon-file"></span>&nbsp;Étiquettes pour tables (
                       <a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_anonymat_pdf', $degustation) ?>">triées par Numéro d'anonymat </a>
                        -
-                      <a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_unique_id_pdf', $degustation) ?>">triées par Numéro de dossier</a>
+                      <a id="btn_pdf_degustation_etiquettes_tables_echantillons_par_unique_id_pdf" href="<?php echo url_for('degustation_etiquettes_tables_echantillons_par_unique_id_pdf', $degustation) ?>">triées par Numéro de dossier</a>
                       )
                   </li>
                 </ul>
