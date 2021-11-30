@@ -248,7 +248,7 @@ class degustationActions extends sfActions {
     public function executeTablesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
-        if (count($this->degustation->getLotsPreleves()) < 1) {
+        if (count($this->degustation->getLotsDegustables()) < 1) {
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
         }
         if (!$this->degustation->haveAllDegustateursSet()) {

@@ -145,6 +145,14 @@ class DegustationLot extends BaseDegustationLot {
         $this->statut = Lot::STATUT_PRELEVE;
     }
 
+    public function isDegustable() {
+        if(! $this->isPreleve() && ! $this->isLeurre()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function isPreleve() {
         return $this->preleve !== null;
     }

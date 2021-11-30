@@ -152,7 +152,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 		$tables = $this->getTablesWithFreeLots();
 		$infos["nbTables"] = count($tables);
-		$infos["nbFreeLots"] = count($this->getFreeLots());
 		$infos["nbLotsAnonymises"] = count($this->getLotsAnonymized());
 		$infos["nbLotsConformes"] = $this->getNbLotsConformes(true);
 		$infos["nbLotsNonConformes"] = $this->getNbLotsNonConformes(true);
@@ -592,7 +591,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 
 	 public function getNbLotsPreleves(){
-		 return count($this->getLotsPreleves()) + count($this->getLotsSansVolume());
+		 return count($this->getLotsDegustables()) + count($this->getLotsSansVolume());
 	 }
 
 	 public function getNbLotsConformes($including_leurre = false){
@@ -623,21 +622,23 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Gestion des tables de la degustation ****/
 
-		public function getLotsPreleves() {
-	   		$lots = array();
-	   		foreach ($this->getLots() as $lot) {
-                if ($lot->isLeurre()) {
-                    $lots[] = $lot;
-                    continue;
-                }
-
-                if(! $lot->getMouvement(Lot::STATUT_PRELEVE)) {
+        public function getLotsDegustables() {
+            $lots = array();
+            foreach ($this->getLots() as $lot) {
+                if(!$lot->isDegustable()) {
                     continue;
                 }
 
                 $lots[] = $lot;
-	   		}
-			return $lots;
+            }
+
+            return $lots;
+        }
+
+        /*** @Deprecated getLotsDegustables ****/
+		public function getLotsPreleves() {
+
+            return $this->getLotsDegustables();
 		}
 
         public function getLotsSansVolume() {
@@ -651,7 +652,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
 		public function getLotsPrelevesCustomSort(array $tri = null) {
-			$lots = $this->getLotsPreleves();
+			$lots = $this->getLotsDegustables();
 			if (!$tri) {
 				$tri = explode('|', $this->tri);
 			}
@@ -711,20 +712,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
  		 	return $lots;
 		}
 
-        public function getLotsNonAnonymisable(){
-            $lotsNonAnonymisable = array();
-            foreach ($this->getLots() as $lot) {
-            if(!$lot->isAnonymisable())
-                $lotsNonAnonymisable[$lot->getHash()] = $lot;
-            }
-
-            return $lotsNonAnonymisable;
-        }
-
         public function cleanLotsNonAnonymisable(){
 			$this->fillDocToSaveFromLots();
-            foreach ($this->getLotsNonAnonymisable() as $hashLot => $lot) {
-                $this->remove($hashLot);
+            foreach ($this->lots->toArray() as $lot) {
+                if($lot->isAnonymisable()) {
+                    continue;
+                }
+                $this->remove($lot->getHash());
             }
             $this->lots->reindex();
         }
@@ -802,7 +796,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsTableOrFreeLots($numero_table, $free_table = true){
 			$lots = array();
-			foreach ($this->getLotsPreleves() as $lot) {
+			foreach ($this->getLotsDegustables() as $lot) {
 				if(($lot->numero_table == $numero_table)){
 					$lots[] = $lot;
 					continue;
@@ -887,7 +881,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
 		public function hasFreeLots(){
-			foreach ($this->getLotsPreleves() as $lot) {
+			foreach ($this->getLotsDegustables() as $lot) {
 				if(!$lot->exist("numero_table") || is_null($lot->numero_table)){
 					return true;
 				}
@@ -896,7 +890,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function getSyntheseLotsTable($numero_table = null){
-			$lots = $this->getLotsPreleves();
+			$lots = $this->getLotsDegustables();
 			$syntheseLots =  $this->createSynthesFromLots($lots, $numero_table);
 			ksort($syntheseLots);
 			return $syntheseLots;
@@ -1123,7 +1117,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsNonAttables(){
 			$non_attables = array();
-			foreach ($this->getLotsPreleves() as $lot) {
+			foreach ($this->getLotsDegustables() as $lot) {
 				if(!$lot->isAnonymisable()) {
 					continue;
                 }
@@ -1539,7 +1533,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
-            foreach ($this->getLotsPreleves() as $lot) {
+            foreach ($this->getLotsDegustables() as $lot) {
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
@@ -1566,7 +1560,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
-            foreach ($this->getLotsPreleves() as $lot) {
+            foreach ($this->getLotsDegustables() as $lot) {
                 if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
                     continue;
                 }
@@ -1610,7 +1604,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $nblots_operateurs = [];
-            foreach ($this->getLotsPreleves() as $lot) {
+            foreach ($this->getLotsDegustables() as $lot) {
                 if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
                     continue;
                 }
@@ -1633,7 +1627,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function buildMouvementsFacturesForfaitConditionnement($cotisation){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
-            foreach ($this->getLotsPreleves() as $lot) {
+            foreach ($this->getLotsDegustables() as $lot) {
                 if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
                     continue;
                 }
