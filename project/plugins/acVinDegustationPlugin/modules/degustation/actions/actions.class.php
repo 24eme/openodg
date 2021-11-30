@@ -456,7 +456,7 @@ class degustationActions extends sfActions {
         }
 
         $this->tableLots = $this->degustation->getLotsByTable($this->numero_table);
-        $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
+        $this->nb_tables = count($this->degustation->getTables());
         $options = array('numero_table' => $this->numero_table);
         $this->form = new DegustationResultatsForm($this->degustation, $options);
 
@@ -493,7 +493,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_presences', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
 
-        $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
+        $this->nb_tables = count($this->degustation->getTables());
         $options = array('numero_table' => $this->numero_table);
         $this->form = new DegustationDegustateursTableForm($this->degustation, $options);
 

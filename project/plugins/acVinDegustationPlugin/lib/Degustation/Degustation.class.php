@@ -150,7 +150,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$infos["degustateurs"][$libelle]['total'] = count($this->degustateurs->getOrAdd($college_key));
 			$infos["degustateurs"][$libelle]['key'] = "nb".$collegeVar;
 		}
-		$tables = $this->getTablesWithFreeLots();
+		$tables = $this->getTables();
 		$infos["nbTables"] = count($tables);
 		$infos["nbLotsAnonymises"] = count($this->getLotsAnonymized());
 		$infos["nbLotsConformes"] = $this->getNbLotsConformes(true);
@@ -661,16 +661,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	   		return $lots;
    	 	}
 
-		public function getTablesWithFreeLots(){
+		public function getTables(){
 			$tables = array();
 			foreach ($this->lots as $lot) {
-				if($lot->exist('numero_table') && $lot->numero_table){
-					if(!isset($tables[$lot->numero_table])){
-						$tables[$lot->numero_table] = new stdClass();
-						$tables[$lot->numero_table]->lots = array();
-					}
-					$tables[$lot->numero_table]->lots[] = $lot;
-				}
+				if(!$lot->exist('numero_table') || !$lot->numero_table){
+				    continue;
+                }
+                $tables[$lot->numero_table][] = $lot;
 			}
             ksort($tables);
 			return $tables;
@@ -840,7 +837,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 return;
             }
             $t = 0;
-            foreach($this->getTablesWithFreeLots() as $table) {
+            foreach($this->getTables() as $table) {
                 $t++;
                 $this->generateAndSetPositionsForTable($t);
             }
@@ -938,13 +935,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		}
 
 		public function getFirstNumeroTable(){
-			$tables = array_keys($this->getTablesWithFreeLots());
+			$tables = array_keys($this->getTables());
 			if(!count($tables)) { return 0; }
 			return min($tables);
 		}
 
 		public function getLastNumeroTable(){
-			$tables = array_keys($this->getTablesWithFreeLots());
+			$tables = array_keys($this->getTables());
 			if(!count($tables)) { return 0; }
 			return max($tables);
 		}
@@ -1204,37 +1201,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$nbLots++;
 			}
 			return $etiquettesPlanches;
-		}
-
-		public function getAllLotsTables(){
-			$tables = $this->getTablesWithFreeLots();
-      $allTablesLots = array();
-      foreach ($tables as $key => $value) {
-        foreach ($value as $lot) {
-          if(!$lot)
-            continue;
-          $allTablesLots = array_merge($allTablesLots, $lot);
-        }
-
-      }
-			return $allTablesLots;
-		}
-
-		public function getLotTableBySlice($slice){
-			$allTablesLots = $this->getAllLotsTables();
-			$lotsBySlice = array();
-			$cpt = 0;
-			$n = intval(count($allTablesLots)/$slice);
-			foreach ($allTablesLots as $key => $lot) {
-				if($cpt < $slice){
-					$cpt++;
-				}else {
-					$n--;
-					$cpt = 1;
-				}
-				$lotsBySlice[$n][] = $lot;
-			}
-			return $lotsBySlice;
 		}
 
 		public function getLotsByNumDossier(){ //Incompréhensible
