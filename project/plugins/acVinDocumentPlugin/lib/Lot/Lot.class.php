@@ -51,7 +51,6 @@ abstract class Lot extends acCouchdbDocumentTree
     const SPECIFICITE_PRIMEUR = "Primeur";
 
     const TYPE_ARCHIVE = 'Lot';
-    const TABLE_IGNORE = 'IGNORE';
 
     public static $libellesStatuts = array(
         self::STATUT_NONPRELEVABLE => 'Non prélevable',

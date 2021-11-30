@@ -56,7 +56,12 @@ class DegustationLot extends BaseDegustationLot {
   }
 
     public function isAnonymisable(){
-        return !is_null($this->numero_table) && !$this->isIgnored();
+        if($this->numero_table === null) {
+
+            return false;
+        }
+
+        return true;
     }
 
     public function anonymize($index)

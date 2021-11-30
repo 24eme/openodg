@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(23);
+$t = new lime_test(20);
 
 $annee = (date('Y')-1)."";
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -73,14 +73,7 @@ $t->is($leurreTable2->numero_table, 2, 'Le numéro de table est le 2');
 $t->is($leurreTable2->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
 $t->is($leurreTable2->millesime, date('Y'), "Le millesime est setté à l'année courante");
 
-$t->comment("On ignore le leurre de la table 2");
-$t->is(count($degust->getLotsNonAttables()), 0, "Tous les lots sont attablés");
-$lotLeurre = $degust->lots[3];
-$degust->lots[3] = $degust->ignorerLot($lotLeurre);
-$t->is(count($degust->getLotsNonAttables()), 1, "Un lot non attablé");
-$t->ok($lotLeurre->isIgnored(), "Le leurre n'est plus dans une table et est ignoré");
-$degust->save();
-
-$t->comment('puis on la retire');
+$t->comment('puis on les retire');
+$degust->lots->remove(3);
 $degust->lots->remove(2);
 $t->is($degust->getLastNumeroTable(), 1, 'La dernière table est la 1');

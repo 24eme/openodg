@@ -660,25 +660,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	   		return $lots;
    	 	}
 
-		public function getFreeLots(){
-			$freeLots = array();
-			foreach ($this->getLotsPreleves() as $lot) {
-				if(! $lot->exist('numero_table') || (!$lot->numero_table && $lot->isIgnored())){
-					$freeLots[] = $lot;
-				}
-			}
-			return $freeLots;
-		}
-
 		public function getTablesWithFreeLots(){
 			$tables = array();
-			$freeLots = $this->getFreeLots();
 			foreach ($this->lots as $lot) {
-				if($lot->exist('numero_table') && $lot->numero_table && !$lot->isIgnored()){
+				if($lot->exist('numero_table') && $lot->numero_table){
 					if(!isset($tables[$lot->numero_table])){
 						$tables[$lot->numero_table] = new stdClass();
 						$tables[$lot->numero_table]->lots = array();
-						$tables[$lot->numero_table]->freeLots = $freeLots;
 					}
 					$tables[$lot->numero_table]->lots[] = $lot;
 				}
@@ -1019,11 +1007,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return $leurres;
     }
 
-		public function ignorerLot($lot){
-			$lot->numero_table = Lot::TABLE_IGNORE;
-			return $lot;
-		}
-
 		/**** Fin Gestion des tables de la degustation ****/
 
 
@@ -1141,8 +1124,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsNonAttables(){
 			$non_attables = array();
 			foreach ($this->getLotsPreleves() as $lot) {
-				if($lot->numero_table && !$lot->isIgnored())
+				if(!$lot->isAnonymisable()) {
 					continue;
+                }
 				$non_attables[] = $lot;
 			}
 			return $non_attables;
