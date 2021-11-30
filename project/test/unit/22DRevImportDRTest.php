@@ -98,8 +98,14 @@ foreach ($drev->declaration as $hash => $details) {
         $nb += 1;
     }
 }
-$t->is($nb, $nb_produits_csv, "bon nombre de produits ($nb_produits_csv) si les options automatique bio et conventionnelles sont activées et présence d'un bio en complement");
-$t->isnt($firstdetail->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "dénomination complémentaire si les options bio et conventionnelles");
+
+if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
+    $t->is($nb, $nb_produits_csv, "bon nombre de produits ($nb_produits_csv) si les options automatique bio et conventionnelles sont activées et présence d'un bio en complement");
+    $t->is($ddetailfirst->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "dénomination complémentaire si les options bio et conventionnelles");
+} else {
+    $t->is($nb, $nb_produits_csv - 1, "bon nombre de produits (3) si les options automatique bio et conventionnelles sont activées et présence d'un bio en complement");
+    $t->is($ddetailfirst->denomination_complementaire, 'vin bio', "dénomination complémentaire de la dr");
+}
 
 $drev->delete();
 
@@ -122,11 +128,12 @@ foreach ($drev->declaration as $hash => $details) {
         $nb += 1;
     }
 }
-$t->is($nb, $nb_produits_csv, "bon nombre de produits si seule l'option automatique bio est activée");
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
-  $t->is($ddetailfirst->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "bonne dénomination de produit si seule l'option automatique bio est activée");
+    $t->is($nb, $nb_produits_csv, "bon nombre de produits si seule l'option automatique bio est activée");
+    $t->is($ddetailfirst->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "bonne dénomination de produit si seule l'option automatique bio est activée");
 }else{
-  $t->is($ddetailfirst->denomination_complementaire, "", "bonne dénomination de produit si seule l'option automatique bio est activée");
+  $t->is($nb, $nb_produits_csv - 1, "bon nombre de produits si seule l'option automatique bio est activée");
+  $t->is($ddetailfirst->denomination_complementaire, "vin bio", "bonne dénomination de produit si seule l'option automatique bio est activée");
 }
 
 $drev->delete();
@@ -160,7 +167,7 @@ $t->isnt($ddetailfirst->denomination_complementaire, DRevClient::DENOMINATION_BI
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $t->is($ddetaillast->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "dénomination complémentaire pour le produit bio");
 }else{
-  $t->is($ddetaillast->denomination_complementaire, "", "dénomination complémentaire pour le produit bio");
+  $t->is($ddetaillast->denomination_complementaire, "Melon", "dénomination complémentaire pour le produit bio");
 }
 
 $validation = new DRevValidation($drev);
@@ -227,6 +234,12 @@ foreach ($drev->declaration as $hash => $details) {
     }
 }
 $nb_produits_csv_doublons = $nb_produits_csv;
-$t->is($nb, $nb_produits_csv_doublons, "si les dénom ne sont que bio et hve alors que ces produits ($nb_produits_csv)");
-$t->is($ddetailfirst->denomination_complementaire, DRevClient::DENOMINATION_HVE_LIBELLE_AUTO, "le 2d détail est HVE comme dans le CSV");
-$t->is($ddetaillast->denomination_complementaire, "", "le premier détail est conventionnel");
+if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
+    $t->is($nb, $nb_produits_csv_doublons, "si les dénom ne sont que bio et hve alors que ces produits ($nb_produits_csv)");
+    $t->is($ddetailfirst->denomination_complementaire, DRevClient::DENOMINATION_HVE_LIBELLE_AUTO, "le 2d détail est HVE comme dans le CSV");
+    $t->is($ddetaillast->denomination_complementaire, "", "le premier détail est conventionnel");
+} else {
+    $t->pass();
+    $t->pass();
+    $t->pass();
+}
