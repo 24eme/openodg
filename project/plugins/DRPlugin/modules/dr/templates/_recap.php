@@ -14,18 +14,16 @@
         <?php foreach ($dr->getProduits() as $produit): ?>
             <tr>
                 <td><?= $produit['libelle'] ?></td>
-                <td class="text-right"><?= $produit['lignes']['04'] ?? 0 ?></td>
-                <td class="text-right"><?= $produit['lignes']['05'] ?? 0 ?></td>
-                <td class="text-right"><?= $produit['lignes']['14'] ?? 0 ?></td>
-                <td class="text-right"><?= $produit['lignes']['15'] ?? 0 ?></td>
+                <?php foreach ($lignesAAfficher as $l): ?>
+                    <td class="text-right"><?= $produit['lignes'][$l] ?? 0 ?></td>
+                <?php endforeach ?>
             </tr>
         <?php endforeach ?>
         <tr>
             <th class="text-right"><strong>Total</strong></th>
-            <th class="text-right"><strong><?= $dr->getTotalValeur('04') ?></strong></th>
-            <th class="text-right"><strong><?= $dr->getTotalValeur('05') ?></strong></th>
-            <th class="text-right"><strong><?= $dr->getTotalValeur('14') ?></strong></th>
-            <th class="text-right"><strong><?= $dr->getTotalValeur('15') ?></strong></th>
+            <?php foreach ($lignesAAfficher as $l): ?>
+                <th class="text-right"><strong><?= $dr->getTotalValeur($l) ?></strong></th>
+            <?php endforeach ?>
         </tr>
     </tbody>
 </table>
