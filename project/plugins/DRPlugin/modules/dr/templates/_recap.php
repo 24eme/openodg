@@ -10,6 +10,16 @@
             <th class="text-center">Volume revendiqué L15 <span class="text-muted">(hl)</span></th>
         </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+        <?php foreach ($dr->getProduits() as $produit): ?>
+            <tr>
+                <td><?= $produit['libelle'] ?></td>
+                <td class="text-right"><?= $produit['lignes']['04'] ?? 0 ?></td>
+                <td class="text-right"><?= $produit['lignes']['05'] ?? 0 ?></td>
+                <td class="text-right"><?= $produit['lignes']['14'] ?? 0 ?></td>
+                <td class="text-right"><?= $produit['lignes']['15'] ?? 0 ?></td>
+            </tr>
+        <?php endforeach ?>
+    </tbody>
 </table>
 
