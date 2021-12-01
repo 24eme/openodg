@@ -40,7 +40,7 @@
           </tr>
           <tr>
             <td style="width:33%;">
-              Nombre total de lots : <?php echo count($degustation->getLots());?><br/>
+              Nombre total de lots : <?php echo count($degustation->getLotsDegustables());?><br/>
             </td>
             <td style="width:33%"><br/>
             </td>

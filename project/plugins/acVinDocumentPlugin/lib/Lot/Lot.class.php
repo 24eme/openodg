@@ -20,6 +20,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_RECOURS_OC = "11_RECOURS_OC";
     const STATUT_CONFORME_APPEL = "12_CONFORME_APPEL";
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
+    const STATUT_ANNULE = "03_ANNULE";
 
     const STATUT_CHANGE = "CHANGE";
 

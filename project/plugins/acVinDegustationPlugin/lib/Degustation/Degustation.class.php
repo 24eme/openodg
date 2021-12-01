@@ -268,6 +268,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 default:
                     break;
             }
+            if($lot->isAnnule()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANNULE));
+                continue;
+            }
             if ($lot->isPreleve()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
             }
@@ -720,6 +724,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$this->fillDocToSaveFromLots();
             foreach ($this->lots->toArray() as $lot) {
                 if($lot->isAnonymisable()) {
+                    continue;
+                }
+                if($lot->isAnnule()) {
                     continue;
                 }
                 $this->remove($lot->getHash());

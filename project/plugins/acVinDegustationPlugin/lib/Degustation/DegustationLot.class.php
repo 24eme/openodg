@@ -138,6 +138,12 @@ class DegustationLot extends BaseDegustationLot {
     }
 
     public function setIsPreleve($date = null) {
+        if($this->isAnnule()) {
+            $this->preleve = null;
+            $this->statut = Lot::STATUT_ANNULE;
+            return;
+        }
+
         if (!$date) {
             $date = date('Y-m-d');
         }
@@ -145,8 +151,20 @@ class DegustationLot extends BaseDegustationLot {
         $this->statut = Lot::STATUT_PRELEVE;
     }
 
+    public function setVolume($volume) {
+        $this->_set('volume', $volume);
+        if($this->isAnnule()) {
+            $this->preleve = null;
+            $this->statut = Lot::STATUT_ANNULE;
+        }
+    }
+
     public function isPrelevable() {
         if($this->isLeurre()) {
+            return false;
+        }
+
+        if($this->isAnnule()) {
             return false;
         }
 
@@ -157,12 +175,20 @@ class DegustationLot extends BaseDegustationLot {
         if(! $this->isPreleve() && ! $this->isLeurre()) {
             return false;
         }
+        if($this->isAnnule()) {
+            return false;
+        }
 
         return true;
     }
 
     public function isPreleve() {
         return $this->preleve !== null;
+    }
+
+    public function isAnnule() {
+
+        return $this->volume === 0;
     }
 
     public function getDocumentType() {

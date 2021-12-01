@@ -42,7 +42,7 @@
   <tr><td>Suite à votre réponse en date du <?php echo date('d/m/Y',strtotime($degustation->date)) ?> et de l'action corrective proposée, nous avons le plaisir de vous informer que la Non-conformité citée en objet a été levée le <?php echo date('d/m/Y',strtotime($degustation->date)) ?>.</td></tr>
 </table><br/>
 
-<?php foreach($degustation->getLots() as $lot): ?>
+<?php foreach($degustation->getLotsDegustables() as $lot): ?>
   <?php if($lot->statut == "NON_CONFORME" && $lot->declarant_identifiant == $etablissement->identifiant && $lot->numero_dossier == $lot_dossier): ?>
         <?php $Newlot = $lot  ?>
   <?php endif; ?>

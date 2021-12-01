@@ -25,7 +25,7 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
             'degustation' => $this->degustation,
             'etablissements' => $etablissements,
             "date_edition" => date("d/m/Y"),
-            "nbLotTotal" => count($this->degustation->getLots()),
+            "nbLotTotal" => count($this->degustation->getLotsDegustables()),
             'lots' => $adresses
           )
         ));
