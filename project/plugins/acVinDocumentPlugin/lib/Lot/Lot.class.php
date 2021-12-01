@@ -57,6 +57,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
+        self::STATUT_ANNULE => 'Annulé',
         self::STATUT_ATTABLE => 'Attablé',
         self::STATUT_ANONYMISE => 'Anonymisé',
         self::STATUT_DEGUSTE => 'Dégusté',
