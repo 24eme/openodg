@@ -10,6 +10,9 @@ class drActions extends sfActions
 
     public function executeApprobation(sfWebRequest $request)
     {
+        $this->dr = $this->getRoute()->getDR();
+        $this->dr->validateOdg();
 
+        $this->redirect('dr_visualisation', $this->dr);
     }
 }
