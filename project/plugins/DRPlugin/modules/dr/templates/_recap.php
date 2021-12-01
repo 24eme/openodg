@@ -19,7 +19,7 @@
                 <?php foreach ($lignesAAfficher as $l): ?>
                     <td class="text-right">
                         <?php if (array_key_exists($l, $produit['lignes']->getRawValue())): ?>
-                            <?= echoFloat($produit['lignes'][$l]['val']) ?>
+                            <?= sprintf('%.0'.$produit['lignes'][$l]['decimals'].'f', $produit['lignes'][$l]['val']) ?>
                             <span class="text-muted"><?= $produit['lignes'][$l]['unit'] ?></span>
                         <?php else: ?>
                             <?= echoFloat(0); ?>
