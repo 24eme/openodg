@@ -265,10 +265,12 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
             }
 
             if (array_key_exists($ligne['categorie'], $donnees[$produit_key]['lignes']) === false) {
-                $donnees[$produit_key]['lignes'][$ligne['categorie']] = 0;
+                $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] = 0;
+                $donnees[$produit_key]['lignes'][$ligne['categorie']]['unit'] =
+                    (in_array($ligne['categorie'], ['04', '04b', '05'])) ? 'ha' : 'hl';
             }
 
-            $donnees[$produit_key]['lignes'][$ligne['categorie']] += $ligne['valeur'];
+            $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] += $ligne['valeur'];
         }
 
         return $donnees;

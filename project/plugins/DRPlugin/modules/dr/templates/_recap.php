@@ -1,3 +1,5 @@
+<?php use_helper('Float') ?>
+
 <h3>Synthèse</h3>
 
 <table class="table table-bordered table-striped">
@@ -15,14 +17,21 @@
             <tr>
                 <td><?= $produit['libelle'] ?></td>
                 <?php foreach ($lignesAAfficher as $l): ?>
-                    <td class="text-right"><?= $produit['lignes'][$l] ?? 0 ?></td>
+                    <td class="text-right">
+                        <?php if (array_key_exists($l, $produit['lignes']->getRawValue())): ?>
+                            <?= echoFloat($produit['lignes'][$l]['val']) ?>
+                            <span class="text-muted"><?= $produit['lignes'][$l]['unit'] ?></span>
+                        <?php else: ?>
+                            <?= echoFloat(0); ?>
+                        <?php endif ?>
+                    </td>
                 <?php endforeach ?>
             </tr>
         <?php endforeach ?>
         <tr>
             <th class="text-right"><strong>Total</strong></th>
             <?php foreach ($lignesAAfficher as $l): ?>
-                <th class="text-right"><strong><?= $dr->getTotalValeur($l) ?></strong></th>
+                <th class="text-right"><strong><?= echoFloat($dr->getTotalValeur($l)) ?></strong></th>
             <?php endforeach ?>
         </tr>
     </tbody>
