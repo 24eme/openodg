@@ -250,4 +250,23 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         }
         return count($apporteurs);
     }
+
+    public function getProduits()
+    {
+        $donnees = [];
+
+        foreach ($this->donnees as $ligne) {
+            $produit_key = $ligne['produit'];
+
+            if (array_key_exists($produit_key, $donnees) === false) {
+                $donnees[$produit_key] = [];
+                $donnees[$produit_key]['libelle'] = $ligne['produit_libelle'];
+                $donnees[$produit_key]['lignes'] = [];
+            }
+
+            $donnees[$produit_key]['lignes'][$ligne['categorie']] = $ligne['valeur'];
+        }
+
+        return $donnees;
+    }
 }
