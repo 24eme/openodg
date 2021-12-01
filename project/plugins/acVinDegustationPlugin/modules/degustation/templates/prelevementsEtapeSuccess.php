@@ -48,29 +48,24 @@
         </div>
         <div class="row">
           <div class="col-xs-8">
-            <div class="row">
-              <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsSansLeurre"]; ?></strong> <strong>lots au total</strong> prévus dans la dégustation<br/>
-              </div>
-              <div class="col-xs-6">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsRestantAPrelever"]; ?></strong> <strong>lots</strong> restant à prélever chez
-              </div>
-              <div class="col-xs-6">
-                <strong><span class="lead"><?php echo $infosDegustation["nbAdherentsLotsRestantAPrelever"]; ?></span> adhérents</strong>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsPrelevesSansLeurre"]; ?></strong> <strong>lots</strong> déjà prélevés chez
-              </div>
-              <div class="col-xs-6">
-                <strong><span class="lead"><?php echo $infosDegustation["nbAdherentsPreleves"]; ?></span> adhérents</strong>
-              </div>
-            </div>
+              <table class="table table-condensed table-bordered table-striped">
+                <tr>
+                    <td class="col-xs-1"><?php echo count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
+                    <td>lots prélevés</td>
+                </tr>
+                <tr>
+                    <td><?php echo count($degustation->getLotsPrelevables()) -  count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
+                    <td>lots restant à prélever</td>
+                </tr>
+                <tr>
+                <td><?php echo count($degustation->getLotsSansVolume()); ?></td>
+                <td>lots annulés</td>
+                </tr>
+                <tr>
+                <th><?php echo count($degustation->getLots()) ?></th>
+                <th>lots au total</th>
+                </tr>
+            </table>
           </div>
           <div class="col-xs-12 text-right">
               <a id="btn_suivi_prelevement" class="btn btn-default btn-sm" href="<?php echo url_for('degustation_preleve', $degustation) ?>" >&nbsp;Saisir les prélévements effectués&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>

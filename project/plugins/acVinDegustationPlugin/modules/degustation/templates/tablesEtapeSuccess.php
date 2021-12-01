@@ -41,11 +41,11 @@
             <strong class="lead"><?php echo $infosDegustation["nbTables"]; ?></strong> Tables prévues :</br>
             <?php if($infosDegustation["nbTables"]): ?>
               <ul class="lots-by-table">
-              <?php foreach ($degustation->getTablesWithFreeLots() as $numTable => $table): ?>
+              <?php foreach ($degustation->getTables() as $numTable => $lots): ?>
                 <?php if(DegustationClient::getNumeroTableStr($numTable) !== false): ?>
                   <li>
                     <strong class="lead"><?php echo DegustationClient::getNumeroTableStr($numTable); ?></strong>
-                    <strong><?php echo count($table->lots); ?> lots</strong>
+                    <strong><?php echo count($lots); ?> lots</strong>
                   </li>
                 <?php endif; ?>
               <?php endforeach; ?>
@@ -54,7 +54,6 @@
             <strong>Aucune tables</strong>
           <?php endif; ?>
           </br>
-          <strong class="lead"><?php echo ($infosDegustation["nbFreeLots"])? $infosDegustation["nbFreeLots"] : 'Aucun' ?></strong> <strong>Échantillon<?php echo ($infosDegustation["nbFreeLots"]>1)? 's' : '' ?></strong> sans table
         </div>
         <div class="col-xs-12 text-right">
             <a id="btn_organisation_table" class="btn btn-default btn-sm" href="<?php echo url_for('degustation_organisation_table', $degustation) ?>" >&nbsp;Échantillons par table&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>

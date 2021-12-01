@@ -248,7 +248,7 @@ class degustationActions extends sfActions {
     public function executeTablesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
-        if (count($this->degustation->getLotsPreleves()) < 1) {
+        if (count($this->degustation->getLotsDegustables()) < 1) {
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
         }
         if (!$this->degustation->haveAllDegustateursSet()) {
@@ -266,10 +266,6 @@ class degustationActions extends sfActions {
         if ($this->degustation->getNbLotsRestantAPreleve() > 0) {
             $this->getUser()->setFlash('error', 'Il reste des lots à prélever');
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
-        }
-        if (count($this->degustation->getFreeLots()) > 0) {
-            $this->getUser()->setFlash('error', 'Il reste des lots à non attablés');
-            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_TABLES), $this->degustation);
         }
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ANONYMATS))) {
             $this->degustation->save(false);
@@ -460,7 +456,7 @@ class degustationActions extends sfActions {
         }
 
         $this->tableLots = $this->degustation->getLotsByTable($this->numero_table);
-        $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
+        $this->nb_tables = count($this->degustation->getTables());
         $options = array('numero_table' => $this->numero_table);
         $this->form = new DegustationResultatsForm($this->degustation, $options);
 
@@ -497,7 +493,7 @@ class degustationActions extends sfActions {
           return $this->redirect('degustation_presences', array('id' => $this->degustation->_id, 'numero_table' => $this->degustation->getFirstNumeroTable()));
         }
 
-        $this->nb_tables = count($this->degustation->getTablesWithFreeLots());
+        $this->nb_tables = count($this->degustation->getTables());
         $options = array('numero_table' => $this->numero_table);
         $this->form = new DegustationDegustateursTableForm($this->degustation, $options);
 
