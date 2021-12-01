@@ -22,7 +22,7 @@
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $dr->getEtablissementObject()]); ?>
 </div>
 
-<?php include_partial('dr/recap', ['dr' => $dr]) ?>
+<?php include_partial('dr/recap', compact('dr', 'lignesAAfficher')) ?>
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
