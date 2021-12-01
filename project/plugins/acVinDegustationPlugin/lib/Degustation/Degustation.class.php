@@ -255,6 +255,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
 
+                case Lot::STATUT_ANNULE:
                 case Lot::STATUT_AFFECTE_DEST:
                     /*if ($lot->document_ordre < 2) {
                         throw new sfException("Le numéro d'ordre d'un lot de dégustation ne peut être inférieur à 2 : ".$lot->unique_id);

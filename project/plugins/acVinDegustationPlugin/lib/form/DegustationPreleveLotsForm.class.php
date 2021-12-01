@@ -37,13 +37,10 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
             if(!isset($value['preleve']) || !$value['preleve']) {
                 $this->getDocument()->lots->get($key)->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
                 $this->getDocument()->lots->get($key)->preleve = null;
-                continue;
-            }
-            if(!$this->getDocument()->lots->get($key)->isPreleve()){
+            } elseif(!$this->getDocument()->lots->get($key)->isPreleve()){
               $this->getDocument()->lots->get($key)->setIsPreleve();
             }
             if($this->getDocument()->lots->get($key)->isAnnule()) {
-                $this->getDocument()->lots->get($key)->statut = Lot::STATUT_ANNULE;
                 $this->getDocument()->lots->get($key)->setIsPreleve();
             }
         }
