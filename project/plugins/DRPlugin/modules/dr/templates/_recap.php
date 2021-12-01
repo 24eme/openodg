@@ -20,6 +20,13 @@
                 <td class="text-right"><?= $produit['lignes']['15'] ?? 0 ?></td>
             </tr>
         <?php endforeach ?>
+        <tr>
+            <th class="text-right"><strong>Total</strong></th>
+            <th class="text-right"><strong><?= $dr->getTotalValeur('04') ?></strong></th>
+            <th class="text-right"><strong><?= $dr->getTotalValeur('05') ?></strong></th>
+            <th class="text-right"><strong><?= $dr->getTotalValeur('14') ?></strong></th>
+            <th class="text-right"><strong><?= $dr->getTotalValeur('15') ?></strong></th>
+        </tr>
     </tbody>
 </table>
 
