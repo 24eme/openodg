@@ -20,6 +20,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_RECOURS_OC = "11_RECOURS_OC";
     const STATUT_CONFORME_APPEL = "12_CONFORME_APPEL";
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
+    const STATUT_ANNULE = "03_ANNULE";
 
     const STATUT_CHANGE = "CHANGE";
 
@@ -51,12 +52,12 @@ abstract class Lot extends acCouchdbDocumentTree
     const SPECIFICITE_PRIMEUR = "Primeur";
 
     const TYPE_ARCHIVE = 'Lot';
-    const TABLE_IGNORE = 'IGNORE';
 
     public static $libellesStatuts = array(
         self::STATUT_NONPRELEVABLE => 'Non prélevable',
         self::STATUT_ATTENTE_PRELEVEMENT => 'En attente de prélèvement',
         self::STATUT_PRELEVE => 'Prélevé',
+        self::STATUT_ANNULE => 'Annulé',
         self::STATUT_ATTABLE => 'Attablé',
         self::STATUT_ANONYMISE => 'Anonymisé',
         self::STATUT_DEGUSTE => 'Dégusté',

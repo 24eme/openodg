@@ -16,7 +16,7 @@ class ExportDegustationFicheTablesEchantillonsParAnonymatPDF extends ExportPDF {
     public function create()
     {
         $lotsTries = [];
-        $lots = $this->degustation->getLots();
+        $lots = $this->degustation->getLotsDegustables();
 
         foreach ($lots as $lot) {
             $lotsTries[$lot->numero_table][] = $lot;

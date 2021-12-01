@@ -270,9 +270,9 @@ class fichierActions extends sfActions
 		if ($request->isMethod(sfWebRequest::POST)) {
 			try {
 				$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
-				$drev = DRevClient::getInstance()->find("DREV-".$this->etablissement->identifiant."-".$this->periode);
+			    $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->etablissement->identifiant, $this->periode);
 				if ($fichiers && $drev) {
-					$drev->importFromDocumentDouanier();
+					$drev->importFromDocumentDouanier(true);
                 	$drev->save();
 				}
 			}catch(sfException $e ) {
