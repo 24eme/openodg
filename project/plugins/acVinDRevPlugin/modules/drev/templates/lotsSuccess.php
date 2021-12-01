@@ -54,9 +54,9 @@
         <?php include_partial('degustation/lotForm', array('form' => $lotForm, 'lot' => $lotItem)); ?>
     <?php endforeach; ?>
     <div class="text-right">
-        <button type="submit" name="submit" value="add" id="lots_ajout" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
+        <button type="submit" name="submit" value="add" id="lots_ajout" class="btn btn-default btn-block"><span class="text-primary"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</span></button>
     </div>
-    <div style="margin-top: 20px;" class="row row-margin row-button">
+    <div style="margin-top: 36px;" class="row row-margin row-button">
         <div class="col-xs-4">
             <a tabindex="-1" href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
