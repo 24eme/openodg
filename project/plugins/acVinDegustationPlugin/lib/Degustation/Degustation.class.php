@@ -635,10 +635,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lots;
         }
 
-        /*** @Deprecated getLotsDegustables ****/
-		public function getLotsPreleves() {
+		public function getLotsPrelevables() {
+            $lots = array();
+            foreach ($this->getLots() as $lot) {
+                if(!$lot->isPrelevable()) {
+                    continue;
+                }
 
-            return $this->getLotsDegustables();
+                $lots[] = $lot;
+            }
+
+            return $lots;
 		}
 
         public function getLotsSansVolume() {
@@ -651,7 +658,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lots;
         }
 
-		public function getLotsPrelevesCustomSort(array $tri = null) {
+		public function getLotsDegustablesCustomSort(array $tri = null) {
 			$lots = $this->getLotsDegustables();
 			if (!$tri) {
 				$tri = explode('|', $this->tri);
@@ -903,7 +910,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             if (($key = array_search(DegustationClient::DEGUSTATION_TRI_MANUEL, $tri_array)) !== false) {
                 unset($tri_array[$key]);
             }
-            $lots = $this->getLotsPrelevesCustomSort($tri_array);
+            $lots = $this->getLotsDegustablesCustomSort($tri_array);
             return $this->createSynthesFromLots($lots, $numero_table, $tri_array);
         }
 
@@ -1169,9 +1176,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$produits = array();
 			$lots = array();
 
-			foreach ($this->getLots() as $key => $lot) {
-				if($lot->leurre)
-					continue;
+			foreach ($this->getLotsPrelevables() as $lot) {
 				$lots[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant.$lot->unique_id] = $lot;
 			}
 			$lotsSorted = $lots;

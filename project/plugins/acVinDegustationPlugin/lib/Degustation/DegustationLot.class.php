@@ -145,6 +145,14 @@ class DegustationLot extends BaseDegustationLot {
         $this->statut = Lot::STATUT_PRELEVE;
     }
 
+    public function isPrelevable() {
+        if($this->isLeurre()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function isDegustable() {
         if(! $this->isPreleve() && ! $this->isLeurre()) {
             return false;
@@ -181,10 +189,6 @@ class DegustationLot extends BaseDegustationLot {
             $this->statut = Lot::STATUT_ATTABLE;
         }
         return parent::setNumeroTable($n);
-    }
-
-    public function isIgnored(){
-      return $this->numero_table === Lot::TABLE_IGNORE;
     }
 
 }

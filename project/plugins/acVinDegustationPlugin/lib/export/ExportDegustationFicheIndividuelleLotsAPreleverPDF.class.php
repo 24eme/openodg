@@ -17,10 +17,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     public function create() {
 
       $adresses = array();
-      foreach ($this->degustation->getLots() as $lot) {
-          if ($lot->isLeurre()){
-              continue;
-          }
+      foreach ($this->degustation->getLotsPrelevables() as $lot) {
           $adresses[$lot->adresse_logement][$lot->unique_id] = $lot;
       }
       ksort($adresses);
