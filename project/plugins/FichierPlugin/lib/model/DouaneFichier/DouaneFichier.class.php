@@ -264,7 +264,11 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
                 $donnees[$produit_key]['lignes'] = [];
             }
 
-            $donnees[$produit_key]['lignes'][$ligne['categorie']] = $ligne['valeur'];
+            if (array_key_exists($ligne['categorie'], $donnees[$produit_key]['lignes']) === false) {
+                $donnees[$produit_key]['lignes'][$ligne['categorie']] = 0;
+            }
+
+            $donnees[$produit_key]['lignes'][$ligne['categorie']] += $ligne['valeur'];
         }
 
         return $donnees;
