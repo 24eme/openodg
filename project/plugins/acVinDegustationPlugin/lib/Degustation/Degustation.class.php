@@ -470,7 +470,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     public function getLotsByOperateurs($identifiant = null)
     {
         $lots = [];
-        foreach ($this->getLots() as $lot) {
+        foreach ($this->getLotsDegustables() as $lot) {
             if ($lot->isLeurre()) {
                 continue;
             }
