@@ -38,18 +38,6 @@
           "callback": "buildMouvementsNbLotsDegustes",
           "callback_parameters": []
         },
-        "chgtDenomFixe": {
-          "modele": "CotisationFixe",
-          "prix": 60,
-          "tva": 0.2,
-          "libelle": "Dégustation de lot",
-          "complement_libelle": "",
-          "docs": [
-            "ChgtDenom"
-          ],
-          "callback": null,
-          "callback_parameters": []
-        },
         "chgtDenomVariable": {
           "modele": "CotisationVariable",
           "prix": 0.15,
