@@ -227,7 +227,7 @@
         <br/>
 
         <?php
-            if( count($drev->getLots()) && $drev->isValideeOdg() && $drev->isModifiable() ): ?>
+            if($drev->isValideeOdg() && $drev->isModifiable()): ?>
             <div class="col-xs-12" style="margin-bottom: 20px;">
               <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
             </div>
