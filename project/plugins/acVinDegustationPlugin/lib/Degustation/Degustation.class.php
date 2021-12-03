@@ -11,6 +11,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     protected $docToSave = array();
     protected $archivage_document = null;
     protected $mouvement_document = null;
+    public $generateMouvementsFacturesOnNextSave = false;
 
     public function __construct() {
         parent::__construct();
@@ -75,8 +76,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
     public function save($saveDependants = true) {
-
         $this->generateMouvementsLots();
+
+        if($this->generateMouvementsFacturesOnNextSave && !$this->isFactures()) {
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
+        $this->generateMouvementsFacturesOnNextSave = false;
 
         $saved = parent::save();
 
@@ -766,9 +772,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 
-            $this->generateMouvementsLots();
-            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
-			$this->generateMouvementsFactures();
+            $this->generateMouvementsFacturesOnNextSave = true;
 		}
 
 		public function desanonymize(){
@@ -784,8 +788,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 
-            $this->generateMouvementsLots();
-			$this->clearMouvementsFactures();
+            if(!$this->isFactures()){
+                $this->clearMouvementsFactures();
+            }
 		}
 
 		public function isAnonymized(){

@@ -117,9 +117,7 @@ class DegustationLot extends BaseDegustationLot {
     public function setConformite($conformite){
         if(!$this->_get("conformite")){
 
-            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
-            $this->getDocument()->clearMouvementsFactures();
-            $this->getDocument()->generateMouvementsFactures();
+            $this->getDocument()->generateMouvementsFacturesOnNextSave = true;
 
             return $this->_set("conformite",$conformite);
         }
@@ -129,9 +127,7 @@ class DegustationLot extends BaseDegustationLot {
 
         if($this->_get("conformite") != $conformite){
 
-            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
-            $this->getDocument()->clearMouvementsFactures();
-            $this->getDocument()->generateMouvementsFactures();
+            $this->getDocument()->generateMouvementsFacturesOnNextSave = true;
         }
         return $this->_set("conformite",$conformite);
 
