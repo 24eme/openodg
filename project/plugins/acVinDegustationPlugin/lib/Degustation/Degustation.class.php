@@ -710,7 +710,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsByTable($numero_table){
 			$lots = array();
-			foreach ($this->getLots() as $lot) {
+			foreach ($this->getLotsDegustables() as $lot) {
 				if(intval($lot->numero_table) == $numero_table){
 					$lots[] = $lot;
 				}
