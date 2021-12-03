@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(13);
+$t = new lime_test(14);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -135,6 +135,14 @@ foreach($degustation->getLotsSortByTables() as $lot) {
     }
 }
 $t->ok(! $inLotTable, "Le lot ne se trouve pas dans les tables");
+
+$inLotAnonymized = false;
+foreach($degustation->getLotsAnonymized() as $lot) {
+    if($lot->unique_id == $lotAnnule->unique_id) {
+        $inLotAnonymizes = true;
+    }
+}
+$t->ok(! $inLotAnonymized, "Le lot ne se trouve pas dans les lots anonymisés");
 
 
 
