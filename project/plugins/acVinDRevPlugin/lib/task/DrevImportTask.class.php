@@ -196,7 +196,7 @@ EOF;
             }
 
 
-            if($volume){
+            if($this->formatFloat($volume)){
                 if($this->isLotInDrev($drev, $data)){
                     $libelleProduit = $produit_line->getLibelleComplet();
                     echo "WARNING;PAS D'IMPORT lot existe : $drev->_id;$campagne;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
