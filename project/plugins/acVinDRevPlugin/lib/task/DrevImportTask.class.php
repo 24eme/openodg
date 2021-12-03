@@ -145,6 +145,11 @@ EOF;
     }
 
     protected function importDRevByLots($drev, $lignes, $identifiant, $campagne){
+	    if($drev && !$drev->isModifiable()) {
+            	echo "ERREUR;$drev->_id;la drev est en cours de saisie\n";
+            	return;
+            }
+
         if(!$drev) {
             $drev = DRevClient::getInstance()->createDoc($identifiant, $campagne, false, false);
             $drev->cleanLots();
