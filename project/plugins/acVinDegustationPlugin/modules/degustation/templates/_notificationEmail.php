@@ -27,7 +27,7 @@ Vous trouverez ci-dessous le lien vers le courrier confirmant la conformité <?p
 Vous trouverez en cliquant sur le<?php if(count($lotsNonConformes) > 1): ?>s<?php endif; ?> lien<?php if(count($lotsNonConformes) > 1): ?>s<?php endif; ?> ci-dessous le courrier concernant <?php if(count($lotsNonConformes) == 1): ?>le lot<?php else: ?>les lots<?php endif; ?> présentant une non conformité :
 
 <?php foreach($lotsNonConformes as $lotNonConforme): ?>
-- <?= showProduitCepagesLot($lotNonConforme) . ", NON CONFORMITÉ de type " . $lotNonConforme->getShortLibelleConformite() ?> : <a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
+- <?= trim(preg_replace("/[ ]+/", " ", (str_replace("&nbsp;", " ", strip_tags(showProduitCepagesLot($lotNonConforme)))))) . ", NON CONFORMITÉ de type " . $lotNonConforme->getShortLibelleConformite() ?> : <a href="<?php echo url_for('degustation_get_courrier_auth_nonconforme', array(
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,
