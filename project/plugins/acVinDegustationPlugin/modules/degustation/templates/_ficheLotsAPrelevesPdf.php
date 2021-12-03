@@ -35,9 +35,9 @@ th {
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
         $etablissement = $etablissements[$key_lots];
-            foreach ($lotsDossier as $numDossier => $lot) :
-
-            $adresse = $lot->getRawValue()->adresse_logement;
+            foreach ($lotsDossier as $numDossier => $lots) :
+                $lot = $lots[0]->getRawValue();
+            $adresse = $lot->adresse_logement;
             $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
     <?php if ($ligne % 12 == 0 ) : $table_header = true; ?>
@@ -75,18 +75,10 @@ th {
           <td><?php echo tdStart() ?>
             <?php echo $numDossier; ?><br/>
             <small>
-            <?php $lotTypesNb = $degustation->getNbLotByTypeFilteredByNumDossier($etablissement->identifiant, $numDossier); ?>
-            <?php foreach ($lotTypesNb as $provenance => $nb) {
-                echo $nb." lot";
-                echo ($nb>1)?'s':'';
-                echo " provenant ";
-                switch ($provenance) {
-                    case 'DEGU': echo "d'une dégustation";break;
-                    case 'DREV': echo "d'une revendication";break;
-                    case 'COND': echo "d'un conditionnement";break;
-                    case 'TRAN': echo "d'une transaction";break;
-                }
-            }?>
+            <?php
+                echo count($lots)." lot";
+                echo (count($lots)>1)?'s':'';
+            ?>
           </small>
           </td>
           <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>

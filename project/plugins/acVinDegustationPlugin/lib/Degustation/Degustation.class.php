@@ -1362,19 +1362,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degust;
 		}
 
-		public function getNbLotByTypeFilteredByNumDossier($declarant_identifiant, $numDossier){
-			$lotsByType = array();
-			foreach ($this->getLotsByOperateurs($declarant_identifiant) as $lots) {
-                foreach ($lots as $lot) {
-                    if($lot->numero_dossier == $numDossier){
-                        $lotsByType[$lot->getTypeProvenance()] +=1;
-                    }
-                }
-			}
-			return $lotsByType;
-		}
-
-
         /**** MOUVEMENTS ****/
 
         public function getTemplateFacture() {
