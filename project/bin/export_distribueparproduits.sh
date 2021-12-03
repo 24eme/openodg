@@ -43,7 +43,7 @@ for type in dr sv11 sv12 ; do
     mv $doc_output $EXPORTDIRFORGLOBAL"/"$type".csv"
 done
 
-cut -d ";" -f 2 $EXPORTDIRFORGLOBAL/lots.csv | sort | uniq | sed -r 's/[0-9]{2}$//' > $EXPORTDIRFORGLOBAL/etablissements_ids.tmp
+cut -d ";" -f 2 $EXPORTDIRFORGLOBAL/lots.csv $EXPORTDIRFORGLOBAL/habilitation.csv | sed 's/"//g' | sort -u | sed -r 's/[0-9]{2}$//' > $EXPORTDIRFORGLOBAL/etablissements_ids.tmp
 
 head -n 1 $EXPORTGLOBALDIR"/etablissements.csv" > $EXPORTDIRFORGLOBAL/etablissements.csv
 cat $EXPORTGLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 1 -2 1 - $EXPORTDIRFORGLOBAL/etablissements_ids.tmp >> $EXPORTDIRFORGLOBAL/etablissements.csv
