@@ -154,6 +154,13 @@ $t->is($b->getResponse()->getContentType(), 'text/csv; charset=ISO-8859-1', "Con
 $t->is($b->getResponse()->getStatuscode(), 200, "CSV Étiquettes de prélevement");
 
 $b->back();
+$b->click('#btn_confirmation_degustateurs');
+$b->isForwardedTo('degustation', 'degustateursConfirmation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation de la venue des dégustateurs");
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'prelevementsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape de prélevements");
+
 $b->click('#btn_suivant');
 $b->isForwardedTo('degustation', 'tablesEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape d'organisation des tables");
@@ -303,6 +310,13 @@ $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en 
 $t->is($b->getResponse()->getStatuscode(), 200, "Fiche individuelle des dégustateurs");
 
 $b->back();
+$b->click('#btn_confirmation_degustateurs');
+$b->isForwardedTo('degustation', 'degustateursConfirmation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation de la venue des dégustateurs");
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
 $b->click('#btn_suivant');
 $b->isForwardedTo('degustation', 'resultatsEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape résultats");

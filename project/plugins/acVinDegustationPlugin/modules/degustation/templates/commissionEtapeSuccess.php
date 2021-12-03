@@ -89,6 +89,12 @@
   </div>
 </div>
 
+<div class="row">
+  <div class="col-xs-12">
+        <?php include_partial('degustation/convocationDegustateurs', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)) ?>
+  </div>
+</div>
+
 <div class="row row-button">
   <div class="col-xs-4"><a href="<?php echo url_for('degustation_tables_etape', $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
   <div class="col-xs-4 text-center">

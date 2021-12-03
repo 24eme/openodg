@@ -309,7 +309,6 @@ class degustationActions extends sfActions {
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
       $this->form = new DegustationDegustateursConfirmationForm($this->degustation);
 
       if (!$request->isMethod(sfWebRequest::POST)) {
@@ -324,8 +323,12 @@ class degustationActions extends sfActions {
       }
       $this->form->save();
 
-      return $this->redirect('degustation_prelevements_etape', $this->degustation);
+      if($this->degustation->isAnonymized()) {
 
+        return $this->redirect('degustation_commission_etape', $this->degustation);
+      }
+
+      return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 
     public function executeDegustateurAbsence(sfWebRequest $request) {
