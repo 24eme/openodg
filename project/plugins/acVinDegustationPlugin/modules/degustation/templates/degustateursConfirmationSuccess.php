@@ -42,7 +42,14 @@
                     <?php $college = $degustateur->getParent()->getKey(); ?>
 	        		<tr <?php if($degustateur->exist('confirmation') && ($degustateur->confirmation === false)): ?>class="disabled text-muted" disabled="disabled" style="text-decoration:line-through;"<?php endif; ?>>
 								<td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
-	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $degustateur->getKey())) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+	        			<td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $degustateur->getKey())) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a>
+
+                            <a class="pull-right" style="color: transparent;" href="<?php echo url_for('degustation_convocation_auth', [
+                                'id' => $degustation->_id,
+                                'auth' => UrlSecurity::generateAuthKey($degustation->_id, $degustateur->getKey()),
+                                'college' => $college,
+                                'identifiant' => $degustateur->getKey()
+                            ], true); ?>"><span class="glyphicon glyphicon-link"></span></a></td>
 	              <td class="text-center edit">
 									<div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
 										<?php echo $form[$name]->renderError() ?>
