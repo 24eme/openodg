@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(14);
+$t = new lime_test(21);
 
 $campagne = (date('Y')-1)."";
 $degust_date = $campagne.'-09-01 12:45';
@@ -87,6 +87,8 @@ foreach ($degustation->getLots() as $lot) {
 }
 $degustation->save();
 
+$t->comment("Annulation d'un lot après prélevement");
+
 $lot = $degustation->lots[0];
 $lot->volume = 0;
 LotsClient::getInstance()->modifyAndSave($lot);
@@ -124,6 +126,7 @@ $degustation->lots[1]->numero_table = 1;
 $t->ok(!$lotAnnule->isAnonymisable(), "Le lot annulé n'est pas anonymisable");
 
 $degustation->anonymize();
+$degustation->save();
 
 $t->is($degustation->lots[0]->unique_id, $lotAnnule->unique_id, "Le lot annulé n'a pas été supprimé lors de l'anonimisation");
 $t->is($degustation->lots[0]->numero_table, null, "Aucun numéro de table pour le lot annulé");
@@ -144,5 +147,20 @@ foreach($degustation->getLotsAnonymized() as $lot) {
 }
 $t->ok(! $inLotAnonymized, "Le lot ne se trouve pas dans les lots anonymisés");
 
+$t->comment("Annulation d'un lot après anonymisation");
 
+$lot = $degustation->lots[1];
+$lot->volume = 0;
+LotsClient::getInstance()->modifyAndSave($lot);
 
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$lotAnnule = $degustation->lots[1];
+
+$t->is($lotAnnule->volume, 0, "Le volume du lot a été modifié à 0 dans la dégustation");
+$t->is($lotAnnule->statut, Lot::STATUT_ANNULE, "Le statut du lot est annulé");
+$t->is($lotAnnule->preleve, null, "Le lot n'est pas marqué comme prélevé");
+$t->ok($lotAnnule->isAnnule(), "Le lot est annulé");
+$t->ok($lotAnnule->getMouvement(Lot::STATUT_AFFECTE_DEST), "Le statut du mouvement de lot est affecte dest");
+$t->ok(!$lotAnnule->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Le statut du mouvement de lot n'est pas en attente de prélevement");
+$t->ok($lotAnnule->getMouvement(Lot::STATUT_ANNULE), "Le statut du mouvement de lot est annulé");
