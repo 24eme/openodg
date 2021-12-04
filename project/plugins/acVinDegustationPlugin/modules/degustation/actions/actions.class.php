@@ -333,13 +333,19 @@ class degustationActions extends sfActions {
 
     public function executeDegustateurAbsence(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
+
       $college = $request->getParameter('college',null);
       $degustateurId = $request->getParameter('degustateurId',null);
       if(!$college || !$degustateurId){
         return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
       }
+
       $this->degustation->degustateurs->getOrAdd($college)->getOrAdd($degustateurId)->add('confirmation',false);
+
+      if($this->degustation->degustateurs->get($college)->get($degustateurId)->exist('numero_table') && $this->degustation->degustateurs->get($college)->get($degustateurId)->numero_table != null) {
+         throw new sfError403Exception("Vous n'êtes pas autorisé à marquer l'absence de ce dégustateur car il est déjà affecté à une table");
+      }
+
       $this->degustation->save(false);
 
       return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
