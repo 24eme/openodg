@@ -54,11 +54,11 @@
                     </td>
                   </tr>
                   <tr style="overflow:hidden; text-overflow: ellipsis">
-                    <td style="line-height:12px; width:50%;">
+                    <td style="line-height:12px; width:60%;">
                       <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
                       &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
                     </td>
-                    <td class="font-1-3em" style="text-align: right; width:50%;">
+                    <td class="font-1-3em" style="text-align: right; width:40%;">
                       <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
                     </td>
                   </tr>
