@@ -10,38 +10,27 @@ th {
 }
 
 </style>
-    <div>
       <table>
         <tr>
-          <td style="width:33%;">
-            <p>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></p>
-            <p>Heure : <?php echo $date->format("H:i"); ?></p>
-          </td>
-          <td style="width:33%;">
-            <p>Campagne: <?php echo $degustation->campagne;?></p>
-          </td>
-          <td style="width:33%">
-            <p>Lieu : <?php echo $degustation->getLieuNom(); ?> </p>
-          </td>
+          <td style="width:25%;">Date : <i><?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></i></td>
+          <td style="width:25%;">Heure : <i><?php echo $date->format("H:i"); ?></i></td>
+          <td style="width:50%;">Commission: <i><?php echo $degustation->_id; ?></i></td>
         </tr>
-        <br/>
         <tr>
-          <td colspan="3">&nbsp;&nbsp;Code Commission: <?php echo $degustation->_id; ?></td>
+            <td style="width:50%"><?php echo tdStart() ?>Lieu : <i><?php echo $degustation->getLieuNom(); ?></i></td>
+            <td style="width:50%;"><?php echo tdStart() ?>Campagne: <i><?php echo $degustation->campagne;?></i></td>
         </tr>
       </table>
-    </div>
-    <div style="margin-bottom: 2em;">
+      <div></div>
       <table>
         <tr style="line-height:20em;">
-          <td style="width:80%"></td>
-          <td style="width:10%">Table :</td>
+          <td style="width:12%">Table :</td>
           <td border="1px" style="width:10%; border-style: solid;text-align:right;">
               <?php echo DegustationClient::getNumeroTableStr($numTab); ?> &nbsp;  &nbsp;
           </td>
         </tr>
       </table>
-    </div>
-    <div>
+      <div></div>
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <thead>
           <tr>
@@ -60,16 +49,21 @@ th {
           <?php endfor; ?>
         </tbody>
       </table>
-    </div>
-
-    <div>
+      <div></div>
       <?php  $ligne=12; $table_header = true;
       foreach($lots as $numAnonyme => $lotInfo): ?>
-      <?php if($ligne % 20 == 0): $table_header = true; ?>
+      <?php if($ligne % 26 == 0): $table_header = true; ?>
         </table>
           <br pagebreak="true" />
-          <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?><p/>
-          <br/>
+          <table>
+            <tr style="line-height:20em;">
+              <td style="width:12%">Table <small>(suite)</small> :</td>
+              <td border="1px" style="width:10%; border-style: solid;text-align:right;">
+                  <?php echo DegustationClient::getNumeroTableStr($numTab); ?> &nbsp;  &nbsp;
+              </td>
+            </tr>
+          </table>
+          <div></div>
       <?php endif; ?>
       <?php if ($table_header): $table_header = false; ?>
           <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
@@ -105,4 +99,3 @@ th {
          <?php $ligne++; ?>
        <?php endforeach; ?>
       </table>
-    </div>

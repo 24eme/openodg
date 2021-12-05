@@ -6,17 +6,11 @@
 </style>
       <table>
         <tr>
-          <td><?php echo tdStart() ?><br>
-              <strong>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></strong><br>
-              <strong>Heure : <?php echo $date->format("H:i"); ?></strong>
+          <td><strong>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></strong><br><strong>Heure : <?php echo $date->format("H:i"); ?></strong>
           </td>
-          <td><?php echo tdStart() ?><br>
-              <strong>Campagne : <?php echo $degustation->campagne ?></strong><br>
-              <strong>Commission: <?php echo $degustation->_id; ?></strong>
+          <td><strong>Campagne : <?php echo $degustation->campagne ?></strong><br><strong>Commission: <?php echo $degustation->_id; ?></strong>
           </td>
-          <td><?php echo tdStart() ?><br>
-            <strong>Lieu : <?php echo $degustation->getLieuNom(); ?></strong>
-          </td>
+          <td><strong>Lieu : <?php echo $degustation->getLieuNom(); ?></strong></td>
         </tr>
       </table>
       <p> <strong> Nom : &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -36,8 +30,8 @@
    <?php if ($i % 10 == 0 ) : $table_header = true; $table_num++; ?>
 </table>
      <br pagebreak="true" />
-     <p>Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?></p>
-     <br/>
+     Suite des lots table <?php echo $lotInfo->getNumeroTableStr(); ?>
+     <div></div>
    <?php endif; ?>
    <?php if ($table_header): $table_header = false; ?>
      <table border="1px" class="table" id="table_fiche_<?php echo $table_num ?>" $cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >

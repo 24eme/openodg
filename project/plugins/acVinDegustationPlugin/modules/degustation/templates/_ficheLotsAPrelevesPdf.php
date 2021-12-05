@@ -10,23 +10,14 @@ th {
 }
 
 </style>
-    <div>
       <table>
         <tr>
-          <td style="width:20%;">
-          </td>
-          <td style="width:30%;">
-            <p>Préleveur :</p>
-          </td>
-          <td style="width:30%">
-            <p>Date d'édition : <?php echo $date_edition;?></p>
-          </td>
-          <td style="width:20%;">
-          </td>
+          <td style="width:20%;"></td>
+          <td style="width:30%;">Préleveur :</td>
+          <td style="width:30%">Date d'édition : <?php echo $date_edition;?></td>
+          <td style="width:20%;"></td>
         </tr>
       </table>
-    </div>
-    <div>
       <table>
         <tr style="line-height: 25em; height:25em;">
           <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
@@ -40,10 +31,9 @@ th {
             $adresse = $lot->adresse_logement;
             $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
-    <?php if ($ligne % 12 == 0 ) : $table_header = true; ?>
+    <?php if ($ligne % 15 == 0 ) : $table_header = true; ?>
       </table>
       <br pagebreak="true" />
-      <p>Suite des lots<p/>
     <?php endif;?>
     <?php if ($table_header): $table_header = false; ?>
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
@@ -88,4 +78,3 @@ th {
       <?php endforeach; ?>
    <?php endforeach; ?>
       </table>
-    </div>
