@@ -12,12 +12,6 @@
     </h2>
 </div>
 
-<?php if($dr->exist('validation') && $dr->validation): ?>
-    <div class="text-right text-success">
-        DR validée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
-    </div>
-<?php endif ?>
-
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $dr->getEtablissementObject()]); ?>
 </div>
@@ -45,7 +39,9 @@
 
     <div class="col-xs-4 text-right">
         <?php if($dr->exist('validation') && $dr->validation): ?>
-            DR approuvée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
+            <div class="text-right text-success">
+                DR validée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
+            </div>
         <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
             <a href="#" class="btn btn-default disabled">
                 Approuver la DR

@@ -21,6 +21,7 @@ class drActions extends sfActions
         }
 
         $this->dr->validateOdg();
+        $this->dr->save();
 
         return $this->redirect('dr_visualisation', $this->dr);
     }
