@@ -39,7 +39,7 @@ class DRValidation extends DocumentValidation
         }
 
         if ($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'] > $produit_conf->getRendement()) {
-            $this->addPoint(self::TYPE_WARNING, 'rendement_declaration', "Produit : ".$produit['libelle']);
+            $this->addPoint(self::TYPE_WARNING, 'rendement_declaration', "Le rendement du produit <strong>".$produit['libelle']."</strong> est de <strong>".$produit_conf->getRendement()."</strong> hl/ha");
         }
     }
 }
