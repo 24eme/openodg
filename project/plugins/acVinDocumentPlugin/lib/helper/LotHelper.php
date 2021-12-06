@@ -1,9 +1,9 @@
 <?php
 
-function showOnlyProduit($lot, $show_always_specificite = true)
+function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
 {
 
-  $text = $lot->produit_libelle." <small>";
+  $text = $lot->produit_libelle." <".$tag.">";
   $text .= ($lot->millesime) ? $lot->millesime : "";
   if ($show_always_specificite || DegustationConfiguration::getInstance()->hasSpecificiteLotPdf()) {
       if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
@@ -15,14 +15,14 @@ function showOnlyProduit($lot, $show_always_specificite = true)
       }
   }
 
-  $text .= "</small>";
+  $text .= "</".$tag.">";
   return $text;
 }
 
-function showProduitCepagesLot($lot, $show_always_specificite = true)
+function showProduitCepagesLot($lot, $show_always_specificite = true, $tagSmall = 'small')
 {   $text = "";
-    $text .= showOnlyProduit($lot, $show_always_specificite);
-    $text .= showOnlyCepages($lot);
+    $text .= showOnlyProduit($lot, $show_always_specificite, $tagSmall);
+    $text .= showOnlyCepages($lot, null, $tagSmall);
     return $text;
 }
 
