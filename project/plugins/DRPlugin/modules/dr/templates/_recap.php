@@ -15,7 +15,12 @@
     <tbody>
         <?php foreach ($dr->getProduits() as $produit): ?>
             <tr>
-                <td><?= $produit['libelle'] ?></td>
+                <td>
+                    <?= $produit['libelle'] ?>
+                    <small class="pull-right text-muted">
+                        <?= $configuration->identifyProductByLibelle($produit['libelle'])->getRendement() ?> hl/ha
+                    </small>
+                </td>
                 <?php foreach ($lignesAAfficher as $l): ?>
                     <td class="text-right">
                         <?php if (array_key_exists($l, $produit['lignes']->getRawValue())): ?>

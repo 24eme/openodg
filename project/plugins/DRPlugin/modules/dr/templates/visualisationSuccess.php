@@ -26,7 +26,7 @@
     <?php include_partial('dr/pointsAttentions', ['validation' => $validation, 'noLink' => true]); ?>
 <?php endif ?>
 
-<?php include_partial('dr/recap', compact('dr', 'lignesAAfficher')) ?>
+<?php include_partial('dr/recap', compact('dr', 'lignesAAfficher', 'configuration')) ?>
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">

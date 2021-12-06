@@ -6,6 +6,7 @@ class drActions extends sfActions
     {
         $this->dr = $this->getRoute()->getDR();
         $this->lignesAAfficher = ['04', '05', '14', '15'];
+        $this->configuration = ConfigurationClient::getInstance()->getCurrent();
         $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
     }
 
