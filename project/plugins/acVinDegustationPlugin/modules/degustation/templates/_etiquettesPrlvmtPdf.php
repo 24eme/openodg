@@ -39,7 +39,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 32px; line-height: 16px; overflow: hidden; vertical-align: middle;"><strong><?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 70, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 32px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong><?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 70, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr>
