@@ -991,6 +991,19 @@ class degustationActions extends sfActions {
         }
         $this->document->generate();
         $this->document->addHeaders($this->getResponse());
+
+        if($request->getParameter('background') == 'etiquettes') {
+            $temp = tmpfile();
+            fwrite($temp, $this->document->output());
+            shell_exec(sprintf("pdftk %s background %s output %s", stream_get_meta_data($temp)['uri'], sfConfig::get('sf_web_dir')."/images/pdf/etiquettes.pdf", stream_get_meta_data($temp)['uri'].".pdf"));
+            $pdfContent = file_get_contents(stream_get_meta_data($temp)['uri'].".pdf");
+            $this->getResponse()->setHttpHeader('Content-Length', filesize(stream_get_meta_data($temp)['uri'].".pdf"));
+            unlink(stream_get_meta_data($temp)['uri'].".pdf");
+            fclose($temp);
+            return $this->renderText($pdfContent);
+        }
+
+
         return $this->renderText($this->document->output());
     }
 
