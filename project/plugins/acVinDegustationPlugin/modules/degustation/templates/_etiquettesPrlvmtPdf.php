@@ -12,7 +12,8 @@
        font-size: 11px;
   }
 </style>
-    <table cellspacing="0" cellpadding="0"><tr><td style="height:4.7px; margin: 0; padding: 0">&nbsp;</td></tr></table>
+    <!--<table cellspacing="0" cellpadding="0"><tr><td style="height:4.7px; margin: 0; padding: 0">&nbsp;</td></tr></table>-->
+    <table cellspacing="0" cellpadding="0"><tr><td style="line-height: 8.5px; margin: 0; padding: 0">&nbsp;</td></tr></table>
     <table cellspacing="0" cellpadding="0" style="height: 1122.4px; margin: 0; padding: 0">
     <?php foreach($plancheLots as $lotInfo): ?>
         <tr style="height: <?php echo 1122.4/count($plancheLots) ?>px; margin: 0; padding: 0;">
