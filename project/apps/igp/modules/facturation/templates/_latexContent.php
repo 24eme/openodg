@@ -51,7 +51,7 @@
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
 \def\FACTUREDECLARANTIDENTIFIANT{<?php echo $facture->identifiant; ?>}
-\def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
+\def\FACTUREDECLARANTADRESSE{<?php echo escape_string_for_latex($facture->declarant->adresse); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
 \def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht, ','); ?>}

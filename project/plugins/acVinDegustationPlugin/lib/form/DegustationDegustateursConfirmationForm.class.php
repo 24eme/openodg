@@ -4,7 +4,7 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
 
 
   public function configure() {
-    foreach ($this->getObject()->getAllDegustateurs() as $degustateur) {
+    foreach ($this->getObject()->getDegustateursNonATable() as $degustateur) {
       $name = $this->getWidgetNameFromDegustateur($degustateur);
       $this->setWidget($name , new WidgetFormInputCheckbox());
       $this->setValidator($name, new ValidatorBoolean());
@@ -24,7 +24,7 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
 
   protected function doUpdateObject($values) {
     parent::doUpdateObject($values);
-    foreach ($this->getObject()->getAllDegustateurs() as $degustateur) {
+    foreach ($this->getObject()->getDegustateursNonATable() as $degustateur) {
       $name = $this->getWidgetNameFromDegustateur($degustateur);
       if($values[$name]){
         $degustateur->add('confirmation',boolval($values[$name]));
@@ -36,7 +36,7 @@ class DegustationDegustateursConfirmationForm extends acCouchdbObjectForm {
 
   protected function updateDefaultsFromObject() {
     $defaults = $this->getDefaults();
-    foreach ($this->getObject()->getAllDegustateurs() as $degustateur) {
+    foreach ($this->getObject()->getDegustateursNonATable() as $degustateur) {
       if($degustateur->exist('confirmation') && $degustateur->get("confirmation")){
         $defaults[$this->getWidgetNameFromDegustateur($degustateur)] = 1;
       }

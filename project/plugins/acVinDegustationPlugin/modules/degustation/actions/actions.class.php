@@ -309,7 +309,6 @@ class degustationActions extends sfActions {
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
       $this->form = new DegustationDegustateursConfirmationForm($this->degustation);
 
       if (!$request->isMethod(sfWebRequest::POST)) {
@@ -324,19 +323,29 @@ class degustationActions extends sfActions {
       }
       $this->form->save();
 
-      return $this->redirect('degustation_prelevements_etape', $this->degustation);
+      if($this->degustation->isAnonymized()) {
 
+        return $this->redirect('degustation_commission_etape', $this->degustation);
+      }
+
+      return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 
     public function executeDegustateurAbsence(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->redirectIfIsAnonymized();
+
       $college = $request->getParameter('college',null);
       $degustateurId = $request->getParameter('degustateurId',null);
       if(!$college || !$degustateurId){
         return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
       }
+
       $this->degustation->degustateurs->getOrAdd($college)->getOrAdd($degustateurId)->add('confirmation',false);
+
+      if($this->degustation->degustateurs->get($college)->get($degustateurId)->exist('numero_table') && $this->degustation->degustateurs->get($college)->get($degustateurId)->numero_table != null) {
+         throw new sfError403Exception("Vous n'êtes pas autorisé à marquer l'absence de ce dégustateur car il est déjà affecté à une table");
+      }
+
       $this->degustation->save(false);
 
       return $this->redirect('degustation_degustateurs_confirmation', $this->degustation);
@@ -982,6 +991,19 @@ class degustationActions extends sfActions {
         }
         $this->document->generate();
         $this->document->addHeaders($this->getResponse());
+
+        if($request->getParameter('background') == 'etiquettes') {
+            $temp = tmpfile();
+            fwrite($temp, $this->document->output());
+            shell_exec(sprintf("pdftk %s background %s output %s", stream_get_meta_data($temp)['uri'], sfConfig::get('sf_web_dir')."/images/pdf/etiquettes.pdf", stream_get_meta_data($temp)['uri'].".pdf"));
+            $pdfContent = file_get_contents(stream_get_meta_data($temp)['uri'].".pdf");
+            $this->getResponse()->setHttpHeader('Content-Length', filesize(stream_get_meta_data($temp)['uri'].".pdf"));
+            unlink(stream_get_meta_data($temp)['uri'].".pdf");
+            fclose($temp);
+            return $this->renderText($pdfContent);
+        }
+
+
         return $this->renderText($this->document->output());
     }
 

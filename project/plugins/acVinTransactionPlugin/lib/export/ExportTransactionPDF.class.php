@@ -1,5 +1,5 @@
 <?php
-class ExportTransactionPDF extends ExportDeclarationLotsPDF {
+class ExportTransactionPDF extends ExportPDF {
 
   protected function getHeaderTitle() {
       $date = new DateTime($this->declaration->date);

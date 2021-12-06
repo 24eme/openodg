@@ -11,6 +11,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     protected $docToSave = array();
     protected $archivage_document = null;
     protected $mouvement_document = null;
+    public $generateMouvementsFacturesOnNextSave = false;
 
     public function __construct() {
         parent::__construct();
@@ -75,8 +76,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	}
 
     public function save($saveDependants = true) {
-
         $this->generateMouvementsLots();
+
+        if($this->generateMouvementsFacturesOnNextSave && !$this->isFactures()) {
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
+        $this->generateMouvementsFacturesOnNextSave = false;
 
         $saved = parent::save();
 
@@ -686,7 +692,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsWithoutLeurre(){
 			$lots = array();
-			foreach ($this->lots as $lot) {
+			foreach ($this->getLotsDegustables() as $lot) {
 					if ($lot->leurre === true) {
 							continue;
 					}
@@ -710,7 +716,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		public function getLotsByTable($numero_table){
 			$lots = array();
-			foreach ($this->getLots() as $lot) {
+			foreach ($this->getLotsDegustables() as $lot) {
 				if(intval($lot->numero_table) == $numero_table){
 					$lots[] = $lot;
 				}
@@ -766,9 +772,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 
-            $this->generateMouvementsLots();
-            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
-			$this->generateMouvementsFactures();
+            $this->generateMouvementsFacturesOnNextSave = true;
 		}
 
 		public function desanonymize(){
@@ -784,8 +788,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 
-            $this->generateMouvementsLots();
-			$this->clearMouvementsFactures();
+            if(!$this->isFactures()){
+                $this->clearMouvementsFactures();
+            }
 		}
 
 		public function isAnonymized(){
@@ -797,7 +802,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getLotsAnonymized(){
             $lotsAnon = array();
-            foreach ($this->getLots() as $k => $lot){
+            foreach ($this->getLotsDegustables() as $k => $lot){
                 if (!$lot->leurre && $lot->numero_anonymat) {
                     $lotsAnon[$lot->numero_anonymat] = $lot;
                 }
@@ -1116,6 +1121,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $degustateurs;
 		}
 
+        public function getDegustateursNonATable(){
+			$degustateurs = array();
+			foreach ($this->degustateurs as $college => $degs) {
+				foreach ($degs as $compte_id => $degustateur) {
+                    if($degustateur->exist('numero_table') && !is_null($degustateur->numero_table)) {
+                        continue;
+                    }
+					$degustateurs["$college|$compte_id"] = $degustateur;
+				}
+			}
+			return $degustateurs;
+		}
+
 		public function getAllDegustateurs(){
 			$degustateurs = array();
 			foreach ($this->degustateurs as $college => $degs) {
@@ -1361,19 +1379,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 			return $degust;
 		}
-
-		public function getNbLotByTypeFilteredByNumDossier($declarant_identifiant, $numDossier){
-			$lotsByType = array();
-			foreach ($this->getLotsByOperateurs($declarant_identifiant) as $lots) {
-                foreach ($lots as $lot) {
-                    if($lot->numero_dossier == $numDossier){
-                        $lotsByType[$lot->getTypeProvenance()] +=1;
-                    }
-                }
-			}
-			return $lotsByType;
-		}
-
 
         /**** MOUVEMENTS ****/
 

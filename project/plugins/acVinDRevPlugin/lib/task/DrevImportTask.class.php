@@ -145,6 +145,11 @@ EOF;
     }
 
     protected function importDRevByLots($drev, $lignes, $identifiant, $campagne){
+	    if($drev && !$drev->isModifiable()) {
+            	echo "ERREUR;$drev->_id;la drev est en cours de saisie\n";
+            	return;
+            }
+
         if(!$drev) {
             $drev = DRevClient::getInstance()->createDoc($identifiant, $campagne, false, false);
             $drev->cleanLots();
@@ -191,7 +196,7 @@ EOF;
             }
 
 
-            if($volume){
+            if($this->formatFloat($volume)){
                 if($this->isLotInDrev($drev, $data)){
                     $libelleProduit = $produit_line->getLibelleComplet();
                     echo "WARNING;PAS D'IMPORT lot existe : $drev->_id;$campagne;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
@@ -243,7 +248,7 @@ EOF;
         // Check si le Volume est le même que celui d'un autre Lot
         foreach ($drev->getLots() as $lot) {
             if (  ($lot->volume == $volume) &&
-                  ( ($ligne[ExportDRevCSV::CSV_DATE_VALIDATION_ODG] < '2021-08-00') || ($numero_cuve == $lot->numero_logement_operateur) ) ) {
+                  ( ($ligne[ExportDRevCSV::CSV_DATE_VALIDATION_ODG] < '2021-08-00') || (KeyInflector::slugify(trim($numero_cuve)) == KeyInflector::slugify(trim($lot->numero_logement_operateur)) ) )) {
                 return true;
             }
         }

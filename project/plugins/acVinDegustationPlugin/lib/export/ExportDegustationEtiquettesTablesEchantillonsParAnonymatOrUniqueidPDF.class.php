@@ -97,7 +97,7 @@ class ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDF exte
 
     protected function getConfig() {
 
-        return new ExportDegustationEtiquettesPDFConfig();
+        return new ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDFConfig();
     }
 
     public function getFileName($with_rev = false) {

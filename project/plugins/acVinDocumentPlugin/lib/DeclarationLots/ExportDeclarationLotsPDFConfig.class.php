@@ -14,10 +14,10 @@ class ExportDeclarationLotsPDFConfig extends acTCPDFConfig
         $this->margin_left = 15;
         $this->margin_right = 15;
 
-        $this->margin_top = 40;
+        $this->margin_top = 30;
         $this->margin_header = 5;
 
-        $this->margin_bottom = 30;
+        $this->margin_bottom = 20;
         $this->margin_footer = 15;
 
         $this->path_images = sfConfig::get('sf_web_dir').'/images/pdf/';

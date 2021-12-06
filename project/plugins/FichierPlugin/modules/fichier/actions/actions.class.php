@@ -142,9 +142,6 @@ class fichierActions extends sfActions
     }
 
 	protected function getCategoriesLimitation() {
-		if(!$this->getUser()->isAdmin() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
-			return array('Identification', 'dr', 'drev');
-		}
 
 		return null;
 	}
