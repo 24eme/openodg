@@ -13,8 +13,15 @@ class drActions extends sfActions
     public function executeApprobation(sfWebRequest $request)
     {
         $this->dr = $this->getRoute()->getDR();
+        $this->configuration = ConfigurationClient::getInstance()->getCurrent();
+        $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
+
+        if ($this->validation->isValide() === false) {
+            throw new Exception('On ne peut pas valider une DR avec des erreurs');
+        }
+
         $this->dr->validateOdg();
 
-        $this->redirect('dr_visualisation', $this->dr);
+        return $this->redirect('dr_visualisation', $this->dr);
     }
 }
