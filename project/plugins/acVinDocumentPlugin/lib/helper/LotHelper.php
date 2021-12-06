@@ -26,9 +26,9 @@ function showProduitCepagesLot($lot, $show_always_specificite = true)
     return $text;
 }
 
-function showOnlyCepages($lot, $maxcars = null) {
+function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
   $text = '';
-  $html = " <small class='text-muted'>";
+  $html = " <".$tag." class='text-muted'>";
   if ($lot instanceof stdClass) {
     $total = $lot->volume;
     foreach ($lot->cepages as $cepage => $hl) {
@@ -43,13 +43,13 @@ function showOnlyCepages($lot, $maxcars = null) {
     }
   }
   if (!$text) {
-    return " <small>&nbsp;</small>";
+    return " <".$tag.">&nbsp;</".$tag.">";
   }
   if ($maxcars) {
       $text = substr($text, 0, $maxcars);
   }
   $html .= $text;
-  $html .= "</small>";
+  $html .= "</".$tag.">";
   return $html;
 }
 
