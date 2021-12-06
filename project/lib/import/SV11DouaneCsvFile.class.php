@@ -81,6 +81,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = Organisme::getCurrentOrganisme();
                 $produit[] = ($p)? $p->getHash() : '';
                 $produit[] = ($this->doc)? $this->doc->_id : '';
+                $produit[] = 'COOPERATIVE';
 	        			$produits[] = $produit;
         			}
                     $cpt++;

@@ -10,6 +10,43 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $csvFile = new CsvFile($this->filePath);
         $csv = $csvFile->getCsv();
 
+        $volume_nego = 0;
+        $volume_coop = 0;
+        $volume_cave = 0;
+        foreach ($csv as $key => $values) {
+            if (($values[0] * 1) == '6' || ($values[0] * 1) == '7') {
+                for($i = 3 ; $i < count($values); $i++) {
+                    $volume_nego += $values[$i];
+                }
+            }
+            if (($values[0] * 1) == '8') {
+                for($i = 3 ; $i < count($values); $i++) {
+                    $volume_coop += $values[$i];
+                }
+            }
+            if (($values[0] * 1) == '9') {
+                for($i = 3 ; $i < count($values); $i++) {
+                    $volume_cave += $values[$i];
+                }
+            }
+        }
+        $famille = '';
+        if ($volume_nego && !$volume_coop && !$volume_cave) {
+            $famille = 'APPORTEUR_NEGO_TOTAL';
+        }elseif (!$volume_nego && $volume_coop && !$volume_cave) {
+            $famille = 'APPORTEUR_COOP_TOTAL';
+        }elseif (!$volume_nego && !$volume_coop && $volume_cave) {
+            $famille = 'CAVE_PARTICULIERE_TOTAL';
+        }elseif ($volume_nego && $volume_coop && !$volume_cave) {
+            $famille = 'APPORTEUR_COOP_ET_NEGO';
+        }elseif (!$volume_nego && $volume_coop && $volume_cave) {
+            $famille = 'APPORTEUR_COOP_ET_CAVE_PARTICULIERE';
+        }elseif ($volume_nego && !$volume_coop && $volume_cave) {
+            $famille = 'APPORTEUR_NEGO_ET_CAVE_PARTICULIERE';
+        }elseif (!$volume_nego && $volume_coop && $volume_cave) {
+            $famille = 'APPORTEUR_COOP_NEGO_ET_CAVE_PARTICULIERE';
+        }
+
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
 	      if ($this->etablissement && !$this->etablissement->isActif()) {
 		        return;
@@ -210,6 +247,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds = ';'.Organisme::getCurrentOrganisme();
           $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
           $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
+          $colExtraIds .= ';'.$famille;
 
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;
