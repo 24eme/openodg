@@ -22,6 +22,10 @@
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $dr->getEtablissementObject()]); ?>
 </div>
 
+<?php if (isset($validation) && $validation->hasPoints()): ?>
+    <?php include_partial('dr/pointsAttentions', ['validation' => $validation, 'noLink' => true]); ?>
+<?php endif ?>
+
 <?php include_partial('dr/recap', compact('dr', 'lignesAAfficher')) ?>
 
 <div class="row row-margin row-button">
