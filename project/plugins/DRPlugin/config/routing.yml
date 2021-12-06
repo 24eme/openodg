@@ -16,5 +16,5 @@ dr_approbation:
     model: DR
     type:  object
   requirements:
-    sf_method: [post]
+    sf_method: [get]
 
