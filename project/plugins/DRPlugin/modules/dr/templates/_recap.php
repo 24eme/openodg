@@ -5,7 +5,7 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="text-center col-xs-5">Produit (millesime)</th>
+            <th class="text-center col-xs-5 clearfix">Produit (millesime) <small class="pull-right text-muted">Rdmt L5</small></th>
             <th class="text-center">Superficie (L4) <span class="text-muted">(ha)</span></th>
             <th class="text-center">Récolte L5 <span class="text-muted">(hl)</span></th>
             <th class="text-center">Volume revendiqué L14 <span class="text-muted">(hl)</span></th>
@@ -18,7 +18,7 @@
                 <td>
                     <?= $produit['libelle'] ?>
                     <small class="pull-right text-muted">
-                        <?= $configuration->identifyProductByLibelle($produit['libelle'])->getRendement() ?> hl/ha
+                        <?= round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) ?> hl/ha
                     </small>
                 </td>
                 <?php foreach ($lignesAAfficher as $l): ?>
