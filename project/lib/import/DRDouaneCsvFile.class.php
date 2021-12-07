@@ -233,6 +233,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
           $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
           $colExtraIds .= ';'.$famille;
+          $colExtraIds .= ';'.substr($this->campagne, 0, 4);
 
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;

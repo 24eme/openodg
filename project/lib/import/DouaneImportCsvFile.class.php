@@ -215,6 +215,7 @@ class DouaneImportCsvFile {
                     $p[] = $produit->getHash();
                     $p[] = $this->doc->_id;
                     $p[] = $famille;
+                    $p[] = substr($this->campagne, 0, 4);
                     $produits[] = $p;
                 }
             }
