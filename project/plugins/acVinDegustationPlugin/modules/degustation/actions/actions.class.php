@@ -876,6 +876,7 @@ class degustationActions extends sfActions {
 
     public function executeEtiquettesPrlvmtPdf(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
+      $this->isEtiquette = true;
       $this->document = new ExportDegustationEtiquettesPrlvmtPDF($this->degustation, $request->getParameter('anonymat4labo', false), $request->getParameter('output', 'pdf'), false);
       return $this->mutualExcecutePDF($request);
     }
@@ -883,6 +884,7 @@ class degustationActions extends sfActions {
     public function executeEtiquettesTablesEchantillonsAnonymesPDF(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
       $this->redirectIfIsNotAnonymized();
+      $this->isEtiquette = true;
       $this->document = new ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDF($this->degustation, $request->getParameter('output', 'pdf'), $request->getParameter('tri', 'numero_anonymat'), false);
       return $this->mutualExcecutePDF($request);
     }
@@ -992,7 +994,7 @@ class degustationActions extends sfActions {
         $this->document->generate();
         $this->document->addHeaders($this->getResponse());
 
-        if($request->getParameter('background') == 'etiquettes') {
+        if(isset($this->isEtiquette) && sfConfig::get('sf_debug')) {
             $temp = tmpfile();
             fwrite($temp, $this->document->output());
             shell_exec(sprintf("pdftk %s background %s output %s", stream_get_meta_data($temp)['uri'], sfConfig::get('sf_web_dir')."/images/pdf/etiquettes_70x36.pdf", stream_get_meta_data($temp)['uri'].".pdf"));
