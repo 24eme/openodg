@@ -30,22 +30,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                 }
             }
         }
-        $famille = '';
-        if ($has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
-            $famille = 'APPORTEUR_NEGO_TOTAL';
-        }elseif (!$has_volume_nego && $has_volume_coop && !$has_volume_cave) {
-            $famille = 'APPORTEUR_COOP_TOTAL';
-        }elseif (!$has_volume_nego && !$has_volume_coop && $has_volume_cave) {
-            $famille = 'CAVE_PARTICULIERE_TOTAL';
-        }elseif ($has_volume_nego && $has_volume_coop && !$has_volume_cave) {
-            $famille = 'APPORTEUR_COOP_ET_NEGO';
-        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
-            $famille = 'APPORTEUR_COOP_ET_CAVE_PARTICULIERE';
-        }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
-            $famille = 'APPORTEUR_NEGO_ET_CAVE_PARTICULIERE';
-        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
-            $famille = 'APPORTEUR_COOP_NEGO_ET_CAVE_PARTICULIERE';
-        }
+        $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
 
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
 	      if ($this->etablissement && !$this->etablissement->isActif()) {
