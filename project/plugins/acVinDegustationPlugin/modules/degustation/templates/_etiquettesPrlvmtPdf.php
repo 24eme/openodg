@@ -44,11 +44,11 @@
                         <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 29px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong><?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 58, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 29px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 58, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 24px; line-height: 12px; overflow: hidden;"><?php echo showOnlyCepages($lotInfo->lot, 58, 'span') ?></td>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 24px; line-height: 12px; overflow: hidden;">&nbsp;&nbsp;<?php echo showOnlyCepages($lotInfo->lot, 58, 'span') ?></td>
                   </tr>
                   <tr>
                     <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>LGT <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
