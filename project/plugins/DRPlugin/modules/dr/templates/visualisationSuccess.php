@@ -12,17 +12,15 @@
     </h2>
 </div>
 
-<?php if($dr->exist('validation') && $dr->validation): ?>
-    <div class="text-right text-success">
-        DR validée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
-    </div>
-<?php endif ?>
-
 <div class="well mb-5">
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $dr->getEtablissementObject()]); ?>
 </div>
 
-<?php include_partial('dr/recap', compact('dr', 'lignesAAfficher')) ?>
+<?php if (isset($validation) && $validation->hasPoints()): ?>
+    <?php include_partial('dr/pointsAttentions', ['validation' => $validation, 'noLink' => true]); ?>
+<?php endif ?>
+
+<?php include_partial('dr/recap', compact('dr', 'lignesAAfficher', 'configuration')) ?>
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
@@ -41,7 +39,13 @@
 
     <div class="col-xs-4 text-right">
         <?php if($dr->exist('validation') && $dr->validation): ?>
-            DR approuvée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
+            <div class="text-right text-success">
+                DR validée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
+            </div>
+        <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
+            <a href="#" class="btn btn-default disabled">
+                Approuver la DR
+            </a>
         <?php else : ?>
             <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-default">
                 Approuver la DR

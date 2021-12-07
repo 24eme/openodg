@@ -12,7 +12,7 @@ class ExportDegustationEtiquettesPDFConfig extends ExportPDFConfig
 
         $this->font_name = 'helvetica';
         $this->margin_left = 0;
-        $this->margin_top = 0;
+        $this->margin_top = 4.7;
         $this->margin_right = 0;
         $this->margin_bottom = 0;
         $this->margin_header = 0;

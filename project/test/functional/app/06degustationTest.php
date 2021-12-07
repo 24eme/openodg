@@ -299,8 +299,8 @@ $b->with('response')->begin()->
     checkElement('table#table_fiche_1 tr:nth-child(8) td:nth-child(1) strong', "A06")->
     checkElement('table#table_fiche_1 tr:nth-child(9) td:nth-child(1) strong', "A07")->
     checkElement('table#table_fiche_1 tr:nth-child(10) td:nth-child(1) strong', "A08")->
-    checkElement('table#table_fiche_2 tr:nth-child(3) td:nth-child(1) strong', "A09")->
-    checkElement('table#table_fiche_2 tr:nth-child(4) td:nth-child(1) strong', "A10")
+    checkElement('table#table_fiche_1 tr:nth-child(11) td:nth-child(1) strong', "A09")->
+    checkElement('table#table_fiche_1 tr:nth-child(12) td:nth-child(1) strong', "A10")
 ->end();
 
 $b->back();
