@@ -14,3 +14,4 @@ all:
   donnees_viticoles:
     regions:
       IGP13: "IGP13"
+  etiquettes: "70x36" #Impression en taille rélle
