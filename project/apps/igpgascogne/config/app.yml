@@ -14,3 +14,4 @@ all:
   donnees_viticoles:
     regions:
       IGPGASCOGNE: "IGPGASCOGNE"
+  etiquettes: "70x36" #Impression en taille rélle
