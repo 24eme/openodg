@@ -10,40 +10,40 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $csvFile = new CsvFile($this->filePath);
         $csv = $csvFile->getCsv();
 
-        $volume_nego = 0;
-        $volume_coop = 0;
-        $volume_cave = 0;
+        $has_volume_nego = 0;
+        $has_volume_coop = 0;
+        $has_volume_cave = 0;
         foreach ($csv as $key => $values) {
-            if (($values[0] * 1) == '6' || ($values[0] * 1) == '7') {
+            if (substr(trim($values[0]), 0, 1) == "6" || substr(trim($values[0]), 0, 1) == '7') {
                 for($i = 3 ; $i < count($values); $i++) {
-                    $volume_nego += $values[$i];
+                    $has_volume_nego += boolval($values[$i]);
                 }
             }
-            if (($values[0] * 1) == '8') {
+            if (substr(trim($values[0]), 0, 1) == '8') {
                 for($i = 3 ; $i < count($values); $i++) {
-                    $volume_coop += $values[$i];
+                    $has_volume_coop += boolval($values[$i]);
                 }
             }
-            if (($values[0] * 1) == '9') {
+            if (substr(trim($values[0]), 0, 1) == '9') {
                 for($i = 3 ; $i < count($values); $i++) {
-                    $volume_cave += $values[$i];
+                    $has_volume_cave += boolval($values[$i]);
                 }
             }
         }
         $famille = '';
-        if ($volume_nego && !$volume_coop && !$volume_cave) {
+        if ($has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
             $famille = 'APPORTEUR_NEGO_TOTAL';
-        }elseif (!$volume_nego && $volume_coop && !$volume_cave) {
+        }elseif (!$has_volume_nego && $has_volume_coop && !$has_volume_cave) {
             $famille = 'APPORTEUR_COOP_TOTAL';
-        }elseif (!$volume_nego && !$volume_coop && $volume_cave) {
+        }elseif (!$has_volume_nego && !$has_volume_coop && $has_volume_cave) {
             $famille = 'CAVE_PARTICULIERE_TOTAL';
-        }elseif ($volume_nego && $volume_coop && !$volume_cave) {
+        }elseif ($has_volume_nego && $has_volume_coop && !$has_volume_cave) {
             $famille = 'APPORTEUR_COOP_ET_NEGO';
-        }elseif (!$volume_nego && $volume_coop && $volume_cave) {
+        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
             $famille = 'APPORTEUR_COOP_ET_CAVE_PARTICULIERE';
-        }elseif ($volume_nego && !$volume_coop && $volume_cave) {
+        }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
             $famille = 'APPORTEUR_NEGO_ET_CAVE_PARTICULIERE';
-        }elseif (!$volume_nego && $volume_coop && $volume_cave) {
+        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
             $famille = 'APPORTEUR_COOP_NEGO_ET_CAVE_PARTICULIERE';
         }
 
