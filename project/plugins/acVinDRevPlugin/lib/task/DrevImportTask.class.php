@@ -49,7 +49,7 @@ EOF;
         $this->csv = $csvFile->getCsv();
         $cvis = array();
         foreach($this->csv as $ligne => $data) {
-            if(!$data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
+            if(!$data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]) {
                 continue;
             }
             $cvi = $data[ExportDRevCSV::CSV_CVI];
@@ -131,7 +131,6 @@ EOF;
                       $dateValidation = $dt->modify('+1 minute')->format('c');
                 }
                 $drev->validate($dateValidation);
-                $dateValidation = null;
                 if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]){
                       $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]);
                       $dateValidation = $dt->modify('+1 minute')->format('c');
@@ -225,7 +224,6 @@ EOF;
             $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]);
             $dateValidationDeclarant = $dt->modify('+1 minute')->format('c');
         }
-        $dateValidation = null;
         if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]){
             $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]);
             $dateValidation = $dt->modify('+1 minute')->format('c');
