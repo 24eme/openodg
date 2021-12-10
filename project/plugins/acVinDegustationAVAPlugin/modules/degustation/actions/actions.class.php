@@ -181,7 +181,11 @@ class degustationActions extends sfActions {
         }
 
         if(!$this->tournee) {
-            $this->tournee = TourneeClient::getInstance()->createOrFindForDegustation($request->getParameter('appellation'),  $request->getParameter('date'), $request->getParameter('date_prelevement_debut'));
+            if ($gap_fin_prelevement = $request->getParameter('gap_fin_prelevement', null)) {
+                $this->tournee = TourneeClient::getInstance()->createOrFindForDegustation($request->getParameter('appellation'),  $request->getParameter('date'), $request->getParameter('date_prelevement_debut'), $gap_fin_prelevement);
+            } else {
+                $this->tournee = TourneeClient::getInstance()->createOrFindForDegustation($request->getParameter('appellation'),  $request->getParameter('date'), $request->getParameter('date_prelevement_debut'));
+            }
         }
 
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin, $this->tournee->getCampagne());
