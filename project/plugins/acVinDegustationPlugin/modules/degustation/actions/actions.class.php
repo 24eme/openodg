@@ -818,12 +818,12 @@ class degustationActions extends sfActions {
 
         $cc = Organisme::getInstance(null, 'degustation')->getEmail();
         $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($degustation->date, "P", "fr_FR")));
-        $body = str_replace("\n", "%0A", strip_tags(get_partial('degustation/notificationEmail', [
+        $body = html_entity_decode(str_replace("\n", "%0A", strip_tags(get_partial('degustation/notificationEmail', [
             'degustation' => $degustation,
             'identifiant' => $identifiant,
             'lotsConformes' => $lotsConformes,
             'lotsNonConformes' => $lotsNonConformes
-        ])));
+        ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
 
         $mailto = "mailto:$email?cc=$cc&subject=$subject&body=$body";
         $mailto = substr($mailto, 0, 1600); // Chrome limite les mailto à un certain nombre de caractères 1600 semblent être le max
