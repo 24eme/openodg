@@ -817,7 +817,7 @@ class degustationActions extends sfActions {
         $email = trim($email);
 
         $cc = Organisme::getInstance(null, 'degustation')->getEmail();
-        $subject = sprintf("%s - Résultat de dégustation du %s", Organisme::getInstance(null, 'degustation')->getNom(), ucfirst(format_date($degustation->date, "P", "fr_FR")));
+        $subject = sprintf("Résultat de la dégustation du %s", $degustation->getDateFormat('d/m/Y'));
         $body = html_entity_decode(str_replace("\n", "%0A", strip_tags(get_partial('degustation/notificationEmail', [
             'degustation' => $degustation,
             'identifiant' => $identifiant,
@@ -826,7 +826,7 @@ class degustationActions extends sfActions {
         ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
 
         $mailto = "mailto:$email?cc=$cc&subject=$subject&body=$body";
-        $mailto = mb_substr($mailto, 0, 1600); // Chrome limite les mailto à un certain nombre de caractères 1600 semblent être le max
+        $mailto = mb_strcut($mailto, 0, 1600); // Chrome limite les mailto à un certain nombre de caractères 1600 semblent être le max
 
         $this->getResponse()->clearHttpHeaders();
         $this->getResponse()->setStatusCode(302);
@@ -1034,7 +1034,7 @@ class degustationActions extends sfActions {
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
         $authKey = $request->getParameter('auth');
-        $degustation_id = $request->getParameter('id');
+        $degustation_id = "DEGUSTATION-".str_replace("DEGUSTATION-", "", $request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant', null);
         $lot_dossier = $request->getParameter('lot_dossier', null);
         $lot_archive = $request->getParameter('lot_archive', null);
