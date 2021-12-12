@@ -587,8 +587,9 @@ degustation_get_courrier_auth_conforme:
   requirements:
     sf_method: [get]
 
+# dc = dégustation courrier
 degustation_get_courrier_auth_conforme_raccourci:
-  url: /dgc/:id/:auth/c/:identifiant
+  url: /dc/:id/:auth/c/:identifiant
   param: {module: degustation, action: getCourrierWithAuth, type: Conformite}
   class: DegustationRoute
   options:
@@ -607,8 +608,9 @@ degustation_get_courrier_auth_nonconforme:
   requirements:
     sf_method: [get]
 
+# dc = dégustation courrier
 degustation_get_courrier_auth_nonconforme_raccourci:
-  url: /dgc/:id/:auth/nc/:lot_dossier/:lot_archive
+  url: /dc/:id/:auth/nc/:lot_dossier/:lot_archive
   param: {module: degustation, action: getCourrierWithAuth, type: NonConformite}
   class: DegustationRoute
   options:
