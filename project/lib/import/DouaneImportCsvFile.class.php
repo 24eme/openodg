@@ -110,7 +110,7 @@ class DouaneImportCsvFile {
         if ($this->getCsvType() == 'SV11') {
             return 'COOPERATIVE';
         }
-        if ($this->getCsvType() == 'SV11') {
+        if ($this->getCsvType() == 'SV12') {
             return 'NEGOCIANT';
         }
         $famille = '';
