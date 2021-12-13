@@ -1633,34 +1633,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-
-        /** Mis à jour par la degustation du volume d'un lot de DRev **/
-		public function modifyVolumeLot($hash_lot,$volume){
-
-			$lot = $this->get($hash_lot);
-
-			// Drev => modificatrice + changement dans Drev
-			$lotDrevOriginal = $lot->getLotProvenance();
-            $lotDrevOriginalToSave = clone $lotDrevOriginal;
-
-			// $modificatrice
-			$modificatrice = $lotDrevOriginal->getDocument()->generateModificative();
-			$modificatrice->save();
-
-			$modificatrice = DRevClient::getInstance()->find($modificatrice->_id);
-
-
-		    $lotModificatrice = $modificatrice->get($lotDrevOriginal->getHash());
-            $lotModificatrice->volume = $volume;
-            $lotModificatrice->statut = Lot::STATUT_PRELEVABLE;
-
-            $modificatrice->validate();
-			$modificatrice->validateOdg();
-			$modificatrice->save();
-
-			$lot->volume = $volume;
-		}
-
         public function getBigDocumentSize() {
 
             return 1000000;
