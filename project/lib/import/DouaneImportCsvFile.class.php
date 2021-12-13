@@ -110,8 +110,8 @@ class DouaneImportCsvFile {
         if ($this->getCsvType() == 'SV11') {
             return 'COOPERATIVE';
         }
-        if ($this->getCsvType() == 'SV11') {
-            return 'NEGOCIANT';
+        if ($this->getCsvType() == 'SV12') {
+            return 'NEGOCIANT_VINIFICATEUR';
         }
         $famille = '';
         if ($has_volume_nego && !$has_volume_coop && !$has_volume_cave) {

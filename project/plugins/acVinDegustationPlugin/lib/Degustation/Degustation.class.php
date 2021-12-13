@@ -1534,6 +1534,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
+            $volumes_operateurs_total = [];
+            // volume total revendiqué par opérateur
+            foreach ($this->getLotsDegustables() as $lot) {
+                if (! isset($volumes_operateurs_total[$lot->declarant_identifiant])) {
+                    $volumes_operateurs_total[$lot->declarant_identifiant] = 0;
+                }
+                $volumes_operateurs_total[$lot->declarant_identifiant] += round($lot->volume, 2);
+            }
+
             foreach ($this->getLotsDegustables() as $lot) {
                 if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
                     continue;
@@ -1563,7 +1572,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $mvtFacture->date = $this->getDateFormat();
                 $mvtFacture->date_version = $this->getDateFormat();
                 $mvtFacture->quantite = $volume;
-                if ($minimum && $minimum > $volume * $cotisation->getPrix()) {
+                if ($minimum && $minimum > $volumes_operateurs_total[$operateur] * $cotisation->getPrix()) {
                     $mvtFacture->quantite = 1;
                     $mvtFacture->taux = $minimum;
                     $mvtFacture->unite = null;

@@ -267,7 +267,7 @@
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "isDeclarantFamille",
+          "callback": "getFirstChgtDenomFacturable",
           "callback_parameters": [
             "NEGOCIANT"
           ]
