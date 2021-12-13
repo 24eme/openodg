@@ -28,7 +28,7 @@ class DRevValidationForm extends acCouchdbForm
 
                 if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue !== null) {
                     $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
-                } else {
+                } elseif ($this->getDocument()->isPapier() || $this->isAdmin) {
                     $this->setDefault('date_degustation_voulue', (new DateTime())->format('d/m/Y'));
                 }
             }

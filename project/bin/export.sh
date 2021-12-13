@@ -74,7 +74,9 @@ rm $EXPORTDIR/changement_denomination.csv.part
 
 sleep 60
 
-php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_lots.csv.part
+php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_cepages_lots.csv.part
+
+cat $EXPORTDIR/declarations_cepages_lots.csv.part | sed 's/ALICANTE.HENRI/ALICANTE HENRI/g' | sed 's/CABERNET FRANC N/CABERNET FRANC N/g' | sed 's/CABERNET.FRANC.N/CABERNET FRANC N/g' | sed 's/CABERNET SAUVIGNON N/CABERNET SAUVIGNON N/g' | sed 's/CABERNET-SAUVIGNON N/CABERNET SAUVIGNON N/g' | sed 's/CALADOC N/CALADOC N/g' | sed 's/CALADOC.N/CALADOC N/g' | sed 's/CARIGNAN N/CARIGNAN N/g' | sed 's/CARIGNAN.N/CARIGNAN N/g' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHARDONNAY B/CHARDONNAY B/g' | sed 's/CHARDONN.B/CHARDONNAY B/g' | sed 's/CHASAN B/CHASAN B/g' | sed 's/CHASAN.B/CHASAN B/g' | sed 's/CINSAULT N/CINSAULT N/g' | sed 's/CINSAUT N/CINSAULT N/g' | sed 's/CLAIRET.B/CLAIRETTE B/g' | sed 's/CLAIRETTE B/CLAIRETTE B/g' | sed 's/COLOMBARD.B/COLOMBARD B/g' | sed 's/COT.N/COT N/g' | sed 's/COUNOISE N/COUNOISE N/g' | sed 's/COUNOISE.N/COUNOISE N/g' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/GRENACHE.BLANC.B/GRENACHE BLANC B/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/GRENACHE.N/GRENACHE N/g' | sed 's/MARSANNE.B/MARSANNE B/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MARSELAN N/MARSELAN N/g' | sed 's/MARSELAN.N/MARSELAN N/g' | sed 's/MERLOT N/MERLOT N/g' | sed 's/MERLOT.N/MERLOT N/g' | sed 's/MOURVED.N/MOURVED N/g' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT À PETITS GRAINS B/MUSCAT À PETITS GRAINS B/g' | sed 's/MUSCAT.à.PETITS.GRAINS.RG/MUSCAT À PETITS GRAINS B/g' | sed 's/MUSCAT À PETITS GRAINS RS/MUSCAT À PETITS GRAINS B/g' | sed 's/MUS.HAMB.N/MUS HAMB N/g' | sed 's/MUS.P.G.RS/MUS P G RS/g' | sed 's/MUS.PT.G.B/MUS PT G B/g' | sed 's/PINOT NOIR N/PINOT NOIR N/g' | sed 's/PINOT.NOIR.N/PINOT NOIR N/g' | sed 's/PIQUEPOUL.BLANC.B/PIQUEPOUL BLANC B/g' | sed 's/ROUSSANNE B/ROUSSANNE B/g' | sed 's/ROUSSANNE.B/ROUSSANNE B/g' | sed 's/SAUVIGN.B/SAUVIGNON B/g' | sed 's/SAUVIGNON B/SAUVIGNON B/g' | sed 's/SAUVIGNON B,VIOGNIER B/SAUVIGNON B/g' | sed 's/SAVAGN.B/SAUVIGNON B/g' | sed 's/SYRAH.N/SYRAH N/g' | sed 's/TEMPRANILLO.N/TEMPRANILLO N/g' | sed 's/UGNI BLANC B/UGNI BLANC B/g' | sed 's/UGNI.BLANC.B/UGNI BLANC B/g' | sed 's/VERMENT.B/VERMENTINO B/g' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VERMENTINO B/VERMENTINO B/g' | sed 's/VIOGNIER"/VIOGNIER B"/g' | sed 's/VIOGNIER B/VIOGNIER B/g' | sed 's/VIOGNIER.B/VIOGNIER B/g' > $EXPORTDIR/declarations_lots.csv.part
 
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
@@ -171,12 +173,12 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.c
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
 
 # Ajouter la hash produit à la fin du fichier lots-historique
-cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,35 | sort -t ";" -k 1,1 > $EXPORTDIR/lots_hash.csv
-tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 15,15 > $EXPORTDIR/lots-historique.csv.sorted
+cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,35,36 | sort -t ";" -k 2,2 > $EXPORTDIR/lots_hash.csv
+tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 16,16 > $EXPORTDIR/lots-historique.csv.sorted
 head -n 1 $EXPORTDIR/lots-historique.csv.part | sed 's/$/;Hash produit/' > $EXPORTDIR/lots-historique.csv.sorted.join
-join -t ";" -a 1 -1 15 -2 1 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$16; $16=unique_id; $17=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
+join -t ";" -a 1 -1 16 -2 2 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$16; $16=unique_id; $17=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
 
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.part > $EXPORTDIR/lots-historique.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
 
 rm $EXPORTDIR/lots-historique.csv.part
 rm $EXPORTDIR/lots-historique.csv.sorted

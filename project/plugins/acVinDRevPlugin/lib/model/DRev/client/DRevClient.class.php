@@ -225,7 +225,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
                 $match = $match && $this->matchFilterConformite($lot, $filter);
-            } else {
+            } elseif($filter) {
                 if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
                     $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
                 }
@@ -245,7 +245,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
         $exclude = (bool) $exclude;
-        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+        $regexpFilter = "#^(".implode("|", explode(",", $familleFilterMatch)).")$#";
 
         if(!$exclude && preg_match($regexpFilter, $famille)) {
             return true;

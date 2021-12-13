@@ -108,9 +108,7 @@ p, div {
    <?php endif;?>
    <tr style="line-height:17px;">
      <td><?php echo tdStart() ?><small><?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></small></td>
-     <td style="text-align:left;"><?php echo tdStart() ?>
-       <small><?php echo showProduitCepagesLot($lot); ?></small>
-     </td>
+     <td style="text-align:left;"><?php echo tdStart() ?><span style="font-size: 11px;"><?php echo showProduitCepagesLot($lot, true, 'span'); ?></span></td>
     <td><?php echo tdStart() ?>
       <small><?php echoFloat($lot->volume); ?></small>
     </td>

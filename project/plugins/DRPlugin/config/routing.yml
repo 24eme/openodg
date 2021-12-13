@@ -1,0 +1,20 @@
+dr_visualisation:
+  url: /dr/visualisation/:id
+  param: { module: dr, action: visualisation }
+  class: DRRoute
+  options:
+    model: DR
+    type:  object
+  requirements:
+    sf_method: [get]
+
+dr_approbation:
+  url: /dr/approbation/:id
+  param: { module: dr, action: approbation }
+  class: DRRoute
+  options:
+    model: DR
+    type:  object
+  requirements:
+    sf_method: [get]
+

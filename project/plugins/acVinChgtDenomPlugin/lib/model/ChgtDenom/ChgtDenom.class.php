@@ -142,6 +142,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
         $this->validation_odg = $date;
         if(!$this->isFactures()){
+            $this->save();
             $this->clearMouvementsFactures();
             $this->generateMouvementsFactures();
         }
@@ -355,6 +356,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function save($saveDependants = true) {
         $this->archiver();
+        $this->piece_document->generatePieces();
         if ($this->isApprouve()) {
             if (!count($this->lots->toArray(true, false))) {
                 $this->generateLots();
@@ -734,11 +736,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       foreach($cotisations as $cotisation) {
           $mouvement = ChgtDenomMouvementFactures::freeInstance($this);
-          foreach ($this->lots as $lot) {
-              if($this->changement_produit_hash == $lot->produit_hash){
-                  $mouvement->detail_identifiant = $lot->numero_archive;
-              }
-          }
+          $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
           if(!$mouvement->quantite) {
@@ -799,7 +797,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     {
       $chgtdenom = $this->getChgtDenomToday($produitFilter);
       $first = current($chgtdenom);
-      return (!$first||$first->_id == $this->_id)? true : false;
+      return $first !== false && $first->_id == $this->_id;
     }
 
     public function getSecondChgtDenomFacturable($produitFilter = null)

@@ -250,4 +250,42 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         }
         return count($apporteurs);
     }
+
+    public function getProduits()
+    {
+        $donnees = [];
+
+        foreach ($this->donnees as $ligne) {
+            $produit_key = $ligne['produit'];
+
+            if (array_key_exists($produit_key, $donnees) === false) {
+                $donnees[$produit_key] = [];
+                $donnees[$produit_key]['libelle'] = $ligne['produit_libelle'];
+                $donnees[$produit_key]['lignes'] = [];
+            }
+
+            if (array_key_exists($ligne['categorie'], $donnees[$produit_key]['lignes']) === false) {
+                $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] = 0;
+                if (in_array($ligne['categorie'], ['04', '04b'])) {
+                    $unit = 'ha';
+                    $decimals = 4;
+                } else {
+                    $unit = 'hl';
+                    $decimals = 2;
+                }
+                $donnees[$produit_key]['lignes'][$ligne['categorie']]['unit'] = $unit;
+                $donnees[$produit_key]['lignes'][$ligne['categorie']]['decimals'] = $decimals;
+            }
+
+            $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] += $ligne['valeur'];
+        }
+
+        return $donnees;
+    }
+
+    public function validateOdg($date = null)
+    {
+        $this->add('validation');
+        $this->validation = ($date) ?: date('Y-m-d');
+    }
 }

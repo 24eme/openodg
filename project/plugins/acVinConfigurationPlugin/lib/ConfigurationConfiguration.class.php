@@ -20,9 +20,4 @@ class ConfigurationConfiguration {
         $this->configuration = sfConfig::get('configuration_configuration', array());
     }
 
-
-    public function hasEffervescentVinbase() {
-        return isset($this->configuration['effervescent_vindebase']) && boolval($this->configuration['effervescent_vindebase']);
-    }
-
 }

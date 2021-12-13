@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(127);
+$t = new lime_test(129);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -184,7 +184,7 @@ $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
-$t->is(count($drev->lots), 2, "Les deux lots sont conservés dans la DRev");
+$t->is(count($drev->lots), 1, "Seulement le lot non vide est conservé");
 
 $t->is($drev->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type par défaut est ".DRevClient::TYPE_MODEL);
 $drev->lots[0]->initial_type = null;
@@ -326,6 +326,13 @@ $drev = DRevClient::getInstance()->find($drev->_id);
 $t->is(count($drev_modif->lots), 0, "Le Lot de la DRev modificatrice est correctement supprimé");
 $t->ok(!$drev_modif->mouvements_lots->exist($drev_modif->identifiant), "Aucun mouvement de lot dans la modificatrice");
 $t->is(count($drev->lots[0]->getMouvements()), 0, "Pas de mouvement pour le lot supprimé");
+$t->is(count(LotsClient::getInstance()->getHistory($drev->identifiant, $drev->lots[0]->unique_id)), 0, "Pas de mouvement pour le lot supprimé");
+
+$t->comment('Nouvelle DRev après la suppression');
+$drev_modif = $drev->findMaster()->generateModificative();
+$drev_modif->save();
+$t->is(count(LotsClient::getInstance()->getHistory($drev->identifiant, $drev->lots[0]->unique_id)), 0, "Pas de mouvement pour le lot supprimé");
+$drev_modif->delete();
 
 $t->comment("Dévalidation de ".$drev->_id."-M01");
 $drev_modif = $drev->findMaster();

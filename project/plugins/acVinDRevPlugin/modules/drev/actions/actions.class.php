@@ -103,6 +103,10 @@ class drevActions extends sfActions {
             throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
         }
 
+        if(!$drev->isMaster()) {
+            throw new Exception("Dévalidation impossible car cette déclaration n'est pas la dernière version");
+        }
+
         $drev->validation = null;
         $drev->validation_odg = null;
         foreach ($drev->getProduits() as $produit) {
@@ -699,7 +703,10 @@ class drevActions extends sfActions {
             $this->drev->validateOdg();
             $this->drev->cleanLots();
             $this->drev->save();
-            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée");
+
+            Email::getInstance()->sendDRevValidation($this->drev);
+
+            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
@@ -769,7 +776,11 @@ class drevActions extends sfActions {
             throw sfException("Une DREV validée par une région ne peut être mise en attente par celle-ci");
         }
 
-        $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        if ($this->drev->isMiseEnAttenteOdg()) {
+            $this->drev->remove('statut_odg');
+        }else{
+            $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        }
         $this->drev->save();
 
         $service = $request->getParameter("service", null);

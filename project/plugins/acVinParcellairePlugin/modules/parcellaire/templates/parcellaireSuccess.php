@@ -73,11 +73,23 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
         </div>
     <?php endif; ?>
 
+    <div class="row">
+      <div class="col-xs-5">
+          <h3>Accès rapide</h3>
+          <ul>
+            <?php foreach (array_keys($parcellesByCommune->getRawValue()) as $commune): ?>
+              <li style="list-style-type: disclosure-closed"><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
+            <?php endforeach ?>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_cepage">Synthèse par cépages</a></li>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_produit">Synthèse par produits</a></li>
+          </ul>
+      </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-12">
             <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
-            	<h3><?php echo $commune ?></h3>
+                <h3 id="parcelles_<?php echo $commune ?>"><?php echo $commune ?></h3>
 
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
@@ -192,7 +204,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
     if (count($synthese)):
 ?>
-<h3>Synthèse par cépages</h3>
+<h3 id="synthese_cepage">Synthèse par cépages</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -211,6 +223,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 <?php
     endforeach;
 ?>
+    <tr>
+        <td><strong>Total</strong></td>
+        <td class="text-right"><strong><?php echo array_sum(array_column($synthese->getRawValue(), 'superficie')) ?></strong></td>
+    </tr>
   </tbody>
 </table>
 <?php endif; ?>
@@ -223,7 +239,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     }
     if (count($synthese)):
 ?>
-<h3>Synthèse par produits habilités</h3>
+<h3 id="synthese_produit">Synthèse par produits habilités</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -267,7 +283,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
-<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
+<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
 </div>
 <?php endif; ?>
 

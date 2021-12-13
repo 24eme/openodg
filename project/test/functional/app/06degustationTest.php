@@ -72,8 +72,10 @@ $b->click('button[type="submit"]', array('import_dr_prodouane' => false))->follo
 $b->isForwardedTo('drev', 'lots');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape lot");
 
-$b->click('button[id="lots_ajout"]')->followRedirect();
-$b->click('button[id="lots_ajout"]')->followRedirect();
+$b->with('response')->begin()->checkElement('.bloc-lot', 1)->end();
+$b->click('button[id="lots_ajout"]', array("drev_lots" => array("lots" => array(
+    array("produit_hash" => $produit->getHash(), "volume" => 100),
+))))->followRedirect();
 $b->with('response')->begin()->checkElement('.bloc-lot', 2)->end();
 $b->click('button[id="lots_continue"]', array("drev_lots" => array("lots" => array(
     array("produit_hash" => $produit->getHash(), "volume" => 100),
@@ -152,6 +154,13 @@ $t->is($b->getResponse()->getContentType(), 'text/csv; charset=ISO-8859-1', "Con
 $t->is($b->getResponse()->getStatuscode(), 200, "CSV Étiquettes de prélevement");
 
 $b->back();
+$b->click('#btn_confirmation_degustateurs');
+$b->isForwardedTo('degustation', 'degustateursConfirmation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation de la venue des dégustateurs");
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'prelevementsEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape de prélevements");
+
 $b->click('#btn_suivant');
 $b->isForwardedTo('degustation', 'tablesEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape d'organisation des tables");
@@ -160,9 +169,11 @@ $b->click('#btn_organisation_table')->followRedirect();
 $b->isForwardedTo('degustation', 'organisationTable');
 $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire d'organisation des tables");
 
-$table1 = ['numero_lot_0' => 1, 'numero_lot_1' => 1];
+$degustation = DegustationClient::getInstance()->find(preg_replace("/.*(DEGUSTATION-[0-9]+).*/", '\1', $b->getRequest()->getUri()));
+
+$table1 = ["lot_".$degustation->lots[0]->declarant_identifiant."-".$degustation->lots[0]->unique_id => 1, "lot_".$degustation->lots[1]->declarant_identifiant."-".$degustation->lots[1]->unique_id => 1];
 for($i = 2; $i < 10; $i++) {
-    $table1['numero_lot_'.$i] = 1;
+    $table1['lot_leure-'.$i] = 1;
     $b->click('#leurre_ajout', ['degustation_ajout_leurre' => ['table' => '1', 'hashref' => '/declaration/certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT']])->followRedirect();
 }
 
@@ -251,9 +262,15 @@ $t->is($b->getResponse()->getStatuscode(), 200, "PDF Fiche lots ventilés (Anony
 
 $b->back();
 $b->click('#btn_pdf_degustation_etiquettes_tables_echantillons_par_anonymat_pdf');
-$b->isForwardedTo('degustation', 'etiquettesTablesEchantillonsParAnonymatPDF');
+$b->isForwardedTo('degustation', 'etiquettesTablesEchantillonsAnonymesPDF');
 $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
-$t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes (Anonymisés)");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes par numéro d'anonymat (Anonymisés)");
+
+$b->back();
+$b->click('#btn_pdf_degustation_etiquettes_tables_echantillons_par_unique_id_pdf');
+$b->isForwardedTo('degustation', 'etiquettesTablesEchantillonsAnonymesPDF');
+$t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en pdf");
+$t->is($b->getResponse()->getStatuscode(), 200, "PDF Tableau des étiquettes par numéro de dossier (Anonymisés)");
 
 $b->back();
 $b->click('#btn_pdf_presence_degustateurs');
@@ -282,8 +299,8 @@ $b->with('response')->begin()->
     checkElement('table#table_fiche_1 tr:nth-child(8) td:nth-child(1) strong', "A06")->
     checkElement('table#table_fiche_1 tr:nth-child(9) td:nth-child(1) strong', "A07")->
     checkElement('table#table_fiche_1 tr:nth-child(10) td:nth-child(1) strong', "A08")->
-    checkElement('table#table_fiche_2 tr:nth-child(3) td:nth-child(1) strong', "A09")->
-    checkElement('table#table_fiche_2 tr:nth-child(4) td:nth-child(1) strong', "A10")
+    checkElement('table#table_fiche_1 tr:nth-child(11) td:nth-child(1) strong', "A09")->
+    checkElement('table#table_fiche_1 tr:nth-child(12) td:nth-child(1) strong', "A10")
 ->end();
 
 $b->back();
@@ -293,6 +310,13 @@ $t->is($b->getResponse()->getContentType(), 'application/pdf', "Content type en 
 $t->is($b->getResponse()->getStatuscode(), 200, "Fiche individuelle des dégustateurs");
 
 $b->back();
+$b->click('#btn_confirmation_degustateurs');
+$b->isForwardedTo('degustation', 'degustateursConfirmation');
+$t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation de la venue des dégustateurs");
+$b->click('button[type="submit"]')->followRedirect();
+$b->isForwardedTo('degustation', 'commissionEtape');
+$t->is($b->getResponse()->getStatuscode(), 200, "Retour à l'étape commission");
+
 $b->click('#btn_suivant');
 $b->isForwardedTo('degustation', 'resultatsEtape');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape résultats");

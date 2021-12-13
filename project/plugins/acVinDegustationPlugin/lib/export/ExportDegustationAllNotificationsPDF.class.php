@@ -13,7 +13,10 @@ class ExportDegustationAllNotificationsPDF extends ExportDeclarationLotsPDF {
     public function create() {
         $lots = array();
         $etablissements = [];
-        foreach ($this->degustation->getLots() as $lot) {
+        foreach ($this->degustation->getLotsDegustables() as $lot) {
+            if($lot->isLeurre()) {
+                continue;
+            }
             if (in_array($lot->declarant_identifiant, $etablissements) === false) {
                 $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
             }

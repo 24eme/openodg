@@ -106,6 +106,37 @@ class DouaneImportCsvFile {
       $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($c);
     }
 
+    public function getFamilleCalculeeFromLigneDouane($has_volume_cave = false, $has_volume_coop = false, $has_volume_nego = false) {
+        if ($this->getCsvType() == 'SV11') {
+            return 'COOPERATIVE';
+        }
+        if ($this->getCsvType() == 'SV11') {
+            return 'NEGOCIANT';
+        }
+        $famille = '';
+        if ($has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
+            $famille = 'APPORTEUR_NEGOCE_TOTAL';
+        }elseif (!$has_volume_nego && $has_volume_coop && !$has_volume_cave) {
+            $famille = 'APPORTEUR_COOP_TOTAL';
+        }elseif (!$has_volume_nego && !$has_volume_coop && $has_volume_cave) {
+            $famille = 'CAVE_PARTICULIERE_TOTAL';
+        }elseif ($has_volume_nego && $has_volume_coop && !$has_volume_cave) {
+            $famille = 'APPORTEUR_COOP_ET_NEGOCE';
+        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
+            $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP';
+        }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
+            $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE';
+        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
+            $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE';
+        }elseif (!$has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
+            $famille = "SANS_VOLUME";
+        }else{
+            throw new sfException("Cas de famille DR non gérée (".$this->getCsvType()." ; ".boolval($has_volume_nego)." ; ".boolval($has_volume_coop)." ; ".boolval($has_volume_cave).")");
+        }
+        return $famille;
+    }
+
+
     public function convertByDonnees() {
         if (!$this->doc->exist('donnees') || count($this->doc->donnees) < 1) {
             return null;
@@ -118,6 +149,24 @@ class DouaneImportCsvFile {
         if (!$this->etablissement) {
             return null;
         }
+        $has_volume_cave = false;
+        $has_volume_nego = false;
+        $has_volume_coop = false;
+        foreach ($this->doc->donnees as $donnee) {
+            switch ($donnee->categorie) {
+                case '09':
+                    $has_volume_cave = true;
+                    break;
+                case '08':
+                    $has_volume_coop = true;
+                    break;
+                case '07':
+                case '06':
+                    $has_volume_nego = true;
+                    break;
+            }
+        }
+        $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
 
         $produits = array();
         $colonnesid = array();
@@ -165,6 +214,8 @@ class DouaneImportCsvFile {
                     $p[] = Organisme::getCurrentOrganisme();
                     $p[] = $produit->getHash();
                     $p[] = $this->doc->_id;
+                    $p[] = $famille;
+                    $p[] = substr($this->campagne, 0, 4);
                     $produits[] = $p;
                 }
             }

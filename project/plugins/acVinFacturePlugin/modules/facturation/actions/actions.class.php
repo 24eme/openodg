@@ -60,8 +60,11 @@ class facturationActions extends sfActions
                 continue;
             }
 
-            $this->mouvements[$m->key[MouvementFactureView::KEY_ETB_ID]][] = $m->value;
+            $this->mouvements[$m->key[MouvementFactureView::KEY_ETB_ID]][] = $m;
         }
+
+
+        $this->withDetails = $request->getParameter('details', false);
     }
 
     public function executeMassive(sfWebRequest $request)
@@ -106,6 +109,14 @@ class facturationActions extends sfActions
             if($this->compte->exist('id_societe')){
               $identifiant = $this->compte->getSociete()->identifiant;
             }
+
+            if(!$request->getParameter('campagne')) {
+                foreach(FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_JSON, null, 1) as $facture) {
+
+                    return $this->redirect('facturation_declarant', array('id' => $this->compte->_id, 'campagne' => $facture->campagne));
+                }
+            }
+
             $this->societe = $this->compte->getSociete();
             $this->form = new FactureGenerationForm();
 
@@ -118,13 +129,17 @@ class facturationActions extends sfActions
             $this->campagnes = [];
             $campagne_actuelle = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
             for ($i = $campagne_actuelle; $i > $campagne_actuelle - 5; $i--) {
-                $this->campagnes[] = implode('-', [$i, $i+1]);
+                $this->campagnes[] = $i;
             }
+
             $this->campagne = $request->getParameter('campagne', null);
-            $campagne_requete = ($this->campagne) ? strstr($this->campagne, "-", true) : null;
 
+            if($this->campagne == "tous") {
+                $this->campagne = null;
+            }
 
-            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $campagne_requete);
+            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne);
+
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
 
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
@@ -311,7 +326,7 @@ class facturationActions extends sfActions
 
         $this->getUser()->setFlash("notice", "Les paiements ont bien été enregistrés");
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant, "campagne" => $this->facture->campagne));
     }
 
     public function executeLatex(sfWebRequest $request) {

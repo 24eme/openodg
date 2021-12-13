@@ -52,6 +52,7 @@
                         <?php endforeach; ?>
                       </td>
                       <td>
+                          <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
                         <?php if ($lot->email_envoye === null): ?>
                             <div class="btn-group">
                               <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -102,11 +103,29 @@
   ?>
 
  <?php if (isset($mail_to_identifiant) && $mail_to_identifiant): ?>
+     <div id="modal_mailto" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Le mail n'a pas pu s'ouvrir automatiquement</h4>
+          </div>
+          <div class="modal-body">
+              <span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Annuler</button>
+            <a href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $mail_to_identifiant)); ?>" class="btn btn-primary">Ouvrir le mail manuellement</a>
+          </div>
+        </div>
+      </div>
+    </div>
  <script>
-     var mailto = document.createElement('a');
-     mailto.href = "<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $mail_to_identifiant)); ?>";
-     mailto.target = '_blank';
-     document.body.appendChild(mailto);
-     mailto.click();
+     var newWin = window.open("<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $mail_to_identifiant)); ?>");
+     if(!newWin || newWin.closed || typeof newWin.closed=='undefined')
+     {
+        setTimeout(function() {$('#modal_mailto').modal('show')}, 1000);
+     }
  </script>
+
  <?php endif ?>

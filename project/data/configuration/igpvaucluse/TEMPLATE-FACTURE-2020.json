@@ -76,6 +76,27 @@
         }
       }
     },
+    "06_SV11CampagnePrecdente": {
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Adhésion ODG",
+      "code_comptable": "75600000",
+      "details": {
+        "forfait": {
+          "modele": "CotisationVariable",
+          "prix": 0.12,
+          "tva": 0.2,
+          "unite": "hl",
+          "libelle": "SV11 N-1 VSIG+IGP",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": "getVolumeVinFromSV11Precedente",
+          "callback_parameters": []
+        }
+      }
+    },
     "10_%detail_identifiant%_01_cotisationOdg_01": {
       "modele": "CotisationsCollection",
       "callback": "",
@@ -111,7 +132,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeLotsFacturables"
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
@@ -131,7 +152,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
@@ -151,7 +172,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
@@ -171,7 +192,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
@@ -191,7 +212,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeRevendiqueNumeroDossier",
           "callback_parameters": [
             "/appellations/MED"
           ]
@@ -214,7 +235,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeRevendiqueNumeroDossier"
         }
       }
     },
@@ -326,7 +347,7 @@
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Changement de dénomination",
-      "code_comptable": "",
+      "code_comptable": "70610000",
       "details": {
         "frais": {
           "modele": "CotisationVariable",
@@ -347,8 +368,8 @@
     "40_changementdeno_redegustation": {
       "modele": "CotisationsCollection",
       "callback": "",
-      "libelle": "Nouveau passage",
-      "code_comptable": "",
+      "libelle": "Nouveau passsage",
+      "code_comptable": "70610000",
       "details": {
         "frais": {
           "modele": "Cotisation",
@@ -360,8 +381,7 @@
             "Degustation"
           ],
           "callback": "buildMouvementsFacturesRedegustationDejaConformeForfait",
-          "callback_parameters": [
-          ]
+          "callback_parameters": []
         }
       }
     }

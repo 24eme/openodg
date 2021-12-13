@@ -7,8 +7,8 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
 
         $this->setWidget('regions', new sfWidgetFormChoice(array('choices' => $this->getRegions(), 'multiple' => true, 'expanded' => true, 'default' => array_keys($this->getRegions()))));
         $this->setWidget('seuil', new sfWidgetFormInput(array(), array('autocomplete' => 'off')));
-        $this->setWidget('date_mouvement', new sfWidgetFormInput(array('default' => date('d/m/Y'))));
-        $this->setWidget('date_facturation', new sfWidgetFormInput(array('default' => date('d/m/Y'))));
+        $this->setWidget('date_mouvement', new sfWidgetFormInput(array('default' => date('d/m/Y')), array('autocomplete' => 'off')));
+        $this->setWidget('date_facturation', new sfWidgetFormInput(array('default' => date('d/m/Y')), array('autocomplete' => 'off')));
         $this->setWidget('message_communication', new sfWidgetFormTextarea());
         $this->setWidget('modele', new bsWidgetFormChoice(array('choices' => $this->getModeleChoices(), 'expanded' => true), array("required" => "required")));
 

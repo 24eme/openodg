@@ -1,9 +1,9 @@
 <?php
 
-function showOnlyProduit($lot, $show_always_specificite = true)
+function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
 {
 
-  $text = $lot->produit_libelle." <small>";
+  $text = $lot->produit_libelle." <".$tag.">";
   $text .= ($lot->millesime) ? $lot->millesime : "";
   if ($show_always_specificite || DegustationConfiguration::getInstance()->hasSpecificiteLotPdf()) {
       if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
@@ -15,20 +15,20 @@ function showOnlyProduit($lot, $show_always_specificite = true)
       }
   }
 
-  $text .= "</small>";
+  $text .= "</".$tag.">";
   return $text;
 }
 
-function showProduitCepagesLot($lot, $show_always_specificite = true)
+function showProduitCepagesLot($lot, $show_always_specificite = true, $tagSmall = 'small')
 {   $text = "";
-    $text .= showOnlyProduit($lot, $show_always_specificite);
-    $text .= showOnlyCepages($lot);
+    $text .= showOnlyProduit($lot, $show_always_specificite, $tagSmall);
+    $text .= showOnlyCepages($lot, null, $tagSmall);
     return $text;
 }
 
-function showOnlyCepages($lot, $maxcars = null) {
+function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
   $text = '';
-  $html = " <small class='text-muted'>";
+  $html = " <".$tag." class='text-muted'>";
   if ($lot instanceof stdClass) {
     $total = $lot->volume;
     foreach ($lot->cepages as $cepage => $hl) {
@@ -43,13 +43,13 @@ function showOnlyCepages($lot, $maxcars = null) {
     }
   }
   if (!$text) {
-    return null;
+    return " <".$tag.">&nbsp;</".$tag.">";
   }
   if ($maxcars) {
       $text = substr($text, 0, $maxcars);
   }
   $html .= $text;
-  $html .= "</small>";
+  $html .= "</".$tag.">";
   return $html;
 }
 
@@ -156,12 +156,12 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
 
     $adresseSplit = explode('—',$adresseLogement);
     $adresse['nom'] = trim($adresseSplit[0]);
-    $adresse['adresse_totale'] = trim($adresseSplit[1]);
-    if (!$adresse['adresse_totale']) {
+    $adresse['adresse_totale'] = $adresseSplit[1];
+    if (!trim($adresse['adresse_totale'])) {
         return $logementEtablissement;
     }
     //Hack des premières version de logement : devra être supprimé
-    if (preg_match('/^[0-9 ]+$/', $adresse['adresse_totale'])) {
+    if (preg_match('/^[0-9 ]+$/', trim($adresse['adresse_totale']))) {
         $adresse['telephone'] = $adresse['adresse_totale'];
         $adresse['adresse_totale'] = $adresse['nom'];
         $adresse['nom'] = '';
@@ -172,8 +172,9 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
         $adresse['code_postal'] = trim($m[2]);
         $adresse['commune'] = trim($m[3]);
     }else{
-        $adresse['adresse'] = $adresse['adresse_totale'];
+        $adresse['adresse'] = trim($adresse['adresse_totale']);
     }
+
     $adresse['telephone'] = trim($adresseSplit[2]);
     $adresse['portable'] = trim($adresseSplit[3]);
     //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé

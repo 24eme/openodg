@@ -7,31 +7,19 @@
   background-color:white;
 }
 </style>
-
-    <div>
-      <table>
+        <table>
         <tbody>
           <tr>
-            <td>
-              <p>Code Commission: <?= $degustation->_id ?></p>
-            </td>
-            <td>
-              <p>Responsable :</p>
-            </td>
+            <td>Commission: <?= $degustation->_id ?></td>
+            <td>Date : <?php echo format_datetime($degustation->date, "P", "fr_FR") ?></td>
           </tr>
 
           <tr>
-            <td>
-                <p>Date : <?php echo format_datetime($degustation->date, "P", "fr_FR") ?></p>
-            </td>
-            <td>
-              <p>Lieu : <?php echo $degustation->lieu; ?> </p>
-            </td>
+            <td colspan="2"><?php echo tdStart() ?> Lieu : <?php echo $degustation->lieu; ?></td>
           </tr>
         </tbody>
       </table>
-    </div>
-
+    <div></div>
     <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
       <thead>
       <tr>

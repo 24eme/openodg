@@ -10,6 +10,28 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $csvFile = new CsvFile($this->filePath);
         $csv = $csvFile->getCsv();
 
+        $has_volume_nego = 0;
+        $has_volume_coop = 0;
+        $has_volume_cave = 0;
+        foreach ($csv as $key => $values) {
+            if (substr(trim($values[0]), 0, 1) == "6" || substr(trim($values[0]), 0, 1) == '7') {
+                for($i = 3 ; $i < count($values); $i++) {
+                    $has_volume_nego += boolval($values[$i]);
+                }
+            }
+            if (substr(trim($values[0]), 0, 1) == '8') {
+                for($i = 3 ; $i < count($values); $i++) {
+                    $has_volume_coop += boolval($values[$i]);
+                }
+            }
+            if (substr(trim($values[0]), 0, 1) == '9') {
+                for($i = 3 ; $i < count($values); $i++) {
+                    $has_volume_cave += boolval($values[$i]);
+                }
+            }
+        }
+        $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
+
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
 	      if ($this->etablissement && !$this->etablissement->isActif()) {
 		        return;
@@ -210,6 +232,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds = ';'.Organisme::getCurrentOrganisme();
           $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
           $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
+          $colExtraIds .= ';'.$famille;
+          $colExtraIds .= ';'.substr($this->campagne, 0, 4);
 
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;

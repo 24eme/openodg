@@ -89,16 +89,26 @@ class Parcellaire extends BaseParcellaire {
     public function countSameParcelle($commune, $section, $numero_parcelle, $lieu, $hashProduit = null, $cepage = null, $campagne_plantation = null){
         $sameParcelle = 0;
 
-        foreach ($this->declaration as $produitKey => $produitParcelles) {
-          foreach ($produitParcelles->detail as $pKey => $parcelleExists) {
-            if(($parcelleExists->commune == $commune) &&
-                ($parcelleExists->section == $section) &&
-                ($parcelleExists->numero_parcelle == $numero_parcelle) &&
-                ($parcelleExists->lieu == $lieu)){
-                  $sameParcelle++;
-                }
-          }
+        foreach ($this->getParcelles() as $parcelleExistante) {
+            if ($parcelleExistante->section !== $section) {
+                continue;
+            }
+
+            if ($parcelleExistante->numero_parcelle !== $numero_parcelle) {
+                continue;
+            }
+
+            if (KeyInflector::slugify($parcelleExistante->lieu) !== KeyInflector::slugify($lieu)) {
+                continue;
+            }
+
+            if (KeyInflector::slugify($parcelleExistante->commune) !== KeyInflector::slugify($commune)) {
+                continue;
+            }
+
+            $sameParcelle++;
         }
+
         return $sameParcelle;
 
     }
@@ -175,6 +185,7 @@ class Parcellaire extends BaseParcellaire {
             }
             $synthese[$cepage]['superficie'] = round($synthese[$cepage]['superficie'] + $p->superficie, 6);
         }
+        ksort($synthese);
         return $synthese;
     }
 
@@ -214,6 +225,18 @@ class Parcellaire extends BaseParcellaire {
                 $synthese[$libelle][$cepage]['superficie_max'] = round($synthese[$libelle][$cepage]['superficie_max'] + $p->superficie, 6);
                 $synthese[$libelle]['Total']['superficie_max'] = round($synthese[$libelle]['Total']['superficie_max'] + $p->superficie, 6);
             }
+        }
+
+        foreach ($synthese as $libelle => &$cepages) {
+            uksort($cepages, function ($cepage1, $cepage2) {
+                if ($cepage1 === "Total") {
+                    return -1;
+                }
+                if ($cepage2 === "Total") {
+                    return 1;
+                }
+                return strcmp($cepage1, $cepage2);
+            });
         }
         return $synthese;
     }

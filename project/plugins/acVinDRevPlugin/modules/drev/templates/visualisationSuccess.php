@@ -1,4 +1,5 @@
 <?php use_helper('Date') ?>
+<?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('global/flash'); ?>
@@ -49,7 +50,7 @@
 
 <?php if ($sf_user->isAdmin() && $drev->isMiseEnAttenteOdg()): ?>
     <div class="alert alert-info">
-        Cette déclaration a été <strong>mise en attente</strong> par l'ODG
+        Cette déclaration a été <strong>mise en attente</strong> par l'ODG (<a href="<?php echo url_for("drev_enattente_admin", $params); ?>">annuler la mise en attente</a>)
     </div>
 <?php endif; ?>
 
@@ -60,8 +61,8 @@
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
 <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
-    <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($drev->exist('date_degustation_voulue')) ? date_format(date_create($drev->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
+    <h3>Controle</h3>
+    <p style="margin-bottom: 30px;">Date de controle souhaitée : <?php echo ($drev->exist('date_degustation_voulue')) ? date_format(date_create($drev->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
 <?php endif ?>
 
 <div class="row row-margin row-button">
@@ -86,7 +87,7 @@
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION) && !$drev->hasLotsUtilises()):
                 if (!$drev->validation_odg): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin() &&  !$drev->hasLotsUtilises()): ?>
+            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin() &&  !$drev->hasLotsUtilises() && $drev->isMaster()): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
             <?php elseif ($drev->isFactures()): ?>
                 <span class="text-muted">DRev facturée</span>
@@ -97,7 +98,6 @@
         <?php elseif(!$drev->validation_odg && ( $sf_user->isAdmin() ||
                                                  ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))
                                                )): ?>
-        <?php $params = array("sf_subject" => $drev, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
         <?php if (!$drev->isMiseEnAttenteOdg()): ?>
                 <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
         <?php endif; ?>

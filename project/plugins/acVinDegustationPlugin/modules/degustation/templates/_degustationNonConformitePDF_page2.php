@@ -78,9 +78,9 @@
 
 <table border="1">
 <tr>
-  <td style="font-weight:bold;">Date d'envoi fiche<br/></td>
-  <td style="font-weight:bold;">Date de Notification :<br/><?php echo date('d/m/Y') ?></td>
-  <td style="font-weight:bold;">Signature du responsable de l'ODG :<br/></td>
+  <td style="width: 32%;"><strong>Date&nbsp;d'envoi&nbsp;de&nbsp;la&nbsp;fiche&nbsp;:</strong><br /><?php echo format_date($lot->email_envoye, 'dd/MM/yyyy') ?></td>
+  <td style="width: 32%;"><strong>Date&nbsp;de&nbsp;Notification&nbsp;:</strong><br /><?php echo format_date($lot->email_envoye, 'dd/MM/yyyy') ?></td>
+  <td style="width: 36%"><strong>Signature&nbsp;du&nbsp;responsable&nbsp;de&nbsp;l'ODG&nbsp;:</strong><br/><?php echo Organisme::getInstance(null, 'degustation')->getResponsable() ?></td>
 </tr>
 </table>
 <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>

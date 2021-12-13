@@ -16,10 +16,10 @@
     <?php endif; ?>
 
     <form role="form" action="<?php echo url_for("chgtdenom_validation", $chgtDenom) ?>" method="post" class="form-horizontal" id="validation-form">
-      <?php if($sf_user->isAdmin()): ?>
+      <?php if(isset($form['validation'])): ?>
       <div class="form-group<?php echo ($form['validation']->hasError()) ? ' has-error' : '' ?>">
             <?php echo $form['validation']->renderError() ?>
-            <?php echo $form['validation']->renderLabel("Date de validation", ["class" => "col-xs-offset-4 col-xs-4 control-label"]) ?>
+            <?php echo $form['validation']->renderLabel("Date de signature (réception papier)", ["class" => "col-xs-offset-4 col-xs-4 control-label"]) ?>
             <div class="col-xs-4">
                 <div class="input-group date-picker-week">
                     <?php echo $form['validation']->render(['class' => "form-control", "placeholder" => "Date de validation"]); ?>

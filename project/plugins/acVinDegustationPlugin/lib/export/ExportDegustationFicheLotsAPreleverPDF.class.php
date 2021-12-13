@@ -12,14 +12,12 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
 
     public function create() {
       $etablissements = array();
-      $adresses = array();
-      foreach ($this->degustation->getLots() as $lot) {
-          if ($lot->isLeurre()) {
-              continue;
+      $lots = array();
+      foreach ($this->degustation->getLotsPrelevables() as $lot) {
+          $lots[$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
+          if(!isset($etablissements[$lot->declarant_identifiant])) {
+              $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
           }
-          $adresses[$lot->declarant_identifiant][$lot->getNumeroDossier()] = $lot;
-          $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
-
       }
 
       @$this->printable_document->addPage(
@@ -28,8 +26,8 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
             'degustation' => $this->degustation,
             'etablissements' => $etablissements,
             "date_edition" => date("d/m/Y"),
-            "nbLotTotal" => count($this->degustation->getLots()),
-            'lots' => $adresses
+            "nbLotTotal" => count($this->degustation->getLotsPrelevables()),
+            'lots' => $lots
           )
         ));
     }

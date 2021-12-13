@@ -23,6 +23,7 @@ Fichier:
       mime: { required: false }
       visibilite: { type: integer }
       papier: { required: false, type: integer }
+      validation: {required: false}
       pieces:
         type: array_collection
         definition:

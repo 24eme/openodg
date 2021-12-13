@@ -76,11 +76,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getConfiguration() {
-        $configuration = ConfigurationClient::getInstance()->getConfiguration($this->getPeriode().'-10-01');
-        if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
-          $configuration->setEffervescentVindebaseActivate();
-        }
-        return $configuration;
+        return ConfigurationClient::getInstance()->getConfiguration($this->getPeriode().'-10-01');
     }
 
     public function getPeriode() {
@@ -139,6 +135,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         // Parcours dans les lots
         foreach($this->lots as $lot) {
             if($lot->millesime != $this->getPeriode()) {
+                continue;
+            }
+            if(!$lot->produit_hash) {
                 continue;
             }
             $couleur = $lot->getConfig()->getCouleur()->getLibelleDR();
@@ -764,7 +763,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4) {
-            	$produitRecolte->superficie_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                $produitRecolte->superficie_total += round(VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]), 4);
                 $has_coop_l8 = false;
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_COOPERATIVE_L8 && $line[DRCsvFile::CSV_VALEUR])  {
@@ -785,7 +784,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
-                $produitRecolte->superficie_total += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
+                $produitRecolte->superficie_total += round(VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]), 4);
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_VOLUME_VENDANGE_FRAICHE) {
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
@@ -794,7 +793,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
-                $produitRecolte->superficie_total += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
+                $produitRecolte->superficie_total += round(VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]), 4);
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE) {
@@ -847,7 +846,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitRecolte->volume_total += $p->recolte->volume_total;
             }
             if ($p->recolte->superficie_total) {
-                $produitRecolte->superficie_total += $p->recolte->superficie_total;
+                $produitRecolte->superficie_total += round($p->recolte->superficie_total, 4);
             }
             if ($p->recolte->recolte_nette) {
                 $produitRecolte->recolte_nette += $p->recolte->recolte_nette;
@@ -1509,7 +1508,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	public function getVolumeFacturable($produitFilter = null)
 	{
-		return $this->declaration->getTotalVolumeRevendique($produitFilter);
+		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
+        foreach($this->getDeletedLots() as $lot) {
+            $volume -= $lot->volume;
+        }
+        return $volume;
 	}
 
 	public function getSurfaceVinifieeFacturable()
@@ -1532,14 +1535,32 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
     {
         $lots = [];
-
+        $lotsmodifs = [];
+        $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
+
             if ($lot->numero_dossier === $this->numero_archive) {
+                $original_volume = $lot->getOriginalVolumeIfModifying();
                 $lots[] = $lot;
+                if ($original_volume) {
+                    $lotsmodifs[] = $lot;
+                    $volume_mod += $original_volume;
+                }
             }
         }
+        if ($volume_mod) {
+            $lots = $lotsmodifs;
+        }
+        $volume = $this->getInternalVolumeRevendique($lots, $produitFilter);
 
-        return $this->getInternalVolumeRevendique($lots, $produitFilter);
+        foreach($this->getDeletedLots() as $lot) {
+            $volume_mod += $lot->volume;
+        }
+
+        return $volume - $volume_mod;
     }
 
     public function getVolumeRevendiqueLots($produitFilter = null){
@@ -1566,6 +1587,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
 
+    public function getVolumeVinFromSV11Precedente($produitFilter = null) {
+        $sv11 = $this->getDR($this->getPeriode()-1);
+        if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
+            return ;
+        }
+        return $sv11->getTotalValeur("10");
+    }
+
     public function getNbApporteursPlusOneFromDouane() {
         $douane = $this->getDR();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
@@ -1578,9 +1607,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $apporteurs + 1;
     }
 
-    /**
-    * @deprecated use getVolumeRevendiqueLots instead
-    */
     public function getVolumeLotsFacturables($produitFilter = null){
 
         return $this->getVolumeRevendiqueLots($produitFilter);
@@ -1613,7 +1639,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
-
       $templateFacture = $this->getTemplateFacture();
       if(!$templateFacture) {
           return array();
@@ -1665,6 +1690,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 
       return array($identifiantCompte => $mouvements);
+    }
+
+    public function getDeletedLots() {
+        $deleted = array();
+        foreach($this->getDiffLotVolume() as $k => $v) {
+            if (strpos($k, '/unique_id') === false) {
+                continue;
+            }
+            if (!$this->getLot($v)) {
+                $deleted[] = $v;
+            }
+        }
+        $lots = array();
+        foreach($deleted as $unique_id) {
+            $lots[] = $this->getMother()->getLot($unique_id);
+        }
+        return $lots;
     }
 
     public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
@@ -2027,12 +2069,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return false;
     }
 
-    public function getDiffWithMother() {
-
-        return $this->version_document->getDiffWithMother();
+    public function getDiffLotVolume() {
+        $diff = $this->getDiffWithMother(true);
+        $diffLot = array();
+        foreach($diff as $k => $v) {
+            if (strpos($k, '/lots/') !== false && (strpos($k, '/volume') !== false || strpos($k, '/unique_id') !== false)) {
+                $diffLot[$k] = $v;
+            }
+        }
+        return $diffLot;
     }
 
-    public function isModifiedMother($hash_or_object, $key = null) {
+    public function getDiffWithMother($both_directions = false) {
+
+        return $this->version_document->getDiffWithMother($both_directions);
+    }
+
+    public function isModifiedMother($hash_or_object, $key = null, $both_directions = false) {
 
         return $this->version_document->isModifiedMother($hash_or_object, $key);
     }

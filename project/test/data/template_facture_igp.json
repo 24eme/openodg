@@ -5,7 +5,8 @@
     "template": "IGP",
     "libelle": "%periode% - IGP",
     "docs": [
-        "DRev"
+        "DRev",
+        "ChgtDenom"
     ],
     "cotisations": {
         "00_%detail_identifiant%_00_volume_revendique_numero_dossier": {
@@ -47,6 +48,38 @@
                     "callback": "getVolumeLotsFacturables"
                 }
             }
+        },
+        "02_changement_denomination": {
+          "modele": "CotisationsCollection",
+          "callback": "",
+          "libelle": "Changement de dénomination",
+          "code_comptable": "706300",
+          "details": {
+            "03_getFirstChgtDenomFacturable": {
+              "modele": "CotisationFixe",
+              "prix": 15,
+              "tva": 0.2,
+              "libelle": "N° %detail_identifiant%",
+              "complement_libelle": "",
+              "docs": [
+                "ChgtDenom"
+              ],
+              "callback": "getFirstChgtDenomFacturable",
+              "callback_parameters": []
+            },
+            "04_getSecondChgtDenomFacturable": {
+              "modele": "CotisationFixe",
+              "prix": 10,
+              "tva": 0.2,
+              "libelle": "N° %detail_identifiant%",
+              "complement_libelle": "",
+              "docs": [
+                "ChgtDenom"
+              ],
+              "callback": "getSecondChgtDenomFacturable",
+              "callback_parameters": []
+            }
+          }
         }
     }
 }

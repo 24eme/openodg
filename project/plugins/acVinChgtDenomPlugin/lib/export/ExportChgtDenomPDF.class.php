@@ -32,11 +32,8 @@ class ExportChgtDenomPDF extends ExportDeclarationLotsPDF {
         if (!$this->chgtdenom->isPapier() && $this->chgtdenom->validation && $this->chgtdenom->validation !== true) {
             $date = new DateTime($this->chgtdenom->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-            if($this->chgtdenom->validation_odg) {
-                $dateOdg = new DateTime($this->chgtdenom->validation_odg);
-                $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
-            } else {
-                $header_subtitle .= ", en attente de l'approbation par l'ODG";
+            if(!$this->chgtdenom->validation_odg) {
+                $header_subtitle .= ", en attente de vérification par l'ODG";
             }
 
         } elseif(!$this->chgtdenom->isPapier()) {

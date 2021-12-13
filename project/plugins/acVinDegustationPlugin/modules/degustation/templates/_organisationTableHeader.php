@@ -5,7 +5,7 @@
   <h2>Attribution des échantillons aux tables</h2>
 </div>
 
-<?php $liste_tables = $degustation->getTablesWithFreeLots(); ?>
+<?php $liste_tables = $degustation->getTables(); ?>
 <?php $numero_table = isset($numero_table) ? $numero_table : false; ?>
 
 <ul class="nav nav-pills degustation">

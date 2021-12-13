@@ -84,6 +84,7 @@ $doc->setLots($lots);
 
 foreach ($doc->getLots() as $lot) {
     $lot->numero_table = 1;
+    $lot->setIsPreleve();
 }
 $doc->addLeurre($doc->lots[0]->getProduitHash(), null, date('Y'), 1);
 

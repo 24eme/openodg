@@ -32,7 +32,7 @@ class ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDF exte
     public function create() {
         $i = 0;
         $plancheLots = [];
-        $lots = $this->degustation->getLots()->toArray();
+        $lots = $this->degustation->getLotsDegustables();
 
         foreach($lots as $lot) {
             if (!$lot->unique_id) {
@@ -97,7 +97,7 @@ class ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDF exte
 
     protected function getConfig() {
 
-        return new ExportDegustationEtiquettesPDFConfig();
+        return new ExportDegustationEtiquettesTablesEchantillonsParAnonymatOrUniqueidPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
