@@ -41,7 +41,7 @@ cat $EXPORTGLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 
 rm $EXPORTDIRFORGLOBAL/etablissements_ids.tmp
 
 head -n 1 $EXPORTDIRFORGLOBAL/production.csv | iconv -f ISO88591 -t UTF8 > $EXPORTDIRFORGLOBAL/production.csv.part
-awk -F ';' '{print $9}' etablissements.csv | grep '[0-9]' | sort -u | while read cvi ; do
+awk -F ';' '{print $9}' $EXPORTDIRFORGLOBAL/etablissements.csv | grep '[0-9]' | sort -u | while read cvi ; do
     cat $EXPORTDIRFORGLOBAL/production.csv | iconv -f ISO88591 -t UTF8 | grep ";"$cvi";" >> $EXPORTDIRFORGLOBAL/production.csv.part
 done
 cat $EXPORTDIRFORGLOBAL/production.csv.part | iconv -f UTF8 -t ISO88591 > $EXPORTDIRFORGLOBAL/production.csv
