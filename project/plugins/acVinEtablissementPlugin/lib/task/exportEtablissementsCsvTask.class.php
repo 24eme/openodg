@@ -52,26 +52,14 @@ EOF;
             $compte = CompteClient::getInstance()->find($etablissement->compte, acCouchdbClient::HYDRATE_JSON);
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, acCouchdbClient::HYDRATE_JSON);
 
-            $habilitationStatut = null;
-            $activites = array();
-            if(isset($habilitation)) {
-                foreach($habilitation->declaration as $produit) {
-                    foreach($produit->activites as $activiteKey => $activite) {
-                        if(!$activite->statut) {
-                            continue;
-                        }
-                        $activites[$activiteKey] = $activiteKey;
-                        $habilitationStatut = self::$statuts_libelles_export[$activite->statut];
-                    }
-                }
+            $habilitationActivites = '';
+            if (isset($compte->tags->activite)) {
+                $habilitationActivites = join('|', $compte->tags->activite);
             }
 
-            $activitesSorted = array();
-            foreach(HabilitationClient::getInstance()->getActivites() as $key => $libelle) {
-                if(!array_key_exists($key, $activites)) {
-                    continue;
-                }
-                $activitesSorted[] = $libelle;
+            $habilitationStatut = '';
+            if (isset($compte->tags->statuts)) {
+                $habilitationStatut = join('|', $compte->tags->statuts);
             }
 
             $ordre = null;
@@ -111,7 +99,7 @@ EOF;
             $etablissement->fax.",".
             $etablissement->telephone_mobile.",".
             '"'.$etablissement->email.'",'.
-            preg_replace('/[0-9][0-9]_/', '', implode(";", $activitesSorted)).",". // Activité habilitation
+            $habilitationActivites.",". // Activité habilitation
             ','. //Reception ODG
             ','. //Enregistrement ODG
             ','. //Transmission AVPI
