@@ -360,6 +360,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         if ($this->isApprouve()) {
             if (!count($this->lots->toArray(true, false))) {
                 $this->generateLots();
+                $this->archiver();
             }
             if (count($this->lots) && ($this->lots[0]->unique_id == $this->changement_origine_lot_unique_id)) {
                 if (($this->lots[0]->volume) && !($this->lots[0]->id_document_affectation)) {
