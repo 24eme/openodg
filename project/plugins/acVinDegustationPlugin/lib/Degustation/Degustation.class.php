@@ -705,7 +705,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if ($lot->isLeurre()) {
                     continue;
                 }
-                $lots[$lot->unique_id] = DegustationClient::getInstance()->cleanLotForDegustation($lot->getLotProvenance()->getData());
+                $lotProvenance = $lot->getLotProvenance();
+                if(!$lotProvenance) {
+                    throw new sfException("Le lot ".$this->getDocument()->_id.$lot->getHash(). " (".$lot->unique_id.") n'a pas de provenance");
+                }
+                $lots[$lot->unique_id] = DegustationClient::getInstance()->cleanLotForDegustation($lotProvenance->getData());
 				$lots[$lot->unique_id]->specificite = $lot->specificite;
 				$lots[$lot->unique_id]->statut = $lot->statut;
             }
