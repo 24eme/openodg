@@ -33,12 +33,14 @@ do
   cat $file | grep -E $HASHPRODUIT --binary-files=text >> $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
 done
 
-cut -d ";" -f 2 $EXPORTFORAPPGLOBALSUBDIR/lots.csv $EXPORTFORAPPGLOBALSUBDIR/habilitation.csv | sed 's/"//g' | sort -u | sed -r 's/[0-9]{2}$//' > $EXPORTFORAPPGLOBALSUBDIR/etablissements_ids.tmp
+cut -d ";" -f 2 $EXPORTFORAPPGLOBALSUBDIR/lots.csv $EXPORTFORAPPGLOBALSUBDIR/habilitation.csv | sed 's/"//g' | sort -u | sed -r 's/[0-9]{2}$//' > $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp
+cut -d ';' -f 3  $EXPORTFORAPPGLOBALSUBDIR/production.csv  | sed 's/"//g' | sort -u | sed -r 's/[0-9]{2}$//' >> $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp
+sort -u $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp > $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids
 
 head -n 1 $GLOBALDIR"/etablissements.csv" > $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv
-cat $GLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 1 -2 1 - $EXPORTFORAPPGLOBALSUBDIR/etablissements_ids.tmp >> $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv
+cat $GLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 1 -2 1 - $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids >> $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv
 
-rm $EXPORTFORAPPGLOBALSUBDIR/etablissements_ids.tmp
+rm $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids
 
 head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
 awk -F ';' '{print $9}' $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv  | grep '[0-9]' | sort -u | tr '\n' '|'  | sed 's/.$/\\);\/p/' | sed 's/^/\/;\\(/' | sed 's/|/\\|/g'  > $EXPORTFORAPPGLOBALSUBDIR/sed.cmd
