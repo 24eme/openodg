@@ -2236,4 +2236,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return (count($this->getProduitsWithReserveInterpro($region)));
     }
 
+    public function getBigDocumentSize() {
+
+        return -1;
+    }
+
 }

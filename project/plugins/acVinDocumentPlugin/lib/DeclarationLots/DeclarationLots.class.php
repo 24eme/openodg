@@ -664,4 +664,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
     }
 
     /** FIN MOUVEMENTS FACTURES **/
+
+    public function getBigDocumentSize() {
+
+        return -1;
+    }
 }

@@ -1642,6 +1642,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getBigDocumentSize() {
 
-            return 1000000;
+            return -1;
         }
 }

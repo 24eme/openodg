@@ -924,4 +924,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         return $found;
     }
+
+    public function getBigDocumentSize() {
+
+        return -1;
+    }
 }
