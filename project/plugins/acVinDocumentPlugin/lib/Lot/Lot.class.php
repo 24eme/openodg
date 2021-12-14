@@ -133,6 +133,9 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_DECLASSE
     );
 
+    protected $nbPassage = null;
+    public $lotsDocumentOrdre = array();
+
     public static function getLibelleStatut($statut) {
         $libelles = self::$libellesStatuts;
         return (isset($libelles[$statut]))? $libelles[$statut] : $statut;
@@ -446,14 +449,20 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getNombrePassage()
     {
-        //On passe par le lot précédent pour connaitre son nombre d'affecté
-        //car dans on est appelé depuis le save on n'est pas encore sauvé et la vue n'est donc pas à jour
-        //alors que le prédécesseur est sauvé
+        if(!is_null($this->nbPassage)) {
+
+            return $this->nbPassage;
+        }
+
         $lotProvenance = $this->getLotProvenance();
         if (!$lotProvenance) {
-            return 0;
+            $this->nbPassage = 0;
+            return $this->nbPassage;
         }
-        return MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotProvenance) + 1;
+
+        $this->nbPassage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotProvenance) + 1;
+
+        return $this->nbPassage;
     }
 
     public static function generateTextePassage($lot, $nb)
@@ -474,6 +483,8 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function updateSpecificiteWithDegustationNumber()
     {
+        $this->nbPassage = null;
+        //echo "updateSpecificiteWithDegustationNumber():".$this->getDocument()->_id.$this->getHash()."\n";
         $nombrePassage = $this->getNombrePassage();
         $this->specificite = self::generateTextePassage($this, $nombrePassage);
     }
@@ -830,14 +841,16 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getDocument()->get($hash);
     }
 
-    public function getLotDocumentOrdre($documentOrdre, $numero_archive_incremente = false) {
-        if ($numero_archive_incremente) {
-            $numero_archive = substr($this->numero_archive, 0, -1);
-        }else{
-            $numero_archive = $this->numero_archive;
+    public function getLotDocumentOrdre($documentOrdre) {
+        if(array_key_exists($documentOrdre, $this->lotsDocumentOrdre)) {
+            return $this->lotsDocumentOrdre[$documentOrdre];
         }
 
-        return LotsClient::getInstance()->find($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $numero_archive, sprintf("%02d", $documentOrdre));
+        //echo "getLotDocumentOrdre($documentOrdre):".$this->getDocument()->_id.$this->getHash()."\n";
+
+        $this->lotsDocumentOrdre[$documentOrdre] = LotsClient::getInstance()->find($this->declarant_identifiant, $this->campagne, $this->numero_dossier, $this->numero_archive, sprintf("%02d", $documentOrdre));
+
+        return $this->lotsDocumentOrdre[$documentOrdre];
     }
 
     public function getInitialType() {
@@ -856,6 +869,8 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function updateDocumentDependances() {
+        //echo "updateDocumentDependances():".$this->getDocument()->_id.$this->getHash()."\n";
+        $this->lotsDocumentOrdre = array();
         $this->getInitialType();
         $lotAffectation = $this->getLotAffectation();
         if($lotAffectation) {
