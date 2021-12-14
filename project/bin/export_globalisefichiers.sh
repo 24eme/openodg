@@ -17,12 +17,12 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
 
     head -n 1 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 > $EXPORTGLOBALDIR/production.csv.part
     tail -n +2 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4"-"$17"-"$18"-"$19"-"$20"-"$29 ; if ( ! unicite[uniq] ) { print $0  ; unicite[uniq] = 1 } }'  >> $EXPORTGLOBALDIR/production.csv.part
-    cat $EXPORTGLOBALDIR/production.csv.part | iconv -f UTF8 -t ISO88591 > $EXPORTGLOBALDIR/production.csv
+    cat $EXPORTGLOBALDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTGLOBALDIR/production.csv
 
     for type in dr sv11 sv12 ; do
         head -n 1 $EXPORTGLOBALDIR/production.csv.part  > $EXPORTGLOBALDIR/$type".csv.part"
         cat $EXPORTGLOBALDIR/production.csv.part | grep -i "^"$type";" >> $EXPORTGLOBALDIR/$type".csv.part"
-        cat $EXPORTGLOBALDIR/$type".csv.part" | iconv -f UTF8 -t ISO88591 > $EXPORTGLOBALDIR/$type".csv"
+        cat $EXPORTGLOBALDIR/$type".csv.part" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTGLOBALDIR/$type".csv"
     done
 
     exit 0;
