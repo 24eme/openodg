@@ -358,7 +358,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                 return;
             }
 
-            $mother->save();
+            $mother->save(false);
             DeclarationClient::getInstance()->clearCache();
         }
 

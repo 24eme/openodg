@@ -1416,7 +1416,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
         }
 
-        $mother->save();
+        $mother->save(false);
         DeclarationClient::getInstance()->clearCache();
     }
 
