@@ -59,6 +59,11 @@ class Conditionnement extends BaseConditionnement
         return false;
     }
 
+    public function save($saveDependants = true) {
+
+        return $this->saveDeclaration($saveDependants);
+    }
+
     /** Facturation **/
     public function aFacturer()
     {

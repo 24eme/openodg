@@ -263,11 +263,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
                 case Lot::STATUT_ANNULE:
                 case Lot::STATUT_AFFECTE_DEST:
-                    /*if ($lot->document_ordre < 2) {
-                        throw new sfException("Le numéro d'ordre d'un lot de dégustation ne peut être inférieur à 2 : ".$lot->unique_id);
-                    }*/
-					$detail = sprintf("%dme passage", $lot->getNombrePassage());
-					if ($lot->getNombrePassage() == 1) {
+                    $nbPassage = $lot->getNombrePassage();
+					$detail = sprintf("%dme passage", $nbPassage);
+					if ($nbPassage == 1) {
 						$detail = "1er passage";
 					}
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_DEST, $detail));
@@ -707,7 +705,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if ($lot->isLeurre()) {
                     continue;
                 }
-                $lots[$lot->unique_id] = DegustationClient::getInstance()->cleanLotForDegustation($lot->getLotProvenance()->getData());
+                $lotProvenance = $lot->getLotProvenance();
+                if(!$lotProvenance) {
+                    throw new sfException("Le lot ".$this->getDocument()->_id.$lot->getHash(). " (".$lot->unique_id.") n'a pas de provenance");
+                }
+                $lots[$lot->unique_id] = DegustationClient::getInstance()->cleanLotForDegustation($lotProvenance->getData());
 				$lots[$lot->unique_id]->specificite = $lot->specificite;
 				$lots[$lot->unique_id]->statut = $lot->statut;
             }
@@ -1534,6 +1536,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $volumes_operateurs = [];
+            $volumes_operateurs_total = [];
+            // volume total revendiqué par opérateur
+            foreach ($this->getLotsDegustables() as $lot) {
+                if (! isset($volumes_operateurs_total[$lot->declarant_identifiant])) {
+                    $volumes_operateurs_total[$lot->declarant_identifiant] = 0;
+                }
+                $volumes_operateurs_total[$lot->declarant_identifiant] += round($lot->volume, 2);
+            }
+
             foreach ($this->getLotsDegustables() as $lot) {
                 if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
                     continue;
@@ -1563,7 +1574,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $mvtFacture->date = $this->getDateFormat();
                 $mvtFacture->date_version = $this->getDateFormat();
                 $mvtFacture->quantite = $volume;
-                if ($minimum && $minimum > $volume * $cotisation->getPrix()) {
+                if ($minimum && $minimum > $volumes_operateurs_total[$operateur] * $cotisation->getPrix()) {
                     $mvtFacture->quantite = 1;
                     $mvtFacture->taux = $minimum;
                     $mvtFacture->unite = null;
@@ -1633,36 +1644,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-
-        /** Mis à jour par la degustation du volume d'un lot de DRev **/
-		public function modifyVolumeLot($hash_lot,$volume){
-
-			$lot = $this->get($hash_lot);
-
-			// Drev => modificatrice + changement dans Drev
-			$lotDrevOriginal = $lot->getLotProvenance();
-            $lotDrevOriginalToSave = clone $lotDrevOriginal;
-
-			// $modificatrice
-			$modificatrice = $lotDrevOriginal->getDocument()->generateModificative();
-			$modificatrice->save();
-
-			$modificatrice = DRevClient::getInstance()->find($modificatrice->_id);
-
-
-		    $lotModificatrice = $modificatrice->get($lotDrevOriginal->getHash());
-            $lotModificatrice->volume = $volume;
-            $lotModificatrice->statut = Lot::STATUT_PRELEVABLE;
-
-            $modificatrice->validate();
-			$modificatrice->validateOdg();
-			$modificatrice->save();
-
-			$lot->volume = $volume;
-		}
-
         public function getBigDocumentSize() {
 
-            return 1000000;
+            return -1;
         }
 }

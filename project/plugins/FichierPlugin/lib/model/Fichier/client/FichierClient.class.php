@@ -145,9 +145,14 @@ class FichierClient extends acCouchdbClient {
     public function getCategories() {
 
         return array(
-            "Dr" => "Dr",
-            "Drev" => "Drev",
-            "Identification" => "Identification"
+            "Dr" => "DR",
+            "Sv11" => "SV11",
+            "Sv12" => "SV12",
+            "Drev" => "DRev",
+            "Identification" => "Habilitation / Identification",
+            "Degustation" => "Dégustation",
+            "Facture" => "Facture",
+            "ChgtDenom" => "Changement de dénomination"
         );
     }
 }

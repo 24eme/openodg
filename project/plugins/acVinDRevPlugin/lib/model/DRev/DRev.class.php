@@ -1416,7 +1416,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
         }
 
-        $mother->save();
+        $mother->save(false);
         DeclarationClient::getInstance()->clearCache();
     }
 
@@ -2234,6 +2234,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasProduitsReserveInterpro($region = null) {
         return (count($this->getProduitsWithReserveInterpro($region)));
+    }
+
+    public function getBigDocumentSize() {
+
+        return -1;
     }
 
 }

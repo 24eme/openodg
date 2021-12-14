@@ -56,4 +56,9 @@ class Transaction extends BaseTransaction
     {
         return $this;
     }
+
+    public function save($saveDependants = true) {
+
+        return $this->saveDeclaration($saveDependants);
+    }
 }

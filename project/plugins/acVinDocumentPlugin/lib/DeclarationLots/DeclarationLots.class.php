@@ -335,7 +335,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             $this->piece_document->generatePieces();
     	}
 
-        public function save($saveDependants = true) {
+        public function saveDeclaration($saveDependants = true) {
             $this->archiver();
             if ($this->isValideeOdg()) {
                 $this->generateMouvementsLots();
@@ -358,7 +358,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                 return;
             }
 
-            $mother->save();
+            $mother->save(false);
             DeclarationClient::getInstance()->clearCache();
         }
 
@@ -664,4 +664,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
     }
 
     /** FIN MOUVEMENTS FACTURES **/
+
+    public function getBigDocumentSize() {
+
+        return -1;
+    }
 }
