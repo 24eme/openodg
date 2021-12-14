@@ -40,19 +40,14 @@ cat $GLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 1 -2 1
 
 rm $EXPORTFORAPPGLOBALSUBDIR/etablissements_ids.tmp
 
-head -n 1 $GLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
-awk -F ';' '{print $9}' $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv | grep '[0-9]' | sort -u | while read cvi ; do
-    cat $GLOBALDIR/production.csv | grep -a ";"$cvi";" >> $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
-done
-cat $EXPORTFORAPPGLOBALSUBDIR/production.csv.part | iconv -f UTF8 -t ISO88591 > $EXPORTFORAPPGLOBALSUBDIR/production.csv
+head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
+awk -F ';' '{print $9}' $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv  | grep '[0-9]' | sort -u | tr '\n' '|'  | sed 's/.$/\\);\/p/' | sed 's/^/\/;\\(/' | sed 's/|/\\|/g'  > $EXPORTFORAPPGLOBALSUBDIR/sed.cmd
+sed -n -f $EXPORTFORAPPGLOBALSUBDIR/sed.cmd $GLOBALDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
+mv $EXPORTFORAPPGLOBALSUBDIR/production.csv.part $EXPORTFORAPPGLOBALSUBDIR/production.csv
+rm $EXPORTFORAPPGLOBALSUBDIR/sed.cmd
 
 for type in dr sv11 sv12 ; do
-    head -n 1 $EXPORTFORAPPGLOBALSUBDIR/production.csv.part  > $EXPORTFORAPPGLOBALSUBDIR/$type".csv.part"
-    cat $EXPORTFORAPPGLOBALSUBDIR/production.csv.part | grep -i "^"$type";" >> $EXPORTFORAPPGLOBALSUBDIR/$type".csv.part"
-    cat $EXPORTFORAPPGLOBALSUBDIR/$type".csv.part" | iconv -f UTF8 -t ISO88591 > $EXPORTFORAPPGLOBALSUBDIR/$type".csv"
+    head -n 1 $EXPORTFORAPPGLOBALSUBDIR/production.csv  > $EXPORTFORAPPGLOBALSUBDIR/$type".csv.part"
+    cat $EXPORTFORAPPGLOBALSUBDIR/production.csv | grep -ia "^"$type";" >> $EXPORTFORAPPGLOBALSUBDIR/$type".csv.part"
+    mv $EXPORTFORAPPGLOBALSUBDIR/$type".csv.part" $EXPORTFORAPPGLOBALSUBDIR/$type".csv"
 done
-
-rm $EXPORTFORAPPGLOBALSUBDIR/dr.csv.part
-rm $EXPORTFORAPPGLOBALSUBDIR/sv11.csv.part
-rm $EXPORTFORAPPGLOBALSUBDIR/sv12.csv.part
-rm $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
