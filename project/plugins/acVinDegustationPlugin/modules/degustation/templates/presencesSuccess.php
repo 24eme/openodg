@@ -42,7 +42,7 @@
                   <?php foreach ($form->getDegustateursForTable() as $name => $degustateur): ?>
                     <tr <?php if($degustateur->exist('confirmation') && ($degustateur->confirmation === false)): ?>class="disabled text-muted" disabled="disabled" style="text-decoration:line-through;"<?php endif; ?>>
                       <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($degustateur->getParent()->getKey()) ?></td>
-                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $id_compte)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                      <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $degustateur->getKey())) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
                       <td class="text-center">
                         <div style="margin-bottom: 0;" class="form-group <?php if($form[$name]->hasError()): ?>has-error<?php endif; ?>">
                           <?php echo $form[$name]->renderError() ?>

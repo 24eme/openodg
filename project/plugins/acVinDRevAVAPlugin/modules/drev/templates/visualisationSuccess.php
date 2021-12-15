@@ -55,13 +55,14 @@
 </form>
 <?php endif; ?>
 
-<?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire') && $drev->commentaire): ?>
-<h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
-    <?php if ($drev->getValidationOdg()): ?>
+<?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
+    <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
+        <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
         <pre>
         <?php echo $drev->commentaire; ?>
         </pre>
-    <?php else: ?>
+    <?php elseif(!$drev->getValidationOdg()): ?>
+        <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
       <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
             <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
             <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
