@@ -63,7 +63,7 @@ class TourneeClient extends acCouchdbClient {
         $tournee = $this->createDoc(self::TYPE_TOURNEE_DEGUSTATION, $date);
         $tournee->appellation = $appellation;
         $tournee->statut = TourneeClient::STATUT_ORGANISATION;
-        $tournee->millesime = ((int) substr($tournee->date, 0, 4) - 1)."";
+        $tournee->millesime = $tournee->millesime;
         $tournee->date_prelevement_debut = $date_debut_prelevement;
         $tournee->date_prelevement_fin = (new DateTime($tournee->date))->modify("-".$gap_fin_prelevement." days")->format('Y-m-d');
         $tournee->organisme = DegustationClient::ORGANISME_DEFAUT;

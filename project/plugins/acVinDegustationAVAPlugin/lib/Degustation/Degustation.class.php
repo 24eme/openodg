@@ -48,7 +48,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 
     public function getMillesime() {
         if(!$this->_get('millesime')) {
-            return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+			
+            return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date_degustation)."";
         }
 
         return $this->_get('millesime');
