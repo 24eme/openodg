@@ -92,7 +92,7 @@ facturation_declarant:
   requirements:
     sf_method: [get, post]
 
-facturation_tempalte:
+facturation_template:
   url: /facturation/template/:id
   param: { module: facturation, action: template }
   requirements:

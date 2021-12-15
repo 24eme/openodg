@@ -10,18 +10,24 @@
     <thead>
         <tr>
             <th>Libellé</th>
-            <th class="col-xs-1">Prix</th>
+            <th>Compta</th>
+            <th>Type</th>
+            <th>Prix</th>
+            <th>Document</th>
+            <th>Calcul de la Quantité</th>
+            <th>Unité</th>
         </tr>
     </thead>
 <?php foreach($template->cotisations as $cotisation): ?>
-    <tr>
-        <th><?php echo $cotisation->libelle ?> <span class="text-muted">(<?php echo $cotisation->code_comptable ?>)</span></th>
-        <th></th>
-    </tr>
     <?php foreach($cotisation->details as $detail): ?>
     <tr>
-        <td><?php echo $detail->libelle ?></td>
+        <td><?php echo $cotisation->libelle ?> <?php echo $detail->libelle ?></td>
+        <td><?php echo $cotisation->code_comptable ?></td>
+        <td><?php echo str_replace("Cotisation", "", $detail->modele) ?></td>
         <td class="text-right"><?php echo $detail->prix ?> €</td>
+        <td><?php echo implode(", ", $detail->docs->getRawValue()->toArray()) ?></td>
+        <td><?php echo $detail->callback ?><?php if($detail->exist('callback_parameters')): ?> <small class="text-muted"><?php echo implode(", ", $detail->callback_parameters->getRawValue()->toArray()) ?></small><?php endif; ?></td>
+        <td class="text-left"><?php echo $detail->unite ?></td>
     </tr>
     <?php endforeach; ?>
 <?php endforeach; ?>
