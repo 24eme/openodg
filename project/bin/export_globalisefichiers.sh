@@ -16,7 +16,7 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     done
 
     head -n 1 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 > $EXPORTGLOBALDIR/production.csv.part
-    tail -n +2 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4"-"$17"-"$18"-"$19"-"$20"-"$29 ; if ( ! unicite[uniq] ) { print $0  ; unicite[uniq] = 1 } }'  >> $EXPORTGLOBALDIR/production.csv.part
+    tail -n +2 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }'  >> $EXPORTGLOBALDIR/production.csv.part
     cat $EXPORTGLOBALDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTGLOBALDIR/production.csv
 
     for type in dr sv11 sv12 ; do
