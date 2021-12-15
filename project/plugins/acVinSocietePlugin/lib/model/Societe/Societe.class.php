@@ -143,7 +143,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function getEtablissementPrincipal() {
-        $etablissements = $this->getEtablissementsObj();
+        $etablissements = $this->getEtablissementsObj(false);
         if (!count($etablissements)) {
             return null;
         }
