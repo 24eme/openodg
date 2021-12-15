@@ -28,10 +28,12 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
+        $contextInstance = sfContext::createInstance($this->configuration);
+
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $context = sfContext::createInstance($this->configuration);
-        
+
         $annee = $arguments['annee'];
         $type = ($options['type'])? strtoupper($options['type']) : null;
 
@@ -83,7 +85,7 @@ EOF;
         		}
 
         		try {
-        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, $options['scrapefiles']);
+        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
         		} catch (Exception $e) {
         			echo sprintf("ERROR;%s\n", $e->getMessage());
         			continue;

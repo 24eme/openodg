@@ -24,6 +24,11 @@ class CampagneManager {
         return $this->getCampagneByDate(date('Y-m-d'));
     }
 
+    public function getCurrentPeriode() {
+
+        return $this->getCurrentYearPeriode();
+    }
+
     public function getCurrentYearPeriode() {
         return preg_replace('/-.*/', '', $this->getCurrent());
     }
