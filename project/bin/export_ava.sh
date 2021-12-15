@@ -66,7 +66,7 @@ done;
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/facture_stats.csv.part > $EXPORTDIR/facture_stats.csv
 rm $EXPORTDIR/facture_stats.csv.part
 
-for ((i=2015 ; $(date +%Y -d "-9 month") ; i++)); do
+for ((i=2015 ; i <= $(date +%Y -d "-9 month") ; i++)); do
     mkdir $EXPORTDIR/$i 2> /dev/null;
     curl -s "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/$i/"$i"_dr.csv
 done
