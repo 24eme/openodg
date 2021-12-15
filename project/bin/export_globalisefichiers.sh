@@ -11,6 +11,9 @@ mkdir $EXPORTGLOBALDIR 2> /dev/null
 
 # Mode multi app
 if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
+
+    rm $EXPORTGLOBALDIR/*.csv
+
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh $app;
     done
