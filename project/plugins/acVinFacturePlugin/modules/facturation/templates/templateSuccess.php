@@ -27,7 +27,7 @@
         <td class="text-right"><?php echo $detail->prix ?> €</td>
         <td><?php echo implode(", ", $detail->docs->getRawValue()->toArray()) ?></td>
         <td><?php echo $detail->callback ?><?php if($detail->exist('callback_parameters')): ?> <small class="text-muted"><?php echo implode(", ", $detail->callback_parameters->getRawValue()->toArray()) ?></small><?php endif; ?></td>
-        <td class="text-left"><?php echo $detail->unite ?></td>
+        <td class="text-left"><?php if($detail->exist('unite')): ?><?php echo $detail->unite ?><?php endif; ?></td>
     </tr>
     <?php endforeach; ?>
 <?php endforeach; ?>
