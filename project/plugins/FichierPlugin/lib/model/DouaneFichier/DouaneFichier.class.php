@@ -315,7 +315,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
             $missing = array_diff_key($donnees['produits'], $value);
             if (count($missing)) {
                 foreach ($missing as $k => $m) {
-                    $value[$k] = ['val' => 0];
+                    $value[$k] = ['val' => '—'];
                 }
             }
         }

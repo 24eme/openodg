@@ -24,7 +24,7 @@
                 <td><?= $ligne ?></td>
                 <?php foreach ($produit as $k => $p): ?>
                 <td class="text-right">
-                    <?= round($p['val'], $p['decimals'] ?? 2) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
+                    <?= ($p['val'] === '—') ? '—' : round($p['val'], $p['decimals'] ?? 2) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
                 </td>
                 <?php endforeach ?>
             </tr>
