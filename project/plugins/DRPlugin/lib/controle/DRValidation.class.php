@@ -14,7 +14,7 @@ class DRValidation extends DocumentValidation
     {
         $this->addControle(self::TYPE_WARNING, 'rendement_manquant', "Rendement non présent en configuration");
         $this->addControle(self::TYPE_WARNING, 'rendement_ligne_manquante', "Il manque une ligne dans le produit");
-        $this->addControle(self::TYPE_WARNING, 'rendement_declaration', "Le rendement n'est pas correct");
+        $this->addControle(self::TYPE_WARNING, 'rendement_declaration', "Le rendement n'est pas respecté");
     }
 
     public function controle()
