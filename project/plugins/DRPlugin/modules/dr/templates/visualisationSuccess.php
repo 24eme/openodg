@@ -43,20 +43,22 @@
     </div>
 
     <div class="col-xs-4 text-right">
-        <?php if($dr->exist('validation') && $dr->validation): ?>
-            <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
-                onclick="return confirm('Êtes vous sûr de vouloir dévalider cette DR');"
-            >
-                <span class="glyphicon glyphicon-remove-sign"> Dévalider</span>
-            </a>
-        <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
-            <a href="#" class="btn btn-default disabled">
-                Approuver la DR
-            </a>
-        <?php else : ?>
-            <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-success">
-                Valider la DR
-            </a>
+        <?php if ($sf_user->isAdmin()): ?>
+            <?php if($dr->exist('validation') && $dr->validation): ?>
+                <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
+                    onclick="return confirm('Êtes vous sûr de vouloir dévalider cette DR');"
+                >
+                    <span class="glyphicon glyphicon-remove-sign"> Dévalider</span>
+                </a>
+            <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
+                <a href="#" class="btn btn-default disabled">
+                    Approuver la DR
+                </a>
+            <?php else : ?>
+                <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-success">
+                    Valider la DR
+                </a>
+            <?php endif ?>
         <?php endif ?>
     </div>
 </div>
