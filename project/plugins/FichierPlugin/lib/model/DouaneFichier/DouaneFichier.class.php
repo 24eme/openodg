@@ -306,8 +306,8 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
             }
 
             $donnees['lignes'][$categorie][$entry->produit]['val'] += $entry->valeur;
-            $donnees['lignes'][$categorie][$entry->produit]['unit'] = (in_array($categorie, ['04', '04b'])) ? 'ha' : 'hl';
-            $donnees['lignes'][$categorie][$entry->produit]['decimals'] = (in_array($categorie, ['04', '04b'])) ? 4 : 2;
+            $donnees['lignes'][$categorie][$entry->produit]['unit'] = (in_array($entry->categorie, ['04', '04b'])) ? 'ha' : 'hl';
+            $donnees['lignes'][$categorie][$entry->produit]['decimals'] = (in_array($entry->categorie, ['04', '04b'])) ? 4 : 2;
         }
 
         // potentiellement, des lignes n'existent pas pour certains produits
