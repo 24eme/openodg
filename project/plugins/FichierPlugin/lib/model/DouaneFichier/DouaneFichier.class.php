@@ -286,6 +286,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
     public function getProduitsDetail()
     {
         $donnees = [];
+        $categories = DouaneCsvFile::getCategories();
 
         // Produits :
         $donnees['produits'] = array_column($this->donnees->toArray(1,0), 'produit_libelle', 'produit');;
@@ -293,18 +294,20 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         $donnees['lignes'] = [];
 
         foreach ($this->donnees as $entry) {
-            if (array_key_exists($entry->categorie, $donnees['lignes']) === false) {
-                $donnees['lignes'][$entry->categorie] = [];
+            $categorie = $categories[$entry->categorie];
+
+            if (array_key_exists($categorie, $donnees['lignes']) === false) {
+                $donnees['lignes'][$categorie] = [];
             }
 
-            if (array_key_exists($entry->produit, $donnees['lignes'][$entry->categorie]) === false) {
-                $donnees['lignes'][$entry->categorie][$entry->produit] = [];
-                $donnees['lignes'][$entry->categorie][$entry->produit]['val'] = 0;
+            if (array_key_exists($entry->produit, $donnees['lignes'][$categorie]) === false) {
+                $donnees['lignes'][$categorie][$entry->produit] = [];
+                $donnees['lignes'][$categorie][$entry->produit]['val'] = 0;
             }
 
-            $donnees['lignes'][$entry->categorie][$entry->produit]['val'] += $entry->valeur;
-            $donnees['lignes'][$entry->categorie][$entry->produit]['unit'] = (in_array($entry->categorie, ['04', '04b'])) ? 'ha' : 'hl';
-            $donnees['lignes'][$entry->categorie][$entry->produit]['decimals'] = (in_array($entry->categorie, ['04', '04b'])) ? 4 : 2;
+            $donnees['lignes'][$categorie][$entry->produit]['val'] += $entry->valeur;
+            $donnees['lignes'][$categorie][$entry->produit]['unit'] = (in_array($categorie, ['04', '04b'])) ? 'ha' : 'hl';
+            $donnees['lignes'][$categorie][$entry->produit]['decimals'] = (in_array($categorie, ['04', '04b'])) ? 4 : 2;
         }
 
         // potentiellement, des lignes n'existent pas pour certains produits
@@ -317,7 +320,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
             }
         }
 
-        ksort($donnees['lignes'], SORT_STRING);
+        ksort($donnees['lignes'], SORT_NUMERIC);
         foreach ($donnees['lignes'] as &$array) {
             ksort($array, SORT_STRING);
         }
