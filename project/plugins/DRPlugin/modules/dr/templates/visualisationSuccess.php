@@ -1,5 +1,6 @@
 <?php use_helper('Date'); ?>
 
+<?php include_partial('dr/breadcrumb', array('dr' => $dr )); ?>
 <?php include_partial('global/flash'); ?>
 
 <div class="page-header no-border clearfix">
