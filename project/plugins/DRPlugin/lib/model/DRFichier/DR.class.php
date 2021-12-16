@@ -21,7 +21,9 @@ class DR extends BaseDR {
 
     public function save()
     {
-        $this->storeDeclarant();
+        if (DRConfiguration::getInstance()->hasValidationDR()) {
+            $this->storeDeclarant();
+        }
         parent::save();
     }
 }
