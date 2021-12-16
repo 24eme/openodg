@@ -43,9 +43,11 @@
 
     <div class="col-xs-4 text-right">
         <?php if($dr->exist('validation') && $dr->validation): ?>
-            <div class="text-right text-success">
-                DR validée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
-            </div>
+            <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
+                onclick="return confirm('Êtes vous sûr de vouloir dévalider cette DR');"
+            >
+                <span class="glyphicon glyphicon-remove-sign"> Dévalider</span>
+            </a>
         <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
             <a href="#" class="btn btn-default disabled">
                 Approuver la DR

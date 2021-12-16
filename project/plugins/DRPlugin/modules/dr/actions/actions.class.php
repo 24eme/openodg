@@ -25,4 +25,18 @@ class drActions extends sfActions
 
         return $this->redirect('dr_visualisation', $this->dr);
     }
+
+    public function executeDevalidation(sfWebRequest $request)
+    {
+        $this->dr = $this->getRoute()->getDR();
+
+        if (! $this->dr->validation) {
+            throw new Exception('On ne peut pas dévalider un DR non approuvée');
+        }
+
+        $this->dr->validation = null;
+        $this->dr->save();
+
+        return $this->redirect('dr_visualisation', $this->dr);
+    }
 }
