@@ -283,6 +283,46 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return $donnees;
     }
 
+    public function getProduitsDetail()
+    {
+        $donnees = [];
+
+        // Produits :
+        $donnees['produits'] = array_column($this->donnees->toArray(1,0), 'produit_libelle', 'produit');;
+        ksort($donnees['produits']);
+        $donnees['lignes'] = [];
+
+        foreach ($this->donnees as $entry) {
+            if (array_key_exists($entry->categorie, $donnees['lignes']) === false) {
+                $donnees['lignes'][$entry->categorie] = [];
+            }
+
+            if (array_key_exists($entry->produit, $donnees['lignes'][$entry->categorie]) === false) {
+                $donnees['lignes'][$entry->categorie][$entry->produit] = [];
+                $donnees['lignes'][$entry->categorie][$entry->produit]['val'] = 0;
+            }
+
+            $donnees['lignes'][$entry->categorie][$entry->produit]['val'] += $entry->valeur;
+        }
+
+        // potentiellement, des lignes n'existent pas pour certains produits
+        foreach ($donnees['lignes'] as $key => &$value) {
+            $missing = array_diff_key($donnees['produits'], $value);
+            if (count($missing)) {
+                foreach ($missing as $k => $m) {
+                    $value[$k] = ['val' => 0];
+                }
+            }
+        }
+
+        ksort($donnees['lignes'], SORT_STRING);
+        foreach ($donnees['lignes'] as &$array) {
+            ksort($array, SORT_STRING);
+        }
+
+        return $donnees;
+    }
+
     public function validateOdg($date = null)
     {
         $this->add('validation');

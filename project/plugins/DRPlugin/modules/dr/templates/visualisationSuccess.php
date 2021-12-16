@@ -25,6 +25,7 @@
 <?php endif ?>
 
 <?php include_partial('dr/recap', compact('dr', 'lignesAAfficher', 'configuration')) ?>
+<?php include_partial('dr/recap_detail', compact('dr')) ?>
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
