@@ -116,9 +116,7 @@
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "NOT /appellations/CDR/"
-          ]
+          "callback_parameters": []
         }
       }
     },

@@ -64,8 +64,9 @@ class Tournee extends BaseTournee {
     }
 
     public function getMillesime() {
-        if(!$this->_get('millesime')) {
-            return ((int) substr($this->date, 0, 4) - 1)."";
+        if(!$this->_get('millesime') && $this->date) {
+
+            return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date)."";
         }
 
         return $this->_get('millesime');
