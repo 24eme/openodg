@@ -38,7 +38,7 @@ class DRValidation extends DocumentValidation
             return 0;
         }
 
-        if ($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'] > $produit_conf->getRendement()) {
+        if (round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) > $produit_conf->getRendement()) {
             $this->addPoint(self::TYPE_WARNING, 'rendement_declaration', "Le rendement L5 du produit <strong>".$produit['libelle']."</strong> est de "
                 . round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) . " hl/ha, "
                 ."le maximum étant <strong>".$produit_conf->getRendement()."</strong> hl/ha"
