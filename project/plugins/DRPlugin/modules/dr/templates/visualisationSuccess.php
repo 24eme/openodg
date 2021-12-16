@@ -9,8 +9,8 @@
         <small class="pull-right">
             <i class="glyphicon glyphicon-file"></i>
             Déclaration importée le <?= format_date($dr->date_import, "dd/MM/yyyy", "fr_FR") ?>
-            <?php if ($dr->exist('validation') && $dr->validation): ?>
-                et approuvée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
+            <?php if ($dr->exist('validation_odg') && $dr->validation_odg): ?>
+                et approuvée le <?= format_date($dr->validation_odg, "dd/MM/yyyy", "fr_FR") ?>
             <?php endif ?>
         </small>
     </h2>
@@ -44,7 +44,7 @@
 
     <div class="col-xs-4 text-right">
         <?php if ($sf_user->isAdmin()): ?>
-            <?php if($dr->exist('validation') && $dr->validation): ?>
+            <?php if($dr->exist('validation_odg') && $dr->validation_odg): ?>
                 <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
                     onclick="return confirm('Êtes vous sûr de vouloir dévalider cette DR');"
                 >

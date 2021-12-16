@@ -330,7 +330,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
 
     public function validateOdg($date = null)
     {
-        $this->add('validation');
-        $this->validation = ($date) ?: date('Y-m-d');
+        $this->add('validation_odg');
+        $this->validation_odg = ($date) ?: date('Y-m-d');
     }
 }
