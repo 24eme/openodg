@@ -35,7 +35,7 @@
     </div>
 
     <div class="col-xs-4 text-center">
-        <a class="btn btn-default" href="#">
+        <a class="btn btn-default" href="<?php echo url_for('get_fichier', array('id' => $dr->_id)) ?>">
             <i class="glyphicon glyphicon-file"></i> DR
         </a>
     </div>
