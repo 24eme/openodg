@@ -1,6 +1,6 @@
 <?php use_helper('Float') ?>
 
-<h3>Détail</h3>
+<h3>Détail par produit</h3>
 
 <table class="table table-bordered table-striped">
     <thead>
