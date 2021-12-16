@@ -87,7 +87,7 @@ class DouaneImportCsvFile {
         $doc[] = $this->etablissement->cvi ;
         $doc[] = self::cleanRaisonSociale($this->etablissement->raison_sociale);
         $doc[] = null;
-        $doc[] = $this->etablissement->siege->commune;
+        $doc[] = ($this->etablissement->siege->commune) ? $this->etablissement->siege->commune : $this->etablissement->commune;
       }else {
         $doc[] = ($this->cvi) ? $this->cvi : null;
         $rs = (isset($this->raison_sociale)) ? $this->raison_sociale : null;
@@ -150,7 +150,7 @@ class DouaneImportCsvFile {
                         $p[] = $t->cvi;
                         $p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
                         $p[] = null;
-                        $p[] = $t->siege->commune;
+                        $p[] = ($t->siege->commune) ? $t->siege->commune : $t->commune;
                     } else {
                         $p[] = null;
                         $p[] = null;
