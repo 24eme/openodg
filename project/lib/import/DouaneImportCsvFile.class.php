@@ -126,7 +126,7 @@ class DouaneImportCsvFile {
             $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP';
         }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
             $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE';
-        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
+        }elseif ($has_volume_nego && $has_volume_coop && $has_volume_cave) {
             $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE';
         }elseif (!$has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
             $famille = "SANS_VOLUME";
