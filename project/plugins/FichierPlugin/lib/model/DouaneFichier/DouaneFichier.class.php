@@ -283,6 +283,51 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return $donnees;
     }
 
+    public function getProduitsDetail()
+    {
+        $donnees = [];
+        $categories = DouaneCsvFile::getCategories();
+
+        // Produits :
+        $donnees['produits'] = array_column($this->donnees->toArray(1,0), 'produit_libelle', 'produit');;
+        ksort($donnees['produits']);
+        $donnees['lignes'] = [];
+
+        foreach ($this->donnees as $entry) {
+            $categorie = $categories[$entry->categorie];
+
+            if (array_key_exists($categorie, $donnees['lignes']) === false) {
+                $donnees['lignes'][$categorie] = [];
+            }
+
+            if (array_key_exists($entry->produit, $donnees['lignes'][$categorie]) === false) {
+                $donnees['lignes'][$categorie][$entry->produit] = [];
+                $donnees['lignes'][$categorie][$entry->produit]['val'] = 0;
+            }
+
+            $donnees['lignes'][$categorie][$entry->produit]['val'] += $entry->valeur;
+            $donnees['lignes'][$categorie][$entry->produit]['unit'] = (in_array($entry->categorie, ['04', '04b'])) ? 'ha' : 'hl';
+            $donnees['lignes'][$categorie][$entry->produit]['decimals'] = (in_array($entry->categorie, ['04', '04b'])) ? 4 : 2;
+        }
+
+        // potentiellement, des lignes n'existent pas pour certains produits
+        foreach ($donnees['lignes'] as $key => &$value) {
+            $missing = array_diff_key($donnees['produits'], $value);
+            if (count($missing)) {
+                foreach ($missing as $k => $m) {
+                    $value[$k] = ['val' => '—'];
+                }
+            }
+        }
+
+        ksort($donnees['lignes'], SORT_NUMERIC);
+        foreach ($donnees['lignes'] as &$array) {
+            ksort($array, SORT_STRING);
+        }
+
+        return $donnees;
+    }
+
     public function validateOdg($date = null)
     {
         $this->add('validation');

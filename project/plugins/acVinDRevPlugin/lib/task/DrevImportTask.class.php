@@ -133,9 +133,9 @@ EOF;
                 $drev->validate($dateValidation);
                 if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]){
                       $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]);
-                      $dateValidation = $dt->modify('+1 minute')->format('c');
+                      $dateValidationODG = $dt->modify('+1 minute')->format('c');
+                      $drev->validateOdg($dateValidation);
                 }
-                $drev->validateOdg($dateValidation);
                 $drev->save();
 
                 echo "IMPORTE;$drev->_id;".Organisme::getInstance()->getUrl()."/drev/visualisation/".$drev->_id."\n";
