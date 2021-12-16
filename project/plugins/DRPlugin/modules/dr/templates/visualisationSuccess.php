@@ -7,7 +7,10 @@
         Déclaration de Récolte <?= $dr->campagne ?>
         <small class="pull-right">
             <i class="glyphicon glyphicon-file"></i>
-            Déclaration importé le <?= format_date($dr->date_import, "dd/MM/yyyy", "fr_FR") ?>
+            Déclaration importée le <?= format_date($dr->date_import, "dd/MM/yyyy", "fr_FR") ?>
+            <?php if ($dr->exist('validation') && $dr->validation): ?>
+                et approuvée le <?= format_date($dr->validation, "dd/MM/yyyy", "fr_FR") ?>
+            <?php endif ?>
         </small>
     </h2>
 </div>
