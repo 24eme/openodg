@@ -42,7 +42,7 @@
         <tr>
             <th class="text-right"><strong>Total</strong></th>
             <?php foreach ($lignesAAfficher as $l): ?>
-                <th class="text-right"><strong><?= echoFloat($dr->getTotalValeur($l)) ?></strong></th>
+                <th class="text-right"><strong><?= echoFloat($dr->getTotalValeur($l)) ?></strong> <span class='text-muted'><?= current($dr->getProduits()->getRawValue())['lignes'][$l]['unit'] ?></span></th>
             <?php endforeach ?>
         </tr>
     </tbody>
