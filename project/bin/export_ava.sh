@@ -74,7 +74,7 @@ done
 rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
 echo "campagne;Produit;titre;raison_sociale;adresse;commune;code_postal;CVI Opérateur;siret;stock_vci_n-1;dr_surface;dr_volume;dr_vci;vci_constitue;vci_complement;vci_substitution;vci_rafraichi;vci_desctruction;drev_revendique_n;drev_revendique_n-1;stock_vci_n" > $EXPORTDIR/bilan_vci.tmp.csv
 cat $EXPORTDIR/bilan_vci.tmp.csv > $EXPORTDIR/bilan_vci.csv
-for ((i=2018 ; $(date +%Y) -i ; i++)); do
+for ((i=2018 ; i <= $(date +%Y -d "-9 month") ; i++)); do
     rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
     python3 bin/notebook/bilan_vci_ava.py "$i" "AOC Crémant d'Alsace" $EXPORTDIR $EXPORTDIR/bilan_vci.tmp.csv
     cat $EXPORTDIR/bilan_vci.tmp.csv | tail -n +2 >> $EXPORTDIR/bilan_vci.csv
