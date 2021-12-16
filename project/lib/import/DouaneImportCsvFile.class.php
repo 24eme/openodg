@@ -91,7 +91,7 @@ class DouaneImportCsvFile {
         $doc[] = $this->etablissement->cvi ;
         $doc[] = self::cleanRaisonSociale($this->etablissement->raison_sociale);
         $doc[] = null;
-        $doc[] = $this->etablissement->siege->commune;
+        $doc[] = ($this->etablissement->siege->commune) ? $this->etablissement->siege->commune : $this->etablissement->commune;
       }else {
         $doc[] = ($this->cvi) ? $this->cvi : null;
         $rs = (isset($this->raison_sociale)) ? $this->raison_sociale : null;
@@ -126,7 +126,7 @@ class DouaneImportCsvFile {
             $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP';
         }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
             $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE';
-        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
+        }elseif ($has_volume_nego && $has_volume_coop && $has_volume_cave) {
             $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE';
         }elseif (!$has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
             $famille = "SANS_VOLUME";
@@ -203,7 +203,7 @@ class DouaneImportCsvFile {
                         $p[] = $t->cvi;
                         $p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
                         $p[] = null;
-                        $p[] = $t->siege->commune;
+                        $p[] = ($t->siege->commune) ? $t->siege->commune : $t->commune;
                     } else {
                         $p[] = null;
                         $p[] = null;
