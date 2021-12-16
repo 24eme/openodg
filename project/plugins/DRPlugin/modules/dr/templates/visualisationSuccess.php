@@ -53,8 +53,8 @@
                 Approuver la DR
             </a>
         <?php else : ?>
-            <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-default">
-                Approuver la DR
+            <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-success">
+                Valider la DR
             </a>
         <?php endif ?>
     </div>
