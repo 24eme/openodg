@@ -231,7 +231,9 @@ EOF;
 
         if($lotsAdded){
             $drev->validate($dateValidationDeclarant);
-            $drev->validateOdg($dateValidation);
+	    if($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
+		    $drev->validateOdg($dateValidation);
+	    }
             $drev->save();
             echo "IMPORTE;$drev->_id;".Organisme::getInstance()->getUrl()."/drev/visualisation/".$drev->_id."\n";
         }
