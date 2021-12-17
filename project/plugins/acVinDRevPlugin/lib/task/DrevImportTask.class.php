@@ -168,6 +168,8 @@ EOF;
             $volumesbyCouleur[$couleur] = $volumesbyCouleur[$couleur] + floatval(str_replace(",", ".",trim($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE])));
         }
 
+        $revision = $drev->_rev;
+
         foreach($lignes as $ligne) {
             $data = $this->csv[$ligne];
             if(!trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]) && !trim($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG])){
@@ -229,11 +231,12 @@ EOF;
             $dateValidation = $dt->modify('+1 minute')->format('c');
         }
 
-        if($lotsAdded){
+        if($lotsAdded || $revision != $drev->_rev) {
             $drev->validate($dateValidationDeclarant);
 	    if($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]) {
 		    $drev->validateOdg($dateValidation);
 	    }
+
             $drev->save();
             echo "IMPORTE;$drev->_id;".Organisme::getInstance()->getUrl()."/drev/visualisation/".$drev->_id."\n";
         }
@@ -268,6 +271,7 @@ EOF;
         if($lotFindByVolume) {
             $lotFindByVolume->numero_logement_operateur = $numero_cuve;
             echo "mise à jour du numéro de cuve;$drev->_id;$numero_cuve;\n";
+            $drev->save();
             return true;
         }
 
