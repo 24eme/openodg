@@ -22,6 +22,13 @@ function(doc) {
         return;
     }
 
+    campagne = doc.campagne;
+    if (doc.type == "DR") {
+      campagne = campagne;
+      campagneplusun = parseInt(campagne) + 1;
+      campagne = campagne + "-" + campagneplusun;
+    }
+
     if(!doc.declarant) {
 
         return;
@@ -153,13 +160,13 @@ function(doc) {
                 if(doc.declaration[key][detailKey].statut_odg){
                    statutProduit = doc.declaration[key][detailKey].statut_odg;
                  }
-    	          emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                emit([type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
                   nb_emits = nb_emits + 1;
               }
            }
     }
 
     if(!nb_emits){
-        emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        emit([type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
     }
 }
