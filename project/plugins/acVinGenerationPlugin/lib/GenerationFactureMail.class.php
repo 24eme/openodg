@@ -67,7 +67,7 @@ class GenerationFactureMail extends GenerationAbstract {
         return $this->logs;
     }
 
-    public function addLog($factureId, $statut, $date = null) {
+    public function addLog($factureId, $statut, $commentaire, $date = null) {
         $header = false;
         if(!file_exists($this->getLogPath())) {
             $header = true;
@@ -76,22 +76,22 @@ class GenerationFactureMail extends GenerationAbstract {
         $fp = fopen($this->getLogPath(), 'a');
 
         if($header) {
-            fputcsv($fp, array("Date", "Numéro de facture", "Identifiant Opérateur", "Raison sociale", "Email", "Statut", "Facture ID"));
+            fputcsv($fp, array("Date", "Numéro de facture", "Identifiant Opérateur", "Raison sociale", "Email", "Statut", "Commentaire", "Facture ID"));
         }
 
-        fputcsv($fp, $this->getLog($factureId, $statut, $date));
+        fputcsv($fp, $this->getLog($factureId, $statut, $commentaire, $date));
 
         fclose($fp);
     }
 
-    public function getLog($factureId, $statut, $date = null) {
+    public function getLog($factureId, $statut, $commentaire, $date = null) {
         if(!$date) {
             $date = date("Y-m-d H:i:s");
         }
 
         $facture = FactureClient::getInstance()->find($factureId);
 
-        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $facture->getSociete()->getEmailTeledeclaration(), $statut, $facture->_id);
+        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $facture->getSociete()->getEmailTeledeclaration(), $statut, $commentaire, $facture->_id);
     }
 
     public function generate() {
@@ -110,18 +110,18 @@ class GenerationFactureMail extends GenerationAbstract {
             $mail = $this->generateMailForADocumentId($factureId);
 
             if(!$mail) {
-                $this->addLog($factureId, "PAS_DE_MAIL");
+                $this->addLog($factureId, "PAS_DE_MAIL", "generateMailForADocumentId n'a pas retourné de mail");
                 continue;
             }
 
             $sended = $this->getMailer()->send($mail);
 
             if(!$sended) {
-                $this->addLog($factureId, "ERREUR");
+                $this->addLog($factureId, "ERREUR", "L'envoi de mail a retourné une erreur");
                 continue;
             }
 
-            $this->addLog($factureId, "ENVOYÉ");
+            $this->addLog($factureId, "ENVOYÉ", "mail envoyé avec succes");
 
             $this->generation->documents->add(null, $factureId);
             $this->generation->save();
