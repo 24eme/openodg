@@ -14,7 +14,7 @@ class GenerationFactureMail extends GenerationAbstract {
          ->setFrom(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')))
          ->setTo($facture->getSociete()->getEmailCompta())
          ->setSubject(self::getSujet($facture->getNumeroOdg()))
-         ->setBody($this->getPartial("facturation/email", array('id' => $facture)));
+         ->setBody($this->getPartial("facturation/email", array('id' => $id)));
 
         return $message;
     }
