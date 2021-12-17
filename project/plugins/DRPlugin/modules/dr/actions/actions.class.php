@@ -37,11 +37,11 @@ class drActions extends sfActions
             return $this->forwardSecure();
         }
 
-        if (! $this->dr->validation) {
+        if (! $this->dr->exist('validation_odg') || ! $this->dr->validation_odg) {
             throw new Exception('On ne peut pas dévalider un DR non approuvée');
         }
 
-        $this->dr->validation = null;
+        $this->dr->validation_odg = null;
         $this->dr->save();
 
         return $this->redirect('dr_visualisation', $this->dr);

@@ -1,8 +1,9 @@
 <?php
 
-class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocument {
+class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocument, InterfaceDeclarantDocument {
 
     protected $mouvement_document = null;
+    protected $declarant_document = null;
 
     public function getPeriode() {
 
@@ -16,6 +17,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
     protected function initDocuments() {
         parent::initDocuments();
         $this->mouvement_document = new MouvementFacturesDocument($this);
+        $this->declarant_document = new DeclarantDocument($this);
     }
 
 
@@ -33,6 +35,15 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
 
         parent::save();
 
+    }
+
+    /**** DECLARANT ****/
+    public function storeDeclarant() {
+        $this->declarant_document->storeDeclarant();
+
+        if($this->getEtablissementObject()->famille) {
+            $this->declarant->famille = $this->getEtablissementObject()->famille;
+        }
     }
 
     /**** MOUVEMENTS ****/
@@ -330,7 +341,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
 
     public function validateOdg($date = null)
     {
-        $this->add('validation');
-        $this->validation = ($date) ?: date('Y-m-d');
+        $this->add('validation_odg');
+        $this->validation_odg = ($date) ?: date('Y-m-d');
     }
 }
