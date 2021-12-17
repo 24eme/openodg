@@ -58,6 +58,10 @@ function(doc) {
       validation = doc.date_import;
     }
 
+    if (! validation && doc.date_depot) {
+      validation = doc.date_depot;
+    }
+
     var validation_odg = null;
     if(doc.validation_odg) {
     validation_odg = doc.validation_odg;
