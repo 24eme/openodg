@@ -18,3 +18,4 @@ all:
         HVE: "HVE"
         primeur: "primeur"
         TerraVitis: "Terra Vitis"
+        autre: "Autre"
