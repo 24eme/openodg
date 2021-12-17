@@ -1,6 +1,6 @@
 <?php use_helper('Float') ?>
 
-<h3>Synthèse</h3>
+<h3>Synthèse par couleur</h3>
 
 <table class="table table-bordered table-striped">
     <thead>
@@ -19,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($dr->getProduits() as $produit): ?>
+        <?php foreach ($dr->getProduitsSynthese() as $produit): ?>
             <tr>
                 <td>
                     <?= $produit['libelle'] ?>

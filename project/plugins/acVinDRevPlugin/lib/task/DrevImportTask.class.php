@@ -198,7 +198,7 @@ EOF;
             if($this->formatFloat($volume)){
                 if($this->isLotInDrev($drev, $data)){
                     $libelleProduit = $produit_line->getLibelleComplet();
-                    echo "WARNING;PAS D'IMPORT lot existe : $drev->_id;$campagne;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
+                    //echo "WARNING;PAS D'IMPORT lot existe : $drev->_id;$campagne;$libelleProduit;$volume;$numero_cuve;$type_destination;$date_destination\n";
                     continue;
                 }
                 $lot = $drev->addLot();
@@ -244,6 +244,8 @@ EOF;
         $numero_cuve = trim($ligne[ExportDRevCSV::CSV_LOT_NUMERO_CUVE]);
         $type_destination = self::$destinationsTypes[preg_replace("/([A-Z_]+).+/","$1",$ligne[ExportDRevCSV::CSV_LOT_DESTINATION])];
         $date_destination = preg_replace("/([A-Z_]* )?([0-9\/]+)/","$2",$ligne[ExportDRevCSV::CSV_LOT_DESTINATION]);
+        $code_inao = trim($ligne[ExportDRevCSV::CSV_PRODUIT_INAO]);
+        $date = trim($ligne[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]);
 
         // Check si le Volume est le même que celui d'un autre Lot
         foreach ($drev->getLots() as $lot) {
@@ -251,6 +253,22 @@ EOF;
                   ( ($ligne[ExportDRevCSV::CSV_DATE_VALIDATION_ODG] < '2021-08-00') || (KeyInflector::slugify(trim($numero_cuve)) == KeyInflector::slugify(trim($lot->numero_logement_operateur)) ) )) {
                 return true;
             }
+        }
+
+        $lotFindByVolume = null;
+        foreach ($drev->getLots() as $lot) {
+            if (!$lot->numero_logement_operateur && $numero_cuve && $lot->volume == $volume && $lot->getConfigProduit()->getCodeDouane() == $code_inao) {
+                if($lotFindByVolume) {
+                    throw new sfException("Le lot semble être déjà importé mais il y a un doute");
+                }
+                $lotFindByVolume = $lot;
+            }
+        }
+
+        if($lotFindByVolume) {
+            $lotFindByVolume->numero_logement_operateur = $numero_cuve;
+            echo "mise à jour du numéro de cuve;$drev->_id;$numero_cuve;\n";
+            return true;
         }
 
         return false;

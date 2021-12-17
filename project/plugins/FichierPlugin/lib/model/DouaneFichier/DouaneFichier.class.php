@@ -294,46 +294,74 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return $donnees;
     }
 
+    public function getProduitsSynthese()
+    {
+        $synthese = [];
+        foreach ($this->getProduits() as $hash => $produit) {
+            $hash_produit = strstr($hash, '/cepages', true);
+            if (array_key_exists($hash_produit, $synthese) === false) {
+                $synthese[$hash_produit] = [];
+                $synthese[$hash_produit]['lignes'] = [];
+                $synthese[$hash_produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($hash)->getCouleur()->getLibelleComplet();
+            }
+
+            foreach ($produit['lignes'] as $ligne => $value) {
+                if (array_key_exists($ligne, $synthese[$hash_produit]['lignes']) === false) {
+                    $synthese[$hash_produit]['lignes'][$ligne] = [];
+                    $synthese[$hash_produit]['lignes'][$ligne]['val'] = 0;
+                    $synthese[$hash_produit]['lignes'][$ligne]['unit'] = (in_array($ligne, ['04', '04b'])) ? 'ha' : 'hl';
+                    $synthese[$hash_produit]['lignes'][$ligne]['decimals'] = (in_array($ligne, ['04', '04b'])) ? 4 : 2;
+                }
+
+                $synthese[$hash_produit]['lignes'][$ligne]['val'] += $value['val'];
+            }
+        }
+
+        return $synthese;
+    }
+
     public function getProduitsDetail()
     {
         $donnees = [];
-        $categories = DouaneCsvFile::getCategories();
 
         // Produits :
-        $donnees['produits'] = array_column($this->donnees->toArray(1,0), 'produit_libelle', 'produit');;
-        ksort($donnees['produits']);
-        $donnees['lignes'] = [];
+        $donnees['lignes'] = array_column($this->donnees->toArray(1,0), 'categorie');
+        sort($donnees['lignes']);
+        $donnees['lignes'] = array_unique($donnees['lignes']);
+        $donnees['produits'] = [];
 
         foreach ($this->donnees as $entry) {
-            $categorie = $categories[$entry->categorie];
+            $produit = $entry->produit;
+            $categorie = $entry->categorie;
 
-            if (array_key_exists($categorie, $donnees['lignes']) === false) {
-                $donnees['lignes'][$categorie] = [];
+            if (array_key_exists($produit, $donnees['produits']) === false) {
+                $donnees['produits'][$produit]['lignes'] = [];
+                $donnees['produits'][$produit]['libelle'] = $entry->produit_libelle;
             }
 
-            if (array_key_exists($entry->produit, $donnees['lignes'][$categorie]) === false) {
-                $donnees['lignes'][$categorie][$entry->produit] = [];
-                $donnees['lignes'][$categorie][$entry->produit]['val'] = 0;
+            if (array_key_exists($categorie, $donnees['produits'][$produit]['lignes']) === false) {
+                $donnees['produits'][$produit]['lignes'][$categorie] = [];
+                $donnees['produits'][$produit]['lignes'][$categorie]['val'] = 0;
             }
 
-            $donnees['lignes'][$categorie][$entry->produit]['val'] += $entry->valeur;
-            $donnees['lignes'][$categorie][$entry->produit]['unit'] = (in_array($entry->categorie, ['04', '04b'])) ? 'ha' : 'hl';
-            $donnees['lignes'][$categorie][$entry->produit]['decimals'] = (in_array($entry->categorie, ['04', '04b'])) ? 4 : 2;
+            $donnees['produits'][$produit]['lignes'][$categorie]['val'] += $entry->valeur;
+            $donnees['produits'][$produit]['lignes'][$categorie]['unit'] = (in_array($entry->categorie, ['04', '04b'])) ? 'ha' : 'hl';
+            $donnees['produits'][$produit]['lignes'][$categorie]['decimals'] = (in_array($entry->categorie, ['04', '04b'])) ? 4 : 2;
         }
 
         // potentiellement, des lignes n'existent pas pour certains produits
-        foreach ($donnees['lignes'] as $key => &$value) {
-            $missing = array_diff_key($donnees['produits'], $value);
+        foreach ($donnees['produits'] as $key => &$value) {
+            $missing = array_diff($donnees['lignes'], array_keys($value['lignes']));
             if (count($missing)) {
                 foreach ($missing as $k => $m) {
-                    $value[$k] = ['val' => '—'];
+                    $value['lignes'][$m] = ['val' => '—'];
                 }
             }
         }
 
-        ksort($donnees['lignes'], SORT_NUMERIC);
-        foreach ($donnees['lignes'] as &$array) {
-            ksort($array, SORT_STRING);
+        ksort($donnees['produits'], SORT_NUMERIC);
+        foreach ($donnees['produits'] as &$array) {
+            ksort($array['lignes'], SORT_STRING);
         }
 
         return $donnees;
