@@ -19,7 +19,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($dr->getProduits() as $produit): ?>
+        <?php foreach ($dr->getProduitsSynthese() as $produit): ?>
             <tr>
                 <td>
                     <?= $produit['libelle'] ?>

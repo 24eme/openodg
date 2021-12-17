@@ -294,6 +294,32 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return $donnees;
     }
 
+    public function getProduitsSynthese()
+    {
+        $synthese = [];
+        foreach ($this->getProduits() as $hash => $produit) {
+            $hash_produit = strstr($hash, '/cepages', true);
+            if (array_key_exists($hash_produit, $synthese) === false) {
+                $synthese[$hash_produit] = [];
+                $synthese[$hash_produit]['lignes'] = [];
+                $synthese[$hash_produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($hash)->getCouleur()->getLibelleComplet();
+            }
+
+            foreach ($produit['lignes'] as $ligne => $value) {
+                if (array_key_exists($ligne, $synthese[$hash_produit]['lignes']) === false) {
+                    $synthese[$hash_produit]['lignes'][$ligne] = [];
+                    $synthese[$hash_produit]['lignes'][$ligne]['val'] = 0;
+                    $synthese[$hash_produit]['lignes'][$ligne]['unit'] = (in_array($ligne, ['04', '04b'])) ? 'ha' : 'hl';
+                    $synthese[$hash_produit]['lignes'][$ligne]['decimals'] = (in_array($ligne, ['04', '04b'])) ? 4 : 2;
+                }
+
+                $synthese[$hash_produit]['lignes'][$ligne]['val'] += $value['val'];
+            }
+        }
+
+        return $synthese;
+    }
+
     public function getProduitsDetail()
     {
         $donnees = [];
