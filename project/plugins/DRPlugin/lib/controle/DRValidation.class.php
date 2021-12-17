@@ -14,7 +14,7 @@ class DRValidation extends DocumentValidation
     {
         $this->addControle(self::TYPE_WARNING, 'rendement_manquant', "Rendement non présent en configuration");
         $this->addControle(self::TYPE_WARNING, 'rendement_ligne_manquante', "Il manque une ligne dans le produit");
-        $this->addControle(self::TYPE_WARNING, 'rendement_declaration', "Le rendement n'est pas correct");
+        $this->addControle(self::TYPE_WARNING, 'rendement_declaration', "Le rendement n'est pas respecté");
     }
 
     public function controle()
@@ -38,8 +38,11 @@ class DRValidation extends DocumentValidation
             return 0;
         }
 
-        if ($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'] > $produit_conf->getRendement()) {
-            $this->addPoint(self::TYPE_WARNING, 'rendement_declaration', "Le rendement du produit <strong>".$produit['libelle']."</strong> est de <strong>".$produit_conf->getRendement()."</strong> hl/ha");
+        if (round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) > $produit_conf->getRendement()) {
+            $this->addPoint(self::TYPE_WARNING, 'rendement_declaration', "Le rendement L5 du produit <strong>".$produit['libelle']."</strong> est de "
+                . round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) . " hl/ha, "
+                ."le maximum étant <strong>".$produit_conf->getRendement()."</strong> hl/ha"
+            );
         }
     }
 }

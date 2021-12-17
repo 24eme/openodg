@@ -4,6 +4,7 @@ function(doc) {
         doc.type != "ChgtDenom" &&
         doc.type != "Conditionnement" &&
         doc.type != "DRev" &&
+        doc.type != "DR" &&
         doc.type != "DRevMarc" &&
         doc.type != "ParcellaireAffectation" &&
         doc.type != "ParcellaireIntentionAffectation" &&
@@ -44,6 +45,10 @@ function(doc) {
     var validation = null;
     if(doc.validation) {
     validation = doc.validation;
+    }
+
+    if (! validation && doc.date_import) {
+      validation = doc.date_import;
     }
 
     var validation_odg = null;

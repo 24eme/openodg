@@ -125,7 +125,15 @@ class declarationActions extends sfActions {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
         }
 
-        if ($doc_type == "SV12" || $doc_type == "DR") {
+        if ($doc_type == "SV12") {
+            return $this->redirect('get_fichier', ['id' => $doc_id]);
+        }
+
+        if ($doc_type == "DR") {
+            if (DRConfiguration::getInstance()->hasValidationDR()) {
+                return $this->redirect('dr_visualisation', ['id' => $doc_id]);
+            }
+
             return $this->redirect('get_fichier', ['id' => $doc_id]);
         }
 

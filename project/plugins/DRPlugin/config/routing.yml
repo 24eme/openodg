@@ -18,3 +18,13 @@ dr_approbation:
   requirements:
     sf_method: [get]
 
+dr_devalidation:
+  url: /dr/devalidation/:id
+  param: { module: dr, action: devalidation }
+  class: DRRoute
+  options:
+    model: DR
+    type:  object
+  requirements:
+    sf_method: [get]
+
