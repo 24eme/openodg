@@ -118,18 +118,20 @@ $drevM01 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->i
 $t->is($drevM01->_id, $drev->_id."-M01", "La modification du lot a engendré une modificatrice");
 $t->is($drevM01->lots[0]->numero_logement_operateur, 'CuveCexCuveA', "Le logement a été changé");
 
-$t->comment("Création d'une drev modificatrice avec un nouveau lot");
+$t->comment("Réduction du volume de la drev");
 
-$drevM02 = DRevClient::getInstance()->find($drevM01->_id)->generateModificative();
+$drevM01 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
+$lot = $drevM01->lots[0];
+$lot->volume = 90;
+LotsClient::getInstance()->modifyAndSave($lot);
+$drevM02 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
 
-$lot = $drevM02->addLot();
-$lot->numero_logement_operateur = 'CUVE B';
-$lot->produit_hash = $produit_hash;
-$lot->volume = 50;
-$drevM02->save();
-$drevM02->validate();
-$drevM02->validateOdg();
-$drevM02->save();
+$t->is($drevM02->_id, $drev->_id."-M02", "La modification du lot a engendré une modificatrice");
+
+$diff = $drevM02->getDiffLotVolume();
+$t->is(count($diff), 1, "la modification a bien généré une différence de volume");
+$t->is($diff['/lots/0/volume'], 100, "la première diff de volume donnne bien l'ancien volume du lot 1");
+$t->is($drevM02->lots[0]->getOriginalVolumeIfModifying(), 100, "on repère bien que c'est une modification");
 
 $getVolumeRevendiqueNumeroDossier_quantite = null;
 $getVolumeLotsFacturables_quantite = null;
@@ -140,24 +142,21 @@ foreach($drevM02->mouvements->get($drev->identifiant) as $m) {
         $getVolumeLotsFacturables_quantite = $m->quantite;
     }
 }
-$t->is($getVolumeRevendiqueNumeroDossier_quantite, 50, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M02 : 50");
-$t->is($getVolumeLotsFacturables_quantite, 50, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M02 : 50");
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, -10, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M02 : -10");
+$t->is($getVolumeLotsFacturables_quantite, -10, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M02 : -10");
 
-$t->comment("Réduction du volume de la drev");
+$t->comment("Création d'une drev modificatrice avec un nouveau lot");
 
-$drevM02 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
+$drevM03 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode)->generateModificative();
 
-$lot = $drevM02->lots[0];
-$lot->volume = 90;
-LotsClient::getInstance()->modifyAndSave($lot);
-$drevM03 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
-
-$t->is($drevM03->_id, $drev->_id."-M03", "La modification du lot a engendré une modificatrice");
-
-$diff = $drevM03->getDiffLotVolume();
-$t->is(count($diff), 1, "la modification a bien généré une différence de volume");
-$t->is($diff['/lots/0/volume'], 100, "la première diff de volume donnne bien l'ancien volume du lot 1");
-$t->is($drevM03->lots[0]->getOriginalVolumeIfModifying(), 100, "on repère bien que c'est une modification");
+$lot = $drevM03->addLot();
+$lot->numero_logement_operateur = 'CUVE B';
+$lot->produit_hash = $produit_hash;
+$lot->volume = 50;
+$drevM03->save();
+$drevM03->validate();
+$drevM03->validateOdg();
+$drevM03->save();
 
 $getVolumeRevendiqueNumeroDossier_quantite = null;
 $getVolumeLotsFacturables_quantite = null;
@@ -168,8 +167,8 @@ foreach($drevM03->mouvements->get($drev->identifiant) as $m) {
         $getVolumeLotsFacturables_quantite = $m->quantite;
     }
 }
-$t->is($getVolumeRevendiqueNumeroDossier_quantite, -10, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M03 : -10");
-$t->is($getVolumeLotsFacturables_quantite, -10, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M03 : -10");
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 50, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M03 : 50");
+$t->is($getVolumeLotsFacturables_quantite, 50, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M03 : 50");
 
 $t->comment("suppression d'un lot de la drev");
 $drevM04 = $drevM03->generateModificative();
