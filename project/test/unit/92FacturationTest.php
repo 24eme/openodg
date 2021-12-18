@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test(43);
+$t = new lime_test(44);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
@@ -117,6 +117,8 @@ $drevM01 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->i
 
 $t->is($drevM01->_id, $drev->_id."-M01", "La modification du lot a engendré une modificatrice");
 $t->is($drevM01->lots[0]->numero_logement_operateur, 'CuveCexCuveA', "Le logement a été changé");
+
+$t->ok(!$drevM01->mouvements->exist($drev->identifiant), "La modification n'a pas engendré de mouvement");
 
 $t->comment("Réduction du volume de la drev après une drev ayant le même numéro de dossier");
 
