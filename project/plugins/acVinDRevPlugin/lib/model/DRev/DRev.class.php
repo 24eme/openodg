@@ -1534,6 +1534,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
     {
+
+        return $this->getVolumeRevendiqueNumeroDossierDiff($produitFilter);
+    }
+
+    public function getVolumeRevendiqueNumeroDossierDiff($produitFilter = null)
+    {
         $lots = [];
         $lotsmodifs = [];
         $volume_mod = 0;
@@ -1669,7 +1675,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
           $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
-          if(isset($cotisationsPrec[$cle])) {
+          if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
 
