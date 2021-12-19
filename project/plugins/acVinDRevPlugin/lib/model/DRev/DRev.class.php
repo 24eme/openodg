@@ -1417,6 +1417,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $mother->save(false);
+        $docs2save = array();
+        foreach($this->getDeletedLots() as $lot) {
+            $docs2save[$lot->id_document] = $lot->id_document;
+        }
+        unset($docs2save[$mother->_id]);
+        foreach($docs2save as $id) {
+            DRevClient::getInstance()->find($id)->save(false);
+        }
+
         DeclarationClient::getInstance()->clearCache();
     }
 
