@@ -1566,7 +1566,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $volume_mod += $lot->volume;
         }
 
+        if($volume_mod === 0 && !$this->isFirstNumeroDossier()) {
+
+            return 0;
+        }
+
         return $volume - $volume_mod;
+    }
+
+    public function isFirstNumeroDossier() {
+        $mother = $this->getMother();
+        if(!$mother) {
+            return true;
+        }
+        foreach($mother->lots as $lot) {
+            if ($lot->numero_dossier === $this->numero_archive) {
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getVolumeRevendiqueLots($produitFilter = null){
