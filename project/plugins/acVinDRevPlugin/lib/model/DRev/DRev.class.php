@@ -1739,6 +1739,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         $lots = array();
         foreach($deleted as $unique_id) {
+            if(!$this->getMother()->getLot($unique_id)) {
+                continue;
+            }
             $lots[] = $this->getMother()->getLot($unique_id);
         }
         return $lots;
