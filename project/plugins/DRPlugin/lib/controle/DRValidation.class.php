@@ -33,15 +33,34 @@ class DRValidation extends DocumentValidation
             return 0;
         }
 
+        $missing_line = false;
         if (array_key_exists('04', $produit['lignes']) === false || array_key_exists('05', $produit['lignes']) === false) {
-            $this->addPoint(self::TYPE_WARNING, 'rendement_ligne_manquante', "Information manquante pour le produit : ".$produit['libelle']);
+            $this->addPoint(self::TYPE_WARNING, 'rendement_ligne_manquante', "Il manque une ligne pour le calcul du rendement L5 : <strong>".$produit['libelle']."</strong>");
+            $missing_line = true;
+        }
+
+        if (array_key_exists('04', $produit['lignes']) === false || array_key_exists('15', $produit['lignes']) === false) {
+            $this->addPoint(self::TYPE_WARNING, 'rendement_ligne_manquante', "Il manque une ligne pour le calcul du rendement L15 : <strong>".$produit['libelle']."</strong>");
+            $missing_line = true;
+        }
+
+        if ($missing_line) {
             return 0;
         }
 
-        if (round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) > $produit_conf->getRendement()) {
-            $this->addPoint(self::TYPE_WARNING, 'rendement_declaration', "Le rendement L5 du produit <strong>".$produit['libelle']."</strong> est de "
-                . round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) . " hl/ha, "
-                ."le maximum étant <strong>".$produit_conf->getRendement()."</strong> hl/ha"
+        if (round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) > $produit_conf->getRendementDrL5()) {
+            $this->addPoint(
+                self::TYPE_WARNING,
+                'rendement_declaration',
+                "Le rendement L5 du produit <strong>".$produit['libelle']."</strong> est de " . round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) . " hl/ha, " ."le maximum étant <strong>".$produit_conf->getRendementDrL5()."</strong> hl/ha"
+            );
+        }
+
+        if (round($produit['lignes']['15']['val'] / $produit['lignes']['04']['val'], 2) > $produit_conf->getRendementDrL15()) {
+            $this->addPoint(
+                self::TYPE_WARNING,
+                'rendement_declaration',
+                "Le rendement L15 du produit <strong>".$produit['libelle']."</strong> est de " . round($produit['lignes']['15']['val'] / $produit['lignes']['04']['val'], 2) . " hl/ha, " ."le maximum étant <strong>".$produit_conf->getRendementDrL15()."</strong> hl/ha"
             );
         }
     }
