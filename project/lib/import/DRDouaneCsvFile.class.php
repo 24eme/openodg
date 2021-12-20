@@ -55,10 +55,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     continue;
                 }
                 if ($achat_fin) {
-                    $commentaire = $values[0];
-                    $vendeur = $values[1];
-                    $volume = str_replace('.', ',', $values[3]);
-                    $achats[] = array(preg_replace('/ - .*/', '', $vendeur), preg_replace('/ *$/', '', preg_replace('/^[0-9]* - */', '', $vendeur)), $volume, $commentaire);
+                    if (isset($values[1]) && isset($values[3])) {
+                        $commentaire = $values[0];
+                        $vendeur = $values[1];
+                        $volume = str_replace('.', ',', $values[3]);
+                        $achats[] = array(preg_replace('/ - .*/', '', $vendeur), preg_replace('/ *$/', '', preg_replace('/^[0-9]* - */', '', $vendeur)), $volume, $commentaire);
+                    }
                     continue;
                 }
 
