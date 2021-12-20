@@ -236,6 +236,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnee->colonneid = $colonnesid[$produitid];
             }
             $d->colonneid = $donnee->colonneid;
+
+            $d->categorie_libelle = DouaneCsvFile::getCategorieLibelle($this->type, $d->categorie);
+
             $this->enhanced_donnees[] = $d;
         }
         $this->enhancedDonnneesWithFamille();

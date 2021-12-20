@@ -117,7 +117,6 @@ class DouaneImportCsvFile {
         }
         $csv = '';
         $configuration = ConfigurationClient::getCurrent();
-        $categories = DouaneCsvFile::getCategories();
         $this->etablissement = EtablissementClient::getInstance()->find($this->doc->identifiant);
         $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($this->doc->campagne);
         if (!$this->etablissement) {
@@ -129,7 +128,7 @@ class DouaneImportCsvFile {
                 if ($produit = $donnee->produit_conf) {
                     $p = $donnee->produit_csv;
                     $p[] = $donnee->categorie;
-                    $p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
+                    $p[] = $donnee->categorie_libelle;
                     $p[] = str_replace('.', ',', $donnee->valeur);
                     if ($donnee->tiers && $t = EtablissementClient::getInstance()->find($donnee->tiers)) {
                         $p[] = $t->cvi;

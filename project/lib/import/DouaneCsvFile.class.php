@@ -44,21 +44,27 @@ class DouaneCsvFile
   protected $csvdata = null;
   protected $ignore = null;
 
-  public static function getCategories() {
+  public static function getCategorieLibelle($type, $categorie_code) {
+      return self::getCategoriesLibelles()[$categorie_code];
+  }
+  public static function getCategoriesLibelles() {
       return array(
           '04' => "4. Superficie de récolte calculée (ratio bailleur/metayer)",
           '04b' => "4b. Superificie de récolte originale",
           '05' => "5. Récolte totale",
-          '06' => "6. Récolte vendue sous forme de raisins. Volume de vins obtenu",
-          '07' => "7. Récolte vendue sous forme de moûts. Volume de moût obtenu",
-          '08' => "8. Récolte apportée en cave coopérative par l'adhérent. Volume obtenu",
-          '09' => "9. Récolte en cave particulière. Volume obtenu",
+          '06' => "6. Récolte sous forme de raisins",
+          '06kg' => '6. Récolte sous forme de raisins en kg',
+          '07' => "7. Récolte sous forme de moûts",
+          '08' => "8. Récolte à une cave coopérative par l'adhérent",
+          '09' => "9. Récolte en cave particulière",
           '10' => "10. Volume en vinification",
           '11' => "11. Volume en concentration",
           '12' => "12. Volume autre destination",
           '13' => "13. Volume de MC ou de MCR",
           '14' => "14. Volume de vin sans AO/IGP avec ou sans cépage",
           '15' => "15. Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé",
+          '15VF' => "15. Vol. de vin clair issu de VF",
+          '15M' => "15. Vol. de vin clair issu de mouts",
           '16' => "16. Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels",
           '17' => "17. Vol. d'eau éliminée en cas d'enrichissement par concentration partielle",
           '18' => "18. Volume Substituable Individuel (VSI)",

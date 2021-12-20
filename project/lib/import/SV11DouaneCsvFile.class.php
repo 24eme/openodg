@@ -25,6 +25,17 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $tabValues = array(3,4,9,10,11,12,13);
         $cpt = 1;
 
+        $index2L = array(
+            3 => "04",
+            4 => "08",
+            5 => "XX",
+            9 => "15",
+            10 => "16",
+            11 => "17",
+            12 => "18",
+            13 => "19",
+        );
+
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
@@ -63,11 +74,11 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                         }else{
                             $produit = $known_produit[$values[6]];
                         }
-	        			$produit[] = $values[6];
-	        			$produit[] = $values[7];
-	        			$produit[] = $values[8];
-	        			$produit[] = sprintf('%02d', ($v+1));
-	        			$produit[] = preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
+	        			$produit[] = $values[6]; //Code douane
+	        			$produit[] = $values[7]; //Libelle produit
+	        			$produit[] = $values[8]; //Mention valorisante
+	        			$produit[] = $index2L[$v]; //Code categorie
+	        			$produit[] = DouaneCsvFile::getCategorieLibelle('SV11', $index2L[$v])." - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
                         if ($v == 3) {
                             $produit[] = self::numerizeVal($values[$v], 4);
                         } else {
