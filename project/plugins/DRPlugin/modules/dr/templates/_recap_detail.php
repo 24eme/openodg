@@ -25,11 +25,17 @@
                     <?= $produit['libelle'] ?>
                     <small class="pull-right text-muted">
                         <span title="Rendement L5" style="cursor: help">
-                            <?= round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) ?>
+                            <?php if ($produit['lignes']['05']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
+                                <?= round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) ?>
+                            <?php else: echo 0 ?>
+                            <?php endif ?>
                         </span> hl/ha
                         |
                         <span title="Rendement L15" style="cursor: help">
-                            <?= round($produit['lignes']['15']['val'] / $produit['lignes']['04']['val'], 2) ?>
+                            <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
+                                <?= round($produit['lignes']['15']['val'] / $produit['lignes']['04']['val'], 2) ?>
+                            <?php else: echo 0 ?>
+                            <?php endif ?>
                         </span> hl/ha
                     </small>
                 </td>
