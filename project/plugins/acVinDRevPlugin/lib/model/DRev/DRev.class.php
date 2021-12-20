@@ -1633,6 +1633,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getSuperficieVinifieeFromDocumentProduction($produitFilter = null) {
         $docDouanier = $this->getDocumentDouanier();
         $type = $docDouanier->type;
+        if (!$type) {
+            return ;
+        }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
             return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL);
         }
