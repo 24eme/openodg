@@ -29,6 +29,12 @@
                 <?php endforeach ?>
             </tr>
         <?php endforeach ?>
+        <tr>
+            <th class="text-right"><strong>Total</strong></th>
+            <?php foreach ($produit['lignes'] as $l => $p): ?>
+                <th class="text-right"><strong><?= echoFloat($dr->getTotalValeur($l)) ?></strong> <span class='text-muted'><?= $p['unit'] ?></span></th>
+            <?php endforeach ?>
+        </tr>
     </tbody>
 </table>
 
