@@ -287,6 +287,6 @@ $drevM05->validate();
 $drevM05->validateOdg();
 
 $drevM03 = DRevClient::getInstance()->find($drevM03->_id);
-$t->ok(!$drevM03->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot créé n'est plus en attente de prélevement");
+$t->ok(!$drevM03->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot supprimé n'est plus en attente de prélevement");
 
 

@@ -1417,6 +1417,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $mother->save(false);
+        $docs2save = array();
+        foreach($this->getDeletedLots() as $lot) {
+            $docs2save[$lot->id_document] = $lot->id_document;
+        }
+        unset($docs2save[$mother->_id]);
+        foreach($docs2save as $id) {
+            DRevClient::getInstance()->find($id)->save(false);
+        }
+
         DeclarationClient::getInstance()->clearCache();
     }
 
@@ -1534,6 +1543,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
     {
+
+        return $this->getVolumeRevendiqueNumeroDossierDiff($produitFilter);
+    }
+
+    public function getVolumeRevendiqueNumeroDossierDiff($produitFilter = null)
+    {
         $lots = [];
         $lotsmodifs = [];
         $volume_mod = 0;
@@ -1560,7 +1575,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $volume_mod += $lot->volume;
         }
 
+        if($volume_mod === 0 && !$this->isFirstNumeroDossier()) {
+
+            return 0;
+        }
+
         return $volume - $volume_mod;
+    }
+
+    public function isFirstNumeroDossier() {
+        $mother = $this->getMother();
+        if(!$mother) {
+            return true;
+        }
+        foreach($mother->lots as $lot) {
+            if ($lot->numero_dossier === $this->numero_archive) {
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getVolumeRevendiqueLots($produitFilter = null){
@@ -1669,7 +1704,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
           $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
-          if(isset($cotisationsPrec[$cle])) {
+          if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
 
@@ -1704,6 +1739,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         $lots = array();
         foreach($deleted as $unique_id) {
+            if(!$this->getMother()->getLot($unique_id)) {
+                continue;
+            }
             $lots[] = $this->getMother()->getLot($unique_id);
         }
         return $lots;

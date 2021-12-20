@@ -376,14 +376,16 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         $donnees = [];
 
         // Produits :
-        $donnees['lignes'] = array_column($this->donnees->toArray(1,0), 'categorie');
-        sort($donnees['lignes']);
-        $donnees['lignes'] = array_unique($donnees['lignes']);
+        $donnees['lignes'] = ['04', '04b', '05', '06', '07', '08', '15'];
         $donnees['produits'] = [];
 
         foreach ($this->donnees as $entry) {
             $produit = $entry->produit;
             $categorie = $entry->categorie;
+
+            if (in_array($categorie, $donnees['lignes']) === false) {
+                continue;
+            }
 
             if (array_key_exists($produit, $donnees['produits']) === false) {
                 $donnees['produits'][$produit]['lignes'] = [];
@@ -406,6 +408,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
             if (count($missing)) {
                 foreach ($missing as $k => $m) {
                     $value['lignes'][$m] = ['val' => '—'];
+                    $value['lignes'][$m]['unit'] = (in_array($m, ['04', '04b'])) ? 'ha' : 'hl';
                 }
             }
         }

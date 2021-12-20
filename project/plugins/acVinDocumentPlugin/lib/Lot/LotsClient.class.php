@@ -153,22 +153,27 @@ class LotsClient
         }
 
         //On vérifie qu'il est bien possible d'avoir des modificatrices pour tous les id
+        $ids2Save = array();
         foreach($ids as $id) {
             $doc = DeclarationClient::getInstance()->find($id);
             if($doc instanceof InterfaceVersionDocument) {
-                if (!$doc->getMaster()->verifyGenerateModificative()) {
+                $master = $doc->getMaster();
+                if (!$master->verifyGenerateModificative()) {
                     throw new sfException("il n'est pas possible d'avoir une modificatrice pour le doc ".$id);
                 }
+                $ids2Save[$master->_id] = $master->_id;
+                continue;
             }
+            $ids2Save[$id] = $id;
         }
 
-        foreach($ids as $id) {
+        foreach($ids2Save as $id) {
             $doc = DeclarationClient::getInstance()->find($id);
             $docM = $doc;
 
             if($doc instanceof InterfaceVersionDocument) {
                 $docM = $doc->getMaster()->generateModificative();
-                $docM->numero_archive = $doc->numero_archive;
+                $docM->numero_archive = $lot->numero_dossier;
             }
 
             $lotM = $docM->getLot($lot->unique_id);
