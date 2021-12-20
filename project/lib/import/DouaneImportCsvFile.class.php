@@ -107,33 +107,7 @@ class DouaneImportCsvFile {
     }
 
     public function getFamilleCalculeeFromLigneDouane($has_volume_cave = false, $has_volume_coop = false, $has_volume_nego = false) {
-        if ($this->getCsvType() == 'SV11') {
-            return DouaneProduction::FAMILLE_COOPERATIVE;
-        }
-        if ($this->getCsvType() == 'SV12') {
-            return DouaneProduction::FAMILLE_NEGOCIANT_VINIFICATEUR;
-        }
-        $famille = '';
-        if ($has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_APPORTEUR_NEGOCE_TOTAL;
-        }elseif (!$has_volume_nego && $has_volume_coop && !$has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL;
-        }elseif (!$has_volume_nego && !$has_volume_coop && $has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL;
-        }elseif ($has_volume_nego && $has_volume_coop && !$has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_APPORTEUR_COOP_ET_NEGOCE;
-        }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP;
-        }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE;
-        }elseif ($has_volume_nego && $has_volume_coop && $has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE;
-        }elseif (!$has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
-            $famille = DouaneProduction::FAMILLE_SANS_VOLUME;
-        }else{
-            throw new sfException("Cas de famille DR non gérée (".$this->getCsvType()." ; ".boolval($has_volume_nego)." ; ".boolval($has_volume_coop)." ; ".boolval($has_volume_cave).")");
-        }
-        return $famille;
+        return DouaneProduction::getFamilleCalculeeFromTypeAndLigneDouane($this->getCsvType(), $has_volume_cave, $has_volume_coop, $has_volume_nego);
     }
 
 
@@ -149,41 +123,7 @@ class DouaneImportCsvFile {
         if (!$this->etablissement) {
             return null;
         }
-        $has_volume_cave = false;
-        $has_volume_cave_lignes = array();
-        $has_volume_nego = false;
-        $has_volume_nego_lignes = array();
-        $has_volume_coop = false;
-        $has_volume_coop_lignes = array();
-        $max_lignes = 0;
-        foreach ($this->doc->getEnhancedDonnees() as $donnee) {
-            switch ($donnee->categorie) {
-                case '09':
-                    $has_volume_cave = true;
-                    $has_volume_cave_lignes[$donnee->colonneid] = true;
-                    break;
-                case '08':
-                    $has_volume_coop = true;
-                    $has_volume_coop_lignes[$donnee->colonneid] = true;
-                    break;
-                case '07':
-                case '06':
-                    $has_volume_nego = true;
-                    $has_volume_nego_lignes[$donnee->colonneid] = true;
-                    break;
-            }
-            if ($max_lignes < $donnee->colonneid) {
-                $max_lignes = $donnee->colonneid;
-            }
-        }
-        $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
-        $familles_lignes = array();
-        for($i = 0 ; $i <= $max_lignes ; $i++) {
-            $familles_lignes[$i] = $this->getFamilleCalculeeFromLigneDouane(@$has_volume_cave_lignes[$i], @$has_volume_coop_lignes[$i], @$has_volume_nego_lignes[$i]);
-        }
         $produits = array();
-        $colonnesid = array();
-        $colonneid = 0;
         try {
             foreach ($this->doc->getEnhancedDonnees() as $donnee) {
                 if ($produit = $donnee->produit_conf) {
@@ -206,9 +146,9 @@ class DouaneImportCsvFile {
                     $p[] = Organisme::getCurrentOrganisme();
                     $p[] = $produit->getHash();
                     $p[] = $this->doc->_id;
-                    $p[] = $famille;
+                    $p[] = $donnee->document_famille;
                     $p[] = substr($this->campagne, 0, 4);
-                    $p[] = $familles_lignes[$donnee->colonneid];
+                    $p[] = $donnee->colonne_famille;
                     $produits[] = $p;
                 }
             }
