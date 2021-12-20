@@ -357,7 +357,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
             if (count($missing)) {
                 foreach ($missing as $k => $m) {
                     $value['lignes'][$m] = ['val' => '—'];
-                    $value['lignes'][$m]['unit'] = (in_array($k, ['04', '04b'])) ? 'ha' : 'hl';
+                    $value['lignes'][$m]['unit'] = (in_array($m, ['04', '04b'])) ? 'ha' : 'hl';
                 }
             }
         }
