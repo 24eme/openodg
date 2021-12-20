@@ -108,28 +108,28 @@ class DouaneImportCsvFile {
 
     public function getFamilleCalculeeFromLigneDouane($has_volume_cave = false, $has_volume_coop = false, $has_volume_nego = false) {
         if ($this->getCsvType() == 'SV11') {
-            return 'COOPERATIVE';
+            return DouaneProduction::FAMILLE_COOPERATIVE;
         }
         if ($this->getCsvType() == 'SV12') {
-            return 'NEGOCIANT_VINIFICATEUR';
+            return DouaneProduction::FAMILLE_NEGOCIANT_VINIFICATEUR;
         }
         $famille = '';
         if ($has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
-            $famille = 'APPORTEUR_NEGOCE_TOTAL';
+            $famille = DouaneProduction::FAMILLE_APPORTEUR_NEGOCE_TOTAL;
         }elseif (!$has_volume_nego && $has_volume_coop && !$has_volume_cave) {
-            $famille = 'APPORTEUR_COOP_TOTAL';
+            $famille = DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL;
         }elseif (!$has_volume_nego && !$has_volume_coop && $has_volume_cave) {
-            $famille = 'CAVE_PARTICULIERE_TOTAL';
+            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL;
         }elseif ($has_volume_nego && $has_volume_coop && !$has_volume_cave) {
-            $famille = 'APPORTEUR_COOP_ET_NEGOCE';
+            $famille = DouaneProduction::FAMILLE_APPORTEUR_COOP_ET_NEGOCE;
         }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
-            $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP';
+            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP;
         }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
-            $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE';
+            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE;
         }elseif ($has_volume_nego && $has_volume_coop && $has_volume_cave) {
-            $famille = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE';
+            $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE;
         }elseif (!$has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
-            $famille = "SANS_VOLUME";
+            $famille = DouaneProduction::FAMILLE_SANS_VOLUME;
         }else{
             throw new sfException("Cas de famille DR non gérée (".$this->getCsvType()." ; ".boolval($has_volume_nego)." ; ".boolval($has_volume_coop)." ; ".boolval($has_volume_cave).")");
         }
