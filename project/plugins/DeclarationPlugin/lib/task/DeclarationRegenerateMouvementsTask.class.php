@@ -40,7 +40,7 @@ EOF;
         }
         if ($options['flagfacture']) {
             foreach($drev->mouvements as $id => $mvts ) {
-                foreach ($mvt as $key => $mvt) {
+                foreach ($mvts as $key => $mvt) {
                     $mvt->facture = 1;
                 }
             }
