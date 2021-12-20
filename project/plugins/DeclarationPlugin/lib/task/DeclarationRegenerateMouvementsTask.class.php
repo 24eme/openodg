@@ -14,6 +14,8 @@ class DeclarationRegenerateMouvementsTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('onlydeletemouvements', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', false),
+            new sfCommandOption('flagfacture', null, sfCommandOption::PARAMETER_REQUIRED, 'set the mouvement to facture = 1', false),
+
         ));
 
         $this->namespace = 'declaration';
@@ -35,6 +37,13 @@ EOF;
         $drev->add('mouvements');
         if (!$options['onlydeletemouvements']) {
             $drev->generateMouvementsFactures();
+        }
+        if ($options['flagfacture']) {
+            foreach($drev->mouvements as $id => $mvts ) {
+                foreach ($mvt as $key => $mvt) {
+                    $mvt->facture = 1;
+                }
+            }
         }
         $drev->save();
         echo sprintf("SUCCESS;Les mouvements ont été regénérés;%s\n", $drev->_id);
