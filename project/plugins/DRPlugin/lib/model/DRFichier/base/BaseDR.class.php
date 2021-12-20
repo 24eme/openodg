@@ -41,13 +41,13 @@
  * @method acCouchdbJson setPieces()
  * @method string getCampagne()
  * @method string setCampagne()
- 
+
  */
 
-abstract class BaseDR extends DouaneFichier {
+abstract class BaseDR extends DouaneProduction {
 
     public function getDocumentDefinitionModel() {
         return 'DR';
     }
-    
+
 }

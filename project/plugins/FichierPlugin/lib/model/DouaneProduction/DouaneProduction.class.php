@@ -1,6 +1,6 @@
 <?php
 
-class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocument, InterfaceDeclarantDocument {
+class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocument, InterfaceDeclarantDocument {
 
     protected $mouvement_document = null;
     protected $declarant_document = null;
