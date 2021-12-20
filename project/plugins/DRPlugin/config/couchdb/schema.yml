@@ -21,6 +21,7 @@ DR:
                   valeur: { }
                   tiers: { }
                   bailleur: { }
+                  colonneid: { }
       declarant:
         type: collection
         class: DRDeclarant

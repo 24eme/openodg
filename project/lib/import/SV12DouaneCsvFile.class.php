@@ -81,6 +81,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = ($this->doc)? $this->doc->_id : '';
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
+                $produit[] = $this->getFamilleCalculeeFromLigneDouane();
 	        			$produits[] = $produit;
                     }
                     $cpt++;

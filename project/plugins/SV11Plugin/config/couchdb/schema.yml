@@ -21,6 +21,7 @@ SV11:
                   valeur: { }
                   tiers: { }
                   bailleur: { }
+                  colonneid: { }
       mouvements:
         type: collection
         definition:

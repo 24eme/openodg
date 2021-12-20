@@ -150,52 +150,44 @@ class DouaneImportCsvFile {
             return null;
         }
         $has_volume_cave = false;
+        $has_volume_cave_lignes = array();
         $has_volume_nego = false;
+        $has_volume_nego_lignes = array();
         $has_volume_coop = false;
-        foreach ($this->doc->donnees as $donnee) {
+        $has_volume_coop_lignes = array();
+        $max_lignes = 0;
+        foreach ($this->doc->getEnhancedDonnees() as $donnee) {
             switch ($donnee->categorie) {
                 case '09':
                     $has_volume_cave = true;
+                    $has_volume_cave_lignes[$donnee->colonneid] = true;
                     break;
                 case '08':
                     $has_volume_coop = true;
+                    $has_volume_coop_lignes[$donnee->colonneid] = true;
                     break;
                 case '07':
                 case '06':
                     $has_volume_nego = true;
+                    $has_volume_nego_lignes[$donnee->colonneid] = true;
                     break;
+            }
+            if ($max_lignes < $donnee->colonneid) {
+                $max_lignes = $donnee->colonneid;
             }
         }
         $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
-
+        $familles_lignes = array();
+        for($i = 0 ; $i <= $max_lignes ; $i++) {
+            $familles_lignes[$i] = $this->getFamilleCalculeeFromLigneDouane(@$has_volume_cave_lignes[$i], @$has_volume_coop_lignes[$i], @$has_volume_nego_lignes[$i]);
+        }
         $produits = array();
         $colonnesid = array();
         $colonneid = 0;
         try {
-            foreach ($this->doc->donnees as $donnee) {
-                if ($produit = $configuration->declaration->get($donnee->produit)) {
-                    $p = array();
-                    if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
-                        $p[] = $b->raison_sociale;
-                        $p[] = $b->ppm;
-                    } else {
-                        $p[] = null;
-                        $p[] = null;
-                    }
-                    $p[] = $produit->getCertification()->getKey();
-                    $p[] = $produit->getGenre()->getKey();
-                    $p[] = $produit->getAppellation()->getKey();
-                    $p[] = $produit->getMention()->getKey();
-                    $p[] = $produit->getLieu()->getKey();
-                    $p[] = $produit->getCouleur()->getKey();
-                    $p[] = $produit->getCepage()->getKey();
-                    $p[] = $produit->code_douane;
-                    $p[] = $produit->getLibelleFormat();
-                    $p[] = $donnee->complement;
-                    $produitid = join("", $p);
-                    if (!isset($colonnesid[$produitid]) || !$colonnesid[$produitid]) {
-                        $colonnesid[$produitid] = ++$colonneid;
-                    }
+            foreach ($this->doc->getEnhancedDonnees() as $donnee) {
+                if ($produit = $donnee->produit_conf) {
+                    $p = $donnee->produit_csv;
                     $p[] = $donnee->categorie;
                     $p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
                     $p[] = str_replace('.', ',', $donnee->valeur);
@@ -210,12 +202,13 @@ class DouaneImportCsvFile {
                         $p[] = null;
                         $p[] = null;
                     }
-                    $p[] = $colonnesid[$produitid];
+                    $p[] = $donnee->colonneid;
                     $p[] = Organisme::getCurrentOrganisme();
                     $p[] = $produit->getHash();
                     $p[] = $this->doc->_id;
                     $p[] = $famille;
                     $p[] = substr($this->campagne, 0, 4);
+                    $p[] = $familles_lignes[$donnee->colonneid];
                     $produits[] = $p;
                 }
             }

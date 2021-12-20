@@ -4,6 +4,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
 
     protected $mouvement_document = null;
     protected $declarant_document = null;
+    protected $enhanced_donnees = null;
 
     public function getPeriode() {
 
@@ -179,6 +180,55 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return false;
     }
 
+    public function getEnhancedDonnees() {
+        if (isset($this->enhanced_donnees)) {
+            return $this->enhanced_donnees;
+        }
+        $this->generateDonnees();
+        $this->enhanced_donnees = array();
+        $colonnesid = array();
+        $colonneid = 0;
+        foreach($this->donnees as $i => $donnee) {
+            $d = (object) $donnee->toArray();
+            $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
+            $p = array();
+            if ($donnee->bailleur && $d->bailleur_etablissement = EtablissementClient::getInstance()->find($donnee->bailleur)) {
+                $p[] = $d->bailleur_etablissement->raison_sociale;
+                $p[] = $d->bailleur_etablissement->ppm;
+            } else {
+                $p[] = null;
+                $p[] = null;
+            }
+            $p[] = $d->produit_conf->getCertification()->getKey();
+            $p[] = $d->produit_conf->getGenre()->getKey();
+            $p[] = $d->produit_conf->getAppellation()->getKey();
+            $p[] = $d->produit_conf->getMention()->getKey();
+            $p[] = $d->produit_conf->getLieu()->getKey();
+            $p[] = $d->produit_conf->getCouleur()->getKey();
+            $p[] = $d->produit_conf->getCepage()->getKey();
+            $p[] = $d->produit_conf->code_douane;
+            $p[] = $d->produit_conf->getLibelleFormat();
+            $p[] = $donnee->complement;
+            $d->produit_csv = $p;
+            $produitid = join("", $p);
+            if ($donnee->colonneid) {
+                $colonnesid[$produitid] = $donnee->colonneid;
+                if ($colonneid < $donnee->colonneid) {
+                    $colonneid = $donnee->colonneid;
+                }
+                $colonneid = $donnee->colonneid;
+            }else{
+                if (!isset($colonnesid[$produitid]) || !$colonnesid[$produitid] || ($colonnesid[$produitid] < $colonneid) || $d->categorie == '04') {
+                    $colonnesid[$produitid] = ++$colonneid;
+                }
+                $donnee->colonneid = $colonnesid[$produitid];
+            }
+            $d->colonneid = $donnee->colonneid;
+            $this->enhanced_donnees[] = $d;
+        }
+        return $this->enhanced_donnees;
+    }
+
     public function addDonnee($data) {
         if (!$data || !isset($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]) || empty($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION])) {
             return null;
@@ -197,6 +247,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         $item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
         $item->categorie = $data[DouaneCsvFile::CSV_LIGNE_CODE];
         $item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
+        $item->colonneid = $data[DouaneCsvFile::CSV_COLONNE_ID];
         if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {
             if ($tiers = EtablissementClient::getInstance()->findByCvi($data[DouaneCsvFile::CSV_TIERS_CVI])) {
                 $item->tiers = $tiers->_id;
