@@ -358,7 +358,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $calcul = $formule;
         $numLignes = preg_split('|[\-+*\/() ]+|', $formule, -1, PREG_SPLIT_NO_EMPTY);
         foreach($numLignes as $numLigne) {
-            $datas[$numLigne] = $this->getTotalValeur($numLigne, $produitFilter);
+            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter);
         }
 
         foreach($datas as $numLigne => $value) {
@@ -368,14 +368,17 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return eval("return $calcul;");
     }
 
-    public function getTotalValeur($numLigne, $produitFilter = null) {
+    public function getTotalValeur($numLigne, $famille = null, $produitFilter = null) {
         $value = 0;
 
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        foreach($this->donnees as $donnee) {
+        foreach($this->getEnhancedDonnees() as $donnee) {
+            if ($famille && $donnee->colonne_famille != $famille) {
+                continue;
+            }
             if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $donnee->produit)) {
                 continue;
             }
