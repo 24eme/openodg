@@ -509,7 +509,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return "Données de la récolte";
         }
 
-        if($this->getDocumentDouanierType() == "DR") {
+        if($this->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
 
             return "Déclaration de récolte";
         }
