@@ -237,8 +237,6 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             }
             $d->colonneid = $donnee->colonneid;
 
-            $d->categorie_libelle = DouaneCsvFile::getCategorieLibelle($this->type, $d->categorie);
-
             $this->enhanced_donnees[] = $d;
         }
         $this->enhancedDonnneesWithFamille();
@@ -337,6 +335,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
         $item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
         $item->categorie = $data[DouaneCsvFile::CSV_LIGNE_CODE];
+        $item->categorie_libelle = $data[DouaneCsvFile::CSV_LIGNE_LIBELLE];
         $item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
         $item->colonneid = $data[DouaneCsvFile::CSV_COLONNE_ID];
         if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {

@@ -18,6 +18,7 @@ DR:
                   produit_libelle: { }
                   complement: { }
                   categorie: { }
+                  categorie_libelle: { }
                   valeur: { }
                   tiers: { }
                   bailleur: { }
