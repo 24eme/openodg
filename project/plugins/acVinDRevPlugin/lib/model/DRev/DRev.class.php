@@ -1626,6 +1626,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $total;
     }
 
+    public function getVolumeVininifieFromDR($produitFilter = null) {
+        if ($this->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
+            return $this->getVolumeVininifieFromDocumentDouanier($produitFilter);
+        }
+        return null
+    }
+
+    public function getVolumeVininifieFromSV11($produitFilter = null) {
+        if ($this->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11) {
+            return $this->getVolumeVininifieFromDocumentDouanier($produitFilter);
+        }
+        return null
+    }
+
+    public function getVolumeVininifieFromSV12($produitFilter = null) {
+        if ($this->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
+            return $this->getVolumeVininifieFromDocumentDouanier($produitFilter);
+        }
+        return null
+    }
+
     public function getVolumeVininifieFromDocumentDouanier($produitFilter = null) {
         $docDouanier = $this->getDocumentDouanier();
         $type = $docDouanier->type;
