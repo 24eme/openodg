@@ -1626,6 +1626,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $total;
     }
 
+    public function getVolumeVininifieFromDocumentDouanier($produitFilter = null) {
+        $docDouanier = $this->getDocumentDouanier();
+        $type = $docDouanier->type;
+        if (!$type) {
+            return ;
+        }
+        if ($type == DRCsvFile::CSV_TYPE_DR) {
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, null, $produitFilter, null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
+        }
+        if ($type == SV11CsvFile::CSV_TYPE_SV11) {
+            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, null, $produitFilter);
+        }
+        if ($type == SV12CsvFile::CSV_TYPE_SV12) {
+            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL, null, $produitFilter);
+        }
+        throw new sfException("type de document douanier $type n'est pas supporté");
+    }
+
     public function getVolumeVinFromDRPrecedente($produitFilter = null) {
         $dr = $this->getDocumentDouanierOlderThanMe($this->getPeriode()-1);
         if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
