@@ -1630,14 +1630,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $sv11->getTotalValeur("10");
     }
 
-    public function getSuperficieVinifieeFromDocumentProduction($produitFilter = null) {
+    public function getSuperficieHorsApportCoopFromDocumentProduction($produitFilter = null) {
         $docDouanier = $this->getDocumentDouanier();
         $type = $docDouanier->type;
         if (!$type) {
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL);
+            return $docDouanier->getTotalValeurFamilleExclue(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
             return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE);

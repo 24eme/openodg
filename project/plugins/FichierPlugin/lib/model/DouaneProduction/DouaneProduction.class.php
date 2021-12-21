@@ -370,7 +370,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return eval("return $calcul;");
     }
 
-    public function getTotalValeur($numLigne, $famille = null, $produitFilter = null) {
+    public function getTotalValeur($numLigne, $famille = null, $produitFilter = null, $famille_exclue = null) {
         $value = 0;
 
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
@@ -379,6 +379,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
 
         foreach($this->getEnhancedDonnees() as $donnee) {
             if ($famille && $donnee->colonne_famille != $famille) {
+                continue;
+            }
+            if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
                 continue;
             }
             if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $donnee->produit)) {
