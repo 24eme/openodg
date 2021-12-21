@@ -27,7 +27,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getVolumeVininifieFromDocumentDouanier"
+                   "callback": "getVolumeVininifieFromDR"
                },
                "cotisationSyndicaleSV11": {
                    "modele": "CotisationVariable",
@@ -39,7 +39,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getVolumeVininifieFromDocumentDouanier"
+                   "callback": "getVolumeVininifieFromSV11"
                },
                "cotisationSyndicaleSV12": {
                    "modele": "CotisationVariable",
@@ -51,7 +51,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getVolumeVininifieFromDocumentDouanier"
+                   "callback": "getVolumeVininifieFromSV12"
                }
            }
        },
