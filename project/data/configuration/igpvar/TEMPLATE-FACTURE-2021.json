@@ -48,7 +48,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "hasDocumentDouanier",
+                   "callback": "hasDocumentDouanierForFacturation",
                    "callback_parameters": [
                    ]
                }
