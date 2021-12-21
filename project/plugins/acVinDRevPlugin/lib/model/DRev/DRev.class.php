@@ -1637,7 +1637,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeurFamilleExclue(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
             return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE);
