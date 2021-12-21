@@ -429,7 +429,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $fichiers;
     }
 
-    public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, , $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $doc = $this->getDocumentDouanier($ext, $periode, $hydrate);
         if ($doc->date_import <= $drev->validation_odg){
             return $doc;
