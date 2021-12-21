@@ -429,6 +429,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $fichiers;
     }
 
+    public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $doc = $this->getDocumentDouanier($ext, $periode, $hydrate);
+        if ($doc->date_import <= substr($this->validation_odg, 0, 10)){
+            return $doc;
+        }
+        return null;
+    }
+
     public function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
     }
@@ -451,6 +459,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return null;
+    }
+
+    public function hasDocumentDouanierForFacturation() {
+        return ($this->getDocumentDouanierOlderThanMe());
     }
 
     public function hasDocumentDouanier() {
@@ -1633,15 +1645,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeVinFromDRPrecedente($produitFilter = null) {
-        $dr = $this->getDR($this->getPeriode()-1);
-        if (!$dr){
+        $dr = $this->getDocumentDouanierOlderThanMe($this->getPeriode()-1);
+        if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
             throw new sfException("Pas de DR ".($this->getPeriode()-1)." pour ".$this->_id);
         }
         return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
 
     public function getVolumeVinFromSV11Precedente($produitFilter = null) {
-        $sv11 = $this->getDR($this->getPeriode()-1);
+        $sv11 = $this->getDocumentDouanierOlderThanMe($this->getPeriode()-1);
         if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
             return ;
         }
@@ -1649,7 +1661,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getSuperficieHorsApportCoopFromDocumentProduction($produitFilter = null) {
-        $docDouanier = $this->getDocumentDouanier();
+        $docDouanier = $this->getDocumentDouanierOlderThanMe();
+        if (!$docDouanier) {
+            return ;
+        }
         $type = $docDouanier->type;
         if (!$type) {
             return ;

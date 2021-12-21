@@ -27,7 +27,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getSuperficieVinifieeFromDocumentProduction",
+                   "callback": "getSuperficieHorsApportCoopFromDocumentProduction",
                    "callback_parameters": [
                    ]
                }
@@ -48,7 +48,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "hasDocumentDouanier",
+                   "callback": "hasDocumentDouanierForFacturation",
                    "callback_parameters": [
                    ]
                }

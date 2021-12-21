@@ -450,7 +450,7 @@ class facturationActions extends sfActions
 
     protected function getUniqueTemplateFactureName(){
       $cm = new CampagneManager(date('m-d'),CampagneManager::FORMAT_PREMIERE_ANNEE);
-      return FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrentPrevious());
+      return FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrent());
     }
 
     protected function forwardCompteSecure(){
