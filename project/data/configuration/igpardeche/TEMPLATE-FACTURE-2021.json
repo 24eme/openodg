@@ -17,41 +17,17 @@
            "libelle": "Cotisation Syndicale",
            "code_comptable": "706200",
            "details": {
-               "cotisationSyndicaleDR": {
+               "cotisationSyndicaleDocumentDouanier": {
                    "modele": "CotisationVariable",
                    "prix": 0.02,
                    "tva": 0.2,
                    "unite": "hl",
-                   "libelle": "Déclaration de récolte (L15)",
+                   "libelle": "",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getVolumeVininifieFromDR"
-               },
-               "cotisationSyndicaleSV11": {
-                   "modele": "CotisationVariable",
-                   "prix": 0.02,
-                   "tva": 0.2,
-                   "unite": "hl",
-                   "libelle": "Déclaration de production (SV11)",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ],
-                   "callback": "getVolumeVininifieFromSV11"
-               },
-               "cotisationSyndicaleSV12": {
-                   "modele": "CotisationVariable",
-                   "prix": 0.02,
-                   "tva": 0.2,
-                   "unite": "hl",
-                   "libelle": "Déclaration de production (SV12)",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ],
-                   "callback": "getVolumeVininifieFromSV12"
+                   "callback": "getVolumeVininifieFromDocumentDouanier"
                }
            }
        },
