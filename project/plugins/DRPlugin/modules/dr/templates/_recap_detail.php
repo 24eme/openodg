@@ -14,7 +14,7 @@
             <th class="text-center col-xs-5 clearfix">Produits <small class="pull-right text-muted">Rdmt L5|L15</small></th>
             <?php $produits = $dr->getProduitsDetail(); ?>
             <?php foreach ($produits['lignes']->getRawValue() as $libelle): ?>
-                <th class="text-center" style="cursor: help" title="<?= DouaneCsvFile::getCategories()[$libelle] ?>">L<?= $libelle ?></th>
+                <th class="text-center" style="cursor: help" title="<?= DouaneCsvFile::getCategorieLibelle($dr->type, $libelle) ?>">L<?= $libelle ?></th>
             <?php endforeach; ?>
         </tr>
     </thead>

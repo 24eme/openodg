@@ -41,13 +41,13 @@
  * @method acCouchdbJson setPieces()
  * @method string getCampagne()
  * @method string setCampagne()
- 
+
  */
 
-abstract class BaseSV11 extends DouaneFichier {
+abstract class BaseSV11 extends DouaneProduction {
 
     public function getDocumentDefinitionModel() {
         return 'SV11';
     }
-    
+
 }

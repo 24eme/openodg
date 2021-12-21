@@ -50,21 +50,21 @@ $t->is($line[SV11CsvFile::CSV_PRODUIT_CEPAGE], $produit->getCepage()->getKey(), 
 $t->is($line[SV11CsvFile::CSV_PRODUIT_INAO], $produit->getCodeDouane().'  ', "Le code inao est OK");
 $t->is($line[SV11CsvFile::CSV_PRODUIT_LIBELLE], $produit->getLibelleComplet(), "Libelle complet OK");
 
-$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], "04", "Code du type de mouvement");
-$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "Superficie de récolte", "Libelle du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE, "Code du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "4. Superficie de récolte calculée (ratio bailleur/metayer) - Superficie de récolte", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV11CsvFile::CSV_VALEUR]), 4), 1.4885, "Valeur");
 
 $line = explode(";", $lines[1]);
-$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], "05", "Code du type de mouvement");
-$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "Récolte", "Libelle du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], SV11CsvFile::CSV_LIGNE_CODE_LIVRAISON_COOP, "Code du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "8. Récolte à une cave coopérative par l'adhérent - Récolte", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV11CsvFile::CSV_VALEUR]), 4), 56.29, "Valeur");
 
 $line = explode(";", $lines[2]);
-$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], "10", "Code du type de mouvement");
-$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "Volume produit apte à", "Libelle du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, "Code du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "15. Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé - Volume produit apte à", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV11CsvFile::CSV_VALEUR]), 4), 53.59, "Valeur");
 
 $line = explode(";", $lines[3]);
-$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], "11", "Code du type de mouvement");
-$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "Vol à livrer à distillation ou usages indistriels", "Libelle du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_CODE], SV11CsvFile::CSV_LIGNE_CODE_VOLUME_ELIMINIE, "Code du type de mouvement");
+$t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "16. Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels - Vol à livrer à distillation ou usages indistriels", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV11CsvFile::CSV_VALEUR]), 4), 2.70, "Valeur");

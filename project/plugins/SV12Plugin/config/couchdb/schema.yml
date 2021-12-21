@@ -18,9 +18,11 @@ SV12:
                   produit_libelle: { }
                   complement: { }
                   categorie: { }
+                  categorie_libelle: { }
                   valeur: { }
                   tiers: { }
                   bailleur: { }
+                  colonneid: { }
       mouvements:
         type: collection
         definition:

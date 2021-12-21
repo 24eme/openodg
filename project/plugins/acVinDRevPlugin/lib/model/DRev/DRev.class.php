@@ -509,7 +509,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return "Données de la récolte";
         }
 
-        if($this->getDocumentDouanierType() == "DR") {
+        if($this->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
 
             return "Déclaration de récolte";
         }
@@ -786,7 +786,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
                 $produitRecolte->superficie_total += round(VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]), 4);
             }
-            if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_VOLUME_VENDANGE_FRAICHE) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_VOLUME_RAISINS) {
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_total += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_sur_place += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
@@ -1628,6 +1628,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         return $sv11->getTotalValeur("10");
+    }
+
+    public function getSuperficieHorsApportCoopFromDocumentProduction($produitFilter = null) {
+        $docDouanier = $this->getDocumentDouanier();
+        $type = $docDouanier->type;
+        if (!$type) {
+            return ;
+        }
+        if ($type == DRCsvFile::CSV_TYPE_DR) {
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+        }
+        if ($type == SV11CsvFile::CSV_TYPE_SV11) {
+            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE);
+        }
+        if ($type == SV12CsvFile::CSV_TYPE_SV12) {
+            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE);
+        }
+        throw new sfException("type de document douanier $type n'est pas supporté");
     }
 
     public function getNbApporteursPlusOneFromDouane() {

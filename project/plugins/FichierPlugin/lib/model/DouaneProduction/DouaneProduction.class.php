@@ -1,9 +1,22 @@
 <?php
 
-class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocument, InterfaceDeclarantDocument {
+class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocument, InterfaceDeclarantDocument {
+
+    const FAMILLE_COOPERATIVE = 'COOPERATIVE';
+    const FAMILLE_NEGOCIANT_VINIFICATEUR = 'NEGOCIANT_VINIFICATEUR';
+    const FAMILLE_APPORTEUR_NEGOCE_TOTAL = 'APPORTEUR_NEGOCE_TOTAL';
+    const FAMILLE_APPORTEUR_COOP_TOTAL = 'APPORTEUR_COOP_TOTAL';
+    const FAMILLE_CAVE_PARTICULIERE_TOTAL = 'CAVE_PARTICULIERE_TOTAL';
+    const FAMILLE_APPORTEUR_COOP_ET_NEGOCE = 'APPORTEUR_COOP_ET_NEGOCE';
+    const FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP';
+    const FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE = 'CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE';
+    const FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE = 'CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE';
+    const FAMILLE_SANS_VOLUME = 'SANS_VOLUME';
+
 
     protected $mouvement_document = null;
     protected $declarant_document = null;
+    protected $enhanced_donnees = null;
 
     public function getPeriode() {
 
@@ -179,6 +192,132 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return false;
     }
 
+    public function getEnhancedDonnees() {
+        if (isset($this->enhanced_donnees)) {
+            return $this->enhanced_donnees;
+        }
+        $this->generateDonnees();
+        $this->enhanced_donnees = array();
+        $colonnesid = array();
+        $colonneid = 0;
+        foreach($this->donnees as $i => $donnee) {
+            $d = (object) $donnee->toArray();
+            $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
+            $p = array();
+            if ($donnee->bailleur && $d->bailleur_etablissement = EtablissementClient::getInstance()->find($donnee->bailleur)) {
+                $p[] = $d->bailleur_etablissement->raison_sociale;
+                $p[] = $d->bailleur_etablissement->ppm;
+            } else {
+                $p[] = null;
+                $p[] = null;
+            }
+            $p[] = $d->produit_conf->getCertification()->getKey();
+            $p[] = $d->produit_conf->getGenre()->getKey();
+            $p[] = $d->produit_conf->getAppellation()->getKey();
+            $p[] = $d->produit_conf->getMention()->getKey();
+            $p[] = $d->produit_conf->getLieu()->getKey();
+            $p[] = $d->produit_conf->getCouleur()->getKey();
+            $p[] = $d->produit_conf->getCepage()->getKey();
+            $p[] = $d->produit_conf->code_douane;
+            $p[] = $d->produit_conf->getLibelleFormat();
+            $p[] = $donnee->complement;
+            $d->produit_csv = $p;
+            $produitid = join("", $p);
+            if ($donnee->colonneid) {
+                $colonnesid[$produitid] = $donnee->colonneid;
+                if ($colonneid < $donnee->colonneid) {
+                    $colonneid = $donnee->colonneid;
+                }
+                $colonneid = $donnee->colonneid;
+            }else{
+                if (!isset($colonnesid[$produitid]) || !$colonnesid[$produitid] || ($colonnesid[$produitid] < $colonneid) || $d->categorie == '04') {
+                    $colonnesid[$produitid] = ++$colonneid;
+                }
+                $donnee->colonneid = $colonnesid[$produitid];
+            }
+            $d->colonneid = $donnee->colonneid;
+
+            $this->enhanced_donnees[] = $d;
+        }
+        $this->enhancedDonnneesWithFamille();
+        return $this->enhanced_donnees;
+    }
+
+    protected function enhancedDonnneesWithFamille(){
+        $has_volume_cave = false;
+        $has_volume_cave_lignes = array();
+        $has_volume_nego = false;
+        $has_volume_nego_lignes = array();
+        $has_volume_coop = false;
+        $has_volume_coop_lignes = array();
+        $max_lignes = 0;
+        foreach ($this->enhanced_donnees as $donnee) {
+            switch ($donnee->categorie) {
+                case '09':
+                    $has_volume_cave = true;
+                    $has_volume_cave_lignes[$donnee->colonneid] = true;
+                    break;
+                case '08':
+                    $has_volume_coop = true;
+                    $has_volume_coop_lignes[$donnee->colonneid] = true;
+                    break;
+                case '07':
+                case '06':
+                    $has_volume_nego = true;
+                    $has_volume_nego_lignes[$donnee->colonneid] = true;
+                    break;
+            }
+            if ($max_lignes < $donnee->colonneid) {
+                $max_lignes = $donnee->colonneid;
+            }
+        }
+        $famille = $this->getFamilleCalculeeFromLigneDouane($this->type, $has_volume_cave, $has_volume_coop, $has_volume_nego);
+        $familles_lignes = array();
+        for($i = 0 ; $i <= $max_lignes ; $i++) {
+            $familles_lignes[$i] = $this->getFamilleCalculeeFromLigneDouane(@$has_volume_cave_lignes[$i], @$has_volume_coop_lignes[$i], @$has_volume_nego_lignes[$i]);
+        }
+        foreach ($this->enhanced_donnees as $donnee) {
+            $donnee->document_famille = $famille;
+            $donnee->colonne_famille = $familles_lignes[$donnee->colonneid];
+        }
+    }
+
+    public function getFamilleCalculeeFromLigneDouane($has_volume_cave = false, $has_volume_coop = false, $has_volume_nego = false) {
+        return self::getFamilleCalculeeFromTypeAndLigneDouane($this->type, $has_volume_cave, $has_volume_coop, $has_volume_nego);
+    }
+
+    public static function getFamilleCalculeeFromTypeAndLigneDouane($type, $has_volume_cave = false, $has_volume_coop = false, $has_volume_nego = false) {
+            if ($type == 'SV11') {
+                return DouaneProduction::FAMILLE_COOPERATIVE;
+            }
+            if ($type == 'SV12') {
+                return DouaneProduction::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            }
+            $famille = '';
+            if ($has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_APPORTEUR_NEGOCE_TOTAL;
+            }elseif (!$has_volume_nego && $has_volume_coop && !$has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL;
+            }elseif (!$has_volume_nego && !$has_volume_coop && $has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL;
+            }elseif ($has_volume_nego && $has_volume_coop && !$has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_APPORTEUR_COOP_ET_NEGOCE;
+            }elseif (!$has_volume_nego && $has_volume_coop && $has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP;
+            }elseif ($has_volume_nego && !$has_volume_coop && $has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE;
+            }elseif ($has_volume_nego && $has_volume_coop && $has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE;
+            }elseif (!$has_volume_nego && !$has_volume_coop && !$has_volume_cave) {
+                $famille = DouaneProduction::FAMILLE_SANS_VOLUME;
+            }else{
+                throw new sfException("Cas de famille DR non gérée (".$this->getCsvType()." ; ".boolval($has_volume_nego)." ; ".boolval($has_volume_coop)." ; ".boolval($has_volume_cave).")");
+            }
+            return $famille;
+        }
+
+
+
     public function addDonnee($data) {
         if (!$data || !isset($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]) || empty($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION])) {
             return null;
@@ -196,7 +335,9 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         $item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
         $item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
         $item->categorie = $data[DouaneCsvFile::CSV_LIGNE_CODE];
+        $item->categorie_libelle = $data[DouaneCsvFile::CSV_LIGNE_LIBELLE];
         $item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
+        $item->colonneid = $data[DouaneCsvFile::CSV_COLONNE_ID];
         if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {
             if ($tiers = EtablissementClient::getInstance()->findByCvi($data[DouaneCsvFile::CSV_TIERS_CVI])) {
                 $item->tiers = $tiers->_id;
@@ -219,7 +360,7 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         $calcul = $formule;
         $numLignes = preg_split('|[\-+*\/() ]+|', $formule, -1, PREG_SPLIT_NO_EMPTY);
         foreach($numLignes as $numLigne) {
-            $datas[$numLigne] = $this->getTotalValeur($numLigne, $produitFilter);
+            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter);
         }
 
         foreach($datas as $numLigne => $value) {
@@ -229,14 +370,20 @@ class DouaneFichier extends Fichier implements InterfaceMouvementFacturesDocumen
         return eval("return $calcul;");
     }
 
-    public function getTotalValeur($numLigne, $produitFilter = null) {
+    public function getTotalValeur($numLigne, $famille = null, $produitFilter = null, $famille_exclue = null) {
         $value = 0;
 
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        foreach($this->donnees as $donnee) {
+        foreach($this->getEnhancedDonnees() as $donnee) {
+            if ($famille && $donnee->colonne_famille != $famille) {
+                continue;
+            }
+            if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
+                continue;
+            }
             if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $donnee->produit)) {
                 continue;
             }
