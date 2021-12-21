@@ -271,7 +271,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $max_lignes = $donnee->colonneid;
             }
         }
-        $famille = $this->getFamilleCalculeeFromLigneDouane($this->type, $has_volume_cave, $has_volume_coop, $has_volume_nego);
+        $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
         $familles_lignes = array();
         for($i = 0 ; $i <= $max_lignes ; $i++) {
             $familles_lignes[$i] = $this->getFamilleCalculeeFromLigneDouane(@$has_volume_cave_lignes[$i], @$has_volume_coop_lignes[$i], @$has_volume_nego_lignes[$i]);
