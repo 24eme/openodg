@@ -250,35 +250,34 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $has_volume_nego_lignes = array();
         $has_volume_coop = false;
         $has_volume_coop_lignes = array();
-        $max_lignes = 0;
+        $colonne_keys = array();
         foreach ($this->enhanced_donnees as $donnee) {
+            $key = $donnee->colonneid.$donnee->bailleur_ppm.$donnee->bailleur_raison_sociale;
             switch ($donnee->categorie) {
                 case '09':
                     $has_volume_cave = true;
-                    $has_volume_cave_lignes[$donnee->colonneid] = true;
+                    $has_volume_cave_lignes[$key] = true;
                     break;
                 case '08':
                     $has_volume_coop = true;
-                    $has_volume_coop_lignes[$donnee->colonneid] = true;
+                    $has_volume_coop_lignes[$key] = true;
                     break;
                 case '07':
                 case '06':
                     $has_volume_nego = true;
-                    $has_volume_nego_lignes[$donnee->colonneid] = true;
+                    $has_volume_nego_lignes[$key] = true;
                     break;
             }
-            if ($max_lignes < $donnee->colonneid) {
-                $max_lignes = $donnee->colonneid;
-            }
+            $colonne_keys[] = $key;
         }
         $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
         $familles_lignes = array();
-        for($i = 0 ; $i <= $max_lignes ; $i++) {
+        foreach($colonne_keys as $i) {
             $familles_lignes[$i] = $this->getFamilleCalculeeFromLigneDouane(@$has_volume_cave_lignes[$i], @$has_volume_coop_lignes[$i], @$has_volume_nego_lignes[$i]);
         }
-        foreach ($this->enhanced_donnees as $donnee) {
+        foreach($this->enhanced_donnees as $donnee) {
             $donnee->document_famille = $famille;
-            $donnee->colonne_famille = $familles_lignes[$donnee->colonneid];
+            $donnee->colonne_famille = $familles_lignes[$donnee->colonneid.$donnee->bailleur_ppm.$donnee->bailleur_raison_sociale];
         }
     }
 
