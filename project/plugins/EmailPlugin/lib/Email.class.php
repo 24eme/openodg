@@ -64,6 +64,7 @@ class Email {
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
@@ -93,6 +94,7 @@ class Email {
             $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
@@ -142,6 +144,7 @@ class Email {
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
