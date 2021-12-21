@@ -205,11 +205,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
             $p = array();
             if ($donnee->bailleur && $d->bailleur_etablissement = EtablissementClient::getInstance()->find($donnee->bailleur)) {
-                $p[] = $d->bailleur_etablissement->raison_sociale;
+                $p[] = $d->bailleur_etablissement->raison_sociale.' ('.$donnee->bailleur.')';
                 $p[] = $d->bailleur_etablissement->ppm;
             } else {
-                $p[] = null;
-                $p[] = null;
+                $p[] = $donnee->bailleur_raison_sociale;
+                $p[] = $donnee->bailleur_ppm;
             }
             $p[] = $d->produit_conf->getCertification()->getKey();
             $p[] = $d->produit_conf->getGenre()->getKey();
@@ -341,11 +341,22 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {
             if ($tiers = EtablissementClient::getInstance()->findByCvi($data[DouaneCsvFile::CSV_TIERS_CVI])) {
                 $item->tiers = $tiers->_id;
+                $item->tiers_raison_sociale = $tiers->raison_sociale;
+                $item->tiers_cvi = $tiers->cvi;
+            }else{
+                $item->tiers_raison_sociale = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
+                $item->tiers_cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
             }
         }
         if ($data[DouaneCsvFile::CSV_BAILLEUR_PPM]) {
             if ($tiers = EtablissementClient::getInstance()->findByPPM($data[DouaneCsvFile::CSV_BAILLEUR_PPM])) {
                 $item->bailleur = $tiers->_id;
+                $item->bailleur_ppm = $tiers->ppm;
+                $item->bailleur_raison_sociale = $tiers->raison_sociale;
+
+            }else{
+                $item->bailleur_ppm = $data[DouaneCsvFile::CSV_BAILLEUR_PPM];
+                $item->bailleur_raison_sociale = $data[DouaneCsvFile::CSV_BAILLEUR_NOM];
             }
         }
 
