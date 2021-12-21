@@ -385,7 +385,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
             if (in_array($donnee->colonne_famille, $throw_familles)) {
-                throw new sfException("Famille ".donnee->colonne_famille." non permise");
+                throw new sfException("Famille $donnee->colonne_famille non permise");
             }
             if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $donnee->produit)) {
                 continue;
