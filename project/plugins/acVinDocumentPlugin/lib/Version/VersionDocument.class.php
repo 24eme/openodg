@@ -122,7 +122,7 @@ class VersionDocument
         if (!$this->document->isModificative()) {
             return array();
         }
-        if (is_null($this->diff_with_mother[$both_directions])) {
+        if (!isset($this->diff_with_mother[$both_directions]) || is_null($this->diff_with_mother[$both_directions])) {
             $mother = $this->getMother();
             if (!$this->getMother()) {
                 $type = $this->document->getDocumentDefinitionModel();
