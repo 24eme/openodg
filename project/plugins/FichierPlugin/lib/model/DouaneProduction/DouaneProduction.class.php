@@ -78,7 +78,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
           return array();
       }
 
-      $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->getCampagne());
+      $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->identifiant, $this->getPeriode());
 
       // TODO : pour l'instant cela est géré avec le critère isRevendication par lot
       if($this->getTotalValeur("15") && !$drev && !DRevConfiguration::getInstance()->isRevendicationParLots()){
@@ -200,6 +200,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->identifiant, $this->getPeriode());
         foreach($this->donnees as $i => $donnee) {
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
@@ -236,7 +237,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnee->colonneid = $colonnesid[$produitid];
             }
             $d->colonneid = $donnee->colonneid;
-
+            if ($drev) {
+                $d->drev_id = $drev->_id;
+            }else{
+                $d->drev_id = null;
+            }
             $this->enhanced_donnees[] = $d;
         }
         $this->enhancedDonnneesWithFamille();

@@ -37,7 +37,7 @@ class DouaneCsvFile
   const CSV_FAMILLE_LIGNE_CALCULEE = 32;
   const CSV_SUBCOLONNE_DOUANE_ID = 32;
 
-  const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Valeur Motif / Raison Sociale Tiers;Code Commune Tiers;Commune Tiers;Id Colonne;Organisme;Hash produit;Doc Id;Famille calculee;Millesime;Famille ligne calculee'."\n";
+  const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Valeur Motif / Raison Sociale Tiers;Code Commune Tiers;Commune Tiers;Id Colonne;Organisme;Hash produit;Last DRev id if exist;Doc Id;Famille calculee;Millesime;Famille ligne calculee'."\n";
 
   protected $file = null;
   protected $separator = null;
