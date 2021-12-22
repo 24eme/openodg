@@ -128,9 +128,7 @@ class drevActions extends sfActions {
     	$this->secure(DRevSecurity::EDITION, $this->drev);
 
         try {
-            if (!($imported = $this->drev->importFromDocumentDouanier())) {
-                throw new sfException("mauvais format");
-            }
+            $imported = $this->drev->importFromDocumentDouanier();
         } catch (Exception $e) {
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
