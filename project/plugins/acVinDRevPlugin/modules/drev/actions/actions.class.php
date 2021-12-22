@@ -128,11 +128,13 @@ class drevActions extends sfActions {
     	$this->secure(DRevSecurity::EDITION, $this->drev);
 
         try {
-            $imported = $this->drev->importFromDocumentDouanier();
+            if (!($imported = $this->drev->importFromDocumentDouanier())) {
+                throw new sfException("mauvais format");
+            }
         } catch (Exception $e) {
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
-                $message .= " Pour les SV11 et les SV12 veuillez à bien utiliser le fichier organisé par apporteur (plutôt que celui organisé par produit).";
+                $message .= "<br/> Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non que celui organisé par produit).";
             }
             $this->getUser()->setFlash('error', $message);
 
@@ -199,13 +201,15 @@ class drevActions extends sfActions {
         $this->form->save();
 
         try {
-            $this->drev->importFromDocumentDouanier(true);
+            if (!$this->drev->importFromDocumentDouanier(true)) {
+                throw new sfException("Mauvais format");
+            }
         } catch(Exception $e) {
 
-            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendues.';
 
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
-                $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteur (plutôt que celui organisé par produit).";
+                $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non celui organisé par produit).";
             }
 
             $this->getUser()->setFlash('error', $message);

@@ -61,6 +61,9 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         			continue;
         		}
         		if (($firstPage || $secondPage) && isset($values[$indexCodeProduit + 1]) && !empty($values[$indexCodeProduit + 1]) && !preg_match('/libell.+[\s]*du[\s]*produit/i', $values[$indexCodeProduit + 1])) {
+                    if (!$libellesLigne) {
+                        break;
+                    }
         			for ($v = $indexCodeProduit + 3; $v < $indexCodeProduit + 10; $v++) {
         				if (!isset($values[$v]) || !$values[$v]) {
         					continue;
