@@ -15,6 +15,22 @@ class ExportTransactionPDF extends ExportPDF {
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
+    public function getFileName($with_rev = false)
+    {
+        return self::buildFileName($this->declaration, true);
+    }
+
+    public static function buildFileName($declaration, $with_rev = false)
+    {
+        $filename = sprintf("_%s", $declaration->_id);
+
+        if ($with_rev) {
+            $filename .= '_' . $declaration->_rev;
+        }
+
+        return $filename . '.pdf';
+    }
+
 
   protected function getHeaderTitle() {
       $date = new DateTime($this->declaration->date);
