@@ -112,9 +112,10 @@
             <tr>
                 <th class="col-xs-1">Date</th>
                 <th class="col-xs-1">Numéro</th>
-                <th class="col-xs-4">Désignation</th>
-                <th class="col-xs-1 text-right">Prix unitaire</th>
+                <th class="col-xs-3">Désignation</th>
+                <th class="col-xs-1">Code comptable</th>
                 <th class="col-xs-1 text-right">Quantité</th>
+                <th class="col-xs-1 text-right">Prix unitaire</th>
                 <th class="col-xs-1 text-right">TVA</th>
                 <th class="col-xs-1 text-right">Total HT</th>
             </tr>
@@ -128,8 +129,9 @@
                             <td class="<?php if(!$first): ?>transparence-lg<?php endif; ?>"><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
                             <td class="<?php if(!$first): ?>transparence-lg<?php endif; ?>">N°&nbsp;<?php echo $facture->numero_archive ?></td>
                             <td><?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?></td>
-                            <td class="text-right"><?php echoFloat($detail->prix_unitaire); ?> €</td>
+                            <td><span class="text-muted"><?php echo $ligne->produit_identifiant_analytique; ?></span></td>
                             <td class="text-right"><?php echoFloat($detail->quantite); ?> <?php if($detail->exist('unite')): ?><small class="text-muted"><?php echo $detail->unite; ?></small><?php endif; ?></td>
+                            <td class="text-right"><?php echoFloat($detail->prix_unitaire); ?> €</td>
                             <td class="text-right"><?php echo ($detail->taux_tva) ? echoFloat($detail->montant_tva)." €" : null; ?></td>
                             <td class="text-right"><?php echo echoFloat($detail->montant_ht); ?> €</td>
                         </tr>
