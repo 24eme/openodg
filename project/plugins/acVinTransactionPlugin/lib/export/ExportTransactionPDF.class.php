@@ -6,6 +6,9 @@ class ExportTransactionPDF extends ExportPDF {
       $titre = sprintf("Déclaration de Vrac export du %s", $date->format('d/m/Y'));
       return $titre;
   }
+    protected function getHeaderSubtitle()
+    {
+    }
 
   public function create() {
       @$this->printable_document->addPage($this->getPartial('transaction/pdf', array('document' => $this->declaration, 'etablissement' => $this->etablissement)));
