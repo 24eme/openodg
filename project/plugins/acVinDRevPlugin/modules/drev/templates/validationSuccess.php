@@ -32,7 +32,7 @@
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
     <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
-	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>
