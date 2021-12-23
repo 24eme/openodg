@@ -3,7 +3,6 @@
 abstract class DocumentValidation
 {
     const TYPE_ERROR = 'erreur';
-    const TYPE_FATAL = 'erreur_fatale';
     const TYPE_WARNING = 'vigilance';
     const TYPE_ENGAGEMENT = 'engagement';
 
@@ -11,7 +10,6 @@ abstract class DocumentValidation
         self::TYPE_ENGAGEMENT,
         self::TYPE_WARNING,
         self::TYPE_ERROR,
-        self::TYPE_FATAL,
     );
 
     protected $document;
@@ -95,24 +93,19 @@ abstract class DocumentValidation
 
     public function getEngagements()
     {
-        return $this->getPoints(self::TYPE_ENGAGEMENT);
+        return $this->getPoints('engagement');
     }
 
     public function getVigilances()
     {
 
-        return $this->getPoints(self::TYPE_WARNING);
+        return $this->getPoints('vigilance');
     }
 
     public function getErreurs()
     {
 
-        return array_merge($this->getPoints(self::TYPE_ERROR), $this->getPoints(self::TYPE_FATAL));
-    }
-
-    public function getFatales()
-    {
-        return $this->getPoints(self::TYPE_FATAL);
+        return $this->getPoints('erreur');
     }
 
     public function hasEngagements()
@@ -128,11 +121,6 @@ abstract class DocumentValidation
     public function hasErreurs()
     {
         return count($this->getErreurs()) > 0;
-    }
-
-    public function hasFatales()
-    {
-        return count($this->getFatales()) > 0;
     }
 
     public function hasPoints()

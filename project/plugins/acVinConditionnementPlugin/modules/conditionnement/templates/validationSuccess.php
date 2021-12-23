@@ -57,7 +57,7 @@
             <a href="<?php echo url_for("conditionnement_lots", $conditionnement); ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="button" id="btn-validation-document-conditionnement" data-toggle="modal" data-target="#conditionnement-confirmation-validation" <?php if($validation->hasErreurs() && $conditionnement->isTeledeclare() && (!$sf_user->hasConditionnementAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-conditionnement" data-toggle="modal" data-target="#conditionnement-confirmation-validation" <?php if($validation->hasErreurs() && $conditionnement->isTeledeclare() && !$sf_user->hasConditionnementAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>

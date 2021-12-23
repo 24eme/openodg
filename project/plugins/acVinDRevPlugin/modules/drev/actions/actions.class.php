@@ -644,7 +644,7 @@ class drevActions extends sfActions {
 
         $this->validation = new DRevValidation($this->drev);
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
+        $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -667,7 +667,7 @@ class drevActions extends sfActions {
         $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
 
-        foreach ($this->validation->getEngagements() as $engagement) {
+        foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
             if(!$this->form->getValue("engagement_".$engagement->getCode())) {
                 continue;
             }
@@ -835,7 +835,7 @@ class drevActions extends sfActions {
         $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
-            $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
+            $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
         }
 
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);

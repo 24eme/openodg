@@ -2,7 +2,7 @@
     <h3>Points bloquants</h3>
     <div class="alert alert-danger" role="alert">
         <ul class="list-unstyled">
-            <?php foreach ($validation->getErreurs() as $controle): ?>
+            <?php foreach ($validation->getPoints(DrevValidation::TYPE_ERROR) as $controle): ?>
                 <li>
                     <?php if ($controle->getRawValue()->getLien() && $controle->getRawValue()->getInfo()) : ?>
                         <span class="glyphicon glyphicon-warning-sign"></span>
@@ -24,7 +24,7 @@
     <h3>Points de vigilance <a title="Les points de vigilance vous permettent de repérer d'éventuels oublis ou erreurs de saisie.  Cependant ils ne vous empêchent pas de valider votre déclaration." data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a></h3>
         <div class="alert alert-warning" role="alert">
             <ul class="list-unstyled">
-                <?php foreach ($validation->getVigilances() as $controle): ?>
+                <?php foreach ($validation->getPoints(DrevValidation::TYPE_WARNING) as $controle): ?>
                     <li>
                         <?php if ($controle->getRawValue()->getLien() && $controle->getRawValue()->getInfo()) : ?>
                             <span class="glyphicon glyphicon-warning-sign"></span>

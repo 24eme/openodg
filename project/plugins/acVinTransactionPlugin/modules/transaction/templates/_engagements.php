@@ -9,7 +9,7 @@
     		</ul>
     	</div>
 
-        <?php foreach ($validation->getEngagements() as $engagement): ?>
+        <?php foreach ($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement): ?>
         <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
             <div class="checkbox">
                 <label>

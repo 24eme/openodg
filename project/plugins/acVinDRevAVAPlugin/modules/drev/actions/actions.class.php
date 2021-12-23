@@ -656,7 +656,7 @@ class drevActions extends sfActions {
         $this->drev->cleanDoc();
         $this->validation = new DRevValidation($this->drev);
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getEngagements()));
+        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -677,7 +677,7 @@ class drevActions extends sfActions {
 
         $documents = $this->drev->getOrAdd('documents');
 
-        foreach ($this->validation->getEngagements() as $engagement) {
+        foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
             $document = $documents->add($engagement->getCode());
             $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
         }
