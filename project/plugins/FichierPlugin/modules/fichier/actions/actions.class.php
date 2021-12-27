@@ -162,13 +162,7 @@ class fichierActions extends sfActions
 										$piecesSocietes
 									);
 
-		$year_min = '1900';
-		$year_max = date('Y');
-		if ($this->year) {
-			$year_min = $this->year;
-			$year_max = $this->year;
-		}
-		$this->history = PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN), $year_min.'-01-01', $year_max.'-12-31');
+		$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $visibilite, $this->year.'-01-01', $this->year.'-12-31', $this->categoriesLimitation) : $allHistory;
 
 		$this->years = array();
 		$this->categories = array();
