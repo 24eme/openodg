@@ -1647,7 +1647,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getVolumeVinFromDRPrecedente($produitFilter = null) {
         $dr = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode()-1);
         if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
-            throw new sfException("Pas de DR ".($this->getPeriode()-1)." pour ".$this->_id);
+            return null;
         }
         return $dr->getTotalValeur("15") + $dr->getTotalValeur("14");
     }
