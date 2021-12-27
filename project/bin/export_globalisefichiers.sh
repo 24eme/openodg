@@ -18,8 +18,11 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
         bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh $app;
     done
 
+    grep -a DREV- $EXPORTGLOBALDIR/production.csv > $EXPORTGLOBALDIR/production.csv.drev.part
+    grep -va DREV- $EXPORTGLOBALDIR/production.csv > $EXPORTGLOBALDIR/production.csv.sansdrev.part
+
     head -n 1 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 > $EXPORTGLOBALDIR/production.csv.part
-    tail -n +2 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }'  >> $EXPORTGLOBALDIR/production.csv.part
+    tail -n +2 $EXPORTGLOBALDIR/production.csv.drev.part $EXPORTGLOBALDIR/production.csv.sansdrev.part | grep -v ^== | grep ';' | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }'  >> $EXPORTGLOBALDIR/production.csv.part
     cat $EXPORTGLOBALDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTGLOBALDIR/production.csv
 
     for type in dr sv11 sv12 ; do
