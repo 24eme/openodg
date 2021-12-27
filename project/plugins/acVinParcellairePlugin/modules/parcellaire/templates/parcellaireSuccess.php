@@ -103,10 +103,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
-		                <th class="col-xs-2">Lieu-dit</th>
+		                <th class="col-xs-1">Lieu-dit</th>
                     <th class="col-xs-1" style="text-align: right;">Section</th>
                     <th class="col-xs-1">N° parcelle</th>
-                    <th class="col-xs-3">Cépage</th>
+                    <th class="col-xs-4">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                     <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
                     <th class="col-xs-1">Écart Pieds</th>
