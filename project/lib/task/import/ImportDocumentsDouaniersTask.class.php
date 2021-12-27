@@ -94,7 +94,7 @@ EOF;
         		if (!$result) {
         			echo sprintf("WARNING;Aucun document douanier pour %s (%s)\n", $etablissement->_id, $etablissement->cvi);
         		} else {
-        			echo sprintf("SUCCESS;Document douanier importé;%s\n", $result->_id);
+        			echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $result->type, $etablissement->_id, $etablissement->cvi);
         		}
 
         	} else {
