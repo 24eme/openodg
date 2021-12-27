@@ -1645,7 +1645,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeVinFromDRPrecedente($produitFilter = null) {
-        $dr = $this->getDocumentDouanierOlderThanMe($this->getPeriode()-1);
+        $dr = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode()-1);
         if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
             throw new sfException("Pas de DR ".($this->getPeriode()-1)." pour ".$this->_id);
         }
@@ -1653,7 +1653,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeVinFromSV11Precedente($produitFilter = null) {
-        $sv11 = $this->getDocumentDouanierOlderThanMe($this->getPeriode()-1);
+        $sv11 = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode()-1);
         if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
             return ;
         }
