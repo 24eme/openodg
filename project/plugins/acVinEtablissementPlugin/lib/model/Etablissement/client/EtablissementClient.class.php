@@ -103,6 +103,8 @@ class EtablissementClient extends acCouchdbClient {
                                                   "DGC" => EtablissementClient::CHAI_ATTRIBUT_DGC,
                                                   "Apport" => EtablissementClient::CHAI_ATTRIBUT_APPORT,
                                                   "Conditionnement" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
+                                                  "Prestataire" => EtablissementClient::CHAI_ATTRIBUT_PRESTATAIRE,
+                                                  "Elevage" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
                                                     );
 
     public static $chaisAttributByLiaisonType = array(
