@@ -4,7 +4,8 @@ abstract class DeclarationLotsValidation extends DocumentValidation
 
     public function configureLots()
     {
-        $this->addControle(self::TYPE_FATAL, 'lot_incomplet', "Cette information est incomplète");
+        $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
+        $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
         $this->addControle(self::TYPE_ERROR, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
         /*
@@ -28,11 +29,11 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             }
 
             if(!$lot->produit_hash){
-              $this->addPoint(self::TYPE_FATAL, 'lot_incomplet', "Lot n° ".($key+1)." - Produit manquant", $this->generateUrl($routeName, array("id" => $this->document->_id)));
+              $this->addPoint(self::TYPE_FATAL, 'lot_incomplet_fatal', "Lot n° ".($key+1)." - Produit manquant", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
             }
             if(!$lot->volume && $lot->volume !== 0){
-              $this->addPoint(self::TYPE_FATAL, 'lot_incomplet', "Lot n° ".($key+1)." - Volume manquant", $this->generateUrl($routeName, array("id" => $this->document->_id)));
+              $this->addPoint(self::TYPE_FATAL, 'lot_incomplet_fatal', "Lot n° ".($key+1)." - Volume manquant", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
             }
 

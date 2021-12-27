@@ -88,7 +88,7 @@ $lot2->produit_hash = $produit->getHash();
 $t->ok(!$lot2->isEmpty(), "Le lot n'est plus vide avec juste un produit");
 $conditionnement->save();
 $validation = new ConditionnementValidation($conditionnement);
-$t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_ERROR, "lot_incomplet")), 2, "Point bloquant: Aucun produit saisi lors de l'etape Lot");
+$t->is(count($validation->getPointsByCode(ConditionnementValidation::TYPE_FATAL, "lot_incomplet_fatal")), 2, "Point bloquant: Aucun produit saisi lors de l'etape Lot");
 
 $t->comment("création du lot 3");
 $lot3 = $conditionnement->addLot();

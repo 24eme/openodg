@@ -84,7 +84,7 @@ $transaction->save();
 
 $validation = new TransactionValidation($transaction);
 
-$t->is(count($validation->getPointsByCode(TransactionValidation::TYPE_ERROR, "lot_incomplet")), 2, "Points bloquants sur chacun des lots");
+$t->is(count($validation->getPointsByCode(TransactionValidation::TYPE_FATAL, "lot_incomplet_fatal")), 2, "Points bloquants sur chacun des lots");
 
 $transaction->remove('lots');
 
