@@ -98,7 +98,7 @@ h3 {
 
 .select2-results .select2-highlighted {
     color: white;
-    background-color: #c50069;
+    background-color: #1c8dba;
 }
 
 .nav-step {
@@ -130,11 +130,11 @@ h3 {
 }
 
 .list-group-item.active-bordered {
-    border-left: 6px solid #c50069 !important;
+    border-left: 6px solid #1c8dba !important;
 }
 
 .panel-primary-bordered-right {
-    border-right: 6px solid #c50069;
+    border-right: 6px solid #1c8dba;
 }
 
 #header header {background-color:#ffffff; margin-top: 0px; margin-bottom: 20px; padding:0px 0;position:relative}
