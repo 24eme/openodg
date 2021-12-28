@@ -149,7 +149,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                                             'nb_lots_degustables' => 0
                                            );
             }
-            $couleurs[$couleur]['appellation'] = $lot->getConfig()->getAppellation()->getLibelleComplet().' Total';
+            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' Total';
             if($lot->getProduitRevendique()){
                 $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleDR();
             }
