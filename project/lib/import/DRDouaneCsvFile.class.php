@@ -61,6 +61,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $achat_fin = 0;
         $achats = array();
         $ratios_bailleur = array();
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
                 //Cas de fin de tableur avec les achats tolérés
@@ -246,6 +247,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         foreach ($produits as $k => $p) {
           $colExtraIds = ';'.Organisme::getCurrentOrganisme();
           $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
+          $colExtraIds .= ($drev) ? ';'.$drev->_id : ';';
           $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
           $colExtraIds .= ';'.$famille;
           $colExtraIds .= ';'.substr($this->campagne, 0, 4);

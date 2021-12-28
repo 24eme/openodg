@@ -20,7 +20,7 @@ unlink($csvTmpFile);
 $lines = explode("\n", $csvConvert);
 
 
-$t = new lime_test(25);
+$t = new lime_test(29);
 $nb = 0;
 foreach($lines as $line) {
     if(!$line) {
@@ -68,3 +68,8 @@ $line = explode(";", $lines[3]);
 $t->is($line[SV11CsvFile::CSV_LIGNE_CODE], SV11CsvFile::CSV_LIGNE_CODE_VOLUME_ELIMINIE, "Code du type de mouvement");
 $t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "16. Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels - Vol à livrer à distillation ou usages indistriels", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV11CsvFile::CSV_VALEUR]), 4), 2.70, "Valeur");
+
+$t->is($line[SV12CsvFile::CSV_COLONNE_ID], '1', "Colonne colonne id OK");
+$t->is($line[SV12CsvFile::CSV_ORGANISME], $application, "Colonne organisme id OK");
+$t->is($line[SV12CsvFile::CSV_MILLESIME], $year, "Colonne Millesime $year OK");
+$t->is($line[SV12CsvFile::CSV_FAMILLE_LIGNE_CALCULEE], "COOPERATIVE", "Colonne famille calculée OK");
