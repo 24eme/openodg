@@ -6,8 +6,10 @@ class societeActions extends sfCredentialActions {
         $interpro = $request->getParameter('interpro_id');
         $q = $request->getParameter('q');
         $limit = $request->getParameter('limit', 100);
-        $statut = $request->getParameter('inactif', false);
-        $statut = ($statut == true) ? SocieteClient::STATUT_ACTIF : SocieteClient::STATUT_SUSPENDU;
+        $with_inactif = $request->getParameter('inactif', false);
+        if (!$with_inactif) {
+            $q .= " AND doc.statut:ACTIF";
+        }
 
         $qs = new acElasticaQueryQueryString($q);
         $elkquery = new acElasticaQuery();
