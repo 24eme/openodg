@@ -1111,6 +1111,7 @@ class degustationActions extends sfActions {
         $degustateurs->get($this->college)->get($this->identifiant)->add('confirmation', boolval($this->presence));
         $this->degustation->save(false);
 
+        Email::getInstance()->sendActionDegustateurAuthMail($degustation, $degustateur, boolval($this->presence));
     }
 
     public function executeRetirerLot(sfWebRequest $request) {

@@ -605,6 +605,31 @@ class Email {
       return $this->getMailer()->send($message);
     }
 
+    public function sendActionDegustateurAuthMail($degustation, $degustateur, $action) {
+        $from = Organisme::getInstance(null, 'degustation')->getEmail();
+        $to = $from;
+
+        $degust_nom = explode(' —', $degustateur->libelle)[0];
+        $action_libelle = ($action) ? "présence" : "absence";
+
+        $subject = "Dégustation " . ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm")." : $action_libelle de $degust_nom";
+
+        $body  = "Bonjour,\n\nDes infos ont été reçues concernant la présence de ".$degustateur->libelle." : \n\n";
+        $body .= "Dégustation: ".ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm")."\n";
+        $body .= "Présence: ".($action) ? "OUI" : 'NON';
+        $body .= "\n\n";
+
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
+
+        return $this->getMailer()->send($message);
+    }
+
+
     protected function getMailer() {
         return $this->_context->getMailer();
     }
