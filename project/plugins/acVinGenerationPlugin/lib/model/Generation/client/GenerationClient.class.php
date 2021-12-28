@@ -47,14 +47,27 @@ class GenerationClient extends acCouchdbClient {
         return $rows;
     }
 
-    public function findHistoryWithType($type, $limit = 100) {
-        return acCouchdbManager::getClient()
-            ->startkey(array($type, array()))
-            ->endkey(array($type))
-            ->descending(true)
-            ->limit($limit)
-	        ->getView("generation", "history")->rows;
-   }
+    public function findHistoryWithType($types, $limit = 100) {
+        if(!is_array($types)) {
+            $types = array($types);
+        }
+
+        $rows = array();
+
+        foreach($types as $type) {
+            $rows = array_merge($rows, acCouchdbManager::getClient()
+                        ->startkey(array($type, array()))
+                        ->endkey(array($type))
+                        ->descending(true)
+                        ->limit($limit)
+                        ->getView("generation", "history")
+                        ->rows);
+        }
+
+        uasort($rows, "GenerationClient::sortHistoryByDate");
+
+        return array_slice($rows, 0, $limit);
+    }
 
     public function findSubGeneration($idGeneration) {
         return acCouchdbManager::getClient()
@@ -64,6 +77,11 @@ class GenerationClient extends acCouchdbClient {
     }
 
     public static function sortHistory($a, $b) {
+
+        return strcmp($b->key[self::HISTORY_KEYS_TYPE_DATE_EMISSION], $a->key[self::HISTORY_KEYS_TYPE_DATE_EMISSION]);
+    }
+
+    public static function sortHistoryByDate($a, $b) {
 
         return strcmp($b->key[self::HISTORY_KEYS_TYPE_DATE_EMISSION], $a->key[self::HISTORY_KEYS_TYPE_DATE_EMISSION]);
     }

@@ -5,7 +5,12 @@ class facturationActions extends sfActions
 
     public function executeIndex(sfWebRequest $request)
     {
-        $this->generations = GenerationClient::getInstance()->findHistory(200);
+        $this->generations = GenerationClient::getInstance()->findHistoryWithType(array(
+            GenerationClient::TYPE_DOCUMENT_FACTURES,
+            GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE,
+            GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA,
+            GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE
+        ), 10);
 
         $this->form = new LoginForm();
 
@@ -445,7 +450,7 @@ class facturationActions extends sfActions
 
     protected function getUniqueTemplateFactureName(){
       $cm = new CampagneManager(date('m-d'),CampagneManager::FORMAT_PREMIERE_ANNEE);
-      return FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrentPrevious());
+      return FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrent());
     }
 
     protected function forwardCompteSecure(){

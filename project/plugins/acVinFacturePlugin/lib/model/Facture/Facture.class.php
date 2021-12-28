@@ -438,11 +438,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getTemplate() {
-        foreach($this->templates as $template_id) {
-
+        $template_id = $this->getTemplateId();
+        if ($template_id) {
             return TemplateFactureClient::getInstance()->find($template_id);
         }
-
         return null;
     }
 

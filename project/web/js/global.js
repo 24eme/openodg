@@ -744,6 +744,8 @@
     }
 
     $.initTypeahead = function() {
+        const contacts_all = document.getElementById('contacts_all');
+        const search_all = document.getElementById('champ_recherche');
 
         $('.typeahead').typeahead({
             itemLink: function(item) {
@@ -761,7 +763,7 @@
             source: function (query, process) {
                 var params = {};
                 params[this.$element.data('queryParam')] = query;
-                
+
                 if($('.typeahead').hasClass("typeaheadGlobal")){
                   var urlVisu = this.$element.attr("data-visualisationLink");
                 }
@@ -795,6 +797,16 @@
             fitToElement: true,
             followLinkOnSelect: true,
         });
+
+        if (contacts_all) {
+          contacts_all.addEventListener('change', function (e) {
+            url = new URL(document.location.origin + champ_recherche.dataset.url)
+            urlSearchParams = new URLSearchParams(url.searchParams);
+            urlSearchParams.set('inactif', this.checked)
+            url.search = urlSearchParams
+            champ_recherche.dataset.url = url.pathname + "?" + url.searchParams
+          });
+        }
     }
 
     $.fn.initAdvancedElements = function () {

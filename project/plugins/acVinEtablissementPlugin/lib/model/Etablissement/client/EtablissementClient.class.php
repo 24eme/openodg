@@ -104,7 +104,10 @@ class EtablissementClient extends acCouchdbClient {
                                                   "VV Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VRAC,
                                                   "VC Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE,
                                                   "DGC" => EtablissementClient::CHAI_ATTRIBUT_DGC,
-                                                  "Apport" => EtablissementClient::CHAI_ATTRIBUT_APPORT
+                                                  "Apport" => EtablissementClient::CHAI_ATTRIBUT_APPORT,
+                                                  "Conditionnement" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
+                                                  "Prestataire" => EtablissementClient::CHAI_ATTRIBUT_PRESTATAIRE,
+                                                  "Elevage" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
                                                     );
 
     public static $chaisAttributByLiaisonType = array(

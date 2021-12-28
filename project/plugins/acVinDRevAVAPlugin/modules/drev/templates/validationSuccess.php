@@ -32,7 +32,7 @@
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
     <?php include_partial('drev/recap', array('drev' => $drev)); ?>
-	<?php  if (!$drev->isPapier() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+	<?php  if (!$drev->isPapier() && count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
     <?php if(isset($form['commentaire'])): ?>
@@ -53,7 +53,7 @@
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <?php if ($validation->hasErreurs() && $sf_user->isAdmin()): ?>
+            <?php if ($validation->hasErreurs() && $sf_user->isAdmin() && !$validation->hasFatales()): ?>
                 <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#drev-confirmation-validation" class="btn btn-default btn-lg btn-upper" onclick="confirm('Êtes vous sûr de vouloir valider cette DRev avec des points bloquant ?')"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
             <?php else : ?>
                 <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>

@@ -124,7 +124,7 @@ $t->is($mailGenerator->getLogFilname(), $generationMail->date_emission."-facture
 $t->is($mailGenerator->getLogPath(), sfConfig::get('sf_web_dir')."/generation/".$mailGenerator->getLogFilname(), "Chemin complet vers le fichier de log");
 $t->is($mailGenerator->getPublishFile(), "%2Fgeneration%2F".$mailGenerator->getLogFilname(), "Chemin complet relatif encodé");
 $logdate = date("Y-m-d H:i:s");
-$t->is($mailGenerator->getLog($facture->_id, "ENVOYÉ", $logdate), array($logdate, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $societeViti->getEmail(), "ENVOYÉ", $facture->_id), "La ligne de log contient les informations");
+$t->is($mailGenerator->getLog($facture->_id, "ENVOYÉ", "test commentaire", $logdate), array($logdate, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $societeViti->getEmail(), "ENVOYÉ", "test commentaire", $facture->_id), "La ligne de log contient les informations");
 $t->ok(file_exists($mailGenerator->getLogPath()), "Le fichier de log existe");
 $t->is(count(file($mailGenerator->getLogPath())), 2, "Le fichier de log contient 2 lignes");
 $mailGenerator->addLog($facture->_id, "ERROR", $logdate);

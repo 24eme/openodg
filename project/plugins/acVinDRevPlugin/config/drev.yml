@@ -17,3 +17,5 @@ all:
         bio: "bio"
         HVE: "HVE"
         primeur: "primeur"
+        TerraVitis: "Terra Vitis"
+        autre: "Autre"

@@ -30,7 +30,7 @@ class FichierClient extends acCouchdbClient {
      *
      * @return false|Un document
      */
-    public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true)
+    public function scrapeAndSaveFiles($etablissement, $type, $annee, $scrap = true, $context = null)
     {
         $etablissements = $etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
         $fichiers = array();
@@ -38,7 +38,7 @@ class FichierClient extends acCouchdbClient {
 		if($scrap) {
             		$this->scrapeFiles($etblmt, $type, $annee);
 	    	}
-	    if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee)) {
+	    if (!$files = $this->getScrapyFiles($etblmt, strtolower($type), $annee, $context)) {
                 continue;
             }
             $client = $this->getClientFromType($type);
@@ -99,10 +99,10 @@ class FichierClient extends acCouchdbClient {
         $status = ProdouaneScrappyClient::exec("download_douane.sh", "$t $annee $cvi 1>&2", $output);
     }
 
-    private function getScrapyFiles($etablissement, $type, $annee)
+    private function getScrapyFiles($etablissement, $type, $annee, $context = null)
     {
     	$files = array();
-    	$directory = new DirectoryIterator(ProdouaneScrappyClient::getDocumentPath());
+    	$directory = new DirectoryIterator(ProdouaneScrappyClient::getDocumentPath($context));
     	$iterator = new IteratorIterator($directory);
     	$regex = new RegexIterator($directory, '/^'.$type.'-'.$annee.'-'.$etablissement->cvi.'\..+$/i', RegexIterator::MATCH);
     	foreach($regex as $file) {
@@ -145,9 +145,14 @@ class FichierClient extends acCouchdbClient {
     public function getCategories() {
 
         return array(
-            "Dr" => "Dr",
-            "Drev" => "Drev",
-            "Identification" => "Identification"
+            "Dr" => "DR",
+            "Sv11" => "SV11",
+            "Sv12" => "SV12",
+            "Drev" => "DRev",
+            "Identification" => "Habilitation / Identification",
+            "Degustation" => "Dégustation",
+            "Facture" => "Facture",
+            "ChgtDenom" => "Changement de dénomination"
         );
     }
 }

@@ -111,17 +111,20 @@ rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_in
 sleep 60
 
 if [ -z $IS_NO_VINIF ]; then
-  bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
-  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
-  rm $EXPORTDIR/dr.csv.part
+  bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/production.csv.part
+  bash bin/export_docs.sh SV11 30 $1 >> $EXPORTDIR/production.csv.part
+  bash bin/export_docs.sh SV12 30 $1 >> $EXPORTDIR/production.csv.part
+  head -n 1 $EXPORTDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/production.csv
+  cat $EXPORTDIR/production.csv.part | grep -E '^(DR|SV)' | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | iconv -f UTF8 -t ISO88591//TRANSLIT >> $EXPORTDIR/production.csv
 
-  bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
-  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
-  rm $EXPORTDIR/sv12.csv.part
+  head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/dr.csv
+  cat $EXPORTDIR/production.csv | grep -a '^DR' >> $EXPORTDIR/dr.csv
+  head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/sv11.csv
+  cat $EXPORTDIR/production.csv | grep -a '^SV11' >> $EXPORTDIR/sv11.csv
+  head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/sv12.csv
+  cat $EXPORTDIR/production.csv | grep -a '^SV12' >> $EXPORTDIR/sv12.csv
 
-  bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
-  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
-  rm $EXPORTDIR/sv11.csv.part
+  rm $EXPORTDIR/production.csv.part
 fi
 
 bash bin/export_docs.sh ParcellaireIrrigable 30 $1 > $EXPORTDIR/parcellaireirrigable.csv.part

@@ -94,10 +94,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
-		                <th class="col-xs-2">Lieu-dit</th>
+		                <th class="col-xs-1">Lieu-dit</th>
                     <th class="col-xs-1" style="text-align: right;">Section</th>
                     <th class="col-xs-1">N° parcelle</th>
-                    <th class="col-xs-3">Cépage</th>
+                    <th class="col-xs-4">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                     <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
                     <th class="col-xs-1">Écart Pieds</th>
@@ -166,6 +166,9 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
+                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) {
+                                    $cepage .= ' - jeunes vignes';
+                                }
                             ?>
                             <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
 

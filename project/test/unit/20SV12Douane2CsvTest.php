@@ -8,7 +8,7 @@ foreach($config->getProduits() as $produit) {
     break;
 }
 
-$t = new lime_test(27);
+$t = new lime_test(31);
 
 $t->ok($produit->getLibelleComplet(), "configuration de base est OK : on a un libellé de produit");
 $t->ok($produit->getCodeDouane(), "configuration de base est OK : le produit a un code douane");
@@ -55,21 +55,26 @@ $t->is($line[SV12CsvFile::CSV_PRODUIT_CEPAGE], $produit->getCepage()->getKey(), 
 $t->is($line[SV12CsvFile::CSV_PRODUIT_INAO], $produit->getCodeDouane(), "Le code inao est OK");
 $t->is($line[SV12CsvFile::CSV_PRODUIT_LIBELLE], $produit->getLibelleComplet(), "Libelle complet OK");
 
-$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], "07", "Code du type de mouvement");
-$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "Quantité de VF", "Libelle du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], SV12CsvFile::CSV_LIGNE_CODE_RECOLTE_RAISINS, "Code du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "6. Récolte sous forme de raisins en kg - Quantité de VF", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV12CsvFile::CSV_VALEUR]), 4), 25105, "Valeur");
 
 $line = explode(";", $lines[1]);
-$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], "09", "Code du type de mouvement");
-$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "Superficie de récolte", "Libelle du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE, "Code du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "4. Superficie de récolte calculée (ratio bailleur/metayer) - Superficie de récolte", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV12CsvFile::CSV_VALEUR]), 4), 6.202, "Valeur");
 
 $line = explode(";", $lines[2]);
-$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], "10", "Code du type de mouvement");
-$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "Volume issu de VF", "Libelle du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], SV12CsvFile::CSV_LIGNE_CODE_VOLUME_RAISINS, "Code du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "15. Vol. de vin clair issu de VF - Volume issu de VF", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV12CsvFile::CSV_VALEUR]), 4), 180, "Valeur");
 
 $line = explode(";", $lines[3]);
-$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], "12", "Code du type de mouvement");
-$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "Total produit", "Libelle du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_CODE], SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL, "Code du type de mouvement");
+$t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], "15. Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé - Total produit", "Libelle du type de mouvement");
 $t->is(round(str_replace(",", ".", $line[SV12CsvFile::CSV_VALEUR]), 4), 180, "Valeur");
+
+$t->is($line[SV12CsvFile::CSV_COLONNE_ID], '1', "Colonne colonne id OK");
+$t->is($line[SV12CsvFile::CSV_ORGANISME], $application, "Colonne organisme id OK");
+$t->is($line[SV12CsvFile::CSV_MILLESIME], $year, "Colonne Millesime $year OK");
+$t->is($line[SV12CsvFile::CSV_FAMILLE_LIGNE_CALCULEE], "NEGOCIANT_VINIFICATEUR", "Colonne famille calculée OK");

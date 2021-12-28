@@ -85,6 +85,12 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
         if (strpos($libelle, 'Blanc') !== false){
             return $this->getLieu()->getLibelleComplet()." Blanc";
         }
+        if (strpos($libelle, 'Rosé') !== false){
+            return $this->getLieu()->getLibelleComplet()." Rosé";
+        }
+        if (strpos($libelle, 'Rouge') !== false){
+            return $this->getLieu()->getLibelleComplet()." Rouge";
+        }
         return $libelle;
     }
 }

@@ -18,7 +18,7 @@
 			<div id="recherche_contact" class="section_label_maj">
         <div class="input-group">
             <input id="champ_recherche" name="q" value = "<?php echo $q ?>" class="form-control input-lg typeahead typeaheadGlobal"
-            placeholder = "Votre recherche..." autocomplete = "off" data-url = "<?php echo url_for('soc_etb_com_autocomplete_all', array('link' => true, 'isObject' => true,'interpro_id'=> 'INTERPRO-declaration','type_compte' => '*')); ?>"
+            placeholder = "Votre recherche..." autocomplete = "off" data-url = "<?php echo url_for('soc_etb_com_autocomplete_actif', array('link' => true, 'interpro_id'=> 'INTERPRO-declaration','type_compte' => '*')); ?>"
             data-query-param = "q" type="text" data-visualisationLink = "<?php echo url_for('compte_visualisation', array('identifiant' => "identifiant")); ?>"  data-link = "visualisationLink" autofocus="autofocus" data-text = "text_html" />
             <span class="input-group-btn">
                 <button class="btn btn-lg btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span></button>

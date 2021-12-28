@@ -49,7 +49,7 @@ class Email {
             return Email::getInstance()->getMessageDRevValidationDeclarant($drev);
         }
 
-        return Email::getInstance()->getMessageDrevConfirmee($drev);
+        return Email::getInstance()->getMessageDRevConfirmee($drev);
     }
 
     public function getMessageDRevValidationDeclarant($drev) {
@@ -64,6 +64,7 @@ class Email {
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
@@ -93,6 +94,7 @@ class Email {
             $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
@@ -120,6 +122,7 @@ class Email {
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain')
@@ -141,6 +144,7 @@ class Email {
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo(array(Organisme::getInstance()->getEmail()))
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');

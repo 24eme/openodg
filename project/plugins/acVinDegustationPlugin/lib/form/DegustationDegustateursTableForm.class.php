@@ -23,10 +23,8 @@ class DegustationDegustateursTableForm extends acCouchdbObjectForm {
     parent::doUpdateObject($values);
     foreach ($this->getDegustateursForTable() as $key => $degustateur) {
       if($values[$key]){
-        if($degustateur->confirmation === false){
-          $degustateur->confirmation = true;
-        }
-        $degustateur->add('numero_table',$this->numero_table);
+        $degustateur->add('confirmation', true);
+        $degustateur->add('numero_table', $this->numero_table);
       }elseif ($degustateur->exist('numero_table') && ($degustateur->numero_table == $this->numero_table)) {
         $degustateur->remove("numero_table");
       }
