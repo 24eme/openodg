@@ -294,7 +294,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
 	        }
         }
         foreach ($achats as $a) {
-            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999;;;;;;".$colExtraIds."\n";
+            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999".$colExtraIds."\n";
         }
         return $csv;
     }
