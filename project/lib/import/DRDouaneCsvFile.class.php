@@ -61,6 +61,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $achat_fin = 0;
         $achats = array();
         $ratios_bailleur = array();
+        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {

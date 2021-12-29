@@ -35,6 +35,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
             12 => "18",
             13 => "19",
         );
+        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
 
         foreach ($csv as $key => $values) {
