@@ -612,10 +612,10 @@ class Email {
         $degust_nom = explode(' —', $degustateur->libelle)[0];
         $action_libelle = ($action) ? "présence" : "absence";
 
-        $subject = "Dégustation " . ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm")." : $action_libelle de $degust_nom";
+        $subject = "Dégustation " .$degustation->getDateFormat('d/m/Y')." : $action_libelle de $degust_nom";
 
         $body  = "Bonjour,\n\nDes infos ont été reçues concernant la présence de ".$degustateur->libelle." : \n\n";
-        $body .= "Dégustation: ".ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm")."\n";
+        $body .= "Dégustation: ".$degustation->getDateFormat('d/m/Y')." à ".$degustation->getDateFormat('G:i')."\n";
         $body .= "Présence: ".($action) ? "OUI" : 'NON';
         $body .= "\n\n";
 
