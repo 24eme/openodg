@@ -63,6 +63,10 @@ EOF;
         			continue;
         		}
 
+                if ($etablissement->statut != CompteClient::STATUT_ACTIF) {
+                    continue;
+                }
+
         		if (!$etablissement->cvi || !preg_match('/^[0-9]{10}$/', $etablissement->cvi)) {
         			echo sprintf("ERROR;CVI non valide %s pour %s\n", $etablissement->cvi, $etablissement->_id);
         			continue;
