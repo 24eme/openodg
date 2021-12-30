@@ -22,7 +22,7 @@ class VarManipulator
 
 	public static function protectStrForCsv($str)
 	{
-		return '"'.str_replace(array('\n', '\r\n', '"', ';'), array('', '', '', '−'), trim($str)).'"';
+		return '"'.preg_replace('/[\n\r]+/' , ' ', str_replace(array('"', ';'), array('', '−'), trim($str))).'"';
 	}
 
 	public static function floatizeForCsv($v)
