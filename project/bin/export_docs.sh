@@ -26,7 +26,7 @@ fi
 header=1
 curl -s http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE"/_design/declaration/_view/export?reduce=true&group_level=2" | awk -F '"' '{print $4 " " $6}' | grep "^$DOC_TYPE " > /tmp/$$.docs
 cat /tmp/$$.docs | while read doctype ; do
-	php symfony declarations:export-csv $SYMFONYTASKOPTIONS --header=$header $OPTIONS $doctype
+	php symfony declarations:export-csv $SYMFONYTASKOPTIONS --header=$header $OPTIONS $EXPORTDOC_FILTER $doctype
 	header=0
 	if test "$WAITSLEEP" ; then
 		sleep $WAITSLEEP
