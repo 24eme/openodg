@@ -48,6 +48,11 @@ if os.path.exists(sys.argv[2]+"/sv11.csv"):
     csv = pd.read_csv(sys.argv[2]+"/sv11.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
     csv.to_sql('sv11', con=engine, if_exists='replace')
 
+if os.path.exists(sys.argv[2]+"/production.csv"):
+    sys.stderr.write(sys.argv[2]+"/production.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/production.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('production', con=engine, if_exists='replace')
+
 if os.path.exists(sys.argv[2]+"/drev_marc.csv"):
     sys.stderr.write(sys.argv[2]+"/drev_marc.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/drev_marc.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
