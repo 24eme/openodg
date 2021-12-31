@@ -50,7 +50,7 @@ EOF;
           VarManipulator::protectStrForCsv($values['detail']),
           $appName,
           $values['document_id'],
-          $values['lot_unique_id'],
+          $values['lot_unique_id']
       );
     }
   }
