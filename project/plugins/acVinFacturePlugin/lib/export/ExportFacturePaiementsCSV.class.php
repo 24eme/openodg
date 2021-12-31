@@ -77,4 +77,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
         return $csv;
     }
 
+    public function setExtraArgs($args) {
+    }
+
 }

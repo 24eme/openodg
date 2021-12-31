@@ -133,4 +133,8 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
         return $export;
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

@@ -126,5 +126,7 @@ class ExportFactureCSV_nantes implements InterfaceDeclarationExportCsv {
       return null;
     }
 
+    public function setExtraArgs($args) {
+    }
 
 }

@@ -92,4 +92,8 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

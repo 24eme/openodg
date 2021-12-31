@@ -7,7 +7,7 @@ class DouaneImportCsvFile {
     protected $campagne = null;
     protected $configuration = null;
 
-    public function __construct($filePath, $doc = null) {
+    public function __construct($filePath, $doc = null, $drev_produit_filter = null) {
         $this->filePath = $filePath;
         $this->doc = $doc;
         $this->configuration = ConfigurationClient::getConfiguration();
@@ -17,6 +17,7 @@ class DouaneImportCsvFile {
             $this->campagne = ConfigurationClient::getInstance()->buildCampagne(date('Y-m-d'));
         }
         $this->cvi = null;
+        $this->drev_produit_filter = $drev_produit_filter;
         set_time_limit(30000);
     }
 
@@ -35,14 +36,14 @@ class DouaneImportCsvFile {
     	return str_replace(';', ' - ', preg_replace('/^ */', '', preg_replace('/ *$/', '', str_replace(array("\r", "\r\n", "\n"), ' ', html_entity_decode($val)))));
     }
 
-    public static function getNewInstanceFromType($type, $file, $doc = null)  {
+    public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null)  {
         switch ($type) {
             case 'DR':
-                return new DRDouaneCsvFile($file, $doc);
+                return new DRDouaneCsvFile($file, $doc, $drev_produit_filter);
             case 'SV11':
-                return new SV11DouaneCsvFile($file, $doc);
+                return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter);
             case 'SV12':
-                return new SV12DouaneCsvFile($file, $doc);
+                return new SV12DouaneCsvFile($file, $doc, $drev_produit_filter);
         }
 
         return null;
@@ -124,7 +125,7 @@ class DouaneImportCsvFile {
         }
         $produits = array();
         try {
-            foreach ($this->doc->getEnhancedDonnees() as $donnee) {
+            foreach ($this->doc->getEnhancedDonnees($this->drev_produit_filter) as $donnee) {
                 if ($produit = $donnee->produit_conf) {
                     $p = $donnee->produit_csv;
                     $p[] = $donnee->categorie;
@@ -161,4 +162,11 @@ class DouaneImportCsvFile {
         }
         return $csv;
     }
+
+    public function getRelatedDrev() {
+        $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
+        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, $this->drev_produit_filter);
+    }
+
 }

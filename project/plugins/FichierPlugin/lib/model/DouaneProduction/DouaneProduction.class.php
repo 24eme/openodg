@@ -192,7 +192,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return false;
     }
 
-    public function getEnhancedDonnees() {
+    public function getEnhancedDonnees($drev_produit_filter = null) {
         if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
         }
@@ -200,7 +200,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->identifiant, $this->getPeriode());
+        $drev = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne(), $drev_produit_filter);
         foreach($this->donnees as $i => $donnee) {
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);

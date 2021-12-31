@@ -97,4 +97,8 @@ class ExportFactureCSV_provence implements InterfaceDeclarationExportCsv {
 
         return $csv;
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

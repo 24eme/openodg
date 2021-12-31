@@ -127,4 +127,7 @@ class ExportFactureCSV_ava implements InterfaceDeclarationExportCsv {
         throw new sfException(sprintf("Code sage du Taux de TVA introuvable : %s (%s)", $ligne->getTauxTva(), $ligne->getDocument()->_id));
     }
 
+    public function setExtraArgs($args) {
+    }
+
 }

@@ -15,6 +15,7 @@ class DeclarationExportCsvTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
             new sfCommandOption('no-warnings', null, sfCommandOption::PARAMETER_REQUIRED, 'do not print warnings', false),
+            new sfCommandOption('filter-produit', null, sfCommandOption::PARAMETER_REQUIRED, "Produit de destination de l'export (pour les DR/SV11/SV12 de med)", ''),
         ));
 
         $this->namespace = 'declaration';
@@ -50,6 +51,9 @@ EOF;
         }
 
         $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
+        if ($options['filter-produit']) {
+            $export->setExtraArgs(array('drev_produit_filter' => $options['filter-produit']));
+        }
         echo $export->export();
     }
 }

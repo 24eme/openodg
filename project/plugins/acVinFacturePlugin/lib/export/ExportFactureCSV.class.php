@@ -106,4 +106,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         return $csv;
     }
 
+    public function setExtraArgs($args) {
+    }
+
 }
