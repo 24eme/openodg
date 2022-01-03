@@ -34,7 +34,7 @@ class DRevValidationForm extends acCouchdbForm
             }
         }
 
-        if($this->getDocument()->isPapier()) {
+        if(!$this->getDocument()->validation && $this->getDocument()->isPapier()) {
             $this->setWidget("date", new sfWidgetFormInput());
             $this->setValidator("date", new sfValidatorDate(
                 array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true),
