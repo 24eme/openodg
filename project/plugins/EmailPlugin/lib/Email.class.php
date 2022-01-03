@@ -616,7 +616,8 @@ class Email {
 
         $body  = "Bonjour,\n\nDes infos ont été reçues concernant la présence de ".$degustateur->libelle." : \n\n";
         $body .= "Dégustation: ".$degustation->getDateFormat('d/m/Y')." à ".$degustation->getDateFormat('G:i')."\n";
-        $body .= "Présence: ".($action) ? "OUI" : 'NON';
+        $body .= "Présence: "
+        $body .= ($action) ? "OUI" : 'NON';
         $body .= "\n\n";
 
         $message = Swift_Message::newInstance()
