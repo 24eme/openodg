@@ -71,9 +71,9 @@ $drev->lots[2]->getUniqueId();
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
-$t->is($drev->lots[0]->unique_id, '2020-2021-00001-00001', 'Le lot 1 de la drev a le bon numéro darchive 2020-2021-00001-00001');
-$t->is($drev->lots[1]->unique_id, '2020-2021-00001-00002', 'Le lot 2 de la drev a le bon numéro darchive 2020-2021-00001-00002');
-$t->is($drev->lots[2]->unique_id, '2020-2021-00001-00003', 'Le lot 3 de la drev a le bon numéro darchive 2020-2021-00001-00003');
+$t->is($drev->lots[0]->unique_id, $campagne.'-00001-00001', 'Le lot 1 de la drev a le bon numéro darchive 2020-2021-00001-00001');
+$t->is($drev->lots[1]->unique_id, $campagne.'-00001-00002', 'Le lot 2 de la drev a le bon numéro darchive 2020-2021-00001-00002');
+$t->is($drev->lots[2]->unique_id, $campagne.'-00001-00003', 'Le lot 3 de la drev a le bon numéro darchive 2020-2021-00001-00003');
 $degust = DegustationClient::getInstance()->createDoc($degust_date);
 $t->comment("Les deux premiers lots sont prélevés");
 $lot1 = $degust->addLot($drev->lots[0]);
@@ -147,8 +147,8 @@ $degust->save();
 
 $degust = DegustationClient::getInstance()->find($degustid);
 $t->is(count($degust->lots), 4,'La dégustation n\'a plus que 4 lots le 2ème lot étant non anonymisable');
-$t->is($degust->lots[0]->unique_id, "2020-2021-00001-00001", "Le lot 1 a bien d'id 2020-2021-00001-00001");
-$t->is($degust->lots[1]->unique_id, "2020-2021-00001-00003", "Le lot 2 a bien d'id de l'ancien lot 3 (le 2 ayant été retiré) : 20202020-2021-00001-00003");
+$t->is($degust->lots[0]->unique_id, $campagne."-00001-00001", "Le lot 1 a bien d'id 2020-2021-00001-00001");
+$t->is($degust->lots[1]->unique_id, $campagne."-00001-00003", "Le lot 2 a bien d'id de l'ancien lot 3 (le 2 ayant été retiré) : 20202020-2021-00001-00003");
 $t->is($degust->lots[2]->unique_id, "", "Le leurre (lot 3) n'a pas de unique_id");
 
 $drevProvenance = DRevClient::getInstance()->find($idDocumentProvenance);

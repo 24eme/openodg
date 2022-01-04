@@ -200,9 +200,9 @@ $t->is($degustation->lots[2]->initial_type, TransactionClient::TYPE_MODEL, "L'in
 $t->is($degustation->lots[2]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->initial_type, $degustation->lots[2]->initial_type, "L'initial type du mouvement");
 
 
-$t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");
-$t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00001-00002", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00001-00002");
-$t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00002-00003", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00003");
+$t->is($degustation->lots[0]->getUniqueId(), $campagne."-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");
+$t->is($degustation->lots[1]->getUniqueId(), $campagne."-00001-00002", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00001-00002");
+$t->is($degustation->lots[2]->getUniqueId(), $campagne."-00002-00003", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00003");
 $t->is($degustation->lots[1]->adresse_logement,$addrCompleteLgtDrev, "Dans la dégustation on a l'addresse de logement depuis la DRev");
 
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Il y a une affectation source avant celle-ci pour le lot 1 (de transaction) de la dégustation");
