@@ -6,5 +6,5 @@ n°CVI: %cvi% - Commune: NEUILLY,,,,,,,,,,,,
 Fournisseurs,,,Produit,,,Achat,,,Production,,,
 Nom,N° CVI / TVA,Zone de production,Code produit,Libellé du produit,Mention valorisante,Quantité de VF,Volume de moûts,Superficie de récolte (Ha),Volume issu de VF,Volume issu de moûts,Total produit,
 Commune de GONFARON,,,,,,,,,,,,
-ACTUALYS JEAN 1,%cvi%,"C2","%code_inao%","%libelle_produit%","","25105","0","6.202","180","0","180"
-TOTAL sur GONFARON,,,,,,25105,0,6,202,180,0,180
+ACTUALYS JEAN 1,%cvi%,"C2","%code_inao%","%libelle_produit%","","25105","0","6.202","170","10","180"
+TOTAL sur GONFARON,,,,,,25105,0,6,202,170,10,180
