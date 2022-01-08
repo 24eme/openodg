@@ -57,7 +57,22 @@
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
                 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <li class="<?php if($route instanceof InterfaceExportRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('export'); ?>"><span class="glyphicon glyphicon-export"></span> Export</a></li>
+                <?php if(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app'))): ?>
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-stats"></span><span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <?php foreach(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app')) as $i => $navItem): ?>
+                     <?php if($i > 0 && isset($navItem['title'])): ?><li role="separator" class="divider"></li><?php endif; ?>
+                     <li>
+                         <a href="<?php echo $navItem['url'] ?>">
+                             <?php if(isset($navItem['icon'])): ?><span class="glyphicon glyphicon-<?php echo $navItem['icon'] ?>"></span><?php endif; ?>
+                             <?php if(isset($navItem['title'])): ?><strong><?php endif; ?><?php echo $navItem['name'] ?><?php if(isset($navItem['title'])): ?></strong><?php endif; ?>
+                         </a>
+                    </li>
+                    <?php endforeach; ?>
+                  </ul>
+                </li>
+                <?php endif; ?>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
