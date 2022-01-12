@@ -26,8 +26,14 @@ else:
 
 if(len(sys.argv)>3):
     datemax = sys.argv[3]
+    if(sys.argv[3] == "08-12"):  #si troisieme argument vaut 08-12  on prend en compte le 01-08 et le 31-12
+        datemin = str(int(millesime)+1)+'-07-31'
+        datemax = str(int(millesime)+2)+'-01-01'
 else:
     datemax = str(int(millesime)+1)+'-08-01'
+
+
+
 
 #dossier_igp = "exports_igpgascogne"
 #igp = "gascogne"
@@ -43,6 +49,10 @@ drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
 changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changement_deno["Type"] == "DRev:Changé") ]
 changement_deno = changement_deno[changement_deno["Date de validation ODG"] < datemax]
 
+
+if ("datemin" in locals()): changement_deno = changement_deno[changement_deno["Date de validation ODG"] > datemin]
+
+
 degustations = pd.read_csv("../../web/"+dossier_igp+"/degustations.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 
 
@@ -54,6 +64,7 @@ drev_lots = drev_lots.rename(columns = {'Date lot': 'Date_lot'})
 drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
+if ("datemin" in locals()): drev_lots = drev_lots.query("Date_lot > @datemin")
 drev_lots['Lieu'] = drev_lots['Lieu'].fillna('')
 drev_lots = drev_lots.groupby(['Appellation','Couleur','Lieu','Produit'])[["Volume"]].sum()
 drev_lots ['Type'] = "VOLUME REVENDIQUE"
@@ -67,6 +78,7 @@ final = drev_lots
 
 degustations = degustations.query("Millésime == @millesime")
 degustations = degustations[degustations["Date"] < datemax]
+if ("datemin" in locals()) : degustations = degustations[ degustations["Date"] > datemin]
 
 conforme = "Conforme"
 rep_conforme = "Réputé conforme"
@@ -187,10 +199,13 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+if ("datemin" in locals()):
 
+    min = str(int(millesime)+1)+'-08-01'
+    max = str(int(millesime)+1)+'-12-31'
 
-# In[ ]:
-
-
-tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+    final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+"_du_"+min+'_au_'+max+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+    tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+"_du_"+min+'_au_'+max+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+else :
+    final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+    tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
