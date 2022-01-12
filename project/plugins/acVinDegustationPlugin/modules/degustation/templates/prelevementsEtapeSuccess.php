@@ -47,30 +47,38 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-8">
-            <div class="row">
-              <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsSansLeurre"]; ?></strong> <strong>lots au total</strong> prévus dans la dégustation<br/>
-              </div>
-              <div class="col-xs-6">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsRestantAPrelever"]; ?></strong> <strong>lots</strong> restant à prélever chez
-              </div>
-              <div class="col-xs-6">
-                <strong><span class="lead"><?php echo $infosDegustation["nbAdherentsLotsRestantAPrelever"]; ?></span> adhérents</strong>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-6">
-                <strong class="lead"><?php echo $infosDegustation["nbLotsPrelevesSansLeurre"]; ?></strong> <strong>lots</strong> déjà prélevés chez
-              </div>
-              <div class="col-xs-6">
-                <strong><span class="lead"><?php echo $infosDegustation["nbAdherentsPreleves"]; ?></span> adhérents</strong>
-              </div>
-            </div>
+          <div class="col-xs-3">
+              <table class="table table-condensed table-bordered table-striped">
+                  <tr>
+                      <td class="col-xs-1 text-right"><?php echo count($degustation->getAdherentsByLotsWithoutStatut(Lot::STATUT_PRELEVE)); ?></td>
+                      <td>opérateurs à prélever</td>
+                  </tr>
+                  <tr>
+                      <td class="col-xs-1 text-right"><?php echo count($degustation->getAdherentsPreleves()); ?></td>
+                      <td>opérateurs prélévés</td>
+                  </tr>
+                  <tr>
+                      <th class="col-xs-1 text-right"><?php echo count($degustation->getAdherentsPreleves()) + count($degustation->getAdherentsByLotsWithoutStatut(Lot::STATUT_PRELEVE)); ?></th>
+                      <th>opérateurs au total</th>
+                  </tr>
+
+                <tr>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsPrelevables()) -  count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
+                    <td>lots restant à prélever</td>
+                </tr>
+                <tr>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
+                    <td>lots prélevés</td>
+                </tr>
+                <tr>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsSansVolume()); ?></td>
+                    <td>lots annulés</td>
+                </tr>
+                <tr>
+                    <th class="col-xs-1 text-right"><?php echo count($degustation->getLots()) ?></th>
+                    <th>lots au total</th>
+                </tr>
+            </table>
           </div>
           <div class="col-xs-12 text-right">
               <a id="btn_suivi_prelevement" class="btn btn-default btn-sm" href="<?php echo url_for('degustation_preleve', $degustation) ?>" >&nbsp;Saisir les prélévements effectués&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
@@ -82,23 +90,7 @@
 </div>
 <div class="row">
   <div class="col-xs-12">
-    <div class="panel panel-default" style="min-height: 160px">
-      <div class="panel-heading">
-        <h2 class="panel-title">Convocations des dégustateurs</h2>
-      </div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-xs-7">
-            <?php foreach ($infosDegustation["degustateurs"] as $college => $indicateurs): ?>
-              <strong class="lead"><?php echo $indicateurs["confirmes"]; ?></strong> / <?php echo $indicateurs["total"]; ?> <strong><?php echo $college; ?></strong> confirmés<br/>
-            <?php endforeach; ?>
-          </div>
-          <div class="col-xs-12 text-right">
-            <a class="btn btn-default btn-sm" href="<?php echo url_for('degustation_degustateurs_confirmation', $degustation) ?>" >&nbsp;Confirmation dégustateurs&nbsp;<span class="glyphicon glyphicon-pencil"></span></a>
-          </div>
-        </div>
-      </div>
-    </div>
+        <?php include_partial('degustation/convocationDegustateurs', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)) ?>
   </div>
 </div>
 

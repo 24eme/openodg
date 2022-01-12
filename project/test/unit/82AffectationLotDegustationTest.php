@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test();
+$t = new lime_test(15);
 
 $campagne = (date('Y')-1)."";
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -20,7 +20,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev->delete(false);
 }
 
-foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation1 = DegustationClient::getInstance()->find($k);
     $degustation1->delete(false);
 }
@@ -94,7 +94,7 @@ $nom = "Degustation du ".$degustationTeste->date." au ".$degustationTeste->lieu;
 $t->is($form->getDegustationChoices(),array($degustationTeste->_id => $nom),"Exemple : Degustation n°2021102 du 21/05/2021 à 10h30 au Syndicat des Vignerons");
 
 $t->comment('On ajoute un leurre');
-$leurre = $degustationTeste->addLeurre($produitLeurreHash, 'Cepage leurre', 1);
+$leurre = $degustationTeste->addLeurre($produitLeurreHash, 'Cepage leurre', date('Y'), 1);
 
 $t->is($leurre->leurre, true, 'C\'est un leurre');
 $t->is($leurre->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
@@ -127,3 +127,9 @@ $degustationAnonyme = DegustationClient::getInstance()->find($degustation->_id);
 $degustationAnonyme->anonymize();
 $degustationAnonyme->save();
 $t->ok($degustationAnonyme->isAnonymized(),"La dégustation a été anonymisé");
+
+$t->comment('Récupération du lot');
+
+$lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id);
+
+$t->is($lot->getDocument()->_id, $degustation->_id, "Le lot récupéré est le dernier de l'historique (plus grand document d'ordre)");

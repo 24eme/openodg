@@ -32,17 +32,17 @@
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
     <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
-	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
     <?php if (DrevConfiguration::getInstance()->hasDegustation() && isset($form["date_degustation_voulue"])): ?>
-        <h3>Dégustation</h3>
+        <h3>Controle</h3>
         <?php echo $form["date_degustation_voulue"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
-            Les vins seront prêt à être dégustés à partir du :
+            Date de controle des vins souhaitée :
             <div class="input-group date-picker-week">
-            <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "Date souhaitée")); ?>
+            <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "Date souhaitée", "required" => "true")); ?>
             <div class="input-group-addon">
                 <span class="glyphicon-calendar glyphicon"></span>
             </div>
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document-drev" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && !$sf_user->hasDrevAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>

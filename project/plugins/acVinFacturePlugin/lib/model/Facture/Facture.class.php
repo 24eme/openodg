@@ -58,14 +58,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $this->date_echeance = $date_facturation_object->modify(FactureConfiguration::getInstance()->getDelaisPaiement())->format('Y-m-d');
         }
 
-        $dateFacturation = explode('-', $this->date_facturation);
-        $this->campagne = $dateFacturation[0];
-
-        if (FactureConfiguration::getInstance()->getExercice() == 'viticole') {
-            $date_campagne = new DateTime($this->date_facturation);
-            $date_campagne = $date_campagne->modify('-7 months');
-            $this->campagne = $date_campagne->format('Y');
-        }
+        $this->campagne = FactureClient::getInstance()->getCampagneByDate($this->date_facturation);
     }
 
     public function setModalitePaiement($modalitePaiement) {
@@ -97,6 +90,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
+        if($this->exist('numero_odg') && $this->_get('numero_odg')) {
+            return $this->_get('numero_odg');
+        }
+
         return $this->campagne . $this->numero_archive;
     }
 
@@ -254,18 +251,20 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $quantite = 0;
             $template = $this->getTemplate();
             $code_comptable = false;
-            if ($template) {
-                foreach ($template->getCotisations() as $cotisName => $cotis) {
-                    if($cotis->code_comptable) {
-                        $code_comptable = true;
-                        if ($mouvement_agreges->value->categorie == $cotisName) {
-                            $ligne->produit_identifiant_analytique = $cotis->code_comptable;
-                            break;
-                        }
+            if (!$template) {
+                throw new sfException("No template found (".$mouvement_agreges->id.")");
+            }
+
+            foreach ($template->getCotisations() as $cotisName => $cotis) {
+                if($cotis->code_comptable) {
+                    $code_comptable = true;
+                    $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
+                    if ($mouvement_agreges->value->categorie == $cotisName) {
+                        $ligne->produit_identifiant_analytique = $cotis->code_comptable;
+                        break;
                     }
                 }
             }
-
             $detail = $ligne->details->add();
             $detail->prix_unitaire = $mouvement_agreges->value->taux;
             $detail->taux_tva = $mouvement_agreges->value->tva;
@@ -387,9 +386,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNbLignesMouvements() {
-      $nbLigne = 0 ;
+        $nbLigne = 0 ;
+        if (FactureConfiguration::getInstance()->isLigneUnique()) {
+            return 1;
+        }
         foreach ($this->lignes as $lignesType) {
-            $nbLigne += count($lignesType->details) + 1;
+            $nbLigne += count($lignesType->details) + FactureConfiguration::getInstance()->isLigneDetailWithTitle() * 1;
         }
         return $nbLigne;
     }
@@ -436,11 +438,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getTemplate() {
-        foreach($this->templates as $template_id) {
-
+        $template_id = $this->getTemplateId();
+        if ($template_id) {
             return TemplateFactureClient::getInstance()->find($template_id);
         }
-
         return null;
     }
 
@@ -488,6 +489,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $declarant->nom = $doc->nom_a_afficher;
         //$declarant->num_tva_intracomm = $this->societe->no_tva_intracommunautaire;
         $declarant->adresse = $doc->adresse;
+        if($doc->adresse_complementaire) {
+            $declarant->adresse .= ", ".$doc->adresse_complementaire;
+        }
         $declarant->commune = $doc->commune;
         $declarant->code_postal = $doc->code_postal;
         $declarant->raison_sociale = ($doc->exist('raison_sociale'))? $doc->raison_sociale : $doc->societe_informations->raison_sociale;
@@ -670,7 +674,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return (bool) $this->date_telechargement;
     }
 
-    public function getNbPaiementsAutomatique(){ 
+    public function getNbPaiementsAutomatique(){
         if($this->paiements){
           return count($this->paiements);
         }

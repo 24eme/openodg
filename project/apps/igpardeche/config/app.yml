@@ -14,3 +14,4 @@ all:
   donnees_viticoles:
     regions:
       IGPARDECHE: "IGPARDECHE"
+  etiquettes: "70x35" #Impression ajusté à la page

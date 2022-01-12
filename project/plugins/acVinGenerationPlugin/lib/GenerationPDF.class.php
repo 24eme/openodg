@@ -40,7 +40,7 @@ class GenerationPDF extends GenerationAbstract {
     file_put_contents("/tmp/$fileres.sh", '/usr/bin/pdftk "'.implode('" "', $pdffiles).'" cat output "'.$fileres.'"');
     $str = system('bash /tmp/'.$fileres.'.sh 2>&1');
     if ($str) {
-        throw new sfException('pdftk returned an error: '.$str);
+        throw new sfException('concatenatePDFs(): pdftk returned an error: bash /tmp/'.$fileres.'.sh 2>&1 => '.$str);
     }
     return $fileres;
   }
@@ -52,7 +52,7 @@ class GenerationPDF extends GenerationAbstract {
     file_put_contents("/tmp/$fileres.sh", '/usr/bin/pdftk "'.$pdf.'" cat '.intval($pageid).' output "'.$fileres.'"');
     $str = system('bash /tmp/'.$fileres.'.sh 2>&1');
     if ($str) {
-        throw new sfException('pdftk returned an error: '.$str);
+        throw new sfException('generateAPDFForAPageId(): pdftk returned an error: bash /tmp/'.$fileres.'.sh 2>&1 => '.$str);
     }
     if (!file_exists($fileres) || !filesize($fileres)) {
       throw new sfException("wrong result file $fileres extracting page # $pageid from $pdf");

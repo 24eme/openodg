@@ -62,47 +62,46 @@
           "callback": "getVolumeLotsFacturables"
         }
       }
-  },
+    },
     "forfait": {
-    "modele": "CotisationsCollection",
-    "callback": "",
-    "libelle": "Cotisation ODG",
-    "code_comptable": "",
-    "details": {
-          "forfait": {
-            "modele": "CotisationFixe",
-            "prix": 52,
-            "tva": 0.2,
-            "libelle": "Forfait sur DRev",
-            "complement_libelle": "",
-            "docs": [
-              "DRev"
-            ],
-            "callback": ""
-          }
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Cotisation ODG",
+      "code_comptable": "",
+      "details": {
+        "forfait": {
+          "modele": "CotisationFixe",
+          "prix": 52,
+          "tva": 0.2,
+          "libelle": "Forfait sur DRev",
+          "complement_libelle": "",
+          "docs": [
+            "DRev"
+          ],
+          "callback": ""
         }
+      }
     },
     "redegustation": {
-    "modele": "CotisationsCollection",
-    "callback": "",
-    "libelle": "Forfait sur nouveau passage pour la dégustation du %date%",
-    "code_comptable": "706102",
-    "details": {
-      "forfait": {
-        "modele": "Cotisation",
-        "prix": 50,
-        "tva": 0.2,
-        "unite": "",
-        "libelle": "",
-        "complement_libelle": "",
-        "docs": [
-          "Degustation"
-        ],
-        "callback": "getRedegustationForfait",
-        "callback_parameters": [
-        ]
+      "modele": "CotisationsCollection",
+      "callback": "",
+      "libelle": "Forfait sur nouveau passage pour la dégustation du %date%",
+      "code_comptable": "706102",
+      "details": {
+        "forfait": {
+          "modele": "Cotisation",
+          "prix": 50,
+          "tva": 0.2,
+          "unite": "",
+          "libelle": "",
+          "complement_libelle": "",
+          "docs": [
+            "Degustation"
+          ],
+          "callback": "getRedegustationForfait",
+          "callback_parameters": []
+        }
       }
     }
-  }
   }
 }

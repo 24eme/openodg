@@ -229,7 +229,15 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     /*** FIN DECLARATION DOCUMENT ***/
 
     public function getAllPieces() {
-        $complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+        $complement = "(Télédéclaration)";
+        if($this->isPapier()) {
+            $complement = "(Papier)";
+        }
+
+        if($this->isPapier() && $this->exist('signataire') && $this->signataire) {
+            $complement = "(".$this->signataire.")";
+        }
+
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),

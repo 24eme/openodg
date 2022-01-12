@@ -28,14 +28,14 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $cd = ChgtDenomClient::getInstance()->find($k);
     $cd->delete(false);
 }
-foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(100, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {
     $doc = acCouchdbManager::getClient()->find($r->id);
     $doc->delete();
 }
-$t = new lime_test();
+$t = new lime_test(38);
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
@@ -71,9 +71,9 @@ $drev->lots[2]->getUniqueId();
 $drev->validate();
 $drev->validateOdg();
 $drev->save();
-$t->is($drev->lots[0]->unique_id, '2020-2021-00001-00001', 'Le lot 1 de la drev a le bon numéro darchive 2020-2021-00001-00001');
-$t->is($drev->lots[1]->unique_id, '2020-2021-00001-00002', 'Le lot 2 de la drev a le bon numéro darchive 2020-2021-00001-00002');
-$t->is($drev->lots[2]->unique_id, '2020-2021-00001-00003', 'Le lot 3 de la drev a le bon numéro darchive 2020-2021-00001-00003');
+$t->is($drev->lots[0]->unique_id, $campagne.'-00001-00001', 'Le lot 1 de la drev a le bon numéro darchive 2020-2021-00001-00001');
+$t->is($drev->lots[1]->unique_id, $campagne.'-00001-00002', 'Le lot 2 de la drev a le bon numéro darchive 2020-2021-00001-00002');
+$t->is($drev->lots[2]->unique_id, $campagne.'-00001-00003', 'Le lot 3 de la drev a le bon numéro darchive 2020-2021-00001-00003');
 $degust = DegustationClient::getInstance()->createDoc($degust_date);
 $t->comment("Les deux premiers lots sont prélevés");
 $lot1 = $degust->addLot($drev->lots[0]);
@@ -111,9 +111,9 @@ $t->is($degust->lots[1]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le 2ème lot 
 $t->is($degust->lots[2]->statut, Lot::STATUT_ATTABLE, "Le 3ème lot est attablé");
 
 $t->comment('On ajoute deux leurres en 4ème et 5ème lot');
-$lot4 = $degust->addLeurre($lot1->produit_hash, null, 1);
+$lot4 = $degust->addLeurre($lot1->produit_hash, null, date('Y'), 1);
 $t->is($lot4->numero_archive, null, "le lot leurre n'a pas de numero d'archive");
-$lot5 = $degust->addLeurre($lot1->produit_hash, null, 1);
+$lot5 = $degust->addLeurre($lot1->produit_hash, null, date('Y'), 1);
 $t->is($lot5->numero_archive, null, "le lot leurre n'a pas de numero d'archive");
 $degust->save();
 $degust = DegustationClient::getInstance()->find($degustid);
@@ -129,31 +129,26 @@ $t->ok($lotProvenance->isAffecte(),'Le lot 3 est affecté dans la DREV');
 $t->comment('On a 2 lots normaux / 2 Leurre sur la table A, 1 lot normal qui n\'a pas de table');
 
 $t->comment('On test l\'anonymat');
-$t->is(array_keys($degust->getLotsNonAnonymisable()), array('/lots/1'), "Seul le /lots/1 n'est pas anonymisable");
+
+$t->ok($degust->lots[0]->isAnonymisable(), "Le lot 0 est anonymisable");
+$t->ok(!$degust->lots[1]->isAnonymisable(), "Le lot 1 n'est pas anonymisable");
+$t->ok($degust->lots[2]->isAnonymisable(), "Le lot 2 est anonymisable");
+$t->ok($degust->lots[3]->isAnonymisable(), "Le lot 3 est anonymisable");
+$t->ok($degust->lots[4]->isAnonymisable(), "Le lot 4 est anonymisable");
 
 $isAnonymized = $degust->isAnonymized();
 $t->ok(!$isAnonymized, 'La dégustation n\'est pas "anonymisée"');
 
-$t->is(count($degust->lots), 5,'La dégustation a bien 4 lots (3 drev et 2 leurre)');
-
-$t->comment("On ignore le lot leurre 4 de la table A");
-$t->is(count($degust->getLotsNonAttables()), 0, "Tous les lots sont attablés");
-$lotLeurre = $degust->lots[3];
-$degust->lots[3] = $degust->ignorerLot($lotLeurre);
-$t->is(count($degust->getLotsNonAttables()), 1, "Un lot non attablé");
-$t->ok($lotLeurre->isIgnored(), "Le leurre n'est plus dans une table et est ignoré");
-$degust->save();
-
 $t->comment('Apposement de l\'anonymat');
 $t->is(count($degust->getLots()), 5, "Avant l'apposement il ya 5 lots");
 $degust->anonymize();
-$t->is(count($degust->getLots()), 3, "Après l'apposement il ya 3 lots dont 2 lots Drev et 1 Leurre car 1 leurre est ignoré (supprimé) et 1 lot non-attablé");
+$t->is(count($degust->getLots()), 4, "Après l'apposement il ya 4 lots dont 2 lots Drev et 2 Leurre et 1 lot non-attablé");
 $degust->save();
 
 $degust = DegustationClient::getInstance()->find($degustid);
-$t->is(count($degust->lots), 3,'La dégustation n\'a plus que 3 lots le 2ème lot étant non anonymisable');
-$t->is($degust->lots[0]->unique_id, "2020-2021-00001-00001", "Le lot 1 a bien d'id 2020-2021-00001-00001");
-$t->is($degust->lots[1]->unique_id, "2020-2021-00001-00003", "Le lot 2 a bien d'id de l'ancien lot 3 (le 2 ayant été retiré) : 20202020-2021-00001-00003");
+$t->is(count($degust->lots), 4,'La dégustation n\'a plus que 4 lots le 2ème lot étant non anonymisable');
+$t->is($degust->lots[0]->unique_id, $campagne."-00001-00001", "Le lot 1 a bien d'id 2020-2021-00001-00001");
+$t->is($degust->lots[1]->unique_id, $campagne."-00001-00003", "Le lot 2 a bien d'id de l'ancien lot 3 (le 2 ayant été retiré) : 20202020-2021-00001-00003");
 $t->is($degust->lots[2]->unique_id, "", "Le leurre (lot 3) n'a pas de unique_id");
 
 $drevProvenance = DRevClient::getInstance()->find($idDocumentProvenance);
@@ -167,7 +162,7 @@ $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
 $t->is(count($degust->mouvements_lots->{$degust->lots[0]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
 
 $numero_anonymats = array();
-$numero_anonymats_attendu = array("A01","A02","A03");
+$numero_anonymats_attendu = array("A01","A02","A03","A04");
 
 foreach ($degust->getLotsByTable(1) as $lot) {
   $numero_anonymats[] = $lot->numero_anonymat;

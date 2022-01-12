@@ -27,7 +27,7 @@ class WidgetCompte extends bsWidgetFormInput
 
     public function getUrlAutocomplete() {
         $interpro_id = $this->getOption('interpro_id');
-        return sfContext::getInstance()->getRouting()->generate('soc_etb_com_autocomplete_all', array('interpro_id' => $interpro_id));
+        return sfContext::getInstance()->getRouting()->generate('soc_etb_com_autocomplete_actif', array('interpro_id' => $interpro_id));
     }
 
     public function render($name, $value = null, $attributes = array(), $errors = array())

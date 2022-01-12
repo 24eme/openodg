@@ -91,18 +91,20 @@ Les produits déclarés sont du millésime du VCI
 <?php if (count($drev->getLotsRevendiques())): ?>
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr style="line-height:20em;">
-        <th class="th" style="text-align: left; width: 10%">&nbsp;Date</th>
-        <th class="th" style="text-align: left; width: 20%">&nbsp;Lot</th>
+        <th class="th" style="text-align: center; width: 10%">&nbsp;Num. Dossier</th>
+        <th class="th" style="text-align: center; width: 9%">&nbsp;Date</th>
+        <th class="th" style="text-align: left; width: 13%">&nbsp;Lot</th>
         <th class="th" style="text-align: left; width: 40%">&nbsp;Produit (millésime)</th>
-        <th class="th" style="text-align: center; width: 10%">Volume</th>
+        <th class="th" style="text-align: center; width: 8%">Volume</th>
         <th class="th" style="text-align: center; width: 20%">&nbsp;Destination (date)</th>
     </tr>
 <?php foreach($drev->getLotsByUniqueAndDate() as $lot): ?>
     <tr>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
+        <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_dossier; ?></td>
+        <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->getDateVersionfr() ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_logement_operateur ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo showProduitCepagesLot($lot) ?><?php if($lot->statut == Lot::STATUT_ELEVAGE): echo "&nbsp;<small>élevage</small>"; endif; ?></td>
-        <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+        <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;</td>
         <td class="td" style="text-align: center; font-size: 8pt;"><?php echo tdStart() ?><?php echo $lot->destination_type; echo ($lot->destination_date) ? " (".$lot->getDestinationDateFr().")" : ''; ?></td>
     </tr>
 <?php endforeach; ?>
@@ -134,24 +136,31 @@ Les produits déclarés sont du millésime du VCI
 
     <br/><br/>
     <span class="h3">&nbsp;Prélèvement&nbsp;</span><br/>
+    <?php if($drev->isAllDossiersHaveSameAddress()): ?>
+        <table class="tableAlt" border="0" cellspacing=0 cellpadding=0 style="text-align: right;" >
+          <thead>
+            <tr style="line-height:20em;">
+              <th class="th" style="text-align: center">Détails du chais</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td style="vertical-align : left; text-align: left;" class="text-left">
+                      <?php echo $drev->constructAdresseLogement(); ?>
+                  </td>
+              </tr>
+        </tbody>
+      </table>
+    <?php else: ?>
     <table class="tableAlt" border="0" cellspacing=0 cellpadding=0 style="text-align: right;" >
       <thead>
         <tr style="line-height:20em;">
-          <?php if(!$drev->isAllDossiersHaveSameAddress()): ?>
           <th class="th" style="text-align: center; width: 20%">Num. Dossier</th>
-          <?php endif; ?>
           <th class="th" style="text-align: center; width: 80%">Détails du chais</th>
         </tr>
       </thead>
       <tbody>
-      <?php if($drev->isAllDossiersHaveSameAddress()): ?>
-        <tr>
-          <td style="vertical-align : middle;" class="text-left">
-            <?php echo $drev->constructAdresseLogement(); ?>
-          </td>
-        </tr>
-      <?php else:
-        foreach ($drev->getLotsByAdresse() as $address => $lots) : ?>
+      <?php foreach ($drev->getLotsByAdresse() as $address => $lots) : ?>
         <tr>
           <td class="td" style="text-align: center; width: 20%">
             <?php
@@ -167,10 +176,10 @@ Les produits déclarés sont du millésime du VCI
             ?>
           </td>
         </tr>
-        <?php endforeach;
-      endif; ?>
+      <?php endforeach; ?>
       </tbody>
     </table>
+    <?php endif; ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) && DRevConfiguration::getInstance()->hasEngagementsPdf()): ?>
     <br />

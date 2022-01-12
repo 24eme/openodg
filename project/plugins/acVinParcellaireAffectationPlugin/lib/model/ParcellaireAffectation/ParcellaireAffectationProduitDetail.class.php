@@ -31,7 +31,7 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
             if (!in_array($this->code_commune, $communes)) {
                 continue;
             }
-            if (strpos($dgc, $this->getHash()) !== false) {
+            if (strpos($dgc, $this->getLieuNode()->getKey()) !== false) {
                 
                 return $dgc;
             }

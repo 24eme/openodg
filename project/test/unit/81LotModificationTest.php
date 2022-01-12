@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test();
+$t = new lime_test(58);
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
@@ -43,7 +43,7 @@ foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouch
     $conditionnement->delete(false);
 }
 
-foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation1 = DegustationClient::getInstance()->find($k);
     $degustation1->delete(false);
 }
@@ -52,6 +52,12 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $chgtdenom = ChgtDenomClient::getInstance()->find($k);
     $chgtdenom->delete(false);
 }
+//Suppression des templates de facturation
+foreach(TemplateFactureClient::getInstance()->findAll() as $k => $doc) {
+    TemplateFactureClient::getInstance()->delete($doc);
+}
+
+acCouchdbManager::getClient()->storeDoc(json_decode(file_get_contents(sfConfig::get('sf_data_dir')."/configuration/".$application."/TEMPLATE-FACTURE-".$annee.".json")));
 
 $template = TemplateFactureClient::getInstance()->findByCampagne($campagne);
 foreach($template->cotisations as $kg => $gcotis) {
@@ -218,7 +224,7 @@ $values = array();
 $values['volume'] = 11;
 $values['produit_hash'] = $produitconfig1->getHash();
 $values['numero_logement_operateur'] = "A";
-$values['millesime'] = "2021";
+$values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
 $values['specificite'] = 'bio';
@@ -239,11 +245,13 @@ $t->is(count($drevM02->mouvements), 0, "la M02 n'a pas de mouvement facturable")
 $lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
 $form = new LotModificationForm($lot);
 
+$t->is($form->getDefault("millesime"), ($annee+2)."", "Le millésime par défaut du form est ".($annee+2));
+
 $values = array();
 $values['volume'] = 11;
 $values['produit_hash'] = $produitconfig1->getHash();
 $values['numero_logement_operateur'] = "A";
-$values['millesime'] = "2021";
+$values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
 $values['specificite'] = 'bio';
@@ -257,3 +265,28 @@ $form->save();
 $lot = LotsClient::getInstance()->findByUniqueId($drev->lots[0]->declarant_identifiant, $drev->lots[0]->unique_id, "01");
 $drevresteM02 = $lot->getDocument();
 $t->ok(preg_match('/M02$/', $drevresteM02->_id), "Une non modification du lot, ne change pas la version de la DREV qui reste M02");
+
+$t->comment("Suppression d'un lot");
+
+$lastDrev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($drev->identifiant, $drev->periode);
+$drevM03 = $lastDrev->generateModificative();
+$lot = $drevM03->addLot();
+$lot->produit_hash = $produitconfig1->getHash();
+$lot->volume = 100;
+$drevM03->validate();
+$drevM03->validateOdg();
+$t->ok($drevM03->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot créé est en attente de prélevement");
+
+$drevM04 = $drevM03->generateModificative();
+$drevM04->validate();
+$drevM04->validateOdg();
+
+$drevM05 = $drevM04->generateModificative();
+$drevM05->lots->remove(1);
+$drevM05->validate();
+$drevM05->validateOdg();
+
+$drevM03 = DRevClient::getInstance()->find($drevM03->_id);
+$t->ok(!$drevM03->lots[1]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot supprimé n'est plus en attente de prélevement");
+
+

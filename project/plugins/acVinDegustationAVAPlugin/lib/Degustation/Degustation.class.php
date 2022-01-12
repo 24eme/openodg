@@ -48,7 +48,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 
     public function getMillesime() {
         if(!$this->_get('millesime')) {
-            return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+			
+            return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date_degustation)."";
         }
 
         return $this->_get('millesime');
@@ -101,6 +102,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
                     $lot->vtsgn = $vtsgn_libelle;
                     $lot->nb_vtsgn = $lot->nb_vtsgn + 1;
                 }
+            }
+        }
+
+        if($this->appellation == "CREMANT") {
+            foreach($drev->declaration->getProduits() as $produit) {
+                if(str_replace("appellation_", "", $produit->getAppellation()->getKey()) != $this->appellation) {
+                    continue;
+                }
+                $produitConfig = $this->getConfiguration()->get($produit->getHash()."/cepage_ED");
+
+                $lot = $prelevement->lots->add(str_replace("/", "-", $produitConfig->getHash()));
+                $lot->libelle = $produitConfig->getLibelle();
+                $lot->hash_produit = $produitConfig->getHash();
+                $lot->volume_revendique = $produit->volume_revendique;
+                $lot->nb_hors_vtsgn = 1;
             }
         }
 

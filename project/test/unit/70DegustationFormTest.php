@@ -57,7 +57,7 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
     $cd = ChgtDenomClient::getInstance()->find($k);
     $cd->delete(false);
 }
-foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(100, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
@@ -200,9 +200,9 @@ $t->is($degustation->lots[2]->initial_type, TransactionClient::TYPE_MODEL, "L'in
 $t->is($degustation->lots[2]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->initial_type, $degustation->lots[2]->initial_type, "L'initial type du mouvement");
 
 
-$t->is($degustation->lots[0]->getUniqueId(), "2020-2021-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");
-$t->is($degustation->lots[1]->getUniqueId(), "2020-2021-00001-00002", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00001-00002");
-$t->is($degustation->lots[2]->getUniqueId(), "2020-2021-00002-00003", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00003");
+$t->is($degustation->lots[0]->getUniqueId(), $campagne."-00001-00001", "Le lot 1 de la dégustation a bien la clé unique 2020-2021-00001-00001");
+$t->is($degustation->lots[1]->getUniqueId(), $campagne."-00001-00002", "Le lot 2 de la dégustation a bien la clé unique 2020-2021-00001-00002");
+$t->is($degustation->lots[2]->getUniqueId(), $campagne."-00002-00003", "Le lot 3 de la dégustation a bien la clé unique 2020-2021-00002-00003");
 $t->is($degustation->lots[1]->adresse_logement,$addrCompleteLgtDrev, "Dans la dégustation on a l'addresse de logement depuis la DRev");
 
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Il y a une affectation source avant celle-ci pour le lot 1 (de transaction) de la dégustation");
@@ -251,7 +251,7 @@ $t->ok(!$degustation->lots[2]->getMouvement(Lot::STATUT_AFFECTABLE), "Il a un mo
 $t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 0, "Il n'y a plus de mouvement prélevable");
 
 $t->comment('on ajoute un leurre, on revient pour décocher un lot, le leurre ne doit pas avoir disparu');
-$degustation->addLeurre($degustation->lots[0]->produit_hash, null, 1);
+$degustation->addLeurre($degustation->lots[0]->produit_hash, null, date('Y'), 1);
 $degustation->save();
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 

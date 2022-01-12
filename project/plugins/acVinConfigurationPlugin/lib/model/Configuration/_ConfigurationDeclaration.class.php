@@ -287,20 +287,15 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getLibelleFormat($labels = array(), $format = "%format_libelle%", $label_separator = ", ") {
 
-        $key = ($this->getDocument()->isEffervescentVindebaseActivate() && $this->isEffervescentNode())? $format.'_vindebase' : $format;
-
-        if (!array_key_exists($key, $this->libelle_format)) {
+        if (!array_key_exists($format, $this->libelle_format)) {
             $format_libelle = $this->getFormatLibelleCalcule();
             $formatResolu = str_replace("%format_libelle%", $format_libelle, $format);
             $libelle = $this->formatProduitLibelle($formatResolu);
-            if($this->getDocument()->isEffervescentVindebaseActivate() && $this->isEffervescentNode()){
-                  $libelle= "Vin de base ".$libelle;
-            }
             $libelle = $this->getDocument()->formatLabelsLibelle($labels, $libelle, $label_separator);
-            $this->libelle_format[$key] = trim($libelle);
+            $this->libelle_format[$format] = trim($libelle);
         }
 
-        return $this->libelle_format[$key];
+        return $this->libelle_format[$format];
     }
 
     public function formatProduitLibelle($format = "%g% %a% %m% %l% %co% %ce%") {

@@ -2,9 +2,9 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if (in_array($application, array('nantes', 'loire'))) {
+if (in_array($application, array('nantes', 'loire', 'igp13'))) {
     $t = new lime_test(1);
-    $t->ok(true, "pas de parcellaire activé");
+    $t->ok(true, "pas d'affectation parcellaire activé");
     return;
 }
 

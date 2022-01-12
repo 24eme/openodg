@@ -1,12 +1,12 @@
 all:
   configuration:
     facture:
-      aggregateMouvements: false
-      ligneMsg: false
+      ligneUnique: false
+      ligneDetailWithTitle: false
       echeances: false
       all_etablissements: false
       export_sage_width_txt: true
       all_etablissements: true
-      modalite_paiement: "- comptant  par virement ou chèques"
+      modalite_paiement: "- comptant par virement ou chèques"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true

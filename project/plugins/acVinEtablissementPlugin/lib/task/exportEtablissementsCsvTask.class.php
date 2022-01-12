@@ -38,7 +38,7 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "Login,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut,PPM,Identifiant etablissement\n";
+        echo "Login,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut,PPM,Organisme,Identifiant etablissement,doc id\n";
 
        $cpt = 0;
         foreach($results->rows as $row) {
@@ -52,26 +52,14 @@ EOF;
             $compte = CompteClient::getInstance()->find($etablissement->compte, acCouchdbClient::HYDRATE_JSON);
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, acCouchdbClient::HYDRATE_JSON);
 
-            $habilitationStatut = null;
-            $activites = array();
-            if(isset($habilitation)) {
-                foreach($habilitation->declaration as $produit) {
-                    foreach($produit->activites as $activiteKey => $activite) {
-                        if(!$activite->statut) {
-                            continue;
-                        }
-                        $activites[$activiteKey] = $activiteKey;
-                        $habilitationStatut = self::$statuts_libelles_export[$activite->statut];
-                    }
-                }
+            $habilitationActivites = '';
+            if (isset($compte->tags->activite)) {
+                $habilitationActivites = join('|', $compte->tags->activite);
             }
 
-            $activitesSorted = array();
-            foreach(HabilitationClient::getInstance()->getActivites() as $key => $libelle) {
-                if(!array_key_exists($key, $activites)) {
-                    continue;
-                }
-                $activitesSorted[] = $libelle;
+            $habilitationStatut = '';
+            if (isset($compte->tags->statuts)) {
+                $habilitationStatut = join('|', $compte->tags->statuts);
             }
 
             $ordre = null;
@@ -111,7 +99,7 @@ EOF;
             $etablissement->fax.",".
             $etablissement->telephone_mobile.",".
             '"'.$etablissement->email.'",'.
-            preg_replace('/[0-9][0-9]_/', '', implode(";", $activitesSorted)).",". // Activité habilitation
+            $habilitationActivites.",". // Activité habilitation
             ','. //Reception ODG
             ','. //Enregistrement ODG
             ','. //Transmission AVPI
@@ -126,8 +114,10 @@ EOF;
             $etablissement->famille.",".
             $compte->date_modification.",".
             $etablissement->statut.",".
-            $etablissement->ppm.",\"".
-            $etablissement->identifiant."\",".
+            $etablissement->ppm.",".
+            Organisme::getCurrentOrganisme().",".
+            $etablissement->identifiant.",".
+            $etablissement->_id.",".
             "\n";
         }
     }

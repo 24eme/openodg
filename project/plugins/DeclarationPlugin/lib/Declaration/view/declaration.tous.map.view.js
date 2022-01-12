@@ -1,12 +1,32 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "ChgtDenom" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Tirage" && doc.type != "TravauxMarc" && doc.type != "ParcellaireIrrigable"  && doc.type != "ParcellaireIrrigue" && doc.type != "ParcellaireIntentionAffectation" && doc.type != "ParcellaireAffectation" && doc.type != "Conditionnement" && doc.type != "Transaction") {
-
+    if(
+        doc.type != "ChgtDenom" &&
+        doc.type != "Conditionnement" &&
+        doc.type != "DRev" &&
+        doc.type != "DR" &&
+        doc.type != "DRevMarc" &&
+        doc.type != "ParcellaireAffectation" &&
+        doc.type != "ParcellaireIntentionAffectation" &&
+        doc.type != "ParcellaireIrrigable" &&
+        doc.type != "ParcellaireIrrigue" &&
+        doc.type != "RegistreVCI" &&
+        doc.type != "Tirage" &&
+        doc.type != "Transaction" &&
+        doc.type != "TravauxMarc"
+    ) {
         return;
     }
 
     if(!doc.campagne) {
         return;
+    }
+
+    campagne = doc.campagne;
+    if (doc.type == "DR") {
+      campagne = campagne;
+      campagneplusun = parseInt(campagne) + 1;
+      campagne = campagne + "-" + campagneplusun;
     }
 
     if(!doc.declarant) {
@@ -32,6 +52,14 @@ function(doc) {
     var validation = null;
     if(doc.validation) {
     validation = doc.validation;
+    }
+
+    if (! validation && doc.date_import) {
+      validation = doc.date_import;
+    }
+
+    if (! validation && doc.date_depot) {
+      validation = doc.date_depot;
     }
 
     var validation_odg = null;
@@ -90,7 +118,7 @@ function(doc) {
 	    statut = "Approuvé";
         infos = null;
         if(validation_odg !== false && validation_odg !== true) {
-            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)(T.*)/, "$3/$2/$1");
+            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)(T.*)?/, "$3/$2/$1");
         }
     }
 
@@ -136,13 +164,13 @@ function(doc) {
                 if(doc.declaration[key][detailKey].statut_odg){
                    statutProduit = doc.declaration[key][detailKey].statut_odg;
                  }
-    	          emit([type, doc.campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                emit([type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
                   nb_emits = nb_emits + 1;
               }
            }
     }
 
     if(!nb_emits){
-        emit([type, doc.campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        emit([type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
     }
 }

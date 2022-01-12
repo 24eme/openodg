@@ -7,25 +7,13 @@ if ($application != 'igp13') {
     $t->ok(true, "Pass AOC");
     return;
 }
-$region = "IGP13";
-$emetteurs[$region] = array(
-    "adresse" => "rue",
-    "code_postal" => "cp",
-    "ville" => "ville cedex 1",
-    "service_facturation" => "Syndicat des vins",
-    "telephone" => "00 00 00 00 00 - 00 00 00 00 00",
-    "email" => "bonjour@email.fr",
-    "responsable" => "responsable",
-    "iban" => "iban",
-    "tva_intracom" => "tva_intracom",
-    "siret" => "siret"
-);
+
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test();
+$t = new lime_test(44);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
-$socVitiCompte = $viti->getSociete()->getMasterCompte();
+$societe = $viti->getSociete();
 
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
@@ -56,462 +44,267 @@ foreach(GenerationClient::getInstance()->findHistory() as $k => $g) {
 }
 
 //Suppression des dégustation précédentes
-foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
     $degustation->delete(false);
 }
 
 //Suppression MandatSepa
-$mandatSepa = MandatSepaClient::getInstance()->findLastBySociete($socVitiCompte->identifiant);
-if($mandatSepa){
-    $mandatSepa->delete(true);
+$oldmandat = MandatSepaClient::getInstance()->findLastBySociete($societe->identifiant);
+if ($oldmandat) {
+    MandatSepaClient::getInstance()->delete($oldmandat);
 }
 
-// Selection des produits
-$path = dirname(__FILE__).'/../data/facturation_produits_'.$application.'.csv';
-
-if(!file_exists($path)){
-  $t = new lime_test(1);
-  $t->ok(true, "Test disabled => pas de fichier de produit");
-  exit;
+//Suppression des factures
+foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
+    FactureClient::getInstance()->delete($f);
 }
 
-$csvProduits = str_getcsv(file_get_contents($path));
-$appelations = explode(';',$csvProduits[0]);
+//Suppression des templates de facturation
+foreach(TemplateFactureClient::getInstance()->findAll() as $k => $doc) {
+    TemplateFactureClient::getInstance()->delete($doc);
+}
+
+$periode = (date('Y')-1)."";
+
+acCouchdbManager::getClient()->storeDoc(json_decode(str_replace("%periode%", $periode, file_get_contents(dirname(__FILE__).'/../data/template_facture_igp.json'))));
+
+$t->comment("Création d'une drev");
 
 $config = ConfigurationClient::getCurrent();
-$produit1 = null;
-$produit2 = null;
-$produit3 = null;
-$produit4 = null;
-$produit5 = null;
-
-for ($i=0; $i < 5 ; $i++) {
-    $appelation = $appelations[$i];
-    foreach($config->getProduits() as $hash => $produit) {
-        $p = ${"produit".($i+1)};
-        if(!$p && strpos($hash,$appelation)) {
-            ${"produit".($i+1)} = $produit;
-            break;
-        }
-    }
-}
-
-$campagne = (date('Y')-1)."";
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$drev->save();
-
-$t->ok(!count($drev->mouvements),"La Drev n'a pas encore de mouvements facturables");
-
-$t->comment("On ajoute 5 lots à la DREV : ");
-for ($i=0; $i < 5 ; $i++) {
-    $drev->addLot();
-    $produit = ${"produit".($i+1)};
+$produit_hash = null;
+foreach($config->getProduits() as $hash => $produit) {
     $produit_hash = $produit->getHash();
-    if(preg_match("/MED/",$produit_hash)){
-        $produit_hash_med = $produit_hash;
-    }
-    if(preg_match("/D13/",$produit_hash)){
-        $produit_hash_d13 = $produit_hash;
-    }
-    $t->comment("=> ".$produit_hash);
-    $drev->lots[$i]->numero_logement_operateur = 'CUVE '.$i;
-    $drev->lots[$i]->produit_hash = $produit_hash;
-    $drev->lots[$i]->volume = $i+1;
+    break;
 }
 
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->save();
-$t->ok(!count($drev->mouvements),"La Drev n'a toujours pas de mouvements facturables, elle n'est pas validée ODG");
+
+$lot = $drev->addLot();
+$lot->numero_logement_operateur = 'CUVE A';
+$lot->produit_hash = $produit_hash;
+$lot->volume = 100;
+$lot = $drev->addLot();
+$lot->numero_logement_operateur = 'CUVE Abis';
+$lot->produit_hash = $produit_hash;
+$lot->volume = 10;
+$drev->save();
 
 $drev->validate();
-$drev->save();
 $drev->validateOdg();
 $drev->save();
 
-$t->ok(count($drev->mouvements),"La Drev a des mouvements facturables, elle est validée ODG");
-
-$mvtDrev = null;
-foreach ($drev->getMouvementsFactures() as $mvtsOp) {
-    foreach ($mvtsOp as $uniqkey => $mvt) {
-        $mvtDrev = $mvt;
-        break;
-    }
-    break;
-}
-
-$t->is($mvtDrev->detail_identifiant,$drev->lots[0]->numero_dossier, "Le mouvements de facture a bien le numéro de dossier du lot de DREV");
-
-$t->comment("Vérification du template de facturation");
-
-$templatesFactures = TemplateFactureClient::getInstance()->findAll();
-$t->ok(count($templatesFactures),"Il existe au moins un template de facture");
-$templateFacture = TemplateFactureClient::getInstance()->findByCampagne($drev->campagne);
-$t->ok($templateFacture->_id,"Le template de facture est : $templateFacture->_id");
-$t->ok(count($templateFacture->cotisations), "Il y a ".count($templateFacture->cotisations)." cotisation(s) dans la facturation ".$campagne);
-
-$codes_comptables = array();
-foreach ($templateFacture->getCotisations() as $cotisName => $cotis) {
-    $cotis->code_comptable = 'CODE_COMPTABLE_'.$cotisName;
-    $codes_comptables[$cotisName] = $cotis->code_comptable;
-}
-$templateFacture->save();
-
-$t->comment("Création de la facture par formulaire de génération");
-
-$form = new FactureGenerationForm();
-$defaults = $form->getDefaults();
-$valuesRev['date_facturation'] = date('d/m/Y');
-$valuesRev['date_mouvement'] = date('d/m/Y');
-$valuesRev['type_document'] = DRevClient::TYPE_MODEL;
-$form->bind($valuesRev);
-$t->ok($form->isValid(), "Le formulaire est valide");
-$gForm = $form->save();
-$gForm->arguments->add('modele', $templateFacture->_id);
-$gForm->arguments->add('region', strtoupper($application));
-$gForm->save();
-
-$socCompte = $viti->getMasterCompte();
-
-$t->ok($gForm, "Une génération de facture a bien été créée");
-
-$generationsids = GenerationClient::getInstance()->getGenerationIdEnAttente();
-$t->is(count($generationsids),1, "Il y a une génération de facture en attente");
-
-foreach ($generationsids as $gid) {
-    $generation = GenerationClient::getInstance()->find($gid);
-    $g = GenerationClient::getInstance()->getGenerator($generation,null,null);
-    $g->generate();
-}
-
-$facturesSoc = FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant);
-$t->is(count($facturesSoc), 1, "Une facture a été générée");
-
-foreach ($facturesSoc as $f) {
-  $facture = $f;
-}
-
-$t->is($facture->_id, "FACTURE-".$socVitiCompte->identifiant."-".date("Ymd")."01", "ID de la facture");
-$t->is($facture->numero_facture,date("Ymd")."01", "Numero de la facture");
-$t->is($facture->numero_archive,"00001", "Numéro d'archive de la facture");
-$t->is($facture->getNumeroOdg(),$facture->campagne."00001", "Numéro odg de la facture");
-$t->is($facture->date_echeance , $facture->date_facturation, "Date d'échéance à récéption");
-
-$keyCotis = null;
-foreach ($facture->lignes as $keyCotis => $cotis) {
-    if(preg_match("/igp13/", $keyCotis)){
-        break;
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drev->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
     }
 }
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 110, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" est 100");
+$t->is($getVolumeLotsFacturables_quantite, 110, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" est 100");
 
-$t->is($facture->lignes->$keyCotis->libelle, "IGP13", "Libellé de la ligne");
-$t->ok($facture->lignes->$keyCotis->details[0]->unite, "hl", "Unité du détail");
-$t->ok($facture->lignes->$keyCotis->details[0]->libelle, "Libellé du détail de la ligne");
-$t->like($facture->lignes->$keyCotis->details[0]->libelle, "/N° ".$drev->numero_archive."/", "Libellé du détail de la ligne avec le numéro d'archive");
-$t->is($facture->lignes->$keyCotis->details[0]->getLibelleComplet(), $facture->lignes->$keyCotis->libelle." ".$facture->lignes->$keyCotis->details[0]->libelle, "Libellé complet de la ligne");
+$t->comment("Changement de cuve");
 
-$t->is($facture->lignes->$keyCotis->produit_identifiant_analytique, $templateFacture->cotisations->$keyCotis->code_comptable, "Le code comptable est bien renseigné");
+$drevM01 = DRevClient::getInstance()->find($drev->_id);
+$lot = $drevM01->lots[0];
+$lot->numero_logement_operateur = 'CuveCexCuveA';
+LotsClient::getInstance()->modifyAndSave($lot);
+$drevM01 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
 
-$t->comment("Modificatrice DREV, on ajoute un lot volume 100 et on supprime le dernier lot");
+$t->is($drevM01->_id, $drev->_id."-M01", "La modification du lot a engendré une modificatrice");
+$t->is($drevM01->lots[0]->numero_logement_operateur, 'CuveCexCuveA', "Le logement a été changé");
 
-$drevM01 = $drev->generateModificative();
-$drevM01->save();
-$lotToRemove = null;
-$volumeFacturable = 0;
-foreach ($drevM01->lots as $num => $lot) {
-    $lotToRemove = $num;
-    $volumeFacturable = $lot->volume * -1;
-}
-$volumeFacturable += 100;
+$t->ok(!$drevM01->mouvements->exist($drev->identifiant), "La modification n'a pas engendré de mouvement");
 
-$drevM01->lots->remove($num);
-$drevM01Lot = $drevM01->addLot();
-$drevM01Lot->numero_logement_operateur = 'CUVE M01';
-$drevM01Lot->produit_hash = $produit_hash_d13;
-$drevM01Lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
-$drevM01Lot->volume = 100;
+$t->comment("Réduction du volume de la drev après une drev ayant le même numéro de dossier");
 
-$drevM01->validate();
-$drevM01->save();
+$drevM01 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
+$lot = $drevM01->lots[0];
+$lot->volume = 90;
+LotsClient::getInstance()->modifyAndSave($lot);
+$drevM02 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
 
-$drevM01->validateOdg();
-$drevM01->save();
+$t->is($drevM02->_id, $drev->_id."-M02", "La modification du lot a engendré une modificatrice");
 
-$t->ok(count($drevM01->mouvements),"La Drev Modificatrice a des mouvements facturables");
+$diff = $drevM02->getDiffLotVolume();
+$t->is(count($diff), 1, "la modification a bien généré une différence de volume");
+$t->is($diff['/lots/0/volume'], 100, "la première diff de volume donnne bien l'ancien volume du lot 1");
+$t->is($drevM02->lots[0]->getOriginalVolumeIfModifying(), 100, "on repère bien que c'est une modification");
 
-$mvtDrevM01 = null;
-foreach ($drevM01->getMouvementsFactures() as $mvtsOp) {
-    foreach ($mvtsOp as $uniqkey => $mvt) {
-        $mvtDrevM01 = $mvt;
-        break;
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drevM02->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
     }
-    break;
 }
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, -10, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M02 : -10");
+$t->is($getVolumeLotsFacturables_quantite, -10, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M02 : -10");
 
-$t->is($volumeFacturable, $mvtDrevM01->quantite, "Le volume facturable M01 est bien le simple ajout de lot +100 et le retrait du lot de -5 = +95");
-$t->is($mvtDrevM01->detail_identifiant, $drevM01->numero_archive, "Le numéro de dossier du mouvement est celui de la Modificatrice");
-$t->isnt($mvtDrevM01->detail_identifiant, $drev->numero_archive, "Le numéro de dossier du mouvement n'est pas le même que celui de la DRev de base");
+$t->comment("Création d'une drev modificatrice avec un nouveau lot");
 
-$form = new FactureGenerationForm();
-$defaults = $form->getDefaults();
-$valuesRev['date_facturation'] = date('d/m/Y');
-$valuesRev['date_mouvement'] = date('d/m/Y');
-$valuesRev['type_document'] = DRevClient::TYPE_MODEL;
-$form->bind($valuesRev);
-$gForm = $form->save();
-$gForm->arguments->add('modele', $templateFacture->_id);
-$gForm->arguments->add('region', strtoupper($application));
-$gForm->save();
+$drevM03 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode)->generateModificative();
 
-$generationsids = GenerationClient::getInstance()->getGenerationIdEnAttente();
+$lot = $drevM03->addLot();
+$lot->numero_logement_operateur = 'CUVE B';
+$lot->produit_hash = $produit_hash;
+$lot->volume = 50;
+$drevM03->save();
+$drevM03->validate();
+$drevM03->validateOdg();
+$drevM03->save();
 
-foreach ($generationsids as $gid) {
-    $generation = GenerationClient::getInstance()->find($gid);
-    $g = GenerationClient::getInstance()->getGenerator($generation,null,null);
-    $g->generate();
-}
-
-
-$facturesSoc = FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant);
-$t->is(count($facturesSoc), 2, "La facture pour la modificatrice a bien été générée");
-
-$t->comment("Test d'avoir");
-$avoir = null;
-foreach ($facturesSoc as $f) {
-    $avoir = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($f);
-    break;
-}
-
-$t->ok($avoir, "Il y a maintenant 1 avoir");
-
-$t->comment("On annule la validation ODG de la Drev");
-
-$drev = DRevClient::getInstance()->find($drev->_id);
-$drev->validation_odg = null;
-$drev->save();
-
-$mouvementsFactures = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte->getSociete());
-foreach ($mouvementsFactures as $mvtFact) {
-    $t->isnt($mvtFact->id, $drev->_id, "Les mouvements facturables ne sont pas ceux de la DRev");
-}
-
-$t->comment("On revalide ODG la DRev");
-$drev = DRevClient::getInstance()->find($drev->_id);
-$drev->validateOdg();
-$drev->save();
-
-$mouvementsFactures = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte->getSociete());
-foreach ($mouvementsFactures as $mvtFact) {
-    $t->isnt($mvtFact->id, $drev->_id, "Les mouvements facturables ne sont toujours pas ceux de la DRev");
-}
-
-$t->comment("Ajout de paiements");
-$t->is(count($facture->paiements),0,"Le nombre de paiements de la facture est 0 ");
-$paiementForm = new FacturePaiementsMultipleForm($facture);
-$valuesPaiement = array('_revision' => $facture->_rev);
-$valuesPaiement['paiements'][0]['montant'] = 1;
-$valuesPaiement['paiements'][0]['date'] = "01/01/".($drev->getCampagne()+1);
-$valuesPaiement['paiements'][0]['type_reglement'] = FactureClient::FACTURE_PAIEMENT_CHEQUE;
-$paiementForm->bind($valuesPaiement);
-$t->ok($paiementForm->isValid(), "Le formulaire est valide");
-
-$facture = $paiementForm->save();
-$t->is(count($facture->paiements),1,"Le nombre de paiements de la facture est 1 ");
-$t->is($facture->paiements[0]->date, ($drev->getCampagne()+1).'-01-01', "Le paiement a la bonne date au format iso");
-$t->is($facture->paiements[0]->versement_comptable, false,"Le paiement n'a pas été versé comptablement");
-$t->is($facture->date_paiement, ($drev->getCampagne()+1).'-01-01', "La date de paiement est bien appliquée");
-
-// Affichage Cotisations
-$cptCotisTotal = 0;
-$cptCotisDrev = 0;
-$cptCotisDr = 0;
-$cptCotisChgtDenom = 0;
-
-foreach ($templateFacture->cotisations as $c_name => $c) {
-  $t->comment("Cotisation = ".$c_name);
-  foreach ($c->details as $d_name => $detail) {
-    $regles = "tarif=".$detail->prix." tva=".$detail->tva;
-    $regles = ($detail->exist("unite"))? $regles." sur=".$detail->unite : $regles;
-    $regles = $regles." docs=".implode(",",$detail->docs->toArray(0,1))." fct=".$detail->callback;
-    $regles = ($detail->exist("callback_parameters"))? $regles." filtre=".implode(",",$detail->callback_parameters->toArray(0,1)) : $regles;
-
-    $t->comment("### ".$d_name." ".$regles);
-
-    if(in_array("DRev",$detail->docs->toArray(0,1))){
-      $cptCotisDrev++;
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drevM03->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
     }
-    if(in_array("ChgtDenom",$detail->docs->toArray(0,1))){
-      $cptCotisChgtDenom++;
-    }
-    if(in_array("DR",$detail->docs->toArray(0,1))){
-      $cptCotisDr++;
-    }
-    $cptCotisTotal++;
-
-  }
 }
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 50, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M03 : 50");
+$t->is($getVolumeLotsFacturables_quantite, 50, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M03 : 50");
 
-$t->ok(count($facture->getLignes()),"Il y a bien plusieurs lignes dans la facture");
-$montantHt = $facture->total_ht;
-$montantTtc = $facture->total_ttc;
-$t->ok(($montantHt > 0),"Le montant HT est supérieur à 0");
-$t->ok(($montantTtc > 0),"Le montant TTC est supérieur à 0");
+$t->comment("Augmentation du volume de la drev après une drev ayant un autre numéro de dossier");
 
-$degustation = new Degustation();
-$degustation->lieu = "Test — Test Facturation";
-$degustation->date = date('Y-m-d')." 14:00";
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
-$t->is(count($lotsPrelevables), 5, "5 lots en attentes de dégustation");
-$degustation->save();
+$drevM03 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
+$lot = $drevM03->lots[0];
+$lot->volume = 150;
+LotsClient::getInstance()->modifyAndSave($lot);
+$drevM04 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
 
-$degustation->setLots($lotsPrelevables);
-$degustation->save();
+$t->is($drevM04->_id, $drev->_id."-M04", "La modification du lot a engendré une modificatrice");
 
-$t->ok(!count($degustation->mouvements), "La dégustation n'étant pas anonymisée il n'y a pas encore de mouvements");
+$diff = $drevM04->getDiffLotVolume();
+$t->is(count($diff), 1, "la modification a bien généré une différence de volume");
+$t->is($diff['/lots/0/volume'], 90, "la première diff de volume donnne bien l'ancien volume du lot 1");
+$t->is($drevM04->lots[0]->getOriginalVolumeIfModifying(), 90, "on repère bien que c'est une modification");
 
-$t->comment("On met les lots à table");
-foreach ($degustation->getLots() as $lot) {
-    $lot->numero_table = 1;
-}
-$degustation->save();
-
-$degustation->anonymize();
-
-$t->ok(!count($degustation->mouvements), "La dégustation est anonymisée mais il n'y a toujours pas des mouvements car les mouvements sont présents lors d'une 2nd dégustation");
-
-
-$t->comment("Conformité des lots");
-$degustation->lots[0]->statut = Lot::STATUT_CONFORME;
-$degustation->lots[1]->statut = Lot::STATUT_NONCONFORME;
-$degustation->save();
-
-$lot = $degustation->lots[1];
-$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot ".$lot->unique_id." est non conforme");
-$t->is($lot->getNombrePassage(), 1, "C'est le premier passage du lot");
-
-$nonconformeId = $lot->unique_id;
-
-$lot->redegustation();
-$degustation->save();
-
-$t->ok($lot->getMouvement(Lot::STATUT_NONCONFORME), "Le lot est toujours non conforme");
-
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
-$t->is(count($lotsPrelevables), 1, "Il y a 1 lot prélevable");
-
-$lotPrelevable = current($lotsPrelevables);
-
-
-$t->comment('Deuxième degustation');
-$degustation2 = new Degustation();
-$form = new DegustationCreationForm($degustation2);
-$values = array('date' => date("d/m/Y"), 'time' => "18:00", 'lieu' => "Test — Test Facturation 2nd Degustation");
-$form->bind($values);
-$degustation2 = $form->save();
-
-$t->comment("Sélection du lot");
-$l = $degustation2->addLot($lot);
-$l->preleve = true;
-$degustation2->save();
-
-$lot2 = $degustation2->lots[0];
-
-
-$t->is($lot2->unique_id, $nonconformeId, "Le lot non conforme est bien celui de la degustation 2 ");
-$degustation2->save();
-
-$t->ok(!count($degustation2->getMouvementsFactures()), "Degustation 2 : on a toujours pas de mouvements car on est pas anonymisée");
-$degustation2->anonymize();
-$degustation2->save();
-
-$t->is(count($degustation2->getMouvementsFactures()), 1, "Degustation 2 : on a bien le mouvement de facture de la redegustation $degustation2->_id");
-
-$mvtRedegust = null;
-foreach ($degustation2->getMouvementsFactures() as $mvtsOp) {
-    foreach ($mvtsOp as $uniqkey => $mvt) {
-        $mvtRedegust = $mvt;
-        break;
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drevM04->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
     }
-    break;
 }
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 60, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M04 : 60");
+$t->is($getVolumeLotsFacturables_quantite, 60, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M04 : -10");
 
-$t->is($mvtRedegust->date, $degustation2->getDateFormat(), "Date du mouvement");
-$t->is($mvtRedegust->date_version, $degustation2->getDateFormat(), "Date version du mouvement");
-$t->is($mvtRedegust->facture, 0, "Mouvement non facturé");
-$t->is($mvtRedegust->facturable, 1, "Mouvement facturable");
-$t->is($mvtRedegust->detail_identifiant,$lot2->numero_dossier, "Degustation 2 : Le mouvements de facture a bien le numéro de dossier du lot redégusté");
+$t->comment("suppression d'un lot de la drev");
+$drevM05 = $drevM04->generateModificative();
+unset($drevM05->lots[2]);
+$drevM05->save();
+$drevM05->validate();
+$drevM05->validateOdg();
+$drevM05->save();
 
-$t->comment("Conformité du lot de la degustation 2 ");
-$degustation2->lots[0]->statut = Lot::STATUT_CONFORME;
-$degustation2->save();
+$diff = $drevM05->getDiffLotVolume();
+$t->is(count($diff), 2, "la modification a bien généré trois différences (2 de volumes, un unique_id)");
+$t->is($diff['/lots/2/volume'], 50, "la diff de volume donnne bien l'ancien volume du lot 1");
+$t->ok(isset($diff['/lots/2/unique_id']), "la diff de volume a bien un unique_id car il est supprimé");
 
-$t->comment('Création chgt Deno vers D13');
+$deletedlots = $drevM05->getDeletedLots();
+$t->is(count($deletedlots), 1, "on repère bien le supprimé");
+$t->is($deletedlots[0]->unique_id, $diff['/lots/2/unique_id'], "c'est le bon unique_id supprimé");
+$t->is($deletedlots[0]->volume, 50, "c'est le bon volume supprimé");
 
-$dateDeno = $campagne.'-12-15 11:00:00';
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drevM05->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
+    }
+}
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, -50, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M01 : -50");
+$t->is($getVolumeLotsFacturables_quantite, -50, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M01 : -50");
 
-$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null);
+$t->comment("suppression d'un lot de la drev + ajout d'un autre");
+$drevM06 = $drevM05->generateModificative();
+unset($drevM06->lots[0]);
+$drevM06->save();
+$lot = $drevM06->addLot();
+$lot->numero_logement_operateur = 'CUVE B';
+$lot->produit_hash = $produit_hash;
+$lot->volume = 168;
+$drevM06->save();
+$drevM06->validate();
+$drevM06->validateOdg();
+$drevM06->save();
 
-$lot = current($lots);
+$diff = $drevM06->getDiffLotVolume();
+$t->is(count($diff), 4, "la modification a bien généré 4 différences (2 de volumes, 2 unique_id car décallage d'index)");
+$t->is($diff['/lots/0/volume'], 150, "la diff de volume donnne bien l'ancien volume du lot 1");
+$t->ok(isset($diff['/lots/0/unique_id']), "la diff de volume a bien un unique_id car il est supprimé");
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lot, $dateDeno, null);
-$chgtDenom->constructId();
-$chgtDenom->save();
+$deletedlots = $drevM06->getDeletedLots();
+$t->is(count($deletedlots), 1, "on repère bien le supprimé");
+$t->is($deletedlots[0]->unique_id, $diff['/lots/0/unique_id'], "c'est le bon unique_id supprimé");
+$t->is($deletedlots[0]->volume, 150, "c'est le bon volume supprimé");
 
-$chgtDenom->changement_produit_hash = $produit_hash_d13;
-$chgtDenom->changement_volume = $lot->volume-0.5;
-$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
-$chgtDenom->generateLots();
-$chgtDenom->generateMouvementsLots(1);
-$chgtDenom->save();
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drevM06->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
+    }
+}
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 18, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M01 : -50");
+$t->is($getVolumeLotsFacturables_quantite, 18, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M01 : -50");
 
-$t->ok(!count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
+$t->comment("Création d'un changement de dénomination");
 
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $drevM06->lots[0], $drevM06->getDate(), null);
+$chgtDenom->changement_volume = 4;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
 $chgtDenom->validate();
-$chgtDenom->validateOdg();
 $chgtDenom->save();
 
-$t->ok(!count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a pas de mouvement de facture parce qu'on fait un chgt vers D13");
+$t->ok(!$chgtDenom->exist($chgtDenom->identifiant), "Aucun mouvement de facture avant la validation par l'ODG");
 
-$t->comment('Création chgt Deno vers MED');
-
-$dateDeno = $campagne.'-12-25 12:00:00';
-
-$lots = ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null);
-$lot = current($lots);
-
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lot, $dateDeno, null);
-$chgtDenom->constructId();
+$chgtDenom->validateODG();
 $chgtDenom->save();
 
-$chgtDenom->changement_produit_hash = $produit_hash_med;
-$chgtDenom->changement_volume = $lot->volume-0.1;
-$chgtDenom->setChangementType(ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT);
-$chgtDenom->generateLots();
-$chgtDenom->generateMouvementsLots(1);
-$chgtDenom->save();
+$t->is(count($chgtDenom->mouvements->get($chgtDenom->identifiant)->toArray()), 1, "Le mouvement de facturation a été généré après la validation par l'ODG");
+$mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst();
+$t->is($mouvChgtDenom->taux, 15, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 1er changement de dénomination est de 15 €");
+$t->is($mouvChgtDenom->detail_identifiant, $chgtDenom->numero_archive, "Le numéro d'archive du changement de dénomination est repris dans le mouvement \"03_getFirstChgtDenomFacturable\"");
+$t->is($mouvChgtDenom->detail_libelle, "N° ".$chgtDenom->numero_archive, "Le libellé du mouvement \"03_getFirstChgtDenomFacturable\" contient le numéro d'archive");
 
-$t->ok(!count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a pas de mouvement de facture parce qu'on est pas valideOdg");
+$t->comment("Création d'un second changement de dénomination le même jour");
 
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $chgtDenom->lots[0], $drevM04->getDate()." 00:00:01", null);
+$chgtDenom->changement_volume = 2;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
 $chgtDenom->validate();
-$chgtDenom->validateOdg();
+$chgtDenom->validateODG();
 $chgtDenom->save();
 
-$t->ok(count($chgtDenom->getMouvementsFactures()),"Changement Deno : on a un mouvement de facture car on est valideOdg et MED");
+$mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst();
+$t->is($mouvChgtDenom->taux, 10, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 2ème changement de dénomination est de 10 €");
+$t->is($mouvChgtDenom->detail_identifiant, $chgtDenom->numero_archive, "Le numéro d'archive du changement de dénomination est repris dans le mouvement \"03_getFirstChgtDenomFacturable\"");
+$t->is($mouvChgtDenom->detail_libelle, "N° ".$chgtDenom->numero_archive, "Le libellé du mouvement \"03_getFirstChgtDenomFacturable\" contient le numéro d'archive");
 
-$mvtChgtDenom = null;
-foreach ($chgtDenom->getMouvementsFactures() as $mvtsOp) {
-    foreach ($mvtsOp as $uniqkey => $mvt) {
-        $mvtChgtDenom = $mvt;
-        break;
-    }
-    break;
-}
+$t->comment("Création d'un troisième changement de dénomination le lendemain");
 
-$t->is($mvtChgtDenom->detail_identifiant, $lot->numero_dossier."ab" ,"Changement Deno :le mouvement de facture du changement a le numéro de dossier correspondant à celui du 2nd chgtDenom");
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $chgtDenom->lots[0], preg_replace("/.{2}$/", "01", $drevM04->getDate()), null);
+$chgtDenom->changement_volume = 1;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
+$chgtDenom->validate();
+$chgtDenom->validateODG();
+$chgtDenom->save();
 
-$mouvementsFacturables = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($socVitiCompte);
-$f = FactureClient::getInstance()->createDocFromView($mouvementsFacturables, $socVitiCompte, date('Y-m-d'), null, $region, $templateFacture);
-
-$keyLignes = array_keys($f->getLignes()->toArray());
-$keyLignesSorted = $keyLignes;
-sort($keyLignesSorted);
-$t->is($keyLignes,$keyLignesSorted, "Dans les factures les noms de cotisations servent pour le trie quel que soit l'ordre de sortie des mouvements de facture ou de l'ordre dans le template");
+$mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst();
+$t->is($mouvChgtDenom->taux, 15, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 2ème changement de dénomination est de 15 €");

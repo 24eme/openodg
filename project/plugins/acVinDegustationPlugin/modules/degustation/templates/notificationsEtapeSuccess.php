@@ -52,6 +52,7 @@
                         <?php endforeach; ?>
                       </td>
                       <td>
+                          <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
                         <?php if ($lot->email_envoye === null): ?>
                             <div class="btn-group">
                               <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -59,7 +60,9 @@
                               </button>
                               <ul class="dropdown-menu text-left">
                                 <li>
-                                  <?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $identifiant, 'lots' => $lots]) ?>
+                                    <a class="btn link-mail-auto" href="<?php echo url_for('degustation_envoi_mail_resultats', array('id' => $degustation->_id, 'identifiant' => $identifiant)); ?>">
+                                      <i class="glyphicon glyphicon-envelope"></i>&nbsp;Envoyer par mail
+                                    </a>
                                 </li>
                                 <li>
                                   <a href="<?php echo url_for('degustation_mail_resultats_previsualisation', array('id' => $degustation->_id, 'identifiant' => $identifiant)); ?>" class="btn btn-mail-previsualisation">
@@ -98,12 +101,31 @@
     include_component('degustation','previewMailPopup', array('degustation' => $degustation, 'identifiant' => $identifiant_operateur, 'lots' => $lotsOperateur));
  endif;
   ?>
-  <?php // mailto si param dans la requete ?>
-  <?php if ($mailto): ?>
-  <script>
-      var mailto = document.createElement('a');
-      mailto.href = "<?php include_component('degustation', 'mailTo', ['degustation' => $degustation, 'identifiant' => $mailto, 'lots' => $degustation->getLotsByOperateurs($mailto)[$mailto], 'notemplate' => true]); ?>";
-      mailto.click();
-  </script>
-  <?php endif ?>
 
+ <?php if (isset($mail_to_identifiant) && $mail_to_identifiant): ?>
+     <div id="modal_mailto" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Le mail n'a pas pu s'ouvrir automatiquement</h4>
+          </div>
+          <div class="modal-body">
+              <span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Annuler</button>
+            <a href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $mail_to_identifiant)); ?>" class="btn btn-primary">Ouvrir le mail manuellement</a>
+          </div>
+        </div>
+      </div>
+    </div>
+ <script>
+     var newWin = window.open("<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $mail_to_identifiant)); ?>");
+     if(!newWin || newWin.closed || typeof newWin.closed=='undefined')
+     {
+        setTimeout(function() {$('#modal_mailto').modal('show')}, 1000);
+     }
+ </script>
+
+ <?php endif ?>

@@ -1,6 +1,6 @@
 Bonjour,
 
-Après vérification, votre déclaration de Revendication <?php echo $drev->campagne; ?> a été définitivement validée par notre service.
+Après vérification, votre déclaration de Revendication <?php echo $drev->getPeriode(); ?> a été définitivement validée par notre service.
 
 Vous trouverez en pièce jointe le document PDF de votre déclaration.
 

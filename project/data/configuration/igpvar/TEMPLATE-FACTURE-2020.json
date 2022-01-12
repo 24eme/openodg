@@ -141,7 +141,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-            "/appellations/MED"
+            "/appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -210,7 +210,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-              "NOT /appellations/MED AND NOT /deja/CONFORME"
+            "NOT /appellations/MED AND NOT /deja/CONFORME"
           ]
         },
         "inao_med": {
@@ -225,7 +225,7 @@
           ],
           "callback": "buildMouvementsFacturesVolumeDeguste",
           "callback_parameters": [
-              "/appellations/MED"
+            "/appellations/MED AND NOT /deja/CONFORME"
           ]
         }
       }
@@ -245,7 +245,7 @@
           "docs": [
             "ChgtDenom"
           ],
-          "callback": "calculFraisJournalier",
+          "callback": "getFirstChgtDenomFacturable",
           "callback_parameters": [
             "/appellations/MED AND NOT NEGOCIANT"
           ]

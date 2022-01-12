@@ -64,8 +64,9 @@ class Tournee extends BaseTournee {
     }
 
     public function getMillesime() {
-        if(!$this->_get('millesime')) {
-            return ((int) substr($this->date, 0, 4) - 1)."";
+        if(!$this->_get('millesime') && $this->date) {
+
+            return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date)."";
         }
 
         return $this->_get('millesime');
@@ -92,15 +93,16 @@ class Tournee extends BaseTournee {
     }
 
     public function setDate($date) {
-        $dateObject = new DateTime($date);
-        $this->date_prelevement_fin = $dateObject->modify("-5 days")->format('Y-m-d');
-
         return $this->_set('date', $date);
     }
 
     public function getProduits() {
         if ($this->appellation == 'VTSGN') {
             return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+        }
+
+        if($this->appellation == "CREMANT") {
+            return $this->getConfiguration()->declaration->certification->genre->appellation_CREMANT->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
         }
 
         return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);

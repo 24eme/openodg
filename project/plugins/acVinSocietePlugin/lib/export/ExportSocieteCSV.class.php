@@ -4,15 +4,17 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
 
     protected $societe = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
-        return "Identifiant;Titre;Raison sociale;Adresse;Adresse 2;Adresse 3;Code postal;Commune;Pays;Code comptable;Code NAF;Siret;TVA Intra;Téléphone;Téléphone portable;Fax;Email;Site;Région;Type;Statut;Date de modification;Observation\n";
+        return "Identifiant;Titre;Raison sociale;Adresse;Adresse 2;Adresse 3;Code postal;Commune;Pays;Code comptable;Code NAF;Siret;TVA Intra;Téléphone;Téléphone portable;Fax;Email;Site;Région;Type;Statut;Date de modification;Observation;Organisme;Societe ID\n";
     }
 
-    public function __construct($societe, $header = true) {
+    public function __construct($societe, $header = true, $region = null) {
         $this->societe = $societe;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {
@@ -67,6 +69,8 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
         $data['statut'] = (($this->societe->statut) ? $this->societe->statut : EtablissementClient::STATUT_ACTIF);
         $data['date_modification'] = $this->societe->date_modification;
         $data['commentaire'] = str_replace('"', "''", str_replace(array(',', ';', "\n", "\r"), array(' / ', ' / ', ' '), $this->societe->commentaire));
+        $data['organisme'] = Organisme::getCurrentOrganisme();
+        $data['societe_id'] = $this->societe->_id;
 
         return $data;
     }
@@ -74,6 +78,9 @@ class ExportSocieteCSV implements InterfaceDeclarationExportCsv {
     public function exportJson() {
 
         return json_encode($this->exportData(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+    }
+
+    public function setExtraArgs($args) {
     }
 
 }

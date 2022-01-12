@@ -31,7 +31,7 @@ foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouch
     $conditionnement->delete(false);
 }
 
-foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
     $degustation->delete(false);
 }
@@ -84,8 +84,9 @@ $doc->setLots($lots);
 
 foreach ($doc->getLots() as $lot) {
     $lot->numero_table = 1;
+    $lot->setIsPreleve();
 }
-$doc->addLeurre($doc->lots[0]->getProduitHash(), null, 1);
+$doc->addLeurre($doc->lots[0]->getProduitHash(), null, date('Y'), 1);
 
 $t->comment('Résultat de conformité / non conformité');
 $lotConformes = $doc->getLotsConformesOrNot(true);

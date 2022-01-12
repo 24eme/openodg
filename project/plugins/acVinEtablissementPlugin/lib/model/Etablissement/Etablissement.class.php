@@ -131,6 +131,10 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $this->liaisons_operateurs->exist($type . '_' . $etablissementId);
     }
 
+    public function getLiaisonByTypeAndEtablissementId($type, $etablissementId) {
+        return $this->liaisons_operateurs->get($type . '_' . $etablissementId);
+    }
+
     public function addLiaison($type, $etablissement,$saveOther = true, $chai = null, $attributsChai = array()) {
 
         if(!$etablissement instanceof Etablissement) {
@@ -164,22 +168,46 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $liaison->add("attributs_chai", $attributsChai);
         }
 
+        if ($saveOther) {
+            $this->updateLiaisonOpposee($liaison);
+        }
+
+        return $liaison;
+    }
+
+    protected function updateLiaisonOpposee($liaison) {
+        $etablissement = $liaison->getEtablissement();
         $typeLiaisonOpposee = EtablissementClient::getTypeLiaisonOpposee($liaison->type_liaison);
+
+        if ($this->isSuspendu()) {
+            if ($etablissement->existLiaison($typeLiaisonOpposee, $this->_id)) {
+                $etablissement->removeLiaison($etablissement->getLiaisonByTypeAndEtablissementId($typeLiaisonOpposee, $this->_id)->getkey(), false);
+                $etablissement->save();
+            }
+            return;
+        }
+        if ($etablissement->existLiaison($typeLiaisonOpposee, $this->_id)) {
+            return ;
+        }
 
         $chaiOppose = null;
         $attributsChaiOpposes = array();
 
-        if(EtablissementClient::isTypeLiaisonCanHaveChai($typeLiaisonOpposee) && $chai) {
-            $chaiOppose = $chai;
+        if(EtablissementClient::isTypeLiaisonCanHaveChai($typeLiaisonOpposee) && $liaison->getChai()) {
+            $chaiOppose = $liaison->getChai();
             $attributsChaiOpposes = $attributsChai;
         }
 
-        if($saveOther && $typeLiaisonOpposee) {
+        if($typeLiaisonOpposee) {
             $etablissement->addLiaison($typeLiaisonOpposee, $this, false, $chaiOppose, $attributsChaiOpposes);
             $etablissement->save();
         }
+    }
 
-        return $liaison;
+    public function updateLiaisonsOpposees() {
+        foreach($this->liaisons_operateurs as $k => $l) {
+            $this->updateLiaisonOpposee($l);
+        }
     }
 
     public function removeLiaison($key, $removeOther = true) {
@@ -497,6 +525,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     public function getNumeroCourt() {
 
         return str_replace(str_replace('SOCIETE-', '', $this->id_societe), '', $this->identifiant);
+    }
+
+    public function setStatut($s) {
+        $r = $this->_set('statut', $s);
+        $this->updateLiaisonsOpposees();
+        return $r;
     }
 
     public function getStatutLibelle(){

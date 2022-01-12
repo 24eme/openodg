@@ -19,4 +19,11 @@ class DR extends BaseDR {
     	return ($admin)? true : false;
     }
 
+    public function save()
+    {
+        if (DRConfiguration::getInstance()->hasValidationDR()) {
+            $this->storeDeclarant();
+        }
+        parent::save();
+    }
 }

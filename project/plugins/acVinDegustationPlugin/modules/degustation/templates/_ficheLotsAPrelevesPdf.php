@@ -10,23 +10,14 @@ th {
 }
 
 </style>
-    <div>
       <table>
         <tr>
-          <td style="width:20%;">
-          </td>
-          <td style="width:30%;">
-            <p>Préleveur :</p>
-          </td>
-          <td style="width:30%">
-            <p>Date d'édition : <?php echo $date_edition;?></p>
-          </td>
-          <td style="width:20%;">
-          </td>
+          <td style="width:20%;"></td>
+          <td style="width:30%;">Préleveur :</td>
+          <td style="width:30%">Date d'édition : <?php echo $date_edition;?></td>
+          <td style="width:20%;"></td>
         </tr>
       </table>
-    </div>
-    <div>
       <table>
         <tr style="line-height: 25em; height:25em;">
           <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
@@ -35,15 +26,14 @@ th {
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
         $etablissement = $etablissements[$key_lots];
-            foreach ($lotsDossier as $numDossier => $lot) :
-
-            $adresse = $lot->getRawValue()->adresse_logement;
+            foreach ($lotsDossier as $numDossier => $lots) :
+                $lot = $lots[0]->getRawValue();
+            $adresse = $lot->adresse_logement;
             $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
-    <?php if ($ligne % 12 == 0 ) : $table_header = true; ?>
+    <?php if ($ligne % 15 == 0 ) : $table_header = true; ?>
       </table>
       <br pagebreak="true" />
-      <p>Suite des lots<p/>
     <?php endif;?>
     <?php if ($table_header): $table_header = false; ?>
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
@@ -75,18 +65,10 @@ th {
           <td><?php echo tdStart() ?>
             <?php echo $numDossier; ?><br/>
             <small>
-            <?php $lotTypesNb = $degustation->getNbLotByTypeFilteredByNumDossier($etablissement->identifiant, $numDossier); ?>
-            <?php foreach ($lotTypesNb as $provenance => $nb) {
-                echo $nb." lot";
-                echo ($nb>1)?'s':'';
-                echo " provenant ";
-                switch ($provenance) {
-                    case 'DEGU': echo "d'une dégustation";break;
-                    case 'DREV': echo "d'une revendication";break;
-                    case 'COND': echo "d'un conditionnement";break;
-                    case 'TRAN': echo "d'une transaction";break;
-                }
-            }?>
+            <?php
+                echo count($lots)." lot";
+                echo (count($lots)>1)?'s':'';
+            ?>
           </small>
           </td>
           <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
@@ -96,4 +78,3 @@ th {
       <?php endforeach; ?>
    <?php endforeach; ?>
       </table>
-    </div>

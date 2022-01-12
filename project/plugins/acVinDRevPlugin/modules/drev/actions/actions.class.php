@@ -103,6 +103,10 @@ class drevActions extends sfActions {
             throw new Exception("Dévalidation impossible car des lots dans cette déclaration sont utilisés");
         }
 
+        if(!$drev->isMaster()) {
+            throw new Exception("Dévalidation impossible car cette déclaration n'est pas la dernière version");
+        }
+
         $drev->validation = null;
         $drev->validation_odg = null;
         foreach ($drev->getProduits() as $produit) {
@@ -128,7 +132,7 @@ class drevActions extends sfActions {
         } catch (Exception $e) {
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
-                $message .= " Pour les SV11 et les SV12 veuillez à bien utiliser le fichier organisé par apporteur (plutôt que celui organisé par produit).";
+                $message .= "<br/> Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non que celui organisé par produit).";
             }
             $this->getUser()->setFlash('error', $message);
 
@@ -195,13 +199,15 @@ class drevActions extends sfActions {
         $this->form->save();
 
         try {
-            $this->drev->importFromDocumentDouanier(true);
+            if (!$this->drev->importFromDocumentDouanier(true)) {
+                throw new sfException("Mauvais format");
+            }
         } catch(Exception $e) {
 
-            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendues.';
 
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
-                $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteur (plutôt que celui organisé par produit).";
+                $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non celui organisé par produit).";
             }
 
             $this->getUser()->setFlash('error', $message);
@@ -638,7 +644,7 @@ class drevActions extends sfActions {
 
         $this->validation = new DRevValidation($this->drev);
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+        $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -661,7 +667,7 @@ class drevActions extends sfActions {
         $this->drev->remove('documents');
         $documents = $this->drev->getOrAdd('documents');
 
-        foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
+        foreach ($this->validation->getEngagements() as $engagement) {
             if(!$this->form->getValue("engagement_".$engagement->getCode())) {
                 continue;
             }
@@ -699,7 +705,10 @@ class drevActions extends sfActions {
             $this->drev->validateOdg();
             $this->drev->cleanLots();
             $this->drev->save();
-            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée");
+
+            Email::getInstance()->sendDRevValidation($this->drev);
+
+            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
@@ -769,7 +778,11 @@ class drevActions extends sfActions {
             throw sfException("Une DREV validée par une région ne peut être mise en attente par celle-ci");
         }
 
-        $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        if ($this->drev->isMiseEnAttenteOdg()) {
+            $this->drev->remove('statut_odg');
+        }else{
+            $this->drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE, $this->regionParam);
+        }
         $this->drev->save();
 
         $service = $request->getParameter("service", null);
@@ -822,7 +835,7 @@ class drevActions extends sfActions {
         $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
-            $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+            $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);

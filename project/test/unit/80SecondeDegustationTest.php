@@ -22,12 +22,13 @@ function countMouvements($degustation) {
 
 $t = new lime_test(57);
 
-$campagne = (date('Y')-1)."";
-$degust1_date_fr = '09/09/'.$campagne;
-$degust2_date_fr = '11/11/'.$campagne;
+$annee = (date('Y')-1)."";
+$campagne = $annee.'-'.($annee + 1);
+$degust1_date_fr = '09/09/'.$annee;
+$degust2_date_fr = '11/11/'.$annee;
 $degust1_time_fr = '09:09';
 $degust2_time_fr = '11:11';
-$degust1_date = $campagne.'-09-01 '.$degust1_time_fr;
+$degust1_date = $annee.'-09-01 '.$degust1_time_fr;
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $degust =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
 
@@ -47,7 +48,7 @@ foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouch
     $conditionnement->delete(false);
 }
 
-foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation1 = DegustationClient::getInstance()->find($k);
     $degustation1->delete(false);
 }
@@ -73,7 +74,7 @@ $produitconfig_hash1 = $produitconfig1->getHash();
 $commissions = DegustationClient::getInstance()->getHistoryLieux();
 
 $t->comment("prépartion avec une DRev");
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $annee);
 $drev->save();
 $produit1 = $drev->addProduit($produitconfig_hash1);
 $produit1->superficie_revendique = 200;
@@ -204,7 +205,7 @@ $lot_degust1 = $degustation1->lots[1];
 $lot_degust2 = $degustation2->lots[0];
 $drev = DRevClient::getInstance()->find($drev->_id);
 
-$t->is(array_keys($lot_degust2->getMouvements()), array('2020-2021-00001-00002-02-ATTENTE-PRELEVEMENT', '2020-2021-00001-00002-01-AFFECTE-DEST'), "Le lot a deux mouvements (effecté et attente de prlvmt) vu qu'il n'a pas été encore prélevé");
+$t->is(array_keys($lot_degust2->getMouvements()), array($campagne.'-00001-00002-02-ATTENTE-PRELEVEMENT', $campagne.'-00001-00002-01-AFFECTE-DEST'), "Le lot a deux mouvements (effecté et attente de prlvmt) vu qu'il n'a pas été encore prélevé");
 $t->is($lot_degust2->numero_archive, $lot_degust1->numero_archive, "Le numero archive de la dégustation 2 n'a pas changé par rapport à la dégustation 1");
 $t->is($lot_degust2->numero_dossier, $lot_degust1->numero_dossier, "Le numero dossier de la dégustation 2 n'a pas changé à la dégustation 1");
 $t->is($lot_degust2->email_envoye, null, "La date d'envoi de mail a été réinitialisée");

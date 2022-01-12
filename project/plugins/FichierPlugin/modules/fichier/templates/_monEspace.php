@@ -14,6 +14,10 @@
                 <div class="actions">
                     <?php if(!$dr): ?>
                     <a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
+                    <?php elseif(DRConfiguration::getInstance()->hasValidationDR()): ?>
+                        <a class="btn btn-block btn-default" href="<?php echo url_for('dr_visualisation', $dr) ?>">
+                            <span class="glyphicon glyphicon-file"></span> Visualiser la synthèse de la DR
+                        </a>
                     <?php else: ?>
                         <a class="btn btn-success btn-block" href="<?php echo url_for('get_fichier', array('id' => $dr->_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Télécharger la DR</a>
                 	<?php endif; ?>

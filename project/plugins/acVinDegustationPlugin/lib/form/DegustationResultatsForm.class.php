@@ -69,5 +69,9 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
       return Lot::$libellesConformites;
     }
 
+    protected function doSave($con = NULL) {
+        $this->updateObject();
+        $this->object->getCouchdbDocument()->save(false);
+    }
 
 }

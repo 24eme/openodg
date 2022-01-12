@@ -5,9 +5,24 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
         bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
     done
-    rm -f web/exports_igp/*.csv
-    bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh;
-    bash $(echo $0 | sed 's/[^\/]*$//')export_distribueparproduits.sh;
+    PROJECTDIR=$(echo $0 | sed 's/[^\/]*$//')..;
+    METABASE_SQLITE=$PROJECTDIR/../../metabaseigp/db/igp.sqlite
+    EXPORTDIR=$PROJECTDIR/web/exports_igp
+    rm -f $EXPORTDIR/*.csv
+    bash $PROJECTDIR/bin/export_globalisefichiers.sh;
+    bash $PROJECTDIR/bin/export_distribueparproduits.sh;
+    mkdir $EXPORTDIR/stats
+    ls igp_*.py | while read script; do python3 $script igp;done
+    python3 bin/csv2sql.py $METABASE_SQLITE".tmp" $EXPORTDIR
+    mv $METABASE_SQLITE".tmp" $METABASE_SQLITE
+
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        . $(echo $0 | sed 's/[^\/]*$//')config_"$app".inc
+        if test -d $EXPORTDIR"/GLOBAL" ; then
+            python3 bin/csv2sql.py $METABASE_SQLITE".global.tmp" $EXPORTDIR"/GLOBAL"
+            mv $METABASE_SQLITE".global.tmp" $METABASE_SQLITE".global"
+        fi
+    done
     exit 0;
 fi
 
@@ -59,15 +74,19 @@ rm $EXPORTDIR/changement_denomination.csv.part
 
 sleep 60
 
-php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_lots.csv.part
+php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_cepages_lots.csv.part
+
+cat $EXPORTDIR/declarations_cepages_lots.csv.part | sed 's/\./ /g' | sed 's/ / /g' |  sed 's/CABERNET-SAUVIGNON N/CABERNET SAUVIGNON N/g' | sed 's/CAB-SAUV-N/CABERNET SAUVIGNON N/' | sed 's/CALADOC"/CALADOC N"/' | sed 's/CAMENèRE N/CAMENÈRE N/' | sed 's/CHARDONAY B/CHARDONNAY B/' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHASAN"/CHASAN B"/' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MERLOT"/MERLOT N"/' | sed 's/MOURVED N/MOURVEDRE N/' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT A B/MUSCAT A PETITS GRAINS B/' | sed 's/MUSCAT À PETITS GRAINS/MUSCAT A PETITS GRAINS/g' | sed 's/MUSCAT D.HAMBOURG N/MUSCAT DE HAMBOURG N/' | sed 's/MUSCAT H N/MUSCAT DE HAMBOURG N/' | sed 's/MUS HAMB N/MUSCAT DE HAMBOURG N/' | sed 's/MUS P G /MUSCAT A PETITS GRAINS /' | sed 's/MUS PT G /MUSCAT A PETITS GRAINS /' | sed 's/Syrah/SYRAH N/' | sed 's/SYRAH"/SYRAH N"/' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VIOGNIER"/VIOGNIER B"/'  sed 's/VIOGNIER"/VIOGNIER B"/g' > $EXPORTDIR/declarations_lots.csv.part
 
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv.part
 
-grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
-rm $EXPORTDIR/drev_lots.csv.part
+if [ -z $IS_NO_VINIF ]; then
+  grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
+  iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev_lots.csv.part > $EXPORTDIR/drev_lots.csv
+  rm $EXPORTDIR/drev_lots.csv.part
+fi
 
 grep "^Conditionnement" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/conditionnement_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/conditionnement_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv
@@ -91,17 +110,22 @@ rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_in
 
 sleep 60
 
-bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/dr.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/dr.csv.part > $EXPORTDIR/dr.csv
-rm $EXPORTDIR/dr.csv.part
+if [ -z $IS_NO_VINIF ]; then
+  bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/production.csv.part
+  bash bin/export_docs.sh SV11 30 $1 >> $EXPORTDIR/production.csv.part
+  bash bin/export_docs.sh SV12 30 $1 >> $EXPORTDIR/production.csv.part
+  head -n 1 $EXPORTDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/production.csv
+  cat $EXPORTDIR/production.csv.part | grep -E '^(DR|SV)' | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | iconv -f UTF8 -t ISO88591//TRANSLIT >> $EXPORTDIR/production.csv
 
-bash bin/export_docs.sh SV12 30 $1 > $EXPORTDIR/sv12.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv12.csv.part > $EXPORTDIR/sv12.csv
-rm $EXPORTDIR/sv12.csv.part
+  head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/dr.csv
+  cat $EXPORTDIR/production.csv | grep -a '^DR' >> $EXPORTDIR/dr.csv
+  head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/sv11.csv
+  cat $EXPORTDIR/production.csv | grep -a '^SV11' >> $EXPORTDIR/sv11.csv
+  head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/sv12.csv
+  cat $EXPORTDIR/production.csv | grep -a '^SV12' >> $EXPORTDIR/sv12.csv
 
-bash bin/export_docs.sh SV11 30 $1 > $EXPORTDIR/sv11.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/sv11.csv.part > $EXPORTDIR/sv11.csv
-rm $EXPORTDIR/sv11.csv.part
+  rm $EXPORTDIR/production.csv.part
+fi
 
 bash bin/export_docs.sh ParcellaireIrrigable 30 $1 > $EXPORTDIR/parcellaireirrigable.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigable.csv.part > $EXPORTDIR/parcellaireirrigable.csv
@@ -142,18 +166,22 @@ php symfony export:facture $SYMFONYTASKOPTIONS >  $EXPORTDIR/factures.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/factures.csv.part > $EXPORTDIR/factures.csv
 rm $EXPORTDIR/factures.csv.part
 
+php symfony export:facture-paiements $SYMFONYTASKOPTIONS >  $EXPORTDIR/paiements.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/paiements.csv.part > $EXPORTDIR/paiements.csv
+rm $EXPORTDIR/paiements.csv.part
+
 php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
 
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
 
 # Ajouter la hash produit à la fin du fichier lots-historique
-cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,35 | sort -t ";" -k 1,1 > $EXPORTDIR/lots_hash.csv
-tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 15,15 > $EXPORTDIR/lots-historique.csv.sorted
-head -n 1 $EXPORTDIR/lots-historique.csv.part | sed 's/$/;Hash produit/' > $EXPORTDIR/lots-historique.csv.sorted.join
-join -t ";" -a 1 -1 15 -2 1 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$16; $16=unique_id; $17=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
+tail -n +2 $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,35,36 | sort -t ";" -k 2,2 > $EXPORTDIR/lots_hash.csv
+tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 16,16 > $EXPORTDIR/lots-historique.csv.sorted
+echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Last doc id;Lot unique Id;Hash produit" > $EXPORTDIR/lots-historique.csv.sorted.join
+join -t ";" -a 1 -1 16 -2 2 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$18; $18=unique_id; $19=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
 
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.part > $EXPORTDIR/lots-historique.csv
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
 
 rm $EXPORTDIR/lots-historique.csv.part
 rm $EXPORTDIR/lots-historique.csv.sorted

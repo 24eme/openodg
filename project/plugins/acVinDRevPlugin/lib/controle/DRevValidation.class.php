@@ -41,8 +41,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'vci_substitue_rafraichi', 'Vous ne pouvez ni subsituer ni rafraichir un volume de VCI supérieur à celui qui figure sur votre déclaration douanière en L15');
 
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre déclaration douanière sont manquantes');
-        $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
-        $this->addControle(self::TYPE_WARNING, 'revendication_superficie_warn', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre déclaration douanière en L4');
+        $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieure à celle qui figure sur votre déclaration douanière en L4');
+        $this->addControle(self::TYPE_WARNING, 'revendication_superficie_warn', 'Vous revendiquez une superficie supérieure à celle qui figure sur votre déclaration douanière en L4');
 
         $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L5)");
         $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
@@ -63,8 +63,10 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV12));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VCI));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_MUTAGE_DECLARATION));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
 
@@ -158,15 +160,17 @@ class DRevValidation extends DeclarationLotsValidation
             if(!$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')) {
                 continue;
             }
-            $produits_manquants[$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
+            @$produits_manquants[$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
         }
 
         if(!count($produits_manquants)) {
             return;
         }
 
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_INF, implode(", ", $produits_manquants));
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_OUEX_SUP, implode(", ", $produits_manquants));
+        foreach($produits_manquants as $pourcentage => $produits) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF"), implode(", ", $produits));
+            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP"), implode(", ", $produits));
+        }
     }
     protected function controleEngagementSv()
     {
@@ -249,7 +253,7 @@ class DRevValidation extends DeclarationLotsValidation
 	        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
 	        }
         }
-        if ( (!$produit->recolte->superficie_total && $produit->superficie_revendique > 0) || ($produit->superficie_revendique > $produit->recolte->superficie_total) ) {
+        if ( (!$produit->recolte->superficie_total && $produit->superficie_revendique > 0) || ($produit->superficie_revendique > round($produit->recolte->superficie_total, 4)) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, $produit->getLibelleComplet());
@@ -344,7 +348,7 @@ class DRevValidation extends DeclarationLotsValidation
             if (! isset($synthese[$couleur])) {
                 continue;
             }
-            if (isset($synthese[$couleur]['volume_restant_max']) && round($synthese[$couleur]['volume_restant_max'], 4) < -0.0001) {
+            if ($this->document->hasDR() && isset($synthese[$couleur]['volume_restant_max']) && round($synthese[$couleur]['volume_restant_max'], 4) < -0.0001) {
                 if ($this->document->exist('achat_tolerance') && $this->document->get('achat_tolerance')) {
                     $this->addPoint(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', $couleur, $this->generateUrl('drev_lots', array('id' => $this->document->_id)));
                 }else{

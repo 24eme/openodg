@@ -1,0 +1,4 @@
+all:
+  configuration:
+    dr:
+      validation: false

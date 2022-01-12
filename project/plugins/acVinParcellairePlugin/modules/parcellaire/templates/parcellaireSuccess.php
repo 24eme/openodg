@@ -5,6 +5,7 @@ $parcellaire_client = ParcellaireClient::getInstance();
 $last = null;
 $list_communes = [];
 $list_idu = [];
+$superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres()) ? 100 : 1;
 ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
@@ -72,21 +73,33 @@ $list_idu = [];
         </div>
     <?php endif; ?>
 
+    <div class="row">
+      <div class="col-xs-5">
+          <h3>Accès rapide</h3>
+          <ul>
+            <?php foreach (array_keys($parcellesByCommune->getRawValue()) as $commune): ?>
+              <li style="list-style-type: disclosure-closed"><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
+            <?php endforeach ?>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_cepage">Synthèse par cépages</a></li>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_produit">Synthèse par produits</a></li>
+          </ul>
+      </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-12">
             <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
-            	<h3><?php echo $commune ?></h3>
+                <h3 id="parcelles_<?php echo $commune ?>"><?php echo $commune ?></h3>
 
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
-		                <th class="col-xs-2">Lieu-dit</th>
+		                <th class="col-xs-1">Lieu-dit</th>
                     <th class="col-xs-1" style="text-align: right;">Section</th>
                     <th class="col-xs-1">N° parcelle</th>
-                    <th class="col-xs-3">Cépage</th>
+                    <th class="col-xs-4">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
-                    <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small">(ha)</span></th>
+                    <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
                     <th class="col-xs-1">Écart Pieds</th>
                     <th class="col-xs-1">Écart Rang</th>
                     <?php if(!empty($import)): ?>
@@ -153,6 +166,9 @@ $list_idu = [];
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
+                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) {
+                                    $cepage .= ' - jeunes vignes';
+                                }
                             ?>
                             <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
 
@@ -161,7 +177,8 @@ $list_idu = [];
                                 <td class=""><?php echo $num_parcelle; ?></td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
-                                <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie); ?></td>
+                                <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie * $superficie_multiplicateur); ?>
+                                </td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
 
@@ -190,7 +207,7 @@ $list_idu = [];
 
     if (count($synthese)):
 ?>
-<h3>Synthèse par cépages</h3>
+<h3 id="synthese_cepage">Synthèse par cépages</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -209,6 +226,10 @@ $list_idu = [];
 <?php
     endforeach;
 ?>
+    <tr>
+        <td><strong>Total</strong></td>
+        <td class="text-right"><strong><?php echo array_sum(array_column($synthese->getRawValue(), 'superficie')) ?></strong></td>
+    </tr>
   </tbody>
 </table>
 <?php endif; ?>
@@ -221,14 +242,14 @@ $list_idu = [];
     }
     if (count($synthese)):
 ?>
-<h3>Synthèse par produits habilités</h3>
+<h3 id="synthese_produit">Synthèse par produits habilités</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
     <tr>
         <th class="col-xs-4">Produit</th>
         <th class="col-xs-4">Cépage</th>
-        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
   </thead>
   <tbody>
@@ -241,17 +262,17 @@ $list_idu = [];
                 <th><?php echo $produit_libelle ; ?></th>
                 <th><?php echo $cepage_libelle ; ?></th>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <th class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></th>
+                <th class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></th>
                 <?php else: ?>
-                <th class="text-right"><?php echoLongFloat($s['superficie_min']); ?></th><th class="text-right"><?php echoLongFloat($s['superficie_max']); ?></th>
+                <th class="text-right"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></th><th class="text-right"><?php echoLongFloat($s['superficie_max'] * $superficie_multiplicateur); ?></th>
                 <?php endif; ?>
             <?php else: ?>
                 <td><?php echo $produit_libelle ; ?></td>
                 <td><?php echo $cepage_libelle ; ?></td>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <td class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min']); ?></td>
+                <td class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></td>
                 <?php else: ?>
-                <td class="text-right"><?php echoLongFloat($s['superficie_min']); ?></td><td class="text-right"><?php echoLongFloat($s['superficie_max']); ?></td>
+                <td class="text-right"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></td><td class="text-right"><?php echoLongFloat($s['superficie_max'] * $superficie_multiplicateur); ?></td>
                 <?php endif; ?>
             <?php endif; ?>
         </tr>
@@ -265,7 +286,7 @@ $list_idu = [];
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
-<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
+<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
 </div>
 <?php endif; ?>
 

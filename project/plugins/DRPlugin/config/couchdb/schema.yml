@@ -18,9 +18,34 @@ DR:
                   produit_libelle: { }
                   complement: { }
                   categorie: { }
+                  categorie_libelle: { }
                   valeur: { }
                   tiers: { }
+                  tiers_raison_sociale: { }
+                  tiers_cvi: { }
                   bailleur: { }
+                  bailleur_ppm: { }
+                  bailleur_raison_sociale: { }
+                  colonneid: { }
+      declarant:
+        type: collection
+        class: DRDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+            famille: { }
       mouvements:
         type: collection
         definition:

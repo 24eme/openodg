@@ -125,8 +125,28 @@ class declarationActions extends sfActions {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
         }
 
-        if ($doc_type == "SV12" || $doc_type == "DR") {
+        if ($doc_type == "SV12") {
             return $this->redirect('get_fichier', ['id' => $doc_id]);
+        }
+
+        if ($doc_type == "DR") {
+            if (DRConfiguration::getInstance()->hasValidationDR()) {
+                return $this->redirect('dr_visualisation', ['id' => $doc_id]);
+            }
+
+            return $this->redirect('get_fichier', ['id' => $doc_id]);
+        }
+
+        // Doc sans page de visu
+        if($doc_type == "PARCELLAIREIRRIGUE") {
+
+            return $this->redirect('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigue'));
+        }
+
+        // Doc sans page de visu et ne remontant pas dans les documents
+        if(in_array($doc_type, array("PARCELLAIREINTENTIONAFFECTATION"))) {
+
+            return $this->redirect('declaration_etablissement', $etablissement);
         }
 
         return $this->forward404();
@@ -181,9 +201,9 @@ class declarationActions extends sfActions {
             $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
         }
 
-        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
         $this->periode = preg_replace('/-.*/', '', $this->campagne);
-        if(!$this->getUser()->hasDrevAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
+        if(!$this->getUser()->hasDrevAdmin() && intval($this->campagne) < intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent()) - 1 ) {
 
             return $this->forwardSecure();
         }

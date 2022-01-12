@@ -29,7 +29,7 @@ unlink($csvTmpFile);
 
 $lines = explode("\n", $csvConvert);
 
-$t = new lime_test(74);
+$t = new lime_test(78);
 $nb = 0;
 foreach($lines as $line) {
     if(!preg_match('/[0-9]/', $line)) {
@@ -60,6 +60,11 @@ $t->is($line[DRCsvFile::CSV_PRODUIT_COULEUR], $produit1->getCouleur()->getKey(),
 $t->is($line[DRCsvFile::CSV_PRODUIT_CEPAGE], $produit1->getCepage()->getKey(), "Cepage OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_INAO], $produit1->getCodeDouane(), "Le code inao est OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_LIBELLE], $produit1->getLibelleComplet(), "Libelle complet OK");
+
+$t->is($line[SV12CsvFile::CSV_COLONNE_ID], '1', "Colonne colonne id OK");
+$t->is($line[SV12CsvFile::CSV_ORGANISME], $application, "Colonne organisme id OK");
+$t->is($line[SV12CsvFile::CSV_MILLESIME], $year, "Colonne Millesime $year OK");
+$t->is($line[SV12CsvFile::CSV_FAMILLE_LIGNE_CALCULEE], "CAVE_PARTICULIERE_TOTAL", "Colonne famille calculée OK");
 
 $line = explode(";", $lines[63]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '7', "le numéro de colonne est ok pour la ligne superficie producteur (colonne 7)");

@@ -28,10 +28,12 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
+        $contextInstance = sfContext::createInstance($this->configuration);
+
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $context = sfContext::createInstance($this->configuration);
-        
+
         $annee = $arguments['annee'];
         $type = ($options['type'])? strtoupper($options['type']) : null;
 
@@ -61,6 +63,10 @@ EOF;
         			continue;
         		}
 
+                if ($etablissement->statut != CompteClient::STATUT_ACTIF) {
+                    continue;
+                }
+
         		if (!$etablissement->cvi || !preg_match('/^[0-9]{10}$/', $etablissement->cvi)) {
         			echo sprintf("ERROR;CVI non valide %s pour %s\n", $etablissement->cvi, $etablissement->_id);
         			continue;
@@ -83,7 +89,7 @@ EOF;
         		}
 
         		try {
-        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, $options['scrapefiles']);
+        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
         		} catch (Exception $e) {
         			echo sprintf("ERROR;%s\n", $e->getMessage());
         			continue;
@@ -92,7 +98,7 @@ EOF;
         		if (!$result) {
         			echo sprintf("WARNING;Aucun document douanier pour %s (%s)\n", $etablissement->_id, $etablissement->cvi);
         		} else {
-        			echo sprintf("SUCCESS;Document douanier importé;%s\n", $result->_id);
+        			echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $result->type, $etablissement->_id, $etablissement->cvi);
         		}
 
         	} else {

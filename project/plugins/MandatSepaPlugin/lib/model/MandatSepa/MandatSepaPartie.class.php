@@ -21,4 +21,13 @@ class MandatSepaPartie extends acCouchdbDocumentTree {
     $this->setCodePostal($partie->getMandatSepaCodePostal());
     $this->setCommune($partie->getMandatSepaCommune());
   }
+
+  public function setIban($i) {
+      return $this->_set('iban', str_replace(' ', '', strtoupper($i)));
+  }
+
+  public function setBic($i) {
+      return $this->_set('bic', str_replace(' ', '', strtoupper($i)));
+  }
+
 }

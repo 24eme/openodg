@@ -88,7 +88,6 @@ EOF;
                 $facture->montant_paiement += $data[self::CSV_FACTURE_TOTAL_REGLE] * 1;
             }
             $facture->versement_comptable = 1;
-            $facture->campagne = $data[self::CSV_FACTURE_CAMPAGNE];
             $facture->numero_archive = $data[self::CSV_FACTURE_NUM_FACTURE];
             $facture->numero_odg = str_replace('_', '', $data[self::CSV_FACTURE_NUM_FACTURE]);
             $facture->date_emission = $date;

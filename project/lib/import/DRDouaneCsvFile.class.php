@@ -2,7 +2,7 @@
 
 class DRDouaneCsvFile extends DouaneImportCsvFile {
 
-    public function convert($type = null) {
+    public function convert() {
     	if (!$this->filePath) {
     		throw new sfException("La cible du fichier n'est pas spécifiée.");
     	}
@@ -10,12 +10,49 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $csvFile = new CsvFile($this->filePath);
         $csv = $csvFile->getCsv();
 
+        $has_volume_nego = 0;
+        $has_volume_nego_lignes = array();
+        $has_volume_coop = 0;
+        $has_volume_coop_lignes = array();
+        $has_volume_cave = 0;
+        $has_volume_cave_lignes = array();
+        $familles_lignes = array();
+        $max_ligne = 0;
+        foreach ($csv as $key => $values) {
+            if (substr(trim($values[0]), 0, 1) == "6" || substr(trim($values[0]), 0, 1) == '7') {
+                for($i = 2 ; $i < count($values); $i++) {
+                    $has_volume_nego_lignes[$i] = boolval($values[$i]);
+                    $has_volume_nego += boolval($values[$i]);
+                }
+            }
+            if (substr(trim($values[0]), 0, 1) == '8') {
+                for($i = 2 ; $i < count($values); $i++) {
+                    $has_volume_coop_lignes[$i] = boolval($values[$i]);
+                    $has_volume_coop += boolval($values[$i]);
+                }
+            }
+            if (substr(trim($values[0]), 0, 1) == '9') {
+                for($i = 2 ; $i < count($values); $i++) {
+                    $has_volume_cave_lignes[$i] = boolval($values[$i]);
+                    $has_volume_cave += boolval($values[$i]);
+                }
+            }
+            if ($max_ligne < count($values)) {
+                $max_ligne = count($values);
+            }
+        }
+        for ($i = 0 ; $i < $max_ligne ; $i++) {
+            $familles_lignes[$i] = $this->getFamilleCalculeeFromLigneDouane(@$has_volume_cave_lignes[$i], @$has_volume_coop_lignes[$i], @$has_volume_nego_lignes[$i]);
+        }
+        $famille = $this->getFamilleCalculeeFromLigneDouane($has_volume_cave, $has_volume_coop, $has_volume_nego);
+
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
 	      if ($this->etablissement && !$this->etablissement->isActif()) {
 		        return;
         }
         $doc = array();
         $produits = array();
+        $hashes = array();
         $ppm = ($this->etablissement)? $this->etablissement->ppm : null;
         $baillage = array();
         $exploitant = array();
@@ -24,6 +61,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $achat_fin = 0;
         $achats = array();
         $ratios_bailleur = array();
+        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+        $drev = $this->getRelatedDrev();;
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
                 //Cas de fin de tableur avec les achats tolérés
@@ -32,10 +71,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     continue;
                 }
                 if ($achat_fin) {
-                    $commentaire = $values[0];
-                    $vendeur = $values[1];
-                    $volume = str_replace('.', ',', $values[3]);
-                    $achats[] = array(preg_replace('/ - .*/', '', $vendeur), preg_replace('/ *$/', '', preg_replace('/^[0-9]* - */', '', $vendeur)), $volume, $commentaire);
+                    if (isset($values[1]) && isset($values[3])) {
+                        $commentaire = $values[0];
+                        $vendeur = $values[1];
+                        $volume = str_replace('.', ',', $values[3]);
+                        $achats[] = array(preg_replace('/ - .*/', '', $vendeur), preg_replace('/ *$/', '', preg_replace('/^[0-9]* - */', '', $vendeur)), $volume, $commentaire);
+                    }
                     continue;
                 }
 
@@ -53,8 +94,10 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         					$produit = $this->configuration->findProductByCodeDouane($values[$i]);
         					if (!$produit) {
         						$produits[$i] = array(null, null, null, null, null, null, null);
+                    $hashes[$i] = '';
         					} else {
         						$produits[$i] = array($produit->getCertification()->getKey(), $produit->getGenre()->getKey(), $produit->getAppellation()->getKey(), $produit->getMention()->getKey(), $produit->getLieu()->getKey(), $produit->getCouleur()->getKey(), $produit->getCepage()->getKey());
+                    $hashes[$i] = $produit->getHash();
         					}
         					$produits[$i][] = $values[$i];
         				}
@@ -122,8 +165,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			}
                     for ($i = 2; $i < count($csv[$key+1]); $i++) {
                         if ($i%2) {
-                            $coloneid[$i]   = intval($i / 2);
-                            $coloneid[$i+1] = intval($i / 2);
+                            $colonneid[$i]   = intval($i / 2);
+                            $colonneid[$i+1] = intval($i / 2);
                         }
                     }
         			continue;
@@ -203,6 +246,14 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $csv = '';
         $doc = $this->getEtablissementRows();
         foreach ($produits as $k => $p) {
+          $colExtraIds = ';'.Organisme::getCurrentOrganisme();
+          $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
+          $colExtraIds .= ($drev) ? ';'.$drev->_id : ';';
+          $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
+          $colExtraIds .= ';'.$famille;
+          $colExtraIds .= ';'.substr($this->campagne, 0, 4);
+          $colExtraIds .= ';'.$familles_lignes[$k];
+
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;
                 if($e[0] == 4) {
@@ -227,23 +278,23 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     array_unshift($bailleur[$k], $e);
                     $bailleur[$k][$sk][2] = self::numerizeVal($superficieInitiale - $superficiemetayer, 4);
                 }
-	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$coloneid[$k]."\n";
+	        	$csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $e).';'.$colonneid[$k].$colExtraIds."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
-	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$coloneid[$k]."\n";
+	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk]).';'.$colonneid[$k].$colExtraIds."\n";
 	        		unset($bailleur[$k][$sk]);
 	        	}
                 if(isset($eOrigin)) {
-                    $csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $eOrigin).';'.$coloneid[$k]."\n";
+                    $csv .= implode(';', $doc).';;;'.implode(';', $p).';'.implode(';', $eOrigin).';'.$colonneid[$k].$colExtraIds."\n";
                 }
 	        }
 	        if (isset($baillage[$k]) && isset($bailleur[$k])) {
 	        	foreach ($bailleur[$k] as $b) {
-	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b).';'.$coloneid[$k]."\n";
+	        		$csv .= implode(';', $doc).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b).';'.$colonneid[$k].$colExtraIds."\n";
 	        	}
 	        }
         }
         foreach ($achats as $a) {
-            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999\n";
+            $csv .= implode(';', $doc).';;;;;;;;;;;;;99;Achats realises dans le cadre de la tolerance administrative ou de sinistre climatique;'.$a[2].';'.$a[0].';'.$a[1].';'.$a[3].";;9999".$colExtraIds."\n";
         }
         return $csv;
     }

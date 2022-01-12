@@ -38,7 +38,7 @@ column = drev.pop("Appellation")
 column_P = drev.pop("Produit")
 drev.insert(0,'Appellation',column)
 drev.insert(1,'Produit',column_P)  
-drev.reset_index(drop=True).to_csv("../../web/exports/rhone_stats_drev_VCI_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+drev.reset_index(drop=True).to_csv("../../web/exports/stats/rhone_stats_drev_VCI_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 
 
 # In[ ]:
@@ -55,5 +55,5 @@ drev_cdr = drev_cdr.reset_index()
 drev = drev.append(drev_cdr, sort=True) 
 drev.loc['Total'] = total 
 
-drev.reset_index(drop=True).to_csv("../../web/exports/stats_drev_vci_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+drev.reset_index(drop=True).to_csv("../../web/exports/stats/stats_drev_vci_"+campagne+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 

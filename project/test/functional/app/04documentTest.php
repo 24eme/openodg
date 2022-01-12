@@ -97,10 +97,10 @@ $t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), nu
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=fichier");
 $c = new sfDomCssSelector($b->getResponseDom());
-$t->is($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), null, "Aucun fichier");
+$t->ok($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), "Fichier présent");
 
 $b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
-$t->is($b->getResponse()->getStatusCode(), 403, "Téléchargement du fichier protégé");
+$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier");
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
 $c = new sfDomCssSelector($b->getResponseDom());

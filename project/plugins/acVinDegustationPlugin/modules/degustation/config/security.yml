@@ -1,6 +1,14 @@
 all:
   credentials: [ADMIN]
 
+lotsListe:
+  is_secure: true
+  credentials: [habilitation]
+
+lotHistorique:
+  is_secure: true
+  credentials: [habilitation]
+
 getCourrierWithAuth:
   is_secure: false
   credentials: []

@@ -1,0 +1,8 @@
+.list-group-item.active-bordered {
+    border-left: 6px solid #337ab7 !important;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #337ab7;
+}
+

@@ -5,8 +5,7 @@
   "template": "IGP",
   "libelle": "2020 - IGP Drôme",
   "docs": [
-    "DRev",
-    "Degustation"
+    "DRev"
   ],
   "cotisations": {
     "forfaitBas": {
@@ -17,7 +16,7 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "prix": 50,
+          "prix": 100,
           "tva": 0.2,
           "libelle": "Cotisation sur volume DRev",
           "callback": "isVolumeLotsFacturablesInRange",
@@ -40,7 +39,7 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "prix": 100,
+          "prix": 150,
           "tva": 0.2,
           "libelle": "Cotisation sur volume DRev",
           "callback": "isVolumeLotsFacturablesInRange",
@@ -63,7 +62,7 @@
       "details": {
         "forfait": {
           "modele": "CotisationFixe",
-          "prix": 150,
+          "prix": 200,
           "tva": 0.2,
           "libelle": "Cotisation sur volume DRev",
           "callback": "isVolumeLotsFacturablesInRange",
@@ -89,17 +88,17 @@
           "prix": 0.05,
           "tva": 0.2,
           "unite": "hl",
-          "libelle": "Cotisation syndicale sur les volumes lots DRev",
+          "libelle": "Volume lots DRev",
           "complement_libelle": "",
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": []
         },
         "controleinterne": {
           "modele": "CotisationVariable",
-          "prix": 0.16,
+          "prix": 0.21,
           "tva": 0.2,
           "unite": "hl",
           "libelle": "Contrôle interne",
@@ -107,7 +106,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": []
         },
         "controleexterne": {
@@ -120,22 +119,10 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": []
         },
-        "lots": {
-          "modele": "Cotisation",
-          "prix": 10,
-          "tva": 0.2,
-          "libelle": "Nombre lots prelevés",
-          "complement_libelle": "",
-          "docs": [
-            "Degustation"
-          ],
-          "callback": "buildMouvementsNbLotsDegustes",
-          "callback_parameters": []
-        },
-        "cotisationInao": {
+        "cotisation": {
           "modele": "CotisationVariable",
           "prix": 0.03,
           "tva": 0,
@@ -144,7 +131,7 @@
           "docs": [
             "DRev"
           ],
-          "callback": "getVolumeRevendiqueLots"
+          "callback": "getVolumeLotsFacturables"
         }
       }
     },
@@ -158,9 +145,8 @@
           "modele": "CotisationVariable",
           "prix": 0.15,
           "tva": 0.2,
-          "unite": "hl",
           "libelle": "Cotisation Igp méditerrannée",
-          "callback": "getVolumeRevendiqueLots",
+          "callback": "getVolumeLotsFacturables",
           "callback_parameters": [
             "/appellations/MED"
           ],
@@ -171,26 +157,7 @@
         }
       }
     },
-    "cotisationRevendication": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "",
-      "code_comptable": "",
-      "details": {
-        "forfait": {
-          "modele": "CotisationFixe",
-          "prix": 25,
-          "tva": 0.2,
-          "libelle": "Cotisation sur revendication DRev",
-          "callback": "isMaster",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ]
-        }
-      }
-    },
-    "cotisationRevendicationModificatrice": {
+    "cotisationModificatrice": {
       "modele": "CotisationsCollection",
       "callback": "",
       "libelle": "Modification",
@@ -200,7 +167,7 @@
           "modele": "CotisationFixe",
           "prix": 25,
           "tva": 0.2,
-          "libelle": "Cotisation sur revendication DRev",
+          "libelle": "Cotisation sur modification DRev",
           "callback": "isModificative",
           "complement_libelle": "",
           "docs": [

@@ -4,9 +4,13 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "DRev";
     const TYPE_COUCHDB = "DREV";
-    const DENOMINATION_BIO_TOTAL = "BIO_TOTAL";
-    const DENOMINATION_BIO_PARTIEL = "BIO_PARTIEL";
+    const DENOMINATION_BIO_TOTAL_DEPRECATED = "BIO_TOTAL";
+    const DENOMINATION_BIO_PARTIEL_DEPRECATED = "BIO_PARTIEL";
+    const DENOMINATION_BIO = "BIO";
+    const DENOMINATION_HVE = "HVE";
+    const DENOMINATION_CONVENTIONNEL = "CONVENTIONNEL";
     const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
+    const DENOMINATION_HVE_LIBELLE_AUTO = "HVE";
     const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_CONDITIONNEMENT';
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
     const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
@@ -22,8 +26,9 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const STATUT_BROUILLON = null;
 
     public static $denominationsAuto = array(
-        self::DENOMINATION_BIO_PARTIEL => "Une partie de mes volumes sont certifiés en Bio",
-        self::DENOMINATION_BIO_TOTAL => 'Tous mes volumes sont certifiés en Bio'
+        self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
+        self::DENOMINATION_HVE => "HVE",
+        self::DENOMINATION_BIO => "Bio",
     );
 
     public static $lotDestinationsType = array(
@@ -220,7 +225,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
                 $match = $match && $this->matchFilterConformite($lot, $filter);
-            } else {
+            } elseif($filter) {
                 if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
                     $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
                 }
@@ -240,7 +245,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
         $exclude = (bool) $exclude;
-        $regexpFilter = "#(".implode("|", explode(",", $familleFilterMatch)).")#";
+        $regexpFilter = "#^(".implode("|", explode(",", $familleFilterMatch)).")$#";
 
         if(!$exclude && preg_match($regexpFilter, $famille)) {
             return true;
@@ -276,4 +281,18 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         $conformite = str_replace(['NOT', ' ', '/deja/'], '', $filter);
         return ($not) ? $lot->isRedegustationDejaConforme() === false : $lot->isRedegustationDejaConforme() === true;
     }
+
+    public function retrieveRelatedDrev($identifiant, $periode, $drev_produit_filter = null) {
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, $periode * 1);
+        if ($drev && $drev_produit_filter) {
+            foreach ($drev->lots as $lot) {
+                if(strpos($lot->produit_hash, $drev_produit_filter) !== false) {
+                    return $drev;
+                }
+            }
+            return null;
+        }
+        return $drev;
+    }
+
 }

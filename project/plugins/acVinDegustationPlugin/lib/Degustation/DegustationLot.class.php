@@ -56,7 +56,12 @@ class DegustationLot extends BaseDegustationLot {
   }
 
     public function isAnonymisable(){
-        return !is_null($this->numero_table) && !$this->isIgnored();
+        if($this->numero_table === null) {
+
+            return false;
+        }
+
+        return true;
     }
 
     public function anonymize($index)
@@ -112,9 +117,7 @@ class DegustationLot extends BaseDegustationLot {
     public function setConformite($conformite){
         if(!$this->_get("conformite")){
 
-            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
-            $this->getDocument()->clearMouvementsFactures();
-            $this->getDocument()->generateMouvementsFactures();
+            $this->getDocument()->generateMouvementsFacturesOnNextSave = true;
 
             return $this->_set("conformite",$conformite);
         }
@@ -124,15 +127,19 @@ class DegustationLot extends BaseDegustationLot {
 
         if($this->_get("conformite") != $conformite){
 
-            // MouvementsFacture => On ne génére les mouvements de facture qu'a l'anonymat et la mise en non conformité
-            $this->getDocument()->clearMouvementsFactures();
-            $this->getDocument()->generateMouvementsFactures();
+            $this->getDocument()->generateMouvementsFacturesOnNextSave = true;
         }
         return $this->_set("conformite",$conformite);
 
     }
 
     public function setIsPreleve($date = null) {
+        if($this->isAnnule()) {
+            $this->preleve = null;
+            $this->statut = Lot::STATUT_ANNULE;
+            return;
+        }
+
         if (!$date) {
             $date = date('Y-m-d');
         }
@@ -140,8 +147,44 @@ class DegustationLot extends BaseDegustationLot {
         $this->statut = Lot::STATUT_PRELEVE;
     }
 
+    public function setVolume($volume) {
+        $this->_set('volume', $volume);
+        if($this->isAnnule()) {
+            $this->preleve = null;
+            $this->statut = Lot::STATUT_ANNULE;
+        }
+    }
+
+    public function isPrelevable() {
+        if($this->isLeurre()) {
+            return false;
+        }
+
+        if($this->isAnnule()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isDegustable() {
+        if(! $this->isPreleve() && ! $this->isLeurre()) {
+            return false;
+        }
+        if($this->isAnnule()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function isPreleve() {
         return $this->preleve !== null;
+    }
+
+    public function isAnnule() {
+
+        return $this->volume === 0;
     }
 
     public function getDocumentType() {
@@ -168,10 +211,6 @@ class DegustationLot extends BaseDegustationLot {
             $this->statut = Lot::STATUT_ATTABLE;
         }
         return parent::setNumeroTable($n);
-    }
-
-    public function isIgnored(){
-      return $this->numero_table === Lot::TABLE_IGNORE;
     }
 
 }

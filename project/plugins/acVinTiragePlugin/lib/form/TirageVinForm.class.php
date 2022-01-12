@@ -18,7 +18,7 @@ class TirageVinForm extends acCouchdbObjectForm {
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         $this->tirage = $object;
-        $this->annee = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $this->annee = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
         parent::__construct($object, $options, $CSRFSecret);
     }
 

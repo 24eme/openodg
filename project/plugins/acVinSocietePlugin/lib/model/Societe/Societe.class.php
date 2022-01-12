@@ -143,7 +143,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
     }
 
     public function getEtablissementPrincipal() {
-        $etablissements = $this->getEtablissementsObj();
+        $etablissements = $this->getEtablissementsObj(false);
         if (!count($etablissements)) {
             return null;
         }
@@ -622,6 +622,13 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
       return (MandatSepaClient::getInstance()->findLastBySociete($this->getIdentifiant()) != null);
     }
 
+    public function hasMandatSepaActif() {
+      $mandat = MandatSepaClient::getInstance()->findLastBySociete($this->getIdentifiant());
+      if (!$mandat) {
+          return false;
+      }
+      return $mandat->is_signe;
+    }
 
     /*** TODO : Fonctions à retirer après le merge ****/
 

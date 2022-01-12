@@ -25,15 +25,12 @@ class FactureConfiguration {
         return in_array('facturation', sfConfig::get('sf_enabled_modules'));
     }
 
-    public function isAggregateLignes() {
-      return isset($this->configuration['aggregateLignes']) && boolval($this->configuration['aggregateLignes']);
+    public function isLigneUnique() {
+      return isset($this->configuration['ligneUnique']) && boolval($this->configuration['ligneUnique']);
     }
 
-    public function getAggregateLignesMsg() {
-      if(!isset($this->configuration['ligneMsg'])){
-        return "";
-      }
-      return $this->configuration['ligneMsg'];
+    public function isLigneDetailWithTitle() {
+      return isset($this->configuration['ligneDetailWithTitle']) && boolval($this->configuration['ligneDetailWithTitle']);
     }
 
     public function hasEcheances() {

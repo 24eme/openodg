@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test();
+$t = new lime_test(18);
 
 $t->is(Organisme::getCurrentRegion(), strtoupper(sfConfig::get('sf_app')), "La région par défaut est l'application");
 

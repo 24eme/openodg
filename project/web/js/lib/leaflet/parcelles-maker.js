@@ -36,7 +36,7 @@ L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
     attribution: 'Map data &copy;' +
         '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
         '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
-        'Imagery © <a href="https://www.igp.fr/">IGN</a>',
+        'Imagery © <a href="https://www.ign.fr/">IGN</a>',
     id: 'mapbox.light'
 }).addTo(map);
 

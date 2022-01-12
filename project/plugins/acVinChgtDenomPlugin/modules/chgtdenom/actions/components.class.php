@@ -3,7 +3,7 @@
 class chgtdenomComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $defaultCampagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent().'-'.(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()+1);
+        $defaultCampagne = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent();
         $this->campagne = $request->getParameter('campagne',$defaultCampagne);
 
         $this->enCours = null;

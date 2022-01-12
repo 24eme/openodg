@@ -1,179 +1,145 @@
 {
-  "_id": "TEMPLATE-FACTURE-2021",
-  "type": "TemplateFacture",
-  "campagne": 2021,
-  "template": "IGP",
-  "libelle": "2021 - IGPArdeche",
-  "docs": [
-    "DRev",
-    "DR",
-    "SV11",
-    "SV12",
-    "ChgtDenom",
-    "Degustation",
-    "Conditionnement"
-  ],
-  "cotisations": {
-    "cotisationSyndicale": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Cotisation Syndicale",
-      "code_comptable": "706200",
-      "details": {
-        "cotisationSyndicaleDR": {
-          "modele": "CotisationVariable",
-          "prix": 0.02,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Déclaration de récolte (L15)",
-          "complement_libelle": "",
-          "docs": [
-            "DR"
-          ],
-          "callback": "calcul",
-          "callback_parameters": [
-            "L15"
-          ]
-        },
-        "cotisationSyndicaleSV11": {
-          "modele": "CotisationVariable",
-          "prix": 0.02,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Déclaration de production (SV11)",
-          "complement_libelle": "",
-          "docs": [
-            "SV11"
-          ],
-          "callback": "calcul",
-          "callback_parameters": [
-            "L10"
-          ]
-        },
-        "cotisationSyndicaleSV12": {
-          "modele": "CotisationVariable",
-          "prix": 0.02,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Déclaration de production (SV12)",
-          "complement_libelle": "",
-          "docs": [
-            "SV12"
-          ],
-          "callback": "calcul",
-          "callback_parameters": [
-            "L10"
-          ]
-        }
-      }
-    },
-    "cotisationODG": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Cotisation ODG",
-      "code_comptable": "706000",
-      "details": {
-        "revendication": {
-          "modele": "CotisationVariable",
-          "prix": 0.22,
-          "tva": 0.2,
-          "unite": "hl",
-          "libelle": "Volume revendiqué - N° %detail_identifiant%",
-          "complement_libelle": "",
-          "docs": [
-            "DRev",
-            "Conditionnement"
-          ],
-          "callback": "getVolumeRevendiqueLots"
-        },
-        "lots": {
-          "modele": "Cotisation",
-          "prix": 8,
-          "tva": 0.2,
-          "libelle": "Nombre de lots presentés",
-          "complement_libelle": "",
-          "docs": [
-            "Degustation"
-          ],
-          "callback": "buildMouvementsNbLotsDegustes",
-          "callback_parameters": []
-        }
-      }
-    },
-    "fraisDossier": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Frais de dossier",
-      "code_comptable": "706100",
-      "details": {
-        "forfait": {
-          "modele": "CotisationFixe",
-          "prix": 75,
-          "tva": 0.2,
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "DRev"
-          ],
-          "callback": "getVolumeRevendiqueLots",
-          "callback_parameters": [
-            "NOT /appellations/CDR/"
-          ]
-        }
-      }
-    },
-    "inao": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Droits INAO - N° %detail_identifiant%",
-      "code_comptable": "706400",
-      "details": {
-        "revendication": {
-          "modele": "CotisationVariable",
-          "prix": 0.03,
-          "tva": 0,
-          "unite": "hl",
-          "libelle": "",
-          "complement_libelle": "",
-          "docs": [
-            "DRev",
-            "Conditionnement"
-          ],
-          "callback": "getVolumeRevendiqueLots"
-        }
-      }
-    },
-    "changementDenomination": {
-      "modele": "CotisationsCollection",
-      "callback": "",
-      "libelle": "Changement de dénomination",
-      "code_comptable": "706300",
-      "details": {
-        "premier": {
-          "modele": "CotisationFixe",
-          "prix": 15,
-          "tva": 0.2,
-          "libelle": "N° %detail_identifiant%",
-          "complement_libelle": "",
-          "docs": [
-            "ChgtDenom"
-          ],
-          "callback": "getFirstChgtDenomFacturable",
-          "callback_parameters": []
-        },
-        "suivant": {
-          "modele": "CotisationFixe",
-          "prix": 10,
-          "tva": 0.2,
-          "libelle": "N° %detail_identifiant%",
-          "complement_libelle": "",
-          "docs": [
-            "ChgtDenom"
-          ],
-          "callback": "getSecondChgtDenomFacturable",
-          "callback_parameters": []
-        }
-      }
-    }
-  }
+   "_id": "TEMPLATE-FACTURE-2021",
+   "type": "TemplateFacture",
+   "campagne": 2021,
+   "template": "IGP",
+   "libelle": "2021 - IGPArdeche",
+   "docs": [
+       "DRev",
+       "ChgtDenom",
+       "Degustation",
+       "Conditionnement"
+   ],
+   "cotisations": {
+       "cotisationSyndicale": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Syndicale",
+           "code_comptable": "706200",
+           "details": {
+               "cotisationSyndicaleDocumentDouanier": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.02,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeVininifieFromDocumentDouanier"
+               }
+           }
+       },
+       "cotisationODG": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation ODG",
+           "code_comptable": "706000",
+           "details": {
+               "revendication": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.22,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "Volume revendiqué - N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev",
+                       "Conditionnement"
+                   ],
+                   "callback": "getVolumeLotsFacturables"
+               },
+               "lots": {
+                   "modele": "Cotisation",
+                   "prix": 8,
+                   "tva": 0.2,
+                   "libelle": "Nombre de lots presentés",
+                   "complement_libelle": "",
+                   "docs": [
+                       "Degustation"
+                   ],
+                   "callback": "buildMouvementsNbLotsDegustes",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "fraisDossier": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Frais de dossier",
+           "code_comptable": "706100",
+           "details": {
+               "forfait": {
+                   "modele": "CotisationFixe",
+                   "prix": 75,
+                   "tva": 0.2,
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getVolumeLotsFacturables",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Droits INAO - N° %detail_identifiant%",
+           "code_comptable": "706400",
+           "details": {
+               "revendication": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.03,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev",
+                       "Conditionnement"
+                   ],
+                   "callback": "getVolumeLotsFacturables"
+               }
+           }
+       },
+       "changementDenomination": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Changement de dénomination",
+           "code_comptable": "706300",
+           "details": {
+               "premier": {
+                   "modele": "CotisationFixe",
+                   "prix": 15,
+                   "tva": 0.2,
+                   "libelle": "N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getFirstChgtDenomFacturable",
+                   "callback_parameters": [
+                   ]
+               },
+               "suivant": {
+                   "modele": "CotisationFixe",
+                   "prix": 10,
+                   "tva": 0.2,
+                   "libelle": "N° %detail_identifiant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "ChgtDenom"
+                   ],
+                   "callback": "getSecondChgtDenomFacturable",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       }
+   }
 }

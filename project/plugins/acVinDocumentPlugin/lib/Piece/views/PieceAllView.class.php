@@ -46,20 +46,42 @@ class PieceAllView extends acCouchdbView
     				->reduce(false)
     				->getView($this->design, $this->view)->rows);
     	}
-        $pieces = array_merge($nonVisibles, $visibles);
 
-		if($categories) {
-			foreach($pieces as $key => $piece){
-				if(in_array($piece->key[PieceAllView::KEYS_CATEGORIE], $categories)) {
-					continue;
+			$pieces = $this->cleanVersions(array_merge($nonVisibles, $visibles));
+
+			if($categories) {
+				foreach($pieces as $key => $piece){
+					if(in_array($piece->key[self::KEYS_CATEGORIE], $categories)) {
+						continue;
+					}
+
+					unset($pieces[$key]);
 				}
-
-				unset($pieces[$key]);
 			}
-		}
 
-		return $pieces;
+			return $pieces;
     }
+
+		private function cleanVersions($items) {
+			$cleaned = array();
+			$saved = array();
+			foreach($items as $item){
+				$key = $item->id;
+				if (preg_match('/(.*)-(M|R)([0-9]+)$/', $key, $m)) {
+					if (isset($saved[$m[1]]) && $m[3] < $saved[$m[1]]) {
+						continue;
+					}
+					$saved[$m[1]] = $m[3];
+					$key = $m[1];
+				} else {
+					$saved[$key] = 0;
+				}
+				if (!isset($cleaned[$key])) {
+					$cleaned[$key] = $item;
+				}
+			}
+			return $cleaned;
+		}
 
     public function getStartISODateForView() {
     	return '1900-01-01';

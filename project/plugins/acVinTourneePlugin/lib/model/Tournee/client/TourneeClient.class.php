@@ -59,12 +59,13 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
-    public function createOrFindForDegustation($appellation, $date, $date_debut_prelevement) {
+    public function createOrFindForDegustation($appellation, $date, $date_debut_prelevement, $gap_fin_prelevement = 5) {
         $tournee = $this->createDoc(self::TYPE_TOURNEE_DEGUSTATION, $date);
         $tournee->appellation = $appellation;
         $tournee->statut = TourneeClient::STATUT_ORGANISATION;
-        $tournee->millesime = ((int) substr($tournee->date, 0, 4) - 1)."";
+        $tournee->millesime = $tournee->millesime;
         $tournee->date_prelevement_debut = $date_debut_prelevement;
+        $tournee->date_prelevement_fin = (new DateTime($tournee->date))->modify("-".$gap_fin_prelevement." days")->format('Y-m-d');
         $tournee->organisme = DegustationClient::ORGANISME_DEFAUT;
         $tournee->getLibelle();
 
@@ -192,8 +193,23 @@ class TourneeClient extends acCouchdbClient {
     }
 
     public function getPrelevementsFiltered($appellation, $date_from, $date_to, $campagne = null) {
+        $prelevements = [];
 
-        return $this->filterPrelevements($appellation, DRevPrelevementsView::getInstance()->getPrelevements($appellation, $date_from, $date_to, $campagne), $campagne);
+        $prelevements = array_merge($prelevements, $this->filterPrelevements(
+            $appellation,
+            DRevPrelevementsView::getInstance()
+                ->getPrelevements(1, $appellation, null, null, $campagne),
+            $campagne
+        ));
+
+        $prelevements = array_merge($prelevements, $this->filterPrelevements(
+            $appellation,
+            DRevPrelevementsView::getInstance()
+                ->getPrelevements(0, $appellation, $date_from, $date_to, $campagne),
+            $campagne
+        ));
+
+        return $prelevements;
     }
 
     public function getReportes($appellation, $campagne = null) {

@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test();
+$t = new lime_test(8);
 
 $periode = (date('Y')-1)."";
 $campagne = $periode."-".($periode + 1);
@@ -34,7 +34,7 @@ foreach(DrevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev = DrevClient::getInstance()->find($k);
     $drev->delete(false);
 }
-foreach(DegustationClient::getInstance()->getHistory(100, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(100, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DegustationClient::getInstance()->deleteDoc(DegustationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {

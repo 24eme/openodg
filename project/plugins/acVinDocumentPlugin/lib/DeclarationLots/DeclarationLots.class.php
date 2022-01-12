@@ -36,11 +36,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       }
 
       public function getConfiguration() {
-          $configuration = ConfigurationClient::getInstance()->getConfiguration($this->date);
-          if(ConfigurationConfiguration::getInstance()->hasEffervescentVinbase()){
-            $configuration->setEffervescentVindebaseActivate();
-          }
-          return $configuration;
+          return ConfigurationClient::getInstance()->getConfiguration($this->date);
       }
 
       public function getConfigProduits() {
@@ -339,7 +335,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             $this->piece_document->generatePieces();
     	}
 
-        public function save($saveDependants = true) {
+        public function saveDeclaration($saveDependants = true) {
             $this->archiver();
             if ($this->isValideeOdg()) {
                 $this->generateMouvementsLots();
@@ -362,7 +358,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                 return;
             }
 
-            $mother->save();
+            $mother->save(false);
             DeclarationClient::getInstance()->clearCache();
         }
 
@@ -668,4 +664,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
     }
 
     /** FIN MOUVEMENTS FACTURES **/
+
+    public function getBigDocumentSize() {
+
+        return -1;
+    }
 }

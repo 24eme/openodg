@@ -1,12 +1,12 @@
 all:
   configuration:
     facture:
-      aggregateMouvements: false
-      ligneMsg: false
+      ligneUnique: false
+      ligneDetailWithTitle: false
       echeances: false
       all_etablissements: false
       export_sage_width_txt: true
       all_etablissements: true
-      modalite_paiement: "- comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars 2020 à novembre 2020 \\ - prélèvement automatique en 9 fois de mars 2020 à novembre 2020 \\"
+      modalite_paiement: "30 jours à reception, par virement \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true

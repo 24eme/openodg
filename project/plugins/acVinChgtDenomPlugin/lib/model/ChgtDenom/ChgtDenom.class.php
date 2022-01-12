@@ -142,6 +142,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
         $this->validation_odg = $date;
         if(!$this->isFactures()){
+            $this->save();
             $this->clearMouvementsFactures();
             $this->generateMouvementsFactures();
         }
@@ -198,10 +199,17 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     public function updateStatut() {
         $statut = LotsClient::getInstance()->findStatut($this->identifiant, $this->changement_origine_lot_unique_id, $this->changement_origine_id_document);
 
+        $this->lots[0]->affectable = false;
+        if ($this->origine_affectable) {
+            if ($this->lots[0]->volume) {
+                $this->lots[0]->affectable = true;
+            }elseif(count($this->lots) > 1){
+                $this->lots[1]->affectable = true;
+            }
+        }
         if($this->origine_statut) {
             $this->origine_statut = null;
             $this->lots[0]->statut = null;
-            $this->lots[0]->affectable = $this->origine_affectable;
         }
 
         if(!$statut) {
@@ -348,13 +356,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function save($saveDependants = true) {
         $this->archiver();
+        $this->piece_document->generatePieces();
         if ($this->isApprouve()) {
             if (!count($this->lots->toArray(true, false))) {
                 $this->generateLots();
+                $this->archiver();
             }
             if (count($this->lots) && ($this->lots[0]->unique_id == $this->changement_origine_lot_unique_id)) {
                 if (($this->lots[0]->volume) && !($this->lots[0]->id_document_affectation)) {
-                    $this->lots[0]->affectable = true;
+                    $this->lots[0]->affectable = $this->origine_affectable;
                 }else{
                     $this->lots[0]->affectable = false;
                 }
@@ -362,7 +372,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $this->generateMouvementsLots();
             $this->fillDocToSaveFromLots();
         }
-        $saved = parent::save();
+        $saved = parent::save($saveDependants);
 
         if ($saveDependants) {
             $this->saveDocumentsDependants();
@@ -727,11 +737,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
       foreach($cotisations as $cotisation) {
           $mouvement = ChgtDenomMouvementFactures::freeInstance($this);
-          foreach ($this->lots as $lot) {
-              if($this->changement_produit_hash == $lot->produit_hash){
-                  $mouvement->detail_identifiant = $lot->numero_archive;
-              }
-          }
+          $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
           if(!$mouvement->quantite) {
@@ -788,25 +794,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** FIN DES MOUVEMENTS ****/
 
-    public function getFirstChgtDenomFacturable()
+    public function getFirstChgtDenomFacturable($produitFilter = null)
     {
-      $chgtdenom = $this->getChgtDenomToday();
+      $chgtdenom = $this->getChgtDenomToday($produitFilter);
       $first = current($chgtdenom);
-      return (!$first||$first->_id == $this->_id)? true : false;
+      return $first !== false && $first->_id == $this->_id;
     }
 
-    public function getSecondChgtDenomFacturable()
+    public function getSecondChgtDenomFacturable($produitFilter = null)
     {
-        return !$this->getFirstChgtDenomFacturable();
-    }
-
-    public function calculFraisJournalier($produitFilter = null)
-    {
-        if ($this->nbChgtDenomToday($produitFilter) > 0) {
-            return;
-        }
-
-        return $this->getVolumeFacturable($produitFilter);
+        return !$this->getFirstChgtDenomFacturable($produitFilter);
     }
 
     public function matchFilter($produitFilter = null, $chgtdenom = null)
@@ -891,21 +888,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return false;
     }
 
-    private function nbChgtDenomToday($produitFilter = null)
-    {
-        return count($this->getChgtDenomToday($produitFilter));
-    }
-
     private function getChgtDenomToday($produitFilter = null)
     {
         $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
             $this->identifiant,
-            substr($this->campagne, 0, 4)
+            substr($this->date, 0, 4)
         );
 
         $today = [];
         foreach ($chgtdenoms as $chgt) {
-            if ($chgt->validation_odg && substr($chgt->date, 0, 10) === substr($this->date, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
+            if ($chgt->validation_odg && substr($chgt->validation, 0, 10) === substr($this->validation, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
                 $today[$chgt->_id] = $chgt;
             }
         }
@@ -931,5 +923,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         return $found;
+    }
+
+    public function getBigDocumentSize() {
+
+        return -1;
     }
 }

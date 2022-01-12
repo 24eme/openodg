@@ -15,15 +15,17 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
     protected $doc = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
         return "Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Ecart pieds;Ecart rang;Type de declaration\n";
     }
 
-    public function __construct($doc, $header = true) {
+    public function __construct($doc, $header = true, $region = null) {
         $this->doc = $doc;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {
@@ -83,5 +85,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
       return preg_replace('/^(\d\d\d)(\d\d\d)(\d\d\d)/', '\1 \2 \3 ', $siret);
     }
 
+    public function setExtraArgs($args) {
+    }
 
 }

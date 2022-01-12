@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(272);
+$t = new lime_test(274);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -28,7 +28,7 @@ foreach(TransactionClient::getInstance()->getHistory($viti->identifiant, acCouch
     $conditionnement->delete(false);
 }
 
-foreach(DegustationClient::getInstance()->getHistory(9999, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
     $degustation->delete(false);
 }
@@ -137,6 +137,7 @@ $t->is($chgtDenomFromDrev->changement_affectable, $lotFromDrev->affectable, "L'a
 $chgtDenomFromDrev->changement_produit_hash = $drev->lots[1]->produit_hash;
 $chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
 $chgtDenomFromDrev->validate();
+$chgtDenomFromDrev->changement_affectable = false;
 $chgtDenomFromDrev->validateOdg();
 $chgtDenomFromDrev->save();
 
@@ -185,7 +186,7 @@ $t->is($chgtDenomFromDrev->lots[1]->unique_id, $campagne.'-00002-00004', "Le lot
 $t->is($chgtDenomFromDrev->lots[1]->id_document, $idChgtDenomFromDrev, "Le lot du chgt a bien id_document ".$idChgtDenomFromDrev);
 $t->is($chgtDenomFromDrev->lots[1]->document_ordre, '01', "Le lot du chgt a bien comme document_ordre 01");
 $t->is($chgtDenomFromDrev->lots[1]->id_document_provenance, null, "Le lot du chgt n'a  de provenance");
-$t->is($chgtDenomFromDrev->lots[1]->affectable, $lotFromDrev->affectable, "Le lot du chgt a la même non affectation que dans la drev (réputé conforme)");
+$t->is($chgtDenomFromDrev->lots[1]->affectable, false, "Le lot du chgt a la même non affectation que dans la drev (réputé conforme)");
 $t->is($chgtDenomFromDrev->lots[1]->volume, $lotFromDrev->volume, "Le lot 2 du chgt a le volume total");
 $t->is($chgtDenomFromDrev->lots[1]->specificite, 'Ma fausse', "Le lot 1 du chgt n'a plus de spécificité");
 $t->ok($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE), "Le lot 1 du changement a bien un mouvement non affectable");
@@ -195,6 +196,15 @@ $t->ok(!$chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le l
 
 
 $t->ok(!$chgtDenomFromDrev->hasLotsUtilises(), "La déclaration n'a pas de lots utilisés");
+
+$chgtDenomFromDrev->devalidate();
+$chgtDenomFromDrev->validate();
+$chgtDenomFromDrev->changement_affectable = true;
+$chgtDenomFromDrev->validateOdg();
+$chgtDenomFromDrev->save();
+$t->is($chgtDenomFromDrev->lots[0]->affectable, false, "Le lot d'origine du chgt pas affectable");
+$t->is($chgtDenomFromDrev->lots[1]->affectable, true, "Le lot du chgt est affectable");
+
 
 $drev = DrevClient::getInstance()->find($drev->_id);
 $t->ok($drev->hasLotsUtilises(), "La drev a des lots utilisés");
@@ -417,8 +427,8 @@ $t->is($chgtDenom->lots[0]->id_document_provenance, $degustation->_id, "Le lot 1
 $t->is($chgtDenom->lots[1]->id_document_provenance, null, "Le lot 2 perd sa provenance de ".$degustation->_id);
 $t->is($chgtDenom->lots[0]->numero_logement_operateur, $chgtDenom->origine_numero_logement_operateur, "Le numero logement opérateur n'a pas changé pour le lot origine");
 $t->is($chgtDenom->lots[1]->numero_logement_operateur, $chgtDenom->changement_numero_logement_operateur, "Le logement lot 2 a changé");
-$t->is($chgtDenom->lots[0]->affectable, true, "Le lot origine ayant un volume positif est affectable");
-$t->is($chgtDenom->lots[1]->affectable, $chgtDenom->changement_affectable, "L'affectation lot 2 a changé");
+$t->is($chgtDenom->lots[0]->affectable, false, "Le lot origine conforme ayant un volume positif est affectable");
+$t->is($chgtDenom->lots[1]->affectable, true, "L'affectation lot 2 est bien affectable comme demandé à la racine du document (changement_affectable)");
 $t->is($chgtDenom->lots[0]->cepages['CABERNET'], 15, "L'affectation du lot origine a la bonne répartition de cepages (CABERNET)");
 $t->is($chgtDenom->lots[0]->cepages['PINOT'], 15, "L'affectation du lot origine a la bonne répartition de cepages (PINOT)");
 $t->is($chgtDenom->lots[1]->cepages['CABERNET'], 10, "Le lot 2 du changement a les cepages (CABERNET)");

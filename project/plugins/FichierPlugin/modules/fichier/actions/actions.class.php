@@ -142,9 +142,6 @@ class fichierActions extends sfActions
     }
 
 	protected function getCategoriesLimitation() {
-		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
-			return array('Identification', 'dr', 'drev');
-		}
 
 		return null;
 	}
@@ -156,8 +153,8 @@ class fichierActions extends sfActions
 
 		$this->campagne = $request->getParameter('campagne', 0);
         if ($this->campagne) {
-            $startdate = ($this->campagne) ? substr($this->campagne, 0, 4) : null;
-            $enddate = ($this->campagne) ? substr($this->campagne, -4, 4) : null;
+            $startdate = substr($this->campagne, 0, 4);
+            $enddate = substr($this->campagne, -4, 4);
         }
 
 		$this->category = $request->getParameter('categorie');
@@ -270,9 +267,9 @@ class fichierActions extends sfActions
 		if ($request->isMethod(sfWebRequest::POST)) {
 			try {
 				$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
-				$drev = DRevClient::getInstance()->find("DREV-".$this->etablissement->identifiant."-".$this->periode);
+			    $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->etablissement->identifiant, $this->periode);
 				if ($fichiers && $drev) {
-					$drev->importFromDocumentDouanier();
+					$drev->importFromDocumentDouanier(true);
                 	$drev->save();
 				}
 			}catch(sfException $e ) {

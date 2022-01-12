@@ -56,6 +56,9 @@
                 <?php
                 foreach ($collegeForm as $idCompte => $compteForm):
                   $compte = $form->getCompteByIdentifiant($idCompte);
+                  if (!$compte) {
+                      continue;
+                  }
                   $words = json_encode(array_merge(
                     explode(' ', strtolower($compte->getNomAAfficher())), explode(' ', $compte->getAdresse()), explode(' ', $compte->getAdresseComplementaire()),
                     [$compte->getCommune(), $compte->getCodePostal(), $compte->identifiant], $compte->getTagsDegustateur()

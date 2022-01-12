@@ -3,34 +3,34 @@
 <?php use_helper('Text') ?>
 <style>
   .font-1-3em{
-    font-size: 1.3em;
+    /*font-size: 1.3em;*/
+  }
+
+  table.table-etiquette tr td {
+       /*border: 0px solid #fff;*/
+       font-family: monospace;
+       font-size: 11px;
   }
 </style>
-    <table  class="" cellspacing="0" cellpadding="11" style="height: 1122.4px; width: 100%; margin: 0; padding: 0">
+    <table cellspacing="0" cellpadding="0" style="height: 1122.4px; margin: 0; padding: 0">
     <?php foreach($plancheLots as $lotInfo): ?>
-        <tr style="height: <?php echo 1122.4/count($plancheLots) ?>px">
+        <tr style="height: <?php echo 1122.4/count($plancheLots) ?>px; margin: 0; padding: 0;">
           <?php for($i=0; $i <3 ; $i++): ?>
-            <td>
-                <table cellspacing="0" cellpadding="0" style="font-size:8px;overflow: hidden;white-space: nowrap;">
-                  <tr style="">
-                    <td style="overflow-wrap:break-word;">
-                      <?php echo tdStart() ?>&nbsp;N°ODG:<strong style="font-size:10px;"><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong>
-                    </td>
-                    <td style="overflow-wrap:break-word;text-align: right;">
-                      <?php echo tdStart() ?>&nbsp;N°Dos:<strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
+            <td cellspacing="0" cellpadding="0" style="margin: 0; padding: 0;">
+                <table class="table-etiquette" cellspacing="0" cellpadding="0" style="font-size:8px;overflow: hidden;white-space: nowrap; top: 0; left: 0; padding: 0; margin: 0; width: 220px">
+		          <tr>
+                        <td style="overflow-wrap:break-word;text-align: left; height: 6px; line-height: 6px; overflow: hidden;" colspan="2">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden;">&nbsp;&nbsp;N°ODG <strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong></td>
+                    <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; padding-right">N°DOSSIER <strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
                     </td>
                   </tr>
-                  <tr style="">
-                    <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:8px;" >
-                      <?php echo tdStart() ?><strong>&nbsp;
-                      <?php if ($i != 2 || !$anonymat4labo): ?>
-                      <?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->getRawValue()->lot->declarant_nom, 43, '...') : "Leurre";  ?>
-                      <?php endif; ?></strong>
-                    </td>
+                  <tr>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 14.5px; line-height: 14px; overflow: hidden;" ><strong><?php if ($i != 2 || !$anonymat4labo): ?><?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->lot->declarant_nom, 30, '…') : "Leurre";  ?><?php endif; ?></strong></td>
                   </tr>
-                  <tr style="line-height:12px;">
-                    <td colspan="2" style="text-align: center;">
-                      <?php echo tdStart() ?>
+                  <tr>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 14px; line-height: 14px; overflow: hidden;">
                       <?php if ($i != 2 || !$anonymat4labo): ?>
                           <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi);
                            elseif ($lotInfo->etablissement->siret):echo (substr($lotInfo->etablissement->siret,0,3)." ".substr($lotInfo->etablissement->siret,3,3)." ".substr($lotInfo->etablissement->siret,6,3)." ".substr($lotInfo->etablissement->siret,9,5));
@@ -40,27 +40,23 @@
                       <?php endif; ?>
                     </td>
                   </tr>
-                  <tr style="line-height:12px;">
-                    <td colspan="2" style="overflow-wrap:break-word; text-align: center;">
-                      <?php echo tdStart() ?><strong><?php echo truncate_text("IGP ".$lotInfo->getRawValue()->lot->produit_libelle, 46, '...', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+		  <tr>
+                        <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 29px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 58, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
-                  <tr style="line-height:12px;">
-                    <td colspan="2" style="overflow-wrap:break-word;text-align:center;line-height:7px;">
-                      <?php echo tdStart() ?>
-
-                      <strong><?php echo showOnlyCepages($lotInfo->lot, 65) ?></strong>
-
-                    </td>
+                  <tr>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 24px; line-height: 12px; overflow: hidden;">&nbsp;&nbsp;<?php echo showOnlyCepages($lotInfo->lot, 58, 'span') ?></td>
                   </tr>
-                  <tr style="overflow:hidden; text-overflow: ellipsis">
-                    <td style="line-height:12px; width:50%;">
-                      <?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>
-                      &nbsp;Lgt&nbsp;:&nbsp;<strong class="font-1-3em"><?php echo substr($lotInfo->lot->numero_logement_operateur.$centilisation, 0, 20)  ?></strong>
+                  <tr>
+                    <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>LGT <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
                     </td>
-                    <td class="font-1-3em" style="text-align: right; width:50%;">
-                      <strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?> hl</strong>
-                    </td>
+                    <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 35%;"><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong> HL</td>
+                  </tr>
+		  <tr>
+                        <td style="overflow-wrap:break-word;text-align: left; height: 6px; line-height: 6px; overflow: hidden;" colspan="2">&nbsp;</td>
                   </tr>
                 </table>
             </td>

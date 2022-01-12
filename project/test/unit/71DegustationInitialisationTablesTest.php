@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test();
+$t = new lime_test(20);
 
 $annee = (date('Y')-1)."";
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
@@ -47,11 +47,12 @@ $t->is(count($degust->mouvements_lots->{$lot1->declarant_identifiant}), 4, 'La g
 
 $t->comment('On créé un leurre à la table 1');
 $produitLeurreHash = $lot1->getProduitHash();
-$produitLeurre = $degust->addLeurre($produitLeurreHash, null, 1);
+$produitLeurre = $degust->addLeurre($produitLeurreHash, null, date('Y'), 1);
 
 $t->is($produitLeurre->leurre, true, 'Le produit est un leurre');
 $t->is($produitLeurre->produit_hash, $produitLeurreHash, "Le hash produit est $produitLeurreHash");
-$t->is($produitLeurre->getIntitulePartiel(), 'lot LEURRE de Alpilles Rouge', 'Le libellé est correct');
+$t->is($produitLeurre->getIntitulePartiel(), 'lot LEURRE de Alpilles Rouge ('.date('Y').')', 'Le libellé est correct');
+$t->is($produitLeurre->millesime, date('Y'), "Le millesime est setté à l'année courante");
 $t->is($degust->hasFreeLots(), false, "Le leurre est assigné");
 
 $t->is(count($degust->getLotsTableOrFreeLots(1)), 2, "Il est assigné à la table 1");
@@ -65,20 +66,14 @@ $degust->lots[2]->numero_table = 2;
 $t->is($degust->getLastNumeroTable(), 2, 'La dernière table est la 2');
 
 $t->comment('On ajoute un leurre à la table 2');
-$leurreTable2 = $degust->addLeurre($produitLeurreHash, 'Cepage leurre', 2);
+$leurreTable2 = $degust->addLeurre($produitLeurreHash, 'Cepage leurre', date('Y'), 2);
 $t->is($leurreTable2->leurre, true, 'C\'est un leurre');
 $t->is($leurreTable2->getProduitHash(), $produitLeurreHash, 'Le hash est le même');
 $t->is($leurreTable2->numero_table, 2, 'Le numéro de table est le 2');
 $t->is($leurreTable2->details, 'Cepage leurre', 'Le cepage du leurre est "Cepage leurre"');
+$t->is($leurreTable2->millesime, date('Y'), "Le millesime est setté à l'année courante");
 
-$t->comment("On ignore le leurre de la table 2");
-$t->is(count($degust->getLotsNonAttables()), 0, "Tous les lots sont attablés");
-$lotLeurre = $degust->lots[3];
-$degust->lots[3] = $degust->ignorerLot($lotLeurre);
-$t->is(count($degust->getLotsNonAttables()), 1, "Un lot non attablé");
-$t->ok($lotLeurre->isIgnored(), "Le leurre n'est plus dans une table et est ignoré");
-$degust->save();
-
-$t->comment('puis on la retire');
+$t->comment('puis on les retire');
+$degust->lots->remove(3);
 $degust->lots->remove(2);
 $t->is($degust->getLastNumeroTable(), 1, 'La dernière table est la 1');

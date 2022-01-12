@@ -27,3 +27,24 @@ all:
           email: "%app_drev_VINSOBRES_email%"
           produits:
             - "TRANQ/appellations/VBR"
+        CHATEAUNEUFDUPAPE:
+          nom: "Syndicat des Vignerons de Châteauneuf-du-Pape"
+          adresse: "25 avenue Général De Gaulle, 84231 Châteauneuf-du-Pape"
+          telephone: "%app_drev_CHATEAUNEUFDUPAPE_telephone%"
+          email: "%app_drev_CHATEAUNEUFDUPAPE_email%"
+          produits:
+            - "TRANQ/appellations/CDP"
+        LIRAC:
+          nom: "Syndicat de l'AOC Lirac"
+          adresse: "Chemin des Chênes, 30126 Lirac"
+          telephone: "%app_drev_LIRAC_telephone%"
+          email: "%app_drev_LIRAC_email%"
+          produits:
+            - "TRANQ/appellations/LIR"
+        GIGONDAS:
+          nom: "Syndicat de Gigondas "
+          adresse: "8 rue du fond du sac, 84190 Gigondas"
+          telephone: "%app_drev_GIGONDAS_telephone%"
+          email: "%app_drev_GIGONDAS_email%"
+          produits:
+            - "TRANQ/appellations/GIG"

@@ -30,6 +30,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     const CSV_VCI_STOCK_CONSTITUE = 30;
     const CSV_TYPE_DREV = 32;
     const CSV_LOT_NUMERO_CUVE = 34;
+    const CSV_LOT_MILLESIME = 36;
     const CSV_LOT_DESTINATION = 37;
     const CSV_DATE_VALIDATION_DECLARANT = 38;
     const CSV_DATE_VALIDATION_ODG = 39;
@@ -143,4 +144,8 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

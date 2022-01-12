@@ -7,7 +7,7 @@ class FacturePaiementEmbedForm extends acCouchdbObjectForm {
         $this->setWidget('montant', new bsWidgetFormInputFloat());
         $this->setValidator('montant', new sfValidatorNumber(array('required' => false)));
 
-        $this->setWidget('date', new sfWidgetFormInput(array(), array()));
+        $this->setWidget('date', new sfWidgetFormInput(array(), array('autocomplete' => 'off')));
         $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)));
 
         $this->setWidget('type_reglement', new sfWidgetFormChoice(array('choices' => $this->getTypesPaiements())));
@@ -35,10 +35,6 @@ class FacturePaiementEmbedForm extends acCouchdbObjectForm {
 
     protected function getTypesPaiements(){
       return array_merge(array("" => ""),FactureClient::$types_paiements);
-    }
-
-    protected function doUpdateObject($values) {
-        parent::doUpdateObject($values);
     }
 
 }

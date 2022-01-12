@@ -135,6 +135,13 @@ class DRevConfiguration {
         return isset($this->configuration['dr_douane_required']) && boolval($this->configuration['dr_douane_required']);
     }
 
+    public function getDateBeginDouane($annee = null) {
+        if (!$annee) {
+            $annee = date('Y');
+        }
+        return $annee.'1031';
+    }
+
     public function hasDegustation() {
         return isset($this->configuration['degustation']) && boolval($this->configuration['degustation']);
     }

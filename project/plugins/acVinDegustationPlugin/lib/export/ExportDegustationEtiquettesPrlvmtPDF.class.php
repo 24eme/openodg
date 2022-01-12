@@ -12,6 +12,7 @@ class ExportDegustationEtiquettesPrlvmtPDF extends ExportPDF {
         }
         parent::__construct($type, $use_cache, $file_dir, $filename);
         if($this->printable_document->getPdf()){
+          $this->printable_document->getPdf()->setViewerPreferences(array("PrintScaling" => "None"));
           $this->printable_document->getPdf()->setPrintHeader(false);
           $this->printable_document->getPdf()->setPrintFooter(false);
         }

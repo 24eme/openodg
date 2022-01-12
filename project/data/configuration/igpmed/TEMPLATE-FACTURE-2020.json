@@ -37,6 +37,20 @@
           ],
           "callback": "buildMouvementsNbLotsDegustes",
           "callback_parameters": []
+        },
+        "chgtDenomVariable": {
+          "modele": "CotisationVariable",
+          "prix": 0.15,
+          "tva": 0.2,
+          "libelle": "Changement de dénomination",
+          "complement_libelle": "",
+          "docs": [
+            "ChgtDenom"
+          ],
+          "callback": "getVolumeFacturable",
+          "callback_parameters": [
+            "/appellations/MED"
+          ]
         }
       }
     }

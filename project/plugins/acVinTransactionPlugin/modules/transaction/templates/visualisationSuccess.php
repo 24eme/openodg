@@ -48,8 +48,8 @@
 <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form, 'dr' => $dr)); ?>
 
 <?php if (TransactionConfiguration::getInstance()->hasDegustation() && $transaction->exist("date_degustation_voulue")): ?>
-    <h3>Dégustation</h3>
-    <p style="margin-bottom: 30px;">Les vins seront prêt à être dégustés à partir du : <?php echo ($transaction->date_degustation_voulue)     ? date_format(date_create($transaction->validation), 'd/m/Y') : null;?></p>
+    <h3>Controle</h3>
+    <p style="margin-bottom: 30px;">Date de controle souhaitée : <?php echo ($transaction->date_degustation_voulue)     ? date_format(date_create($transaction->validation), 'd/m/Y') : null;?></p>
 <?php endif ?>
 <div class="row row-margin row-button">
     <div class="col-xs-4">
@@ -79,7 +79,7 @@
                                                )): ?>
         <?php $params = array("sf_subject" => $transaction, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
         <div class="col-xs-6 text-right">
-            <button type="button" name="validateOdg" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && !$sf_user->hasTransactionAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+            <button type="button" name="validateOdg" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && (!$sf_user->hasTransactionAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         </div>
 
         <?php endif; ?>

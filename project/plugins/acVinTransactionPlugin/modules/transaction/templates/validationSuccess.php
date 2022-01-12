@@ -42,9 +42,9 @@
     <?php endif; ?>
 
     <?php if (TransactionConfiguration::getInstance()->hasDegustation()): ?>
-        <h3>Dégustation</h3>
+        <h3>Controle</h3>
         <div class="form-group" style="margin-bottom: 20px;">
-            Les vins seront prêt à être dégustés à partir du :
+            Date de controle souhaitée :
             <div class="input-group">
             <?php echo date("d/m/Y"); ?>
             </div>
@@ -56,7 +56,7 @@
             <a href="<?php echo url_for("transaction_lots", $transaction); ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="button" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && !$sf_user->hasTransactionAdmin()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && (!$sf_user->hasTransactionAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>

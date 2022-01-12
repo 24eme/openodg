@@ -6,8 +6,15 @@ class societeActions extends sfCredentialActions {
         $interpro = $request->getParameter('interpro_id');
         $q = $request->getParameter('q');
         $limit = $request->getParameter('limit', 100);
+        $with_inactif = $request->getParameter('inactif', false);
+        $q4el = $q;
+        $statut = null;
+        if (!$with_inactif) {
+            $q4el .= "* AND doc.statut:ACTIF";
+            $statut = CompteClient::STATUT_ACTIF;
+        }
 
-        $qs = new acElasticaQueryQueryString($q);
+        $qs = new acElasticaQueryQueryString($q4el);
         $elkquery = new acElasticaQuery();
         $elkquery->setQuery($qs);
         $elkquery->setLimit($limit);
@@ -18,16 +25,8 @@ class societeActions extends sfCredentialActions {
 
         $jsonElastic = $this->matchCompteElastic($this->resultsElk, $limit);
 
-        $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit));
+        $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterproAndStatut($interpro, $q, $limit, $statut), $q, $limit));
 
-        return $this->renderText(json_encode($json));
-    }
-
-    public function executeActifautocomplete(sfWebRequest $request) {
-        $interpro = $request->getParameter('interpro_id');
-        $q = $request->getParameter('q');
-        $limit = $request->getParameter('limit', 100);
-        $json = $this->matchCompte(CompteAllView::getInstance()->findByInterproAndStatut($interpro, $q, $limit, SocieteClient::STATUT_ACTIF), $q, $limit);
         return $this->renderText(json_encode($json));
     }
 
@@ -297,8 +296,19 @@ class societeActions extends sfCredentialActions {
       $json = array();
       foreach ($res as $key => $one_row) {
         $data = $one_row->getData();
-
-        $text = $data['doc']['nom_a_afficher'];
+        $text = '';
+        switch ($data['doc']['compte_type']) {
+            case 'INTERLOCUTEUR':
+                $text = '👤 ';
+                break;
+            case 'SOCIETE':
+                $text = '🏢 ';
+                break;
+            case 'ETABLISSEMENT':
+                $text = '🏠 ';
+                break;
+        }
+        $text .= $data['doc']['nom_a_afficher'];
         $text .= ' ('.$data['doc']['adresse'];
         $text .= ($data['doc']['adresse_complementaire'])? ' - '.$data['doc']['adresse_complementaire'] : "";
         $text .= ' / '.$data['doc']['commune'].' / '.$data['doc']['code_postal'].') ' ;

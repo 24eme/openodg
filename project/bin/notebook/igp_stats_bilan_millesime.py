@@ -26,7 +26,7 @@ else:
 
 if(len(sys.argv)>3):
     datemax = sys.argv[3]
-    if(sys.argv[3] == "08-12"):  #si troisieme argument vaut 08-12  on prend en compte le 01-08 et le 31-12
+    if(sys.argv[3] == "08-12"):  #si troisieme argument vaut 08-12  on prend du 01-08 au 31-12 inclus les deux 
         datemin = str(int(millesime)+1)+'-07-31'
         datemax = str(int(millesime)+2)+'-01-01'
 else:

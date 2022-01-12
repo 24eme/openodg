@@ -21,35 +21,25 @@ class degustationActions extends sfActions {
         $this->form = new TourneeCreationForm($this->tournee);
 
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
-        $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
-            'ALSACE', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
 
-        $this->demandes_alsace = array();
-        $this->demandes_vtsgn = array();
-        $total = 0;
-        foreach($prelevements as $prelevement) {
-            $total = $total + 1;
-            $dateObject = new DateTime($prelevement->date);
-            if(!isset($this->demandes_alsace[$dateObject->format('M Y')])) {
-                $this->demandes_alsace[$dateObject->format('M Y')] = 0;
-                $this->demandes_vtsgn[$dateObject->format('M Y')] = 0;
-            }
-            $this->demandes_alsace[$dateObject->format('M Y')] += 1;
-        }
+        $this->graphs = array(
+            'ALSACE' => array("name" => "AOC Alsace", "color" => '120,120,220', "data" => array()),
+            'CREMANT' => array("name" => "AOC Crémant Alsace", "color" => '220,178,29', "data" => array()),
+            'VTSGN' => array("name" => "VT / SGN", "color" => '0,220,220', "data" => array()),
+        );
 
-        $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
-            'VTSGN', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
-        $total = 0;
-        foreach($prelevements as $prelevement) {
-            $total = $total + 1;
-            $dateObject = new DateTime($prelevement->date);
-            if(!isset($this->demandes_vtsgn[$dateObject->format('M Y')])) {
-                $this->demandes_vtsgn[$dateObject->format('M Y')] = 0;
+        foreach($this->graphs as $key => $graph) {
+            $dateObject = new DateTime($campagne."-10-01");
+            for($i = 0; $i <= 12; $i++) {
+                $this->graphs[$key]['data'][$dateObject->format('M Y')] = 0;
+                $dateObject = $dateObject->modify("+ 1 month");
             }
-            if(!isset($this->demandes_alsace[$dateObject->format('M Y')])) {
-                $this->demandes_alsace[$dateObject->format('M Y')] = 0;
+            $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(1, $key, $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+            $prelevements = array_merge($prelevements, DRevPrelevementsView::getInstance()->getPrelevements(0, $key, $campagne."-10-01", ($campagne+1)."-10-01", $campagne));
+            foreach($prelevements as $prelevement) {
+                $dateObject = new DateTime($prelevement->date);
+                $this->graphs[$key]['data'][$dateObject->format('M Y')] += 1;
             }
-            $this->demandes_vtsgn[$dateObject->format('M Y')] = $total;
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -191,7 +181,11 @@ class degustationActions extends sfActions {
         }
 
         if(!$this->tournee) {
-            $this->tournee = TourneeClient::getInstance()->createOrFindForDegustation($request->getParameter('appellation'),  $request->getParameter('date'), $request->getParameter('date_prelevement_debut'));
+            if ($gap_fin_prelevement = $request->getParameter('gap_fin_prelevement', null)) {
+                $this->tournee = TourneeClient::getInstance()->createOrFindForDegustation($request->getParameter('appellation'),  $request->getParameter('date'), $request->getParameter('date_prelevement_debut'), $gap_fin_prelevement);
+            } else {
+                $this->tournee = TourneeClient::getInstance()->createOrFindForDegustation($request->getParameter('appellation'),  $request->getParameter('date'), $request->getParameter('date_prelevement_debut'));
+            }
         }
 
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin, $this->tournee->getCampagne());
@@ -666,6 +660,11 @@ class degustationActions extends sfActions {
                 }
 
                 $p->cuve = $prelevement->cuve;
+                $p->composition = $prelevement->composition;
+                $p->remove('fermentation_lactique');
+                if(isset($prelevement->fermentation_lactique)) {
+                    $p->add('fermentation_lactique', (bool) $prelevement->fermentation_lactique);
+                }
                 $p->volume_revendique = $prelevement->volume_revendique;
                 $p->hash_produit = $prelevement->hash_produit;
                 $p->anonymat_prelevement = $prelevement->anonymat_prelevement;

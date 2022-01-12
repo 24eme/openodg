@@ -11,13 +11,11 @@ class DRevLotsForm extends acCouchdbForm
     {
         $formLots = new BaseForm();
 
-        foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
-            foreach ($lots as $lot) {
-                if($lot->hasBeenEdited()){
-                    continue;
-                }
-                $formLots->embedForm($lot->getKey(), new DRevLotForm($lot));
+        foreach($this->getDocument()->lots as $lot) {
+            if($lot->hasBeenEdited()){
+                continue;
             }
+            $formLots->embedForm($lot->getKey(), new DRevLotForm($lot));
         }
 
         $this->embedForm('lots', $formLots);
@@ -30,6 +28,7 @@ class DRevLotsForm extends acCouchdbForm
 		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
 			$embedForm->doUpdateObject($values['lots'][$key]);
         }
+        $this->getDocument()->cleanLots();
 		$this->getDocument()->lotsImpactRevendication();
 		$this->getDocument()->save();
 	}

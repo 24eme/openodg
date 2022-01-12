@@ -1,12 +1,13 @@
 all:
   configuration:
     facture:
-      aggregateMouvements: false
-      ligneMsg: false
+      ligneUnique: false
+      ligneDetailWithTitle: false
       echeances: false
       all_etablissements: false
       export_sage_width_txt: true
       all_etablissements: true
-      modalite_paiement: "- comptant par virement \\ - virement en 3, 6, 8 ou 9 fois de mars 2020 à novembre 2020 \\ - comptant par chèque \\"
+      modalite_paiement: "- comptant par virement \\ - comptant par chèque \\ - paiement à réception de facture \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      exercice: 'recolte'

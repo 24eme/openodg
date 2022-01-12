@@ -26,8 +26,8 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
     public function getParcellesByDgc($onlyAffectee = false) {
         $parcelles = array();
 
-        foreach($this->getParcelles() as $hash => $parcelle) {
-            //print_r($parcelle->getDgcLibelle());exit();
+        foreach($this as $keyProduit => $produit) {
+          foreach ($produit->detail as $parcelle) {
             $key = str_replace(" ", "-", $parcelle->getDgcLibelle());
 
             if ($onlyAffectee && !$parcelle->affectee) {
@@ -38,6 +38,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
                 $parcelles[$key] = array();
             }
             $parcelles[$key][$parcelle->commune.$parcelle->section.sprintf('%06d', $parcelle->numero_parcelle).$parcelle->getHash()] = $parcelle;
+          }
         }
         ksort($parcelles);
         return $parcelles;

@@ -9,15 +9,17 @@ class ExportCompteCSV_ava implements InterfaceDeclarationExportCsv {
 
     protected $compte = null;
     protected $header = false;
+    protected $region = null;
 
     public static function getHeaderCsv() {
 
         return "numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;code NAF;n° identifiant;n° siret;mise en sommeil;date de création;téléphone;fax;email;site;Région viticole;\n";
     }
 
-    public function __construct($compte, $header = true) {
+    public function __construct($compte, $header = true, $region = null) {
         $this->compte = $compte;
         $this->header = $header;
+        $this->region = $region;
     }
 
     public function getFileName() {
@@ -59,4 +61,8 @@ class ExportCompteCSV_ava implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

@@ -39,6 +39,9 @@ class CompteAllView extends acCouchdbView {
     }
 
     public function findByInterproAndStatut($interpro, $q = null, $limit = 100, $statut = CompteClient::STATUT_ACTIF) {
+      if (!$statut) {
+          return $this->findByInterpro($interpro, $q, $limit);
+      }
       try {
 	return $this->findByInterproELASTIC($interpro, $q, $limit, array(sprintf('statut:%s', $statut)));
       }catch(Exception $e) {
@@ -115,10 +118,18 @@ class CompteAllView extends acCouchdbView {
 
     public static function makeLibelle($datas) {
         $libelle = '';
+        switch ($datas[self::KEY_COMPTE_TYPE]) {
+            case 'INTERLOCUTEUR':
+                $libelle = '👤 ';
+                break;
+            case 'SOCIETE':
+                $libelle = '🏢 ';
+                break;
+            case 'ETABLISSEMENT':
+                $libelle = '🏠 ';
+                break;
+        }
         if (isset($datas[self::KEY_NOM_A_AFFICHER]) && $nom = $datas[self::KEY_NOM_A_AFFICHER]) {
-            if ($libelle) {
-                $libelle .= ' / ';
-            }
             $libelle .= Anonymization::hideIfNeeded($nom);
         }
 

@@ -32,6 +32,10 @@
       <div class="col-xs-7"><?php echo $organisme->getIban(); ?></div>
     </div>
     <div class="row">
+      <div class="col-xs-1">Paiement&nbsp;:</div>
+      <div class="col-xs-11"><?php echo FactureConfiguration::getInstance()->getModaliteDePaiement(); ?></div>
+    </div>
+    <div class="row">
       <div class="col-xs-1">OI :</div>
       <div class="col-xs-7"><?php echo $organisme->getOi(); ?></div>
     </div>
@@ -47,7 +51,8 @@
     <?php endif; ?>
 </div>
 
-
+<h2>Facturation</h2>
+<a href="<?php echo url_for('facturation_template', array('id' => "TEMPLATE-FACTURE-".ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentPeriode())); ?>">Voir le template de facturation <?php echo ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentPeriode() ?></a>
 
 <h2>Produits <a href="<?php echo url_for('produit_nouveau') ?>" class="btn btn-sm btn-default pull-right"><span class="glyphicon glyphicon-plus"></span> Ajouter un produit</a></h2>
 

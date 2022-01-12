@@ -4,6 +4,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
 
     protected $facture = null;
     protected $header = false;
+    protected $que_les_non_verses_comptablement = false;
 
     protected $floatHelper = null;
 
@@ -74,6 +75,9 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
         }
 
         return $csv;
+    }
+
+    public function setExtraArgs($args) {
     }
 
 }

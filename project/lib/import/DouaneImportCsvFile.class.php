@@ -7,7 +7,7 @@ class DouaneImportCsvFile {
     protected $campagne = null;
     protected $configuration = null;
 
-    public function __construct($filePath, $doc = null) {
+    public function __construct($filePath, $doc = null, $drev_produit_filter = null) {
         $this->filePath = $filePath;
         $this->doc = $doc;
         $this->configuration = ConfigurationClient::getConfiguration();
@@ -17,6 +17,7 @@ class DouaneImportCsvFile {
             $this->campagne = ConfigurationClient::getInstance()->buildCampagne(date('Y-m-d'));
         }
         $this->cvi = null;
+        $this->drev_produit_filter = $drev_produit_filter;
         set_time_limit(30000);
     }
 
@@ -35,14 +36,14 @@ class DouaneImportCsvFile {
     	return str_replace(';', ' - ', preg_replace('/^ */', '', preg_replace('/ *$/', '', str_replace(array("\r", "\r\n", "\n"), ' ', html_entity_decode($val)))));
     }
 
-    public static function getNewInstanceFromType($type, $file, $doc = null)  {
+    public static function getNewInstanceFromType($type, $file, $doc = null, $drev_produit_filter = null)  {
         switch ($type) {
             case 'DR':
-                return new DRDouaneCsvFile($file, $doc);
+                return new DRDouaneCsvFile($file, $doc, $drev_produit_filter);
             case 'SV11':
-                return new SV11DouaneCsvFile($file, $doc);
+                return new SV11DouaneCsvFile($file, $doc, $drev_produit_filter);
             case 'SV12':
-                return new SV12DouaneCsvFile($file, $doc);
+                return new SV12DouaneCsvFile($file, $doc, $drev_produit_filter);
         }
 
         return null;
@@ -91,7 +92,7 @@ class DouaneImportCsvFile {
         $doc[] = $this->etablissement->cvi ;
         $doc[] = self::cleanRaisonSociale($this->etablissement->raison_sociale);
         $doc[] = null;
-        $doc[] = $this->etablissement->siege->commune;
+        $doc[] = ($this->etablissement->siege->commune) ? $this->etablissement->siege->commune : $this->etablissement->commune;
       }else {
         $doc[] = ($this->cvi) ? $this->cvi : null;
         $rs = (isset($this->raison_sociale)) ? $this->raison_sociale : null;
@@ -106,62 +107,49 @@ class DouaneImportCsvFile {
       $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($c);
     }
 
+    public function getFamilleCalculeeFromLigneDouane($has_volume_cave = false, $has_volume_coop = false, $has_volume_nego = false) {
+        return DouaneProduction::getFamilleCalculeeFromTypeAndLigneDouane($this->getCsvType(), $has_volume_cave, $has_volume_coop, $has_volume_nego);
+    }
+
+
     public function convertByDonnees() {
         if (!$this->doc->exist('donnees') || count($this->doc->donnees) < 1) {
             return null;
         }
         $csv = '';
         $configuration = ConfigurationClient::getCurrent();
-        $categories = sfConfig::get('app_dr_categories');
         $this->etablissement = EtablissementClient::getInstance()->find($this->doc->identifiant);
         $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($this->doc->campagne);
         if (!$this->etablissement) {
             return null;
         }
-
         $produits = array();
-        $colonnesid = array();
-        $colonneid = 0;
         try {
-            foreach ($this->doc->donnees as $donnee) {
-                if ($produit = $configuration->declaration->get($donnee->produit)) {
-                    $p = array();
-                    if ($donnee->bailleur && $b = EtablissementClient::getInstance()->find($donnee->bailleur)) {
-                        $p[] = $b->raison_sociale;
-                        $p[] = $b->ppm;
-                    } else {
-                        $p[] = null;
-                        $p[] = null;
-                    }
-                    $p[] = $produit->getCertification()->getKey();
-                    $p[] = $produit->getGenre()->getKey();
-                    $p[] = $produit->getAppellation()->getKey();
-                    $p[] = $produit->getMention()->getKey();
-                    $p[] = $produit->getLieu()->getKey();
-                    $p[] = $produit->getCouleur()->getKey();
-                    $p[] = $produit->getCepage()->getKey();
-                    $p[] = $produit->code_douane;
-                    $p[] = $produit->getLibelleFormat();
-                    $p[] = $donnee->complement;
-                    $produitid = join("", $p);
-                    if (!isset($colonnesid[$produitid]) || !$colonnesid[$produitid]) {
-                        $colonnesid[$produitid] = ++$colonneid;
-                    }
+            foreach ($this->doc->getEnhancedDonnees($this->drev_produit_filter) as $donnee) {
+                if ($produit = $donnee->produit_conf) {
+                    $p = $donnee->produit_csv;
                     $p[] = $donnee->categorie;
-                    $p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
+                    $p[] = $donnee->categorie_libelle;
                     $p[] = str_replace('.', ',', $donnee->valeur);
                     if ($donnee->tiers && $t = EtablissementClient::getInstance()->find($donnee->tiers)) {
                         $p[] = $t->cvi;
                         $p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
                         $p[] = null;
-                        $p[] = $t->siege->commune;
+                        $p[] = ($t->siege->commune) ? $t->siege->commune : $t->commune;
                     } else {
                         $p[] = null;
                         $p[] = null;
                         $p[] = null;
                         $p[] = null;
                     }
-                    $p[] = $colonnesid[$produitid];
+                    $p[] = $donnee->colonneid;
+                    $p[] = Organisme::getCurrentOrganisme();
+                    $p[] = $produit->getHash();
+                    $p[] = $donnee->drev_id;
+                    $p[] = $this->doc->_id;
+                    $p[] = $donnee->document_famille;
+                    $p[] = substr($this->campagne, 0, 4);
+                    $p[] = $donnee->colonne_famille;
                     $produits[] = $p;
                 }
             }
@@ -174,4 +162,11 @@ class DouaneImportCsvFile {
         }
         return $csv;
     }
+
+    public function getRelatedDrev() {
+        $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
+        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, $this->drev_produit_filter);
+    }
+
 }

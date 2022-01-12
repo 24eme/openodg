@@ -34,7 +34,7 @@ foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identi
 }
 
 
-$t = new lime_test(33);
+$t = new lime_test(35);
 
 $t->is(MandatSepaConfiguration::getInstance()->getMentionAutorisation(), 'En signant ce formulaire de mandat, vous autorisez (A) le Syndicat des Vins IGP à envoyer des instructions à votre banque pour débiter votre compte, et (B) votre banque à débiter votre compte conformément aux instructions du Syndicat des Vins IGP.', 'autorisation correctement configuré');
 $t->is(MandatSepaConfiguration::getInstance()->getMentionRemboursement(), 'Vous bénéficiez d\'un droit à remboursement par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle. Toute demande de remboursement doit être présentée dans les 8 semaines suivant la date de débit de votre compte ou sans tarder et au plus tard dans les 13 mois en cas de prélèvement non autorisé.', 'remboursement correctement configuré');
@@ -42,6 +42,8 @@ $t->is(MandatSepaConfiguration::getInstance()->getMentionDroits(), 'Vos droits c
 
 $mandatSepa = MandatSepaClient::getInstance()->createDoc($societe);
 $mandatSepa->constructId();
+$mandatSepa->debiteur->iban = ' fr14 90099 09000 00000999999 00';
+$mandatSepa->debiteur->bic = 'cmbppfr';
 $mandatSepa->save();
 $mandaid = $mandatSepa->_id;
 $mandatSepa = MandatSepaClient::getInstance()->find($mandaid);
@@ -65,6 +67,9 @@ $t->is($mandatSepa->debiteur->nom, $societe->raison_sociale, 'nom conforme à la
 $t->is($mandatSepa->debiteur->adresse, $societe->siege->adresse, 'adresse conforme à la societe');
 $t->is($mandatSepa->debiteur->code_postal, $societe->siege->code_postal, 'cp conforme à la societe');
 $t->is($mandatSepa->debiteur->commune, $societe->siege->commune, 'commune conforme à la societe');
+$t->is($mandatSepa->debiteur->iban, 'FR1490099090000000099999900', 'iban correctement stocké en base');
+$t->is($mandatSepa->debiteur->bic, 'CMBPPFR', 'bic correctement stocké en base');
+
 
 $id = 'MANDATSEPA-'.$societe->getIdentifiant().'-'.date('Ymd');
 $t->is($mandatSepa->_id, $id, 'identifiant de mandat SEPA conforme');
@@ -109,7 +114,7 @@ $drev->save();
 //Création de la facture
 $mouvementsBySoc = array($societe->identifiant => FactureClient::getInstance()->getFacturationForSociete($societe));
 $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,array("date_mouvement" => date('Y-m-d')));
-$facture = FactureClient::getInstance()->createDocFromView($mouvementsBySoc[$societe->getIdentifiant()],$societe->getMasterCompte());
+$facture = FactureClient::getInstance()->createDocFromView($mouvementsBySoc[$societe->getIdentifiant()],$societe->getMasterCompte(), null, null, null, TemplateFactureClient::getInstance()->findByCampagne($drev->campagne));
 
 $facture->save();
 $t->is(count($facture->paiements), 1, "La facture générée a bien un paiement");
@@ -134,7 +139,7 @@ $xml = $sepa->getXml();
 $sepa->saveExportedSepa();
 
 $t->is($xml, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.008.001.02\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:iso:std:iso:20022:tech:xsd:pain.008.001.02 pain.008.001.02.xsd\"><CstmrDrctDbtInitn><GrpHdr><MsgId>".date('Y-m-d-h-i-00')."</MsgId><CreDtTm>".$date_generation."</CreDtTm><NbOfTxs>1</NbOfTxs><CtrlSum>89.9</CtrlSum><InitgPty><Nm>Syndicat</Nm><Id><OrgId><Othr><Id>FR123456789123974747 (BICXXXXXX)</Id></Othr></OrgId></Id></InitgPty></GrpHdr><PmtInf><PmtInfId>PAIEMENT-".$facture->paiements[0]->date."</PmtInfId><PmtMtd>DD</PmtMtd><NbOfTxs>1</NbOfTxs><CtrlSum>89.9</CtrlSum><PmtTpInf><SvcLvl><Cd>SEPA</Cd></SvcLvl><LclInstrm><Cd>CORE</Cd></LclInstrm><SeqTp>RCUR</SeqTp></PmtTpInf><ReqdColltnDt>".date('Y-m-d',strtotime($date_generation.'+15 days'))."</ReqdColltnDt><Cdtr><Nm>Syndicat</Nm></Cdtr><CdtrAcct><Id><IBAN>FR123456789123974747 (BICXXXXXX)</IBAN></Id></CdtrAcct><CdtrAgt><FinInstnId><BIC/></FinInstnId></CdtrAgt><ChrgBr>SLEV</ChrgBr><CdtrSchmeId><Id><PrvtId><Othr><Id/><SchmeNm><Prtry>SEPA</Prtry></SchmeNm></Othr></PrvtId></Id></CdtrSchmeId><DrctDbtTxInf><PmtId><EndToEndId>Facture Syndicat</EndToEndId></PmtId><InstdAmt Ccy=\"EUR\">89.9</InstdAmt><DrctDbtTx><MndtRltdInf><MndtId>BDR000005</MndtId><DtOfSgntr>".$date_signature."</DtOfSgntr></MndtRltdInf></DrctDbtTx><DbtrAgt><FinInstnId><BIC/></FinInstnId></DbtrAgt><Dbtr><Nm>SARL ACTUALYS JEAN</Nm></Dbtr><DbtrAcct><Id><IBAN/></Id></DbtrAcct><RmtInf><Ustrd>Facture</Ustrd></RmtInf></DrctDbtTxInf></PmtInf></CstmrDrctDbtInitn></Document>
+<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pain.008.001.02\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:iso:std:iso:20022:tech:xsd:pain.008.001.02 pain.008.001.02.xsd\"><CstmrDrctDbtInitn><GrpHdr><MsgId>".date('Y-m-d-h-i-00')."</MsgId><CreDtTm>".$date_generation."</CreDtTm><NbOfTxs>1</NbOfTxs><CtrlSum>89.9</CtrlSum><InitgPty><Nm>Syndicat</Nm><Id><OrgId><Othr><Id>FR123456789123974747 (BICXXXXXX)</Id></Othr></OrgId></Id></InitgPty></GrpHdr><PmtInf><PmtInfId>PAIEMENT-".$facture->paiements[0]->date."</PmtInfId><PmtMtd>DD</PmtMtd><NbOfTxs>1</NbOfTxs><CtrlSum>89.9</CtrlSum><PmtTpInf><SvcLvl><Cd>SEPA</Cd></SvcLvl><LclInstrm><Cd>CORE</Cd></LclInstrm><SeqTp>RCUR</SeqTp></PmtTpInf><ReqdColltnDt>".date('Y-m-d',strtotime($facture->date_facturation.'+15 days'))."</ReqdColltnDt><Cdtr><Nm>Syndicat</Nm></Cdtr><CdtrAcct><Id><IBAN>FR123456789123974747 (BICXXXXXX)</IBAN></Id></CdtrAcct><CdtrAgt><FinInstnId><BIC/></FinInstnId></CdtrAgt><ChrgBr>SLEV</ChrgBr><CdtrSchmeId><Id><PrvtId><Othr><Id/><SchmeNm><Prtry>SEPA</Prtry></SchmeNm></Othr></PrvtId></Id></CdtrSchmeId><DrctDbtTxInf><PmtId><EndToEndId>Facture ".$facture->numero_odg."</EndToEndId></PmtId><InstdAmt Ccy=\"EUR\">89.9</InstdAmt><DrctDbtTx><MndtRltdInf><MndtId>BDR000005</MndtId><DtOfSgntr>".$date_signature."</DtOfSgntr></MndtRltdInf></DrctDbtTx><DbtrAgt><FinInstnId><BIC>CMBPPFR</BIC></FinInstnId></DbtrAgt><Dbtr><Nm>SARL ACTUALYS JEAN</Nm></Dbtr><DbtrAcct><Id><IBAN>FR1490099090000000099999900</IBAN></Id></DbtrAcct><RmtInf><Ustrd>Facture ".$facture->numero_odg."</Ustrd></RmtInf></DrctDbtTxInf></PmtInf></CstmrDrctDbtInitn></Document>
 ","Le XML généré correspond à notre montant");
 
 $facturesEnAttenteSepa = FactureEtablissementView::getInstance()->getPaiementNonExecuteSepa();
