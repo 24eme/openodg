@@ -28,13 +28,13 @@ EOF;
 
     $appName = $this->configuration->getApplication();
 
-    echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id\n";
+    echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id\n";
 
     foreach(MouvementLotHistoryView::getInstance()->getAllLotsWithHistorique()->rows as $lot) {
       $values = (array)$lot->value;
       $statut = (isset(Lot::$libellesStatuts[$values['statut']]))? Lot::$libellesStatuts[$values['statut']] : $values['statut'];
       $date = preg_split('/( |T)/', $values['date'], -1, PREG_SPLIT_NO_EMPTY);
-      printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+      printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
           $values['initial_type'],
           $values['declarant_identifiant'],
           VarManipulator::protectStrForCsv($values['declarant_nom']),
@@ -50,7 +50,8 @@ EOF;
           VarManipulator::protectStrForCsv($values['detail']),
           $appName,
           $values['document_id'],
-          $values['lot_unique_id']
+          $values['lot_unique_id'],
+          $values['declarant_identifiant'].'-'.$values['lot_unique_id']
       );
     }
   }
