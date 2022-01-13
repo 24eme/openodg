@@ -172,23 +172,28 @@ rm $EXPORTDIR/paiements.csv.part
 
 php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
 cat $EXPORTDIR/lots.csv.part | awk -F ';' 'OFS=";"; {gsub("\\.", " ", $20); print $0; }' | sed 's/ / /g' |  sed 's/CABERNET-SAUVIGNON/CABERNET SAUVIGNON/g' | sed 's/CAB-SAUV-N/CABERNET SAUVIGNON N/' | sed 's/CALADOC"/CALADOC N"/' | sed 's/CAMENèRE N/CAMENÈRE N/' | sed 's/CHARDONAY B/CHARDONNAY B/' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHASAN"/CHASAN B"/' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MERLOT"/MERLOT N"/' | sed 's/MOURVED N/MOURVEDRE N/' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT A B/MUSCAT A PETITS GRAINS B/' | sed 's/MUSCAT À PETITS GRAINS/MUSCAT A PETITS GRAINS/g' | sed 's/MUSCAT D.HAMBOURG N/MUSCAT DE HAMBOURG N/' | sed 's/MUSCAT H N/MUSCAT DE HAMBOURG N/' | sed 's/MUS HAMB N/MUSCAT DE HAMBOURG N/' | sed 's/MUS P G /MUSCAT A PETITS GRAINS /' | sed 's/MUS PT G /MUSCAT A PETITS GRAINS /' | sed 's/Syrah/SYRAH N/' | sed 's/SYRAH"/SYRAH N"/' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VIOGNIER"/VIOGNIER B"/' | sed 's/VIOGNIER"/VIOGNIER B"/g' > $EXPORTDIR/lots_cleancepages.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots_cleancepages.csv.part > $EXPORTDIR/lots.csv
 
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
 
 # Ajouter la hash produit à la fin du fichier lots-historique
-tail -n +2 $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,35,36 | sort -t ";" -k 2,2 > $EXPORTDIR/lots_hash.csv
-tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 16,16 > $EXPORTDIR/lots-historique.csv.sorted
-echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Last doc id;Lot unique Id;Hash produit" > $EXPORTDIR/lots-historique.csv.sorted.join
-join -t ";" -a 1 -1 16 -2 2 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$18; $18=unique_id; $19=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
-
+tail -n +2 $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,36,37 | sort -t ";" -k 2,2 > $EXPORTDIR/lots_hash.csv
+tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 17,17 > $EXPORTDIR/lots-historique.csv.sorted
+echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;Last doc id;Hash produit" > $EXPORTDIR/lots-historique.csv.sorted.join
+join -t ";" -a 1 -1 17 -2 2 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
+
+grep 'Affecté à une dégustation (destination)' $EXPORTDIR/lots-historique.csv.part | sort -t ';' -k 8,8 -r | awk -F ';' '{ uniq = $17 ; if ( ! unicite[uniq] ) { print $17";"$13 ; unicite[uniq] = uniq ; }  }' | sort -t ';' -k 1,1 > $EXPORTDIR/lots-passages.csv
+tail -n +2 $EXPORTDIR/lots_cleancepages.csv.part | sort -t ';' -k 36,36 > $EXPORTDIR/lots_cleancepages.csv.part.sorted
+echo "Origine;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id;Hash produit;Passage" > $EXPORTDIR/lots_cleancepages_passages.csv.part
+join -t ';' -a 1 -1 36 -2 1 $EXPORTDIR/lots_cleancepages.csv.part.sorted  $EXPORTDIR/lots-passages.csv >> $EXPORTDIR/lots_cleancepages_passages.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots_cleancepages_passages.csv.part > $EXPORTDIR/lots.csv
 
 rm $EXPORTDIR/lots-historique.csv.part
 rm $EXPORTDIR/lots-historique.csv.sorted
 rm $EXPORTDIR/lots-historique.csv.sorted.join
 rm $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
+rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted
 
 bash bin/export_docs.sh Degustation 30 $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
