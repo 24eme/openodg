@@ -66,7 +66,7 @@ EOF;
 
                 $campagne = $cviParts[1];
 
-                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi,true);
+                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
 
                 if(!$etablissement) {
                     echo "DREV;ERREUR;$cvi;cvi non trouvé\n";
