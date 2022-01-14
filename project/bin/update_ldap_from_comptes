@@ -23,15 +23,13 @@ if test -f $LOCK_FILE; then
 fi
 touch $LOCK_FILE;
 
-. bin/config.inc
+since=""
 
-since="0"
-
-if test -f $SEQ_FILE ; then
-since=$(cat $SEQ_FILE)
+if test -f $SEQ_FILE && test -n $SEQ_FILE then
+since="since="$(cat $SEQ_FILE)
 fi
 
-curl -s "http://"$COUCHHOST":"$COUCHPORT"/"$COUCHBASE"/_changes?since="$since | grep COMPTE- | sed 's/{"seq"://' | sed 's/,"id":"/ /' | sed 's/".*//'  | while read seq compte ; do
+curl -s "http://"$COUCHHOST":"$COUCHPORT"/"$COUCHBASE"/_changes?"$since | grep COMPTE- | sed 's/{"seq":"*//' | sed 's/"*,"id":"/ /' | sed 's/".*//'  | while read seq compte ; do
 	php symfony compte:ldap-update $SYMFONYTASKOPTIONS $compte
 	echo $seq > $SEQ_FILE
 done
