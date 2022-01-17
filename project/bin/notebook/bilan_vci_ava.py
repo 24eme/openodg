@@ -249,7 +249,7 @@ bilan_infos['vci_desctruction'] = bilan_infos["Destruction_x"]
 bilan_infos['drev_revendique_n'] = round(bilan_infos["Volume revendiqué"].fillna(0) - bilan_infos["Volume revendiqué issu du VCI"].fillna(0), 2)
 bilan_infos['drev_revendique_n-1'] = bilan_infos["Volume revendiqué issu du VCI"]
 bilan_infos['stock_vci_n'] = round(bilan_infos["Stock_y"].fillna(0), 2)
-bilan_infos['rendement_vci_ha_hl'] = round((bilan_infos['stock_vci_n-1'] + bilan_infos['vci_constitue']) / bilan_infos['dr_surface'] * 100, 2)
+bilan_infos['rendement_vci_ha_hl'] = round((bilan_infos['vci_rafraichi'] + bilan_infos['vci_constitue']) / bilan_infos['dr_surface'] * 100, 2)
 
 
 # In[ ]:
