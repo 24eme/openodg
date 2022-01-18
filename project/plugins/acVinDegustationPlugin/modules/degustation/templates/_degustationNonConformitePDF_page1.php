@@ -43,7 +43,7 @@
   <tr><td>Compte tenu de ce résultat, vous pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
-      <li><strong>Soit d’abandonner volontairement la dénomination correspondante</strong> en nous communiquant par fax, courrier ou mail, une déclaration de déclassement au moyen de la fiche jointe.</li><br/>
+      <li><strong>Soit d’abandonner volontairement la dénomination correspondante</strong> en nous communiquant par mail ou courrier, une déclaration de déclassement au moyen de la fiche jointe.</li><br/>
       <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
       <li>Soit de vous opposer aux conclusions de ce contrôle. Dans ce cas, ainsi que le prévoit le plan de contrôle de l'IGP, vous êtes dans l'obligation de transmettre le dossier à l'organisme de contrôle/d'inspection qui diligentera un nouveau contrôle entièrement à votre charge. <?php if (Organisme::getInstance(null, 'degustation')->getOi()): ?><strong>(<?php echo Organisme::getInstance(null, 'degustation')->getOi() ?>)</strong><?php endif ?></li>
       <?php else: ?>
@@ -60,7 +60,7 @@
 </table><br/><br/>
 
 <table>
-<tr><td>Dans tous les cas, il vous appartient de nous retourner, par fax ou par courrier, daté et signé chacun des documents joints avec la mention de votre décision :&nbsp;<strong>Demande de déclassement ou <?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR) ? 'nouveau contrôle OC/OI' : 'nouvelle présentation' ?></strong>.<br/><br/></td></tr><br/>
+<tr><td>Dans tous les cas, il vous appartient de nous retourner, par mail ou courrier, daté et signé chacun des documents joints avec la mention de votre décision :&nbsp;<strong>Demande de déclassement ou <?php echo ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR) ? 'nouveau contrôle OC/OI' : 'nouvelle présentation' ?></strong>.<br/><br/></td></tr><br/>
   <tr><td>Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.</td></tr><br/>
   <tr><td>Pour toutes informations, merci de nous contacter.</td></tr><br/>
 </table>
