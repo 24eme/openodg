@@ -7,6 +7,7 @@
 class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     private $societe = NULL;
+    private $cacheEtablissement;
 
     public function constructId() {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
@@ -334,6 +335,15 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getEtablissement() {
+        if (!$this->cacheEtablissement) {
+            $this->cacheEtablissement = $this->getEtablissementReal();
+        }
+        return $this->cacheEtablissement;
+
+    }
+
+
+    public function getEtablissementReal() {
         if($this->isSocieteContact()) {
             $societe = $this->getSociete();
 
