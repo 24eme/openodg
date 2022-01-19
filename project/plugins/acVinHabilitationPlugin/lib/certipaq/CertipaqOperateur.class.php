@@ -59,6 +59,9 @@ class CertipaqOperateur extends CertipaqService
                     $hab->dr_cdc = CertipaqDeroulant::getInstance()->keyid2obj('dr_cdc_id', $hab->dr_cdc_id);
                 }
             }
+            $h = (array) $value->habilitations;
+            usort($h, "CertipaqDI::orderHabilitations");
+            $value->habilitations = $h;
         }
         return $res;
     }
