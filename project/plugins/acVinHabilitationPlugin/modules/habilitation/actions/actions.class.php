@@ -615,4 +615,26 @@ class habilitationActions extends sfActions {
         $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
     }
 
+    public function executeCertipaqDiff(sfWebRequest $request) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+
+            throw new sfError403Exception();
+        }
+
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+
+        $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
+
+        if($this->getUser()->isAdmin()) {
+            $this->filtre = $request->getParameter('filtre');
+        } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+            $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
+        }
+
+        $this->certipaq_operateur = CertipaqOperateur::getInstance()->findByEtablissement($this->etablissement);
+        $this->pseudo_operateur = (object) CertipaqDI::getInstance()->getOperateurFromHabilitation($this->habilitation);
+
+    }
+
 }

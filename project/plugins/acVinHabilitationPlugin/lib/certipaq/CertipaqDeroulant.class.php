@@ -51,6 +51,26 @@ class CertipaqDeroulant extends CertipaqService
         return null;
     }
 
+    public function findHabilitation($habilitation_libelle) {
+        $habs = $this->getListeHabilitation();
+        foreach($habs as $id => $h) {
+            if (
+                    strpos(strtoupper($h->libelle), strtoupper($habilitation_libelle)) === false
+                  &&
+                    strpos(strtoupper($h->cle), strtoupper($habilitation_libelle)) === false
+                ) {
+                $to_delete[] = $id;
+            }
+        }
+        foreach($to_delete as $id) {
+            unset($habs[$id]);
+        }
+        if (count($habs) == 1) {
+            return array_values($habs)[0];
+        }
+        return null;
+    }
+
     public function getListeTypeControle()
     {
         return $this->queryAndRes2hashid('dr/type_controle');
