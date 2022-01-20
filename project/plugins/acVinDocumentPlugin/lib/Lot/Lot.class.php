@@ -751,14 +751,22 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getUniqueId(){
         if(is_null($this->_get('unique_id'))) {
-            $this->set('unique_id', strtolower(KeyInflector::slugify($this->campagne."-".$this->numero_dossier.'-'.$this->numero_archive)));
+            if (!$this->campagne) {
+                $this->campagne = $this->getDocument()->campagne;
+            }
+            if (!$this->numero_dossier) {
+                $this->numero_dossier = $this->getDocument()->numero_archive;
+            }
+            if ($this->campagne && $this->numero_dossier && $this->numero_archive) {
+                $this->set('unique_id', strtolower(KeyInflector::slugify($this->campagne."-".$this->numero_dossier.'-'.$this->numero_archive)));
+            }
         }
 
         return $this->_get('unique_id');
     }
 
     public function setCampagne($campagne) {
-        $this->unique_id = null;
+        $this->resetUniqueId();
 
         $this->_set('campagne', $campagne);
 
@@ -766,19 +774,21 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function setNumeroArchive($numeroArchive) {
-        $this->unique_id = null;
-
+        $this->resetUniqueId();
         $this->_set('numero_archive', $numeroArchive);
 
         $this->getUniqueId();
     }
 
     public function setNumeroDossier($numeroDossier) {
-        $this->unique_id = null;
-
+        $this->resetUniqueId();
         $this->_set('numero_dossier', $numeroDossier);
 
         $this->getUniqueId();
+    }
+
+    public function resetUniqueId() {
+        return $this->_set('unique_id', null);
     }
 
     public function buildMouvement($statut, $detail = null, $date = null, $numero_archive_incremente = false) {

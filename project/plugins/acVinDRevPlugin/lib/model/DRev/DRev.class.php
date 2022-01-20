@@ -1463,7 +1463,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
         }
         $this->archivage_document->preSave();
-        $this->archiverLot($this->numero_archive);
+        $this->archiverLot();
     }
 
   /*** ARCHIVAGE ***/
@@ -1478,8 +1478,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $this->isValidee();
   }
 
-  public function archiverLot($numeroDossier) {
+  public function archiverLot() {
       $lots = array();
+      if (!$this->numero_archive) {
+          throw new sfException("Ne peut archiver les lots sans numero d'archive dans la DRev");
+      }
       foreach($this->lots as $lot) {
         if ($lot->numero_archive) {
             continue;
@@ -1496,8 +1499,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
       foreach($lots as $lot) {
           $num++;
+          $lot->numero_dossier = $this->numero_archive;
           $lot->numero_archive = sprintf("%05d", $num);
-          $lot->numero_dossier = $numeroDossier;
       }
       DeclarationClient::getInstance()->clearCache();
   }
@@ -1562,24 +1565,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getVolumeRevendiqueNumeroDossierDiff($produitFilter = null)
     {
         $lots = [];
-        $lotsmodifs = [];
+        $lotsmodifsvolumes = [];
         $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
             if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
                 continue;
             }
-
-            if ($lot->numero_dossier === $this->numero_archive) {
+            if ($lot->numero_dossier === $this->numero_archive && $lot->id_document == $this->getDocument()->_id) {
                 $original_volume = $lot->getOriginalVolumeIfModifying();
                 $lots[] = $lot;
-                if ($original_volume) {
-                    $lotsmodifs[] = $lot;
+                if ($original_volume !== false) {
+                    $lotsmodifsvolumes[] = $lot;
                     $volume_mod += $original_volume;
                 }
             }
         }
-        if ($volume_mod) {
-            $lots = $lotsmodifs;
+        if (count($lotsmodifsvolumes)) {
+            $lots = $lotsmodifsvolumes;
         }
         $volume = $this->getInternalVolumeRevendique($lots, $produitFilter);
 
@@ -1587,7 +1589,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $volume_mod += $lot->volume;
         }
 
-        if($volume_mod === 0 && !$this->isFirstNumeroDossier()) {
+        if(count($lotsmodifsvolumes) === 0 && !$this->isFirstNumeroDossier()) {
 
             return 0;
         }

@@ -169,4 +169,11 @@ class DRevLot extends BaseDRevLot
         return $diff[$this->getHash()."/volume"];
     }
 
+    public function setUniqueId($ui) {
+        if (!$ui) {
+            throw new sfException("setUniqueId empty");
+        }
+        return $this->_set('unique_id', $ui);
+    }
+
 }
