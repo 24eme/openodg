@@ -1576,17 +1576,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $lots[] = $lot;
                 if ($original_volume !== false) {
                     $lotsmodifsvolumes[] = $lot;
-                    $volume_mod += $original_volume;
                 }
+                $volume_mod += $lot->volume - $original_volume;
             }
         }
-        if (count($lotsmodifsvolumes)) {
-            $lots = $lotsmodifsvolumes;
-        }
-        $volume = $this->getInternalVolumeRevendique($lots, $produitFilter);
 
         foreach($this->getDeletedLots() as $lot) {
-            $volume_mod += $lot->volume;
+            $volume_mod -= $lot->volume;
         }
 
         if(count($lotsmodifsvolumes) === 0 && !$this->isFirstNumeroDossier()) {
@@ -1594,7 +1590,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return 0;
         }
 
-        return $volume - $volume_mod;
+        return $volume_mod;
     }
 
     public function isFirstNumeroDossier() {

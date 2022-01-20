@@ -150,6 +150,9 @@ class DRevLot extends BaseDRevLot
     }
 
     public function getOriginalVolumeIfModifying() {
+        if ($this->getDocument()->isFirstNumeroDossier()){
+            return 0;
+        }
         $diff = $this->getDocument()->getDiffLotVolume();
         if (!count($diff)) {
             return false;
@@ -165,6 +168,9 @@ class DRevLot extends BaseDRevLot
                 return $diff[$hash . "/volume"];
             }
             return false;
+        }
+        if (!isset($diff[$this->getHash()."/volume"])) {
+            return $this->volume;
         }
         return $diff[$this->getHash()."/volume"];
     }

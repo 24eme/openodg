@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test(66);
+$t = new lime_test(73);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
@@ -355,9 +355,42 @@ foreach($drevM09->mouvements->get($drev->identifiant) as $m) {
 $t->is($getVolumeRevendiqueNumeroDossier_quantite, 18, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M01 : -18");
 $t->is($getVolumeLotsFacturables_quantite, 18, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M01 : -18");
 
+$t->comment("Modification d'autre chose que du volume");
+$lot = clone $drevM09->lots[0];
+$lot->volume = 20;
+LotsClient::getInstance()->modifyAndSave($lot);
+$drevM10 = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($viti->identifiant, $periode);
+$drevM10->lots[1]->numero_logement_operateur = 'XX12';
+$drevM10->lots[1]->id_document = $drevM10->_id;
+$drevM10->save();
+$drevM10->devalidate();
+$drevM10->save();
+$drevM10->validate();
+$drevM10->validateOdg();
+$drevM10->save();
+$t->is($drevM10->lots[0]->volume, 20, "le nouveau volume de 10 est bien enregistré");
+$t->is($drevM10->lots[0]->getOriginalVolumeIfModifying(), 10, "l'ancien volume de 0 est trouvé");
+$t->is($drevM10->lots[1]->volume, 50, "le volume du lot modifié de 50 est bon");
+$t->is($drevM10->lots[1]->getOriginalVolumeIfModifying(), 50, "l'ancien volume de 50 est trouvé");
+
+$diff = $drevM10->getDiffLotVolume();
+$t->is(count($diff), 1, "la modification a bien généré 1 différence");
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drevM10->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
+    }
+}
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, 10, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M08 : 10");
+$t->is($getVolumeLotsFacturables_quantite, 10, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M08 : 10");
+
+
 $t->comment("Création d'un changement de dénomination");
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $drevM07->lots[0], $drevM07->getDate(), null);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $drevM10->lots[0], $drevM10->getDate(), null);
 $chgtDenom->changement_volume = 4;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
 $chgtDenom->validate();
