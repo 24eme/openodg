@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test(73);
+$t = new lime_test(80);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
@@ -387,10 +387,42 @@ foreach($drevM10->mouvements->get($drev->identifiant) as $m) {
 $t->is($getVolumeRevendiqueNumeroDossier_quantite, 10, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M08 : 10");
 $t->is($getVolumeLotsFacturables_quantite, 10, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M08 : 10");
 
+$t->comment("suppression du dernier lot avec bidouillage de numero d'archive (cas Vaucluse)");
+
+$drevM11 = $drevM10->generateModificative();
+$drevM11->numero_archive = $drevM10->numero_archive;
+unset($drevM11->lots[2]);
+$drevM11->save();
+$drevM11 = DRevClient::getInstance()->find($drevM11->_id);
+$drevM11->validate();
+$drevM11->validateOdg();
+$drevM11->save();
+
+$diff = $drevM11->getDiffLotVolume();
+$t->is(count($diff), 2, "la modification a bien généré trois différences (2 de volumes, un unique_id)");
+$t->is($diff['/lots/2/volume'], 168, "la diff de volume donnne bien l'ancien volume du lot 1");
+
+$deletedlots = $drevM11->getDeletedLots();
+$t->is(count($deletedlots), 1, "on repère bien le supprimé");
+$t->is($deletedlots[0]->unique_id, $diff['/lots/2/unique_id'], "c'est le bon unique_id supprimé");
+$t->is($deletedlots[0]->volume, 168, "c'est le bon volume supprimé");
+$getVolumeRevendiqueNumeroDossier_quantite = null;
+$getVolumeLotsFacturables_quantite = null;
+foreach($drevM11->mouvements->get($drev->identifiant) as $m) {
+    if($m->type_hash == '01_getVolumeRevendiqueNumeroDossier') {
+        $getVolumeRevendiqueNumeroDossier_quantite = $m->quantite;
+    }elseif ($m->type_hash == '02_getVolumeLotsFacturables') {
+        $getVolumeLotsFacturables_quantite = $m->quantite;
+    }
+}
+$t->is($getVolumeRevendiqueNumeroDossier_quantite, -168, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" du seul modifié M11 : -168");
+$t->is($getVolumeLotsFacturables_quantite, -168, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" du seul modifié M11 : -168");
+
+
 
 $t->comment("Création d'un changement de dénomination");
 
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $drevM10->lots[0], $drevM10->getDate(), null);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $drevM11->lots[0], $drevM11->getDate(), null);
 $chgtDenom->changement_volume = 4;
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_DECLASSEMENT;
 $chgtDenom->validate();

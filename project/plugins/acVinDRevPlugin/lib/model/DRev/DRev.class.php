@@ -1581,11 +1581,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
 
+        $deleted = false;
         foreach($this->getDeletedLots() as $lot) {
             $volume_mod -= $lot->volume;
+            $deleted = true;
         }
 
-        if(count($lotsmodifsvolumes) === 0 && !$this->isFirstNumeroDossier()) {
+        if(!$deleted && count($lotsmodifsvolumes) === 0 && !$this->isFirstNumeroDossier()) {
 
             return 0;
         }
