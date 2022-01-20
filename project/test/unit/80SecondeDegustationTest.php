@@ -165,7 +165,7 @@ $t->ok($lot_degust1->affectable, "Le lot est affectable");
 $t->ok($lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot a un mouvement affectable");
 $t->ok(!$lot_degust1->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot n'a pas encore de mouvement affecte source");
 
-$t->is($lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE)->detail, '2ème passage', "Le mouvement en attente de redégustation provenant de la 1ère dégustation est indiqué comme en attente de 2ème dégustation");
+$t->is($lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE)->detail, '2me passage', "Le mouvement en attente de redégustation provenant de la 1ère dégustation est indiqué comme en attente de 2ème dégustation");
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $lotsEnManquement = DegustationClient::getInstance()->getManquements();
