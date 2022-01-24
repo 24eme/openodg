@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test(80);
+$t = new lime_test(81);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
@@ -464,3 +464,5 @@ $chgtDenom->save();
 
 $mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst();
 $t->is($mouvChgtDenom->taux, 15, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 2ème changement de dénomination est de 15 €");
+
+$t->fail('CotisationFixe getNbLieuxPrelevements ne doit pas renvoyé 1 sur une lot modifié');
