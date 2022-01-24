@@ -26,7 +26,7 @@
           </div>
       </div>
     </div>
-    <?php foreach($facture->paiements as $p): if ($p->versement_comptable):?>
+    <?php foreach($facture->paiements as $p): if ($p->versement_comptable || ( $p->type_reglement == FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO && $p->execute )):?>
         <hr/>
         <div class="row">
           <div class="form-group col-xs-12">
