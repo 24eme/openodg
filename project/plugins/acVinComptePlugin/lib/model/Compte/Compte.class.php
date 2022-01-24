@@ -782,7 +782,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getCodeComptable(){
-      return $this->getSociete()->getCodeComptable();
+      return ($this->getSociete())? $this->getSociete()->getCodeComptable() : null;
     }
 
     public function getTagsDegustateur()
