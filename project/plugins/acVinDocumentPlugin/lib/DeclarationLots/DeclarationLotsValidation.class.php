@@ -70,8 +70,8 @@ abstract class DeclarationLotsValidation extends DocumentValidation
               foreach ($lot->cepages as $cepage => $v) {
                 $somme+=$v;
               }
-              if($somme != $lot->volume){
-                $this->addPoint(self::TYPE_FATAL, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+              if(round($somme, 2) != round($lot->volume, 2)){
+                $this->addPoint(self::TYPE_FATAL, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".round($lot->volume, 2)." hl vs cépage ".round($somme, 2)." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               }
             }
 
