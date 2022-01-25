@@ -18,11 +18,19 @@ class GenericLatex {
   }
 
   private function getLatexDestinationDir() {
-    return sfConfig::get('sf_root_dir')."/data/latex/";
+    $latex_dir = sfConfig::get('sf_app_cache_dir')."/latex/";
+    if (!file_exists($latex_dir)){
+        mkdir($latex_dir, 0770, true);
+    }
+    return $latex_dir;
   }
-  
+
   protected function getTEXWorkingDir() {
-    return "/tmp/";
+      $tmp_dir = sfConfig::get('sf_app_cache_dir')."/tmp/";
+      if (!file_exists($tmp_dir)){
+          mkdir($tmp_dir, 0770, true);
+      }
+    return $tmp_dir;
   }
 
   public function generatePDF() {
