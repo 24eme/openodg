@@ -174,9 +174,6 @@
 
 <?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
 \begin{center}
-\\\vspace{2cm}
-\flushleft \textbf{\large{Encours de règlement}}}
-\\\vspace{0.5cm}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|m{5cm}|>{\raggedleft}m{8cm}|>{\raggedleft}m{5cm}|}
   \hline
