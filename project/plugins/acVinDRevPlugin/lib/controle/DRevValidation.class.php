@@ -157,10 +157,14 @@ class DRevValidation extends DeclarationLotsValidation
         }
         $produits_manquants = array();
         foreach($this->document->getProduits() as $produit) {
-            if(!$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')) {
+            $pourcentage = $produit->getConfig()->getAttribut('engagement_parcelles_manquantes');
+            if(!$pourcentage) {
                 continue;
             }
-            @$produits_manquants[$produit->getConfig()->getAttribut('engagement_parcelles_manquantes')][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
+            if (!constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF") || !constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")) {
+                throw new sfException("engagement_parcelles_manquantes $pourcentage pour ".$produit->getLibelle()." (".$produit->getConfig()->getDocument()->_id.") ne correspond pas à une constante connue (DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP)");
+            }
+            @$produits_manquants[$pourcentage][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
         }
 
         if(!count($produits_manquants)) {
