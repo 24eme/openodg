@@ -19,6 +19,10 @@ millesime = str(datetime.now().year - 1)
 if(len(sys.argv) > 2 and re.search("^[0-9]{4}$", sys.argv[2])):
     millesime = sys.argv[2]
     
+outputdir = path_igp+'/stats/'+millesime
+if(not os.path.isdir(outputdir)):
+    os.mkdir(outputdir)   
+    
 millesime_precedent = str(int(millesime) - 1)
 
 moisjour = "12-31"
@@ -79,5 +83,5 @@ stat_igp['VRC ' + millesime_precedent] = lots_conforme[(lots_conforme['Millésim
 # In[ ]:
 
 
-stat_igp.reset_index().to_csv(path_igp+"/stats/igp_stats_vrc-vrt_"+millesime+"_"+date_fin_courant+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+stat_igp.reset_index().to_csv(outputdir+"/igp_stats_vrc-vrt_"+millesime+"_"+date_fin_courant+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 
