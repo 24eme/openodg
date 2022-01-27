@@ -26,6 +26,7 @@ if(len(sys.argv)>2):
     
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir+'/stats/'+millesime
+
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)
     
