@@ -84,5 +84,5 @@ stat_igp['VRC ' + millesime_precedent] = lots_conforme[(lots_conforme['Millésim
 # In[ ]:
 
 
-stat_igp.reset_index().to_csv(outputdir+"/igp_stats_vrc-vrt_"+millesime+"_"+date_fin_courant+".csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
+stat_igp.reset_index().to_csv(outputdir+"/"+date_fin_courant+"_"+millesime+"_igp_stats_vrc-vrt.csv", encoding="iso8859_15", sep=";", index=False, decimal=",")
 
