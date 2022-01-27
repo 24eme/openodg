@@ -26,7 +26,8 @@ if(len(sys.argv)>2):
     
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir+'/stats/'+millesime
-os.mkdir(outputdir)
+if(not os.path.isdir(outputdir)):
+    os.mkdir(outputdir)
     
 datelimite = str(datetime.now().year)+'-08-01'
 datelimite_exact = str(datetime.now().year)+'-07-31'
@@ -103,7 +104,7 @@ lots_ini = lots
 
 lots = lots[lots["Date lot"] < datelimite]  
 
-degustations = degustations.query("Millesime == @millesime");
+degustations = degustations.query("Millésime == @millesime");
 degustations = degustations.fillna("")
 
 lignes_volume_instance_controle = pd.merge(lignes_volume_revendique,degustations, how='left', left_on = ["Identifiant",'Lot unique Id'], right_on = ["Id Opérateur",'Lot unique Id'],suffixes=("", " lots"))
