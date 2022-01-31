@@ -17,11 +17,11 @@ if(len(sys.argv)<2):
     exit()
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
+today= datetime.now()
 
 if(len(sys.argv)>2):
     millesime = sys.argv[2]
 else:
-    today= datetime.now()
     debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
     millesime = str(debutcampagne.year)
     
@@ -32,8 +32,8 @@ if(len(sys.argv)>3):
         datemax = str(int(millesime)+2)+'-01-01'
         datemax_exact = str(int(millesime)+1)+'-12-31'
 else:
-    datemax = str(int(millesime)+1)+'-08-01'
-    datemax_exact =  str(int(millesime)+1)+'-07-31'
+    datemax = str(int(today.year))+'-01-01'
+    datemax_exact =  str(int(today.year)-1)+'-12-31'
     
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir+'/stats/'+millesime
@@ -55,7 +55,7 @@ changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changem
 changement_deno = changement_deno[changement_deno["Date de validation ODG"] < datemax]
 if ("datemin" in locals()): changement_deno = changement_deno[changement_deno["Date de validation ODG"] > datemin]
 
-degustations = pd.read_csv(exportdir+"/degustations.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
+lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 
 
 # In[ ]:
@@ -78,23 +78,23 @@ final = drev_lots
 
 
 
-degustations = degustations.query("Millésime == @millesime")
-degustations = degustations[degustations["Date"] < datemax]
-if ("datemin" in locals()) : degustations = degustations[ degustations["Date"] > datemin]
+lots = lots.query("Millésime == @millesime")
+lots = lots[lots["Date lot"] < datemax]
+if ("datemin" in locals()) : lots = lots[lots["Date lot"] > datemin]
 
 conforme = "Conforme"
 rep_conforme = "Réputé conforme"
-#en_recours="En recours OC"
+conforme_appel="Conforme en appel"
+elevage="En élevage"
 
-degustations = degustations.rename(columns = {'Statut de lot': 'Statut_de_lot'})
-degustations = degustations.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme");      
-# & Statut_de_lot != @en_recours
+lots = lots.rename(columns = {'Statut de lot': 'Statut_de_lot'})
+lots = lots.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme & Statut_de_lot != @conforme_appel & Statut_de_lot != @elevage");
 
-degustations['Lieu'] = degustations['Lieu'].fillna('')
-degustations = degustations.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
-degustations['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
-degustations = degustations.reset_index()
-final = final.append(degustations,sort= True)
+lots['Lieu'] = lots['Lieu'].fillna('')
+lots = lots.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
+lots['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
+lots = lots.reset_index()
+final = final.append(lots,sort= True)
 
 
 # In[ ]:
