@@ -61,9 +61,6 @@ lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", 
 changement_denomination = pd.read_csv(exportdir+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
 changement_denomination = changement_denomination[changement_denomination["Date de validation ODG"] < datelimite]
 
-degustations = pd.read_csv(exportdir+"/degustations.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
-degustations = degustations[degustations["Date"] < datelimite]
-
 
 # In[ ]:
 
@@ -105,11 +102,8 @@ lots_ini = lots
 
 lots = lots[lots["Date lot"] < datelimite]  
 
-degustations = degustations.query("Millésime == @millesime");
-degustations = degustations.fillna("")
-
-lignes_volume_instance_controle = pd.merge(lignes_volume_revendique,degustations, how='left', left_on = ["Identifiant",'Lot unique Id'], right_on = ["Id Opérateur",'Lot unique Id'],suffixes=("", " lots"))
-lignes_volume_instance_controle = lignes_volume_instance_controle[(lignes_volume_instance_controle['Statut de lot'] != "Conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Réputé conforme")]
+lignes_volume_instance_controle = pd.merge(lignes_volume_revendique,lots, how='left', left_on = ["Identifiant",'Lot unique Id'], right_on = ["Id Opérateur",'Lot unique Id'],suffixes=("", " lots"))
+lignes_volume_instance_controle = lignes_volume_instance_controle[(lignes_volume_instance_controle['Statut de lot'] != "Conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Réputé conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Conforme en appel") & (lignes_volume_instance_controle['Statut de lot'] != "En élevage")]
 
 lignes_volume_instance_controle = lignes_volume_instance_controle.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id'])[["Volume"]].sum()
 lignes_volume_instance_controle = lignes_volume_instance_controle.reset_index()
