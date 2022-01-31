@@ -57,6 +57,7 @@ drev_lots = drev_lots[drev_lots["Date lot"] < datelimite]
 etablissements = pd.read_csv(exportdir+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
 societe = pd.read_csv(exportdir+"/societe.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Téléphone' :'str', 'Téléphone portable': 'str'}, index_col=False, low_memory=False)
 lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", index_col=False, low_memory=False)
+lots = lots.rename(columns = {'Id Opérateur':'Identifiant'})
 
 changement_denomination = pd.read_csv(exportdir+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
 changement_denomination = changement_denomination[changement_denomination["Date de validation ODG"] < datelimite]
@@ -100,9 +101,10 @@ lots = lots.query("Millésime == @millesime");
 lots = lots.fillna("")
 lots_ini = lots
 
-lots = lots[lots["Date lot"] < datelimite]  
+lots = lots[lots["Date lot"] < datelimite]
+lots = lots[lots["Volume"] > 0]
 
-lignes_volume_instance_controle = lots[(lignes_volume_instance_controle['Statut de lot'] != "Conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Réputé conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Conforme en appel") & (lignes_volume_instance_controle['Statut de lot'] != "En élevage")]
+lignes_volume_instance_controle = lots[(lots['Statut de lot'] != "Conforme") & (lots['Statut de lot'] != "Réputé conforme") & (lots['Statut de lot'] != "Conforme en appel") & (lots['Statut de lot'] != "En élevage")]
 lignes_volume_instance_controle = lignes_volume_instance_controle.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id'])[["Volume"]].sum()
 lignes_volume_instance_controle = lignes_volume_instance_controle.reset_index()
 
@@ -230,9 +232,9 @@ tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Volume','Lie
 
 # Pour comparer A-B avec la somme des volumes de lots.csv
 
-lots_init = lots_ini.groupby(['Id Opérateur','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
-lots_init = lots_init.reset_index(level=['Id Opérateur','Appellation','Couleur','Produit','Lieu'])
-lots_init = lots_init.rename(columns = {'Id Opérateur':'Identifiant','Volume':'Somme Volume lots.csv'})
+lots_init = lots_ini.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
+lots_init = lots_init.reset_index(level=['Identifiant','Appellation','Couleur','Produit','Lieu'])
+lots_init = lots_init.rename(columns = {'Volume':'Somme Volume lots.csv'})
 
 tab_cal = pd.merge(tab_cal,lots_init,how='left', left_on=['Identifiant','Appellation','Couleur','Produit','Lieu'], right_on = ['Identifiant','Appellation','Couleur','Produit','Lieu'],suffixes=("", " lots"))
 tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
