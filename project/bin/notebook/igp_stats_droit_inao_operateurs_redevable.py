@@ -102,9 +102,7 @@ lots_ini = lots
 
 lots = lots[lots["Date lot"] < datelimite]  
 
-lignes_volume_instance_controle = pd.merge(lignes_volume_revendique,lots, how='left', left_on = ["Identifiant",'Lot unique Id'], right_on = ["Id Opérateur",'Lot unique Id'],suffixes=("", " lots"))
-lignes_volume_instance_controle = lignes_volume_instance_controle[(lignes_volume_instance_controle['Statut de lot'] != "Conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Réputé conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Conforme en appel") & (lignes_volume_instance_controle['Statut de lot'] != "En élevage")]
-
+lignes_volume_instance_controle = lots[(lignes_volume_instance_controle['Statut de lot'] != "Conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Réputé conforme") & (lignes_volume_instance_controle['Statut de lot'] != "Conforme en appel") & (lignes_volume_instance_controle['Statut de lot'] != "En élevage")]
 lignes_volume_instance_controle = lignes_volume_instance_controle.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id'])[["Volume"]].sum()
 lignes_volume_instance_controle = lignes_volume_instance_controle.reset_index()
 
