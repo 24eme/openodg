@@ -320,7 +320,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $pieces[] = [
                 'identifiant' => $lot->declarant_identifiant,
-                'date_depot' => $lot->email_envoye,
+                'date_depot' => $this->date,
                 'libelle' => $libelle,
                 'mime' => Piece::MIME_PDF,
                 'visibilite' => 1,
