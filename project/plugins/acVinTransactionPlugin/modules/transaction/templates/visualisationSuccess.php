@@ -49,7 +49,7 @@
 
 <?php if (TransactionConfiguration::getInstance()->hasDegustation() && $transaction->exist("date_degustation_voulue")): ?>
     <h3>Controle</h3>
-    <p style="margin-bottom: 30px;">Date de controle souhaitée : <?php echo ($transaction->date_degustation_voulue)     ? date_format(date_create($transaction->validation), 'd/m/Y') : null;?></p>
+    <p style="margin-bottom: 30px;">Date de controle souhaitée (hors lots en élevage) : <?php echo ($transaction->date_degustation_voulue)     ? date_format(date_create($transaction->validation), 'd/m/Y') : null;?></p>
 <?php endif ?>
 <div class="row row-margin row-button">
     <div class="col-xs-4">
