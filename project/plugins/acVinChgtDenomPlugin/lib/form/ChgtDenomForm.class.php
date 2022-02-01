@@ -41,6 +41,11 @@ class ChgtDenomForm extends acCouchdbObjectForm
         parent::doUpdateObject($values);
         $this->getObject()->changement_type = $values['changement_type'];
         $this->getObject()->changement_produit_hash = null;
+
+        if ($this->getObject()->isChgtDenomination() && ! $values['changement_produit_hash']) {
+            throw new sfValidatorError($this, 'invalid', ['value' => $values['changement_produit_hash']]);
+        }
+
         if ($values['changement_produit_hash'] && !$this->getObject()->isDeclassement()) {
             $this->getObject()->changement_produit_hash = $values['changement_produit_hash'];
         }
