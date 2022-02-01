@@ -43,7 +43,7 @@ class ChgtDenomForm extends acCouchdbObjectForm
         $this->getObject()->changement_produit_hash = null;
 
         if ($this->getObject()->isChgtDenomination() && ! $values['changement_produit_hash']) {
-            throw new sfValidatorError($this, 'invalid', ['value' => $values['changement_produit_hash']]);
+            throw new sfException('Il faut mettre un produit dans un changement de dénomination');
         }
 
         if ($values['changement_produit_hash'] && !$this->getObject()->isDeclassement()) {
