@@ -246,6 +246,12 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 ?>
 <h3 id="synthese_produit">Synthèse par produits habilités</h3>
 
+<?php if (! HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant)): ?>
+    <div class="alert alert-warning" role="alert">
+    L'opérateur n'a pas d'<a href="<?php echo url_for('habilitation_declarant', ['identifiant' => $etablissement->identifiant]) ?>">habilitation</a>
+    </div>
+<?php endif ?>
+
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
     <tr>
