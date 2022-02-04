@@ -57,7 +57,7 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
         }
         foreach ($items as $compteId => $val) {
             if (isset($val['selectionne']) && !empty($val['selectionne'])) {
-                $doc->addDegustateur($compteId, $college, false);
+                $doc->addDegustateur($compteId, $college);
             }
         }
     }
