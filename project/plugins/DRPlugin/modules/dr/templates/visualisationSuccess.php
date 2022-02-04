@@ -59,7 +59,7 @@
                 </a>
             <?php else : ?>
                 <a href="<?= url_for('dr_enattente_admin', ['id' => $dr->_id]) ?>" class="btn btn-default">
-                    <?= $dr->statut_odg ? 'Enlever la mise en attente' : 'Mise en attente' ?>
+                    <?= ($dr->exist('statut_odg') && $dr->statut_odg) ? 'Enlever la mise en attente' : 'Mise en attente' ?>
                 </a>
                 <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-success">
                     Valider la DR
