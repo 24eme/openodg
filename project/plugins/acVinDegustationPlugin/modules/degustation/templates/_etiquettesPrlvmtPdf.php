@@ -27,7 +27,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 14.5px; line-height: 14px; overflow: hidden;" ><strong><?php if ($i != 2 || !$anonymat4labo): ?><?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->lot->declarant_nom, 30, '…') : "Leurre";  ?><?php endif; ?></strong></td>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 14.5px; line-height: 14px; overflow: hidden;" ><strong><?php if ($i != 2 || !$anonymat4labo): ?><?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->lot->declarant_nom, 30, '…', 'middle') : "Leurre";  ?><?php endif; ?></strong></td>
                   </tr>
                   <tr>
                     <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 14px; line-height: 14px; overflow: hidden;">
