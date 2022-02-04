@@ -535,6 +535,15 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return $donnees;
     }
 
+    public function switchEnAttente()
+    {
+        if (! $this->exist('statut_odg')) {
+            $this->add('statut_odg', null);
+        }
+
+        $this->statut_odg = ($this->statut_odg) ? null : DRClient::STATUT_EN_ATTENTE;
+    }
+
     public function validateOdg($date = null)
     {
         $this->add('validation_odg');

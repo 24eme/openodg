@@ -46,6 +46,24 @@ class drActions extends sfActions
         return $this->redirect('dr_visualisation', $this->dr);
     }
 
+    public function executeEnattenteAdmin(sfWebRequest $request)
+    {
+        $this->dr = $this->getRoute()->getDR();
+
+        if (! $this->getUser()->isAdmin()) {
+            return $this->forwardSecure();
+        }
+
+        if ($this->dr->exist('validation_odg') && $this->dr->validation_odg) {
+            throw new sfException('La DR doit pas être validée ODG pour permettre la mise en attente');
+        }
+
+        $this->dr->switchEnAttente();
+        $this->dr->save();
+
+        return $this->redirect('dr_visualisation', $this->dr);
+    }
+
     protected function forwardSecure()
     {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
