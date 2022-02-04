@@ -28,3 +28,12 @@ dr_devalidation:
   requirements:
     sf_method: [get]
 
+dr_enattente_admin:
+  url: /dr/enattente/:id
+  param: { module: dr, action: enattenteAdmin }
+  class: DRRoute
+  options:
+    model: DR
+    type: object
+  requirements:
+    sf_method: [get]
