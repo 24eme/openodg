@@ -1,7 +1,10 @@
 <?php use_helper('Compte'); ?>
 <?php $compte = $etablissement->getMasterCompte(); ?>
 
-<h4><span class="glyphicon glyphicon-home"></span> <?php  echo $etablissement->getNom()." - ".$etablissement->getIdentifiant(); ?><?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - SIRET : '.formatSIRET($etablissement->getSiret()); } ?></h4>
+<h4>
+<?php if ($compte->exist('en_alerte') && $compte->en_alerte): ?><span class="pull-right">⛔</span><?php endif; ?>
+    <span class="glyphicon glyphicon-home"></span> <?php  echo $etablissement->getNom()." - ".$etablissement->getIdentifiant(); ?><?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - SIRET : '.formatSIRET($etablissement->getSiret()); } ?>
+</h4>
 <div class="row">
     <div class="col-xs-12">
         <div class="row">
