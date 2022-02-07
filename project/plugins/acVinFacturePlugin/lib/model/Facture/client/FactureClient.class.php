@@ -488,9 +488,13 @@ class FactureClient extends acCouchdbClient {
       $avoir->versement_comptable_paiement = 1;
       $avoir->storeDatesCampagne(date('Y-m-d'));
       $avoir->date_paiement = null;
-      $avoir->reglement_paiement = null;
       $avoir->remove('arguments');
       $avoir->add('arguments');
+
+      $avoir->date_paiement = null;
+      $avoir->modalite_paiement = null;
+      $avoir->montant_paiement = null;
+      $avoir->reglement_paiement = null;
       $avoir->remove('paiements');
       $avoir->add('paiements');
 
