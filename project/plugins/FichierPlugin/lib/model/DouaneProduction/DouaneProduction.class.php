@@ -504,7 +504,8 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
 
             if (array_key_exists($produit, $donnees['produits']) === false) {
                 $donnees['produits'][$produit]['lignes'] = [];
-                $donnees['produits'][$produit]['libelle'] = $entry->produit_libelle;
+                $donnees['produits'][$produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
+                $donnees['produits'][$produit]['hash'] = $entry->produit;
             }
 
             if (array_key_exists($categorie, $donnees['produits'][$produit]['lignes']) === false) {
