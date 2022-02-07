@@ -454,7 +454,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnees[$produit_key]['lignes'][$ligne['categorie']]['decimals'] = $decimals;
             }
 
-            $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] += $ligne['valeur'];
+            $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] += str_replace(',', '.', $ligne['valeur']);
         }
 
         return $donnees;
@@ -513,7 +513,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnees['produits'][$produit]['lignes'][$categorie]['val'] = 0;
             }
 
-            $donnees['produits'][$produit]['lignes'][$categorie]['val'] += $entry->valeur;
+            $donnees['produits'][$produit]['lignes'][$categorie]['val'] += str_replace(',', '.', $entry->valeur);
             $donnees['produits'][$produit]['lignes'][$categorie]['unit'] = (in_array($entry->categorie, ['04', '04b'])) ? 'ha' : 'hl';
             $donnees['produits'][$produit]['lignes'][$categorie]['decimals'] = (in_array($entry->categorie, ['04', '04b'])) ? 4 : 2;
         }
