@@ -437,6 +437,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if (array_key_exists($produit_key, $donnees) === false) {
                 $donnees[$produit_key] = [];
                 $donnees[$produit_key]['libelle'] = $ligne['produit_libelle'];
+                $donnees[$produit_key]['hash'] = $produit_key;
                 $donnees[$produit_key]['lignes'] = [];
             }
 
