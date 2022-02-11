@@ -5,6 +5,11 @@ class drActions extends sfActions
     public function executeVisualisation(sfWebRequest $request)
     {
         $this->dr = $this->getRoute()->getDR();
+        if (! $this->dr->exist('donnees') || empty($this->dr->donnees)) {
+            $this->dr->generateDonnees();
+            $this->dr->save();
+            $this->dr = $this->getRoute()->getDR();
+        }
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
         $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
     }
