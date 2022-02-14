@@ -78,6 +78,10 @@
     }else{
         $pseudo_site = (object) $pseudo_operateur->sites[$site_id]->getRawValue();
     }
+    if (@$has_site) {
+        echo "<tr><th colspan=3><center><strong>&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*</strong></center></th></tr>";
+    }
+    $has_site = 1;
 ?>
 <?php print_tr('Nom du site', $pseudo_site->nom_site, $site->nom_site); ?>
 <?php print_tr('Capacité cuverie', $pseudo_site->capacite_cuverie, $site->capacite_cuverie, ''); ?>
