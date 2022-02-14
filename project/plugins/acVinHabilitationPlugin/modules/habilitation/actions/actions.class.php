@@ -631,10 +631,16 @@ class habilitationActions extends sfActions {
         } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
-
-        $this->certipaq_operateur = CertipaqOperateur::getInstance()->findByEtablissement($this->etablissement);
-        $this->pseudo_operateur = (object) CertipaqDI::getInstance()->getOperateurFromHabilitation($this->habilitation);
-
+        $this->error = '';
+        try {
+            $this->certipaq_operateur = CertipaqOperateur::getInstance()->findByEtablissement($this->etablissement);
+            $this->pseudo_operateur = (object) CertipaqDI::getInstance()->getOperateurFromHabilitation($this->habilitation);
+            if (!$this->certipaq_operateur) {
+                $this->error = "Opérateur ".$this->etablissement->nom." non trouvé sur Certipaq par une recherche cvi (".$this->etablissement->cvi.") et siret (".$this->etablissement->siret.")";
+            }
+        }catch(sfException $e) {
+            $this->error .= $e->getMessage();
+        }
     }
 
 }

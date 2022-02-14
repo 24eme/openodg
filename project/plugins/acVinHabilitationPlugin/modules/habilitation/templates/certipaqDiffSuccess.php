@@ -7,6 +7,14 @@
 
 <p>Comparatif des données issues de la base de données et celles trouvées vias l'API Certipaq</p>
 
+<?php if (isset($error) && $error): ?>
+
+<h2>Erreur</h2>
+
+<pre><?php echo $error; ?></pre>
+
+<?php return ;endif; ?>
+
 <h2>Opérateur</h2>
 
 <?php function print_tr($titre, $local, $certi, $type_comp = null) {
