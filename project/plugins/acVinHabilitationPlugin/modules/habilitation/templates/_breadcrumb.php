@@ -10,4 +10,7 @@
   <?php if(!$habilitation->isLastOne()): ?>
     <li class="active"><a href="<?php echo url_for('habilitation_edition', array('id' => $habilitation->_id)); ?>">Habilitation au <?php echo Date::francizeDate($habilitation->getDate()); ?> </a></li>
   <?php endif; ?>
+  <?php if (isset($last)): ?>
+    <li class="active"><?php echo $last; ?></li>
+  <?php endif; ?>
 </ol>
