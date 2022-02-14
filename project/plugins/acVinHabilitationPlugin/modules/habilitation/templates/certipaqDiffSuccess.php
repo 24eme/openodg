@@ -1,5 +1,9 @@
-
-<h1>Comparatif Certipaq</h1>
+<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation, 'last' => "Comparatif avec Certipaq" ));
+  $etablissement = $habilitation->getEtablissementObject();
+ ?>
+<div class="page-header no-border">
+    <h1>Comparatif Certipaq</h1>
+</div>
 
 <p>Comparatif des données issues de la base de données et celles trouvées vias l'API Certipaq</p>
 
@@ -87,15 +91,24 @@
 <?php endforeach; ?>
 </table>
 <div class="row" style="margin-top: 100px;">
-<h2>Données brutes</h2>
-<table class="table">
-<tr><th>Données en base</th><th>Données Certipaq</th></tr>
-<tr>
-<td><pre>
-<?php print_r($pseudo_operateur->getRawValue()); ?>
-</pre></td>
-<td><pre>
-<?php print_r($certipaq_operateur->getRawValue()); ?>
-</pre></td>
-</table>
+    <h2>Données brutes</h2>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+        <div class="panel-heading"><h3>Syndicat</h3></div>
+        <div class="panel-body">
+            <pre>
+                <?php print_r($pseudo_operateur->getRawValue()); ?>
+            </pre></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+        <div class="panel-heading"><h3>Certipaq</h3></div>
+        <div class="panel-body">
+            <pre>
+            <?php print_r($certipaq_operateur->getRawValue()); ?>
+            </pre>
+        </div>
+        </div>
+    </div>
 </div>
