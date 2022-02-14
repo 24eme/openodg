@@ -27,6 +27,9 @@
 
 <?php endif; ?>
 <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject())); ?>
+<?php if (CertipaqService::getInstance()->hasConfiguration()): ?>
+<a style="margin-bottom: 30px;" class="pull-right" href="<?php echo url_for('certipaq_diff', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-transfer"></span>&nbsp;Certipaq</a>
+<?php endif; ?>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>

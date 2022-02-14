@@ -14,7 +14,7 @@ class CertipaqService
     private function __construct()
     {
         $this->configuration = sfConfig::get('app_certipaq_oauth');
-        if (!$this->configuration) {
+        if (!$this->configuration && get_class($this) != 'CertipaqService') {
             throw new sfException('CertipaqService Error : Yml configuration not found for Certipaq');
         }
     }
@@ -198,9 +198,13 @@ class CertipaqService
         curl_close ($ch);
 
         if ($httpCode < 200 || $httpCode >= 300 ) {
-            throw new sfException('HTTP Error '.$httpCode.' : '.$server_output);
+            throw new sfException('HTTP Error '.$httpCode.' ('.$url.') : '.$server_output);
         }
 
         return $server_output;
+    }
+
+    public function hasConfiguration() {
+        return ($this->configuration) && (count($this->configuration));
     }
 }
