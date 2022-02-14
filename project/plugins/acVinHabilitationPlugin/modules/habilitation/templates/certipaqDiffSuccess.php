@@ -48,7 +48,7 @@
             $class = "";
             break;
     }
-    echo "<tr $class><th>$titre</th><td>$local</td><td>$certi</td></tr>";
+    echo "<tr $class><th>$titre</th><td>$local</td><td>$certi</td></tr>\n";
 }
 ?>
 <table class="table">
