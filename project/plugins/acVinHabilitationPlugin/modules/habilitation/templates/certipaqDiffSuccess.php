@@ -88,7 +88,7 @@
 <?php print_tr('Adresse', $pseudo_site->adresse, $site->adresse." ".$site->complement_adresse, 'string'); ?>
 <?php print_tr('Code postal', $pseudo_site->cp, $site->cp, 'string'); ?>
 <?php print_tr('Ville', $pseudo_site->ville, $site->ville, 'string'); ?>
-<?php print_tr('Telephone', $pseudo_site->telephone, $site->telephone, 'string'); ?>
+<?php print_tr('Telephone', $pseudo_site->telephone, $site->telephone, 'nombre'); ?>
 <?php print_tr('Fax', $pseudo_site->fax, $site->fax, 'string'); ?>
 <?php print_tr('Commentaire', "[N/A]", $site->commentaire); ?>
 <?php foreach($site->habilitations as $id => $h):  $pseudo_h = (object) $pseudo_site->habilitations[$id]; ?>
