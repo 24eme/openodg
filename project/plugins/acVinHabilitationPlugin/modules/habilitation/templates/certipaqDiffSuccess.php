@@ -69,8 +69,15 @@
 
 <tr><td colspan=3><h2>Habilitations</h2></td></tr>
 <?php
+    if (!$pseudo_operateur):
+        echo "<tr class='danger'><td><strong>Pas d'habilitation trouvée</strong></td></tr></table>";
+    else:
     foreach ($certipaq_operateur->sites as $site_id => $site):
-    $pseudo_site = (object) $pseudo_operateur->sites[$site_id]->getRawValue();
+    if (!$pseudo_operateur->sites[$site_id]) {
+        $pseudo_site = (object) array('nom_site'=>'', 'capacite_cuverie'=>'', 'complement_adresse'=> '', 'cp'=>'', 'ville'=>'', 'telephone'=>'', 'fax'=>'');
+    }else{
+        $pseudo_site = (object) $pseudo_operateur->sites[$site_id]->getRawValue();
+    }
 ?>
 <?php print_tr('Nom du site', $pseudo_site->nom_site, $site->nom_site); ?>
 <?php print_tr('Capacité cuverie', $pseudo_site->capacite_cuverie, $site->capacite_cuverie, ''); ?>
@@ -98,6 +105,7 @@
 <?php endforeach; ?>
 <?php endforeach; ?>
 </table>
+<?php endif; ?>
 <div class="row" style="margin-top: 100px;">
     <h2>Données brutes</h2>
     <div class="col-md-6">
