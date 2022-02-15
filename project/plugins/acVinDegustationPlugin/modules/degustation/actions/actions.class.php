@@ -1031,6 +1031,9 @@ class degustationActions extends sfActions {
     }
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
+        // Gestion du cas ou le mailer ne retire pas le ">" à la fin du lien
+        $request->setParameter('lot_archive', str_replace('>', '', $request->getParameter('lot_archive', null)));
+
         $authKey = $request->getParameter('auth');
         $degustation_id = "DEGUSTATION-".str_replace("DEGUSTATION-", "", $request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant', null);
