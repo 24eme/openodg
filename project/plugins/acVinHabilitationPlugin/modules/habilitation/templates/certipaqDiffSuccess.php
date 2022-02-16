@@ -91,15 +91,15 @@
 <?php print_tr('Telephone', $pseudo_site->telephone, $site->telephone, 'nombre'); ?>
 <?php print_tr('Fax', $pseudo_site->fax, $site->fax, 'string'); ?>
 <?php print_tr('Commentaire', "[N/A]", $site->commentaire); ?>
-<?php foreach($site->habilitations as $id => $h):  $pseudo_h = (object) $pseudo_site->habilitations[$id]; ?>
+<?php foreach($site->habilitations as $id => $h):  $pseudo_h = (object) @$pseudo_site->habilitations[$id]; ?>
 <?php print_tr("Hab $id : Numéro", "[N/A]", $h->num_habilitation); ?>
-<?php print_tr("Hab $id : Activité", $pseudo_h->dr_activites_operateurs->libelle, $h->dr_activites_operateurs->libelle, 'string'); ?>
-<?php print_tr("Hab $id : Cahier des charges", $pseudo_h->dr_cdc->libelle, $h->dr_cdc->libelle, 'string'); ?>
-<?php print_tr("Hab $id : CdC famille", $pseudo_h->dr_cdc_famille->libelle, $h->dr_cdc_famille->libelle, 'string'); ?>
-<?php print_tr("Hab $id : Statut", $pseudo_h->dr_statut_habilitation->libelle, $h->dr_statut_habilitation->libelle, 'string'); ?>
+<?php print_tr("Hab $id : Activité", @$pseudo_h->dr_activites_operateurs->libelle, $h->dr_activites_operateurs->libelle, 'string'); ?>
+<?php print_tr("Hab $id : Cahier des charges", @$pseudo_h->dr_cdc->libelle, $h->dr_cdc->libelle, 'string'); ?>
+<?php print_tr("Hab $id : CdC famille", @$pseudo_h->dr_cdc_famille->libelle, $h->dr_cdc_famille->libelle, 'string'); ?>
+<?php print_tr("Hab $id : Statut", @$pseudo_h->dr_statut_habilitation->libelle, $h->dr_statut_habilitation->libelle, 'string'); ?>
 <?php print_tr("Hab $id : Outil de production", "[N/A]", $h->outil_production->nom_outil, 'string'); ?>
-<?php print_tr("Hab $id : Date decision", $pseudo_h->date_decision, $h->date_decision, 'date'); ?>
-<?php print_tr("Hab $id : Date dossier_complet_odg", $pseudo_h->date_dossier_complet_odg, $h->date_dossier_complet_odg); ?>
+<?php print_tr("Hab $id : Date decision", @$pseudo_h->date_decision, $h->date_decision, 'date'); ?>
+<?php print_tr("Hab $id : Date dossier_complet_odg", @$pseudo_h->date_dossier_complet_odg, $h->date_dossier_complet_odg); ?>
 <?php print_tr("Hab $id : Date habilitation_maximum", "[N/A]", $h->date_habilitation_maximum); ?>
 <?php print_tr("Hab $id : Date reception_certipaq", "[N/A]", $h->date_reception_certipaq); ?>
 <?php print_tr("Hab $id : Date Validation_dossier_complet", "[N/A]", $h->date_validation_dossier_complet); ?>
