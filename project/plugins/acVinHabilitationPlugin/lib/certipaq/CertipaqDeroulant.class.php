@@ -40,7 +40,6 @@ class CertipaqDeroulant extends CertipaqService
             }
             $to_delete = array();
             foreach($activites as $id => $a) {
-                $a->libelle = str_replace('à', 'a', $a->libelle);
                 if (strpos(strtoupper($a->libelle), strtoupper($mot)) === false) {
                     $to_delete[] = $id;
                 }

@@ -116,7 +116,7 @@ class CertipaqDI extends CertipaqService
                     $habilitation['date_decision'] = $activite->date;
                     $habilitation['date_dossier_complet_odg'] = '';
                     $habilitation['outil_production'] = array('');
-                    $habilitation['order'] = $habilitation['dr_cdc']->libelle."".$habilitation['dr_activites_operateurs']->libelle."".$habilitation['dr_statut_habilitation']->cle;
+                    $habilitation['order'] =  CertipaqDI::getHabilitationOrderString( (object) $habilitation );
                     $habilitations[] = $habilitation;
                 }
             }
@@ -195,9 +195,11 @@ class CertipaqDI extends CertipaqService
     public static function orderHabilitations($a, $b) {
         $a = (object) $a;
         $b = (object) $b;
-        $a_order_libelle = $a->dr_cdc->libelle.$a->dr_activites_operateurs->libelle.$a->dr_statut_habilitation->cle;
-        $b_order_libelle = $b->dr_cdc->libelle.$b->dr_activites_operateurs->libelle.$b->dr_statut_habilitation->cle;
-        return strcmp($a_order_libelle, $b_order_libelle);
+        return strcmp($a->order, $b->order);
+    }
+    
+    public static function getHabilitationOrderString($hab) {
+        return $hab->dr_cdc->libelle.'|'.$hab->dr_activites_operateurs->libelle.'|'.$hab->dr_statut_habilitation->cle;
     }
 
 }
