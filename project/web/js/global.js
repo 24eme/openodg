@@ -308,6 +308,7 @@
                 $(this).parent().parent().parent().parent().addClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().addClass('success');
                 $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").removeAttr("disabled");
+                $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").trigger('change');
             } else {
                 $(this).parent().parent().parent().addClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-on");
@@ -315,6 +316,7 @@
                 $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().removeClass('success');
                 $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").attr("disabled", "disabled");
+                $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").trigger('change');
             }
             if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
             	$('.bootstrap-switch-activeall').hide();

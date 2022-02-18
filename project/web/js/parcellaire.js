@@ -49,4 +49,15 @@ $(document).ready(function()
                 return false;
             }
         });
+    function compute_superficies() {
+        console.log('compute_superficies');
+        var somme_superficie = 0;
+        $('input.affecte_superficie').each(function() {somme_superficie += parseFloat($(this).val())});
+        $('#total_superficie').html(somme_superficie.toFixed(4));
+        somme_superficie = 0;
+        $('input.affecte_superficie:not([disabled])').each(function() {somme_superficie += parseFloat($(this).val())});
+        $('#total_affecte').html(somme_superficie.toFixed(4));
+    }
+    $('.affecte_superficie').change(function () { console.log('affecte_superficie changing'); compute_superficies()});
+    compute_superficies();
 });
