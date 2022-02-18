@@ -38,7 +38,7 @@ class commonActions extends sfActions {
             return $this->redirect('habilitation');
         }
 
-        if($this->getUser()->getCompte() && !$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()) {
+        if($this->getUser()->getCompte() && (!$this->getUser()->getCompte()->getSociete() || !$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal())) {
 
             return $this->forwardSecure();
         }
