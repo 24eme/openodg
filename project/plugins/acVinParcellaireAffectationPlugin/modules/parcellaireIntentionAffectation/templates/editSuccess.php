@@ -65,12 +65,14 @@
                 <td class="text-center">
                     <div style="margin-bottom: 0;" id = "surface" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['superficie_affectation']->hasError()): ?>has-error<?php endif; ?>">
                         <div class="col-xs-12">
-                            <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(array('class' => 'form-control text-center bsswitch-input' , 'placeholder' => $parcelle->superficie)); ?>
+                            <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie)); ?>
                         </div>
                     </div>
                 </td>
             </tr>
         <?php  endif; endforeach; ?>
+        <tr><td colspan="8" class="text-right"><b>Total affecté</b></td><td style="padding-right: 20px;" class="text-right" id="total_affecte"></td></tr>
+        <tr><td colspan="8" class="text-right"><b>Total superficie</b></td><td style="padding-right: 20px;" class="text-right" id="total_superficie"></td></tr>
         </tbody>
 	</table>
     <?php  endforeach; ?>
