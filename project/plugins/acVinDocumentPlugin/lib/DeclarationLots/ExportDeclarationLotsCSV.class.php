@@ -43,6 +43,10 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             if(!$this->document->validation && $lot->isCurrent()) {
                 continue;
             }
+            $keyproduit = '';
+            if ($lot->getConfigProduit()) {
+                $keyproduit = DeclarationExportCsv::getProduitKeysCsv($lot->getConfigProduit());
+            }
             $csv .= $this->document->type.";".
             $this->document->campagne.";".
             $this->document->identifiant.";".
@@ -58,7 +62,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $lot->numero_archive.";".
             $lot->date.";".
             $this->protectStr($lot->numero_logement_operateur).";".
-            DeclarationExportCsv::getProduitKeysCsv($lot->getConfigProduit()).';'.
+            $keyproduit.';'.
             $lot->getProduitLibelle().";".
             $lot->getCepagesLibelle().";".
             $lot->millesime.";".
@@ -92,4 +96,8 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

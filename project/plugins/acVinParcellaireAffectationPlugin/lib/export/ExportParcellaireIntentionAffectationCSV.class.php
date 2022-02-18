@@ -80,4 +80,8 @@ class ExportParcellaireIntentionAffectationCSV implements InterfaceDeclarationEx
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

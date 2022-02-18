@@ -76,7 +76,7 @@ sleep 60
 
 php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_cepages_lots.csv.part
 
-cat $EXPORTDIR/declarations_cepages_lots.csv.part | sed 's/ALICANTE.HENRI/ALICANTE HENRI/g' | sed 's/CABERNET FRANC N/CABERNET FRANC N/g' | sed 's/CABERNET.FRANC.N/CABERNET FRANC N/g' | sed 's/CABERNET SAUVIGNON N/CABERNET SAUVIGNON N/g' | sed 's/CABERNET-SAUVIGNON N/CABERNET SAUVIGNON N/g' | sed 's/CALADOC N/CALADOC N/g' | sed 's/CALADOC.N/CALADOC N/g' | sed 's/CARIGNAN N/CARIGNAN N/g' | sed 's/CARIGNAN.N/CARIGNAN N/g' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHARDONNAY B/CHARDONNAY B/g' | sed 's/CHARDONN.B/CHARDONNAY B/g' | sed 's/CHASAN B/CHASAN B/g' | sed 's/CHASAN.B/CHASAN B/g' | sed 's/CINSAULT N/CINSAULT N/g' | sed 's/CINSAUT N/CINSAULT N/g' | sed 's/CLAIRET.B/CLAIRETTE B/g' | sed 's/CLAIRETTE B/CLAIRETTE B/g' | sed 's/COLOMBARD.B/COLOMBARD B/g' | sed 's/COT.N/COT N/g' | sed 's/COUNOISE N/COUNOISE N/g' | sed 's/COUNOISE.N/COUNOISE N/g' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/GRENACHE.BLANC.B/GRENACHE BLANC B/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/GRENACHE.N/GRENACHE N/g' | sed 's/MARSANNE.B/MARSANNE B/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MARSELAN N/MARSELAN N/g' | sed 's/MARSELAN.N/MARSELAN N/g' | sed 's/MERLOT N/MERLOT N/g' | sed 's/MERLOT.N/MERLOT N/g' | sed 's/MOURVED.N/MOURVED N/g' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT À PETITS GRAINS B/MUSCAT À PETITS GRAINS B/g' | sed 's/MUSCAT.à.PETITS.GRAINS.RG/MUSCAT À PETITS GRAINS B/g' | sed 's/MUSCAT À PETITS GRAINS RS/MUSCAT À PETITS GRAINS B/g' | sed 's/MUS.HAMB.N/MUS HAMB N/g' | sed 's/MUS.P.G.RS/MUS P G RS/g' | sed 's/MUS.PT.G.B/MUS PT G B/g' | sed 's/PINOT NOIR N/PINOT NOIR N/g' | sed 's/PINOT.NOIR.N/PINOT NOIR N/g' | sed 's/PIQUEPOUL.BLANC.B/PIQUEPOUL BLANC B/g' | sed 's/ROUSSANNE B/ROUSSANNE B/g' | sed 's/ROUSSANNE.B/ROUSSANNE B/g' | sed 's/SAUVIGN.B/SAUVIGNON B/g' | sed 's/SAUVIGNON B/SAUVIGNON B/g' | sed 's/SAUVIGNON B,VIOGNIER B/SAUVIGNON B/g' | sed 's/SAVAGN.B/SAUVIGNON B/g' | sed 's/SYRAH.N/SYRAH N/g' | sed 's/TEMPRANILLO.N/TEMPRANILLO N/g' | sed 's/UGNI BLANC B/UGNI BLANC B/g' | sed 's/UGNI.BLANC.B/UGNI BLANC B/g' | sed 's/VERMENT.B/VERMENTINO B/g' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VERMENTINO B/VERMENTINO B/g' | sed 's/VIOGNIER"/VIOGNIER B"/g' | sed 's/VIOGNIER B/VIOGNIER B/g' | sed 's/VIOGNIER.B/VIOGNIER B/g' > $EXPORTDIR/declarations_lots.csv.part
+cat $EXPORTDIR/declarations_cepages_lots.csv.part | awk -F ';' 'BEGIN{OFS=";"}  {gsub("\\.", " ", $24); print $0; }' | sed 's/ / /g' |  sed 's/CABERNET-SAUVIGNON/CABERNET SAUVIGNON/g' | sed 's/CAB-SAUV-N/CABERNET SAUVIGNON N/' | sed 's/CALADOC"/CALADOC N"/' | sed 's/CAMENèRE N/CAMENÈRE N/' | sed 's/CHARDONAY B/CHARDONNAY B/' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHASAN"/CHASAN B"/' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MERLOT"/MERLOT N"/' | sed 's/MOURVED N/MOURVEDRE N/' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT A B/MUSCAT A PETITS GRAINS B/' | sed 's/MUSCAT À PETITS GRAINS/MUSCAT A PETITS GRAINS/g' | sed 's/MUSCAT D.HAMBOURG N/MUSCAT DE HAMBOURG N/' | sed 's/MUSCAT H N/MUSCAT DE HAMBOURG N/' | sed 's/MUS HAMB N/MUSCAT DE HAMBOURG N/' | sed 's/MUS P G /MUSCAT A PETITS GRAINS /' | sed 's/MUS PT G /MUSCAT A PETITS GRAINS /' | sed 's/Syrah/SYRAH N/' | sed 's/SYRAH"/SYRAH N"/' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VIOGNIER"/VIOGNIER B"/' | sed 's/VIOGNIER"/VIOGNIER B"/g' > $EXPORTDIR/declarations_lots.csv.part
 
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
@@ -171,23 +171,29 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/paiements.csv.part > $EXPORTDIR/p
 rm $EXPORTDIR/paiements.csv.part
 
 php symfony lots:export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots.csv.part > $EXPORTDIR/lots.csv
+cat $EXPORTDIR/lots.csv.part | awk -F ';' 'BEGIN{OFS=";"}  {gsub("\\.", " ", $20); print $0; }' | sed 's/ / /g' |  sed 's/CABERNET-SAUVIGNON/CABERNET SAUVIGNON/g' | sed 's/CAB-SAUV-N/CABERNET SAUVIGNON N/' | sed 's/CALADOC"/CALADOC N"/' | sed 's/CAMENèRE N/CAMENÈRE N/' | sed 's/CHARDONAY B/CHARDONNAY B/' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHASAN"/CHASAN B"/' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MERLOT"/MERLOT N"/' | sed 's/MOURVED N/MOURVEDRE N/' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT A B/MUSCAT A PETITS GRAINS B/' | sed 's/MUSCAT À PETITS GRAINS/MUSCAT A PETITS GRAINS/g' | sed 's/MUSCAT D.HAMBOURG N/MUSCAT DE HAMBOURG N/' | sed 's/MUSCAT H N/MUSCAT DE HAMBOURG N/' | sed 's/MUS HAMB N/MUSCAT DE HAMBOURG N/' | sed 's/MUS P G /MUSCAT A PETITS GRAINS /' | sed 's/MUS PT G /MUSCAT A PETITS GRAINS /' | sed 's/Syrah/SYRAH N/' | sed 's/SYRAH"/SYRAH N"/' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VIOGNIER"/VIOGNIER B"/' | sed 's/VIOGNIER"/VIOGNIER B"/g' > $EXPORTDIR/lots_cleancepages.csv.part
 
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
 
 # Ajouter la hash produit à la fin du fichier lots-historique
-cat $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,35,36 | sort -t ";" -k 2,2 > $EXPORTDIR/lots_hash.csv
-tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 16,16 > $EXPORTDIR/lots-historique.csv.sorted
-head -n 1 $EXPORTDIR/lots-historique.csv.part | sed 's/$/;Hash produit/' > $EXPORTDIR/lots-historique.csv.sorted.join
-join -t ";" -a 1 -1 16 -2 2 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ unique_id=$1; hash_produit=$16; $16=unique_id; $17=hash_produit; $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
-
+tail -n +2 $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,36,37 | sort -t ";" -k 2,2 > $EXPORTDIR/lots_hash.csv
+tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 17,17 > $EXPORTDIR/lots-historique.csv.sorted
+echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;Last doc id;Hash produit" > $EXPORTDIR/lots-historique.csv.sorted.join
+join -t ";" -a 1 -1 17 -2 2 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
+
+grep 'Affecté à une dégustation (destination)' $EXPORTDIR/lots-historique.csv.part | sort -t ';' -k 8,8 -r | awk -F ';' '{ uniq = $17 ; if ( ! unicite[uniq] ) { print $17";"$13 ; unicite[uniq] = uniq ; }  }' | sort -t ';' -k 1,1 > $EXPORTDIR/lots-passages.csv
+tail -n +2 $EXPORTDIR/lots_cleancepages.csv.part | sort -t ';' -k 36,36 > $EXPORTDIR/lots_cleancepages.csv.part.sorted
+echo "Origine;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Hash produit;Passage" > $EXPORTDIR/lots_cleancepages_passages.csv.part
+join -t ';' -a 1 -1 36 -2 1 $EXPORTDIR/lots_cleancepages.csv.part.sorted  $EXPORTDIR/lots-passages.csv | awk -F ';' 'BEGIN{OFS=";"}  {$1=""; print $0}' | sed 's/^;//'  >> $EXPORTDIR/lots_cleancepages_passages.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots_cleancepages_passages.csv.part > $EXPORTDIR/lots.csv
 
 rm $EXPORTDIR/lots-historique.csv.part
 rm $EXPORTDIR/lots-historique.csv.sorted
 rm $EXPORTDIR/lots-historique.csv.sorted.join
 rm $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
+rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted
 
 bash bin/export_docs.sh Degustation 30 $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv

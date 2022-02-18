@@ -90,4 +90,8 @@ class ExportDegustateursCSV implements InterfaceDeclarationExportCsv {
           }
         return $csv;
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

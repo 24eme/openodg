@@ -6,6 +6,7 @@
 
 import pandas as pd
 import sys
+import os
 from datetime import datetime
 import dateutil.relativedelta
 
@@ -16,34 +17,45 @@ if(len(sys.argv)<2):
     exit()
 dossier_igp = "exports_"+sys.argv[1]
 igp = sys.argv[1].replace('igp',"")
+today= datetime.now()
 
 if(len(sys.argv)>2):
     millesime = sys.argv[2]
 else:
-    today= datetime.now()
     debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
     millesime = str(debutcampagne.year)
-
+    
 if(len(sys.argv)>3):
     datemax = sys.argv[3]
+    if(sys.argv[3] == "08-12"):  #si troisieme argument vaut 08-12  on prend en compte le 01-08 et le 31-12
+        datemin = str(int(millesime)+1)+'-07-31'
+        datemax = str(int(millesime)+2)+'-01-01'
+        datemax_exact = str(int(millesime)+1)+'-12-31'
 else:
-    datemax = str(int(millesime)+1)+'-08-01'
+    datemax = str(int(today.year))+'-01-01'
+    datemax_exact =  str(int(today.year)-1)+'-12-31'
+    
+exportdir = '../../web/'+dossier_igp
+outputdir = exportdir+'/stats/'+millesime
+if(not os.path.isdir(outputdir)):
+    os.mkdir(outputdir)   
 
 #dossier_igp = "exports_igpgascogne"
 #igp = "gascogne"
 #datemax = "2022-01-01"
 #millesime = "2019"
 
-drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
-lots = pd.read_csv("../../web/"+dossier_igp+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
-changement_deno = pd.read_csv("../../web/"+dossier_igp+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
+drev_lots = pd.read_csv(exportdir+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
+lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
+changement_deno = pd.read_csv(exportdir+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
 
 #lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
 changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changement_deno["Type"] == "DRev:Changé") ]
 changement_deno = changement_deno[changement_deno["Date de validation ODG"] < datemax]
+if ("datemin" in locals()): changement_deno = changement_deno[changement_deno["Date de validation ODG"] > datemin]
 
-degustations = pd.read_csv("../../web/"+dossier_igp+"/degustations.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
+lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
 
 
 # In[ ]:
@@ -54,6 +66,7 @@ drev_lots = drev_lots.rename(columns = {'Date lot': 'Date_lot'})
 drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
+if ("datemin" in locals()): drev_lots = drev_lots.query("Date_lot > @datemin")
 drev_lots['Lieu'] = drev_lots['Lieu'].fillna('')
 drev_lots = drev_lots.groupby(['Appellation','Couleur','Lieu','Produit'])[["Volume"]].sum()
 drev_lots ['Type'] = "VOLUME REVENDIQUE"
@@ -65,22 +78,23 @@ final = drev_lots
 
 
 
-degustations = degustations.query("Millésime == @millesime")
-degustations = degustations[degustations["Date"] < datemax]
+lots = lots.query("Millésime == @millesime")
+lots = lots[lots["Date lot"] < datemax]
+if ("datemin" in locals()) : lots = lots[lots["Date lot"] > datemin]
 
 conforme = "Conforme"
 rep_conforme = "Réputé conforme"
-#en_recours="En recours OC"
+conforme_appel="Conforme en appel"
+elevage="En élevage"
 
-degustations = degustations.rename(columns = {'Statut de lot': 'Statut_de_lot'})
-degustations = degustations.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme");
-# & Statut_de_lot != @en_recours
+lots = lots.rename(columns = {'Statut de lot': 'Statut_de_lot'})
+lots = lots.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme & Statut_de_lot != @conforme_appel & Statut_de_lot != @elevage");
 
-degustations['Lieu'] = degustations['Lieu'].fillna('')
-degustations = degustations.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
-degustations['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
-degustations = degustations.reset_index()
-final = final.append(degustations,sort= True)
+lots['Lieu'] = lots['Lieu'].fillna('')
+lots = lots.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
+lots['Type'] = "VOLUME EN INSTANCE DE CONFORMITE"
+lots = lots.reset_index()
+final = final.append(lots,sort= True)
 
 
 # In[ ]:
@@ -177,7 +191,7 @@ tab_cal['type_declassement'] =  final.query("Type == @type_declassement").groupb
 tab_cal = tab_cal.fillna(0)
 
 tab_cal['A'] = tab_cal['type_vol_revendique'] - tab_cal['type_instance_conformite']
-tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1)
+tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1) 
 tab_cal['A-B'] =  tab_cal['A'] - tab_cal ['B']
 tab_cal = tab_cal.reset_index(level=['Appellation','Lieu','Couleur','Produit'])
 
@@ -187,10 +201,20 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-final.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+if ("datemin" in locals()):
+
+    min = str(int(millesime)+1)+'-08-01'
+    max = str(int(millesime)+1)+'-12-31'
+
+    final.reset_index(drop=True).to_csv(outputdir+'/'+max+'_depuis_'+min+'_'+millesime+'_stats_bilan_millesime.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+    tab_cal.reset_index(drop=True).to_csv(outputdir+'/'+max+'_depuis_'+min+'_'+millesime+'_stats_bilan_millesime_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+else :
+    final.reset_index(drop=True).to_csv(outputdir+'/'+datemax_exact+'_'+millesime+'_stats_bilan_millesime.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+    tab_cal.reset_index(drop=True).to_csv(outputdir+'/'+datemax_exact+'_'+millesime+'_stats_bilan_millesime_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
 
 # In[ ]:
 
 
-tab_cal.reset_index(drop=True).to_csv('../../web/'+dossier_igp+'/stats/stats_bilan_millesime_'+millesime+'_au_'+datemax+'_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
+
+

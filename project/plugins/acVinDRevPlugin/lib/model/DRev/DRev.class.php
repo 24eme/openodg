@@ -149,7 +149,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                                             'nb_lots_degustables' => 0
                                            );
             }
-            $couleurs[$couleur]['appellation'] = $lot->getConfig()->getAppellation()->getLibelleComplet().' Total';
+            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' Total';
             if($lot->getProduitRevendique()){
                 $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleDR();
             }
@@ -798,7 +798,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
                 $produitRecolte->superficie_total += round(VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]), 4);
             }
-            if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_VOLUME_RAISINS) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL) {
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_total += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_sur_place += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
@@ -1463,7 +1463,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
         }
         $this->archivage_document->preSave();
-        $this->archiverLot($this->numero_archive);
+        $this->archiverLot();
     }
 
   /*** ARCHIVAGE ***/
@@ -1478,8 +1478,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       return $this->isValidee();
   }
 
-  public function archiverLot($numeroDossier) {
+  public function archiverLot() {
       $lots = array();
+      if (!$this->numero_archive) {
+          throw new sfException("Ne peut archiver les lots sans numero d'archive dans la DRev");
+      }
       foreach($this->lots as $lot) {
         if ($lot->numero_archive) {
             continue;
@@ -1496,8 +1499,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
       foreach($lots as $lot) {
           $num++;
+          $lot->numero_dossier = $this->numero_archive;
           $lot->numero_archive = sprintf("%05d", $num);
-          $lot->numero_dossier = $numeroDossier;
       }
       DeclarationClient::getInstance()->clearCache();
   }
@@ -1562,37 +1565,34 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getVolumeRevendiqueNumeroDossierDiff($produitFilter = null)
     {
         $lots = [];
-        $lotsmodifs = [];
+        $lotsmodifsvolumes = [];
         $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
             if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
                 continue;
             }
-
-            if ($lot->numero_dossier === $this->numero_archive) {
+            if ($lot->numero_dossier === $this->numero_archive && $lot->id_document == $this->getDocument()->_id) {
                 $original_volume = $lot->getOriginalVolumeIfModifying();
                 $lots[] = $lot;
-                if ($original_volume) {
-                    $lotsmodifs[] = $lot;
-                    $volume_mod += $original_volume;
+                if ($original_volume !== false) {
+                    $lotsmodifsvolumes[] = $lot;
                 }
+                $volume_mod += $lot->volume - $original_volume;
             }
         }
-        if ($volume_mod) {
-            $lots = $lotsmodifs;
-        }
-        $volume = $this->getInternalVolumeRevendique($lots, $produitFilter);
 
+        $deleted = false;
         foreach($this->getDeletedLots() as $lot) {
-            $volume_mod += $lot->volume;
+            $volume_mod -= $lot->volume;
+            $deleted = true;
         }
 
-        if($volume_mod === 0 && !$this->isFirstNumeroDossier()) {
+        if(!$deleted && count($lotsmodifsvolumes) === 0 && !$this->isFirstNumeroDossier()) {
 
             return 0;
         }
 
-        return $volume - $volume_mod;
+        return $volume_mod;
     }
 
     public function isFirstNumeroDossier() {
@@ -1670,13 +1670,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, $produitFilter, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
-            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE);
+            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter);
         }
         if ($type == SV12CsvFile::CSV_TYPE_SV12) {
-            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE);
+            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter);
         }
         throw new sfException("type de document douanier $type n'est pas supporté");
     }

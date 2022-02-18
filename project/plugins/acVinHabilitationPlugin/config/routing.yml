@@ -120,3 +120,13 @@ habilitation_demande_commentaire_modification:
     type:     object
   requirements:
     sf_method: [get, post]
+
+certipaq_diff:
+  url: /habilitation/certipaq/:identifiant/diff
+  param: { module: habilitation, action certipaqDiff }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]

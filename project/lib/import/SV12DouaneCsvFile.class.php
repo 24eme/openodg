@@ -29,7 +29,8 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         $secondPage = false;
         $cpt = 1;
         $indexCodeProduit = 3;
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
+        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+        $drev = $this->getRelatedDrev();
 
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {

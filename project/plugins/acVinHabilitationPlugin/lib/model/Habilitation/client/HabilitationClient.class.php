@@ -266,15 +266,17 @@ class HabilitationClient extends acCouchdbClient {
             return false;
         }
 
-        public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+        public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_JSON){
           $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-")
                       ->endkey(self::TYPE_COUCHDB."-ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")->execute($hydrate);
           $etbIds = array();
           foreach ($allHabilitations as $habilitation) {
-            $etbIds[$habilitation->getIdentifiant()] = $habilitation->getIdentifiant();
+            if (!isset($etbIds[$habilitation->identifiant]) || $etbIds[$habilitation->identifiant] < $habilitation->_id) {
+                $etbIds[$habilitation->identifiant] = $habilitation->_id;
+            }
           }
           krsort($etbIds);
-          return array_unique($etbIds);
+          return $etbIds;
         }
 
         public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activites, $statut, $commentaire = "") {

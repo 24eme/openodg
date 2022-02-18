@@ -15,6 +15,7 @@ class ExportDouaneCSV implements InterfaceDeclarationExportCsv
         $this->doc = $doc;
         $this->header = $header;
         $this->region = $region;
+        $this->drev_produit_filter = null;
     }
 
     public function getFileName() {
@@ -44,4 +45,11 @@ class ExportDouaneCSV implements InterfaceDeclarationExportCsv
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+        if (isset($args['drev_produit_filter'])) {
+            $this->drev_produit_filter = $args['drev_produit_filter'];
+        }
+    }
+
 }

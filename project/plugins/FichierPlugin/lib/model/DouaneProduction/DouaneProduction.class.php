@@ -192,7 +192,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return false;
     }
 
-    public function getEnhancedDonnees() {
+    public function getEnhancedDonnees($drev_produit_filter = null) {
         if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
         }
@@ -200,7 +200,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->identifiant, $this->getPeriode());
+        $drev = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne(), $drev_produit_filter);
         foreach($this->donnees as $i => $donnee) {
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
@@ -437,6 +437,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if (array_key_exists($produit_key, $donnees) === false) {
                 $donnees[$produit_key] = [];
                 $donnees[$produit_key]['libelle'] = $ligne['produit_libelle'];
+                $donnees[$produit_key]['hash'] = $produit_key;
                 $donnees[$produit_key]['lignes'] = [];
             }
 
@@ -453,7 +454,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnees[$produit_key]['lignes'][$ligne['categorie']]['decimals'] = $decimals;
             }
 
-            $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] += $ligne['valeur'];
+            $donnees[$produit_key]['lignes'][$ligne['categorie']]['val'] += str_replace(',', '.', $ligne['valeur']);
         }
 
         return $donnees;
@@ -503,7 +504,8 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
 
             if (array_key_exists($produit, $donnees['produits']) === false) {
                 $donnees['produits'][$produit]['lignes'] = [];
-                $donnees['produits'][$produit]['libelle'] = $entry->produit_libelle;
+                $donnees['produits'][$produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
+                $donnees['produits'][$produit]['hash'] = $entry->produit;
             }
 
             if (array_key_exists($categorie, $donnees['produits'][$produit]['lignes']) === false) {
@@ -511,7 +513,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnees['produits'][$produit]['lignes'][$categorie]['val'] = 0;
             }
 
-            $donnees['produits'][$produit]['lignes'][$categorie]['val'] += $entry->valeur;
+            $donnees['produits'][$produit]['lignes'][$categorie]['val'] += str_replace(',', '.', $entry->valeur);
             $donnees['produits'][$produit]['lignes'][$categorie]['unit'] = (in_array($entry->categorie, ['04', '04b'])) ? 'ha' : 'hl';
             $donnees['produits'][$produit]['lignes'][$categorie]['decimals'] = (in_array($entry->categorie, ['04', '04b'])) ? 4 : 2;
         }
@@ -533,6 +535,15 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         }
 
         return $donnees;
+    }
+
+    public function switchEnAttente()
+    {
+        if (! $this->exist('statut_odg')) {
+            $this->add('statut_odg', null);
+        }
+
+        $this->statut_odg = ($this->statut_odg) ? null : DRClient::STATUT_EN_ATTENTE;
     }
 
     public function validateOdg($date = null)

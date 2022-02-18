@@ -47,23 +47,36 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-8">
+          <div class="col-xs-3">
               <table class="table table-condensed table-bordered table-striped">
+                  <tr>
+                      <td class="col-xs-1 text-right"><?php echo count($degustation->getAdherentsByLotsWithoutStatut(Lot::STATUT_PRELEVE)); ?></td>
+                      <td>opérateurs à prélever</td>
+                  </tr>
+                  <tr>
+                      <td class="col-xs-1 text-right"><?php echo count($degustation->getAdherentsPreleves()); ?></td>
+                      <td>opérateurs prélévés</td>
+                  </tr>
+                  <tr>
+                      <th class="col-xs-1 text-right"><?php echo count($degustation->getAdherentsPreleves()) + count($degustation->getAdherentsByLotsWithoutStatut(Lot::STATUT_PRELEVE)); ?></th>
+                      <th>opérateurs au total</th>
+                  </tr>
+
                 <tr>
-                    <td class="col-xs-1"><?php echo count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
-                    <td>lots prélevés</td>
-                </tr>
-                <tr>
-                    <td><?php echo count($degustation->getLotsPrelevables()) -  count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsPrelevables()) -  count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
                     <td>lots restant à prélever</td>
                 </tr>
                 <tr>
-                <td><?php echo count($degustation->getLotsSansVolume()); ?></td>
-                <td>lots annulés</td>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsDegustables()) - count($degustation->getLeurres()) ?></td>
+                    <td>lots prélevés</td>
                 </tr>
                 <tr>
-                <th><?php echo count($degustation->getLots()) ?></th>
-                <th>lots au total</th>
+                    <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsSansVolume()); ?></td>
+                    <td>lots annulés</td>
+                </tr>
+                <tr>
+                    <th class="col-xs-1 text-right"><?php echo count($degustation->getLots()) ?></th>
+                    <th>lots au total</th>
                 </tr>
             </table>
           </div>

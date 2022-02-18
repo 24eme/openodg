@@ -18,11 +18,25 @@ class GenericLatex {
   }
 
   private function getLatexDestinationDir() {
-    return sfConfig::get('sf_root_dir')."/data/latex/";
+    $latex_dir = sfConfig::get('sf_app_cache_dir')."/latex/";
+    if (!file_exists($latex_dir)){
+        $current_umask = umask();
+        umask(0000);
+        mkdir($latex_dir, 0770, true);
+        umask($current_umask);
+    }
+    return $latex_dir;
   }
-  
+
   protected function getTEXWorkingDir() {
-    return "/tmp/";
+      $tmp_dir = sfConfig::get('sf_app_cache_dir')."/tmp/";
+      if (!file_exists($tmp_dir)){
+          $current_umask = umask();
+          umask(0000);
+          mkdir($tmp_dir, 0770, true);
+          umask($current_umask);
+      }
+    return $tmp_dir;
   }
 
   public function generatePDF() {
@@ -63,6 +77,10 @@ class GenericLatex {
       throw new sfException("not possible to rename $tmpfile to $filename");
     }
     $this->cleanPDF();
+    $current_umask = umask();
+    umask(0000);
+    chmod($filename, 0660);
+    umask($current_umask);
     return $filename;
   }
 

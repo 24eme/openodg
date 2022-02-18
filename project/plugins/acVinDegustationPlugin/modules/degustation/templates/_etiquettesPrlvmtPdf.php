@@ -27,24 +27,13 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 14.5px; line-height: 14px; overflow: hidden;" ><strong><?php if ($i != 2 || !$anonymat4labo): ?><?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->lot->declarant_nom, 30, '…') : "Leurre";  ?><?php endif; ?></strong></td>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28px; line-height: 14px; overflow: hidden;" ><?php if ($i != 2 || !$anonymat4labo): ?><strong><?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->lot->declarant_nom, 47, '…', 'middle') : "Leurre";  ?></strong> <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi); elseif ($lotInfo->etablissement->siret):echo substr($lotInfo->etablissement->siret,0,9)." "; endif; ?><?php else: ?><br /><i>Destiné au laboratoire</i><?php endif; ?></td>
                   </tr>
-                  <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 14px; line-height: 14px; overflow: hidden;">
-                      <?php if ($i != 2 || !$anonymat4labo): ?>
-                          <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi);
-                           elseif ($lotInfo->etablissement->siret):echo (substr($lotInfo->etablissement->siret,0,3)." ".substr($lotInfo->etablissement->siret,3,3)." ".substr($lotInfo->etablissement->siret,6,3)." ".substr($lotInfo->etablissement->siret,9,5));
-                          endif; ?>
-                      <?php else: ?>
-                          <i>Lot destiné au laboratoire</i>
-                      <?php endif; ?>
-                    </td>
-                  </tr>
-		  <tr>
+		          <tr>
                         <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 29px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 58, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 58, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr>
@@ -56,7 +45,7 @@
                     <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 35%;"><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong> HL</td>
                   </tr>
 		  <tr>
-                        <td style="overflow-wrap:break-word;text-align: left; height: 6px; line-height: 6px; overflow: hidden;" colspan="2">&nbsp;</td>
+                        <td style="overflow-wrap:break-word;text-align: left; height: 7px; line-height: 7px; overflow: hidden;" colspan="2">&nbsp;</td>
                   </tr>
                 </table>
             </td>

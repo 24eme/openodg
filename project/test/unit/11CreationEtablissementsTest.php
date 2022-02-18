@@ -23,7 +23,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(33);
+$t = new lime_test(39);
 $t->comment('création des différentes établissements');
 
 $societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
@@ -108,7 +108,24 @@ $etablissementnego->save();
 $l_array = $etablissementnego->liaisons_operateurs->toArray(1,0);
 $liaisons = array_shift($l_array);
 $t->is($liaisons['type_liaison'], "COOPERATEUR", "L'établissement a une liaison Coopérateur");
-$t->is($liaisons['id_etablissement'], $etablissementviti->_id, "La liaison est vers l''établissement $etablissementviti->_id");
+$t->is($liaisons['id_etablissement'], $etablissementviti->_id, "La liaison est vers le viti $etablissementviti->_id");
+
+$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
+$l_array = $etablissementviti->liaisons_operateurs->toArray(1,0);
+$liaisons = array_shift($l_array);
+$t->is($liaisons['type_liaison'], "COOPERATIVE", "La coop a une liaison avec son apporteur");
+$t->is($liaisons['id_etablissement'], $etablissementnego->_id, "La liaison est vers la coop $etablissementnego->_id");
+
+$etablissementviti->getSociete()->switchStatusAndSave();
+$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
+$t->is($etablissementviti->statut, CompteClient::STATUT_SUSPENDU, "le viti est bien suspendu");
+$t->is(count($etablissementviti->liaisons_operateurs->toArray(1,0)), 1, "le viti suspendu a conservé sa liaison");
+$etablissementnego = EtablissementClient::getInstance()->find($etablissementnego->_id);
+$t->is(count($etablissementnego->liaisons_operateurs->toArray(1,0)), 0, "le nego n'a plus de liaison avec le viti suspendu");
+
+$etablissementviti->getSociete()->switchStatusAndSave();
+$etablissementnego = EtablissementClient::getInstance()->find($etablissementnego->_id);
+$t->is(count($etablissementnego->liaisons_operateurs->toArray(1,0)), 1, "le nego a reprise sa liaison avec le viti réactivé");
 
 $societenego = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_nego_region_2_societe')->getSociete();
 $etablissementnego = $societenego->createEtablissement(EtablissementFamilles::FAMILLE_NEGOCIANT);

@@ -59,6 +59,9 @@ class CertipaqOperateur extends CertipaqService
                     $hab->dr_cdc = CertipaqDeroulant::getInstance()->keyid2obj('dr_cdc_id', $hab->dr_cdc_id);
                 }
             }
+            $h = (array) $value->habilitations;
+            usort($h, "CertipaqDI::orderHabilitations");
+            $value->habilitations = $h;
         }
         return $res;
     }
@@ -101,8 +104,11 @@ class CertipaqOperateur extends CertipaqService
 
     public function findByCviOrSiret($siret_ou_cvi) {
         $siret_ou_cvi = str_replace(' ', '', $siret_ou_cvi);
-        $res = $this->recherche(array('cvi' => $siret_ou_cvi));
-        if (!$res || !count($res)) {
+        $res = null;
+        if (strlen($siret_ou_cvi) == 10) {
+            $res = $this->recherche(array('cvi' => $siret_ou_cvi));
+        }
+        if ((!$res || !count($res)) && strlen($siret_ou_cvi) == 14) {
             $res = $this->recherche(array('siret' => $siret_ou_cvi));
         }
         if (!$res || !isset($res[0]) || count($res) > 1) {

@@ -57,7 +57,7 @@ foreach(TemplateFactureClient::getInstance()->findAll() as $k => $doc) {
     TemplateFactureClient::getInstance()->delete($doc);
 }
 
-acCouchdbManager::getClient()->storeDoc(json_decode(file_get_contents(sfConfig::get('sf_data_dir')."/configuration/".$application."/TEMPLATE-FACTURE-2020.json")));
+acCouchdbManager::getClient()->storeDoc(json_decode(file_get_contents(sfConfig::get('sf_data_dir')."/configuration/".$application."/TEMPLATE-FACTURE-".$annee.".json")));
 
 $template = TemplateFactureClient::getInstance()->findByCampagne($campagne);
 foreach($template->cotisations as $kg => $gcotis) {

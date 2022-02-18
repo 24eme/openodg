@@ -61,4 +61,8 @@ class ExportCompteCSV_ava implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

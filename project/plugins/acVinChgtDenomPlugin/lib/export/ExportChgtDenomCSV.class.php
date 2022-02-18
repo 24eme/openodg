@@ -134,4 +134,7 @@ class ExportChgtDenomCSV implements InterfaceDeclarationExportCsv {
         return $csv;
     }
 
+    public function setExtraArgs($args) {
+    }
+
 }

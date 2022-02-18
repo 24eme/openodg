@@ -85,5 +85,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
       return preg_replace('/^(\d\d\d)(\d\d\d)(\d\d\d)/', '\1 \2 \3 ', $siret);
     }
 
+    public function setExtraArgs($args) {
+    }
 
 }

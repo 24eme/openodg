@@ -35,8 +35,12 @@ class CertipaqDeroulant extends CertipaqService
     public function findActivite($activite_libelle) {
         $activites = $this->getListeActivitesOperateurs();
         foreach (explode(' ', $activite_libelle) as $mot) {
+            if (strpos(strtoupper($mot), 'TIREUSE') !== false) {
+                $mot = 'TIREUSE';
+            }
             $to_delete = array();
             foreach($activites as $id => $a) {
+                $a->libelle = str_replace('à', 'a', $a->libelle);
                 if (strpos(strtoupper($a->libelle), strtoupper($mot)) === false) {
                     $to_delete[] = $id;
                 }
@@ -47,6 +51,26 @@ class CertipaqDeroulant extends CertipaqService
         }
         if (count($activites) == 1) {
             return array_values($activites)[0];
+        }
+        return null;
+    }
+
+    public function findHabilitation($habilitation_libelle) {
+        $habs = $this->getListeHabilitation();
+        foreach($habs as $id => $h) {
+            if (
+                    strpos(strtoupper($h->libelle), strtoupper($habilitation_libelle)) === false
+                  &&
+                    strpos(strtoupper($h->cle), strtoupper($habilitation_libelle)) === false
+                ) {
+                $to_delete[] = $id;
+            }
+        }
+        foreach($to_delete as $id) {
+            unset($habs[$id]);
+        }
+        if (count($habs) == 1) {
+            return array_values($habs)[0];
         }
         return null;
     }
@@ -203,7 +227,7 @@ class CertipaqDeroulant extends CertipaqService
             if ($p->libelle == $conf->getLibelleComplet()) {
                 return $p;
             }
-            if (strpos($p->libelle, $conf->getLibelleComplet()) !== false) {
+            if (strpos($p->libelle, $conf->getLibelleComplet()) === 0) {
                 $certipaq_produits[] = $p;
             }
         }
@@ -212,7 +236,7 @@ class CertipaqDeroulant extends CertipaqService
             if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
                 return $p;
             }
-            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) !== false) {
+            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) === 0) {
                 $certipaq_produits[] = $p;
             }
         }

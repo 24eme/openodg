@@ -43,9 +43,9 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
         $context = sfContext::createInstance($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $etbsWithHabilitations = HabilitationClient::getInstance()->getAllEtablissementsWithHabilitations();
-        foreach ($etbsWithHabilitations as $key => $etbWithHabilitation) {
-          $h = HabilitationClient::getInstance()->getLastHabilitation($etbWithHabilitation);
-          $etb = EtablissementCLient::getInstance()->find($h->getIdentifiant());
+        foreach ($etbsWithHabilitations as $etbWithHabilitation => $habilitation_id) {
+          $h = HabilitationClient::getInstance()->find($habilitation_id);
+          $etb = $h->getEtablissementObject();
           $compte = CompteClient::getInstance()->find($etb->getCompte());
           $compte->tags->remove('produit');
           $compte->tags->add('produit');

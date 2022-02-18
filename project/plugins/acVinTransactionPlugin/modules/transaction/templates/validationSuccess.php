@@ -44,7 +44,7 @@
     <?php if (TransactionConfiguration::getInstance()->hasDegustation()): ?>
         <h3>Controle</h3>
         <div class="form-group" style="margin-bottom: 20px;">
-            Date de controle souhaitée :
+            Date de controle souhaitée (hors lots en élevage) :
             <div class="input-group">
             <?php echo date("d/m/Y"); ?>
             </div>

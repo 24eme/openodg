@@ -72,7 +72,7 @@ for ((i=2015 ; i <= $(date +%Y -d "-9 month") ; i++)); do
 done
 
 rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null
-echo "campagne;Produit;titre;raison_sociale;adresse;commune;code_postal;CVI;siret;stock_vci_n-1;dr_surface;dr_volume;dr_vci;vci_constitue;vci_complement;vci_substitution;vci_rafraichi;vci_desctruction;drev_revendique_n;drev_revendique_n-1;stock_vci_n" > $EXPORTDIR/bilan_vci.tmp.csv
+echo "campagne;Produit;titre;raison_sociale;adresse;commune;code_postal;CVI;siret;stock_vci_n-1;dr_surface;dr_volume;dr_vci;vci_constitue;vci_complement;vci_substitution;vci_rafraichi;vci_desctruction;drev_revendique_n;drev_revendique_n-1;stock_vci_n;rendement_vci_ha_hl" > $EXPORTDIR/bilan_vci.tmp.csv
 cat $EXPORTDIR/bilan_vci.tmp.csv > $EXPORTDIR/bilan_vci.csv
 for ((i=2018 ; i <= $(date +%Y -d "-9 month") ; i++)); do
     rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null

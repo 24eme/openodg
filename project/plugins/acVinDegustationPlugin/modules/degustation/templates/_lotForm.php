@@ -4,8 +4,8 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?php echo $form['produit_hash']->renderLabel("Produit", array('class' => "col-sm-3 control-label")); ?>
-                    <div class="col-sm-9">
+                    <?php echo $form['produit_hash']->renderLabel("Produit", array('class' => "col-sm-4 control-label")); ?>
+                    <div class="col-sm-8">
                         <?php echo $form['produit_hash']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?php echo $form['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                    <?php echo $form['numero_logement_operateur']->renderLabel("Numéro cuve/lot", array('class' => "col-sm-4 control-label")); ?>
                     <div class="col-sm-3">
                         <?php echo $form['numero_logement_operateur']->render(); ?>
                     </div>
@@ -52,8 +52,8 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <?php echo $form['destination_type']->renderLabel("Destination", array('class' => "col-sm-3 control-label")); ?>
-                    <div class="col-sm-9">
+                    <?php echo $form['destination_type']->renderLabel("Destination", array('class' => "col-sm-4 control-label")); ?>
+                    <div class="col-sm-8">
                         <?php echo $form['destination_type']->render(); ?>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
             <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <?php echo $form['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
+                        <?php echo $form['specificite']->renderLabel("Spécificité", array('class' => "col-sm-4 control-label")); ?>
                         <div class="col-sm-5">
                             <?php echo $form['specificite']->render(); ?>
                         </div>

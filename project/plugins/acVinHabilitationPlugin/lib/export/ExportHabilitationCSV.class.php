@@ -8,7 +8,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Nom Opérateur (Raison Sociale);Identifiant;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cépage;Produit (libellé appellation);CVI Opérateur;Siret Opérateur;Adresse (etablissement);Adresse complémentaire (etablissement);Adresse complémentaire 2 (etablissement);Code postal  (etablissement);Commune (etablissement);Téléphone fixe (etablissement);Téléphone mobile (etablissement);Email (etablissement);Adresse (société);Adresse complémentaire (société);Adresse complémentaire 2 (société);Code postal (société);Commune (société);Téléphone fixe (société);Téléphone mobile (société);Email (société);Activité;Statut;Date;Commentaire;Organisme;Id du doc;Hash produit\n";
+        return "Nom Opérateur (Raison Sociale);Identifiant;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cépage;Produit (libellé appellation);CVI;Siret;Adresse (etablissement);Adresse complémentaire (etablissement);Adresse complémentaire 2 (etablissement);Code postal  (etablissement);Commune (etablissement);Téléphone fixe (etablissement);Téléphone mobile (etablissement);Email (etablissement);Adresse (société);Adresse complémentaire (société);Adresse complémentaire 2 (société);Code postal (société);Commune (société);Téléphone fixe (société);Téléphone mobile (société);Email (société);Activité;Statut;Date;Commentaire;Organisme;Id du doc;Hash produit\n";
     }
 
     public function __construct($habilitation, $header = true, $region = null) {
@@ -120,4 +120,8 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    public function setExtraArgs($args) {
+    }
+
 }

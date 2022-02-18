@@ -125,6 +125,9 @@ class couchClient extends couch {
 			$memory = memory_get_usage();
 			$timer = sfTimerManager::getTimer("CouchDB", true);
 		}
+		if(getenv('COUCHDB_DEBUG')) {
+			echo "[couchdb_debug] $method $url\n";
+		}
 		$raw = $this->query($method,$url,$parameters,$data);
 // 		echo $raw."\n";
 		$response = $this->parseRawResponse($raw, $this->results_as_array);
