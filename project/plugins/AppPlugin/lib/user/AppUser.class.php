@@ -48,12 +48,22 @@ class AppUser extends sfBasicSecurityUser {
           $societe = SocieteClient::getInstance()->findByIdentifiantSociete($login_or_compte);
           if(!$societe){
              throw new sfException("Le compte est nul : ".$login_or_compte);
+         }
+         if($societe->isSuspendu()){
+              $this->signOut();
+              return false;
+              //throw new sfException("Le compte est nul : ".$login_or_compte);
           }
           $compte = $societe->getMasterCompte();
           $login = $compte->identifiant;
           if(!$compte){
              throw new sfException("Le compte est nul : ".$login_or_compte);
           }
+        }
+
+        if ($compte->statut === EtablissementClient::STATUT_SUSPENDU) {
+            $this->signOut();
+            return false;
         }
 
         $this->setAttribute(self::SESSION_COMPTE_LOGIN, $login, $namespace);
