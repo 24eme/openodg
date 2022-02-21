@@ -227,7 +227,7 @@ class CertipaqDeroulant extends CertipaqService
             if ($p->libelle == $conf->getLibelleComplet()) {
                 return $p;
             }
-            if (strpos($p->libelle, $conf->getLibelleComplet()) !== false) {
+            if (strpos($p->libelle, $conf->getLibelleComplet()) === 0) {
                 $certipaq_produits[] = $p;
             }
         }
@@ -236,7 +236,7 @@ class CertipaqDeroulant extends CertipaqService
             if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
                 return $p;
             }
-            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) !== false) {
+            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) === 0) {
                 $certipaq_produits[] = $p;
             }
         }
