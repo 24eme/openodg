@@ -550,5 +550,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     {
         $this->add('validation_odg');
         $this->validation_odg = ($date) ?: date('Y-m-d');
+
+        if ($this->exist('statut_odg') && $this->statut_odg === DRClient::STATUT_EN_ATTENTE) {
+            $this->statut_odg = null;
+        }
     }
 }
