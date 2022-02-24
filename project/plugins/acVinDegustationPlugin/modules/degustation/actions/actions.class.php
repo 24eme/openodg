@@ -1037,6 +1037,7 @@ class degustationActions extends sfActions {
         $authKey = $request->getParameter('auth');
         $degustation_id = "DEGUSTATION-".str_replace("DEGUSTATION-", "", $request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant', null);
+        $identifiant = str_replace(array('>', '%3E', '%3e'), '', $identifiant);
         $lot_dossier = $request->getParameter('lot_dossier', null);
         $lot_archive = $request->getParameter('lot_archive', null);
         $type = $request->getParameter('type', null);
