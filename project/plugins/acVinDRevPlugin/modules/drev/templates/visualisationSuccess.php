@@ -62,7 +62,7 @@
 
 <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
     <h3>Controle</h3>
-    <p style="margin-bottom: 30px;">Date de controle souhaitée : <?php echo ($drev->exist('date_degustation_voulue')) ? date_format(date_create($drev->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
+    <p style="margin-bottom: 30px;">Date de controle souhaitée (hors lots en élevage) : <?php echo ($drev->exist('date_degustation_voulue')) ? date_format(date_create($drev->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
 <?php endif ?>
 
 <div class="row row-margin row-button">

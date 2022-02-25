@@ -43,7 +43,7 @@ cat $GLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 1 -2 1
 rm $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids
 
 head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
-awk -F ';' '{print $9}' $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv  | grep '[0-9]' | sort -u | tr '\n' '|'  | sed 's/.$/\\);\/p/' | sed 's/^/\/;\\(/' | sed 's/|/\\|/g'  > $EXPORTFORAPPGLOBALSUBDIR/sed.cmd
+awk -F ';' '{print $9}' $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv  | grep '[0-9]' | sort -u | tr '\n' '|'  | sed 's/.$/\\)";\/p/' | sed 's/^/\/;"\\(/' | sed 's/|/\\|/g'  > $EXPORTFORAPPGLOBALSUBDIR/sed.cmd
 sed -n -f $EXPORTFORAPPGLOBALSUBDIR/sed.cmd $GLOBALDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
 mv $EXPORTFORAPPGLOBALSUBDIR/production.csv.part $EXPORTFORAPPGLOBALSUBDIR/production.csv
 rm $EXPORTFORAPPGLOBALSUBDIR/sed.cmd

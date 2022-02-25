@@ -46,7 +46,6 @@ class PieceAllView extends acCouchdbView
     				->reduce(false)
     				->getView($this->design, $this->view)->rows);
     	}
-
 			$pieces = $this->cleanVersions(array_merge($nonVisibles, $visibles));
 
 			if($categories) {
@@ -66,19 +65,18 @@ class PieceAllView extends acCouchdbView
 			$cleaned = array();
 			$saved = array();
 			foreach($items as $item){
-				$key = $item->id;
+                $key = $item->id;
 				if (preg_match('/(.*)-(M|R)([0-9]+)$/', $key, $m)) {
 					if (isset($saved[$m[1]]) && $m[3] < $saved[$m[1]]) {
 						continue;
 					}
 					$saved[$m[1]] = $m[3];
 					$key = $m[1];
-				} else {
-					$saved[$key] = 0;
+                } elseif(isset($saved[$key])) {
+                    continue;
 				}
-				if (!isset($cleaned[$key])) {
-					$cleaned[$key] = $item;
-				}
+
+                $cleaned[] = $item;
 			}
 			return $cleaned;
 		}

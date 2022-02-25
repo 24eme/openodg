@@ -16,7 +16,7 @@ class ChgtDenomValidation extends DocumentValidation
     public function configure()
     {
         $this->addControle(self::TYPE_ERROR, 'lot_volume', "Le volume saisi est supérieur au volume initial.");
-
+        $this->addControle(self::TYPE_ERROR, 'chgtdenom_produit', "Le changement de dénomination n'a pas de produit");
     }
 
     public function controle()
@@ -38,6 +38,11 @@ class ChgtDenomValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ERROR, 'lot_volume', $lot->getProduitLibelle()." $lot->millesime ( ".$volume." hl )", $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id, "appellation" => $key)));
           }
       }
+
+        if ($this->document->isChgtDenomination() && ! $this->document->changement_produit_hash) {
+            $this->addPoint(self::TYPE_ERROR, 'chgtdenom_produit', '');
+        }
+
     }
   }
 

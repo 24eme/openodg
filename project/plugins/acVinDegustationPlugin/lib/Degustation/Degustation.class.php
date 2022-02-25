@@ -320,7 +320,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $pieces[] = [
                 'identifiant' => $lot->declarant_identifiant,
-                'date_depot' => $lot->email_envoye,
+                'date_depot' => $this->date,
                 'libelle' => $libelle,
                 'mime' => Piece::MIME_PDF,
                 'visibilite' => 1,
@@ -1148,22 +1148,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $non_attables;
 		}
 
-		public function addDegustateur($compteId, $college, $numTab){
+		public function addDegustateur($compteId, $college, $numTab = null){
 			$this->getOrAdd('degustateurs');
 			$compte = CompteClient::getInstance()->find($compteId);
 			$degustateur = $this->degustateurs->getOrAdd($college)->getOrAdd($compteId);
 			$degustateur->getOrAdd('libelle');
 			$degustateur->libelle = $compte->getLibelleWithAdresse();
 
-			if($numTab !== false){
-				if($numTab !== null){
-					$degustateur->getOrAdd('numero_table');
-					$degustateur->numero_table = $numTab;
-				}
-				$degustateur->getOrAdd('confirmation');
-				$degustateur->confirmation = true;
-			}
+			if($numTab === null){
 
+                return $degustateur;
+            }
+
+            $degustateur->getOrAdd('numero_table');
+            $degustateur->numero_table = $numTab;
+            $degustateur->getOrAdd('confirmation');
+            $degustateur->confirmation = true;
+
+            return $this->degustateur;
 		}
 
 		public function setDateEmailConvocationDegustateur($date, $compteId, $college) {

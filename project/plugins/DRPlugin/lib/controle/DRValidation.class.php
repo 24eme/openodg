@@ -26,7 +26,7 @@ class DRValidation extends DocumentValidation
 
     public function controleRendement($produit)
     {
-        $produit_conf = $this->configuration->identifyProductByLibelle($produit['libelle']);
+        $produit_conf = $this->configuration->declaration->get($produit['hash']);
 
         if (! $produit_conf->hasRendement()) {
             $this->addPoint(self::TYPE_WARNING, 'rendement_manquant', "Il n'y a pas de rendement pour le produit : ".$produit['libelle']);

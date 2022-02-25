@@ -617,6 +617,8 @@ class degustationActions extends sfActions {
         $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
+
+        uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
     }
 
     public function executeManquements(sfWebRequest $request) {
@@ -1029,9 +1031,13 @@ class degustationActions extends sfActions {
     }
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
+        // Gestion du cas ou le mailer ne retire pas le ">" à la fin du lien
+        $request->setParameter('lot_archive', str_replace('>', '', $request->getParameter('lot_archive', null)));
+
         $authKey = $request->getParameter('auth');
         $degustation_id = "DEGUSTATION-".str_replace("DEGUSTATION-", "", $request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant', null);
+        $identifiant = str_replace(array('>', '%3E', '%3e'), '', $identifiant);
         $lot_dossier = $request->getParameter('lot_dossier', null);
         $lot_archive = $request->getParameter('lot_archive', null);
         $type = $request->getParameter('type', null);

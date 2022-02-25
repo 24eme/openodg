@@ -110,12 +110,13 @@ class CertipaqDI extends CertipaqService
                     $habilitation['dr_cdc_famille_id'] = $certipaq_produit->dr_cdc_famille_id;
                     $habilitation['dr_cdc_famille'] = CertipaqDeroulant::getInstance()->keyid2obj('dr_cdc_famille_id', $certipaq_produit->dr_cdc_famille_id);
                     $habilitation['outil_production'] = array();
-                    $habilitation['dr_statut_habilitation_raw'] = $activite;
+                    //$habilitation['dr_statut_habilitation_raw'] = $activite;
                     $habilitation['dr_statut_habilitation'] = CertipaqDeroulant::getInstance()->findHabilitation($activite->statut);
                     $habilitation['dr_statut_habilitation_id'] = $habilitation['dr_statut_habilitation']->id;
                     $habilitation['date_decision'] = $activite->date;
                     $habilitation['date_dossier_complet_odg'] = '';
                     $habilitation['outil_production'] = array('');
+                    $habilitation['order'] = $habilitation['dr_cdc']->libelle."".$habilitation['dr_activites_operateurs']->libelle."".$habilitation['dr_statut_habilitation']->cle;
                     $habilitations[] = $habilitation;
                 }
             }

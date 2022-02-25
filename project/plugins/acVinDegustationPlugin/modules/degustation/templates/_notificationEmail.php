@@ -9,11 +9,11 @@ Au vu des documents fournis, et des résultats du contrôle documentaire, analyt
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'identifiant' => $identifiant
-], true) ?>">%3C<?php echo url_for('degustation_get_courrier_auth_conforme_raccourci', [
+], true) ?>"><?php echo url_for('degustation_get_courrier_auth_conforme_raccourci', [
     'id' => str_replace("DEGUSTATION-", "", $degustation->_id),
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'identifiant' => $identifiant
-], true) ?>%3E</a>
+], true) ?></a>
 <?php endif; ?>
 
 <?php if(count($lotsNonConformes)): ?>
@@ -25,21 +25,21 @@ Au vu des documents fournis, et des résultats du contrôle documentaire, analyt
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
-), true); ?>">%3C<?php echo url_for('degustation_get_courrier_auth_nonconforme_raccourci', array(
+), true); ?>"><?php echo url_for('degustation_get_courrier_auth_nonconforme_raccourci', array(
     'id' => str_replace("DEGUSTATION-", "", $degustation->_id),
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $lotNonConforme->numero_dossier.$lotNonConforme->numero_archive),
     'lot_dossier' => $lotNonConforme->numero_dossier,
     'lot_archive' => $lotNonConforme->numero_archive
-), true); ?>%3E</a>
+), true); ?></a>
 <?php endforeach; ?>
 
 Si vous souhaitez déclasser un de ces lots, vous pouvez le faire en ligne : <a href="<?php echo url_for('chgtdenom_lots', [
     'identifiant' => $identifiant,
     'campagne' => $degustation->campagne
-], true) ?>">%3C<?php echo url_for('chgtdenom_lots', [
+], true) ?>"><?php echo url_for('chgtdenom_lots', [
     'identifiant' => $identifiant,
     'campagne' => $degustation->campagne
-], true) ?>%3E</a>
+], true) ?></a>
 
 <?php endif; ?>
 Nous vous prions de croire, Madame, Monsieur, en l’expression de nos sentiments les meilleurs.

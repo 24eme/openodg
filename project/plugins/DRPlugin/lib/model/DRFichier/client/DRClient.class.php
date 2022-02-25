@@ -4,6 +4,7 @@ class DRClient extends acCouchdbClient implements FacturableClient, DouaneClient
 
     const TYPE_COUCHDB = 'DR';
 	const TYPE_MODEL = 'DR';
+    const STATUT_EN_ATTENTE = 'En attente';
 
     public static function getInstance()
     {

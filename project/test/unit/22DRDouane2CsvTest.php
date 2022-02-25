@@ -50,7 +50,7 @@ if (date('m') < 8) {
 }
 $campagne = sprintf("%04d-%04d", $year , $year + 1 );
 $t->is($line[SV11CsvFile::CSV_CAMPAGNE], $campagne, "La campagne est ".$campagne);
-$t->is($line[DRCsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
+$t->is($line[DRCsvFile::CSV_RECOLTANT_CVI], '"7523700100"', "Le CVI est 7523700100 en chaine de caractère");
 $t->is($line[DRCsvFile::CSV_PRODUIT_CERTIFICATION], $produit1->getCertification()->getKey(), "Certification OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_GENRE], $produit1->getGenre()->getKey(), "Genre OK");
 $t->is($line[DRCsvFile::CSV_PRODUIT_APPELLATION], $produit1->getAppellation()->getKey(), "Appellation OK");
