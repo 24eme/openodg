@@ -55,7 +55,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le complément de récolte par du vci dépasse le rendement autorisé");
         $this->addControle(self::TYPE_ERROR, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
 
-        $this->addControle(self::TYPE_ERROR, 'chai_manquant', "Les informations liées à votre chai sont manquantes");
+        $this->addControle(self::TYPE_ERROR, 'chai_manquant', "Les informations liées à votre chai de vinification sont manquantes");
 
         /*
          * Engagement
@@ -428,7 +428,7 @@ class DRevValidation extends DocumentValidation {
             break;
           }
         }
-        if (!$hasChai && $this->document->exist('non_vinificateur') && !$this->document->non_vinificateur) {
+        if (!$hasChai && (!$this->document->exist('non_vinificateur') || !$this->document->non_vinificateur)) {
             $this->addPoint(self::TYPE_ERROR, 'chai_manquant', "Exploitation", $this->generateUrl('drev_exploitation', array('sf_subject' => $this->document)));
         }
     }
