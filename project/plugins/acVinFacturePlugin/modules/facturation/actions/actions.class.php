@@ -360,7 +360,7 @@ class facturationActions extends sfActions
         $authKey = $request->getParameter('auth');
         $id = $request->getParameter('id');
 
-        if (UrlSecurity::verifyAuthKey($authKey, $id)) {
+        if (!UrlSecurity::verifyAuthKey($authKey, $id)) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
