@@ -7,7 +7,7 @@
 <?php slot('global_css_class', 'no_right_col')?>
 
 <h2>Facturation</h2>
-<a href="<?php echo url_for('facturation_template', array('id' => "TEMPLATE-FACTURE-".ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentPeriode())); ?>">Voir le template de facturation <?php echo ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrentPeriode() ?></a>
+<a href="<?php echo url_for('facturation_template_last'); ?>">Voir le template de facturation</a>
 
 <h2>Produits <a href="<?php echo url_for('produit_nouveau') ?>" class="btn btn-sm btn-default pull-right"><span class="glyphicon glyphicon-plus"></span> Ajouter un produit</a></h2>
 

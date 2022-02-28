@@ -92,6 +92,13 @@ facturation_declarant:
   requirements:
     sf_method: [get, post]
 
+facturation_template_last:
+  url: /facturation/last/template
+  param: { module: facturation, action: redirectTemplate }
+  requirements:
+    sf_method: [get, post]
+  class: FacturationRoute
+
 facturation_template:
   url: /facturation/template/:id
   param: { module: facturation, action: template }
