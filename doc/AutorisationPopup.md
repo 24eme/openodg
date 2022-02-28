@@ -4,8 +4,8 @@ Pour l'envoi des notifications par mail, il faut autoriser les popup. Voici la p
 
 ## Firefox
 
-[Cliquer à gauche de l'url pour autoriser les popup](captures/popup_firefox.gif)
+![Cliquer à gauche de l'url pour autoriser les popup](captures/popup_firefox.gif)
 
 ## Chrome / Chromimum
 
-[Cliquer à droite de l'url pour autoriser les popup](captures/popup_chromium.gif)
+![Cliquer à droite de l'url pour autoriser les popup](captures/popup_chromium.gif)
