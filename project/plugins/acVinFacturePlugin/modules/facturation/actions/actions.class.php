@@ -438,6 +438,11 @@ class facturationActions extends sfActions
         $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
     }
 
+    public function executeRedirectTemplate(sfWebRequest $request) {
+        $template = $this->getUniqueTemplateFactureName();
+        return $this->redirect('facturation_template', array('id' => $template));
+    }
+
     private function getLatexTmpPath() {
             return "/tmp/";
     }
