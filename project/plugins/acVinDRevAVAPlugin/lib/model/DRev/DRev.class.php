@@ -571,8 +571,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			} else {
     				$hash = str_replace('/detail/0', '', $hash);
     			}
-    			if (!$registreVCI->exist($hash)) {
-    				continue;
+		   if (!$registreVCI->exist($hash)) {
+			$hash = preg_replace('|/details/.+$|', '', $hash);
+                    if($produit->destruction) {
+                        $registreVCI->addLigne($hash, 'destruction', $produit->destruction, $produit->stockage_identifiant);
+                    }
+                    if($produit->complement) {
+                        $registreVCI->addLigne($hash, 'complement', $produit->complement, $produit->stockage_identifiant);
+                    }
+                    if($produit->substitution) {
+                        $registreVCI->addLigne($hash, 'substitution', $produit->substitution, $produit->stockage_identifiant);
+                    }
+                    if($produit->rafraichi) {
+                        $registreVCI->addLigne($hash, 'rafraichi', $produit->rafraichi, $produit->stockage_identifiant);
+                    }
+                    continue;
     			}
     			$detail = $registreVCI->get($hash);
                 if(round($produit->destruction - $detail->destruction, 2)) {
