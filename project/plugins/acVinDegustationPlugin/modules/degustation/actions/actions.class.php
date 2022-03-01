@@ -61,6 +61,10 @@ class degustationActions extends sfActions {
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->redirectIfIsAnonymized();
 
+        if ($this->degustation->getNbLotsPreleves()) {
+            return sfView::ALERT;
+        }
+
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
             $this->degustation->save(false);
         }
