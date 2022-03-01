@@ -167,7 +167,7 @@ $t->is($degustation->lieu, $lieu, "Lieu de la dégustation");
 $t->is($degustation->getLieuNom(), "Lieu test", "Nom du lieu de la dégustation");
 
 $t->comment("Prélèvement");
-$form = new DegustationPrelevementLotsForm($degustation);
+$form = new DegustationSelectionLotsForm($degustation);
 
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),
@@ -258,7 +258,7 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is(count($degustation->lots), 4, "3 lots + 1 leurre");
 
 $t->comment('On décoche les lots et on en sélectionne qu\'un');
-$form = new DegustationPrelevementLotsForm($degustation);
+$form = new DegustationSelectionLotsForm($degustation);
 
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),

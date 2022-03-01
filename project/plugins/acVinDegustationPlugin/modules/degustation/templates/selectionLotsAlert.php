@@ -2,7 +2,7 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_LOTS)); ?>
 
 <div class="page-header no-border">
-    <h2>Prélèvement des lots</h2>
+    <h2>Sélection des lots</h2>
 </div>
 
 <p class="alert alert-danger">Des lots ont été prélevés pour cette dégustation.</p>

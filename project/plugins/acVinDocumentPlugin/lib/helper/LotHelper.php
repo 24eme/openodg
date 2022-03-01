@@ -91,7 +91,7 @@ function getUrlEtapeFromMvtLot($mvtLot)
             return url_for('degustation_preleve', ['id' => $documentId]);
 
         case Lot::STATUT_AFFECTE_DEST:
-            return url_for('degustation_prelevement_lots', ['id' => $documentId]);
+            return url_for('degustation_selection_lots', ['id' => $documentId]);
     }
     return url_for(strtolower($mvtLot->value->document_type).'_visualisation', array('id' => $documentId));
 }

@@ -114,9 +114,9 @@ degustation_notifications_etape:
   requirements:
     sf_method: [get]
 
-degustation_prelevement_lots:
-  url: /degustation/:id/prelevement-lots
-  param: { module: degustation, action: prelevementLots }
+degustation_selection_lots:
+  url: /degustation/:id/selection-lots
+  param: { module: degustation, action: selectionLots }
   class: DegustationRoute
   options:
     model:    Degustation

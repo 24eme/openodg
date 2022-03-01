@@ -96,7 +96,7 @@ $b->isForwardedTo('degustation', 'index');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil des dégustations");
 
 $b->click('button[type="submit"]', array('degustation_creation' => array('date' => date('d/m/Y'), 'time' => '11:00', 'max_lots' => '2')))->followRedirect();
-$b->isForwardedTo('degustation', 'prelevementLots');
+$b->isForwardedTo('degustation', 'selectionLots');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape de séléction des lots");
 
 $b->click('button[type="submit"]')->followRedirect()->followRedirect();

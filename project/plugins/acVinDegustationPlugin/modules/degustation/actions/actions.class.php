@@ -25,7 +25,7 @@ class degustationActions extends sfActions {
 
         $degustation = $this->form->save();
 
-        return $this->redirect('degustation_prelevement_lots', $degustation);
+        return $this->redirect('degustation_selection_lots', $degustation);
     }
 
     public function executeListe(sfWebRequest $request)
@@ -56,7 +56,7 @@ class degustationActions extends sfActions {
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
     }
 
-    public function executePrelevementLots(sfWebRequest $request) {
+    public function executeSelectionLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->redirectIfIsAnonymized();
@@ -69,7 +69,7 @@ class degustationActions extends sfActions {
             $this->degustation->save(false);
         }
 
-        $this->form = new DegustationPrelevementLotsForm($this->degustation);
+        $this->form = new DegustationSelectionLotsForm($this->degustation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -531,7 +531,7 @@ class degustationActions extends sfActions {
         $etape = $this->getRouteEtape($this->degustation->etape);
         if(!$etape){
 
-            return $this->redirect('degustation_prelevement_lots', $this->degustation);
+            return $this->redirect('degustation_selection_lots', $this->degustation);
         }
 
         return $this->redirect($etape, $this->degustation);
