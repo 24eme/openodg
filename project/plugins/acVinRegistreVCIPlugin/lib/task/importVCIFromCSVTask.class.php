@@ -75,11 +75,11 @@ EOF;
                 $produitDetail = $produit->get('details/'.$cvi);
 
                 if($produitDetail->destruction == $this->formatFloat($data[12]) && $produitDetail->complement == $this->formatFloat($data[13]) && $produitDetail->substitution == $this->formatFloat($data[14]) && $produitDetail->rafraichi == $this->formatFloat($data[15]) && $produitDetail->constitue == $this->formatFloat($data[16])) {
-                    echo "Registre déjà ok ".$registre->_id."\n";
+                    //echo "Registre déjà ok ".$registre->_id."\n";
                     continue;
                 }
             }
-            
+
             if($data[16] && (!$produitDetail || $produitDetail->constitue != $this->formatFloat($data[16]))) {
                 $registre->addLigne($confProduit->getHash(), 'constitue', $this->formatFloat($data[16]), $cvi);
             }
