@@ -54,7 +54,7 @@ drev_lots = drev_lots[drev_lots["Date lot"] < datelimite]
 # In[ ]:
 
 
-etablissements = pd.read_csv(exportdir+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str'}, index_col=False, low_memory=False)
+etablissements = pd.read_csv(exportdir+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str', 'CVI': 'str', 'SIRET': 'str'}, index_col=False, low_memory=False)
 societe = pd.read_csv(exportdir+"/societe.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Téléphone' :'str', 'Téléphone portable': 'str'}, index_col=False, low_memory=False)
 lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", index_col=False, low_memory=False)
 lots = lots.rename(columns = {'Id Opérateur':'Identifiant'})
@@ -244,7 +244,7 @@ tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Volume','Lie
 
 etablissements = pd.merge(etablissements,societe,how='outer',left_on="Login",right_on='Identifiant',suffixes=('',' societe'))
 tab_cal = pd.merge(tab_cal,etablissements,how='left',left_on=['Identifiant'],right_on=['Identifiant etablissement'],suffixes=(''," etablissement"))    
-tab_cal = tab_cal[['Identifiant','Raison sociale societe','Raison sociale','Famille',"Adresse societe","Adresse 2 societe",'Adresse 3 societe','Code postal societe','Commune societe', 'Pays', 'Code comptable societe','Téléphone',"Téléphone portable",'Fax societe','Email societe','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
+tab_cal = tab_cal[['Identifiant','Titre societe','Raison sociale societe','Titre', 'Raison sociale','CVI','SIRET','Famille',"Adresse societe","Adresse 2 societe",'Adresse 3 societe','Code postal societe','Commune societe', 'Pays', 'Code comptable societe','Téléphone',"Téléphone portable",'Fax societe','Email societe','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
 tab_cal = tab_cal.rename(columns = {'Raison sociale': 'Nom etablissement','Raison sociale societe':'Nom societe','Adresse societe':'Adresse','Adresse 2 societe':'Adresse 2','Adresse 3 societe':'Adresse 3','Code postal societe':'Code postal','Email Operateur':'Email','Fax societe':'Fax'})
 
 tab_cal.reset_index(drop=True).to_csv(outputdir+'/'+datelimite_exact+'_'+millesime+'_igp_stats_droit_inao_operateurs_redevable_A_B_A-B.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
