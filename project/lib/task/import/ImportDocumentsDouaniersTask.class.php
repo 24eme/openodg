@@ -79,7 +79,7 @@ EOF;
 
         		$c = FichierClient::getInstance()->getClientFromType($ddType);
 
-                if ($f = $c->findByArgs($etablissement->identifiant, $annee) && (!($options['forceimport']) || ($f && $f->exist('donnees')))) {
+                if (($f = $c->findByArgs($etablissement->identifiant, $annee)) && (!($options['forceimport']) || ($f && $f->exist('donnees')))) {
                     if (!$options['forceimport']) {
                         echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
                     }else{
