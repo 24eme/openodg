@@ -1,6 +1,6 @@
 <?php
 
-class DegustationPrelevementLotsForm extends acCouchdbObjectForm {
+class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
     private $lots = [];
     private $leurres = [];

@@ -110,7 +110,7 @@ $iddegust1 = $degustation1->_id;
 $t->comment($iddegust1);
 
 $t->comment("Sélection des lots");
-$form = new DegustationPrelevementLotsForm($degustation1);
+$form = new DegustationSelectionLotsForm($degustation1);
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $degustation1->_rev,
@@ -189,7 +189,7 @@ $degustation2 = $form->save();
 $t->comment($degustation2->_id);
 
 $t->comment("Sélection du lot dans la 2de dégustation");
-$form = new DegustationPrelevementLotsForm($degustation2);
+$form = new DegustationSelectionLotsForm($degustation2);
 $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $degustation2->_rev,

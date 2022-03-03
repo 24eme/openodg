@@ -25,7 +25,7 @@ class degustationActions extends sfActions {
 
         $degustation = $this->form->save();
 
-        return $this->redirect('degustation_prelevement_lots', $degustation);
+        return $this->redirect('degustation_selection_lots', $degustation);
     }
 
     public function executeListe(sfWebRequest $request)
@@ -56,16 +56,20 @@ class degustationActions extends sfActions {
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
     }
 
-    public function executePrelevementLots(sfWebRequest $request) {
+    public function executeSelectionLots(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->redirectIfIsAnonymized();
+
+        if ($this->degustation->getNbLotsPreleves()) {
+            return sfView::ALERT;
+        }
 
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_LOTS))) {
             $this->degustation->save(false);
         }
 
-        $this->form = new DegustationPrelevementLotsForm($this->degustation);
+        $this->form = new DegustationSelectionLotsForm($this->degustation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -527,7 +531,7 @@ class degustationActions extends sfActions {
         $etape = $this->getRouteEtape($this->degustation->etape);
         if(!$etape){
 
-            return $this->redirect('degustation_prelevement_lots', $this->degustation);
+            return $this->redirect('degustation_selection_lots', $this->degustation);
         }
 
         return $this->redirect($etape, $this->degustation);
@@ -617,6 +621,8 @@ class degustationActions extends sfActions {
         $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
+
+        uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
     }
 
     public function executeManquements(sfWebRequest $request) {
@@ -1029,9 +1035,13 @@ class degustationActions extends sfActions {
     }
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
+        // Gestion du cas ou le mailer ne retire pas le ">" à la fin du lien
+        $request->setParameter('lot_archive', str_replace('>', '', $request->getParameter('lot_archive', null)));
+
         $authKey = $request->getParameter('auth');
         $degustation_id = "DEGUSTATION-".str_replace("DEGUSTATION-", "", $request->getParameter('id'));
         $identifiant = $request->getParameter('identifiant', null);
+        $identifiant = str_replace(array('>', '%3E', '%3e'), '', $identifiant);
         $lot_dossier = $request->getParameter('lot_dossier', null);
         $lot_archive = $request->getParameter('lot_archive', null);
         $type = $request->getParameter('type', null);

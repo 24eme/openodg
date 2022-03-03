@@ -31,7 +31,9 @@ class ConfigurationClient extends acCouchdbClient {
         if ($campagne < 2013) {
             $campagne = '2013';
         }
-        if (!isset(self::$configuration[$campagne]) || ! self::$configuration[$campagne]) {
+        $campagne++;
+        while (!isset(self::$configuration[$campagne]) || ! self::$configuration[$campagne]) {
+            $campagne--;
             self::$configuration[$campagne] = CacheFunction::cache('model', array(acCouchdbManager::getClient(), 'find'), array('CONFIGURATION-' . $campagne));
         }
 

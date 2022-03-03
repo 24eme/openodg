@@ -5,6 +5,11 @@ class drActions extends sfActions
     public function executeVisualisation(sfWebRequest $request)
     {
         $this->dr = $this->getRoute()->getDR();
+        if (! $this->dr->exist('donnees') || empty($this->dr->donnees)) {
+            $this->dr->generateDonnees();
+            $this->dr->save();
+            $this->dr = $this->getRoute()->getDR();
+        }
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
         $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
     }
@@ -41,6 +46,24 @@ class drActions extends sfActions
         }
 
         $this->dr->validation_odg = null;
+        $this->dr->save();
+
+        return $this->redirect('dr_visualisation', $this->dr);
+    }
+
+    public function executeEnattenteAdmin(sfWebRequest $request)
+    {
+        $this->dr = $this->getRoute()->getDR();
+
+        if (! $this->getUser()->isAdmin()) {
+            return $this->forwardSecure();
+        }
+
+        if ($this->dr->exist('validation_odg') && $this->dr->validation_odg) {
+            throw new sfException('La DR doit pas être validée ODG pour permettre la mise en attente');
+        }
+
+        $this->dr->switchEnAttente();
         $this->dr->save();
 
         return $this->redirect('dr_visualisation', $this->dr);

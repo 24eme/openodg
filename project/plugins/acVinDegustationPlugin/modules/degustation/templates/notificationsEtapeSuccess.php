@@ -111,7 +111,7 @@
             <h4 class="modal-title">Le mail n'a pas pu s'ouvrir automatiquement</h4>
           </div>
           <div class="modal-body">
-              <span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique.</p>
+              <span class="glyphicon glyphicon-info-sign"></span> Vous devez autoriser le navigateur à ouvrir des popups pour activer l'ouverture automatique. (<a href="https://github.com/24eme/openodg/blob/master/doc/AutorisationPopup.md">Consulter l'aide</a>)</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Annuler</button>

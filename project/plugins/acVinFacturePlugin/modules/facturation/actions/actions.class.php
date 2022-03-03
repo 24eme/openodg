@@ -360,7 +360,7 @@ class facturationActions extends sfActions
         $authKey = $request->getParameter('auth');
         $id = $request->getParameter('id');
 
-        if (UrlSecurity::verifyAuthKey($authKey, $id)) {
+        if (!UrlSecurity::verifyAuthKey($authKey, $id)) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
@@ -436,6 +436,11 @@ class facturationActions extends sfActions
 
     public function executeTemplate(sfWebRequest $request) {
         $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
+    }
+
+    public function executeRedirectTemplate(sfWebRequest $request) {
+        $template = $this->getUniqueTemplateFactureName();
+        return $this->redirect('facturation_template', array('id' => $template));
     }
 
     private function getLatexTmpPath() {

@@ -28,7 +28,7 @@ class ExportChgtDenomPDF extends ExportDeclarationLotsPDF {
 
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("%s\n%s\n\n", $this->chgtdenom->declarant->nom, $this->chgtdenom->declarant->email);
+        $header_subtitle = sprintf("%s\n%s\n", $this->chgtdenom->declarant->nom, $this->chgtdenom->declarant->email);
         if (!$this->chgtdenom->isPapier() && $this->chgtdenom->validation && $this->chgtdenom->validation !== true) {
             $date = new DateTime($this->chgtdenom->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));

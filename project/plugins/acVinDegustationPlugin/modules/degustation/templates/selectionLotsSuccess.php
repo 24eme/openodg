@@ -6,7 +6,7 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_LOTS)); ?>
 
 <div class="page-header no-border">
-    <h2>Prélèvement des lots <small class="text-muted">Campagne <?php echo $degustation->campagne; ?></small></h2>
+    <h2>Sélection des lots <small class="text-muted">Campagne <?php echo $degustation->campagne; ?></small></h2>
 </div>
 <div class="alert alert-info" role="alert">
   <table class="table table-condensed">
@@ -24,7 +24,7 @@
 </div>
 
 <p>Sélectionnez l'ensemble des lots à prélever pour la dégustation</p>
-<form action="<?php echo url_for("degustation_prelevement_lots", $degustation) ?>" method="post" class="form-horizontal degustation prelevements">
+<form action="<?php echo url_for("degustation_selection_lots", $degustation) ?>" method="post" class="form-horizontal degustation prelevements selectionlots">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">

@@ -8,7 +8,11 @@
         Déclaration de Récolte <?= $dr->campagne ?>
         <small class="pull-right">
             <i class="glyphicon glyphicon-file"></i>
-            Déclaration importée le <?= format_date($dr->date_import, "dd/MM/yyyy", "fr_FR") ?>
+            Déclaration
+            <?php if ($dr->exist('statut_odg') && $dr->statut_odg): ?>
+                mise en attente,
+            <?php endif ?>
+            importée le <?= format_date($dr->date_import, "dd/MM/yyyy", "fr_FR") ?>
             <?php if ($dr->exist('validation_odg') && $dr->validation_odg): ?>
                 et approuvée le <?= format_date($dr->validation_odg, "dd/MM/yyyy", "fr_FR") ?>
             <?php endif ?>
@@ -54,6 +58,9 @@
                     Approuver la DR
                 </a>
             <?php else : ?>
+                <a href="<?= url_for('dr_enattente_admin', ['id' => $dr->_id]) ?>" class="btn btn-default">
+                    <?= ($dr->exist('statut_odg') && $dr->statut_odg) ? 'Enlever la mise en attente' : 'Mise en attente' ?>
+                </a>
                 <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-success">
                     Valider la DR
                 </a>

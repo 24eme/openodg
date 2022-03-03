@@ -1,7 +1,19 @@
-
-<h1>Comparatif Certipaq</h1>
+<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation, 'last' => "Comparatif avec Certipaq" ));
+  $etablissement = $habilitation->getEtablissementObject();
+ ?>
+<div class="page-header no-border">
+    <h1>Comparatif Certipaq</h1>
+</div>
 
 <p>Comparatif des données issues de la base de données et celles trouvées vias l'API Certipaq</p>
+
+<?php if (isset($error) && $error): ?>
+
+<h2>Erreur</h2>
+
+<pre><?php echo $error; ?></pre>
+
+<?php return ;endif; ?>
 
 <h2>Opérateur</h2>
 
@@ -36,7 +48,7 @@
             $class = "";
             break;
     }
-    echo "<tr $class><th>$titre</th><td>$local</td><td>$certi</td></tr>";
+    echo "<tr $class><th>$titre</th><td>$local</td><td>$certi</td></tr>\n";
 }
 ?>
 <table class="table">
@@ -57,15 +69,26 @@
 
 <tr><td colspan=3><h2>Habilitations</h2></td></tr>
 <?php
+    if (!$pseudo_operateur):
+        echo "<tr class='danger'><td><strong>Pas d'habilitation trouvée</strong></td></tr></table>";
+    else:
     foreach ($certipaq_operateur->sites as $site_id => $site):
-    $pseudo_site = (object) $pseudo_operateur->sites[$site_id]->getRawValue();
+    if (!$pseudo_operateur->sites[$site_id]) {
+        $pseudo_site = (object) array('nom_site'=>'', 'capacite_cuverie'=>'', 'complement_adresse'=> '', 'cp'=>'', 'ville'=>'', 'telephone'=>'', 'fax'=>'');
+    }else{
+        $pseudo_site = (object) $pseudo_operateur->sites[$site_id]->getRawValue();
+    }
+    if (@$has_site) {
+        echo "<tr><th colspan=3><center><strong>&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*&nbsp;*</strong></center></th></tr>";
+    }
+    $has_site = 1;
 ?>
 <?php print_tr('Nom du site', $pseudo_site->nom_site, $site->nom_site); ?>
 <?php print_tr('Capacité cuverie', $pseudo_site->capacite_cuverie, $site->capacite_cuverie, ''); ?>
 <?php print_tr('Adresse', $pseudo_site->adresse, $site->adresse." ".$site->complement_adresse, 'string'); ?>
 <?php print_tr('Code postal', $pseudo_site->cp, $site->cp, 'string'); ?>
 <?php print_tr('Ville', $pseudo_site->ville, $site->ville, 'string'); ?>
-<?php print_tr('Telephone', $pseudo_site->telephone, $site->telephone, 'string'); ?>
+<?php print_tr('Telephone', $pseudo_site->telephone, $site->telephone, 'nombre'); ?>
 <?php print_tr('Fax', $pseudo_site->fax, $site->fax, 'string'); ?>
 <?php print_tr('Commentaire', "[N/A]", $site->commentaire); ?>
 <?php foreach($site->habilitations as $id => $h):  $pseudo_h = (object) $pseudo_site->habilitations[$id]; ?>
@@ -86,16 +109,26 @@
 <?php endforeach; ?>
 <?php endforeach; ?>
 </table>
+<?php endif; ?>
 <div class="row" style="margin-top: 100px;">
-<h2>Données brutes</h2>
-<table class="table">
-<tr><th>Données en base</th><th>Données Certipaq</th></tr>
-<tr>
-<td><pre>
-<?php print_r($pseudo_operateur->getRawValue()); ?>
-</pre></td>
-<td><pre>
-<?php print_r($certipaq_operateur->getRawValue()); ?>
-</pre></td>
-</table>
+    <h2>Données brutes</h2>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+        <div class="panel-heading"><h3>Syndicat</h3></div>
+        <div class="panel-body">
+            <pre>
+                <?php print_r($pseudo_operateur->getRawValue()); ?>
+            </pre></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+        <div class="panel-heading"><h3>Certipaq</h3></div>
+        <div class="panel-body">
+            <pre>
+            <?php print_r($certipaq_operateur->getRawValue()); ?>
+            </pre>
+        </div>
+        </div>
+    </div>
 </div>

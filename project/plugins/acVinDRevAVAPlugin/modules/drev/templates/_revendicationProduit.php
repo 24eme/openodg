@@ -37,7 +37,7 @@
                             foreach ($produit->getProduitsCepage() as $cepage_key => $produit_cepage) :
                             	$print = false;
                                 ?>
-                                <?php if ($produit_cepage->volume_revendique && !$vtsgn): ?>
+                                <?php if (($produit_cepage->volume_revendique || $produit_cepage->superficie_revendique) && !$vtsgn): ?>
                                 <tr>
                                     <td class="col-md-<?php if($drev->hasProduitsVCI()): ?>4<?php else: ?>6<?php endif; ?> text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?></small></td>
                                     <?php if(!$drev->isNonRecoltant()): ?>

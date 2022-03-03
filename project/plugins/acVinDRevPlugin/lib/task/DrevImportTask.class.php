@@ -252,8 +252,7 @@ EOF;
 
         // Check si le Volume est le même que celui d'un autre Lot
         foreach ($drev->getLots() as $lot) {
-            if (  ($lot->volume == $volume) &&
-                  ( ($ligne[ExportDRevCSV::CSV_DATE_VALIDATION_ODG] < '2021-08-00') || (KeyInflector::slugify(trim($numero_cuve)) == KeyInflector::slugify(trim($lot->numero_logement_operateur)) ) )) {
+            if ($lot->volume == $volume && KeyInflector::slugify(trim($numero_cuve)) == KeyInflector::slugify(trim($lot->numero_logement_operateur))) {
                 return true;
             }
         }
