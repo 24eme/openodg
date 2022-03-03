@@ -56,7 +56,7 @@ class DR extends BaseDR implements InterfaceMouvementFacturesDocument {
 			if($this->getTotalValeur("15") && !$drev){
 			 	throw new FacturationPassException("L15 et pas de Drev : ".$this->_id." on skip la facture");
 			}
-
+        $this->generateDonnees();
       $cotisations = $templateFacture->generateCotisations($this);
 
       if($this->hasVersion()) {
