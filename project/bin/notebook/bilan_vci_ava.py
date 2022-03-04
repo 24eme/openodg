@@ -104,13 +104,13 @@ vci_curr[vci_curr['Produit'].str.contains(appellation)]
 # In[ ]:
 
 
-vci_curr_total_group = vci_curr[vci_curr['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17]].groupby(['CVI Opérateur']).agg('sum').reset_index()
+vci_curr_total_group = vci_curr[vci_curr['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17,10]].groupby(['CVI Opérateur', 'Stockage']).agg('sum').reset_index()
 vci_curr_total_group['Produit'] = appellation
-vci_curr_group = vci_curr[vci_curr['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17]].groupby(['CVI Opérateur', 'Produit']).agg('sum').reset_index()
+vci_curr_group = vci_curr[vci_curr['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17,10]].groupby(['CVI Opérateur', 'Produit', 'Stockage']).agg('sum').reset_index()
 vci_curr_group = pd.concat([vci_curr_group, vci_curr_total_group], ignore_index=True)
-vci_prev_total_group = vci_prev[vci_prev['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17]].groupby(['CVI Opérateur']).agg('sum').reset_index()
+vci_prev_total_group = vci_prev[vci_prev['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17,10]].groupby(['CVI Opérateur', 'Stockage']).agg('sum').reset_index()
 vci_prev_total_group['Produit'] = appellation
-vci_prev_group = vci_prev[vci_prev['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17]].groupby(['CVI Opérateur', 'Produit']).agg('sum').reset_index()
+vci_prev_group = vci_prev[vci_prev['Produit'].str.contains(appellation)].iloc[:,[18,8,11,12,13,14,15,16,17,10]].groupby(['CVI Opérateur', 'Produit', 'Stockage']).agg('sum').reset_index()
 vci_prev_group = pd.concat([vci_prev_group, vci_prev_total_group], ignore_index=True)
 
 
@@ -141,7 +141,7 @@ vci_prev_group.describe()
 # In[ ]:
 
 
-registres = pd.merge(vci_prev_group, vci_curr_group,  how='outer', on=['CVI Opérateur', 'Produit'])
+registres = pd.merge(vci_prev_group, vci_curr_group,  how='outer', on=['CVI Opérateur', 'Produit', 'Stockage'])
 
 
 # In[ ]:
@@ -237,6 +237,7 @@ bilan_infos['adresse'] = bilan_infos["Adresse"]
 bilan_infos['commune'] = bilan_infos["Commune"]
 bilan_infos['code_postal'] = bilan_infos["Code postal"]
 bilan_infos['siret'] = bilan_infos["SIRET"]
+bilan_infos['stockage'] = bilan_infos["Stockage"]
 bilan_infos['stock_vci_n-1'] = round(bilan_infos["Constitue_x"].fillna(0) + bilan_infos["Stock précédent_x"].fillna(0), 2)
 bilan_infos['dr_surface'] = bilan_infos["superficie totale"]
 bilan_infos['dr_volume'] = bilan_infos["volume total"]
@@ -256,7 +257,7 @@ bilan_infos['rendement_vci_ha_hl'] = round((bilan_infos['vci_rafraichi'] + bilan
 
 
 bilan_infos = bilan_infos.query("stock_vci_n-1 > 0 or vci_constitue > 0 or vci_complement > 0 or vci_substitution > 0 or vci_rafraichi > 0 or vci_desctruction > 0 or stock_vci_n > 0 ").reset_index(drop=True);
-bilan_final = bilan_infos.sort_values(['campagne', 'CVI', 'Produit']).reindex(columns=["campagne","Produit","titre", "raison_sociale", "adresse", "commune", "code_postal", "CVI", "siret", "stock_vci_n-1", "dr_surface", "dr_volume", "dr_vci", "vci_constitue", "vci_complement", "vci_substitution", "vci_rafraichi", "vci_desctruction", "drev_revendique_n", "drev_revendique_n-1", "stock_vci_n", "rendement_vci_ha_hl"]).drop_duplicates().reset_index(drop=True);
+bilan_final = bilan_infos.sort_values(['campagne', 'CVI', 'Produit']).reindex(columns=["campagne","Produit","titre", "raison_sociale", "adresse", "commune", "code_postal", "CVI", "siret", "stockage", "stock_vci_n-1", "dr_surface", "dr_volume", "dr_vci", "vci_constitue", "vci_complement", "vci_substitution", "vci_rafraichi", "vci_desctruction", "drev_revendique_n", "drev_revendique_n-1", "stock_vci_n", "rendement_vci_ha_hl"]).drop_duplicates().reset_index(drop=True);
 
 
 # In[ ]:
