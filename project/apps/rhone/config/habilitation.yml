@@ -30,6 +30,7 @@ all:
           TRANSMIS_CERTIPAQ: "Transmis à CERTIPAQ"
           VALIDE_CERTIPAQ: "Validé par CERTIPAQ"
           REFUSE_CERTIPAQ: "Refusé par CERTIPAQ"
+          SUSPENDU_CERTIPAQ: "Suspendu par CERTIPAQ"
           TRANSMIS_INAO: "Transmis à l'INAO"
           VALIDE_INAO: "Validé par l'INAO"
           REFUSE_INAO: "Refusé par l'INAO"
@@ -56,15 +57,18 @@ all:
             REFUSE: REFUS
             ANNULE: ANNULÉ
             SUSPENDU_INAO: SUSPENDU
+            SUSPENDU_CERTIPAQ: SUSPENDU
           RETRAIT:
             COMPLET: DEMANDE_RETRAIT
             VALIDE: RETRAIT
             REFUSE: HABILITE
             ANNULE: HABILITE
             SUSPENDU_INAO: SUSPENDU
+            SUSPENDU_CERTIPAQ: SUSPENDU
           RESILIATION:
             COMPLET: DEMANDE_RESILIATION
             VALIDE: RESILIE
             REFUSE: HABILITE
             ANNULE: HABILITE
             SUSPENDU_INAO: SUSPENDU
+            SUSPENDU_CERTIPAQ: SUSPENDU
