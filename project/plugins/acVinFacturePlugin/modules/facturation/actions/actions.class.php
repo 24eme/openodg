@@ -132,7 +132,7 @@ class facturationActions extends sfActions
             $this->identifiant = $request->getParameter('identifiant');
 
             $this->campagnes = [];
-            $campagne_actuelle = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
+            $campagne_actuelle = date('Y');
             for ($i = $campagne_actuelle; $i > $campagne_actuelle - 5; $i--) {
                 $this->campagnes[] = $i;
             }
