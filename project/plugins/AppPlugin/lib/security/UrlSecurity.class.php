@@ -4,6 +4,11 @@ class UrlSecurity
 {
     public static function generateAuthKey($id, $discriminant = null)
     {
+        if(!sfConfig::get('app_secret')) {
+
+            throw new Exception("Le \"app_secret\" doit être configuré pour pouvoir générer les url authentifiantes");
+        }
+
         return substr(hash_hmac('sha512', $id.$discriminant, sfConfig::get('app_secret')), 0, 10);
     }
 
