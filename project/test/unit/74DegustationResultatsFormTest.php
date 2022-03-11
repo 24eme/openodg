@@ -208,6 +208,8 @@ $t->comment('Notifications');
 $doc->setMailEnvoyeEtablissement($etbIdentifiant, 0);
 $t->is($doc->isMailEnvoyeEtablissement($etbIdentifiant), false, 'On remet les mails à non envoyé');
 
+sfConfig::set('app_secret', 'test_secret');
+
 $authKey = UrlSecurity::generateAuthKey($doc->_id, $etbIdentifiant);
 
 $t->is(strlen($authKey), 10, "Génération de la clé de chiffrement");
