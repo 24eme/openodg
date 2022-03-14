@@ -21,6 +21,7 @@ $emetteurs["IGP13"] = array(
     "siret" => "siret"
 );
 sfConfig::set('app_facture_emetteur' , $emetteurs);
+sfConfig::set('app_secret', 'test_secret');
 
 $t = new lime_test();
 
