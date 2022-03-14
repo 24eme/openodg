@@ -25,6 +25,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return date($format, strtotime($this->date));
     }
 
+    public function getDateCommission() {
+
+        return $this->getDocument()->getDateFormat('Y-m-d');
+    }
+
 		public function getMaster() {
 			return $this;
 		}

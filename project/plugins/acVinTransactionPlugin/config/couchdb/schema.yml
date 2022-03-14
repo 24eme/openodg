@@ -30,6 +30,7 @@ Transaction:
       lecture_seule: { required: false }
       denomination_auto: { required: false }
       date_degustation_voulue: { required: false }
+      date_commission: { required: false }
       version: { required: false }
       numero_archive: {  }
       type_archive: { required: false }

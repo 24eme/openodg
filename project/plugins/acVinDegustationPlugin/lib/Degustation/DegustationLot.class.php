@@ -213,11 +213,4 @@ class DegustationLot extends BaseDegustationLot {
         return parent::setNumeroTable($n);
     }
 
-    public function getDateCommission() {
-
-        $this->date_commission = $this->getDocument()->getDateFormat('Y-m-d');
-
-        return $this->_get('date_commission');
-    }
-
 }

@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(137);
+$t = new lime_test(141);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -102,15 +102,19 @@ $drev->lots[1]->numero_logement_operateur = '2';
 $drev->lots[1]->volume = 2;
 $drev->validate();
 $drev->validateOdg();
+$drev->add('date_commission', $drev->getDateValidation('Y-m-d'));
 $drev->save();
 
+$t->is($drev->date_commission, $drev->getDateValidation('Y-m-d'), "Date de commission de la DREV");
 $t->ok($drev->lots[0]->numero_archive, "Numéro d'archive du lot 1");
 $t->ok($drev->lots[0]->numero_dossier, "Numéro de dossier du lot 1");
+$t->is($drev->lots[0]->date_commission, $drev->date_commission, "Date de la commission dans le lot");
 $t->ok($drev->lots[1]->numero_archive, "Numéro d'archive du lot 2");
 $t->ok($drev->lots[1]->numero_dossier, "Numéro de dossier du lot 2");
 $t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 1 est bien 01");
 $t->is($drev->lots[1]->document_ordre, '01', "Document ordre du lot 2 est bien 01");
 $t->is($drev->lots[1]->adresse_logement, $addrCompleteLgtDrev, "Lot drev a l'adresse de chai");
+$t->is($drev->lots[1]->date_commission, $drev->date_commission, "Date de la commission dans le lot");
 $t->ok(!$drev->hasLotsUtilises(), "La drev n'a pas de lot utilisée");
 
 $t->comment($drev->_id);
@@ -148,6 +152,7 @@ $t->comment("Test de la dégustation : $docid");
 $t->comment("Création de la dégustation");
 
 $degustation = DegustationClient::getInstance()->createDoc($degust_date);
+
 $t->is($degustation->_id, $docid, "doc id");
 $t->is($degustation->campagne, $campagne, "campagne à partir de la date");
 
@@ -163,6 +168,7 @@ $t->is($degustation->_id, $docid, "doc id");
 $degustation = DegustationClient::getInstance()->find($degustation->_id);
 $t->is($degustation->date, $degust_date.":00", "La date de la degustation est la bonne");
 $t->is($degustation->getDateFormat(), $date, "La méthode getDateFormat renvoi la date");
+$t->is($degustation->getDateCommission(), $degustation->getDateFormat('Y-m-d'), "Date de commission de la dégustation");
 $t->is($degustation->lieu, $lieu, "Lieu de la dégustation");
 $t->is($degustation->getLieuNom(), "Lieu test", "Nom du lieu de la dégustation");
 

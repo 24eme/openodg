@@ -321,6 +321,15 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
        }
 
+       public function getDateCommission() {
+           if(!$this->exist('date_commission')) {
+
+               return null;
+           }
+
+           return $this->_get('date_commission');
+       }
+
 
     	public function getDateValidation($format = 'Y-m-d') {
     		if ($this->validation) {
