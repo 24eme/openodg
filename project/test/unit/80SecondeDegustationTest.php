@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(57);
+$t = new lime_test(64);
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
@@ -128,10 +128,17 @@ $degustation1->lots[1]->numero_table = 2;
 $degustation1->anonymize();
 $degustation1->save();
 
+
 $t->is($degustation1->lots[0]->numero_table, 1, 'Le lot 1 est atablé sur la table 1');
 $t->is($degustation1->lots[1]->numero_table, 2, 'Le lot 2 est atablé sur la table 2');
 $t->is($degustation1->lots[0]->numero_anonymat, "A01", 'Le lot 1 est bien anonymisé');
 $t->is($degustation1->lots[1]->numero_anonymat, "B01", 'Le lot 2 est bien anonymisé');
+$t->is($degustation1->lots[0]->_get('date_commission'), $degustation1->getDateFormat('Y-m-d'), 'Le lot 1 est à une date de commission');
+$t->is($degustation1->lots[1]->_get('date_commission'), $degustation1->getDateFormat('Y-m-d'), 'Le lot 2 est à une date de commission');
+
+$drev = DRevClient::getInstance()->find($drev->_id);
+$t->is($drev->lots[0]->_get('date_commission'), $degustation1->lots[0]->date_commission, 'La date de commission du lot dans de la drev est celui de la degustation');
+$t->is($drev->lots[1]->_get('date_commission'), $degustation1->lots[1]->date_commission, 'La date de commission du lot dans de la drev est celui de la degustation');
 
 $t->comment("Conformité des lots");
 $degustation1->lots[0]->statut = Lot::STATUT_CONFORME;
@@ -226,6 +233,7 @@ $t->ok($lot_degust2->isSecondPassage(), "Le lot de la deuxième degust est bien 
 $t->is($lot_degust2->affectable, false, "Le lot de la 2d dégustation n'est plus affectable");
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot_degust2), 2, "Il y a deux affecte source avant le lot de la 2de dégustation");
 $t->is($lot_degust2->specificite, "2ème dégustation", "La spécificité du lot attribué à la 2de dégustation est : 2ème dégustation");
+$t->is($lot_degust2->_get('date_commission'), $degustation2->getDateFormat('Y-m-d'), 'Le lot de la dégustation à la même date de commission que la date de la dégustation');
 
 $t->is($lot_degust1->document_ordre, '02', "Le numéro d'ordre du lot de la degustation 1 est bien 02");
 $t->is($lot_degust1->id_document_affectation, $degustation2->_id, "Le lot de la degust 1 est bien affecté à la degustation 2 ".$degustation2->_id);
@@ -233,8 +241,10 @@ $t->is($lot_degust1->id_document_provenance, $drev->_id, "Le lot de la degust 1 
 $t->ok($lot_degust1->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot de la degust 1 est bien en affecte_src");
 $t->ok(!$lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot dans la 1ère dégustation n'est plus affectable / ".Lot::STATUT_AFFECTABLE);
 $t->is($lot_degust1->getNombrePassage(), 1, "Le lot de la première degust a toujours comme numero de passage 1");
+$t->is($lot_degust1->_get('date_commission'), $degustation1->getDateFormat('Y-m-d'), 'Le lot de la dégustation à la même date de commission que la date de la dégustation');
 
 $t->is($drev->lots[0]->id_document_affectation, $degustation1->_id, "Le lot de la drev est resté affecté à la degustation 1 ".$degustation1->_id);
+$t->is($drev->lots[0]->_get('date_commission'), $degustation1->getDateFormat('Y-m-d'), 'Le lot de la drev à la même date de commission que la 1ère dégustation');
 
 $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
 $t->is(count($lotsPrelevables), 0, "Il y a 0 mouvement prélevable");

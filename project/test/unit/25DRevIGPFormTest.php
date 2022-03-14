@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(129);
+$t = new lime_test(131);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -260,6 +260,8 @@ $lot = $mouvement->getLot();
 
 $t->is($lot->id_document_provenance, null, "Le lot n'a pas de provenance");
 $t->is($lot->id_document_affectation, null, "Le lot n'a pas de fils");
+$t->is($lot->date, $drev->getDateValidation('Y-m-d'), "Le date de validation du lot est celle de validation de la drev");
+$t->is($lot->date_commission, null, "Le date de commission du lot est celle de validation de la drev");
 $t->is(count($lot->getMouvements()), 3, "Le lot à 3 mouvements");
 $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot à un mouvement affectable");
 $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), "Le lot à un mouvement revendique");

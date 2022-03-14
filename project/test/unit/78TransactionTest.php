@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(21);
+$t = new lime_test(23);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -117,4 +117,5 @@ $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 $t->ok($lot->getMouvement(Lot::STATUT_CHANGEABLE), 'Le lot est changeable');
 $t->is($lot->getTypeProvenance(), null, "pas de provenance");
 $t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->initial_type, $lot->initial_type, "Mouvement origine type");
-
+$t->is($lot->date, $transaction->getDateValidation('Y-m-d'), "La date du lot est la date de conditionnement");
+$t->is($lot->date_commission, null, "La date de la commission n'est pas encore ajouté");

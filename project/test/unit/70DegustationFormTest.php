@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(128);
+$t = new lime_test(136);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -189,6 +189,8 @@ $degustation = DegustationClient::getInstance()->find($degustation->_id);
 
 $t->is(count($degustation->lots), 3, 'Il y a 3 lots dans la dégustation');
 
+$t->is($degustation->lots[0]->date, (new DateTime($degustation->date))->format('Y-m-d'), "Le lot à pour date celle de la degustation");
+$t->is($degustation->lots[0]->date_commission, $degustation->getDateFormat('Y-m-d'), "Le lot de la commission à pour date celle de la degustation");
 $t->is($degustation->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type par défaut est ".DRevClient::TYPE_MODEL);
 $degustation->lots[0]->initial_type = null;
 $t->is($degustation->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
@@ -221,7 +223,11 @@ $t->is($degustation->lots[2]->id_document_provenance, $transaction->_id, "La pro
 $drev = DRevClient::getInstance()->find($iddrev);
 $t->ok($drev->hasLotsUtilises(), "La drev a des lots utilisée");
 $t->is($drev->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la DREV est bien ".$degustation->_id);
+$t->is($drev->lots[0]->date, $drev->getDateValidation('Y-m-d'), "La date drev du lot 1 est toujours celle de la DREV");
+$t->is($drev->lots[0]->date_commission, $degustation->getDateFormat('Y-m-d'), "La date de la commission est dans le lot 1 de la DREV");
+$t->is($drev->lots[1]->date, $drev->getDateValidation('Y-m-d'), "La date drev du lot 2 est toujours celle de la DREV");
 $t->is($drev->lots[1]->id_document_affectation, $degustation->_id, "L'affectation du lot 2 dans la DREV est bien ".$degustation->_id);
+$t->is($drev->lots[1]->date_commission, $degustation->getDateFormat('Y-m-d'), "La date de la commission est dans le lot 2 de la DREV");
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot de la drev a un mouvement affecté");
 $t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot de la drev a un mouvement affectable");
 $t->ok(!$drev->lots[0]->getMouvement(Lot::STATUT_CHANGE_SRC), "Le lot de la drev ");
@@ -231,7 +237,10 @@ $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lo
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($drev->lots[1]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 2 dans la DREV");
 
 $transaction = TransactionClient::getInstance()->find($transaction->_id);
-$t->is($transaction->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la DREV est bien ".$degustation->_id);
+$t->is($transaction->lots[0]->date, $transaction->getDateValidation('Y-m-d'), "La date drev du lot 1 est toujours celle de la transaction");
+$t->is($transaction->lots[0]->id_document_affectation, $degustation->_id, "L'affectation du lot 1 dans la transaction est bien ".$degustation->_id);
+$t->is($transaction->lots[0]->date_commission, $degustation->getDateFormat('Y-m-d'), "La date de la commission est dans le lot 1 de la transaction");
+
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($transaction->lots[0]), 0, "Il n'y pas a d'affectation source avant celle-ci pour le lot 1 dans la DREV");
 
 $t->is(count($degustation->mouvements_lots->get($drev->identifiant)), 6, "Il y a 4 mouvements");

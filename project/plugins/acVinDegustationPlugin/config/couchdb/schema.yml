@@ -31,6 +31,7 @@ Degustation:
                   initial_type: { }
                   id_document_provenance: { }
                   id_document_affectation: { }
+                  date_commission: { }
                   campagne: {}
                   numero_dossier: { }
                   numero_archive: { }

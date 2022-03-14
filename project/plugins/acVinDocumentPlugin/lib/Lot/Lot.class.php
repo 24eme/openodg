@@ -894,6 +894,11 @@ abstract class Lot extends acCouchdbDocumentTree
         }else{
             $this->id_document_provenance = null;
         }
+
+        if($lotAffectation && $lotAffectation->date_commission) {
+            $this->date_commission = $lotAffectation->date_commission;
+        }
+        $this->getDateCommission();
     }
 
     public function getLotAffectation()
