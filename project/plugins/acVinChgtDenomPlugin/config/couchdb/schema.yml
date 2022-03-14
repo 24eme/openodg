@@ -155,6 +155,7 @@ ChgtDenom:
                         campagne: {}
                         numero_dossier: {  }
                         numero_archive: {  }
+                        date_commission: { }
                         libelle: {}
                         detail: {}
                         volume: { type: float }

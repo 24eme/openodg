@@ -20,7 +20,7 @@ function countMouvements($degustation) {
     return $nb_mvmts;
 }
 
-$t = new lime_test(64);
+$t = new lime_test(65);
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
@@ -234,6 +234,7 @@ $t->is($lot_degust2->affectable, false, "Le lot de la 2d dégustation n'est plus
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot_degust2), 2, "Il y a deux affecte source avant le lot de la 2de dégustation");
 $t->is($lot_degust2->specificite, "2ème dégustation", "La spécificité du lot attribué à la 2de dégustation est : 2ème dégustation");
 $t->is($lot_degust2->_get('date_commission'), $degustation2->getDateFormat('Y-m-d'), 'Le lot de la dégustation à la même date de commission que la date de la dégustation');
+$t->is($lot_degust2->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->date_commission, $lot_degust2->date_commission, "La date de commission du mouvement");
 
 $t->is($lot_degust1->document_ordre, '02', "Le numéro d'ordre du lot de la degustation 1 est bien 02");
 $t->is($lot_degust1->id_document_affectation, $degustation2->_id, "Le lot de la degust 1 est bien affecté à la degustation 2 ".$degustation2->_id);

@@ -9,7 +9,7 @@ if ($application != 'igp13') {
 }
 
 
-$t = new lime_test(39);
+$t = new lime_test(40);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $centilisations = ConditionnementConfiguration::getInstance()->getContenances();
@@ -140,6 +140,7 @@ $t->is($lot->getTypeProvenance(), null, "pas de provenance");
 $t->is($lot->getMouvement(Lot::STATUT_AFFECTABLE)->initial_type, $lot->initial_type, "Mouvement initial type");
 $t->is($lot->date, $conditionnement->getDateValidation('Y-m-d'), "La date du lot est la date de conditionnement");
 $t->is($lot->date_commission, null, "La date de la commission n'est pas encore ajouté");
+$t->is($lot->getMouvement(Lot::STATUT_REVENDIQUE)->date_commission, $lot->date_commission, "La date de commission du mouvement");
 
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
 $lottransaction = $transaction->addLot();

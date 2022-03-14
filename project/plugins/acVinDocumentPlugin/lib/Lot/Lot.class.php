@@ -804,6 +804,7 @@ abstract class Lot extends acCouchdbDocumentTree
         }else{
             $mouvement->numero_archive = substr($this->numero_archive, 0, -1);
         }
+        $mouvement->date_commission = $this->date_commission;
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;

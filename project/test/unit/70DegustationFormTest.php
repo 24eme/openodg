@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(136);
+$t = new lime_test(137);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -195,6 +195,7 @@ $t->is($degustation->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial t
 $degustation->lots[0]->initial_type = null;
 $t->is($degustation->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->initial_type, $degustation->lots[0]->initial_type, "L'initial type du mouvement");
+$t->is($degustation->lots[0]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT)->date_commission, $degustation->lots[0]->date_commission, "La date de commission du mouvement");
 
 $t->is($degustation->lots[2]->initial_type, TransactionClient::TYPE_MODEL, "L'initial type par défaut est ".TransactionClient::TYPE_MODEL);
 $degustation->lots[2]->initial_type = null;

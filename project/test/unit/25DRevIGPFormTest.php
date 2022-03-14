@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(131);
+$t = new lime_test(132);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -282,6 +282,7 @@ $t->is($mouvement->lot_hash, $lot->getHash(), "Mouvement lot has");
 $t->is($mouvement->declarant_identifiant, $drev->identifiant, "Mouvement declarant identifiant");
 $t->is($mouvement->declarant_nom, $drev->declarant->raison_sociale, "Mouvement declarant raison sociale");
 $t->is($mouvement->campagne, $drev->getCampagne(), "Mouvement campagne");
+$t->is($mouvement->date_commission, $lot->date_commission, "Mouvement date de commission");
 
 $t->comment("Test de la synthèse des lots (visu/validation/_recap)");
 
