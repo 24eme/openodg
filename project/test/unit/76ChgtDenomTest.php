@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(281);
+$t = new lime_test(290);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -718,6 +718,7 @@ $degustation->lieu = "Test — Test";
 $degustation->date = $date;
 $degustation->save();
 $degustation->setLots(array($chgtDenomFromDrev->lots[0]));
+$degustation->lots[0]->statut = Lot::STATUT_NONCONFORME;
 $degustation->save();
 
 $drevM01 = DRevClient::getInstance()->find($drevM01->_id);
@@ -725,3 +726,44 @@ $chgtDenomFromDrev = ChgtDenomClient::getInstance()->find($chgtDenomFromDrev->_i
 
 $t->is($drevM01->lots[$lot->getKey()]->date_commission, $degustation->date_commission, "Date de commission du lot de la DREV  est celle de la dégustation");
 $t->is($chgtDenomFromDrev->lots[0]->date_commission, $degustation->date_commission, "Date de commission du lot du Changement de dénomination est celle de la dégustation");
+
+$date = ($year+1).'-12-28 15:00:00';
+
+$lotDeguste = $degustation->lots[0];
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotDeguste, $date, null);
+$chgtDenom->changement_volume = 25;
+$chgtDenom->changement_produit_hash = $lot->produit_hash;
+$chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
+$chgtDenom->validate();
+$chgtDenom->validateOdg();
+$chgtDenom->save();
+
+$drevM01 = DRevClient::getInstance()->find($drevM01->_id);
+$chgtDenomFromDrev = ChgtDenomClient::getInstance()->find($chgtDenomFromDrev->_id);
+
+$t->is($drevM01->lots[$lot->getKey()]->date_commission, $degustation->date_commission, "Date de commission du lot de la DREV est celle de la dégustation");
+$t->is($chgtDenomFromDrev->lots[0]->date_commission, $degustation->date_commission, "Date de commission du lot du Changement de dénomination est celle de la dégustation");
+$t->is($degustation->lots[0]->date_commission, $degustation->date_commission, "Date de commission du lot de la dégustation");
+$t->is($chgtDenom->lots[0]->date_commission, $degustation->date_commission, "Date de commission du lot du changement de dénomination après la dégustation");
+
+$date = ($year+1).'-12-29 15:00:00';
+
+$degustation2 = new Degustation();
+$degustation2->lieu = "Test — Test";
+$degustation2->date = $date;
+$degustation2->save();
+$degustation2->setLots(array($chgtDenom->lots[0]));
+$degustation2->lots[0]->statut = Lot::STATUT_CONFORME;
+$degustation2->save();
+
+$drevM01 = DRevClient::getInstance()->find($drevM01->_id);
+$chgtDenomFromDrev = ChgtDenomClient::getInstance()->find($chgtDenomFromDrev->_id);
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+$degustation->save();
+$chgtDenom = ChgtDenomClient::getInstance()->find($chgtDenom->_id);
+
+$t->is($drevM01->lots[$lot->getKey()]->date_commission, $degustation->date_commission, "Date de commission du lot de la DREV est celle de la dégustation");
+$t->is($chgtDenomFromDrev->lots[0]->date_commission, $degustation->date_commission, "Date de commission du lot du Changement de dénomination est celle de la dégustation");
+$t->is($degustation->lots[0]->date_commission, $degustation->date_commission, "Date de commission du lot de la dégustation");
+$t->is($chgtDenom->lots[0]->date_commission, $degustation2->date_commission, "Date de commission du lot du changement de dénomination après la dégustation");
+$t->is($degustation2->lots[0]->date_commission, $degustation2->date_commission, "Date de commission du lot du changement de dénomination après la dégustation");
