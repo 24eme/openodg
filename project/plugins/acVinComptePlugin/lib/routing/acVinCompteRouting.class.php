@@ -111,6 +111,7 @@ class acVinCompteRouting {
             array('model' => 'Compte',
             'type' => 'object')));
 
+        $r->prependRoute('compte_viticonnect_api', new sfRoute('/viticonnect/api/:login/:epoch/:md5', array('module' => 'compte_teledeclarant', 'action' => 'viticonnect')));
 
     }
 

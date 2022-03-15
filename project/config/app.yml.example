@@ -114,3 +114,5 @@ all:
       "": ""
   export_webpath: null
   secret: mon_code_secret # 32 caracteres
+  viticonnect:
+    secret: "SECRET"
