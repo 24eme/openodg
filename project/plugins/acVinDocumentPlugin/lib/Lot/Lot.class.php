@@ -896,10 +896,12 @@ abstract class Lot extends acCouchdbDocumentTree
             $this->id_document_provenance = null;
         }
 
-        $this->date_commission = $this->getDocument()->date_commission;
+        $this->date_commission = $this->getDocument()->getDateCommission();
 
         if(!$this->getDocument() instanceof Degustation && $lotAffectation && $lotAffectation->date_commission) {
             $this->date_commission = $lotAffectation->date_commission;
+        } elseif (!$this->getDocument() instanceof Degustation && $lotProvenance && $lotProvenance->date_commission) {
+            $this->date_commission = $lotProvenance->date_commission;
         }
     }
 

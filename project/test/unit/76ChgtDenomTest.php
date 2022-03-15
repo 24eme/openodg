@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(274);
+$t = new lime_test(281);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -79,6 +79,7 @@ $i++;
 $drev->validate($date);
 $drev->lots[2]->affectable = false;
 $drev->lots[2]->millesime = "2015";
+$drev->add('date_commission', $drev->getDateValidation('Y-m-d'));
 $drev->validateOdg($date);
 $drev->save();
 
@@ -159,6 +160,7 @@ $chgtDenomFromDrev->lots[0]->initial_type = null;
 $t->is($chgtDenomFromDrev->lots[0]->initial_type, DRevClient::TYPE_MODEL, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($chgtDenomFromDrev->lots[0]->getMouvement(Lot::STATUT_NONAFFECTABLE)->initial_type, $chgtDenomFromDrev->lots[0]->initial_type, "L'initial type du mouvement");
 $t->is($chgtDenomFromDrev->lots[0]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
+$t->is($chgtDenomFromDrev->lots[0]->date_commission, $lotFromDrev->date_commission, "La date de commission du lot est celle du lot de la drev");
 $t->is($chgtDenomFromDrev->lots[0]->numero_archive, "00003", "Le lot du chgt a le même numéro d'archive que dans la drev");
 $t->is($chgtDenomFromDrev->lots[0]->unique_id, $lotFromDrev->unique_id, "Le 1er lot du chgt a le même unique id que celui de la drev");
 $t->is($chgtDenomFromDrev->lots[0]->id_document, $idChgtDenomFromDrev, "Le lot du chgt a bien id_document ".$idChgtDenomFromDrev);
@@ -180,6 +182,7 @@ $chgtDenomFromDrev->lots[1]->initial_type = null;
 $t->is($chgtDenomFromDrev->lots[1]->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type du mouvement est  ".DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE);
 $t->is($chgtDenomFromDrev->lots[1]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
+$t->is($chgtDenomFromDrev->lots[1]->date_commission, null, "La date de commission du lot est vide");
 $t->is($chgtDenomFromDrev->lots[1]->numero_archive, "00004", "Le lot changé (2d) a un nouveau numéro d'archive");
 $t->is($chgtDenomFromDrev->lots[1]->numero_dossier, $chgtDenomFromDrev->numero_archive, "Le lot changé a le même numéro de dossier que l'archive du chgmt");
 $t->is($chgtDenomFromDrev->lots[1]->unique_id, $campagne.'-00002-00004', "Le lot changé a un nouveau uniq id");
@@ -677,3 +680,48 @@ $chgtDenomAutreCampagne->generateLots();
 $t->is($chgtDenomAutreCampagne->campagne, $drev->campagne, "La campagne du changement de dénomination est celle de la drev");
 $t->is($chgtDenomAutreCampagne->lots[0]->campagne, $drev->campagne, "La campagne du lot non changé est celle de la drev");
 $t->is($chgtDenomAutreCampagne->lots[1]->campagne, $drev->campagne, "La campagne du lot changé est celle de la drev");
+
+$t->comment("Création d'un changement partiel à partir d'une drev puis dégustation sur la partie non changé");
+
+$date = ($year+1).'-12-10 15:00:00';
+
+$drevM01 = $drev->getMaster()->generateModificative();
+$lot = $drevM01->addLot();
+$lot->volume = 100;
+$lot->produit_hash = $produit->getHash();
+$drevM01->validate($date);
+$drevM01->add('date_commission', $drev->getDateValidation('Y-m-d'));
+$drevM01->validateOdg($date);
+$drevM01->save();
+$lot = $drevM01->lots[$lot->getKey()];
+
+$t->is($drevM01->lots[$lot->getKey()]->date_commission, $drevM01->date_commission, "Date de commission du lot de la DREV");
+
+$date = ($year+1).'-12-20 15:00:00';
+
+$chgtDenomFromDrev = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lot, $date, null);
+$chgtDenomFromDrev->changement_volume = 50;
+$chgtDenomFromDrev->changement_produit_hash = $lot->produit_hash;
+$chgtDenomFromDrev->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
+$chgtDenomFromDrev->validate();
+$chgtDenomFromDrev->validateOdg();
+$chgtDenomFromDrev->save();
+
+$drevM01 = DRevClient::getInstance()->find($drevM01->_id);
+$t->is($drevM01->lots[$lot->getKey()]->date_commission, $drevM01->date_commission, "Date de commission du lot de la DREV");
+$t->is($chgtDenomFromDrev->lots[0]->date_commission, $drevM01->date_commission, "Date de commission du lot de Changement de dénomination");
+
+$date = ($year+1).'-12-25 15:00:00';
+
+$degustation = new Degustation();
+$degustation->lieu = "Test — Test";
+$degustation->date = $date;
+$degustation->save();
+$degustation->setLots(array($chgtDenomFromDrev->lots[0]));
+$degustation->save();
+
+$drevM01 = DRevClient::getInstance()->find($drevM01->_id);
+$chgtDenomFromDrev = ChgtDenomClient::getInstance()->find($chgtDenomFromDrev->_id);
+
+$t->is($drevM01->lots[$lot->getKey()]->date_commission, $degustation->date_commission, "Date de commission du lot de la DREV  est celle de la dégustation");
+$t->is($chgtDenomFromDrev->lots[0]->date_commission, $degustation->date_commission, "Date de commission du lot du Changement de dénomination est celle de la dégustation");

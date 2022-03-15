@@ -374,9 +374,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
         $saved = parent::save($saveDependants);
 
-        if ($saveDependants) {
-            $this->saveDocumentsDependants();
-        }
+        $this->saveDocumentsDependants();
 
         return $saved;
     }
