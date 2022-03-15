@@ -249,6 +249,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $l;
     }
 
+    public function getDateCommission() {
+
+        return false;
+    }
+
     public function getCampagne() {
         if(is_null($this->_get('campagne'))) {
             $firstOrigineLot = $this->getFirstOrigineLot();
@@ -368,6 +373,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 }else{
                     $this->lots[0]->affectable = false;
                 }
+            }
+            if(isset($this->lots[1])) {
+                $this->lots[1]->date_commission = null;
+            }
+            if(isset($this->lots[1]) && $this->changement_date_commission) {
+                $this->lots[1]->date_commission = $this->changement_date_commission;
             }
             $this->generateMouvementsLots();
             $this->fillDocToSaveFromLots();
