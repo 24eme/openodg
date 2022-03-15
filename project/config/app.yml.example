@@ -135,3 +135,5 @@ all:
     regions:
       "": ""
   export_webpath: null
+  viticonnect:
+    secret: "SECRET"
