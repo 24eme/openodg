@@ -319,6 +319,11 @@ abstract class Lot extends acCouchdbDocumentTree
             $this->date_commission = $this->getLogOrigine()->date_commission;
         }
 
+        if(is_null($this->_get('date_commission')) && method_exists($this->getDocument(), 'getTheoriticalDateCommission')) {
+
+            return $this->getDocument()->getTheoriticalDateCommission();
+        }
+
         return $this->_get('date_commission');
     }
 
