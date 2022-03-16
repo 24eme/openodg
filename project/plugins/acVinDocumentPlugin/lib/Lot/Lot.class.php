@@ -335,6 +335,10 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getLogOrigine() {
+        if(!$this->hasDocumentOrigine()) {
+
+            return null;
+        }
 
         return $this->getDocOrigine()->getLot($this->unique_id);
     }
