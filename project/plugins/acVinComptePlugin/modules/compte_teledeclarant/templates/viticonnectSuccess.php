@@ -17,6 +17,6 @@
 <?php if ($compte->getSociete()->no_tva_intracommunautaire): ?>
         <cas:tva><?php echo $compte->getSociete()->no_tva_intracommunautaire; ?></cas:tva>
 <?php endif; ?>
-<?php endforeach; ?>
     </cas:entity>
+<?php endforeach; ?>
 </cas:entities>
