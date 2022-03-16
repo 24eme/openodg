@@ -314,11 +314,29 @@ abstract class Lot extends acCouchdbDocumentTree
       return date("d/m/Y");
     }
 
+    public function getDateCommission() {
+        if(!$this->isCurrent()) {
+            $this->date_commission = $this->getLogOrigine()->date_commission;
+        }
+
+        if(is_null($this->_get('date_commission')) && method_exists($this->getDocument(), 'getTheoriticalDateCommission')) {
+
+            return $this->getDocOrigine()->getTheoriticalDateCommission();
+        }
+
+        return $this->_get('date_commission');
+    }
+
     public function getDocOrigine(){
       if(!$this->exist('id_document') || !$this->id_document){
         return null;
       }
       return DeclarationClient::getInstance()->findCache($this->id_document);
+    }
+
+    public function getLogOrigine() {
+
+        return $this->getDocOrigine()->getLot($this->unique_id);
     }
 
     public function isCurrent(){
