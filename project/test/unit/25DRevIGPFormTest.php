@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(132);
+$t = new lime_test(133);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -317,6 +317,7 @@ $drev_modif = $drev->findMaster();
 $t->is($drev_modif->_id, $drev->_id.'-M01', "La modification a l'identifiant attendu");
 $t->is(count($drev_modif->lots[0]->getMouvements()), 0, "La modificatrice n'a pas de mouvements pour ce lot");
 $t->is($drev_modif->numero_archive, "00003", "Numéro d'archive de la DRev à 00003");
+$t->is($drev_modif->getLot($lot->unique_id)->getDateCommission(), $lot->date_commission, "Date de commission du lot dans la master");
 
 $t->comment("Suppression de lots");
 $drev_modif->remove('lots');
