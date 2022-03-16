@@ -1,7 +1,7 @@
 <cas:entities>
 <?php foreach($compte->getSociete()->getEtablissementsObj() as $e): ?>
     <cas:entity>
-        <cas:raison_sociale><?php echo htmlentities($e->etablissement->raison_sociale); ?></cas:raison_sociale>
+        <cas:raison_sociale><?php echo htmlspecialchars($e->etablissement->raison_sociale, ENT_XML1, 'UTF-8'); ?></cas:raison_sociale>
 <?php if ($e->etablissement->cvi): ?>
         <cas:cvi><?php echo $e->etablissement->cvi; ?></cas:cvi>
 <?php endif; ?>
