@@ -1521,6 +1521,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_get('date_commission');
     }
 
+    public function getTheoriticalDateCommission() {
+        $date_commission = null;
+        foreach($this->getCurrentLots() as $lot) {
+            if(!$lot->date_commission) {
+                continue;
+            }
+
+            if($date_commission && $lot->date_commission != $date_commission) {
+
+                return null;
+            }
+            $date_commission = $lot->date_commission;
+        }
+
+        return $date_commission;
+    }
+
 	public function getDateValidation($format = 'Y-m-d')
 	{
 		if ($this->validation) {
