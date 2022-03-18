@@ -37,10 +37,10 @@ class acCouchdbDocumentCollection extends acCouchdbCollection {
     public function get($id) {
         if ($this->contains($id)) {
             if ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND_WITH_DATA && !($this->_datas[$id] instanceof acCouchdbDocument)) {
-                $this->_datas[$id] = acCouchdbManager::getClient()->create($this->_datas[$id]);
+                return acCouchdbManager::getClient()->create($this->_datas[$id]);
             }
             if ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND && is_null($this->_datas[$id])) {
-                $this->_datas[$id] = acCouchdbManager::getClient()->find($id);
+                return acCouchdbManager::getClient()->find($id);
             }
             if ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND_JSON && is_null($this->_datas[$id])) {
                 return acCouchdbManager::getClient()->find($id, acCouchdbClient::HYDRATE_JSON);
