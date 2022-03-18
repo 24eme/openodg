@@ -29,6 +29,7 @@ class acCouchdbClient extends couchClient {
     const HYDRATE_JSON = 3;
     const HYDRATE_ARRAY = 4;
     const HYDRATE_DOCUMENT = 5;
+    const HYDRATE_ON_DEMAND_JSON = 6;
 
     /**
      * Store an acCouchdbDocument in the database
@@ -179,7 +180,7 @@ class acCouchdbClient extends couchClient {
      * @return acCouchdbValueCollection Collection of the view results
      */
     public function executeView($id, $name, $hydrate = self::HYDRATE_DOCUMENT) {
-        if ($hydrate != self::HYDRATE_ON_DEMAND) {
+        if ($hydrate != self::HYDRATE_ON_DEMAND && $hydrate != self::HYDRATE_ON_DEMAND_JSON) {
             $this->include_docs(true);
         }
         if ($hydrate == self::HYDRATE_ARRAY) {
@@ -195,7 +196,7 @@ class acCouchdbClient extends couchClient {
      * @return acCouchdbValueCollection Collection class of couchdb documents 
      */
     public function execute($hydrate = self::HYDRATE_DOCUMENT) {
-        if ($hydrate != self::HYDRATE_ON_DEMAND) {
+        if ($hydrate != self::HYDRATE_ON_DEMAND && $hydrate != self::HYDRATE_ON_DEMAND_JSON) {
             $this->include_docs(true);
         }
         if ($hydrate == self::HYDRATE_ARRAY) {

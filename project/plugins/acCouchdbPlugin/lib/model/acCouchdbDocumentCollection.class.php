@@ -13,6 +13,8 @@ class acCouchdbDocumentCollection extends acCouchdbCollection {
                     foreach ($data->rows as $item) {
                         if ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND) {
                             $this->_datas[$item->id] = null;
+                        } elseif ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND_JSON) {
+                            $this->_datas[$item->id] = null;
                         } elseif ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND_WITH_DATA) {
                             $this->_datas[$item->id] = $item->doc;
                         } elseif ($this->_hydrate == acCouchdbClient::HYDRATE_JSON) {
@@ -39,6 +41,9 @@ class acCouchdbDocumentCollection extends acCouchdbCollection {
             }
             if ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND && is_null($this->_datas[$id])) {
                 $this->_datas[$id] = acCouchdbManager::getClient()->find($id);
+            }
+            if ($this->_hydrate == acCouchdbClient::HYDRATE_ON_DEMAND_JSON && is_null($this->_datas[$id])) {
+                return acCouchdbManager::getClient()->find($id, acCouchdbClient::HYDRATE_JSON);
             }
             return $this->_datas[$id];
         } else {
