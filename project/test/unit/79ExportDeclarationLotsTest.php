@@ -83,7 +83,7 @@ $drev->save();
 
 $lotD = $drev->lots[0];
 
-$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays de destination;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n", "Entête du csv declarations lots");
+$t->is(ExportDeclarationLotsCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email Operateur;Num dossier;Num lot;Date lot;Date de commission;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Destination;Date de destination;Pays de destination;Centilisation;Elevage;Eleve;Prelevable;Preleve;Changé;Logement Adresse;Mode de declaration;Date de validation;Date de validation ODG;Date de degustation voulue;Date d'envoi OI;Organisme;Doc Id;Lot unique Id;Hash produit\n", "Entête du csv declarations lots");
 
 $export = new ExportDeclarationLotsCSV($drev, false);
 $t->is($export->export(),
@@ -101,6 +101,7 @@ $t->is($export->export(),
     $lotD->numero_dossier.";".
     $lotD->numero_archive.";".
     $lotD->date.";".
+    $lotD->date_commission.";".
     '"'.$lotD->numero_logement_operateur."\";".
     DeclarationExportCsv::getProduitKeysCsv($lotD->getConfigProduit()).';'.
     $lotD->getProduitLibelle().";".
@@ -160,7 +161,7 @@ $t->is(ExportChgtDenomCSV::getHeaderCsv(), "Type;Campagne;Identifiant;Famille;CV
 $chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotD, $date, true);
 $chgtDenom->changement_produit_hash = $produitconfig2->getHash();
 $chgtDenom->changement_type = ChgtDenomClient::CHANGEMENT_TYPE_CHANGEMENT;
-$chgtDenom->changement_volume = $lotD - 10;
+$chgtDenom->changement_volume = $lotD->volume - 10;
 $chgtDenom->constructId();
 $chgtDenom->save();
 $chgtDenom->validate();
