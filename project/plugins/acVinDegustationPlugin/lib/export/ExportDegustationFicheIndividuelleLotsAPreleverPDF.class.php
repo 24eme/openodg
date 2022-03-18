@@ -18,10 +18,10 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
       $adresses = array();
       foreach ($this->degustation->getLotsPrelevables() as $lot) {
-          $adresses[$lot->adresse_logement][$lot->unique_id] = $lot;
+          $adresses[$lot->adresse_logement.$lot->declarant_identifiant][$lot->unique_id] = $lot;
       }
       ksort($adresses);
-      foreach ($adresses as $adresseLogement => $lotsArchive) {
+      foreach ($adresses as $lotsArchive) {
         $volumeLotTotal = 0;
         foreach ($lotsArchive as $archive => $lot) {
           $volumeLotTotal += $lot->volume;
