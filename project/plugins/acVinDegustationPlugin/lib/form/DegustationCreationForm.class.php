@@ -20,7 +20,7 @@ class DegustationCreationForm extends BaseForm
 
     public static function getLieuxChoices() {
         $lieux = array(null=>null);
-        return array_merge($lieux, DegustationClient::getInstance()->getHistoryLieux());
+        return array_merge($lieux, DegustationConfiguration::getInstance()->getLieux());
     }
 
     public function save() {

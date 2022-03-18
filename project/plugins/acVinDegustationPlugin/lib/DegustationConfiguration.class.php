@@ -44,4 +44,21 @@ class DegustationConfiguration {
         return isset($this->configuration['notation']) && boolval($this->configuration['notation']);
     }
 
+    public function getLieux() {
+
+        return CacheFunction::cache('model', array(DegustationConfiguration::getInstance(), '_getLieux'));
+    }
+
+    public function _getLieux() {
+        $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON);
+        $lieux = array();
+        foreach ($degusts as $d) {
+            $lieux[$d->lieu] = $d->lieu;
+        }
+        if (!count($lieux)) {
+            return array("Salle de dégustation par défaut" => "Salle de dégustation par défaut");
+        }
+        return $lieux;
+    }
+
 }

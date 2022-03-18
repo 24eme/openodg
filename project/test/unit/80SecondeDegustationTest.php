@@ -71,7 +71,7 @@ foreach($config->getProduits() as $produitconfig) {
     break;
 }
 $produitconfig_hash1 = $produitconfig1->getHash();
-$commissions = DegustationClient::getInstance()->getHistoryLieux();
+$commissions = DegustationConfiguration::getInstance()->getLieux();
 
 $t->comment("prépartion avec une DRev");
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $annee);
