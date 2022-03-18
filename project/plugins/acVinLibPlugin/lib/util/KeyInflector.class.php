@@ -40,7 +40,7 @@ class KeyInflector
      */
     public static function unaccent($string)
     {
-        if ( ! preg_match('/[\x80-\xff]/', $string) ) {
+        if (!$string || ! preg_match('/[\x80-\xff]/', $string) ) {
           return $string;
       }
 
@@ -183,6 +183,9 @@ class KeyInflector
      */
     public static function slugify($text)
     {
+        if (!$text) {
+            return $text;
+        }
         // Remove all non url friendly characters with the unaccent function
         $text = self::unaccent($text);
 

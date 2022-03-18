@@ -310,7 +310,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function isSocieteContact() {
-        return ($this->getSociete()->compte_societe == $this->_id);
+        return ($this->getSociete() && $this->getSociete()->compte_societe == $this->_id);
     }
 
     private function removeFournisseursTag() {
@@ -348,7 +348,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $societe = $this->getSociete();
 
             foreach($societe->getEtablissementsObj() as $etablissement) {
-                if($etablissement->etablissement->isSameCompteThanSociete()) {
+                if($etablissement && $etablissement->etablissement && $etablissement->etablissement->isSameCompteThanSociete()) {
 
                     return $etablissement->etablissement;
                 }
@@ -440,7 +440,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function setMotDePasseSSHA($mot_de_passe) {
-        mt_srand((double) microtime() * 1000000);
+        mt_srand(round(microtime(true) * 1000000));
         $salt = pack("CCCC", mt_rand(), mt_rand(), mt_rand(), mt_rand());
         $hash = "{SSHA}" . base64_encode(pack("H*", sha1($mot_de_passe . $salt)) . $salt);
         $this->_set('mot_de_passe', $hash);
@@ -646,7 +646,10 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     public function getEmail() {
         return Anonymization::hideIfNeeded($this->_get('email'));
     }
-    public function getEmails(){
+    public function getEmails(): array{
+        if (!$this->email) {
+            return array($this->email);
+        }
         return explode(';',$this->email);
     }
 

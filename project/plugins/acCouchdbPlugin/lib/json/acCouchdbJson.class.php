@@ -384,19 +384,19 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
         return $iterator;
     }
 
-    public function offsetGet(mixed $index): mixed {
+    public function offsetGet($index): mixed {
         return $this->get($index);
     }
 
-    public function offsetSet(mixed $index, mixed $newval): void {
+    public function offsetSet($index, $newval): void {
         $this->set($index, $newval);
     }
 
-    public function offsetExists(mixed $index): bool {
+    public function offsetExists($index): bool {
         return $this->exist($index);
     }
 
-    public function offsetUnset(mixed $offset): void {
+    public function offsetUnset($offset): void {
         $this->remove($offset);
     }
 

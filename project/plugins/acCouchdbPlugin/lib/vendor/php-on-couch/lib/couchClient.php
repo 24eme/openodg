@@ -382,7 +382,7 @@ class couchClient extends couch {
 	* @return object CouchDB document
 	*/
 	public function getDoc ($id) {
-		if ( !strlen($id) )
+		if ( !$id || !strlen($id) )
 			throw new InvalidArgumentException ("Document ID is empty");
 
 		if ( preg_match('/^_design/',$id) )

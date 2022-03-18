@@ -46,7 +46,10 @@ class ConfigurationCertification extends BaseConfigurationCertification {
 		return array_shift($a);
 	}
 
-	public function getCodesDouanes() {
+	public function getCodesDouanes(): array {
+        if (!$this->_get('code_douane')) {
+            return array();
+        }
 		return explode(',', $this->_get('code_douane'));
 	}
 

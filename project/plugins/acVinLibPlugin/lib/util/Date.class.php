@@ -37,7 +37,7 @@ class Date {
 
     public static function getIsoDateFromFrenchDate($french_date) {
         $matches = array();
-        if (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', $french_date, $matches)) {
+        if ($french_date && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', $french_date, $matches)) {
             $jours = $matches[1];
             $mois = $matches[2];
             $annee = $matches[3];
@@ -47,21 +47,21 @@ class Date {
     }
 
     public static function francizeDate($date) {
-        if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/', $date, $matches)) {
+        if ($date && preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/', $date, $matches)) {
             $jours = $matches[3];
             $mois = $matches[2];
             $annee = $matches[1];
             return date('d/m/Y', mktime(0, 0, 0, $mois, $jours, $annee));
         }
 
-        if (preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})T[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$/', $date, $matches)) {
+        if ($date && preg_match('/^([0-9]{4})-([0-9]{2})-([0-9]{2})T[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$/', $date, $matches)) {
             $jours = $matches[3];
             $mois = $matches[2];
             $annee = $matches[1];
             return date('d/m/Y', mktime(0, 0, 0, $mois, $jours, $annee));
         }
 
-        if (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})T[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$/', $date, $matches)) {
+        if ($date && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})T[0-9]{2}:[0-9]{2}:[0-9]{2}\+[0-9]{2}:[0-9]{2}$/', $date, $matches)) {
             $jours = $matches[1];
             $mois = $matches[2];
             $annee = $matches[3];
@@ -72,7 +72,7 @@ class Date {
     }
 
     public static function francizeHeure($heure) {
-        if (preg_match('/^([0-9]{2}):([0-9]{2})$/', $heure, $matches)) {
+        if ($heure && preg_match('/^([0-9]{2}):([0-9]{2})$/', $heure, $matches)) {
             $heure_only = $matches[1];
             $minute = $matches[2];
             return $heure_only . 'h' . $minute;

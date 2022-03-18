@@ -44,7 +44,7 @@ class FloatHelper
         }
 
         $int = $number;
-        $float = null;
+        $float = '';
 
         if(count(explode(".", $number."")) >= 2) {
             list($int, $float) = explode(".", $number);
