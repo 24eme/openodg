@@ -111,7 +111,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         }
 
         if($reprisePrecedente) {
-            $previous_drev = self::findMasterByIdentifiantAndPeriode($identifiant, $periode - 1 );
+            $previous_drev = self::findMasterByIdentifiantAndPeriode($identifiant, intval($periode) - 1 );
             if ($previous_drev) {
                 $drev->set('chais', $previous_drev->chais->toArray(true, false));
               foreach($previous_drev->getProduitsVci() as $produit) {
@@ -214,7 +214,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public function matchFilter($lot, $produitFilter)
     {
-        $filters = explode(" AND ", $produitFilter);
+        $filters = ($produitFilter) ? explode(" AND ", $produitFilter) : array();
         $etablissements = [];
         $match = true;
 
@@ -264,11 +264,11 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         $isExcludeMode = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
 
-        if($produitFilter && !$isExcludeMode && !preg_match($regexpFilter, $lot->getProduitHash())) {
+        if($produitFilter && !$isExcludeMode && $lot->getProduitHash() && !preg_match($regexpFilter, $lot->getProduitHash())) {
             return false;
         }
 
-        if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
+        if($produitFilter && $isExcludeMode && $lot->getProduitHash() && preg_match($regexpFilter, $lot->getProduitHash())) {
             return false;
         }
 
@@ -283,7 +283,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function retrieveRelatedDrev($identifiant, $periode, $drev_produit_filter = null) {
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, $periode * 1);
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, intval($periode) * 1);
         if ($drev && $drev_produit_filter) {
             foreach ($drev->lots as $lot) {
                 if(strpos($lot->produit_hash, $drev_produit_filter) !== false) {

@@ -79,6 +79,7 @@ foreach ($drev->lots as $lotdrev) {
 }
 
 $degustation = new Degustation();
+$degustation->date = $degust_date;
 $degustation->save();
 $degustation->setLots($lots);
 

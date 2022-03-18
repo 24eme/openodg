@@ -56,7 +56,7 @@ class MandatSepaClient extends acCouchdbClient {
         $creancier = MandatSepaConfiguration::getInstance();
       }
       $mandatSepa->setCreancier($creancier);
-      if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date)) {
+      if (!$date || !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date)) {
         $date = date('Y-m-d');
       }
       $mandatSepa->setDate($date);

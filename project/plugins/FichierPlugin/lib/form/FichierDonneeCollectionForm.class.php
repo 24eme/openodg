@@ -55,7 +55,7 @@ class FichierDonneeCollectionForm extends sfForm implements FormBindableInterfac
     	}
     }
 
-	public function offsetUnset($offset)
+	public function offsetUnset($offset): void
 	{
 		parent::offsetUnset($offset);
 		if (!is_null($this->virgin_object)) {

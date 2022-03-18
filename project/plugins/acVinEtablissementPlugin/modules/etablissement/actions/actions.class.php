@@ -113,6 +113,13 @@ class etablissementActions extends sfCredentialActions {
         $this->num = count($this->etablissement->chais) -1;
         $this->societe = $this->etablissement->getSociete();
         $this->form = new EtablissementChaiModificationForm($this->chai);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->form->save();
+                $this->redirect('etablissement_visualisation', array('identifiant' => $this->etablissement->identifiant));
+            }
+        }
         $this->setTemplate('chaiModification');
     }
 

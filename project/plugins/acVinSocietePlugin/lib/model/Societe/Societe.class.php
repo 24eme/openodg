@@ -123,7 +123,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         foreach ($this->etablissements as $id => $obj) {
             $etb = EtablissementClient::getInstance()->find($id);
             if (!$withSuspendu) {
-                if (!$etb->isActif()) {
+                if (!$etb || !$etb->isActif()) {
                     continue;
                 }
             }

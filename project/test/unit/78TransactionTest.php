@@ -29,17 +29,18 @@ foreach(DrevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     $drev = DrevClient::getInstance()->find($k);
     $drev->delete(false);
 }
-foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {
-    $doc = acCouchdbManager::getClient()->find($r->id);
-    $doc->delete();
-}
-
 $year = date('Y');
 if (date('m') < 8) {
     $year = $year - 1;
 }
 $campagne = sprintf("%04d-%04d", $year , $year + 1 );
 $date = $year.'10-28';
+
+foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {
+    $doc = acCouchdbManager::getClient()->find($r->id);
+    $doc->delete();
+}
+
 //Début des tests
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);

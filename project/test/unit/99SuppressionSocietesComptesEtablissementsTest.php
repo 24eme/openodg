@@ -60,7 +60,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
             foreach(acCouchdbManager::getClient()
                         ->reduce(false)
                         ->getView('declaration', 'tous')->rows as $row) {
-                if (preg_match('/-'.$etabl->identifiant.'-/', $row->id )) {
+                if ($row->id && preg_match('/-'.$etab->identifiant.'-/', $row->id )) {
                     $doc = acCouchdbManager::getClient()->find($row->id);
                     $doc->delete();
                 }

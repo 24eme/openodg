@@ -12,7 +12,7 @@ foreach(HabilitationClient::getInstance()->getHistory($etablissement->identifian
 
 $config = ConfigurationClient::getCurrent();
 $produit1 = null;
-foreach(HabilitationClient::getInstance()->getProduitsConfig($config) as $p) {
+foreach(HabilitationClient::getInstance()->getProduitsConfig($config) as $produit) {
     $produit1 = $produit;
 
     break;

@@ -98,7 +98,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 
     public static function sortLotByDate($lot1, $lot2) {
 
-        return $lot1->date > $lot2->date;
+        return strcmp($lot1->date, $lot2->date);
     }
 
     public static function getNumeroTableStr($numero_table){

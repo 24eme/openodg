@@ -40,7 +40,7 @@ class TirageLotsCollectionForm extends acCouchdbObjectForm implements FormBindab
 		$this->getObject()->remove($key);
 	}
 
-	public function offsetUnset($offset)
+	public function offsetUnset($offset): void
 	{
 		parent::offsetUnset($offset);
 		if (!is_null($this->virgin_object)) {

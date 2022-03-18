@@ -259,7 +259,7 @@ class ParcellaireClient extends acCouchdbClient {
         return $parcellaire;
     }
 
-    public function findOrCreateDocPDF($identifiant, $date = null, $source = null, $path=null, $cvi, $type = self::TYPE_COUCHDB) {
+    public function findOrCreateDocPDF($identifiant, $date = null, $source = null, $path=null, $cvi = '', $type = self::TYPE_COUCHDB) {
         if (! $date) {
             $date = date('Ymd');
         }
@@ -277,7 +277,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public function findOrCreateDocJson($identifiant, $date = null, $source = null, $path=null, $cvi, $type = self::TYPE_COUCHDB) {
+    public function findOrCreateDocJson($identifiant, $date = null, $source = null, $path=null, $cvi = '', $type = self::TYPE_COUCHDB) {
         if (! $date) {
             $date = date('Ymd');
         }

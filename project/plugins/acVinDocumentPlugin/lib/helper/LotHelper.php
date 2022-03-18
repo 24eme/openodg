@@ -10,7 +10,7 @@ function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
           $text .= ' - '.$lot->specificite;
       }
   }else{
-      if (strpos($lot->specificite, 'primeur') !== false) {
+      if ($lot->specificite && strpos($lot->specificite, 'primeur') !== false) {
           $text .= ' - primeur';
       }
   }

@@ -142,7 +142,7 @@ $t->is($lot->date, $conditionnement->getDateValidation('Y-m-d'), "La date du lot
 $t->is($lot->date_commission, null, "La date de la commission n'est pas encore ajouté");
 $t->is($lot->getMouvement(Lot::STATUT_REVENDIQUE)->date_commission, $lot->date_commission, "La date de commission du mouvement");
 
-$transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
+$transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $mydate);
 $lottransaction = $transaction->addLot();
 $lottransaction->volume = 12;
 $lottransaction->produit_hash = $produit->getHash();

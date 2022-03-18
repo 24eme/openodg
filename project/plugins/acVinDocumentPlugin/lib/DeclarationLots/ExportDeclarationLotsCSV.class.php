@@ -25,7 +25,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function protectStr($str) {
-    	return '"'.str_replace(array('\n', '"', ';'), array('', '', '−'), $str).'"';
+    	return ($str) ? '"'.str_replace(array('\n', '"', ';'), array('', '', '−'), $str).'"' : '""';
     }
 
     public function export() {

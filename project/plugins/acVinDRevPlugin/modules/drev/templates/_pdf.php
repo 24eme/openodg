@@ -17,7 +17,7 @@
       <td>N° CVI : <i><?php echo $drev->declarant->cvi ?></i></td>
   </tr>
   <tr>
-        <td>&nbsp;Adresse : <i><?php echo str_replace('−', '-', $drev->declarant->adresse); ?></i></td>
+        <td>&nbsp;Adresse : <i><?php echo ($drev->declarant->adresse) ? str_replace('−', '-', $drev->declarant->adresse) : ''; ?></i></td>
         <td>&nbsp;Email : <i><?php echo $drev->declarant->email; ?></i></td>
         <td>SIRET : <i><?php echo formatSIRET($drev->declarant->siret); ?></i></td>
   </tr>

@@ -198,7 +198,7 @@ class fichierActions extends sfActions
 			}
 			$this->categories[$categorie]++;
 		}
-        uasort($this->history, function($a, $b) { return $a->key[PieceAllView::KEYS_DATE_DEPOT] < $b->key[PieceAllView::KEYS_DATE_DEPOT]; });
+        uasort($this->history, function($a, $b) { return strcmp($a->key[PieceAllView::KEYS_DATE_DEPOT], $b->key[PieceAllView::KEYS_DATE_DEPOT]); });
 
 		ksort($this->categories);
 	}

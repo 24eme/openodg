@@ -5,7 +5,9 @@ include dirname(__FILE__).'/../../bootstrap/functional.php';
 foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') as $k => $v) {
     if (preg_match('/ETABLISSEMENT-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
       $etablissement = EtablissementClient::getInstance()->find($m[1]);
-      $etablissement->delete();
+      if ($etablissement) {
+          $etablissement->delete();
+      }
     }
 }
 

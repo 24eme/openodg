@@ -26,7 +26,7 @@ class SocieteClient extends acCouchdbClient {
     }
 
     public function getId($identifiant) {
-        if (preg_match('/^SOCIETE/', $identifiant))
+        if ($identifiant && preg_match('/^SOCIETE/', $identifiant))
             return $identifiant;
         return 'SOCIETE-' . $identifiant;
     }

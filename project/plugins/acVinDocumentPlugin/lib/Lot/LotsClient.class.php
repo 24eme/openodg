@@ -37,7 +37,7 @@ class LotsClient
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarant, $uniqueId)->rows;
         $first_mvt = current($mouvements);
 
-        if (strpos($first_mvt->value->document_id, "CHGTDENOM") === 0) {
+        if (isset($first_mvt->value->document_id) && $first_mvt->value->document_id && strpos($first_mvt->value->document_id, "CHGTDENOM") === 0) {
             $lot0_unique_id = ChgtDenomClient::getInstance()->find($first_mvt->value->document_id, acCouchdbClient::HYDRATE_JSON)->changement_origine_lot_unique_id;
 
             $mvmt_temp = [];

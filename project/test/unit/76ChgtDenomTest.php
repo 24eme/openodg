@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(294);
+$t = new lime_test(293);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -130,7 +130,6 @@ $t->is($chgtDenomFromDrev->campagne, $drev->campagne, "le chgt de denom a la cam
 $t->is($chgtDenomFromDrev->periode, $year, "le chgt de denom a la bonne periode à $year");
 $t->is($chgtDenomFromDrev->numero_archive, '00002', "le chgt de denom a bien un numero d'archive'");
 
-$t->is($chgtDenom->changement_numero_logement_operateur, $lotFromDegust->numero_logement_operateur, 'changement_numero_logement_operateur par defaut est le numero logement du lot origine');
 $t->is($chgtDenomFromDrev->origine_affectable, $lotFromDrev->affectable, "L'affectation origine reprend l'affectation du lot de la DREV d'origine");
 $t->is($chgtDenomFromDrev->origine_statut, Lot::STATUT_NONAFFECTABLE, "Le statut d'origine est réputé conforme");
 $t->is($chgtDenomFromDrev->changement_affectable, $lotFromDrev->affectable, "L'affectation changé reprends l'affectation du lot d'origine comme le changement est total");
@@ -331,7 +330,8 @@ $lotFromDegust = current($lots);
 $t->is($lotFromDegust->statut, Lot::STATUT_NONCONFORME, 'le lot sélectionné de la dégust est bien NON CONFORME');
 $t->is($lotFromDegust->id_document, $degustation->_id, 'le lot sélectionné provient bien de la dégustation '.$degustation->_id);
 $volume = $lot->volume;
-$lotFromDegustConforme = next($lots);
+next($lots);
+$lotFromDegustConforme = current($lots);
 
 $date = $year.'-11-11 11:11:11';
 $chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lotFromDegust, $date, null);
@@ -632,7 +632,7 @@ $lot = $drev->lots[0] ;
 $lot->getUniqueId();
 
 $date = $year.'-10-11 10:10:10';
-$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lot, $date, $papier);
+$chgtDenom = ChgtDenomClient::getInstance()->createDoc($viti->identifiant, $lot, $date);
 $chgtDenom->constructId();
 $chgtdenom_sanslot_id = $chgtDenom->_id;
 $t->comment($chgtdenom_sanslot_id);

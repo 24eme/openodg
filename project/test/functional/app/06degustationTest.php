@@ -174,7 +174,9 @@ $degustation = DegustationClient::getInstance()->find(preg_replace("/.*(DEGUSTAT
 $table1 = ["lot_".$degustation->lots[0]->declarant_identifiant."-".$degustation->lots[0]->unique_id => 1, "lot_".$degustation->lots[1]->declarant_identifiant."-".$degustation->lots[1]->unique_id => 1];
 for($i = 2; $i < 10; $i++) {
     $table1['lot_leure-'.$i] = 1;
-    $b->click('#leurre_ajout', ['degustation_ajout_leurre' => ['table' => '1', 'hashref' => '/declaration/certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT']])->followRedirect();
+    print_r($b->getResponse()->getContent());
+    $b->click('#leurre_ajout', ['degustation_ajout_leurre' => ['table' => '1', 'hashref' => '/declaration/certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT', "millesime" => date('Y')]]);
+    $b->followRedirect();
 }
 
 $b->click('button[type="submit"]', array('tables' => $table1))->followRedirect();

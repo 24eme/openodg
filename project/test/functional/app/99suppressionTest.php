@@ -12,11 +12,11 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_functionnal') a
         $soc = SocieteClient::getInstance()->findByIdentifiantSociete($m[1]);
         foreach($soc->getEtablissementsObj() as $k => $etabl) {
             if($etabl->etablissement){
-                foreach(DRevClient::getInstance()->getHistory($etablissement->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+                foreach(DRevClient::getInstance()->getHistory($etabl->etablissement->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
                     $drev = DRevClient::getInstance()->find($k);
                     $drev->delete(false);
                 }
-                foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, true) as $piece) {
+                foreach(PieceAllView::getInstance()->getPiecesByEtablissement($etabl->etablissement->identifiant, true) as $piece) {
                     if(strpos($piece->id, 'FICHIER-') === false) {
                         continue;
                     }

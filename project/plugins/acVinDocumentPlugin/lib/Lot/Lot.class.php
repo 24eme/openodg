@@ -186,7 +186,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function setDate($date) {
 
-        return $this->_set('date', preg_replace("/[ T].*$/", "", $date));
+        return $this->_set('date', preg_replace("/[ T].*$/", "", ($date) ? $date : ''));
     }
 
     public function isEmpty() {
@@ -259,7 +259,7 @@ abstract class Lot extends acCouchdbDocumentTree
              return $this->position;
          }
          if (!$this->getConfig()||$type == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT) {
-           $numero= intval(substr($this->numero_anonymat, 1));
+           $numero= ($this->numero_anonymat) ? intval(substr($this->numero_anonymat, 1)) : 0;
            return $numero;
          }
         if ($type == DegustationClient::DEGUSTATION_TRI_APPELLATION) {
@@ -315,7 +315,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDateCommission() {
-        if(!$this->isCurrent()) {
+        if(!$this->isCurrent() && $this->getLogOrigine()) {
             $this->date_commission = $this->getLogOrigine()->date_commission;
         }
 
@@ -455,7 +455,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function hasSpecificitePassage()
     {
-        return preg_match("/ème dégustation/", $this->specificite);
+        return $this->specificite && preg_match("/ème dégustation/", $this->specificite);
     }
 
     public function getTextPassage()
@@ -486,7 +486,7 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         $specificite = $lot->specificite;
 
-        $specificite = preg_replace('/(, )?\d(er|ème) dégustation/', '', $specificite);
+        $specificite = ($specificite) ? preg_replace('/(, )?\d(er|ème) dégustation/', '', $specificite) : '';
 
         if ($nb > 1) {
             if ($specificite) {
@@ -594,7 +594,7 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($toLot != $this) {
             $toManuelTarget = 1;
         }else{
-            $toManuelTarget = $fromManuel;
+            $toManuelTarget = 0;
         }
         $fromPos = $fromLot->getPosition();
         $fromManuel = ($fromPos % 2);
@@ -735,11 +735,17 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getTypeDocument()
     {
+        if (!$this->id_document) {
+            return null;
+        }
         return substr($this->id_document, 0, 4);
     }
 
     public function getTypeProvenance()
     {
+        if (!$this->id_document_provenance) {
+            return null;
+        }
         return substr($this->id_document_provenance, 0, 4);
     }
 
@@ -962,12 +968,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffecte() {
 
-        return preg_match('/^DEGUST/', $this->id_document_affectation);
+        return $this->id_document_affectation && preg_match('/^DEGUST/', $this->id_document_affectation);
     }
 
     public function isChange() {
 
-        return preg_match('/^CHGTDENOM/', $this->id_document_affectation);
+        return $this->id_document_affectation && preg_match('/^CHGTDENOM/', $this->id_document_affectation);
     }
 
     public function getDestinationShort()

@@ -21,7 +21,7 @@
         <form method="GET" class="form-inline" action="">
             Campagne :
             <select class="select2SubmitOnChange form-control" name="campagne">
-                <?php for($i=ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent() * 1; $i > ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - $nb_campagne ; $i--): ?>
+                <?php for($i=intval(ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent()) * 1; $i > ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() - $nb_campagne ; $i--): ?>
                     <option <?php if($periode == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i.'-'.($i + 1) ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
                 <?php endfor; ?>
             </select>

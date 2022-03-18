@@ -120,7 +120,7 @@ $t->ok($lot->getMouvement(Lot::STATUT_REVENDIQUE), "Mouvement de lot revendiqué
 $t->is($lot->unique_id, $drev->lots[0]->unique_id, "Le lot récupéré à le même unique id");
 $t->is($lot->id_document, $drev->_id, "Le lot récupéré provient de la drev");
 $t->is($lot->document_ordre, "01", "Le lot récupéré a le numéro d'ordre 01");
-$t->is($lotDegustation->id_document_provenance, $drevM01->_id, "Le document de provenance du lot de dégustation est la drev modificatrice");
+$t->is($lot->id_document_provenance, $drev->_id, "Le document de provenance du lot de dégustation est la drev modificatrice");
 
 $t->comment('Modification du lot');
 

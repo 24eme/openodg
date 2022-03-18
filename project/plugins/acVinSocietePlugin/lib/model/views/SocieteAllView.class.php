@@ -32,9 +32,12 @@ class SocieteAllView extends acCouchdbView
 
     private function findByInterproAndStatutELASTIC($interpro, $statut, $q, $limit) {
       $query = array();
-      foreach (explode(' ', $q) as $s) {
-	$query[] = "*$q*";
-      }
+	  if (!is_string($q)) {
+		  throw new Exception("ElasticSearch disabled");
+	  }
+  	  foreach (explode(' ', $q) as $s) {
+		  $query[] = "*$q*";
+  	  }
       if ($statut) {
 	$query[] = "doc.statut:$statut";
       }

@@ -925,9 +925,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
+    public function addProduit($hash, $denominationComplementaire = '', $hidden_denom = '') {
         $detailKey = self::DEFAULT_KEY;
-
+        if (!$denominationComplementaire) {
+            $denominationComplementaire = '';
+        }
+        if (!$hidden_denom) {
+            $hidden_denom = '';
+        }
         if($denominationComplementaire || $hidden_denom){
             $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }
@@ -1763,7 +1768,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
 
-          $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
+          $cle = str_replace('%detail_identifiant%', ($mouvement->detail_identifiant) ? $mouvement->detail_identifiant : '', $cotisation->getHash());
           if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
@@ -2230,9 +2235,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         throw new sfException("Not use");
     }
 
-    public function isValidee() {
+    public function isValidee(): bool {
 
-        return $this->validation;
+        return ($this->validation > "1970-01-01");
     }
 
     public function isValideeOdg() {

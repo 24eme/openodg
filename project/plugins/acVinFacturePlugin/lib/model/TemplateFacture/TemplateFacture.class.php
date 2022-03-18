@@ -26,6 +26,9 @@ class TemplateFacture extends BaseTemplateFacture
                     throw new sfException('pas de %detail_identifiant% possible pour la clé '.$cle.' : '.get_class($document)." n'a pas de champs numero_archive");
                 }
                 if (strpos($cle, '%detail_identifiant%') !== false) {
+                    if (!$document->numero_archive) {
+                        $document->numero_archive = '';
+                    }
                     $cle = str_replace('%detail_identifiant%', $document->numero_archive, $cle);
                 }
 				$cotisations[$cle] = $cotisation;

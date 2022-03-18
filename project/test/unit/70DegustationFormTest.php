@@ -128,9 +128,9 @@ $t->comment("Création d'un lot de transaction");
 $transaction = TransactionClient::getInstance()->createDoc($viti->identifiant, $campagne, $date);
 
 $chais = $transaction->add('chais');
-$chais->adresse = $adresseLogement;
-$chais->code_postal = $cpLogement;
-$chais->commune = $communeLogement;
+$chais->adresse = $drev->chais->adresse;
+$chais->code_postal = $drev->chais->code_postal;
+$chais->commune = $drev->chais->commune;
 $addrCompleteLgtTrans = $transaction->constructAdresseLogement();
 
 

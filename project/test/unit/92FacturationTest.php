@@ -33,7 +33,7 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
 }
 
 //Suppression des factures précédentes
-foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
+foreach(FactureClient::getInstance()->getFacturesByCompte($societe->identifiant) as $k => $f) {
     FactureClient::getInstance()->delete($f);
 }
 
@@ -56,7 +56,7 @@ if ($oldmandat) {
 }
 
 //Suppression des factures
-foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
+foreach(FactureClient::getInstance()->getFacturesByCompte($societe->identifiant) as $k => $f) {
     FactureClient::getInstance()->delete($f);
 }
 

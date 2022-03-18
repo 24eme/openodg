@@ -54,6 +54,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function constructId() {
+		if (!$this->date) {
+			throw new sfException('date is required to construct the id');
+		}
 		$date = new DateTime($this->date);
 
         $this->set('_id', DegustationClient::TYPE_COUCHDB."-".$date->format('YmdHi'));
@@ -873,6 +876,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getTheoriticalPosition($table, $without_manual = false) {
             $lots_theoritical = $this->getLotsTableOrFreeLotsCustomSort($table, false, false);
             $theoritical_position = array();
+			$i = 0;
             foreach ($lots_theoritical as $lot) {
                 if ($without_manual && $lot->isPositionManuel()) {
                     continue;
@@ -1624,7 +1628,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsDegustables() as $lot) {
-                if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
+                if(!$lot->id_document_provenance || strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);

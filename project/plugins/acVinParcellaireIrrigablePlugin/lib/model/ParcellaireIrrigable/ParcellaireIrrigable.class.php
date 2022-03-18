@@ -138,7 +138,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
     	  		$detail = $parcellaire->get($hash);
     	  		$produit = $detail->getProduit();
-    	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
+    	  		$item = $this->declaration->add(str_replace('/declaration/', '', $produit->getHash()));
     	  		$item->libelle = $produit->libelle;
     	  		$subitem = $item->detail->add($detail->getKey());
 

@@ -3,7 +3,7 @@ class pieceActions extends sfActions
 {
     public function executeGet(sfWebRequest $request) {
     	$docId = $request->getParameter('doc_id');
-    	$pieceId = str_replace('-', '/', $request->getParameter('piece_id'));
+    	$pieceId = str_replace('-', '/', $request->getParameter('piece_id', ''));
     	$fileParam = $request->getParameter('file', null);
     	$client = acCouchdbManager::getClient();
     	if ($doc = $client->find($docId)) {

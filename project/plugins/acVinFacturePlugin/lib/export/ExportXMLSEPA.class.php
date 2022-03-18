@@ -77,6 +77,8 @@ class ExportXMLSEPA {
 
     $this->generatePmtInf($tabPmtInf);
 
+    $nbPrelevement = 0;
+    $sommeMontant = 0;
     foreach($this->xml->CstmrDrctDbtInitn->children() as $paiement){
       if ($paiement->getName() != 'PmtInf') {
           continue;

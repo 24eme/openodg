@@ -291,7 +291,9 @@ class CompteClient extends acCouchdbClient {
       return strcmp($a->id, $b->id);
     }
     public function calculCoordonnees($adresse, $commune, $code_postal) {
-        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
+        if ($adresse) {
+            $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
+        }
         $url = CompteClient::API_ADRESSE_URL.'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
 
         $file = file_get_contents($url);

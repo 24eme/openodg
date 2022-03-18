@@ -232,7 +232,7 @@ class DRevDeclaration extends BaseDRevDeclaration
     {
     	$total = 0;
 
-		$produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
+		$produitFilterMatch = preg_replace("/^NOT /", "", ($produitFilter) ? $produitFilter : '', -1, $produitExclude);
 		$produitExclude = (bool) $produitExclude;
 		$regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
       foreach($this->getProduits() as $key => $item) {

@@ -172,7 +172,7 @@ class FactureClient extends acCouchdbClient {
         $facture->storeEmetteur($region);
         $facture->storeDeclarant($compte);
         $facture->storeTemplates($template);
-        if(trim($message_communication)) {
+        if($message_communication && trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
 
@@ -385,13 +385,13 @@ class FactureClient extends acCouchdbClient {
 
     public function getComptesIdFilterWithParameters($arguments) {
         $ids = array();
-        if($arguments['compte']){
+        if(isset($arguments['compte']) && $arguments['compte']){
 
             //TODO: il faudra gérer le multi etb
             $ids[] = $arguments['compte'];
             return $ids;
         }
-        if(!$arguments['requete'] && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+        if((!isset($arguments['requete']) || !$arguments['requete']) && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
           $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
           foreach($comptes as $compte) {
              $ids[] = $compte->id;

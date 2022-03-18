@@ -9,7 +9,7 @@
 <?php include_partial('global/flash'); ?>
 
 <div class="row">
-  <form action="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)) ?>" method="post" class="form-horizontal">
+  <form method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <div class="col-xs-8">

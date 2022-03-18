@@ -22,7 +22,7 @@ abstract class Piece extends acCouchdbDocumentTree
 	}
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
-    	if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
+    	if ($id && preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
 			$doc = $m[1];
 			return $doc::getUrlGenerationCsvPiece($id, $admin);
 

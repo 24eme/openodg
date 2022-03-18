@@ -132,7 +132,7 @@ class compteActions extends sfCredentialActions {
       if (! $request->getParameter('contacts_all') ) {
 		      $query .= " doc.statut:ACTIF";
       }
-      $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
+      $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags', '')), array('')));
       $this->selected_typetags = array();
       if (count($this->selected_rawtags) > 0) {
           $this->hasFilters = true;

@@ -2,6 +2,8 @@
 
 class SV12DouaneCsvFile extends DouaneImportCsvFile {
 
+    protected $etablissement = null;
+
     public function convert() {
         $handler = fopen($this->filePath, 'r');
 

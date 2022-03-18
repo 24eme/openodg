@@ -55,6 +55,7 @@ foreach($produits as $produit) {
     $produit_hash2 = $produit->getHash();
     break;
 }
+$produit_hash_aoc = null;
 foreach($produits as $produit) {
     if($produit->isRevendicationParLots()) {
         continue;
