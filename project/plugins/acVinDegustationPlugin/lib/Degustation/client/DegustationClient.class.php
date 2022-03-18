@@ -56,18 +56,6 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $degustations;
     }
 
-    public function getHistoryLieux($limit = 50) {
-        $degusts = $this->getHistory($limit, '', acCouchdbClient::HYDRATE_JSON);
-        $lieux = array();
-        foreach ($degusts as $d) {
-            $lieux[$d->lieu] = $d->lieu;
-        }
-        if (!count($lieux)) {
-            return array("Salle de dégustation par défaut" => "Salle de dégustation par défaut");
-        }
-        return $lieux;
-    }
-
     public function cleanLotForDegustation($lot) {
         if (get_class($lot) != 'stdClass') {
             $lot = $lot->toJson();

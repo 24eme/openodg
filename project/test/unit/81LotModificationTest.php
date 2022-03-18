@@ -86,7 +86,7 @@ foreach($config->getProduits() as $produitconfig) {
     }
 }
 
-$commissions = DegustationClient::getInstance()->getHistoryLieux();
+$commissions = DegustationConfiguration::getInstance()->getLieux();
 
 $t->comment("Préparation de la DRev");
 
