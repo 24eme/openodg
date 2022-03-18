@@ -251,8 +251,20 @@ class compte_teledeclarantActions extends sfActions {
             http_response_code(401);
             die("Unauthorized");
         }
-        
-        $this->compte = acCouchdbManager::getClient('Compte')->retrieveByLogin($login);
+
+        $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin($login);
+        $this->entities = array('raison_sociale' => [], 'cvi' => [], 'siret' => [], 'ppm' => [], 'accise' => [], 'tva' => []);
+        $this->entities_number = 0;
+        foreach($compte->getSociete()->getEtablissementsObj() as $e) {
+            $this->entities['raison_sociale'][] = htmlspecialchars($e->etablissement->raison_sociale, ENT_XML1, 'UTF-8');
+            $this->entities['cvi'][] = str_replace(' ', '', $e->etablissement->cvi);
+            $this->entities['siret'][] = str_replace(' ', '', $compte->societe_informations->siret);
+            $this->entities['ppm'][] = str_replace(' ', '', $e->etablissement->ppm);
+            $this->entities['accises'][] = str_replace(' ', '', $e->etablissement->no_accises);
+            $this->entities['tva'][] = str_replace(' ', '', $compte->getSociete()->no_tva_intracommunautaire);
+            $this->entities_number++;
+        }
+    
         $this->setLayout(false);
         $this->getResponse()->setHttpHeader('Content-Type', 'text/plain');
         
