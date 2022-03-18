@@ -10,4 +10,3 @@ all:
       modalite_paiement: "- comptant par virement ou chèque \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
-      exercice: "viticole"
