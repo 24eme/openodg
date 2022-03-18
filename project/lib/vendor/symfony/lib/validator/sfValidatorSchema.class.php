@@ -16,7 +16,7 @@
  * @package    symfony
  * @subpackage validator
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfValidatorSchema.class.php 22446 2009-09-26 07:55:47Z fabien $
+ * @version    SVN: $Id$
  */
 class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
 {
@@ -110,7 +110,7 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
     $errorSchema = new sfValidatorErrorSchema($this);
 
     // check that post_max_size has not been reached
-    if (isset($_SERVER['CONTENT_LENGTH']) && (int) $_SERVER['CONTENT_LENGTH'] > $this->getBytes(ini_get('post_max_size')))
+    if (isset($_SERVER['CONTENT_LENGTH']) && (int) $_SERVER['CONTENT_LENGTH'] > $this->getBytes(ini_get('post_max_size')) && ini_get('post_max_size') != 0)
     {
       $errorSchema->addError(new sfValidatorError($this, 'post_max_size'));
 
@@ -120,7 +120,7 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
     // pre validator
     try
     {
-      $this->preClean($values);
+      $values = $this->preClean($values);
     }
     catch (sfValidatorErrorSchema $e)
     {
@@ -161,6 +161,12 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
         $clean[$name] = null;
 
         $errorSchema->addError($e, (string) $name);
+      }
+      catch (Exception $e)
+      {
+        $class = get_class($e);
+
+        throw new $class($e->getMessage().' of "'.$name.'" field');
       }
     }
 
@@ -212,16 +218,18 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
    *
    * @param  array $values  The input values
    *
+   * @return array The cleaned values
+   *
    * @throws sfValidatorError
    */
   public function preClean($values)
   {
     if (null === $validator = $this->getPreValidator())
     {
-      return;
+      return $values;
     }
 
-    $validator->clean($values);
+    return $validator->clean($values);
   }
 
   /**
@@ -301,9 +309,9 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
    *
    * @return bool true if the schema has a field with the given name, false otherwise
    */
-  public function offsetExists($name)
+  public function offsetExists($offset): bool
   {
-    return isset($this->fields[$name]);
+    return isset($this->fields[$offset]);
   }
 
   /**
@@ -313,7 +321,7 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
    *
    * @return sfValidatorBase The sfValidatorBase instance associated with the given name, null if it does not exist
    */
-  public function offsetGet($name)
+  public function offsetGet($name): mixed
   {
     return isset($this->fields[$name]) ? $this->fields[$name] : null;
   }
@@ -324,11 +332,11 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
    * @param string          $name       The field name
    * @param sfValidatorBase $validator  An sfValidatorBase instance
    */
-  public function offsetSet($name, $validator)
+  public function offsetSet(mixed $name, mixed $validator): void
   {
     if (!$validator instanceof sfValidatorBase)
     {
-      throw new InvalidArgumentException('A field must be an instance of sfValidatorBase.');
+      throw new InvalidArgumentException('A validator must be an instance of sfValidatorBase.');
     }
 
     $this->fields[$name] = clone $validator;
@@ -339,7 +347,7 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
    *
    * @param string $name
    */
-  public function offsetUnset($name)
+  public function offsetUnset($name): void
   {
     unset($this->fields[$name]);
   }
@@ -347,7 +355,7 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
   /**
    * Returns an array of fields.
    *
-   * @return sfValidatorBase An array of sfValidatorBase instances
+   * @return sfValidatorBase[] An array of sfValidatorBase instances
    */
   public function getFields()
   {
@@ -382,18 +390,21 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
 
   protected function getBytes($value)
   {
-    $value = trim($value);
-    switch (strtolower($value[strlen($value) - 1]))
-    {
-      // The 'G' modifier is available since PHP 5.1.0
-      case 'g':
-        $value = 1024 * (int) $value;
-      case 'm':
-        $value = 1024 * (int) $value;
-      case 'k':
-        $value = 1024 * (int) $value;
+    $value    = trim($value);
+    $number   = (float) $value;
+    $modifier = strtolower($value[strlen($value) - 1]);
+
+    $exp_by_modifier = array(
+      'k' => 1,
+      'm' => 2,
+      'g' => 3,
+    );
+
+    if (array_key_exists($modifier, $exp_by_modifier)) {
+      $exp    = $exp_by_modifier[$modifier];
+      $number = $number * pow(1024, $exp);
     }
 
-    return $value;
+    return $number;
   }
 }

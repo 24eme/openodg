@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage addon
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfPager.class.php 27747 2010-02-08 18:02:19Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 abstract class sfPager implements Iterator, Countable
 {
@@ -68,6 +68,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * Used internally by {@link getCurrent()}.
    *
+   * @param int $offset
    * @return mixed
    */
   abstract protected function retrieveObject($offset);
@@ -380,7 +381,7 @@ abstract class sfPager implements Iterator, Countable
    */
   public function setPage($page)
   {
-    $this->page = intval($page);
+    $this->page = (int) $page;
 
     if ($this->page <= 0)
     {
@@ -528,7 +529,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * @see Iterator
    */
-  public function current()
+  public function current(): mixed
   {
     if (!$this->isIteratorInitialized())
     {
@@ -543,7 +544,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * @see Iterator
    */
-  public function key()
+  public function key(): mixed
   {
     if (!$this->isIteratorInitialized())
     {
@@ -558,7 +559,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * @see Iterator
    */
-  public function next()
+  public function next(): void
   {
     if (!$this->isIteratorInitialized())
     {
@@ -567,7 +568,7 @@ abstract class sfPager implements Iterator, Countable
 
     --$this->resultsCounter;
 
-    return next($this->results);
+    next($this->results);
   }
 
   /**
@@ -575,7 +576,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * @see Iterator
    */
-  public function rewind()
+  public function rewind(): void
   {
     if (!$this->isIteratorInitialized())
     {
@@ -584,7 +585,7 @@ abstract class sfPager implements Iterator, Countable
 
     $this->resultsCounter = count($this->results);
 
-    return reset($this->results);
+    reset($this->results);
   }
 
   /**
@@ -592,7 +593,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * @see Iterator
    */
-  public function valid()
+  public function valid(): bool
   {
     if (!$this->isIteratorInitialized())
     {
@@ -607,7 +608,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * @see Countable
    */
-  public function count()
+  public function count(): int
   {
     return $this->getNbResults();
   }

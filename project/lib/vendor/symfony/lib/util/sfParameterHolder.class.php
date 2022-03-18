@@ -19,7 +19,7 @@
  * @subpackage util
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Sean Kerr <sean@code-box.org>
- * @version    SVN: $Id: sfParameterHolder.class.php 23922 2009-11-14 14:58:38Z fabien $
+ * @version    SVN: $Id$
  */
 class sfParameterHolder implements Serializable
 {
@@ -183,9 +183,14 @@ class sfParameterHolder implements Serializable
    *
    * @return array Objects instance
    */
-  public function serialize()
+  public function serialize(): string
   {
-    return serialize($this->parameters);
+    return serialize($this->__serialize());
+  }
+
+  public function __serialize(): array
+  {
+    return $this->parameters;
   }
 
   /**
@@ -195,6 +200,11 @@ class sfParameterHolder implements Serializable
    */
   public function unserialize($serialized)
   {
-    $this->parameters = unserialize($serialized);
+   $this->__unserialize(unserialize($serialized));
+  }
+
+  public function __unserialize($unserialized)
+  {
+    $this->parameters = $unserialized;
   }
 }

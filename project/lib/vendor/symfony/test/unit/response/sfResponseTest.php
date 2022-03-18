@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
-require_once(dirname(__FILE__).'/../../bootstrap/unit.php');
+require_once(__DIR__.'/../../bootstrap/unit.php');
 
 class myResponse extends sfResponse
 {
-  function serialize() {}
-  function unserialize($serialized) {}
+  function serialize(): string {}
+  function __serialize(): array {}
+  function unserialize($serialized)
+  function __unserialize($unserialized)
 }
 
 class fakeResponse

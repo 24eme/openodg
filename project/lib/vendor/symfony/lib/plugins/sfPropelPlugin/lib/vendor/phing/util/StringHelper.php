@@ -140,7 +140,7 @@ class StringHelper {
      * Creates a key based on any number of passed params.
      * @return string
      */
-    public static function key() {
+    public static function key(): mixed {
         $args = func_get_args();
         return serialize($args);
     }    

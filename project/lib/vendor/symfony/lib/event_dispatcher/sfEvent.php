@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -117,9 +117,9 @@ class sfEvent implements ArrayAccess
    *
    * @return Boolean true if the parameter exists, false otherwise
    */
-  public function offsetExists($name)
+  public function offsetExists(mixed $offset): bool
   {
-    return array_key_exists($name, $this->parameters);
+    return array_key_exists($offset, $this->parameters);
   }
 
   /**
@@ -129,7 +129,7 @@ class sfEvent implements ArrayAccess
    *
    * @return mixed  The parameter value
    */
-  public function offsetGet($name)
+  public function offsetGet(mixed $name): mixed
   {
     if (!array_key_exists($name, $this->parameters))
     {
@@ -143,9 +143,9 @@ class sfEvent implements ArrayAccess
    * Sets a parameter (implements the ArrayAccess interface).
    *
    * @param string  $name   The parameter name
-   * @param mixed   $value  The parameter value 
+   * @param mixed   $value  The parameter value
    */
-  public function offsetSet($name, $value)
+  public function offsetSet(mixed $name, mixed $value): void
   {
     $this->parameters[$name] = $value;
   }
@@ -155,7 +155,7 @@ class sfEvent implements ArrayAccess
    *
    * @param string $name    The parameter name
    */
-  public function offsetUnset($name)
+  public function offsetUnset(mixed $name): void
   {
     unset($this->parameters[$name]);
   }

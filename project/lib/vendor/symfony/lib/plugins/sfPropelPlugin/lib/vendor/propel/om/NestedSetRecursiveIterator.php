@@ -38,19 +38,19 @@ class NestedSetRecursiveIterator implements RecursiveIterator
 		$this->curNode = $node;
 	}
 
-	public function rewind() {
+	public function rewind(): void {
 		$this->curNode = $this->topNode;
 	}
 
-	public function valid() {
+	public function valid(): bool {
 		return ($this->curNode !== null);
 	}
 
-	public function current() {
+	public function current(): mixed {
 		return $this->curNode;
 	}
 
-	public function key() {
+	public function key(): mixed {
 		$key = array();
 		foreach ($this->curNode->getPath() as $node) {
 			$key[] = $node->getPrimaryKey();
@@ -58,7 +58,7 @@ class NestedSetRecursiveIterator implements RecursiveIterator
 		return implode('.', $key);
 	}
 
-	public function next() {
+	public function next(): void {
 		$nextNode = null;
 
 		if ($this->valid()) {
@@ -75,7 +75,7 @@ class NestedSetRecursiveIterator implements RecursiveIterator
 			}
 			$this->curNode = $nextNode;
 		}
-		return $this->curNode;
+		$this->curNode;
 	}
 
 	public function hasChildren() {

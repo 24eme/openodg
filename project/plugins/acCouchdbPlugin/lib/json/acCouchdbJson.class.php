@@ -76,26 +76,31 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
         return $this->add($objHash[acCouchdbHash::FIRST_KEY_OF_HASH])->getOrAdd($objHash[acCouchdbHash::HASH_WITHOUT_FIRST_KEY]);
     }
 
-    public function set($key_or_hash, $value) {
+    public function set(mixed $key_or_hash, mixed $value): void {
         $objHash = $this->getHashObject($key_or_hash);
 
         if ($objHash[acCouchdbHash::HASH_WITHOUT_FIRST_KEY] === null) {
             if (!$this->isArray() && $method = $this->getMutator($objHash[acCouchdbHash::FIRST_KEY_OF_HASH])) {
 
-                return $this->$method($value);
+                $this->$method($value);
+                return;
             }
 
-            return $this->_set($objHash[acCouchdbHash::FIRST_KEY_OF_HASH], $value);
+            $this->_set($objHash[acCouchdbHash::FIRST_KEY_OF_HASH], $value);
+            return;
         } elseif($this->_exist($key_or_hash)) {
 
-            return $this->_set($key_or_hash, $value);
+            $this->_set($key_or_hash, $value);
+            return;
         } elseif($this->_exist($objHash[acCouchdbHash::FIRST_KEY_OF_HASH])) {
 
-            return $this->get($objHash[acCouchdbHash::FIRST_KEY_OF_HASH])->set($objHash[acCouchdbHash::HASH_WITHOUT_FIRST_KEY], $value);
+            $this->get($objHash[acCouchdbHash::FIRST_KEY_OF_HASH])->set($objHash[acCouchdbHash::HASH_WITHOUT_FIRST_KEY], $value);
+            return;
         } elseif(!$this->isArray()) {
             foreach($this as $key => $item) {
                 if($this->containsSubHash($key_or_hash, $key)) {
-                    return $this->get($key)->set(str_replace($key, "", $key_or_hash), $value);
+                    $this->get($key)->set(str_replace($key, "", $key_or_hash), $value);
+                    return;
                 }
             }
         }
@@ -370,7 +375,7 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
         $this->_filter_persisent = false;
     }
 
-    public function getIterator() {
+    public function getIterator(): Traversable {
         $this->loadData();
         $iterator = new acCouchdbJsonArrayIterator($this, $this->_filter);
         if (!$this->_filter_persisent) {
@@ -379,23 +384,23 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
         return $iterator;
     }
 
-    public function offsetGet($index) {
+    public function offsetGet(mixed $index): mixed {
         return $this->get($index);
     }
 
-    public function offsetSet($index, $newval) {
-        return $this->set($index, $newval);
+    public function offsetSet(mixed $index, mixed $newval): void {
+        $this->set($index, $newval);
     }
 
-    public function offsetExists($index) {
+    public function offsetExists(mixed $index): bool {
         return $this->exist($index);
     }
 
-    public function offsetUnset($offset) {
-        return $this->remove($offset);
+    public function offsetUnset(mixed $offset): void {
+        $this->remove($offset);
     }
 
-    public function count() {
+    public function count(): int {
         return $this->getIterator()->count();
     }
 

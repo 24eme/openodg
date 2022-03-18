@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage validator
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfValidatorError.class.php 15393 2009-02-10 12:58:49Z fabien $
+ * @version    SVN: $Id$
  */
 class sfValidatorError extends Exception implements Serializable
 {
@@ -138,9 +138,14 @@ class sfValidatorError extends Exception implements Serializable
    *
    * @return string The instance as a serialized string
    */
-  public function serialize()
+  public function serialize(): string
   {
-    return serialize(array($this->validator, $this->arguments, $this->code, $this->message));
+    return serialize($this->__serialize());
+  }
+
+  public function __serialize(): array
+  {
+    return array($this->validator, $this->arguments, $this->code, $this->message);
   }
 
   /**
@@ -151,6 +156,11 @@ class sfValidatorError extends Exception implements Serializable
    */
   public function unserialize($serialized)
   {
-    list($this->validator, $this->arguments, $this->code, $this->message) = unserialize($serialized);
+   $this->__unserialize(unserialize($serialized));
+  }
+
+  public function __unserialize($unserialized)
+  {
+    list($this->validator, $this->arguments, $this->code, $this->message) = $unserialized;
   }
 }

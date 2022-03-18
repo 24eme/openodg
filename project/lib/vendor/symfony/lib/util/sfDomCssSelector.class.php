@@ -19,7 +19,7 @@
  * @package    symfony
  * @subpackage util
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfDomCssSelector.class.php 31893 2011-01-24 18:11:45Z fabien $
+ * @version    SVN: $Id$
  */
 class sfDomCssSelector implements Countable, Iterator
 {
@@ -161,7 +161,7 @@ class sfDomCssSelector implements Countable, Iterator
         // Code to deal with attribute selectors
         if (preg_match('/^(\w+|\*)(\[.+\])$/', $token, $matches))
         {
-          $tagName = $matches[1] ? $matches[1] : '*';
+          $tagName = $matches[1] ?: '*';
           preg_match_all('/
             \[
               ([\w\-]+)             # attribute
@@ -540,7 +540,7 @@ class sfDomCssSelector implements Countable, Iterator
     {
       throw new Exception(sprintf('Unable to parse custom selector "%s".', $selector));
     }
-    return array('selector' => $matches[1], 'parameter' => isset($matches[3]) ? ($matches[3] ? $matches[3] : $matches[4]) : '');
+    return array('selector' => $matches[1], 'parameter' => isset($matches[3]) ? ($matches[3] ?: $matches[4]) : '');
   }
 
   protected function nth($cur, $result = 1, $dir = 'nextSibling')
@@ -563,7 +563,7 @@ class sfDomCssSelector implements Countable, Iterator
   /**
    * Reset the array to the beginning (as required for the Iterator interface).
    */
-  public function rewind()
+  public function rewind(): void
   {
     reset($this->nodes);
 
@@ -575,7 +575,7 @@ class sfDomCssSelector implements Countable, Iterator
    *
    * @return string The key
    */
-  public function key()
+  public function key(): mixed
   {
     return key($this->nodes);
   }
@@ -585,7 +585,7 @@ class sfDomCssSelector implements Countable, Iterator
    *
    * @return mixed The escaped value
    */
-  public function current()
+  public function current(): mixed
   {
     return current($this->nodes);
   }
@@ -593,7 +593,7 @@ class sfDomCssSelector implements Countable, Iterator
   /**
    * Moves to the next element (as required by the Iterator interface).
    */
-  public function next()
+  public function next(): void
   {
     next($this->nodes);
 
@@ -609,7 +609,7 @@ class sfDomCssSelector implements Countable, Iterator
    *
    * @return bool The validity of the current element; true if it is valid
    */
-  public function valid()
+  public function valid(): bool
   {
     return $this->count > 0;
   }
@@ -619,7 +619,7 @@ class sfDomCssSelector implements Countable, Iterator
    *
    * @param integer The number of matching nodes
    */
-  public function count()
+  public function count(): int
   {
     return count($this->nodes);
   }

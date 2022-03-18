@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-require_once(dirname(__FILE__).'/../../bootstrap/unit.php');
+require_once(__DIR__.'/../../bootstrap/unit.php');
 
 $t = new lime_test(14);
 
@@ -56,12 +56,22 @@ $t->diag('implements Serializable');
 // even if you use PDO as a session handler
 class NotSerializable implements Serializable
 {
-  public function serialize()
+  public function serialize(): string
+  {
+    throw new Exception('Not serializable');
+  }
+
+  public function __serialize(): array
   {
     throw new Exception('Not serializable');
   }
 
   public function unserialize($serialized)
+  {
+    throw new Exception('Not serializable');
+  }
+
+  public function __unserialize($unserialized)
   {
     throw new Exception('Not serializable');
   }

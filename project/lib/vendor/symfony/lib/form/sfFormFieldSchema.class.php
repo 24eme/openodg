@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage form
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfFormFieldSchema.class.php 23214 2009-10-20 18:11:23Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Countable
 {
@@ -91,9 +91,9 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @return Boolean true if the widget exists, false otherwise
    */
-  public function offsetExists($name)
+  public function offsetExists($offset): bool
   {
-    return isset($this->widget[$name]);
+    return isset($this->widget[$offset]);
   }
 
   /**
@@ -103,7 +103,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @return sfFormField A form field instance
    */
-  public function offsetGet($name)
+  public function offsetGet($name): mixed
   {
     if (!isset($this->fields[$name]))
     {
@@ -120,7 +120,9 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
 
         if ($error && !$error instanceof sfValidatorErrorSchema)
         {
-          $error = new sfValidatorErrorSchema($error->getValidator(), array($error));
+          $current = $error;
+          $error = new sfValidatorErrorSchema($error->getValidator());
+          $error->addError($current);
         }
       }
       else
@@ -142,7 +144,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @throws LogicException
    */
-  public function offsetSet($offset, $value)
+  public function offsetSet($offset,$value): void
   {
     throw new LogicException('Cannot update form fields (read-only).');
   }
@@ -154,7 +156,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @throws LogicException
    */
-  public function offsetUnset($offset)
+  public function offsetUnset($offset): void
   {
     throw new LogicException('Cannot remove form fields (read-only).');
   }
@@ -162,7 +164,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
   /**
    * Resets the field names array to the beginning (implements the Iterator interface).
    */
-  public function rewind()
+  public function rewind(): void
   {
     reset($this->fieldNames);
     $this->count = count($this->fieldNames);
@@ -173,7 +175,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @return string The key
    */
-  public function key()
+  public function key(): mixed
   {
     return current($this->fieldNames);
   }
@@ -183,7 +185,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @return mixed The escaped value
    */
-  public function current()
+  public function current(): mixed
   {
     return $this[current($this->fieldNames)];
   }
@@ -191,7 +193,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
   /**
    * Moves to the next form field (implements the Iterator interface).
    */
-  public function next()
+  public function next(): void
   {
     next($this->fieldNames);
     --$this->count;
@@ -202,7 +204,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @return boolean The validity of the current element; true if it is valid
    */
-  public function valid()
+  public function valid(): bool
   {
     return $this->count > 0;
   }
@@ -212,7 +214,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @return integer The number of embedded form fields
    */
-  public function count()
+  public function count(): int
   {
     return count($this->fieldNames);
   }
