@@ -81,11 +81,10 @@ function style(feature) {
     color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
         fillColor: color,
-        weight: 3,
-        opacity: 2,
+        weight: 1,
+        opacity: 1,
         color: 'white',
-        dashArray: '5',
-        fillOpacity: 0.7
+        fillOpacity: 0.5
     };
 }
 
@@ -94,10 +93,11 @@ function style(feature) {
 **/
 function styleDelimitation(){
     return {
-        fillColor: '#d0f3fb',
-        weight: 0,
-        opacity: 2,
-        color: 'white',
+        fillColor: '#000',
+        weight: 3,
+        opacity: 0.6,
+        dashArray: '5',
+        color: 'black',
         fillOpacity: 0.4
     }
 }
