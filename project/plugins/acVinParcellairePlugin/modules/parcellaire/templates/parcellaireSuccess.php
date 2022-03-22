@@ -95,13 +95,11 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                   <thead>
 		        	<tr>
 		                <th class="col-xs-1">Lieu-dit</th>
-                    <th class="col-xs-1" style="text-align: right;">Section</th>
-                    <th class="col-xs-1">N° parcelle</th>
+                    <th class="col-xs-1">Section / N° parcelle</th>
                     <th class="col-xs-4">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                     <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
-                    <th class="col-xs-1">Écart Pieds</th>
-                    <th class="col-xs-1">Écart Rang</th>
+                    <th class="col-xs-1">Écart Pieds/Rang</th>
                     <?php if(!empty($import)): ?>
                     <th class="col-xs-1">Carte</th>
                     <?php endif; ?>
@@ -171,22 +169,29 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                 }
                             ?>
                             <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
-
+                            <?php $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"]; ?>
                                 <td style="<?php echo $styleproduit; ?>"><?php echo $lieu; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $section; $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
-                                <td class=""><?php echo $num_parcelle; ?></td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
+                                <td class="" style="text-align: center;">
+                                    <?php echo $section; ?> <?php echo $num_parcelle; ?></br>
+                                    <span class="text-muted"><?php echo $detail->idu; ?></span>
+                                </td>
+                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
+                                    <span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?><br/>
+                                    <?php $a = $detail->isInAire(); ?>
+                                    <span class="<?php if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT): ?>text-danger<?php else: ?>text-muted<?php endif; ?>">
+                                    Aire: <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire" : $a ; ?>
+                                    </span>
+                                </td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
                                 <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie * $superficie_multiplicateur); ?>
                                 </td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?> / <?php echo $ecart_rang; ?></td>
 
                                 <?php if(!empty($import)): ?>
-                                <td>
-                                    <div id="<?php echo $detail->idu; ?>" class="clearfix liencarto">
-                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
-                                            <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
+                                <td style="text-align: center;">
+                                    <div id="<?php echo $detail->idu; ?>" class="liencarto">
+                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')"> &nbsp;
+                                            <i class="glyphicon glyphicon-map-marker"></i> &nbsp;
                                         </a>
                                     </div>
                                 </td>
