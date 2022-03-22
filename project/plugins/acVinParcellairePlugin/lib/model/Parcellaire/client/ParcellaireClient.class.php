@@ -69,7 +69,7 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function getDefaultCommune() {
-        return array_keys(ParcellaireConfiguration::getInstance()->getAires())[0];
+        return array_keys(ParcellaireConfiguration::getInstance()->getAiresInfos())[0];
     }
 
     public function getAire($communes, $jsonFolder = null) {

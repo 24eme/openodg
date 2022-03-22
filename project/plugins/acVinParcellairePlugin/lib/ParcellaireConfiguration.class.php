@@ -45,7 +45,7 @@ class ParcellaireConfiguration {
         return $this->configuration['unit'] == "ares";
     }
 
-    public function getAires() {
+    public function getAiresInfos() {
         if(!isset($this->configuration['aires'])) {
 
             return array();
@@ -53,7 +53,7 @@ class ParcellaireConfiguration {
         return $this->configuration['aires'];
     }
 
-    public function getAire($key) {
+    public function getAireInfo($key) {
         if(!isset($this->configuration['aires'][$key])) {
 
             return null;
