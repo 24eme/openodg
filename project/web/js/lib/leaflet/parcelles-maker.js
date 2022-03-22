@@ -92,12 +92,13 @@ function style(feature) {
 /**
 * Css style default
 **/
-function styleDelimitation(){
+function styleDelimitation(color, opacity){
     return {
-        fillColor: '#d0f3fb',
-        weight: 0,
-        opacity: 2,
-        color: 'white',
+        fillColor: color,
+        weight: 3,
+        opacity: opacity,
+        dashArray: '5',
+        color: 'black',
         fillOpacity: 0.4
     }
 }
@@ -133,8 +134,8 @@ layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFe
 layers["Parcelles"].addTo(map);
 
 for(name in aires) {
-  layers[name] = L.geoJSON(parseString(aires[name]), { style: styleDelimitation });
-  layers[name].addTo(map);
+  layers[aires[name]['name']] = L.geoJSON(parseString(aires[name]['geojson']), { style: styleDelimitation(aires[name]['color'], 0.6 / aires.length) });
+  layers[aires[name]['name']].addTo(map);
 };
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
