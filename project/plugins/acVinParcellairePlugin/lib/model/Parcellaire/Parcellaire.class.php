@@ -294,11 +294,6 @@ class Parcellaire extends BaseParcellaire {
         return ParcellaireClient::getInstance()->getAire($this->declaration->getCommunes(), $jsonFolder);
     }
 
-    public function getAires() {
-
-        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes());
-    }
-
     public function getGeoPHPDelimitations() {
         if ($this->cache_geophpdelimitation) {
             return $this->cache_geophpdelimitation;
