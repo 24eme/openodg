@@ -66,17 +66,9 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
     $import = $parcellaire->getGeoJson(); ?>
-    <?php if(!empty($import)): ?>
-     <div class="row" id="jump">
-            <div class="col-xs-12">
-                <a name="carte"></a><h3>Filtrer</h3>
-                <div class="form-group">
-                    <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
+
     <?php if($parcellaire && $parcellaire->getGeoJson() != false): ?>
+        <a name="carte"></a>
         <div>
             <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
         </div>
@@ -94,6 +86,17 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
           </ul>
       </div>
     </div>
+
+    <?php if(!empty($import)): ?>
+    <div class="row" id="jump">
+        <div class="col-xs-12">
+            <h3>Filtrer</h3>
+            <div class="form-group">
+                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div class="row">
         <div class="col-xs-12">
