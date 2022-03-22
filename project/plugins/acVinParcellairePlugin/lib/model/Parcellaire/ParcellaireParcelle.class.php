@@ -221,7 +221,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getGeoJson() {
-        $data = json_decode($this->getDocument()->getGeoJson());
+        $data = $this->getDocument()->getGeoJson();
         foreach($data->features as $f) {
             if ($f->id == $this->idu) {
                 return json_encode($f);
