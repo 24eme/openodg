@@ -231,7 +231,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     public function isInAires() {
         $aires = [];
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $jsonFolder => $infos) {
-            $aires[$infos["name"]] = $this->isInAire($jsonFolder);
+            $res = $this->isInAire($jsonFolder);
+            if ($res) {
+                $aires[$infos["name"]] = $res;
+            }
         }
         return $aires;
     }
@@ -241,7 +244,11 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             $jsonFolder =ParcellaireClient::getInstance()->getDefaultCommune();
         }
         $geoparcelle = geoPHP::load($this->getGeoJson());
-        foreach($this->document->getGeoPHPDelimitations($jsonFolder) as $d) {
+        $aire = $this->document->getGeoPHPDelimitations($jsonFolder);
+        if (!$aire) {
+            return null;
+        }
+        foreach($aire as $d) {
             $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
             if ($pc > 0.99) {
                 return ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT;
