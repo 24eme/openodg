@@ -288,7 +288,10 @@ class Parcellaire extends BaseParcellaire {
 
     }
 
-    public function getAire($jsonFolder = 'communes') {
+    public function getAire($jsonFolder = null) {
+        if (!$jsonFolder) {
+            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
+        }
         return ParcellaireClient::getInstance()->getAire($this->declaration->getCommunes(), $jsonFolder);
     }
 
