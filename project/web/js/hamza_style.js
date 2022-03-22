@@ -445,13 +445,24 @@
 
                 $(document).find('.hamzastyle').select2("data", select2Data);
 
+                let isHamzaModeAnd = true;
+                if($(document).find('input.hamzastyle').attr('data-mode') == 'OR') {
+                  isHamzaModeAnd = false;
+                }
+
+                console.log(isHamzaModeAnd);
+
                 $(document).find('.hamzastyle-item').each(function () {
                     var words = $(this).attr('data-words');
-                    var find = true;
+                    var callbackfct = $(this).attr('data-callbackfct')
+                    var find = isHamzaModeAnd;
                     for (key in filtres) {
                         var word = filtres[key];
-                        if (words.indexOf(word) === -1) {
+                        if (isHamzaModeAnd && words.indexOf(word) === -1) {
                             find = false;
+                        }
+                        if (!isHamzaModeAnd && words.indexOf(word) !== -1) {
+                            find = true;
                         }
                     }
                     if (find) {
