@@ -80,6 +80,10 @@ class ParcellaireClient extends acCouchdbClient {
         $geojson = [];
         $files = '';
 
+        if (!file_exists($scrapydocs.'/../'.$jsonFolder)) {
+            throw new sfException($scrapydocs.'/../'.$jsonFolder." doesnt exist");
+        }
+
         foreach ($communes as $id => $commune) {
             $file_name = $scrapydocs.'/../'.$jsonFolder.'/delimitation-'.$commune.'.json';
             $files = glob($file_name);
