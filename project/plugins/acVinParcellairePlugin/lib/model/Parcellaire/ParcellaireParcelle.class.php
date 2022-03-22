@@ -228,9 +228,20 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             }
         }
     }
-    public function isInAire() {
+    public function isInAires() {
+        $aires = [];
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $jsonFolder => $infos) {
+            $aires[$infos["name"]] = $this->isInAire($jsonFolder);
+        }
+        return $aires;
+    }
+
+    public function isInAire($jsonFolder = null) {
+        if (!$jsonFolder) {
+            $jsonFolder =ParcellaireClient::getInstance()->getDefaultCommune();
+        }
         $geoparcelle = geoPHP::load($this->getGeoJson());
-        foreach($this->document->getGeoPHPDelimitations() as $d) {
+        foreach($this->document->getGeoPHPDelimitations($jsonFolder) as $d) {
             $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
             if ($pc > 0.99) {
                 return ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT;
