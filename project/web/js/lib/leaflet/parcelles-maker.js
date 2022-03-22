@@ -119,35 +119,27 @@ function closeDisplayer(){
     return res;
 }
 
-/**
-* Use this function to load all map data (Geojson). ie add new Feature
-**/
-function loadGeoJson(){
-    mygeojson = L.geoJSON(parseString(parcellesStr), {
-    style: style,
-    onEachFeature: onEachFeature,
-    }).addTo(map);
-
-    zoomOnMap();
-}
-
-
 function zoomOnMap(){
 
     closeDisplayer();
     myMarker = null;
 
-    map.fitBounds(mygeojson.getBounds());
+    map.fitBounds(layers["Parcelles"].getBounds());
 }
 
-mygeojson = L.geoJSON(parseString(delimitationStr),
-{
-    style: styleDelimitation
-}).addTo(map);
+var layers = [];
+
+layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+layers["Parcelles"].addTo(map);
+
+for(name in aires) {
+  layers[name] = L.geoJSON(parseString(aires[name]), { style: styleDelimitation });
+  layers[name].addTo(map);
+};
+
+L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
+
 zoomOnMap();
-
-loadGeoJson(); //Create map layer from geojson coordonates 
-
 
 function zoomToFeature(e) {
     if(!closeDisplayer() || map.getZoom() < minZoom){

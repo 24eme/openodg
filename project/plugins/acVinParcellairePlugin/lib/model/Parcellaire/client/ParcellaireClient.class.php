@@ -57,12 +57,22 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
-    public function getDelimitations($communes){
+    public function getAires($communes) {
+        $aires = array();
+
+        foreach(ParcellaireConfiguration::getInstance()->getAiresName() as $jsonFolder => $infos) {
+            $aires[$infos['name']] = ParcellaireClient::getInstance()->getAire($communes, $jsonFolder);
+        }
+
+        return $aires;
+    }
+
+    public function getAire($communes, $jsonFolder = "communes") {
         $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
         $geojson = [];
         $files = '';
         foreach ($communes as $id => $commune) {
-            $file_name = $scrapydocs.'/../communes/delimitation-'.$commune.'.json';
+            $file_name = $scrapydocs.'/../'.$jsonFolder.'/delimitation-'.$commune.'.json';
             $files = glob($file_name);
             if (!empty($files)) {
                 $contents = str_replace("\n", '', file_get_contents($file_name));
