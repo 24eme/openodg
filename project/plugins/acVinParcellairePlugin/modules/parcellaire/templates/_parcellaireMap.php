@@ -15,7 +15,7 @@
 ?>
 
 <script type="text/javascript">
-	var parcelles = '<?php echo addslashes($import); ?>';
+	var parcelles = '<?php echo addslashes(json_encode($import)); ?>';
 	var delimitation = '<?php echo addslashes($list_communes); ?>';
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>
