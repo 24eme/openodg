@@ -59,9 +59,9 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getAires($communes) {
         $aires = array();
-        if (ParcellaireConfiguration::getInstance()->getAiresName()) {
-            foreach(ParcellaireConfiguration::getInstance()->getAiresName() as $jsonFolder => $infos) {
-                $aires[$infos['name']] = ParcellaireClient::getInstance()->getAire($communes, $jsonFolder);
+        if (ParcellaireConfiguration::getInstance()->getAires()) {
+            foreach(ParcellaireConfiguration::getInstance()->getAires() as $jsonFolder => $infos) {
+                $aires[$jsonFolder] = ParcellaireClient::getInstance()->getAire($communes, $jsonFolder);
             }
         }
 

@@ -1,0 +1,10 @@
+all:
+  configuration:
+    parcellaire:
+      aires:
+        communes-aoc:
+          name: "AOC Côte de Provence"
+          color: "#000"
+        communes-stevictoire:
+          name: "AOC Sainte-Victoire"
+          color: "#000"
