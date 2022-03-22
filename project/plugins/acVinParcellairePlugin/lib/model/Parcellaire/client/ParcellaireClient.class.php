@@ -72,11 +72,19 @@ class ParcellaireClient extends acCouchdbClient {
         return $aires;
     }
 
-    public function getAire($communes, $jsonFolder = "communes") {
+    public function getDefaultCommune() {
+        return array_keys(ParcellaireConfiguration::getInstance()->getAiresName())[0];
+    }
+
+    public function getAire($communes, $jsonFolder = null) {
+        if (!$jsonFolder) {
+            $jsonFolder = $this->getDefaultCommune();
+        }
         $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
 >>>>>>> ae2f834a2e (Permet de gérer plusieurs couche d'aire)
         $geojson = [];
         $files = '';
+
         foreach ($communes as $id => $commune) {
             $file_name = $scrapydocs.'/../'.$jsonFolder.'/delimitation-'.$commune.'.json';
             $files = glob($file_name);
