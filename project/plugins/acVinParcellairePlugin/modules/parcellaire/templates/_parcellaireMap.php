@@ -10,8 +10,8 @@
 
 
 <?php
-    $import = ParcellaireClient::getInstance()->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi());
-	$list_communes = implode("|", ParcellaireClient::getInstance()->getDelimitations($parcellaire->declaration->getCommunes()));
+    $import = $parcellaire->getGeoJson();
+	$list_communes = implode("|", $parcellaire->getDelimitations());
 ?>
 
 <script type="text/javascript">

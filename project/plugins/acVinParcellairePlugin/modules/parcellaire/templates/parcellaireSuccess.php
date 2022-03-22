@@ -64,7 +64,7 @@ $list_idu = [];
 </div>
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
-    $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()); ?>
+    $import = $parcellaire->getGeoJson(); ?>
     <?php if(!empty($import)): ?>
      <div class="row" id="jump">
             <div class="col-xs-12">
@@ -75,7 +75,7 @@ $list_idu = [];
             </div>
         </div>
     <?php endif; ?>
-    <?php if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
+    <?php if($parcellaire && $parcellaire->getGeoJson() != false): ?>
         <div>
             <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
         </div>

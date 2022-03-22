@@ -237,4 +237,27 @@ class Parcellaire extends BaseParcellaire {
         return null;
     }
 
+    public function getGeoJson(){
+
+        $file_name = "import-cadastre-".$this->declarant->cvi."-parcelles.json";
+        $uri = $this->getAttachmentUri($file_name);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $import = curl_exec($ch);
+        curl_close($ch);
+
+        if(strpos($import, "Document is missing attachment")) {
+            sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
+            return false;
+        }
+        return $import;
+
+    }
+
+    public function getDelimitations() {
+        return ParcellaireClient::getInstance()->getDelimitations($this->declaration->getCommunes());
+    }
+
 }
