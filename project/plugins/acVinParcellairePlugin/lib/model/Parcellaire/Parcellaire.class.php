@@ -299,14 +299,16 @@ class Parcellaire extends BaseParcellaire {
         if (!$jsonFolder) {
             $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
         }
-        if ($this->cache_geophpdelimitation) {
-            return $this->cache_geophpdelimitation[$jsonFolder];
-        }
-        $this->cache_geophpdelimitation = [];
-        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $v) {
-            foreach ($this->getAire($key) as $d) {
-                $this->cache_geophpdelimitation[$key][] = geoPHP::load($d);
+        if (!$this->cache_geophpdelimitation) {
+            $this->cache_geophpdelimitation = [];
+            foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $v) {
+                foreach ($this->getAire($key) as $d) {
+                    $this->cache_geophpdelimitation[$key][] = geoPHP::load($d);
+                }
             }
+        }
+        if (!isset($this->cache_geophpdelimitation[$jsonFolder])) {
+            return null;
         }
         return $this->cache_geophpdelimitation[$jsonFolder];
     }
