@@ -7,15 +7,11 @@
 	<button id="locate-position"><i class="glyphicon glyphicon-screenshot"></i></button>
 </div>
 
-
-
-<?php
-    $import = $parcellaire->getRawValue()->getGeoJson();
-	$list_communes = implode("|", $parcellaire->getDelimitations()->getRawValue());
-?>
-
 <script type="text/javascript">
-	var parcelles = '<?php echo addslashes(json_encode($import)); ?>';
-	var delimitation = '<?php echo addslashes($list_communes); ?>';
+	var parcelles = '<?php echo addslashes($parcellaire->getRawValue()->getGeoJson()) ?>';
+    var aires = [];
+    <?php foreach($parcellaire->getAires() as $name => $geojson): ?>
+        aires['<?php echo addslashes($name) ?>'] = '<?php echo addslashes(implode("|", $geojson->getRawValue())); ?>';
+    <?php endforeach; ?>
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>
