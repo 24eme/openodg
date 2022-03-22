@@ -282,8 +282,13 @@ class Parcellaire extends BaseParcellaire {
 
     }
 
-    public function getDelimitations() {
-        return ParcellaireClient::getInstance()->getDelimitations($this->declaration->getCommunes());
+    public function getAire($jsonFolder) {
+        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes(), $jsonFolder);
+    }
+
+    public function getAires() {
+
+        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes());
     }
 
     public function getGeoPHPDelimitations() {
@@ -291,7 +296,7 @@ class Parcellaire extends BaseParcellaire {
             return $this->cache_geophpdelimitation;
         }
         $this->cache_geophpdelimitation = [];
-        foreach ($this->getDelimitations() as $d) {
+        foreach ($this->getAire() as $d) {
             $this->cache_geophpdelimitation[] = geoPHP::load($d);
         }
         return $this->cache_geophpdelimitation;
