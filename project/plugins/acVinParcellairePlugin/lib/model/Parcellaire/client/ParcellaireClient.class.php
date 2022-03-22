@@ -57,10 +57,6 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
-<<<<<<< HEAD
-    public function getDelimitations($communes){
-        $scrapydocs = sfConfig::get('app_scrapy_documents');
-=======
     public function getAires($communes) {
         $aires = array();
         if (ParcellaireConfiguration::getInstance()->getAires()) {
@@ -73,7 +69,7 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function getDefaultCommune() {
-        return array_keys(ParcellaireConfiguration::getInstance()->getAiresName())[0];
+        return array_keys(ParcellaireConfiguration::getInstance()->getAires())[0];
     }
 
     public function getAire($communes, $jsonFolder = null) {
@@ -81,7 +77,6 @@ class ParcellaireClient extends acCouchdbClient {
             $jsonFolder = $this->getDefaultCommune();
         }
         $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
->>>>>>> ae2f834a2e (Permet de gérer plusieurs couche d'aire)
         $geojson = [];
         $files = '';
 
