@@ -10,8 +10,9 @@
 <script type="text/javascript">
 	var parcelles = '<?php echo addslashes(json_encode($parcellaire->getRawValue()->getGeoJson())) ?>';
     var aires = [];
-    <?php foreach($parcellaire->getAires() as $name => $geojson): $json = addslashes(implode("|", $geojson->getRawValue())); if ($json): ?>
-        aires['<?php echo addslashes($name) ?>'] = '<?php echo $json ?>';
+    <?php foreach(ParcellaireConfiguration::getInstance()->getAires() as $jsonFolder => $infos): $json = addslashes(implode("|", $parcellaire->getAire($jsonFolder)->getRawValue())); if ($json): ?>
+        aires.push({'geojson': '<?php echo $json ?>', 'color': '<?php $infos['color'] ?>', 'name': '<?php echo addslashes($infos['name']) ?>'});
     <?php endif; endforeach; ?>
+    console.log(aires);
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>

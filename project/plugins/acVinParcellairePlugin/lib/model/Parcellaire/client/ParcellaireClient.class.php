@@ -57,17 +57,6 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
-    public function getAires($communes) {
-        $aires = array();
-        if (ParcellaireConfiguration::getInstance()->getAiresName()) {
-            foreach(ParcellaireConfiguration::getInstance()->getAiresName() as $jsonFolder => $infos) {
-                $aires[$infos['name']] = ParcellaireClient::getInstance()->getAire($communes, $jsonFolder);
-            }
-        }
-
-        return $aires;
-    }
-
     public function getDefaultCommune() {
         return array_keys(ParcellaireConfiguration::getInstance()->getAiresInfos())[0];
     }
@@ -270,7 +259,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (!$parcellaire || $parcellaire->date != $date) {
             $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
-        
+
         if($path){
             $parcellaire->storeAttachment($path, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
             $parcellaire->save();
@@ -288,12 +277,12 @@ class ParcellaireClient extends acCouchdbClient {
         if (!$parcellaire || $parcellaire->date != $date) {
             $parcellaire = $this->findOrCreate($identifiant, $date, $source, $type);
         }
-        
+
         if($path){
             $parcellaire->storeAttachment($path, 'text/json', "import-cadastre-$cvi-parcelles.json");
             $parcellaire->save();
         }
-        return $parcellaire;    
+        return $parcellaire;
     }
 
     public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
