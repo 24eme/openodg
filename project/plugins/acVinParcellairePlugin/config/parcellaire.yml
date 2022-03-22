@@ -3,3 +3,7 @@ all:
     parcellaire:
       limit_produits_configuration: true
       unit: "hectares"
+      aires:
+        communes:
+          name: "AOC"
+          color: ""
