@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
 /**
  * Model for Parcellaire
  *
@@ -8,6 +9,7 @@ class Parcellaire extends BaseParcellaire {
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    private $cache_geophpdelimitation = null;
 
     public function __construct() {
         parent::__construct();
@@ -258,6 +260,17 @@ class Parcellaire extends BaseParcellaire {
 
     public function getDelimitations() {
         return ParcellaireClient::getInstance()->getDelimitations($this->declaration->getCommunes());
+    }
+
+    public function getGeoPHPDelimitations() {
+        if (isset($this->cache_geophpdelimitation)) {
+            return $this->cache_geophpdelimitation;
+        }
+        $this->cache_geophpdelimitation = [];
+        foreach ($this->getDelimitations() as $d) {
+            $this->cache_geophpdelimitation[] = geoPHP::load($d);
+        }
+        return $this->cache_geophpdelimitation;
     }
 
 }

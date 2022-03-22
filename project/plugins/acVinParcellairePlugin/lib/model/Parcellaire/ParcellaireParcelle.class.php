@@ -1,5 +1,7 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
+
 /**
  * Model for ParcellaireCepageDetail
  *
@@ -216,5 +218,27 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         $year = date('Y', strtotime('1st november')) - 2;
         $campagne_troisieme_feuille = ($year - 1).'-'.$year;
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
+    }
+
+    public function getGeoJson() {
+        $data = json_decode($this->getDocument()->getGeoJson());
+        foreach($data->features as $f) {
+            if ($f->id == $this->idu) {
+                return json_encode($f);
+            }
+        }
+    }
+    public function isInAire() {
+        $geoparcelle = geoPHP::load($this->getGeoJson());
+        foreach($this->document->getGeoPHPDelimitations() as $d) {
+            $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
+            if ($pc > 0.99) {
+                return 'OUI';
+            }
+            if ($pc > 0.01) {
+                return 'PARTIEL';
+            }
+        }
+        return false;
     }
 }
