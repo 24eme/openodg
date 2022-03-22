@@ -271,15 +271,25 @@ class Parcellaire extends BaseParcellaire {
         return ParcellaireClient::getInstance()->getAire($this->declaration->getCommunes(), $jsonFolder);
     }
 
-    public function getGeoPHPDelimitations() {
+    public function getAires() {
+
+        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes());
+    }
+
+    public function getGeoPHPDelimitations($jsonFolder = null) {
+        if (!$jsonFolder) {
+            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
+        }
         if ($this->cache_geophpdelimitation) {
-            return $this->cache_geophpdelimitation;
+            return $this->cache_geophpdelimitation[$jsonFolder];
         }
         $this->cache_geophpdelimitation = [];
-        foreach ($this->getAire() as $d) {
-            $this->cache_geophpdelimitation[] = geoPHP::load($d);
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $v) {
+            foreach ($this->getAire($key) as $d) {
+                $this->cache_geophpdelimitation[$key][] = geoPHP::load($d);
+            }
         }
-        return $this->cache_geophpdelimitation;
+        return $this->cache_geophpdelimitation[$jsonFolder];
     }
 
 }

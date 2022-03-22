@@ -172,10 +172,16 @@ $list_idu = [];
                                 </td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
                                     <span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?><br/>
-                                    <?php $a = $detail->isInAire(); ?>
+                                    <?php $aires = $detail->isInAires(); if ($aires): ?>
+                                    <span class="text-muted">Aire(s):</span>
+                                    <?php foreach($aires as $nom => $a): ?>
                                     <span class="<?php if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT): ?>text-danger<?php else: ?>text-muted<?php endif; ?>">
-                                    Aire: <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire" : $a ; ?>
+                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire" : '' ; ?>
+                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement" : '' ; ?>
+                                    <?php echo $nom; ?>
                                     </span>
+                                    <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
                                 <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie * $superficie_multiplicateur); ?>
