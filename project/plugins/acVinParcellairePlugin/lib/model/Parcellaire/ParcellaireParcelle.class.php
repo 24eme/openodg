@@ -233,12 +233,12 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         foreach($this->document->getGeoPHPDelimitations() as $d) {
             $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
             if ($pc > 0.99) {
-                return 'OUI';
+                return ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT;
             }
             if ($pc > 0.01) {
-                return 'PARTIEL';
+                return ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT;
             }
         }
-        return false;
+        return ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE;
     }
 }
