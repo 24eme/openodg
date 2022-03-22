@@ -18,6 +18,10 @@ class ParcellaireClient extends acCouchdbClient {
         self::MODE_SAVOIRFAIRE_METAYER => "Métayer",
     );
 
+    const PARCELLAIRE_AIRE_TOTALEMENT = 'OUI';
+    const PARCELLAIRE_AIRE_PARTIELLEMENT = 'PARTIEL';
+    const PARCELLAIRE_AIRE_HORSDELAIRE = false;
+
     public static function getInstance() {
         return acCouchdbManager::getClient("Parcellaire");
     }
