@@ -10,6 +10,7 @@ class Parcellaire extends BaseParcellaire {
     protected $declarant_document = null;
     protected $piece_document = null;
     private $cache_geophpdelimitation = null;
+    private $cache_geojson = null;
 
     public function __construct() {
         parent::__construct();
@@ -264,6 +265,9 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getGeoJson(){
+        if ($this->cache_geojson !== null) {
+            return $this->cache_geojson;
+        }
 
         $file_name = "import-cadastre-".$this->declarant->cvi."-parcelles.json";
         $uri = $this->getAttachmentUri($file_name);
@@ -276,14 +280,16 @@ class Parcellaire extends BaseParcellaire {
 
         if(strpos($import, "Document is missing attachment")) {
             sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
-            return false;
+            $this->cache_geojson = false;
+        }else{
+            $this->cache_geojson = json_decode($import);
         }
-        return $import;
+        return $this->cache_geojson;
 
     }
 
-    public function getAire($jsonFolder) {
-        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes(), $jsonFolder);
+    public function getAire($jsonFolder = 'commune') {
+        return ParcellaireClient::getInstance()->getAire($this->declaration->getCommunes(), $jsonFolder);
     }
 
     public function getAires() {
@@ -292,7 +298,7 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getGeoPHPDelimitations() {
-        if (isset($this->cache_geophpdelimitation)) {
+        if ($this->cache_geophpdelimitation) {
             return $this->cache_geophpdelimitation;
         }
         $this->cache_geophpdelimitation = [];

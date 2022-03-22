@@ -8,7 +8,7 @@
 </div>
 
 <script type="text/javascript">
-	var parcelles = '<?php echo addslashes($parcellaire->getRawValue()->getGeoJson()) ?>';
+	var parcelles = '<?php echo addslashes(json_encode($parcellaire->getRawValue()->getGeoJson())) ?>';
     var aires = [];
     <?php foreach($parcellaire->getAires() as $name => $geojson): ?>
         aires['<?php echo addslashes($name) ?>'] = '<?php echo addslashes(implode("|", $geojson->getRawValue())); ?>';

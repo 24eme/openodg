@@ -130,7 +130,6 @@ function zoomOnMap(){
 var layers = [];
 
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
-layers["Parcelles"].addTo(map);
 
 for(name in aires) {
   layers[name] = L.geoJSON(parseString(aires[name]), { style: styleDelimitation });
@@ -138,6 +137,8 @@ for(name in aires) {
 };
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
+
+layers["Parcelles"].addTo(map);
 
 zoomOnMap();
 
