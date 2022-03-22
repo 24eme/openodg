@@ -46,7 +46,10 @@ class ParcellaireConfiguration {
     }
 
     public function getAires() {
+        if(!isset($this->configuration['aires'])) {
 
+            return array();
+        }
         return $this->configuration['aires'];
     }
 
