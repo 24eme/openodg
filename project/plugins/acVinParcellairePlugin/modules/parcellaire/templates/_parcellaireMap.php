@@ -10,8 +10,8 @@
 
 
 <?php
-    $import = $parcellaire->getGeoJson();
-	$list_communes = implode("|", $parcellaire->getDelimitations());
+    $import = $parcellaire->getRawValue()->getGeoJson();
+	$list_communes = implode("|", $parcellaire->getDelimitations()->getRawValue());
 ?>
 
 <script type="text/javascript">
