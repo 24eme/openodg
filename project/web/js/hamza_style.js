@@ -465,7 +465,7 @@
                             find = true;
                         }
                     }
-                    if (find) {
+                    if (find || filtres.length == 0) {
                         $(this).show();
                     } else {
                         $(this).hide();

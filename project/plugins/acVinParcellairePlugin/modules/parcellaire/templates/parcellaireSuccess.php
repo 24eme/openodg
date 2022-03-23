@@ -59,8 +59,8 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     $import = $parcellaire->getGeoJson(); ?>
 
     <?php if($parcellaire && $parcellaire->getGeoJson() != false): ?>
-        <a name="carte"></a>
-        <div>
+        <div id="jump">
+            <a name="carte"></a>
             <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
         </div>
     <?php endif; ?>
@@ -79,11 +79,11 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     </div>
 
     <?php if(!empty($import)): ?>
-    <div class="row" id="jump">
+    <div class="row">
         <div class="col-xs-12">
             <h3>Filtrer</h3>
             <div class="form-group">
-                <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
+                <input id="hamzastyle" onchange="filterMap()" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
             </div>
         </div>
     </div>
@@ -198,10 +198,8 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
                                 <?php if(!empty($import)): ?>
                                 <td style="text-align: center;">
-                                    <div id="<?php echo $detail->idu; ?>" class="liencarto">
-                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')"> &nbsp;
-                                            <i class="glyphicon glyphicon-map-marker"></i> &nbsp;
-                                        </a>
+                                    <div id="<?php echo $detail->idu; ?>">
+                                        <button class="btn btn-link" onclick="showParcelle('<?php echo $detail->idu; ?>')"><i class="glyphicon glyphicon-map-marker"></i></button>
                                     </div>
                                 </td>
                                 <?php endif; ?>
