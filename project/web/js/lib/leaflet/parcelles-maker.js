@@ -78,7 +78,7 @@ function style(feature) {
         weight: 2,
         opacity: 1,
         color: 'red',
-        fillOpacity: 0.2
+        fillOpacity: 0.3
     };
 }
 
@@ -197,14 +197,14 @@ info.addTo(map);
 
 function highlightFeature(e) {
   e.target.setStyle({
-      fillOpacity: 0.4
+      fillOpacity: 0.5
   });
   info.update(e.target);
 }
 
 function resetHighlight(e) {
   e.target.setStyle({
-      fillOpacity: 0.2
+      fillOpacity: 0.3
   });
   info.update();
 }
