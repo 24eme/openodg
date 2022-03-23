@@ -3,8 +3,8 @@
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
 <div id="map" class="col-12" style="height: 350px; margin-bottom: 20px;">
-	<button id="refreshButton" onclick="zoomOnMap()"><i class="glyphicon glyphicon-fullscreen"></i></button>
-	<button id="locate-position"><i class="glyphicon glyphicon-screenshot"></i></button>
+	<div class="leaflet-touch leaflet-bar"><a id="refreshButton" onclick="zoomOnMap(); return false;" href="#"><span class="glyphicon glyphicon-fullscreen"></span></a></div>
+	<div class="leaflet-touch leaflet-bar"><a id="locate-position" href="#"><span class="glyphicon glyphicon-screenshot"></span></a></div>
 </div>
 
 <script type="text/javascript">
