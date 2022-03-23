@@ -74,11 +74,11 @@ function style(feature) {
     var color;
     color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
-        fillColor: color,
-        weight: 1,
+        fillColor: '#fff',
+        weight: 2,
         opacity: 1,
-        color: 'white',
-        fillOpacity: 0.5
+        color: 'red',
+        fillOpacity: 0.2
     };
 }
 
@@ -88,7 +88,7 @@ function style(feature) {
 function styleDelimitation(color, opacity){
     return {
         fillColor: color,
-        weight: 3,
+        weight: 0,
         opacity: opacity,
         dashArray: '5',
         color: 'black',
@@ -104,9 +104,10 @@ function zoomOnMap(){
 var layers = [];
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
 
-for(name in aires) {
-  layers[aires[name]['name']] = L.geoJSON(parseString(aires[name]['geojson']), { style: styleDelimitation(aires[name]['color'], 0.6 / aires.length) });
-  layers[aires[name]['name']].addTo(map);
+for(i in aires) {
+  console.log(aires[i]['color']);
+  layers[aires[i]['name']] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
+  layers[aires[i]['name']].addTo(map);
 };
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
@@ -123,12 +124,8 @@ function zoomToFeature(e) {
 function zoomToParcelle(layer) {
   clearParcelleSelected();
   map.fitBounds(layer.getBounds());
-  info.update(layer);
   parcelleSelected = layer;
-  parcelleSelected.setStyle({
-      weight: 3,
-      fillOpacity: 1
-  });
+  info.update(layer);
 }
 
 function clearParcelleSelected() {
@@ -155,6 +152,9 @@ info.update = function (layer) {
   if(parcelleSelected) {
     layer = parcelleSelected;
     this._div.style.background = 'rgba(255,255,255,1)';
+    parcelleSelected.setStyle({
+        fillOpacity: 0.8
+    });
   }
   if(!layer) {
     this._div.style.display = 'none';
@@ -196,10 +196,16 @@ $('#btn-close-info').on('click', function() {
 info.addTo(map);
 
 function highlightFeature(e) {
+  e.target.setStyle({
+      fillOpacity: 0.4
+  });
   info.update(e.target);
 }
 
 function resetHighlight(e) {
+  e.target.setStyle({
+      fillOpacity: 0.2
+  });
   info.update();
 }
 
