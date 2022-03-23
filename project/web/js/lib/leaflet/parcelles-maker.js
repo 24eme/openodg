@@ -150,8 +150,10 @@ info.onAdd = function (map) {
 
 // method that we will use to update the control based on feature properties passed
 info.update = function (layer) {
+  this._div.style.background = 'rgba(255,255,255,0.9)';
   if(parcelleSelected) {
     layer = parcelleSelected;
+    this._div.style.background = 'rgba(255,255,255,1)';
   }
   if(!layer) {
     this._div.style.display = 'none';
@@ -175,7 +177,7 @@ info.update = function (layer) {
       ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
   });
 
-  var popupContent ='<table class="table table-bordered table-condensed table-striped"><tbody>'+
+  var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
                   '<tr>'+numParcelles+'</tr>'+
                   '<tr>'+Cepages+'</tr>'+
                   '<tr>'+compagnes+'</tr>'+
@@ -185,6 +187,10 @@ info.update = function (layer) {
                   '</tbody></table>';
     this._div.innerHTML = popupContent;
 };
+
+$('#btn-close-info').on('click', function() {
+  clearParcelleSelected();
+});
 
 info.addTo(map);
 
