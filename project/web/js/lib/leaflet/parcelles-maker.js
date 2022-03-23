@@ -1,10 +1,7 @@
 var parcellesStr = window.parcelles;
 var delimitationStr = window.delimitation;
 var allIdu = window.all_idu;
-var myMarker;
-var mygeojson;
-var myLayer=[];
-var fitBound;
+var parcelleSelected = null;
 var minZoom = 17;
 
 function parseString(dlmString){
@@ -16,7 +13,8 @@ function parseString(dlmString){
 }
 
 var map = L.map('map');
-
+map.on('click', function(e) { if(e.target && e.target.feature) { return; } console.log(e); clearParcelleSelected() });
+console.log(map);
 
 L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
         '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
@@ -99,33 +97,12 @@ function styleDelimitation(color, opacity){
     }
 }
 
-/**
-* Close popup and delete marker showing on map
-**/
-function closeDisplayer(){
-    var res = false;
-    
-    if(myMarker){
-        map.removeLayer(myMarker);//remove preview marker, show one marker at the same time
-        res = true;
-    }
-    if(map._popup != null){
-        map.closePopup();//close popup if is opened
-        res = true;
-    }
-    return res;
-}
-
 function zoomOnMap(){
-
-    closeDisplayer();
-    myMarker = null;
-
     map.fitBounds(layers["Parcelles"].getBounds());
+    clearParcelleSelected()
 }
 
 var layers = [];
-
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
 layers["Parcelles"].addTo(map);
 
@@ -139,58 +116,93 @@ L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
 zoomOnMap();
 
 function zoomToFeature(e) {
-    if(!closeDisplayer() || map.getZoom() < minZoom){
+  zoomToParcelle(e.target);
+  e.preventDefault();
+}
 
-        myMarker = L.marker(e.target.getCenter()).addTo(map); 
-        var f = map.fitBounds(e.target.getBounds());
-    }else{
-        map.openPopup(e.target._popup);
-        var popup = $(".leaflet-popup-content")[0];
-        minPopupWidth = popup.style.width;
-        var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
-        if(width > minPopupWidth){
-            popup.style.overflowX = "scroll";
-        }   
-    }
+function zoomToParcelle(layer) {
+  clearParcelleSelected();
+  map.fitBounds(layer.getBounds());
+  info.update(layer);
+  parcelleSelected = layer;
+  parcelleSelected.setStyle({
+      weight: 3,
+      fillOpacity: 1
+  });
+}
+
+function clearParcelleSelected() {
+  if(!parcelleSelected) {
+    return;
+  }
+  parcelleSelected.setStyle(style(parcelleSelected.feature));
+  parcelleSelected = null;
+  info.update(null);
+}
+
+var info = L.control();
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this._div.style.display = 'none';
+    this.update();
+    return this._div;
+};
+
+// method that we will use to update the control based on feature properties passed
+info.update = function (layer) {
+  if(parcelleSelected) {
+    layer = parcelleSelected;
+  }
+  if(!layer) {
+    this._div.style.display = 'none';
+    return null
+  }
+  let props = layer.feature.properties;
+
+  this._div.style.display = 'block';
+  var Cepages = "<th>Produits et cepages</th>";
+  var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
+  var Superficies = "<th>Superficies  <span>(ha)</span></th>";
+  var ecartPied = "<th>Écart Pieds</th>";
+  var ecartRang = "<th>Écart Rang</th>";
+  var compagnes = "<th>Année plantat°</th>";
+  props.parcellaires.forEach(function(parcelle){
+      numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
+      Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
+      compagnes += '<td>'+parcelle.Campagne+'</td>';
+      Superficies += '<td>'+parcelle.Superficie+'</td>';
+      ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
+      ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
+  });
+
+  var popupContent ='<table class="table table-bordered table-condensed table-striped"><tbody>'+
+                  '<tr>'+numParcelles+'</tr>'+
+                  '<tr>'+Cepages+'</tr>'+
+                  '<tr>'+compagnes+'</tr>'+
+                  '<tr>'+Superficies+'</tr>'+
+                  '<tr>'+ecartPied+'</tr>'+
+                  '<tr>'+ecartRang+'</tr>'+
+                  '</tbody></table>';
+    this._div.innerHTML = popupContent;
+};
+
+info.addTo(map);
+
+function highlightFeature(e) {
+  info.update(e.target);
+}
+
+function resetHighlight(e) {
+  info.update();
 }
 
 function onEachFeature(feature, layer) {
     layer.on({
-        click: zoomToFeature,
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
     });
-    
-    var Cepages = "<th>Produits et cepages</th>";
-    var numParcelles = "<th>Parcelle N°</th>";
-    var Superficies = "<th>Superficies  <span>(ha)</span></th>";
-    var ecartPied = "<th>Écart Pieds</th>";
-    var ecartRang = "<th>Écart Rang</th>";
-    var compagnes = "<th>Année plantat°</th>";
-    feature.properties.parcellaires.forEach(function(parcelle){
-        numParcelles += '<td>'+parcelle["Numero parcelle"]+'</td>';
-        Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
-        compagnes += '<td>'+parcelle.Campagne+'</td>';
-        Superficies += '<td>'+parcelle.Superficie+'</td>';
-        ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
-        ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
-    });
-    
-    var popupContent ='<table class="table table-bordered table-condensed table-striped"><tbody>'+
-                    '<tr>'+numParcelles+'</tr>'+
-                    '<tr>'+Cepages+'</tr>'+
-                    '<tr>'+compagnes+'</tr>'+
-                    '<tr>'+Superficies+'</tr>'+
-                    '<tr>'+ecartPied+'</tr>'+
-                    '<tr>'+ecartRang+'</tr>'+
-                    '</tbody></table>';
-
-    if (feature.properties && feature.properties.popupContent) {
-        popupContent += feature.properties.popupContent;
-    }
-
-    layer.bindPopup(popupContent);
-
-    layer._events.click.reverse();
-
 }
 
 function showParcelle(id){
@@ -200,14 +212,8 @@ function showParcelle(id){
       return;
     }
 
-    closeDisplayer();
-    this.myLayer = layer;
-    center = myLayer.getCenter();
-    this.myMarker = L.marker(center, {}).addTo(map);
-
-    this.map.fitBounds(this.myLayer.getBounds());
-    var carte = document.getElementById("jump");
-    carte.scrollIntoView();
+    zoomToParcelle(layer);
+    document.getElementById("jump").scrollIntoView();
 }
 
 function getParcelleLayer(id) {
@@ -232,6 +238,7 @@ function getParcelleLayer(id) {
 * myfilters it's input element
 **/
 function filterMap() {
+    clearParcelleSelected();
     let filters = $('#hamzastyle').val();
     let terms = filters.split(",");
     if(!terms.length) {
@@ -287,11 +294,11 @@ $(document).ready(function(){
                     var p = document.createElement("p");
                     p.innerHTML = "non-trouvée";
                     parent.append(p);
-                    element.style.display = 'none'; 
-                }                
+                    element.style.display = 'none';
+                }
             });
         }
-    }    
+    }
    });
 })
 
