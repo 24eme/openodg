@@ -6,10 +6,6 @@ var mygeojson;
 var myLayer=[];
 var fitBound;
 var minZoom = 17;
-var listIdLayer=[];
-var myidus= [];
-var filters;
-var error = true;
 
 function parseString(dlmString){
     var mydlm = [];
@@ -196,94 +192,74 @@ function onEachFeature(feature, layer) {
 
 }
 
-/**
-* show parcelle with maker on it in map  
-**/
+function showParcelle(id){
+    let layer = getParcelleLayer(id);
 
-function showParcelle(id, htmlObj){
-    if(this.map) {
-        this.map.eachLayer(function(layer) {            
-            if(layer.feature){
-                //Check proprietie parcellaires to filter layer delimitation
-                if(Object.keys(layer.feature.properties).includes('parcellaires')){
-                    if(layer.feature.properties.parcellaires[0].IDU == id){
-                        error = false;
-                        closeDisplayer();
-                        this.myLayer = layer;
-                        center = myLayer.getCenter();
-                        this.myMarker = L.marker(center,  {
-
-                        }).addTo(map);
-                        
-                        this.map.fitBounds(this.myLayer.getBounds());
-                        var carte = document.getElementById("jump");
-                        carte.scrollIntoView();
-                    }
-                    
-                }   
-            }
-        });        
-    }else{
-        alert("Error: Map empty !");
+    if(!layer) {
+      return;
     }
+
+    closeDisplayer();
+    this.myLayer = layer;
+    center = myLayer.getCenter();
+    this.myMarker = L.marker(center, {}).addTo(map);
+
+    this.map.fitBounds(this.myLayer.getBounds());
+    var carte = document.getElementById("jump");
+    carte.scrollIntoView();
 }
+
+function getParcelleLayer(id) {
+  let layerFinded = null;
+
+  map.eachLayer(function(layer) {
+      if(layer.feature){
+          if(Object.keys(layer.feature.properties).includes('parcellaires')){
+              if(layer.feature.properties.parcellaires[0].IDU == id){
+                layerFinded = layer;
+              }
+          }
+      }
+  });
+
+  return layerFinded;
+}
+
+
 /**
 * On select words filter, we filter map layers also.
-* myfilters it's input element  
+* myfilters it's input element
 **/
-function filterMapOn(myfilters){
-    filters = myfilters;
-    $(".hamzastyle-item").each(function(i, val){
-        var words = val.getAttribute("data-words");
-        if(filters.value && checkAllwords(eval(words),filters.value.split(","))){
-            let id = val.lastElementChild.firstElementChild.getAttribute("id");
-            myidus[id] = id;
-        }
+function filterMap() {
+    let filters = $('#hamzastyle').val();
+    let terms = filters.split(",");
+    if(!terms.length) {
+      layers['Parcelles'].eachLayer(function(layer) {
+        layer._path.style.display = 'block';
+      })
+      return;
+    }
+
+    layers['Parcelles'].eachLayer(function(layer) {
+      layer._path.style.display = 'none';
     });
-    if(filters.value && Object.keys(myidus).length){
-        layerFilter(styleDelimitation(), Object.keys(myidus));
-        myidus=[];
-    }else{
-        layerFilter("default", myidus);
-    }
-}
 
-function checkAllwords(words, wordsfilter){
-    for(let i=0; i < wordsfilter.length; i++){
-
-        if(!words.includes(wordsfilter[i])){
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
-* hide layer(s) by changing color filling (function styleDelimitation)
-* show layer(s) by changing color filling with produit color (function style) 
-**/
-function layerFilter(styleCss, myidus){
-    if(map) {
-        closeDisplayer();
-        map.eachLayer(function(layer) {
-            if(layer.feature){
-                if(typeof(styleCss) == 'object' && !myidus.includes(layer.feature.id)){
-                   layer.setStyle(styleCss);                    
-                }else if(layer.feature.properties.hasOwnProperty('parcellaires')){
-                   layer.setStyle(style(layer.feature));
-                }
-            }
+    $(".hamzastyle-item").each(function(i, val){
+        let words = val.getAttribute("data-words");
+        terms.forEach(function(term) {
+          if(words.indexOf(term) > -1) {
+            getParcelleLayer(val.lastElementChild.firstElementChild.getAttribute("id"))._path.style.display = 'block';
+          }
         });
-    }
+    });
 }
 
 /**
 * Keep filter if the page reload
 **/
 $(window).on("load", function() {
-    filters = $("#hamzastyle")[0];
-    if(filters){
-        filterMapOn(filters);
+    if($("input#hamzastyle").val()){
+        filterMap();
     }
 });
 
