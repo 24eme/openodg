@@ -126,6 +126,8 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                             $classparcelle = '';
                             $classsuperficie = '';
                             $stylesuperficie = '';
+                            $superficie = 0;
+                            $nb_parcelles = 0;
                             if (isset($diff) && $diff) {
                                 if ($last && !$last->exist($detail->getHash())) {
                                     $styleline = 'border-style: solid; border-width: 1px; border-color: darkgreen;';
@@ -213,8 +215,11 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                 </td>
                                 <?php endif; ?>
                             </tr>
+                            <?php $superficie = $superficie + $detail->superficie; ?>
+                            <?php $nb_parcelles++; ?>
                             <?php endforeach; ?>
                     </tbody>
+                    <tr><th colspan="5"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoLongFloat($superficie); ?></strong></td><td colspan="3" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
                 </table>
     <?php endforeach; ?>
         </div>
