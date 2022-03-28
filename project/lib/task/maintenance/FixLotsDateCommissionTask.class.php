@@ -44,6 +44,8 @@ EOF;
         );
     }
 
+    rsort($ids);
+
     $ids_master = array();
     foreach($ids as $id) {
         $key = preg_replace('/-M[0-9]+$/', '', $id);
@@ -60,13 +62,10 @@ EOF;
     foreach($ids_master as $id) {
         $doc = DeclarationClient::getInstance()->find($id);
         foreach($doc->getLots() as $lot) {
-            if(!$doc && $lot->isCurrent()) {
+            $key = $lot->campagne."_".$lot->numero_dossier;
+            if(!$lot->date_commission) {
                 continue;
             }
-            if(!$lot->date_commission) {
-                    continue;
-            }
-            $key = $lot->campagne."_".$lot->numero_dossier;
             if(isset($numDossierDateCommission[$key]) && $numDossierDateCommission[$key] === false) {
                 continue;
             }
