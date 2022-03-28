@@ -118,10 +118,14 @@ EOF;
                 echo "aucune date trouvé : ".$lot->campagne."_".$lot->numero_dossier."\n";
                 continue;
             }
+            if($lot->getDateCommission()) {
+                continue;
+            }
             $lotOrigine = $lot->getLotOrigine();
+            if($lotOrigine->getDateCommission()) {
+                continue;
+            }
             $docOrigine = $lotOrigine->getDocument();
-
-            $docOrigine->remove('date_commission');
             $lotOrigine->date_commission = $numDossierDateCommission[$lot->campagne."_".$lot->numero_dossier];
             if($docOrigine->save()) {
                 echo "Document ".$docOrigine->_id."@".$docOrigine->_rev." saved\n";
