@@ -71,8 +71,15 @@ EOF;
             }
             if(isset($numDossierDateCommission[$key]) && $numDossierDateCommission[$key] != $lot->date_commission) {
                 $numDossierDateCommission[$key] = false;
+                continue;
             }
             $numDossierDateCommission[$key] = $lot->date_commission;
+        }
+    }
+
+    foreach($numDossierDateCommission as $key => $date) {
+        if($date === false) {
+            unset($numDossierDateCommission[$key]);
         }
     }
 
@@ -113,15 +120,12 @@ EOF;
             if(!$doc->validation && $lot->isCurrent()) {
                 continue;
             }
-            if(!isset($numDossierDateCommission[$lot->campagne."_".$lot->numero_dossier])) {
-                echo "aucune date trouvé : ".$lot->campagne."_".$lot->numero_dossier."\n";
-                continue;
-            }
-            if($lot->getDateCommission()) {
-                continue;
-            }
             $lotOrigine = $lot->getLotOrigine();
             if($lotOrigine->getDateCommission()) {
+                continue;
+            }
+            if(!isset($numDossierDateCommission[$lot->campagne."_".$lot->numero_dossier])) {
+                echo "aucune date trouvé : ".$lot->campagne."_".$lot->numero_dossier."\n";
                 continue;
             }
             $docOrigine = $lotOrigine->getDocument();
