@@ -316,7 +316,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getDateCommission() {
         if(!$this->isCurrent()) {
-            $this->date_commission = $this->getLogOrigine()->date_commission;
+            $this->date_commission = $this->getLotOrigine()->date_commission;
         }
 
         return $this->_get('date_commission');
@@ -329,7 +329,7 @@ abstract class Lot extends acCouchdbDocumentTree
       return DeclarationClient::getInstance()->findCache($this->id_document);
     }
 
-    public function getLogOrigine() {
+    public function getLotOrigine() {
         if(!$this->hasDocumentOrigine()) {
 
             return null;
@@ -917,7 +917,7 @@ abstract class Lot extends acCouchdbDocumentTree
             $this->date_commission = $lotAffectation->date_commission;
         } elseif (!$this->getDocument() instanceof Degustation && $lotProvenance && $lotProvenance->date_commission) {
             $this->date_commission = $lotProvenance->date_commission;
-        } elseif($this->getDocument()->getDateCommission() !== false) {
+        } elseif($this->getDocument()->getDateCommission()) {
             $this->date_commission = $this->getDocument()->getDateCommission();
         }
     }
