@@ -347,9 +347,9 @@ class DRevValidation extends DeclarationLotsValidation
             }
         }
 
-        $synthese = $this->document->summerizeProduitsLotsByCouleur(false);
-        foreach ($this->document->getLotsByCouleur() as $couleur => $lot) {
-            if (! isset($synthese[$couleur])) {
+        $synthese = $this->document->summerizeProduitsLotsByCouleur(true);
+        foreach ($synthese as $couleur => $synt) {
+            if (strpos($couleur, 'Total') === false) {
                 continue;
             }
             if ($this->document->hasDR() && isset($synthese[$couleur]['volume_restant_max']) && round($synthese[$couleur]['volume_restant_max'], 4) < -0.0001) {
