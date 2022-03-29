@@ -51,7 +51,7 @@ class FactureEmailManager extends Email
             $replyTo = $from;
         }
         $subject = "Cotisations AVA : Factures disponibles sur votre espace";
-        $body = $this->getBodyFromPartial('facturation/email', array('factures' => $facturesToSend));
+        $body = $this->getBodyFromPartial('facturation/emailAVA', array('factures' => $facturesToSend));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)

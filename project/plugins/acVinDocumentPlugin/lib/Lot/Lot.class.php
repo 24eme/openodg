@@ -134,6 +134,9 @@ abstract class Lot extends acCouchdbDocumentTree
     );
 
     protected $nbPassage = null;
+
+    private $cache_mouvements = null;
+
     public $lotsDocumentOrdre = array();
 
     public static function getLibelleStatut($statut) {
@@ -316,7 +319,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getDateCommission() {
         if(!$this->isCurrent()) {
-            $this->date_commission = $this->getLogOrigine()->date_commission;
+            $this->date_commission = $this->getLotOrigine()->date_commission;
         }
 
         return $this->_get('date_commission');
@@ -329,7 +332,7 @@ abstract class Lot extends acCouchdbDocumentTree
       return DeclarationClient::getInstance()->findCache($this->id_document);
     }
 
-    public function getLogOrigine() {
+    public function getLotOrigine() {
         if(!$this->hasDocumentOrigine()) {
 
             return null;
@@ -436,7 +439,12 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function isControle(){
-        return ($this->affectable || $this->id_document_affectation);
+        foreach($this->getMouvements() as $mvt) {
+            if ($mvt->statut == self::STATUT_AFFECTE_SRC) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function isSecondPassage()
@@ -841,21 +849,14 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getMouvements() {
-        if(!$this->getDocument()->exist("/mouvements_lots/".$this->declarant_identifiant)) {
-
-            return array();
-        }
-
-        $mouvements = array();
-
-        foreach($this->getDocument()->get("/mouvements_lots/".$this->declarant_identifiant) as $m) {
-            if($m->lot_unique_id != $this->unique_id) {
-                continue;
+        if (!$this->cache_mouvements) {
+            $this->cache_mouvements = array();
+            $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($this->declarant_identifiant, $this->unique_id, $this->document_ordre);
+            foreach($mvts->rows as $r) {
+                $this->cache_mouvements[] = $r->value;
             }
-            $mouvements[$m->getKey()] = $m;
         }
-
-        return $mouvements;
+        return $this->cache_mouvements;
     }
 
     public function getMouvement($statut) {
@@ -917,7 +918,7 @@ abstract class Lot extends acCouchdbDocumentTree
             $this->date_commission = $lotAffectation->date_commission;
         } elseif (!$this->getDocument() instanceof Degustation && $lotProvenance && $lotProvenance->date_commission) {
             $this->date_commission = $lotProvenance->date_commission;
-        } elseif($this->getDocument()->getDateCommission() !== false) {
+        } elseif($this->getDocument()->getDateCommission()) {
             $this->date_commission = $this->getDocument()->getDateCommission();
         }
     }

@@ -251,7 +251,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getDateCommission() {
 
-        return false;
+        return null;
     }
 
     public function getCampagne() {
