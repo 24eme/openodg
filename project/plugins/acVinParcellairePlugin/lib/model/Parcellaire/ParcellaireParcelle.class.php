@@ -1,5 +1,7 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
+
 /**
  * Model for ParcellaireCepageDetail
  *
@@ -216,5 +218,45 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         $year = date('Y', strtotime('1st november')) - 2;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
+    }
+
+    public function getGeoJson() {
+        $data = $this->getDocument()->getGeoJson();
+        foreach($data->features as $f) {
+            if ($f->id == $this->idu) {
+                return json_encode($f);
+            }
+        }
+    }
+    public function isInAires() {
+        $aires = [];
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $jsonFolder => $infos) {
+            $res = $this->isInAire($jsonFolder);
+            if ($res) {
+                $aires[$infos["name"]] = $res;
+            }
+        }
+        return $aires;
+    }
+
+    public function isInAire($jsonFolder = null) {
+        if (!$jsonFolder) {
+            $jsonFolder =ParcellaireClient::getInstance()->getDefaultCommune();
+        }
+        $geoparcelle = geoPHP::load($this->getGeoJson());
+        $aire = $this->document->getGeoPHPDelimitations($jsonFolder);
+        if (!$aire) {
+            return null;
+        }
+        foreach($aire as $d) {
+            $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
+            if ($pc > 0.99) {
+                return ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT;
+            }
+            if ($pc > 0.01) {
+                return ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT;
+            }
+        }
+        return ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE;
     }
 }
