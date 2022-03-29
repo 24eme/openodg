@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
 /**
  * Model for Parcellaire
  *
@@ -8,6 +9,8 @@ class Parcellaire extends BaseParcellaire {
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    private $cache_geophpdelimitation = null;
+    private $cache_geojson = null;
 
     public function __construct() {
         parent::__construct();
@@ -259,6 +262,55 @@ class Parcellaire extends BaseParcellaire {
             return file_get_contents($this->getParcellairePDFUri());
         }
         return null;
+    }
+
+    public function getGeoJson(){
+        if ($this->cache_geojson !== null) {
+            return $this->cache_geojson;
+        }
+
+        $file_name = "import-cadastre-".$this->declarant->cvi."-parcelles.json";
+        $uri = $this->getAttachmentUri($file_name);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $import = curl_exec($ch);
+        curl_close($ch);
+
+        if(strpos($import, "Document is missing attachment")) {
+            sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
+            $this->cache_geojson = false;
+        }else{
+            $this->cache_geojson = json_decode($import);
+        }
+        return $this->cache_geojson;
+
+    }
+
+    public function getAire($jsonFolder = null) {
+        if (!$jsonFolder) {
+            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
+        }
+        return ParcellaireClient::getInstance()->getAire($this->declaration->getCommunes(), $jsonFolder);
+    }
+
+    public function getGeoPHPDelimitations($jsonFolder = null) {
+        if (!$jsonFolder) {
+            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
+        }
+        if (!$this->cache_geophpdelimitation) {
+            $this->cache_geophpdelimitation = [];
+            foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $v) {
+                foreach ($this->getAire($key) as $d) {
+                    $this->cache_geophpdelimitation[$key][] = geoPHP::load($d);
+                }
+            }
+        }
+        if (!isset($this->cache_geophpdelimitation[$jsonFolder])) {
+            return null;
+        }
+        return $this->cache_geophpdelimitation[$jsonFolder];
     }
 
 }

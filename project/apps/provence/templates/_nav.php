@@ -1,28 +1,40 @@
-<?php $route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : NULL; ?>
-<?php $etablissement = null ?>
-<?php $compte = null; ?>
+<?php
+$route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : NULL;
+$etablissement = null;
+$compte = null;
 
-<?php if($route instanceof EtablissementRoute): ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $etablissement->getMasterCompte(); ?>
-<?php endif; ?>
-<?php if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute): ?>
-    <?php $compte = $route->getCompte(); ?>
-    <?php $etablissement = $compte->getEtablissement(); ?>
-<?php endif; ?>
-<?php if($route instanceof SocieteRoute): ?>
-    <?php $societe = $route->getSociete(); ?>
-    <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
-<?php endif; ?>
-
-<?php if($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)): ?>
-    <?php $compte = $sf_user->getCompte(); ?>
-    <?php $societe = $compte->getSociete() ; if ($societe) $etablissement = $societe->getEtablissementPrincipal(); ?>
-    <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
-<?php endif; ?>
-
-
+if ($route instanceof EtablissementRoute) {
+    $etablissement = $route->getEtablissement();
+    $compte = $etablissement->getMasterCompte();
+}
+if ($route instanceof FacturationDeclarantRoute || $route instanceof FactureRoute || $route instanceof CompteRoute) {
+    $compte = $route->getCompte();
+    $etablissement = $compte->getEtablissement();
+}
+if ($route instanceof SocieteRoute) {
+    $etablissement = $route->getEtablissement();
+    $societe = $route->getSociete();
+    if ($societe) {
+        $compte = $societe->getMasterCompte();
+    }
+}
+if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)) {
+    $compte = $sf_user->getCompte();
+    $societe = $compte->getSociete() ;
+    if ($societe) {
+        $etablissement = $societe->getEtablissementPrincipal();
+    }
+    if (!$etablissement) {
+        $etablissement = $compte->getEtablissement();
+    }
+}
+if (!$compte && !$etablissement && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+    throw new sfError403Exception("pas de compte");
+}
+if (($compte->statut = CompteClient::STATUT_SUSPENDU) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+    throw new sfError403Exception("Compte inactif");
+}
+?>
 <nav id="menu_navigation" class="navbar navbar-default container">
         <div class="navbar-header hidden-lg hidden-md">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">

@@ -44,6 +44,8 @@ EOF;
         );
     }
 
+    rsort($ids);
+
     $ids_master = array();
     foreach($ids as $id) {
         $key = preg_replace('/-M[0-9]+$/', '', $id);
@@ -60,20 +62,24 @@ EOF;
     foreach($ids_master as $id) {
         $doc = DeclarationClient::getInstance()->find($id);
         foreach($doc->getLots() as $lot) {
-            if(!$doc && $lot->isCurrent()) {
+            $key = $lot->campagne."_".$lot->numero_dossier;
+            if(!$lot->date_commission) {
                 continue;
             }
-            if(!$lot->date_commission) {
-                    continue;
-            }
-            $key = $lot->campagne."_".$lot->numero_dossier;
             if(isset($numDossierDateCommission[$key]) && $numDossierDateCommission[$key] === false) {
                 continue;
             }
             if(isset($numDossierDateCommission[$key]) && $numDossierDateCommission[$key] != $lot->date_commission) {
                 $numDossierDateCommission[$key] = false;
+                continue;
             }
             $numDossierDateCommission[$key] = $lot->date_commission;
+        }
+    }
+
+    foreach($numDossierDateCommission as $key => $date) {
+        if($date === false) {
+            unset($numDossierDateCommission[$key]);
         }
     }
 
@@ -114,15 +120,12 @@ EOF;
             if(!$doc->validation && $lot->isCurrent()) {
                 continue;
             }
-            if(!isset($numDossierDateCommission[$lot->campagne."_".$lot->numero_dossier])) {
-                echo "aucune date trouvé : ".$lot->campagne."_".$lot->numero_dossier."\n";
-                continue;
-            }
-            if($lot->getDateCommission()) {
-                continue;
-            }
             $lotOrigine = $lot->getLotOrigine();
             if($lotOrigine->getDateCommission()) {
+                continue;
+            }
+            if(!isset($numDossierDateCommission[$lot->campagne."_".$lot->numero_dossier])) {
+                echo "aucune date trouvé : ".$lot->campagne."_".$lot->numero_dossier."\n";
                 continue;
             }
             $docOrigine = $lotOrigine->getDocument();

@@ -5,7 +5,7 @@
   <div class="modal fade modal-page modal-demande" aria-labelledby="Créer une demande" aria-hidden="true">
   	<div class="modal-dialog">
   		<div class="modal-content">
-  			<form method="post" action="<?php echo url_for("degustation_ajout_degustateurPresence", array('id' => $degustation->_id, 'table' => $table)) ?>" role="form" class="form-horizontal" novalidate>
+  			<form method="post" action="<?php echo url_for("degustation_ajout_degustateurPresence", array('id' => $degustation->_id, 'table' => $table)) ?>" role="form" class="form-horizontal">
   				<div class="modal-header">
   					<h4 class="modal-title" id="myModalLabel">Ajouter un degustateur</h4>
   				</div>
@@ -16,14 +16,12 @@
             </div>
 
 
-            <div class="panel panel-default bloc-lot">
-                <div class="panel-body" style="padding-bottom: 0;">
                   <div class="row">
                         <div class="col-md-10">
                             <div class="form-group">
-                                <?php echo $form['nom']->renderLabel("Nom", array('class' => "col-sm-3 control-label")); ?>
+                                <?php echo $form['nom']->renderLabel("Dégustateur", array('class' => "col-sm-3 control-label")); ?>
                                 <div class="col-sm-9">
-                                      <?php echo $form['nom']->render(array("data-placeholder" => "Saisir un nom", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                                      <?php echo $form['nom']->render(array("placeholder" => "Rechercher un dégustateur", "required" => true, "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                                 </div>
                             </div>
                         </div>
@@ -33,15 +31,12 @@
                       <div class="col-md-10">
                           <div class="form-group">
                               <?php echo $form['college']->renderLabel("Collège", array('class' => "col-sm-3 control-label")); ?>
-                              <div class="col-sm-4">
-                                    <?php echo $form['college']->render(); ?>
+                              <div class="col-sm-9">
+                                    <?php echo $form['college']->render(array("placeholder" => "Sélectionner un college", "required" => true, "class" => "form-control")); ?>
                               </div>
-                              <div class="col-sm-5"></div>
                           </div>
                       </div>
                     </div>
-                </div>
-            </div>
   				</div>
   				<div class="modal-footer">
             <?php if ($table): ?>
