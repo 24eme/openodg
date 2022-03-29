@@ -210,7 +210,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                             <?php $nb_parcelles++; ?>
                             <?php endforeach; ?>
                     </tbody>
-                    <tr><th colspan="5"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoLongFloat($superficie); ?></strong></td><td colspan="3" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
+                    <tr><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoLongFloat($superficie); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
                 </table>
     <?php endforeach; ?>
         </div>
