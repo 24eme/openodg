@@ -31,7 +31,7 @@ if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_A
 if (!$compte && !$etablissement && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
     throw new sfError403Exception("pas de compte");
 }
-if (($compte->statut = CompteClient::STATUT_SUSPENDU) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
     throw new sfError403Exception("Compte inactif");
 }
 ?>
