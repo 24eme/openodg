@@ -28,10 +28,7 @@ if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_A
         $etablissement = $compte->getEtablissement();
     }
 }
-if (!$compte && !$etablissement) {
-    throw new sfError403Exception("pas de compte");
-}
-if (!$compte && !$etablissement) {
+if (!$compte && !$etablissement && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
     throw new sfError403Exception("pas de compte");
 }
 if (($compte->statut = CompteClient::STATUT_SUSPENDU) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
