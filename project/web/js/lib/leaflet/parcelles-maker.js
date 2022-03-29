@@ -129,20 +129,6 @@ function onEachFeature(feature, layer) {
 }
 var layers = [];
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
-for(i in sections) {
-    map.addLayer( new L.Marker(
-                    sections[i].getCenter(),
-                    {
-                        title: "MyLocation",
-                        icon: L.divIcon( iconOptions = {
-                                iconSize  : [15, 15],
-                                className : 'sectionlabel',
-                                html: '<b>' +  i + '</b>'
-                        })
-                    }
-                )
-            );
-}
 
 for(i in aires) {
   console.log(aires[i]['color']);
@@ -151,6 +137,8 @@ for(i in aires) {
 };
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
+
+layers["Parcelles"].addTo(map);
 
 zoomOnMap();
 
