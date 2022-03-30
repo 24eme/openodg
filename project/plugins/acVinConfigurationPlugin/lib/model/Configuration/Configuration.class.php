@@ -59,16 +59,24 @@ class Configuration extends BaseConfiguration {
     	return $cepages;
     }
 
+    public static function slugifyProduitLibelle($s) {
+        $s = strtolower($s);
+        $s = str_replace('comté', 'cmt', $s);
+        $s = preg_replace("/[ ]+/", " ", trim($s));
+        $s = KeyInflector::slugify($s);
+        return $s;
+    }
+
     public function identifyProductByLibelle($libelle) {
         if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
 
             return $this->identifyLibelleProduct[$libelle];
         }
 
-        $libelleSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($libelle)));
+        $libelleSlugify = self::slugifyProduitLibelle($libelle);
 
         foreach($this->getProduits() as $produit) {
-            $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleFormat())));
+            $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
             //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
             if($libelleSlugify == $libelleProduitSlugify) {
                 $this->identifyLibelleProduct[$libelle] = $produit;
