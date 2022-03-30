@@ -60,11 +60,11 @@ class Configuration extends BaseConfiguration {
     }
 
     public static function slugifyProduitLibelle($s) {
-        $s = trim($s);
         $s = strtolower($s);
         $s = str_replace('comté', 'cmt', $s);
+        $s = preg_replace('/(s|s$)/', '', $s);
         $s = preg_replace("/[ ]+/", " ", $s);
-        $s = preg_replace('/(s |s$)/', '', $s);
+        $s = trim($s);
         $s = KeyInflector::slugify($s);
         return $s;
     }
