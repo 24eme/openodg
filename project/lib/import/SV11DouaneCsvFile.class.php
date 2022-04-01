@@ -10,6 +10,9 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $premierChamp  =  $csvFile->getPremierChamp();
 
         if(isset($premierChamp) && $premierChamp != "Apporteur"){
+          if (sfConfig::get('sf_debug')) {
+              throw new sfException("Mauvais format : on devrait avoir apporteur dans CsvFile::getPremierChamp()");
+          }
           return;
         }
 

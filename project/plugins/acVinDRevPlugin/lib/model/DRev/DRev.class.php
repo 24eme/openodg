@@ -641,12 +641,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
       $csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
+        if (sfConfig::get('sf_debug')) {
+            throw new sfException('pas de CSV');
+        }
       	return false;
       }
 	  try {
         $this->importCSVDouane($csv);
         return true;
-      } catch (Exception $e) { }
+      } catch (Exception $e) {
+          if (sfConfig::get('sf_debug')) {
+              throw $e;
+          }
+      }
       return false;
     }
 
