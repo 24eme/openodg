@@ -40,6 +40,10 @@ class DegustationClient extends acCouchdbClient {
                     $manquements[] = $lot;
                 }
             }
+<<<<<<< HEAD
+=======
+            $manquements[$manquement->date.$item->value->unique_id] = $manquement;
+>>>>>>> e3b9f359a (trie par date des manquements)
         }
         return $manquements;
     }
