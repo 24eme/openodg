@@ -113,7 +113,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
             if ($campagne && $manquement->campagne != $campagne) {
                 continue;
             }
-            $manquements[$item->value->unique_id] = $manquement;
+            $manquements[$manquement->date.$item->value->unique_id] = $manquement;
         }
 
         ksort($manquements);
