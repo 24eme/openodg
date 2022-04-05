@@ -2,7 +2,7 @@
 $infos = FactureConfiguration::getInstance()->getInfos();
 ?>Madame, Monsieur,
 
-Nous vous invitions à participer à la prochaine commission de dégustation des vins IGP qui aura lieu le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "HH").'h'.format_date($degustation->date, "mm"); ?> <?php echo $degustation->getLieuNom()." - ".preg_replace("/.+—[ ]*/", "", $degustation->lieu); ?>
+Nous vous invitons à participer à la prochaine commission de dégustation des vins IGP qui aura lieu le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "HH").'h'.format_date($degustation->date, "mm"); ?> <?php echo $degustation->getLieuNom()." - ".preg_replace("/.+—[ ]*/", "", $degustation->lieu); ?>
 
 
 Pour le bon déroulé de cette dégustation nous vous remercions de bien vouloir nous confirmer votre présence en cliquant sur le lien :
