@@ -15,10 +15,10 @@ class DegustationAjoutDegustateurForm extends acCouchdbForm {
     $this->colleges = DegustationConfiguration::getInstance()->getColleges();
 
     $this->setWidget('nom', new bsWidgetFormChoice(array('choices' => $this->getDegustateursByCollege())));
-    $this->setValidator('nom', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDegustateursByCollege()))));
+    $this->setValidator('nom', new sfValidatorChoice(array('choices' => array_keys($this->getDegustateursByCollege()))));
 
-    $this->setWidget('college', new bsWidgetFormChoice(array('choices' => $this->colleges)));
-    $this->setValidator('college', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->colleges))));
+    $this->setWidget('college', new bsWidgetFormChoice(array('choices' => array_merge(array(""=>""), $this->colleges))));
+    $this->setValidator('college', new sfValidatorChoice(array('choices' => array_keys($this->colleges))));
 
     $this->widgetSchema->setNameFormat('lot_form[%s]');
   }
@@ -35,9 +35,9 @@ class DegustationAjoutDegustateurForm extends acCouchdbForm {
 
   public function getDegustateursByCollege() {
     if (!$this->degustateurs) {
-        $this->degustateurs = [];
+        $this->degustateurs = ["" => ""];
         foreach (DegustationConfiguration::getInstance()->getColleges() as $key => $college) {
-            $this->degustateurs = $this->degustateurs + $this->getDocument()->listeDegustateurs($key, true);
+            $this->degustateurs = array_merge($this->degustateurs, $this->getDocument()->listeDegustateurs($key, true));
         }
     }
 

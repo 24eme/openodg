@@ -25,9 +25,10 @@ th {
       </table>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
-        $etablissement = $etablissements[$key_lots];
-            foreach ($lotsDossier as $numDossier => $lots) :
-                $lot = $lots[0]->getRawValue();
+        $key_etablissement = explode('/', $key_lots)[1];
+        $etablissement = $etablissements[$key_etablissement];
+        foreach ($lotsDossier as $numDossier => $lots) :
+            $lot = $lots[0]->getRawValue();
             $adresse = $lot->adresse_logement;
             $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
