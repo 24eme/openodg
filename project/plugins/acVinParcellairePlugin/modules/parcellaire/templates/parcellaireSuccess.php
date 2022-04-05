@@ -102,7 +102,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
         <div class="col-xs-12">
             <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
                 <h3 id="parcelles_<?php echo $commune ?>"><?php echo $commune ?></h3>
-
+            <?php
+                $superficie = 0;
+                $nb_parcelles = 0;
+                ?>
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
@@ -126,8 +129,6 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                             $classparcelle = '';
                             $classsuperficie = '';
                             $stylesuperficie = '';
-                            $superficie = 0;
-                            $nb_parcelles = 0;
                             if (isset($diff) && $diff) {
                                 if ($last && !$last->exist($detail->getHash())) {
                                     $styleline = 'border-style: solid; border-width: 1px; border-color: darkgreen;';
@@ -215,7 +216,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                 </td>
                                 <?php endif; ?>
                             </tr>
-                            <?php $superficie = $superficie + $detail->superficie; ?>
+                            <?php $superficie = $superficie + $detail->superficie * $superficie_multiplicateur; ?>
                             <?php $nb_parcelles++; ?>
                             <?php endforeach; ?>
                     </tbody>
