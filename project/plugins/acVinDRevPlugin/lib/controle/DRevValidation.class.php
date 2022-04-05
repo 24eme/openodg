@@ -347,7 +347,7 @@ class DRevValidation extends DeclarationLotsValidation
             }
         }
 
-        $synthese = $this->document->summerizeProduitsLotsByCouleur(true);
+        $synthese = $this->document->summerizeProduitsLotsByCouleur('couleur');
         foreach ($synthese as $couleur => $synt) {
             if (strpos($couleur, 'Total') === false) {
                 continue;

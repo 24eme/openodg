@@ -131,7 +131,7 @@
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
-                            <?php if(isset($form['lots'])): ?>
+                            <?php if(isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                                 <div class="col-xs-12">
@@ -224,11 +224,57 @@
             </tbody>
           </table>
         <?php endif; ?>
-        <br/>
-
         <?php
             if($drev->isValideeOdg() && $drev->isModifiable()): ?>
             <div class="col-xs-12" style="margin-bottom: 20px;">
               <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
             </div>
+        <?php endif; ?>
+
+        <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
+        <h3>Contrôle</h3>
+        <?php if(isset($form["date_degustation_voulue"])): ?>
+            <?php echo $form["date_degustation_voulue"]->renderError(); ?>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <?php echo $form["date_degustation_voulue"]->renderLabel("Date de controle des vins souhaitée :", array("class" => "col-xs-3 control-label")); ?>
+                <div class="input-group date-picker-week col-xs-3">
+                <?php echo $form["date_degustation_voulue"]->render(array("class" => "form-control", "placeholder" => "", "required" => "true")); ?>
+                <div class="input-group-addon">
+                    <span class="glyphicon-calendar glyphicon"></span>
+                </div>
+                </div>
+            </div>
+        <?php else: ?>
+            <p>Date de controle souhaitée (hors lots en élevage) : <?php echo ($drev->exist('date_degustation_voulue')) ? date_format(date_create($drev->get('date_degustation_voulue')), 'd/m/Y') : null; ?></p>
+        <?php endif; ?>
+        <?php if(isset($form["date_commission"])): ?>
+            <?php echo $form["date_commission"]->renderError(); ?>
+            <?php if(isset($form["degustation"])): ?>
+            <?php echo $form['degustation']->renderError(); ?>
+            <?php endif; ?>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <?php echo $form["date_commission"]->renderLabel("Date de la commission :", array("class" => "col-xs-3 control-label")); ?>
+                <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
+                    <?php if(isset($form["degustation"])): ?>
+                    <?php echo $form['degustation']->render(); ?>
+                    <?php endif; ?>
+                    <?php echo $form["date_commission"]->render(); ?>
+                    <div class="input-group-addon">
+                        <span class="glyphicon-calendar glyphicon"></span>
+                    </div>
+                    <?php if(isset($form["degustation"])): ?>
+                    <button type="button" onclick="document.querySelector('#validation_date_commission').classList.remove('hidden'); document.querySelector('#validation_degustation').classList.add('hidden'); this.classList.add('invisible');
+                    document.querySelector('#validation_date_commission').setAttribute('required', true);
+                    document.querySelector('#validation_degustation').removeAttribute('required', true); document.querySelector('#validation_date_commission').focus()" class="btn btn-link btn-sm" style="position: absolute; right: -80px; top: 10px;">(changer)</button>
+                <?php endif; ?>
+                </div>
+                <script>
+                    document.querySelector('#validation_degustation').addEventListener('change', function(e) {
+                        document.querySelector('#validation_date_commission').value = this.value;
+                    });
+                </script>
+            </div>
+            <?php else: ?>
+            <p>Date de la commission : <?php echo ($drev->exist('date_commission')) ? date_format(date_create($drev->get('date_commission')), 'd/m/Y') : null; ?></p>
+            <?php endif ?>
         <?php endif; ?>

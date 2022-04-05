@@ -315,7 +315,7 @@ $drev_modif->validateOdg();
 $drev_modif->save();
 $drev_modif = $drev->findMaster();
 $t->is($drev_modif->_id, $drev->_id.'-M01', "La modification a l'identifiant attendu");
-$t->is(count($drev_modif->lots[0]->getMouvements()), 0, "La modificatrice n'a pas de mouvements pour ce lot");
+$t->ok(!$drev_modif->mouvements_lots->exist($drev_modif->identifiant), "La modificatrice n'a pas de mouvements pour ce lot");
 $t->is($drev_modif->numero_archive, "00003", "Numéro d'archive de la DRev à 00003");
 $t->is($drev_modif->getLot($lot->unique_id)->getDateCommission(), $lot->date_commission, "Date de commission du lot dans la master");
 
@@ -424,8 +424,7 @@ if($drev_modif->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
 $validation = new DRevValidation($drev_modif);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
-
-$t->is(count($erreurs), 1, "une erreur");
+$t->is(count($erreurs), 1, "1 erreur de validation");
 $t->ok($erreurs['lot_volume_total_depasse'], "un point bloquant car le volume revendiqué des lots est supérieurs à celui déclaré dans la DR");
 $t->is(count($vigilances), 1, "un point de vigilances");
 $t->ok(isset($vigilances['lot_igp_inexistant_dans_dr_warn']), "le point vigilance indique que le produit du 2d lot ne fait pas partie de la DR comme attendu");
