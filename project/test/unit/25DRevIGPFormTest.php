@@ -315,7 +315,7 @@ $drev_modif->validateOdg();
 $drev_modif->save();
 $drev_modif = $drev->findMaster();
 $t->is($drev_modif->_id, $drev->_id.'-M01', "La modification a l'identifiant attendu");
-$t->is(count($drev_modif->lots[0]->getMouvements()), 0, "La modificatrice n'a pas de mouvements pour ce lot");
+$t->ok(!$drev_modif->mouvements_lots->exist($drev_modif->identifiant), "La modificatrice n'a pas de mouvements pour ce lot");
 $t->is($drev_modif->numero_archive, "00003", "Numéro d'archive de la DRev à 00003");
 $t->is($drev_modif->getLot($lot->unique_id)->getDateCommission(), $lot->date_commission, "Date de commission du lot dans la master");
 
