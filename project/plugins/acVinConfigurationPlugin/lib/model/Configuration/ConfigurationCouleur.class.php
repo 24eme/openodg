@@ -81,14 +81,17 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
 	}
 
     public function getLibelleDR() {
-        $libelle = $this->getLibelleComplet();
-        if (strpos($libelle, 'Blanc') !== false){
-            $libelle = $this->getLieu()->getLibelleComplet()." Blanc";
-        }elseif (strpos($libelle, 'Rosé') !== false){
-            $libelle = $this->getLieu()->getLibelleComplet()." Rosé";
-        }elseif (strpos($libelle, 'Rouge') !== false){
-            $libelle = $this->getLieu()->getLibelleComplet()." Rouge";
+        if (strpos($this->libelle, 'Blanc') !== false){
+            return "Blanc";
+        }elseif (strpos($this->libelle, 'Rosé') !== false){
+            return "Rosé";
+        }elseif (strpos($this->libelle, 'Rouge') !== false){
+            return "Rouge";
         }
-        return str_replace('Vin de base ', '', $libelle);
+        return $this->libelle;
+    }
+
+    public function getLibelleCompletDR() {
+        return str_replace('Vin de base ', '', trim($this->getLieu()->getLibelleComplet(). " ".$this->getLibelleDR()));
     }
 }
