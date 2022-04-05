@@ -274,7 +274,7 @@
                     });
                 </script>
             </div>
-            <?php else: ?>
+        <?php elseif($drev->date_commission): ?>
             <p>Date de la commission : <?php echo ($drev->exist('date_commission')) ? date_format(date_create($drev->get('date_commission')), 'd/m/Y') : null; ?></p>
             <?php endif ?>
         <?php endif; ?>
