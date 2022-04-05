@@ -6,7 +6,7 @@ class ExportLotsCSV {
     protected $lots = array();
 
     public static function getHeaderCsv() {
-        return "Origine;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id;Hash produit\n";
+        return "Origine;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date commission;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Date commission;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id;Hash produit\n";
     }
 
     public function __construct($header = true, $appName = null) {
@@ -94,6 +94,7 @@ class ExportLotsCSV {
               $code_postal,
               VarManipulator::protectStrForCsv($commune),
               $lot['campagne'],
+              (isset($lot['date_commission']))? $lot['date_commission'] : '',
               $date[0],
               $lot['numero_dossier'],
               $lot['numero_archive'],
