@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test(81);
+$t = new lime_test(84);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
@@ -106,6 +106,17 @@ foreach($drev->mouvements->get($drev->identifiant) as $m) {
 }
 $t->is($getVolumeRevendiqueNumeroDossier_quantite, 110, "La quantité du mouvement a facturer \"getVolumeRevendiqueNumeroDossier\" est 100");
 $t->is($getVolumeLotsFacturables_quantite, 110, "La quantité du mouvement a facturer \"getVolumeLotsFacturables\" est 100");
+
+$t->is($drev->mouvements->get($drev->identifiant)->getFirst()->date, $drev->validation, "En l'absence de date de commission la date du mouvement est celle de la validation de la drev");
+
+$dateCommission = (new DateTime())->modify('+20 days')->format('Y-m-d');
+
+$drev->add('date_commission', $dateCommission);
+$drev->generateMouvementsFactures();
+$drev->save();
+
+$t->is($drev->mouvements->get($drev->identifiant)->getFirst()->date, $dateCommission, "Avec une date de commission la date du mouvement est celle de la date de commission");
+$t->is($drev->mouvements->get($drev->identifiant)->getFirst()->date_version, $drev->validation, "La date de version du mouvement est la date de validation de la drev");
 
 $t->comment("Changement de cuve");
 
