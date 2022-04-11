@@ -80,6 +80,27 @@
               "callback_parameters": []
             }
           }
+      },
+        "03_conditionnement": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "Conditionnement",
+            "code_comptable": "70610400",
+            "details": {
+                "05_aFacturer": {
+                    "modele": "CotisationFixe",
+                    "prix": 200,
+                    "tva": 0.2,
+                    "libelle": "",
+                    "complement_libelle": "",
+                    "docs": [
+                        "Conditionnement"
+                    ],
+                    "callback": "aFacturer",
+                    "callback_parameters": [
+                    ]
+                }
+            }
         }
     }
 }

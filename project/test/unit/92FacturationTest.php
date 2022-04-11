@@ -10,7 +10,7 @@ if ($application != 'igp13') {
 
 sfConfig::set('app_facture_emetteur' , $emetteurs);
 
-$t = new lime_test(84);
+$t = new lime_test(86);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $societe = $viti->getSociete();
@@ -47,6 +47,10 @@ foreach(GenerationClient::getInstance()->findHistory() as $k => $g) {
 foreach(DegustationClient::getInstance()->getHistory(9999, '', acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $degustation = DegustationClient::getInstance()->find($k);
     $degustation->delete(false);
+}
+foreach(ConditionnementClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+    $conditionnement = ConditionnementClient::getInstance()->find($k);
+    $conditionnement->delete(false);
 }
 
 //Suppression MandatSepa
@@ -477,3 +481,21 @@ $mouvChgtDenom = $chgtDenom->mouvements->get($chgtDenom->identifiant)->getFirst(
 $t->is($mouvChgtDenom->taux, 15, "Le taux de facturation du mouvement \"03_getFirstChgtDenomFacturable\" du 2ème changement de dénomination est de 15 €");
 
 $t->fail('CotisationFixe getNbLieuxPrelevements ne doit pas renvoyé 1 sur une lot modifié');
+
+$t->comment("Facturation d'une déclaration de conditionnement");
+
+$conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, ConfigurationClient::getInstance()->getCurrentCampagne(), date('Y-m-d'));
+$conditionnement->save();
+
+$lot = $conditionnement->addLot();
+$lot->numero_logement_operateur = 'CUVE A';
+$lot->produit_hash = $produit_hash;
+$lot->volume = 100;
+
+$conditionnement->validate();
+$conditionnement->validateOdg();
+$conditionnement->save();
+
+$mouvConditionnement = $conditionnement->mouvements->get($conditionnement->identifiant)->getFirst();
+$t->is($mouvConditionnement->taux, 200, "Le taux de facturation du mouvement \"03_conditionnement/05_aFacturer\" est de 200 €");
+$t->is($mouvConditionnement->quantite, 1, "Le quantite de facturation du mouvement \"03_conditionnement/05_aFacturer\" est de 1");
