@@ -66,31 +66,25 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function storeParcellesAffectation($isUpDate=false) {
-    if(!$this->validation){
-      $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant);
-  		foreach ($intention->getParcelles() as $parcelle) {
-		    $prod = $parcelle->getProduit();
-        $hash = str_replace('/declaration/', '', $prod->getHash());
-        if ($parcelle->affectation) {
-		        if ($this->declaration->exist($hash)) {
-	            $item = $this->declaration->get($hash);                  
-              foreach ($item->getDetail() as $key => $detail) {
-                $parcelle->affectation = $detail->affectation;                    
-              }
-              
-		        } else {
-	            $item = $this->declaration->add($hash);
-	            $item->libelle = $prod->libelle;
-		        }
-		        $parcelle->origine_doc = $intention->_id;
-		        unset($parcelle['origine_hash']);
-		        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
-		    }
-        elseif($isUpDate && $this->declaration->exist($hash)){
-          $item = $this->declaration->get($hash);
-          $parcelle->origine_doc = $intention->_id;
-          unset($parcelle['origine_hash']);
-          $detail = $item->detail->remove($parcelle->getKey(), $parcelle);   
+    if($this->validation){
+        return;
+    }
+    $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant);
+    if (!$intention) {
+        $intention = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->identifiant, $this->campagne);
+        if (!count($intention->declaration)) {
+            $intention = null;
+        }
+    }
+    $previous = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+    if(!$intention) {
+        return;
+    }
+	foreach ($intention->getParcelles() as $parcelle) {
+	    $produit = $parcelle->getProduit();
+        $hash = str_replace('/declaration/', '', $produit->getHash());
+        if (!$parcelle->affectation) {
+            continue;
         }
   		}
     }
