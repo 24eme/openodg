@@ -136,7 +136,10 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                   $superficie_auto = $parcelle->getSuperficieInAire("AOC Sainte-Victoire");
                   if ($superficie_auto) {
                       $subitem->affectation = 1;
-                      $subitem->date_affectation = "1970-01-01";
+                      $subitem->date_affectation = "2004-05-29";
+                      if ($subitem->campagne_plantation > "2004-2005") {
+                          $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
+                      }
                       $subitem->superficie_affectation  = $superficie_auto;
                   } else if (isset($affectees[$parcelle->getKey()]) && $affectees[$parcelle->getKey()]) {
                       $subitem->affectation = 1;
