@@ -16,6 +16,10 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
             $this->date = $doc->validation;
             $this->date_version = $doc->validation;
         }
+        if($doc->exist('date_commission') && $doc->date_commission) {
+            $this->date = $doc->date_commission;
+        }
+
         $this->type = $doc->type;
         if($doc->exist('campagne')) {
             $this->campagne = $doc->campagne;

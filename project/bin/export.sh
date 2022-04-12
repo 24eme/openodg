@@ -176,10 +176,10 @@ cat $EXPORTDIR/lots.csv.part | awk -F ';' 'BEGIN{OFS=";"}  {gsub("\\.", " ", $20
 php symfony lots:export-historique-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots-historique.csv.part
 
 # Ajouter la hash produit à la fin du fichier lots-historique
-tail -n +2 $EXPORTDIR/lots.csv.part | cut -d ";" -f 34,36,37 | sort -t ";" -k 2,2 > $EXPORTDIR/lots_hash.csv
+tail -n +2 $EXPORTDIR/lots.csv.part | sort -t ";" -k 36,36 > $EXPORTDIR/lots_hash.csv
 tail -n +2 $EXPORTDIR/lots-historique.csv.part | sort -t ";" -k 17,17 > $EXPORTDIR/lots-historique.csv.sorted
-echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;Last doc id;Hash produit" > $EXPORTDIR/lots-historique.csv.sorted.join
-join -t ";" -a 1 -1 17 -2 2 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
+echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date lot;Num Dossier;Num Lot;Doc Ordre;Doc Type;Libellé du lot;Volume;Statut;Details;Organisme;Doc Id;Lot unique Id;Lot Origine;Lot Id Opérateur;Lot Nom Opérateur;Lot Adresse Opérateur;Lot Code postal Opérateur;Lot Commune Opérateur;Lot Campagne;Lot Date lot;Lot Num dossier;Lot Num lot;Lot Num logement Opérateur;Lot Certification;Lot Genre;Lot Appellation;Lot Mention;Lot Lieu;Lot Couleur;Lot Cepage;Lot Produit;Lot Cépages;Lot Millésime;Lot Spécificités;Lot Volume;Lot Statut de lot;Lot Destination;Lot Date de destination;Lot Pays de destination;Lot Elevage;Lot Centilisation;Lot Date prélévement;Lot Conformité;Lot Date de conformité en appel;Lot Organisme;Lot Doc Id;Lot Lot unique Id;Hash produit;Lot Passage" > $EXPORTDIR/lots-historique.csv.sorted.join
+join -t ";" -a 1 -1 17 -2 36 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
 
 grep 'Affecté à une dégustation (destination)' $EXPORTDIR/lots-historique.csv.part | sort -t ';' -k 8,8 -r | awk -F ';' '{ uniq = $17 ; if ( ! unicite[uniq] ) { print $17";"$13 ; unicite[uniq] = uniq ; }  }' | sort -t ';' -k 1,1 > $EXPORTDIR/lots-passages.csv

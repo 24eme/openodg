@@ -230,6 +230,15 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
         $this->cleanDoc();
         $this->validation_odg = $date;
+
+        if(!$this->numero_archive) {
+            $this->save();
+        }
+
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
     }
 
       public function devalidate() {
