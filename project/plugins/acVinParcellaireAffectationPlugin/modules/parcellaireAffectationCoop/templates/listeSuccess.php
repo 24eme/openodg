@@ -33,8 +33,12 @@
                     <a href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Continuer la déclaration</a>
                 <?php elseif($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR): ?>
                     <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Saisir la déclaration</a>
+                    -<br/>
+                    <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "0")) ?>">Pas cette année</a>
                 <?php else: ?>
                     <span class="glyphicon glyphicon-ban-circle transparence-md"></span>
+                    <br/>
+                    <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "1")) ?>">Ré-Activer</a>
                 <?php endif; ?>
             </td>
         </tr>

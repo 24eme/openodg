@@ -158,6 +158,16 @@ parcellaireaffectationcoop_saisie:
   requirements:
     sf_method: [get, post]
 
+parcellaireaffectationcoop_switch:
+  url: /parcellaire-affectation-coop/switch/:id/:apporteur/:sens
+  param: { module: parcellaireAffectationCoop, action: switch }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaireaffectationcoop_visualisation:
   url: /parcellaire-affectation-coop/visualisation/:id/:id_document
   param: { module: parcellaireAffectationCoop, action: visualisation }

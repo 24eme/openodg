@@ -74,6 +74,15 @@ class parcellaireAffectationCoopActions extends sfActions {
     	}
     }
 
+    public function executeSwitch(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->apporteur = $request->getParameter('apporteur');
+        $this->parcellaireAffectationCoop->apporteurs->{'ETABLISSEMENT-'.$this->apporteur}->intention = ($request->getParameter('sens'));
+        $this->parcellaireAffectationCoop->save();
+        return $this->redirect('parcellaireaffectationcoop_liste', array('sf_subject' => $this->parcellaireAffectationCoop));
+    }
+
     public function executeSaisie(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
