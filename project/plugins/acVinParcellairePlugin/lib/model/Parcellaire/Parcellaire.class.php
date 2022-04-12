@@ -308,7 +308,7 @@ class Parcellaire extends BaseParcellaire {
             }
         }
         if (!isset($this->cache_geophpdelimitation[$jsonFolder])) {
-            return null;
+            return array();
         }
         return $this->cache_geophpdelimitation[$jsonFolder];
     }
