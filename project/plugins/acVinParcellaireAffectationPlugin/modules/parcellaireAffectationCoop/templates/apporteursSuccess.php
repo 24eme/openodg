@@ -2,11 +2,12 @@
 <?php include_partial('parcellaireAffectationCoop/step', array('step' => 'apporteurs', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
 
 <div class="page-header no-border">
-    <h2>Liste complète de tous vos apporteurs</h2>
+    <h2>Liste complète de tous vos adhérents</h2>
 </div>
 
 <?php if($sf_user->isAdmin()): ?><a class="pull-right" href="<?php echo url_for("parcellaireaffectationcoop_recap", $parcellaireAffectationCoop) ?>">Voir les changements</a><?php endif; ?>
-<p>Veuillez mettre à jour la liste compléte de tous vos apporteurs</p>
+<p>Vous pouvez mettre à jour la liste compléte de tous vos adhérents. <br /><br />
+Ceux qui ne vous ont rien apportés cette année mais qui reste adhérent doivent resté cochés.</p>
 
 <form action="" method="post" class="form-horizontal">
     <table class="table table-condensed table-striped table-bordered">
@@ -25,7 +26,7 @@
             <td>
                 <div style="margin-bottom: 0;" class="form-group">
                     <div class="col-xs-12">
-                        <?php echo $form[$idApporteur]->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                        <?php echo $form[$idApporteur]->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "Adhérent", 'data-off-text' => "Démissionnaire", 'data-on-color' => "success", 'data-off-color' => "danger")); ?>
                     </div>
                 </div>
             </td>
