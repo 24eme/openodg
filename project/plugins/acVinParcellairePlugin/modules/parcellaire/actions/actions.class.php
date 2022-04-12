@@ -33,29 +33,29 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeDeclarant(sfWebRequest $request) {
-          $this->etablissement = $this->getRoute()->getEtablissement();
-          $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
+        $this->secureTeledeclarant();
+        
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
 
-          $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
-          $this->setTemplate('parcellaire');
+        $this->setTemplate('parcellaire');
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+        
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement($this->etablissement);
         $this->setTemplate('parcellaire');
     }
 
     public function executeScrape(sfWebRequest $request)
     {
+        $this->secureTeledeclarant();
+        
         $this->etablissement = $this->getRoute()->getEtablissement();
-    }
-
-    public function executeMap(sfWebRequest $request){
-        $parcellaire_client = ParcellaireClient::getInstance();
-        //TODO if we popup the map
     }
 
     public function executeImport(sfWebRequest $request)
@@ -86,20 +86,9 @@ class parcellaireActions extends sfActions {
         $this->redirect('parcellaire_declarant', $this->etablissement);
     }
 
-    protected function secureEtablissement($etablissement) {
-        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
-
-            return $this->forwardSecure();
-        }
-    }
-
-    protected function forwardSecure() {
-        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
-
-        throw new sfStopException();
-    }
-
     public function executeParcellairePDF(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+        
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
@@ -112,5 +101,11 @@ class parcellaireActions extends sfActions {
         $this->content = $parcellaire->getParcellairePDF();
         echo $this->content;
         exit;
+    }
+    
+    public function secureTeledeclarant() {
+        if(!$this->getUser()->isAdmin() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
+            throw new sfError403Exception();
+        }
     }
 }

@@ -9,11 +9,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
-    <ol class="breadcrumb">
-      <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-      <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $parcellaire->identifiant)); ?>"><?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>)</a></li>
-      <li class="active"><a href="">Parcellaire au <?php echo $parcellaire->getDateFr(); ?></a></li>
-    </ol>
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire</a></li>
+  <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
+</ol>
 <?php else: ?>
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
@@ -43,14 +42,6 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 <?php if ($sf_user->hasFlash('success_import')): ?>
 <div class="alert alert-success" role="alert">
     <strong>Succès :</strong> <?= $sf_user->getFlash('success_import') ?>
-</div>
-<?php endif; ?>
-
-<?php if(isset($form)): ?>
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'),  'noautofocus' => true)); ?>
-    </div>
 </div>
 <?php endif; ?>
 
