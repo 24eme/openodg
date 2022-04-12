@@ -37,9 +37,6 @@ class parcellaireActions extends sfActions {
         
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
-
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
-
         $this->setTemplate('parcellaire');
     }
 
