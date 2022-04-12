@@ -74,6 +74,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return;
     }
     $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant);
+    if (!$intention) {
+        $intention = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->identifiant, $this->campagne);
+        if (!count($intention->declaration)) {
+            $intention = null;
+        }
+    }
     $previous = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
     if(!$intention) {
         return;

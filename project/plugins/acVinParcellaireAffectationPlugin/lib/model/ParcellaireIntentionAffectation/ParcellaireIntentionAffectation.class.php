@@ -133,7 +133,15 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       $subitem->add('vtsgn', (int)$parcelle->vtsgn);
                   }
                   $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
-                  if (isset($affectees[$parcelle->getKey()]) && $affectees[$parcelle->getKey()]) {
+                  $superficie_auto = $parcelle->getSuperficieInAire("AOC Sainte-Victoire");
+                  if ($superficie_auto) {
+                      $subitem->affectation = 1;
+                      $subitem->date_affectation = "2004-05-29";
+                      if ($subitem->campagne_plantation > "2004-2005") {
+                          $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
+                      }
+                      $subitem->superficie_affectation  = $superficie_auto;
+                  } else if (isset($affectees[$parcelle->getKey()]) && $affectees[$parcelle->getKey()]) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = $affectees[$parcelle->getKey()]['date'];
                       $subitem->superficie_affectation  = $affectees[$parcelle->getKey()]['superficie'];
