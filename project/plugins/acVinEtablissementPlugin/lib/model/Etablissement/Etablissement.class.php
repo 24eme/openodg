@@ -553,4 +553,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $labos[0]->libelle_etablissement;
     }
 
+    public function getLiaisonsOperateursSorted() {
+        $liaisonsOperateurs = $this->liaisons_operateurs->toArray();
+
+        uasort($liaisonsOperateurs, function($a, $b) {
+            return $a->libelle_etablissement > $b->libelle_etablissement;
+        });
+
+        return $liaisonsOperateurs;
+    }
+
 }

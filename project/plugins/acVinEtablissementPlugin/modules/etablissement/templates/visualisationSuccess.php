@@ -178,7 +178,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
+                        <?php foreach($etablissement->getLiaisonsOperateursSorted() as $liaison): ?>
                             <tr>
                                 <td><?php echo $liaison->getTypeLiaisonLibelle() ?></td>
                                 <td>
