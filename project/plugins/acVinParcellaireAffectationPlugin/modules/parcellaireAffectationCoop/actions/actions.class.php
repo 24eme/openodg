@@ -36,7 +36,7 @@ class parcellaireAffectationCoopActions extends sfActions {
         $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
         $parcellaireAffectationCoop->save();
 
-        return $this->redirect('parcellaireaffectationcoop_apporteurs', $parcellaireAffectationCoop);
+        return $this->redirect('parcellaireaffectationcoop_liste', $parcellaireAffectationCoop);
     }
 
     public function executeApporteurs(sfWebRequest $request) {
