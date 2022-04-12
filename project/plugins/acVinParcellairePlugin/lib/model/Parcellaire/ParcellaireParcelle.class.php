@@ -222,16 +222,40 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getGeoJson() {
         $data = $this->getDocument()->getGeoJson();
-        foreach($data->features as $f) {
-            if ($f->id == $this->idu) {
-                return json_encode($f);
+        if ($data) {
+            foreach($data->features as $f) {
+                if ($f->id == $this->idu) {
+                    return json_encode($f);
+                }
             }
         }
+        return null;
     }
+    
+    public function getSuperficieInAire($airename) {
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $jsonFolder => $infos) {
+            if ($infos["name"] != $airename) {
+                continue ;
+            }
+            $geoparcelle = geoPHP::load($this->getGeoJson());
+            $global_pc = 0;
+            foreach($this->document->getGeoPHPDelimitations($jsonFolder) as $d) {
+                $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
+                if ($pc > 0.99) {
+                    $global_pc = 1;
+                }else if ($pc > 0.01) {
+                    $global_pc += $pc;
+                }
+            }
+            return $this->superficie * $global_pc;
+        }
+        return 0;
+    }
+    
     public function isInAires() {
         $aires = [];
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $jsonFolder => $infos) {
-            $res = $this->isInAire($jsonFolder);
+            $res = $this->geojsonInGeojsonAire($jsonFolder);
             if ($res) {
                 $aires[$infos["name"]] = $res;
             }
@@ -239,9 +263,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $aires;
     }
 
-    public function isInAire($jsonFolder = null) {
+    public function geojsonInGeojsonAire($jsonFolder = null) {
         if (!$jsonFolder) {
-            $jsonFolder =ParcellaireClient::getInstance()->getDefaultCommune();
+            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
         }
         $geoparcelle = geoPHP::load($this->getGeoJson());
         $aire = $this->document->getGeoPHPDelimitations($jsonFolder);
