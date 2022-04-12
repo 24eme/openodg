@@ -1,3 +1,4 @@
 all:
   configuration:
     societe:
+      visualisation_teledeclaration: true
