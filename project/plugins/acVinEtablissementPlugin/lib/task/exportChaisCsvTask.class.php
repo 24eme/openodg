@@ -35,7 +35,7 @@ EOF;
         $results = EtablissementClient::getInstance()->findAll();
 
         $withoutLiaisons = (isset($options['without-liaisons']) && $options['without-liaisons']);
-        echo "Identifiant chais,Identifiant,Type,Chais Activites,Nom,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET\n";
+        echo "Identifiant chais,Identifiant,Type,Chais Activites,Raison sociale,Nom,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET\n";
         $this->activitesCorespondance = array_flip(EtablissementClient::$chaisAttributsInImport);
         if(!$withoutLiaisons){
            $cpt = 0;
@@ -48,6 +48,7 @@ EOF;
                 $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
                 if(isset($etablissement->chais)){
                     foreach($etablissement->chais as $numChai => $chai) {
+                        $chai->etablissement_nom = $etablissement->nom;
                         $this->chais[$etablissement->_id.'/chais/'.$numChai] = $chai;
                     }
                 }
@@ -80,7 +81,8 @@ EOF;
                     preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id).",".
                     "Autre,".
                     $activites.",".
-                    trim($chai->nom).",".
+                    $etablissement->nom.",".
+                    $chai->nom.",".
                     trim(str_replace('"', '', $adresses[0])).",".
                     trim(str_replace('"', '', $a_comp)).",".
                     trim(str_replace('"', '', $a_comp1)).",".
@@ -145,6 +147,7 @@ EOF;
                         preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id).",".
                         $type_chai.",".
                         $activites.",".
+                        $chaiDistant->etablissement_nom.",".
                         trim($chaiDistant->nom).",".
                         trim(str_replace('"', '', $adresses[0])).",".
                         trim(str_replace('"', '', $a_comp)).",".
@@ -174,6 +177,15 @@ EOF;
         }
 
         public static function sortActivite($a,$b){
+            if(!isset(self::$activiteOrdre[$a])) {
+                
+                return false;
+            }
+            
+            if(!isset(self::$activiteOrdre[$b])) {
+                
+                return true;
+            }
             return self::$activiteOrdre[$a] > self::$activiteOrdre[$b];
         }
 
