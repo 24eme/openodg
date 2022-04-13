@@ -13,8 +13,7 @@ function parseString(dlmString){
 }
 
 var map = L.map('map');
-map.on('click', function(e) { if(e.target && e.target.feature) { return; } console.log(e); clearParcelleSelected() });
-console.log(map);
+map.on('click', function(e) { if(e.target && e.target.feature) { return; } clearParcelleSelected() });
 
 L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
         '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
@@ -46,7 +45,7 @@ function onLocationFound(e) {
     var radius = e.accuracy / 100;
     L.marker(e.latlng,{icon: icon}).addTo(map);
     L.circle(e.latlng, radius).addTo(map);
-    map.setView(e.latlng, minZoom);    
+    map.setView(e.latlng, minZoom);
 }
 function onLocationError(e) {
     alert("Vous n'êtes actuellement pas localisable. Veuillez activer la localisation.");
@@ -128,6 +127,12 @@ function onEachFeature(feature, layer) {
             );
 }
 var layers = [];
+
+for(i in aires) {
+  layers[aires[i]['name']] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
+  layers[aires[i]['name']].addTo(map);
+};
+
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
 for(i in sections) {
     map.addLayer( new L.Marker(
@@ -143,14 +148,14 @@ for(i in sections) {
                 )
             );
 }
-
-for(i in aires) {
-  console.log(aires[i]['color']);
-  layers[aires[i]['name']] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
-  layers[aires[i]['name']].addTo(map);
-};
+layers["Parcelles"].addTo(map);
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
+map.addEventListener('overlayadd', function(e) {
+    for(name in layers) {
+        layers[name].bringToFront();
+    }
+});
 
 zoomOnMap();
 
