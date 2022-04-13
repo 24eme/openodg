@@ -127,6 +127,21 @@ function onEachFeature(feature, layer) {
             );
 }
 var layers = [];
+layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+for(i in sections) {
+    map.addLayer( new L.Marker(
+                    sections[i].getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'sectionlabel',
+                                html: '<b>' +  i + '</b>'
+                        })
+                    }
+                )
+            );
+}
 
 for(i in aires) {
   layers[aires[i]['name']] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
