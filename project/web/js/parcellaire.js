@@ -50,14 +50,15 @@ $(document).ready(function()
             }
         });
     if ($('input.affecte_superficie').length) {
-        console.log('affecte_superficie : compute_superficies');
         function compute_superficies_input() {
-            var somme_superficie = 0;
-            $('.affecte_superficie').each(function() {somme_superficie += parseFloat($(this).val())});
-            $('#total_superficie').html(somme_superficie.toFixed(4));
-            somme_superficie = 0;
-            $('.affecte_superficie:not([disabled])').each(function() {somme_superficie += parseFloat($(this).val())});
-            $('#total_affecte').html(somme_superficie.toFixed(4));
+          $('.total_superficie').each(function() {
+              var somme_superficie = 0;
+              $(this).parents('table').find('.affecte_superficie').each(function() {somme_superficie += parseFloat($(this).val())});
+              $(this).parents('table').find('.total_superficie').eq(0).html(somme_superficie.toFixed(4));
+              somme_superficie = 0;
+              $(this).parents('table').find('.affecte_superficie:not([disabled])').each(function() {somme_superficie += parseFloat($(this).val())});
+              $(this).parents('table').find('.total_affecte').eq(0).html(somme_superficie.toFixed(4));
+          });
         }
         $('input.affecte_superficie').change(function () { console.log('affecte_superficie changing'); compute_superficies_input()});
         compute_superficies_input();
