@@ -80,7 +80,7 @@ EOF;
                     preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id).",".
                     "Autre,".
                     $activites.",".
-                    trim($chai->nom).","
+                    trim($chai->nom).",".
                     trim(str_replace('"', '', $adresses[0])).",".
                     trim(str_replace('"', '', $a_comp)).",".
                     trim(str_replace('"', '', $a_comp1)).",".
