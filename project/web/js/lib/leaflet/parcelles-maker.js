@@ -99,7 +99,33 @@ function zoomOnMap(){
     map.fitBounds(layers["Parcelles"].getBounds());
     clearParcelleSelected()
 }
-
+var sections = []
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+    let parcelle_text = feature.id.substring(5).replace(/0/g, '');
+    let section_text = feature.id.substring(5, 10).replace(/0/g, '');
+    if (!sections[section_text]) {
+        sections[section_text] = layer.getBounds();
+    }else{
+        sections[section_text].extend(layer.getBounds());
+    }
+    map.addLayer( new L.Marker(
+                    layer.getBounds().getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'parcellelabel',
+                                html: '<b>' +  parcelle_text + '</b>'
+                        })
+                    }
+                )
+            );
+}
 var layers = [];
 
 for(i in aires) {
@@ -107,6 +133,20 @@ for(i in aires) {
   layers[aires[i]['name']].addTo(map);
 };
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+for(i in sections) {
+    map.addLayer( new L.Marker(
+                    sections[i].getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'sectionlabel',
+                                html: '<b>' +  i + '</b>'
+                        })
+                    }
+                )
+            );
+}
 layers["Parcelles"].addTo(map);
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
@@ -117,6 +157,19 @@ map.addEventListener('overlayadd', function(e) {
 });
 
 zoomOnMap();
+
+
+map.on('zoomend', function() {
+    if (map.getZoom() > 15){
+        $('.parcellelabel').show();
+        $('.sectionlabel').hide();
+    } else {
+        $('.parcellelabel').hide();
+        $('.sectionlabel').show();
+    }
+});
+$('.parcellelabel').hide();
+$('.sectionlabel').show();
 
 function zoomToFeature(e) {
   zoomToParcelle(e.target);
@@ -209,14 +262,6 @@ function resetHighlight(e) {
       fillOpacity: 0.3
   });
   info.update();
-}
-
-function onEachFeature(feature, layer) {
-    layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: zoomToFeature
-    });
 }
 
 function showParcelle(id){
