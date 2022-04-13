@@ -6,7 +6,11 @@
 	<div class="leaflet-touch leaflet-bar"><a id="refreshButton" onclick="zoomOnMap(); return false;" href="#"><span class="glyphicon glyphicon-fullscreen"></span></a></div>
 	<div class="leaflet-touch leaflet-bar"><a id="locate-position" href="#"><span class="glyphicon glyphicon-screenshot"></span></a></div>
 </div>
-
+<style>
+.sectionlabel, .parcellelabel {
+	text-shadow: 1px 1px #fff,-1px 1px #fff,1px -1px #fff,-1px -1px #fff,1px 1px 5px #555;
+}
+</style>
 <script type="text/javascript">
 	var parcelles = '<?php echo addslashes($parcellaire->getRawValue()->getGeoJson()) ?>';
     var aires = [];

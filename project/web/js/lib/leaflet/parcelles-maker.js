@@ -100,10 +100,49 @@ function zoomOnMap(){
     map.fitBounds(layers["Parcelles"].getBounds());
     clearParcelleSelected()
 }
-
+var sections = []
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+    let parcelle_text = feature.id.substring(5).replace(/0/g, '');
+    let section_text = feature.id.substring(5, 10).replace(/0/g, '');
+    if (!sections[section_text]) {
+        sections[section_text] = layer.getBounds();
+    }else{
+        sections[section_text].extend(layer.getBounds());
+    }
+    map.addLayer( new L.Marker(
+                    layer.getBounds().getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'parcellelabel',
+                                html: '<b>' +  parcelle_text + '</b>'
+                        })
+                    }
+                )
+            );
+}
 var layers = [];
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
-layers["Parcelles"].addTo(map);
+for(i in sections) {
+    map.addLayer( new L.Marker(
+                    sections[i].getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'sectionlabel',
+                                html: '<b>' +  i + '</b>'
+                        })
+                    }
+                )
+            );
+}
 
 for(i in aires) {
   console.log(aires[i]['color']);
@@ -114,6 +153,19 @@ for(i in aires) {
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
 
 zoomOnMap();
+
+
+map.on('zoomend', function() {
+    if (map.getZoom() > 15){
+        $('.parcellelabel').show();
+        $('.sectionlabel').hide();
+    } else {
+        $('.parcellelabel').hide();
+        $('.sectionlabel').show();
+    }
+});
+$('.parcellelabel').hide();
+$('.sectionlabel').show();
 
 function zoomToFeature(e) {
   zoomToParcelle(e.target);
@@ -149,13 +201,10 @@ info.onAdd = function (map) {
 info.update = function (layer) {
   if(parcelleSelected) {
     layer = parcelleSelected;
-<<<<<<< HEAD
-=======
     this._div.style.background = 'rgba(255,255,255,1)';
     parcelleSelected.setStyle({
         fillOpacity: 0.8
     });
->>>>>>> 4d8237788 (Changement de la transparence au rollover)
   }
   if(!layer) {
     this._div.style.display = 'none';
