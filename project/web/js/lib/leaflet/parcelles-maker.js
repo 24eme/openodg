@@ -157,6 +157,13 @@ map.addEventListener('overlayadd', function(e) {
     }
 });
 
+L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
+map.addEventListener('overlayadd', function(e) {
+    for(name in layers) {
+        layers[name].bringToFront();
+    }
+});
+
 zoomOnMap();
 
 
