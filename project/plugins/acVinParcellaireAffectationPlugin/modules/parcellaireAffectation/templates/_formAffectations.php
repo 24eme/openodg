@@ -40,7 +40,8 @@
             <td><?php echo $parcelle->campagne_plantation; ?></td>
             <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
             <td>
-                <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="pull-right"><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
+                <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="pull-right superficie2compute"><?php echo  number_format($parcelle->superficie_affectation,4); ?></span>
             </td>
         	<td class="text-center">
             	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
@@ -59,5 +60,10 @@
         </tr>
     <?php  endif; endforeach; ?>
     </tbody>
+    <tfoot>
+        <td colspan="6" class="text-right">Superficie totale :</td>
+        <td colspan="" class="total_superficie text-right"></td>
+        <td colspan="3" class="text-left"></td>
+    </tfoot>
 </table>
 <?php endforeach; ?>
