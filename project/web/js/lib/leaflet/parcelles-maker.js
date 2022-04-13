@@ -129,6 +129,20 @@ function onEachFeature(feature, layer) {
 }
 var layers = [];
 layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+for(i in sections) {
+    map.addLayer( new L.Marker(
+                    sections[i].getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'sectionlabel',
+                                html: '<b>' +  i + '</b>'
+                        })
+                    }
+                )
+            );
+}
 
 for(i in aires) {
   console.log(aires[i]['color']);
@@ -146,11 +160,14 @@ zoomOnMap();
 map.on('zoomend', function() {
     if (map.getZoom() > 15){
         $('.parcellelabel').show();
+        $('.sectionlabel').hide();
     } else {
         $('.parcellelabel').hide();
+        $('.sectionlabel').show();
     }
 });
 $('.parcellelabel').hide();
+$('.sectionlabel').show();
 
 function zoomToFeature(e) {
   zoomToParcelle(e.target);
@@ -238,27 +255,6 @@ function resetHighlight(e) {
       fillOpacity: 0.3
   });
   info.update();
-}
-
-function onEachFeature(feature, layer) {
-    layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: zoomToFeature
-    });
-    let parcelle_text = feature.id.substring(5).replace(/0/g, '');
-    map.addLayer( new L.Marker(
-                    layer.getBounds().getCenter(),
-                    {
-                        title: "MyLocation",
-                        icon: L.divIcon( iconOptions = {
-                                iconSize  : [15, 15],
-                                className : 'parcellelabel',
-                                html: '<b>' +  parcelle_text + '</b>'
-                        })
-                    }
-                )
-            );
 }
 
 function showParcelle(id){
