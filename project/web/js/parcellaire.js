@@ -49,4 +49,34 @@ $(document).ready(function()
                 return false;
             }
         });
+    if ($('input.affecte_superficie').length) {
+        console.log('affecte_superficie : compute_superficies');
+        function compute_superficies_input() {
+            var somme_superficie = 0;
+            $('.affecte_superficie').each(function() {somme_superficie += parseFloat($(this).val())});
+            $('#total_superficie').html(somme_superficie.toFixed(4));
+            somme_superficie = 0;
+            $('.affecte_superficie:not([disabled])').each(function() {somme_superficie += parseFloat($(this).val())});
+            $('#total_affecte').html(somme_superficie.toFixed(4));
+        }
+        $('input.affecte_superficie').change(function () { console.log('affecte_superficie changing'); compute_superficies_input()});
+        compute_superficies_input();
+    }
+
+    if ($('.superficie2compute').length) {
+        function compute_superficies() {
+            $('.total_superficie').each(function() {
+                var somme_superficie = 0;
+                $(this).closest('table').find(".superficie2compute").each(function() {
+                    if ($(this).parent().parent().find('.bsswitch:checked').length) {
+                        somme_superficie += parseFloat($(this).html());
+                    }
+                });
+                $(this).html(somme_superficie);
+            });
+        }
+        $('input.bsswitch').on('update', function () { compute_superficies()});
+        compute_superficies();
+    }
+
 });
