@@ -267,6 +267,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         if (!$jsonFolder) {
             $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
         }
+        if(!$this->getGeoJson()) {
+            return null;
+        }
+
         $geoparcelle = geoPHP::load($this->getGeoJson());
         $aire = $this->document->getGeoPHPDelimitations($jsonFolder);
         if (!$aire) {
