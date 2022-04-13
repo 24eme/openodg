@@ -19,4 +19,4 @@
     <?php endif; endforeach; ?>
     console.log(aires);
 </script>
-<?php use_javascript('lib/leaflet/parcelles-maker.js'); ?>
+<?php use_javascript('lib/leaflet/parcelles-maker.js?202204131636'); ?>
