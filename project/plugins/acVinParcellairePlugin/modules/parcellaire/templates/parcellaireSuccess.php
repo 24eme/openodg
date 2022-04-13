@@ -26,13 +26,12 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     <h2>Parcellaire</h2>
     <?php endif;?>
 </div>
-<?php if(!$sf_user->hasTeledeclaration()): ?>
+
 <div class="clearfix">
   <a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right" style="margin-bottom: 10px;">
       <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane
   </a>
 </div>
-<?php endif;?>
 
 <?php include_partial('global/flash'); ?>
 
