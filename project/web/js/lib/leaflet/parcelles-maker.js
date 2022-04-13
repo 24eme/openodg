@@ -116,6 +116,16 @@ layers["Parcelles"].addTo(map);
 
 zoomOnMap();
 
+
+map.on('zoomend', function() {
+    if (map.getZoom() > 15){
+        $('.parcellelabel').show();
+    } else {
+        $('.parcellelabel').hide();
+    }
+});
+$('.parcellelabel').hide();
+
 function zoomToFeature(e) {
   zoomToParcelle(e.target);
   e.preventDefault();
@@ -215,6 +225,19 @@ function onEachFeature(feature, layer) {
         mouseout: resetHighlight,
         click: zoomToFeature
     });
+    let parcelle_text = feature.id.substring(5).replace(/0/g, '');
+    map.addLayer( new L.Marker(
+                    layer.getBounds().getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'parcellelabel',
+                                html: '<b>' +  parcelle_text + '</b>'
+                        })
+                    }
+                )
+            );
 }
 
 function showParcelle(id){
