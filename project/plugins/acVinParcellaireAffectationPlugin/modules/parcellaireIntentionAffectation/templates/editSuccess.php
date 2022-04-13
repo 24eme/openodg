@@ -71,6 +71,8 @@
                 </td>
             </tr>
         <?php  endif; endforeach; ?>
+        <tr><td colspan="8" class="text-right"><b>Total affecté</b></td><td style="padding-right: 20px;" class="text-right total_affecte"></td></tr>
+        <tr><td colspan="8" class="text-right"><b>Total superficie</b></td><td style="padding-right: 20px;" class="text-right total_superficie"></td></tr>
         </tbody>
 	</table>
     <?php  endforeach; ?>
