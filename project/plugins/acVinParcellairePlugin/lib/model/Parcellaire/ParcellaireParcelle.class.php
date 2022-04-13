@@ -237,6 +237,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             if ($infos["name"] != $airename) {
                 continue ;
             }
+            if(!$this->getGeoJson()) {
+                continue;
+            }
             $geoparcelle = geoPHP::load($this->getGeoJson());
             $global_pc = 0;
             foreach($this->document->getGeoPHPDelimitations($jsonFolder) as $d) {
