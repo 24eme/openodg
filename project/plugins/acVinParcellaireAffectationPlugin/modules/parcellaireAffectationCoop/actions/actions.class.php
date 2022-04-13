@@ -33,8 +33,11 @@ class parcellaireAffectationCoopActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
-        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode);
-        $parcellaireAffectationCoop->save();
+        $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);
+
+        if($parcellaireAffectationCoop->isNew()) {
+            $parcellaireAffectationCoop->save();
+        }
 
         return $this->redirect('parcellaireaffectationcoop_liste', $parcellaireAffectationCoop);
     }
