@@ -94,7 +94,7 @@ class ExportLotsCSV {
               $code_postal,
               VarManipulator::protectStrForCsv($commune),
               $lot['campagne'],
-              (isset($lot['date_commission']))? $lot['date_commission'] : '',
+              (isset($lot['date_commission']))? $lot['date_commission'] : $date[0],
               $date[0],
               $lot['numero_dossier'],
               $lot['numero_archive'],

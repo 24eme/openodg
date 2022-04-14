@@ -61,7 +61,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $lot->numero_dossier.";".
             $lot->numero_archive.";".
             $lot->date.";".
-            $lot->date_commission.";".
+            ($lot->date_commission ? $lot->date_commission : $lot->date) .";".
             $this->protectStr($lot->numero_logement_operateur).";".
             $keyproduit.';'.
             $lot->getProduitLibelle().";".
