@@ -5,7 +5,7 @@
     <h2>Validation de votre déclaration</h2>
 </div>
 
-<form role="form" class="form-inline" action="<?php echo url_for('conditionnement_validation', $conditionnement) ?>#engagements" method="post" id="validation-form">
+<form role="form" class="form-horizontal" action="<?php echo url_for('conditionnement_validation', $conditionnement) ?>#engagements" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -41,23 +41,13 @@
 	<?php  if (!$conditionnement->isPapier() && count($validation->getPoints(ConditionnementValidation::TYPE_ENGAGEMENT)) > 0): ?>
     	<?php include_partial('conditionnement/engagements', array('conditionnement' => $conditionnement, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
-
-    <?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
-        <h3>Controle</h3>
-        <div class="form-group" style="margin-bottom: 20px;">
-            Date de controle souhaitée (hors lots en élevage) :
-            <div class="input-group">
-            <?php echo date("d/m/Y"); ?>
-            </div>
-        </div>
-    <?php endif ?>
-
-    <div style="padding-top: 10px;" class="row row-margin row-button">
+    <hr />
+    <div class="row row-margin row-button">
         <div class="col-xs-6">
             <a href="<?php echo url_for("conditionnement_lots", $conditionnement); ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="button" id="btn-validation-document-conditionnement" data-toggle="modal" data-target="#conditionnement-confirmation-validation" <?php if($validation->hasErreurs() && $conditionnement->isTeledeclare() && (!$sf_user->hasConditionnementAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-conditionnement" data-target="#conditionnement-confirmation-validation" <?php if($validation->hasErreurs() && $conditionnement->isTeledeclare() && (!$sf_user->hasConditionnementAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper " onclick="if ($('#validation-form')[0].reportValidity()){ $('#conditionnement-confirmation-validation').modal('toggle') }"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>

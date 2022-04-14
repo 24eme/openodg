@@ -1,6 +1,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Version') ?>
 <?php use_helper('Lot') ?>
+<?php use_javascript('hamza_style.js'); ?>
 
 
 
@@ -107,7 +108,41 @@
                 </tr>
               </tbody>
             </table>
-            <br/>
-
           <?php endif; ?>
-<?php use_javascript('hamza_style.js'); ?>
+
+
+<?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
+<h3>Contrôle</h3>
+<p>Date de controle souhaitée (hors lots en élevage) : <?php if ($conditionnement->exist('date_degustation_voulue')): ?><?php echo $conditionnement->get('date_degustation_voulue'); ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
+
+<?php if(isset($form["date_commission"])): ?>
+    <?php echo $form["date_commission"]->renderError(); ?>
+    <?php if(isset($form["degustation"])): ?>
+    <?php echo $form['degustation']->renderError(); ?>
+    <?php endif; ?>
+    <div class="form-group" style="margin-bottom: 20px;">
+        <?php echo $form["date_commission"]->renderLabel("Date de la commission :", array("class" => "col-xs-3 control-label")); ?>
+        <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
+            <?php if(isset($form["degustation"])): ?>
+            <?php echo $form['degustation']->render(); ?>
+            <?php endif; ?>
+            <?php echo $form["date_commission"]->render(); ?>
+            <div class="input-group-addon">
+                <span class="glyphicon-calendar glyphicon"></span>
+            </div>
+            <?php if(isset($form["degustation"])): ?>
+            <button type="button" onclick="document.querySelector('#validation_date_commission').classList.remove('hidden'); document.querySelector('#validation_degustation').classList.add('hidden'); this.classList.add('invisible');
+            document.querySelector('#validation_date_commission').setAttribute('required', true);
+            document.querySelector('#validation_degustation').removeAttribute('required', true); document.querySelector('#validation_date_commission').focus()" class="btn btn-link btn-sm" style="position: absolute; right: -80px; top: 10px;">(changer)</button>
+        <?php endif; ?>
+        </div>
+        <script>
+            document.querySelector('#validation_degustation').addEventListener('change', function(e) {
+                document.querySelector('#validation_date_commission').value = this.value;
+            });
+        </script>
+    </div>
+<?php elseif($conditionnement->date_commission): ?>
+    <p>Date de la commission : <?php echo ($conditionnement->exist('date_commission')) ? date_format(date_create($conditionnement->get('date_commission')), 'd/m/Y') : null; ?></p>
+    <?php endif ?>
+<?php endif; ?>
