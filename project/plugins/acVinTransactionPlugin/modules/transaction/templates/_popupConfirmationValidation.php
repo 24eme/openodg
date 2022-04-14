@@ -29,7 +29,7 @@
 					</div>
 					<div class="modal-footer">
 						<a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
-						<a id="submit-confirmation-validation" class="btn btn-success btn pull-right">approuver</a>
+						<a id="submit-confirmation-validation" class="btn btn-success btn pull-right">Approuver</a>
 					</div>
 			</div>
 		</div>

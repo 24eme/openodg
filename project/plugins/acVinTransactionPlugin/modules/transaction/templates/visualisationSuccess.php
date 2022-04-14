@@ -3,7 +3,7 @@
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php if (isset($form)): ?>
 
-    <form role="form" class="form-inline" action="<?php echo url_for('transaction_visualisation', $transaction) ?>" method="post" id="validation-form">
+    <form role="form" class="form-horizontal" action="<?php echo url_for('transaction_visualisation', $transaction) ?>" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
@@ -47,10 +47,7 @@
 
 <?php include_partial('transaction/recap', array('transaction' => $transaction, 'form' => $form, 'dr' => $dr)); ?>
 
-<?php if (DRevConfiguration::getInstance()->hasDegustation() && $transaction->exist("date_degustation_voulue")): ?>
-    <h3>Controle</h3>
-    <p style="margin-bottom: 30px;">Date de controle souhaitée (hors lots en élevage) : <?php echo ($transaction->date_degustation_voulue)     ? date_format(date_create($transaction->validation), 'd/m/Y') : null;?></p>
-<?php endif ?>
+<hr />
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $transaction->identifiant, 'campagne' => $transaction->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
@@ -66,7 +63,7 @@
     </div>
 
     <div class="col-xs-4 text-right">
-        <div class="btn-group">
+        <div class="btn-group row">
         <?php if ($transaction->validation && TransactionSecurity::getInstance($sf_user, $transaction->getRawValue())->isAuthorized(TransactionSecurity::DEVALIDATION) && !$transaction->hasLotsUtilises()):
                 if (!$transaction->validation_odg): ?>
                     <a class="btn btn-default" href="<?php echo url_for('transaction_devalidation', $transaction) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir ce vrac export ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
@@ -79,7 +76,7 @@
                                                )): ?>
         <?php $params = array("sf_subject" => $transaction, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>
         <div class="col-xs-6 text-right">
-            <button type="button" name="validateOdg" id="btn-validation-document-transaction" data-toggle="modal" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && (!$sf_user->hasTransactionAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+            <button type="button" name="validateOdg" id="btn-validation-document-transaction" data-target="#transaction-confirmation-validation" <?php if($validation->hasErreurs() && $transaction->isTeledeclare() && (!$sf_user->hasTransactionAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#transaction-confirmation-validation').modal('toggle') }"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         </div>
 
         <?php endif; ?>
