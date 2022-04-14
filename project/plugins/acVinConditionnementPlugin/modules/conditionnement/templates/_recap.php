@@ -111,7 +111,7 @@
           <?php endif; ?>
 
 
-<?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
+<?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
 <h3>Contrôle</h3>
 <p>Date de controle souhaitée (hors lots en élevage) : <?php if ($conditionnement->exist('date_degustation_voulue')): ?><?php echo $conditionnement->get('date_degustation_voulue'); ?><?php else: ?><?php echo date('d/m/Y'); ?><?php endif; ?></p>
 

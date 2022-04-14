@@ -2,14 +2,16 @@
 
 class ConditionnementValidationForm extends acCouchdbForm
 {
-  public $isAdmin = null;
-  public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
-     $this->isAdmin = $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
-    parent::__construct($doc, $defaults, $options, $CSRFSecret);
-  }
+    public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
+    }
+
+    public function isAdmin() {
+
+        return $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
+    }
 
     public function configure() {
-        $this->isAdmin = $this->getOption('isAdmin');
         if(!$this->getDocument()->isPapier()) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
@@ -21,19 +23,19 @@ class ConditionnementValidationForm extends acCouchdbForm
             }
         }
 
-        $formaffectable = new BaseForm();
+        $formDegustable = new BaseForm();
         foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
             foreach ($lots as $lot) {
                 if($lot->hasBeenEdited()){
                     continue;
                 }
-								$formaffectable->embedForm($lot->getKey(), new LotAffectableForm($lot));
+								$formDegustable->embedForm($lot->getKey(), new LotAffectableForm($lot));
             }
         }
 
-        $this->embedForm('lots', $formaffectable);
+        $this->embedForm('lots', $formDegustable);
 
-        if (ConditionnementConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg && $this->isAdmin) {
+        if (DRevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg && $this->isAdmin()) {
             $this->setWidget('date_commission', new bsWidgetFormInput(array(), array('required' => true)));
             $this->setValidator('date_commission', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
@@ -62,11 +64,11 @@ class ConditionnementValidationForm extends acCouchdbForm
   	   $this->getDocument()->getOrAdd("date_degustation_voulue");
        $this->getDocument()->date_degustation_voulue = date("d/m/y");
 
-       if (DrevConfiguration::getInstance()->hasDegustation() && $this->isAdmin) {
+       if (DRevConfiguration::getInstance()->hasDegustation() && $this->isAdmin()) {
            $this->getDocument()->add('date_commission', $values['date_commission']);
        }
 
-       if($this->isAdmin){
+       if($this->isAdmin()){
          foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
            $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
         }

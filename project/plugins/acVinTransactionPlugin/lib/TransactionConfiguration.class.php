@@ -88,10 +88,6 @@ class TransactionConfiguration {
       }
     }
 
-    public function hasDegustation() {
-        return isset($this->configuration['degustation']) && boolval($this->configuration['degustation']);
-    }
-
     public function hasContenances() {
         return isset($this->configuration['contenances']) && boolval($this->configuration['contenances']);
     }

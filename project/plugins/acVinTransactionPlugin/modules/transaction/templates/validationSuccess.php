@@ -41,7 +41,7 @@
     	<?php include_partial('transaction/engagements', array('transaction' => $transaction, 'validation' => $validation, 'form' => $form)); ?>
     <?php endif; ?>
 
-    <?php if (TransactionConfiguration::getInstance()->hasDegustation()): ?>
+    <?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
         <h3>Controle</h3>
         <div class="form-group" style="margin-bottom: 20px;">
             Date de controle souhaitée (hors lots en élevage) :
