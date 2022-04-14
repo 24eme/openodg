@@ -47,6 +47,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             if ($lot->getConfigProduit()) {
                 $keyproduit = DeclarationExportCsv::getProduitKeysCsv($lot->getConfigProduit());
             }
+            $docOrigine = $lot->getDocOrigine();
             $csv .= $this->document->type.";".
             $this->document->campagne.";".
             $this->document->identifiant.";".
@@ -80,12 +81,12 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $lot->isChange().";".
             $this->protectStr($lot->adresse_logement).";".
             "PAPIER;".
-            $this->document->validation.";".
-            $this->document->validation_odg.";".
-            ($this->document->exist('date_degustation_voulue') ? $this->document->date_degustation_voulue : null).";".
-            ($this->document->exist('envoi_oi') ? $this->document->envoi_oi : null).";".
+            $docOrigine->validation.";".
+            $docOrigine->validation_odg.";".
+            ($docOrigine->exist('date_degustation_voulue') ? $docOrigine->date_degustation_voulue : null).";".
+            ($docOrigine->exist('envoi_oi') ? $docOrigine->envoi_oi : null).";".
             Organisme::getCurrentOrganisme().";".
-            $this->document->_id.";".
+            $docOrigine->_id.";".
             $lot->unique_id.";".
             $lot->produit_hash."\n";
         }
