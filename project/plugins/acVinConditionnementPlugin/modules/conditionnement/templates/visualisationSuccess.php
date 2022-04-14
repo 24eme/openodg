@@ -46,10 +46,7 @@
 
 <?php include_partial('conditionnement/recap', array('conditionnement' => $conditionnement, 'form' => $form, 'dr' => $dr)); ?>
 
-<?php if (ConditionnementConfiguration::getInstance()->hasDegustation()): ?>
-    <h3>Controle</h3>
-    <p style="margin-bottom: 30px;">Date de controle souhaitée (hors lots en élevage) : <?php echo ($conditionnement->exist('date_degustation_voulue') && $conditionnement->date_degustation_voulue) ? date_format(date_create($conditionnement->validation), 'd/m/Y') : '<i>non saisi</i>';?></p>
-<?php endif ?>
+<hr />
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $conditionnement->identifiant, 'campagne' => $conditionnement->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
