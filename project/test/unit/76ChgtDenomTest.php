@@ -8,7 +8,7 @@ if ($application != 'igp13') {
     return;
 }
 
-$t = new lime_test(294);
+$t = new lime_test(295);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -144,6 +144,7 @@ $chgtDenomFromDrev->save();
 
 $t->is($chgtDenomFromDrev->changement_origine_id_document, $drev->_id, "Le changement a bien comme document d'origine ".$drev->_id);
 $t->is($chgtDenomFromDrev->changement_origine_lot_unique_id, $lotFromDrev->unique_id, "Le changement a bien l'unique id de son origine ".$lotFromDrev->unique_id);
+$t->is($chgtDenomFromDrev->changement_date_commission, $lotFromDrev->date_commission, "La date de commission du lot changé est celle du lot de la drev");
 $t->is($chgtDenomFromDrev->changement_volume, $lotFromDrev->volume, "Le changement a bien le volume de son origine");
 $t->is($chgtDenomFromDrev->changement_millesime, $lotFromDrev->millesime, "Le changement a bien le millesime de son origine : ".$drev->lots[2]->millesime);
 $t->isnt($chgtDenomFromDrev->changement_produit_hash, $lotFromDrev->produit_hash, "Le changement a bien un produit différent");
@@ -182,7 +183,7 @@ $chgtDenomFromDrev->lots[1]->initial_type = null;
 $t->is($chgtDenomFromDrev->lots[1]->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type calculé est ".DRevClient::TYPE_MODEL);
 $t->is($chgtDenomFromDrev->lots[1]->getMouvement(Lot::STATUT_NONAFFECTABLE)->initial_type, DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE, "L'initial type du mouvement est  ".DRevClient::TYPE_MODEL.":".LotsClient::INITIAL_TYPE_CHANGE);
 $t->is($chgtDenomFromDrev->lots[1]->date, $chgtDenomFromDrev->date, "La date du mouvement est celle du changement de dénom");
-$t->is($chgtDenomFromDrev->lots[1]->date_commission, null, "La date de commission du lot est vide");
+$t->is($chgtDenomFromDrev->lots[1]->date_commission, $chgtDenomFromDrev->lots[0]->date_commission, "La date de commission du lot est celle du lot d'origine");
 $t->is($chgtDenomFromDrev->lots[1]->numero_archive, "00004", "Le lot changé (2d) a un nouveau numéro d'archive");
 $t->is($chgtDenomFromDrev->lots[1]->numero_dossier, $chgtDenomFromDrev->numero_archive, "Le lot changé a le même numéro de dossier que l'archive du chgmt");
 $t->is($chgtDenomFromDrev->lots[1]->unique_id, $campagne.'-00002-00004', "Le lot changé a un nouveau uniq id");

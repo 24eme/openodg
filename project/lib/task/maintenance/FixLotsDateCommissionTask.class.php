@@ -38,102 +38,25 @@ EOF;
 
     if(!isset($ids)) {
         $ids = array_merge(
-            DeclarationClient::getInstance()->getIds(DRevClient::TYPE_MODEL),
-            DeclarationClient::getInstance()->getIds(ConditionnementClient::TYPE_MODEL),
-            DeclarationClient::getInstance()->getIds(TransactionClient::TYPE_MODEL)
+            DeclarationClient::getInstance()->getIds(ChgtDenomClient::TYPE_MODEL),
         );
     }
 
     rsort($ids);
 
-    $ids_master = array();
     foreach($ids as $id) {
-        $key = preg_replace('/-M[0-9]+$/', '', $id);
-
-        if(array_key_exists($key, $ids_master)) {
-            continue;
-        }
-
-        $ids_master[$key] = $id;
-    }
-
-    $numDossierDateCommission = array();
-
-    foreach($ids_master as $id) {
         $doc = DeclarationClient::getInstance()->find($id);
-        foreach($doc->getLots() as $lot) {
-            $key = $lot->campagne."_".$lot->numero_dossier;
-            if(!$lot->date_commission) {
-                continue;
-            }
-            if(isset($numDossierDateCommission[$key]) && $numDossierDateCommission[$key] === false) {
-                continue;
-            }
-            if(isset($numDossierDateCommission[$key]) && $numDossierDateCommission[$key] != $lot->date_commission) {
-                $numDossierDateCommission[$key] = false;
-                continue;
-            }
-            $numDossierDateCommission[$key] = $lot->date_commission;
-        }
-    }
-
-    foreach($numDossierDateCommission as $key => $date) {
-        if($date === false) {
-            unset($numDossierDateCommission[$key]);
-        }
-    }
-
-    ksort($numDossierDateCommission);
-
-    $keyPrevious = null;
-    $campagnePrevious = null;
-    $dossierPrevious  = null;
-    $keyCurrent = null;
-    $campagneCurrent = null;
-    $dossierCurrent = null;
-    foreach($numDossierDateCommission as $key => $date_commission) {
-        $campagneCurrent = explode("_", $key)[0];
-        $dossierCurrent = explode("_", $key)[1];
-        $keyCurrent = $key;
-
-        if($campagneCurrent != $campagnePrevious || $numDossierDateCommission[$keyPrevious] != $date_commission) {
-                $keyPrevious = $keyCurrent;
-                $campagnePrevious = $campagneCurrent;
-                $dossierPrevious = $dossierCurrent;
-                continue;
+        $lotOrigine = $doc->getLotOrigine();
+        if($lotOrigine) {
+            $doc->changement_date_commission = $lotOrigine->date_commission;
         }
 
-        for($i=$dossierPrevious*1+1; $i < $dossierCurrent*1; $i++) {
-                $numDossierDateCommission[$campagneCurrent."_".sprintf("%05d", $i)] = $date_commission;
+        if($doc->changement_specificite == "UNDEFINED") {
+            $doc->changement_specificite = "";
         }
 
-        $keyPrevious = $keyCurrent;
-        $campagnePrevious = $campagneCurrent;
-        $dossierPrevious = $dossierCurrent;
-    }
-
-    ksort($numDossierDateCommission);
-
-    foreach($ids_master as $id) {
-        $doc = DeclarationClient::getInstance()->find($id);
-        foreach($doc->getLots() as $lot) {
-            if(!$doc->validation && $lot->isCurrent()) {
-                continue;
-            }
-            $lotOrigine = $lot->getLotOrigine();
-            if($lotOrigine->getDateCommission()) {
-                continue;
-            }
-            if(!isset($numDossierDateCommission[$lot->campagne."_".$lot->numero_dossier])) {
-                echo "aucune date trouvé : ".$lot->campagne."_".$lot->numero_dossier."\n";
-                continue;
-            }
-            $docOrigine = $lotOrigine->getDocument();
-            $lotOrigine->date_commission = $numDossierDateCommission[$lot->campagne."_".$lot->numero_dossier];
-            if($docOrigine->save()) {
-                echo "Document ".$docOrigine->_id."@".$docOrigine->_rev." saved\n";
-            }
-
+        if($doc->save()) {
+            echo $doc->_id.": saved\n";
         }
     }
   }
