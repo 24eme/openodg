@@ -37,9 +37,7 @@ EOF;
     }
 
     if(!isset($ids)) {
-        $ids = array_merge(
-            DeclarationClient::getInstance()->getIds(ChgtDenomClient::TYPE_MODEL),
-        );
+        $ids = DeclarationClient::getInstance()->getIds(ChgtDenomClient::TYPE_MODEL);
     }
 
     rsort($ids);
