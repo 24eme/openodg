@@ -1,0 +1,16 @@
+all:
+  configuration:
+    parcellaire:
+      aires:
+        muscadet:
+          name: "Muscadet"
+          color: "#52e536"
+          denumination_id: "00211"
+        grosplan:
+          name: "Gros Plant"
+          color: "#72cf61"
+          denumination_id: "02023"
+        muscadetsevreetmaine:
+          name: "Muscadet Sèvre et Maine"
+          color: "#fde85e"
+          denumination_id: "00214"
