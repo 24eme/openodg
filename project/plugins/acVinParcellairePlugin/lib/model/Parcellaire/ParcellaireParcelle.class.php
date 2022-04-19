@@ -211,7 +211,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       if (!$this->getProduit()->isRealProduit()) {
           return false;
       }
-      return !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
+      return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 
     public function hasTroisiemeFeuille() {
