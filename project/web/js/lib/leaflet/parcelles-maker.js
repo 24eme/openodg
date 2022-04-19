@@ -106,8 +106,8 @@ function onEachFeature(feature, layer) {
         mouseout: resetHighlight,
         click: zoomToFeature
     });
-    let parcelle_text = feature.id.substring(5).replace(/0/g, '');
-    let section_text = feature.id.substring(5, 10).replace(/0/g, '');
+    let section_text = feature.id.substring(5, 10).replace(/^0*/, '');
+    let parcelle_text = section_text+'&nbsp;'+feature.id.substring(10, 15).replace(/^0*/, '');
     if (!sections[section_text]) {
         sections[section_text] = layer.getBounds();
     }else{
