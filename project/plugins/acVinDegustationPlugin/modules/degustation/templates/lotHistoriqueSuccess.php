@@ -78,7 +78,7 @@
                        <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_affectable', array('id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Retirer le "réputé conforme"</a></li>
                        <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
                 <?php endif; ?>
-                <?php if ($mouvement->value->statut == Lot::STATUT_CONFORME): ?>
+                <?php if (in_array($mouvement->value->statut, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME))): ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
                 <?php endif; ?>
                 <?php if ($mouvement->value->statut == Lot::STATUT_ATTENTE_PRELEVEMENT): ?>
