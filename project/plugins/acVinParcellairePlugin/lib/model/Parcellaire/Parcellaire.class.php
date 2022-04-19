@@ -264,11 +264,11 @@ class Parcellaire extends BaseParcellaire {
 
     }
 
-    public function getAire($jsonFolder = null) {
-        if (!$jsonFolder) {
-            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
+    public function getAire($inao_denomination_id = null) {
+        if (!$inao_denomination_id) {
+            $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultCommune();
         }
-        return ParcellaireClient::getInstance()->getAire($this->declaration->getCommunes(), $jsonFolder);
+        return ParcellaireClient::getInstance()->getAire($inao_denomination_id, $this->declaration->getCommunes());
     }
 
     public function getAires() {
@@ -276,22 +276,22 @@ class Parcellaire extends BaseParcellaire {
         return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes());
     }
 
-    public function getGeoPHPDelimitations($jsonFolder = null) {
-        if (!$jsonFolder) {
-            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
+    public function getGeoPHPDelimitations($denom_id = null) {
+        if (!$denom_id) {
+            $denom_id = ParcellaireClient::getInstance()->getDefaultDenomination();
         }
         if (!$this->cache_geophpdelimitation) {
             $this->cache_geophpdelimitation = [];
-            foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $v) {
-                foreach ($this->getAire($key) as $d) {
-                    $this->cache_geophpdelimitation[$key][] = geoPHP::load($d);
+            foreach(ParcellaireClient::getInstance()->getDenominations() as $c) {
+                foreach ($this->getAire($denom_id, $c) as $d) {
+                    $this->cache_geophpdelimitation[$denom_id][] = geoPHP::load($d);
                 }
             }
         }
-        if (!isset($this->cache_geophpdelimitation[$jsonFolder])) {
+        if (!isset($this->cache_geophpdelimitation[$denom_id])) {
             return array();
         }
-        return $this->cache_geophpdelimitation[$jsonFolder];
+        return $this->cache_geophpdelimitation[$denom_id];
     }
 
 }
