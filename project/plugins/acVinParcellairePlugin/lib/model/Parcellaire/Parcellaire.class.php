@@ -280,6 +280,9 @@ class Parcellaire extends BaseParcellaire {
         if (!$denom_id) {
             $denom_id = ParcellaireClient::getInstance()->getDefaultDenomination();
         }
+        if (!geophp::geosInstalled()) {
+            throw new sfException("php-geos needed");
+        }
         if (!$this->cache_geophpdelimitation) {
             $this->cache_geophpdelimitation = [];
             foreach(ParcellaireClient::getInstance()->getDenominations() as $did) {
