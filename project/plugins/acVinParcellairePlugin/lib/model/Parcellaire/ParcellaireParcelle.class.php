@@ -240,6 +240,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             if(!$this->getGeoJson()) {
                 continue;
             }
+            if (!method_exists('geoPHP','load')) {
+                throw new sfException("php-geos needed");
+            }
             $geoparcelle = geoPHP::load($this->getGeoJson());
             $global_pc = 0;
             foreach($this->document->getGeoPHPDelimitations($infos['denumination_id']) as $d) {
@@ -273,7 +276,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         if(!$this->getGeoJson()) {
             return null;
         }
-
+        if (!method_exists('geoPHP','load')) {
+            throw new sfException("php-geos needed");
+        }
         $geoparcelle = geoPHP::load($this->getGeoJson());
         $aire = $this->document->getGeoPHPDelimitations($inao_denomination_id);
         if (!$aire) {
