@@ -57,31 +57,54 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
-    public function getDefaultCommune() {
-        return array_keys(ParcellaireConfiguration::getInstance()->getAiresInfos())[0];
+    public function getAires($communes) {
+        $aires = array();
+        if (ParcellaireConfiguration::getInstance()->getAires()) {
+            foreach($this->getCommunes() as $denum_id) {
+                $aires[$denum_id] = $this->getAire($denum_id, $communes);
+            }
+        }
+
+        return $aires;
     }
 
-    public function getAire($communes, $jsonFolder = null) {
-        if (!$jsonFolder) {
-            $jsonFolder = $this->getDefaultCommune();
+    public function getDefaultDenomination() {
+        return $this->getDenominations()[0];
+    }
+    
+    public function getDenominations() {
+        $res = array();
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $a) {
+            $res[$a["denumination_id"]] = $a["denumination_id"];
         }
-        $scrapydocs = ProdouaneScrappyClient::getDocumentPath();
+        return array_keys($res);
+    }
+
+    public function getAire($inao_denomination_id, $communes) {
+        if (! intval($inao_denomination_id)) {
+            throw new sfException('not $inao_denomination_id');
+        }
         $geojson = [];
         $files = '';
-
-        if (!file_exists($scrapydocs.'/../'.$jsonFolder)) {
-            throw new sfException($scrapydocs.'/../'.$jsonFolder." doesnt exist");
-        }
-
         foreach ($communes as $id => $commune) {
-            $file_name = $scrapydocs.'/../'.$jsonFolder.'/delimitation-'.$commune.'.json';
-            $files = glob($file_name);
-            if (!empty($files)) {
-                $contents = str_replace("\n", '', file_get_contents($file_name));
+            $contents = $this->getDelimitationCommuneDelimitationCache($commune, $inao_denomination_id);
+            if ($contents) {
+                $contents = str_replace("\n", '', $contents);
                 array_push($geojson, $contents);
             }
         }
         return $geojson;
+    }
+
+    public function getDelimitationCommuneDelimitationCache($commune_insee, $denom_id) {
+        return CacheFunction::cache('model', "ParcellaireClient::getDelimitationCommuneDelimitation", array($commune_insee, $denom_id));
+    }
+
+    public static function getDelimitationCommuneDelimitation($commune_insee, $inao_denomination_id) {
+        $dep = substr($commune_insee,0,2);
+        $url_aire = "https://raw.githubusercontent.com/24eme/opendatawine/master/delimitation_aoc/".$dep."/".$commune_insee."/".$inao_denomination_id.".geojson";
+        $contents = @file_get_contents($url_aire);
+        return $contents;
     }
 
     /**
