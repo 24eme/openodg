@@ -82,7 +82,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getAire($inao_denomination_id, $communes) {
         if (! intval($inao_denomination_id)) {
-            throw new sfException('not $inao_denomination_id');
+            throw new sfException("not inao_denomination_id: $inao_denomination_id");
         }
         $geojson = [];
         $files = '';
