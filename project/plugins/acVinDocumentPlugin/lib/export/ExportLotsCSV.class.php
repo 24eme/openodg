@@ -86,7 +86,7 @@ class ExportLotsCSV {
           if (isset($lot['centilisation'])) {
             $centilisation = isset($contenances[$lot['centilisation']])? $contenances[$lot['centilisation']] : $lot['centilisation'];
           }
-          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+          $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
               $lot['initial_type'],
               $lot['declarant_identifiant'],
               VarManipulator::protectStrForCsv($lot['declarant_nom']),
