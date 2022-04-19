@@ -150,15 +150,15 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                             $classcepage = '';
                             if ($detail->hasProblemExpirationCepage()) {
                               $classline .=  ' warning';
-                              $classcepage .= ' text-warning strong';
+                              $classcepage .= ' text-warning strong hasProblemExpirationCepage';
                             }
                             if ($detail->hasProblemEcartPieds()) {
                               $classline .=  ' danger';
-                              $classecart .= ' text-danger strong';
+                              $classecart .= ' text-danger strong hasProblemEcartPieds';
                             }
                             if ($detail->hasProblemCepageAutorise()) {
                               $classline .= ' danger';
-                              $classcepage .= ' text-danger strong';
+                              $classcepage .= ' text-danger strong hasProblemCepageAutorise';
                             }
                             ?>
                             <?php
