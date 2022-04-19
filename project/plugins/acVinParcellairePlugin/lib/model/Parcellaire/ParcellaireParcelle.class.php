@@ -233,7 +233,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
     
     public function getSuperficieInAire($airename) {
-        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $jsonFolder => $infos) {
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
             if ($infos["name"] != $airename) {
                 continue ;
             }
@@ -242,7 +242,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             }
             $geoparcelle = geoPHP::load($this->getGeoJson());
             $global_pc = 0;
-            foreach($this->document->getGeoPHPDelimitations($jsonFolder) as $d) {
+            foreach($this->document->getGeoPHPDelimitations($infos['denumination_id']) as $d) {
                 $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
                 if ($pc > 0.99) {
                     $global_pc = 1;
@@ -257,8 +257,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     
     public function isInAires() {
         $aires = [];
-        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $jsonFolder => $infos) {
-            $res = $this->geojsonInGeojsonAire($jsonFolder);
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
+            $res = $this->geojsonInGeojsonAire($infos['denumination_id']);
             if ($res) {
                 $aires[$infos["name"]] = $res;
             }
@@ -266,16 +266,16 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $aires;
     }
 
-    public function geojsonInGeojsonAire($jsonFolder = null) {
-        if (!$jsonFolder) {
-            $jsonFolder = ParcellaireClient::getInstance()->getDefaultCommune();
+    public function geojsonInGeojsonAire($inao_denomination_id = null) {
+        if (!$inao_denomination_id) {
+            $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
         }
         if(!$this->getGeoJson()) {
             return null;
         }
 
         $geoparcelle = geoPHP::load($this->getGeoJson());
-        $aire = $this->document->getGeoPHPDelimitations($jsonFolder);
+        $aire = $this->document->getGeoPHPDelimitations($inao_denomination_id);
         if (!$aire) {
             return null;
         }
