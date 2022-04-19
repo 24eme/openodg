@@ -240,7 +240,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             if(!$this->getGeoJson()) {
                 continue;
             }
-            if (!method_exists('geoPHP','load')) {
+            if (!geophp::geosInstalled()) {
                 throw new sfException("php-geos needed");
             }
             $geoparcelle = geoPHP::load($this->getGeoJson());
@@ -276,7 +276,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         if(!$this->getGeoJson()) {
             return null;
         }
-        if (!method_exists('geoPHP','load')) {
+        if (!geophp::geosInstalled()) {
             throw new sfException("php-geos needed");
         }
         $geoparcelle = geoPHP::load($this->getGeoJson());
