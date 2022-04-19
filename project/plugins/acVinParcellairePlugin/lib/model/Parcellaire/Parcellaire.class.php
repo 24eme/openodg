@@ -266,7 +266,7 @@ class Parcellaire extends BaseParcellaire {
 
     public function getAire($inao_denomination_id = null) {
         if (!$inao_denomination_id) {
-            $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultCommune();
+            $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
         }
         return ParcellaireClient::getInstance()->getAire($inao_denomination_id, $this->declaration->getCommunes());
     }
