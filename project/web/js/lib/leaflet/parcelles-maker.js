@@ -45,7 +45,7 @@ function onLocationFound(e) {
     var radius = e.accuracy / 100;
     L.marker(e.latlng,{icon: icon}).addTo(map);
     L.circle(e.latlng, radius).addTo(map);
-    map.setView(e.latlng, minZoom);    
+    map.setView(e.latlng, minZoom);
 }
 function onLocationError(e) {
     alert("Vous n'êtes actuellement pas localisable. Veuillez activer la localisation.");
@@ -96,7 +96,7 @@ function styleDelimitation(color, opacity){
 }
 
 function zoomOnMap(){
-    map.fitBounds(layers["Parcelles"].getBounds());
+    map.fitBounds(layers[parcelles_name].getBounds());
     clearParcelleSelected()
 }
 var sections = []
@@ -127,7 +127,8 @@ function onEachFeature(feature, layer) {
             );
 }
 var layers = [];
-layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+parcelles_name = '<span style="background-color: white; border: 2px solid red; width: 25px; display:inline-block;"> &nbsp; </span> Parcelles'
+layers[parcelles_name] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
 for(i in sections) {
     map.addLayer( new L.Marker(
                     sections[i].getCenter(),
@@ -144,24 +145,19 @@ for(i in sections) {
 }
 
 for(i in aires) {
-  layers[aires[i]['name']] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
-  layers[aires[i]['name']].addTo(map);
+  name = '<span style="background-color: '+aires[i]['color']+'; width: 25px; display:inline-block;"> &nbsp; </span> ' + aires[i]['name'];
+  layers[name] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
+  layers[name].addTo(map);
 };
-layers["Parcelles"] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
-layers["Parcelles"].addTo(map);
+layers[parcelles_name] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+layers[parcelles_name].addTo(map);
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
 map.addEventListener('overlayadd', function(e) {
     for(name in layers) {
         layers[name].bringToFront();
     }
-});
-
-L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
-map.addEventListener('overlayadd', function(e) {
-    for(name in layers) {
-        layers[name].bringToFront();
-    }
+    layers[parcelles_name].bringToFront();
 });
 
 zoomOnMap();
