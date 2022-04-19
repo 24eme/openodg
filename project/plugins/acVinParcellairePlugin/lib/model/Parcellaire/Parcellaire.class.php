@@ -282,9 +282,9 @@ class Parcellaire extends BaseParcellaire {
         }
         if (!$this->cache_geophpdelimitation) {
             $this->cache_geophpdelimitation = [];
-            foreach(ParcellaireClient::getInstance()->getDenominations() as $c) {
-                foreach ($this->getAire($denom_id, $c) as $d) {
-                    $this->cache_geophpdelimitation[$denom_id][] = geoPHP::load($d);
+            foreach(ParcellaireClient::getInstance()->getDenominations() as $did) {
+                foreach($this->getAire($did) as $d) {
+                    $this->cache_geophpdelimitation[$did][] = geoPHP::load($d);
                 }
             }
         }
