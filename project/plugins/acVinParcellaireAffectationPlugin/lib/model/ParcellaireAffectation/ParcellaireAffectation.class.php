@@ -86,8 +86,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-  		}
-    }
+	}
   }
 
   public function getConfiguration() {
