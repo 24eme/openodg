@@ -579,7 +579,12 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         $decl = clone $this->lots[0];
         $decl->produit_hash = null;
         $decl->produit_libelle = "Vin sans IG";
-        $decl->cepages = null;
+        $decl->remove('cepages');
+        $decl->add('cepages');
+        foreach ($this->changement_cepages as $cep => $vol) {
+            $decl->cepages->add($cep, $vol);
+        }
+        $decl->numero_logement_operateur = $this->changement_numero_logement_operateur;
         $decl->millesime = null;
         $decl->volume = $this->changement_volume;
         $lots_res[] = $decl;
