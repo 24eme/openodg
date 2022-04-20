@@ -197,7 +197,7 @@ rm $EXPORTDIR/lots-historique.csv.sorted
 rm $EXPORTDIR/lots-historique.csv.sorted.join
 rm $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
-rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted
+rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted $EXPORTDIR/lots_cleancepages.csv.part
 
 bash bin/export_docs.sh Degustation $WAITSLEEP $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
