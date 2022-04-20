@@ -39,13 +39,16 @@ class ConditionnementValidationForm extends acCouchdbForm
             $this->setWidget('date_commission', new bsWidgetFormInput(array(), array('required' => true)));
             $this->setValidator('date_commission', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
+            $degustations = DRevValidationForm::getDegustationChoices();
             if ($this->getDocument()->exist('date_commission') && $this->getDocument()->date_commission) {
                 $this->setDefault('date_commission', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_commission)->format('d/m/Y'));
-            } else {
-                $this->setWidget('degustation',new bsWidgetFormChoice( array('choices' => DRevValidationForm::getDegustationChoices()), array('required' => true)));
+            } elseif(count($degustations) > 0) {
+                $this->setWidget('degustation',new bsWidgetFormChoice( array('choices' => $degustations), array('required' => true)));
                 $this->setValidator('degustation', new sfValidatorPass(array('required' => false)));
                 $this->widgetSchema['date_commission']->setAttribute('required', false);
                 $this->getWidget('date_commission')->setAttribute('class', 'form-control hidden');
+            } else {
+                $this->setDefault('date_commission', date('d/m/Y'));
             }
         }
 
