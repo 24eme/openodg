@@ -36,6 +36,10 @@ mkdir $EXPORTDIR 2> /dev/null
 
 APPLICATION=$(echo -n $SYMFONYTASKOPTIONS | sed -r 's/.*--application=([^ ]+).*/\1/')
 
+if ! test $WAITSLEEP ; then
+WAITSLEEP=30
+fi
+
 php symfony export:etablissements-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/etablissements.csv.part
 cat $EXPORTDIR/etablissements.csv.part | sort | grep -E "^(Login)" > $EXPORTDIR/etablissements.csv.sorted.part
 cat $EXPORTDIR/etablissements.csv.part | sort | grep -Ev "^(Login)" >> $EXPORTDIR/etablissements.csv.sorted.part
@@ -44,7 +48,7 @@ cat $EXPORTDIR/etablissements.en.csv | sed 's/;/ø/g' | awk -F ',' 'BEGIN { OFS=
 rm $EXPORTDIR/etablissements.csv.part $EXPORTDIR/etablissements.csv.sorted.part
 ln -s etablissements.en.csv $EXPORTDIR/etablissements.iso8859.csv 2> /dev/null # Pour l'AVPI en provence
 
-sleep 60
+sleep $WAITSLEEP
 
 php symfony export:chais-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/chais.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/chais.csv.part > $EXPORTDIR/chais.en.csv
@@ -52,7 +56,7 @@ cat $EXPORTDIR/chais.en.csv | sed 's/;/ø/g' | awk -F ',' 'BEGIN { OFS=";" }{ $1
 rm $EXPORTDIR/chais.csv.part
 ln -s chais.en.csv $EXPORTDIR/chais.iso8859.csv 2> /dev/null # Pour l'AVPI en provence
 
-sleep 60
+sleep $WAITSLEEP
 
 php symfony export:societe $SYMFONYTASKOPTIONS > $EXPORTDIR/societe.csv.part
 head -n 1 $EXPORTDIR/societe.csv.part > $EXPORTDIR/societe.csv.part.head
@@ -62,17 +66,17 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/societe.csv.part > $EXPORTDIR/soc
 rm $EXPORTDIR/societe.csv.part $EXPORTDIR/societe.csv.part.head $EXPORTDIR/societe.csv.part.body
 mv -f $EXPORTDIR/societe.iso.csv $EXPORTDIR/societe.csv
 
-sleep 60
+sleep $WAITSLEEP
 
-bash bin/export_docs.sh DRev 30 $1 > $EXPORTDIR/drev.csv.part
+bash bin/export_docs.sh DRev $WAITSLEEP $1 > $EXPORTDIR/drev.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/drev.csv.part > $EXPORTDIR/drev.csv
 rm $EXPORTDIR/drev.csv.part
 
-bash bin/export_docs.sh ChgtDenom 30 $1 > $EXPORTDIR/changement_denomination.csv.part
+bash bin/export_docs.sh ChgtDenom $WAITSLEEP $1 > $EXPORTDIR/changement_denomination.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/changement_denomination.csv.part > $EXPORTDIR/changement_denomination.csv
 rm $EXPORTDIR/changement_denomination.csv.part
 
-sleep 60
+sleep $WAITSLEEP
 
 php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_cepages_lots.csv.part
 
@@ -98,7 +102,7 @@ rm $EXPORTDIR/transaction_lots.csv.part
 
 rm $EXPORTDIR/declarations_lots.csv.part
 
-bash bin/export_docs.sh Habilitation 30 $1 > $EXPORTDIR/habilitation.csv.part
+bash bin/export_docs.sh Habilitation $WAITSLEEP $1 > $EXPORTDIR/habilitation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
 rm $EXPORTDIR/habilitation.csv.part
 
@@ -108,12 +112,12 @@ php bin/export/export_liste_inao.php $EXPORTDIR/habilitation_demandes.csv.part |
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_inao.csv.part > $EXPORTDIR/habilitation_demandes_inao.csv
 rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_inao.csv.part
 
-sleep 60
+sleep $WAITSLEEP
 
 if [ -z $IS_NO_VINIF ]; then
-  bash bin/export_docs.sh DR 30 $1 > $EXPORTDIR/production.csv.part
-  bash bin/export_docs.sh SV11 30 $1 >> $EXPORTDIR/production.csv.part
-  bash bin/export_docs.sh SV12 30 $1 >> $EXPORTDIR/production.csv.part
+  bash bin/export_docs.sh DR $WAITSLEEP $1 > $EXPORTDIR/production.csv.part
+  bash bin/export_docs.sh SV11 $WAITSLEEP $1 >> $EXPORTDIR/production.csv.part
+  bash bin/export_docs.sh SV12 $WAITSLEEP $1 >> $EXPORTDIR/production.csv.part
   head -n 1 $EXPORTDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/production.csv
   cat $EXPORTDIR/production.csv.part | grep -E '^(DR|SV)' | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | iconv -f UTF8 -t ISO88591//TRANSLIT >> $EXPORTDIR/production.csv
 
@@ -127,35 +131,35 @@ if [ -z $IS_NO_VINIF ]; then
   rm $EXPORTDIR/production.csv.part
 fi
 
-bash bin/export_docs.sh ParcellaireIrrigable 30 $1 > $EXPORTDIR/parcellaireirrigable.csv.part
+bash bin/export_docs.sh ParcellaireIrrigable $WAITSLEEP $1 > $EXPORTDIR/parcellaireirrigable.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigable.csv.part > $EXPORTDIR/parcellaireirrigable.csv
 rm $EXPORTDIR/parcellaireirrigable.csv.part
 
-bash bin/export_docs.sh ParcellaireIrrigue 30 $1 > $EXPORTDIR/parcellaireirrigue.csv.part
+bash bin/export_docs.sh ParcellaireIrrigue $WAITSLEEP $1 > $EXPORTDIR/parcellaireirrigue.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireirrigue.csv.part > $EXPORTDIR/parcellaireirrigue.csv
 rm $EXPORTDIR/parcellaireirrigue.csv.part
 
-bash bin/export_docs.sh ParcellaireIntentionAffectation 30 $1 > $EXPORTDIR/parcellaireintentionaffectation.csv.part
+bash bin/export_docs.sh ParcellaireIntentionAffectation $WAITSLEEP $1 > $EXPORTDIR/parcellaireintentionaffectation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireintentionaffectation.csv.part > $EXPORTDIR/parcellaireintentionaffectation.csv
 rm $EXPORTDIR/parcellaireintentionaffectation.csv.part
 
-bash bin/export_docs.sh ParcellaireAffectation 30 $1 > $EXPORTDIR/parcellaireaffectation.csv.part
+bash bin/export_docs.sh ParcellaireAffectation $WAITSLEEP $1 > $EXPORTDIR/parcellaireaffectation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireaffectation.csv.part > $EXPORTDIR/parcellaireaffectation.csv
 rm $EXPORTDIR/parcellaireaffectation.csv.part
 
-#sleep 60
+#sleep $WAITSLEEP
 
 php symfony pieces:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/pieces.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pieces.csv.part > $EXPORTDIR/pieces.csv
 rm $EXPORTDIR/pieces.csv.part
 
-#sleep 60
+#sleep $WAITSLEEP
 
 php symfony liaisons:export-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/liaisons.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/liaisons.csv.part > $EXPORTDIR/liaisons.csv
 rm $EXPORTDIR/liaisons.csv.part
 
-#sleep 60
+#sleep $WAITSLEEP
 
 php symfony compte:export-all-csv $SYMFONYTASKOPTIONS >  $EXPORTDIR/comptes.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/comptes.csv.part > $EXPORTDIR/comptes.csv
@@ -195,7 +199,7 @@ rm $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
 rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted
 
-bash bin/export_docs.sh Degustation 30 $1 > $EXPORTDIR/degustations.csv.part
+bash bin/export_docs.sh Degustation $WAITSLEEP $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
 rm $EXPORTDIR/degustations.csv.part
 
