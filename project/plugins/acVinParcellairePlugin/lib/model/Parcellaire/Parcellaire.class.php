@@ -279,7 +279,7 @@ class Parcellaire extends BaseParcellaire {
 
         if(strpos($import, "Document is missing attachment")) {
             sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
-            $this->cache_geojson = false;
+            $this->cache_geojson = array();
         }else{
             $this->cache_geojson = json_decode($import);
         }
