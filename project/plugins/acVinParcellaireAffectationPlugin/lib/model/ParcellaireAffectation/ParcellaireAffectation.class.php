@@ -88,8 +88,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
   		}
     }
-  }
-
+    
   public function getConfiguration() {
 
       return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-03-01');
