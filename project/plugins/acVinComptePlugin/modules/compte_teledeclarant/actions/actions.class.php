@@ -212,27 +212,31 @@ class compte_teledeclarantActions extends sfActions {
         $this->getResponse()->setHttpHeader('Expires', '0');
         return $this->renderText(file_get_contents($path));
     }
-    
+
     public function executeViticonnect(sfWebRequest $request)
     {
         $secret = sfConfig::get('app_viticonnect_secret');;
-        
+
         $login = $request->getParameter('login');
-        
+
         $epoch = $request->getParameter('epoch');
         if(abs(time() - $epoch) > 30) {
             http_response_code(403);
             die('Forbidden');
         }
-        
+
         $md5 = $request->getParameter('md5');
-        
+
         if ($md5 != md5($secret."/".$login."/".$epoch)) {
             http_response_code(401);
             die("Unauthorized");
         }
 
-        $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin($login);
+        $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin(strtolower($login));
+        if (!$compte) {
+            http_response_code(401);
+            die("Unauthorized $login");
+        }
         $this->entities = array('raison_sociale' => [], 'cvi' => [], 'siret' => [], 'ppm' => [], 'accise' => [], 'tva' => []);
         $this->entities_number = 0;
         foreach($compte->getSociete()->getEtablissementsObj() as $e) {
