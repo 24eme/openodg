@@ -80,8 +80,11 @@ class GenerationExportComptable extends GenerationAbstract
 
             if(!$facture->versement_comptable_paiement) {
                 $export = new ExportFacturePaiementsCSV($facture, false, true);
-                $paiements_buffer .= $export->exportFacturePaiements($date_mouvement, true);
-                $this->generation->documents->add(null, $facture->_id);
+                $csvPaiement = $export->exportFacturePaiements($date_mouvement, true);
+                $paiements_buffer .= $csvPaiement;
+                if($csvPaiement) {
+                    $this->generation->documents->add(null, $facture->_id);
+                }
                 $facture->save();
             }
 
