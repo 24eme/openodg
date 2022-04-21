@@ -2,11 +2,187 @@ all:
   configuration:
     parcellaire:
       aires:
-        cotedurhone:
+        CotesduRhone:
           name: "Côtes du Rhône"
-          color: "#b6166b"
-          denumination_id: "01344"
-        cdrvillage:
+          color: "#E53935"
+          denomination_id: "01344"
+        CotesduRhoneVillages:
           name: "Côtes du Rhône Villages"
-          color: "#52e536"
-          denumination_id: "01345"
+          color: "#FDD835"
+          denomination_id: "01345"
+        BeaumesdeVenise:
+          name: "Beaumes de Venise"
+          color: "#D81B60"
+          denomination_id: "02642"
+        Cairanne:
+          name: "Cairanne"
+          color: "#8E24AA"
+          denomination_id: "01996"
+        ChateauGrillet:
+          name: "Chateau Grillet"
+          color: "#43A047"
+          denomination_id: "01335"
+        ChateauneufduPape:
+          name: "Chateauneuf du Pape"
+          color: "#6D4C41"
+          denomination_id: "01336"
+        Condrieu:
+          name: "Condrieu"
+          color: "#1E88E5"
+          denomination_id: "01339"
+        Cornas:
+          name: "Cornas"
+          color: "#00ACC1"
+          denomination_id: "01340"
+        CoteRotie:
+          name: "Côte Rotie"
+          color: "#7CB342"
+          denomination_id: "01341"
+        CotesduRhoneVillagesChusclan:
+          name: "Côtes du Rhône Villages Chusclan"
+          color: "#C0CA33"
+          denomination_id: "01348"
+        CotesduRhoneVillagesGadagne:
+          name: "Côtes du Rhône Villages Gadagne"
+          color: "#FFB300"
+          denomination_id: "02527"
+        CotesduRhoneVillagesLaudun:
+          name: "Côtes du Rhône Villages Laudun"
+          color: "#FB8C00"
+          denomination_id: "01349"
+        CotesduRhoneVillagesMassifd'Uchaux:
+          name: "Côtes du Rhône Villages Massif d'Uchaux"
+          color: "#5E35B1"
+          denomination_id: "01708"
+#        CotesduRhoneVillagesNyons:
+#          name: "Côtes du Rhône Villages Nyons"
+#          color: "#00897B"
+#          denomination_id: 
+        CotesduRhoneVillagesPlandeDieu:
+          name: "Côtes du Rhône Villages Plan de Dieu"
+          color: "#F4511E"
+          denomination_id: "01709"
+        CotesduRhoneVillagesPuymeras:
+          name: "Côtes du Rhône Villages Puymeras"
+          color: "#3949AB"
+          denomination_id: "01710"
+        CotesduRhoneVillagesRoaix:
+          name: "Côtes du Rhône Villages Roaix"
+          color: "#039BE5"
+          denomination_id: "01351"
+        CotesduRhoneVillagesRochegude:
+          name: "Côtes du Rhône Villages Rochegude"
+          color: "#757575"
+          denomination_id: "01352"
+        CotesduRhoneVillagesRoussetlesVignes:
+          name: "Côtes du Rhône Villages Rousset les Vignes"
+          color: "#546E7A"
+          denomination_id: "01353"
+        CotesduRhoneVillagesSablet:
+          name: "Côtes du Rhône Villages Sablet"
+          color: "#C62828"
+          denomination_id: "01354"
+#        CotesduRhoneVillagesSaintAndeol:
+#          name: "Côtes du Rhône Villages Saint-Andéol"
+#          color: "#F9A825"
+#          denomination_id: 
+        CotesduRhoneVillagesSainte-Cecile:
+          name: "Côtes du Rhône Villages Sainte-Cecile"
+          color: "#AD1457"
+          denomination_id: "02826"
+        CotesduRhoneVillagesSaintGervais:
+          name: "Côtes du Rhône Villages Saint Gervais"
+          color: "#6A1B9A"
+          denomination_id: "01355"
+        CotesduRhoneVillagesSaintMaurice:
+          name: "Côtes du Rhône Villages Saint Maurice"
+          color: "#2E7D32"
+          denomination_id: "01356"
+        CotesduRhoneVillagesSaintPantaleonlesVignes:
+          name: "Côtes du Rhône Villages Saint Pantaleon les Vignes"
+          color: "#4E342E"
+          denomination_id: "01357"
+        CotesduRhoneVillagesSeguret:
+          name: "Côtes du Rhône Villages Seguret"
+          color: "#1565C0"
+          denomination_id: "01358"
+        CotesduRhoneVillagesSignargues:
+          name: "Côtes du Rhône Villages Signargues"
+          color: "#00838F"
+          denomination_id: "01711"
+        CotesduRhoneVillagesSuzelaRousse:
+          name: "Côtes du Rhône Villages Suze la Rousse"
+          color: "#558B2F"
+          denomination_id: "02827"
+#        CotesduRhoneVillagesVaisonlaRomaine:
+#          name: "Côtes du Rhône Villages Vaison la Romaine"
+#          color: "#9E9D24"
+#          denomination_id: 
+        CotesduRhoneVillagesValreas:
+          name: "Côtes du Rhône Villages Valreas"
+          color: "#FF8F00"
+          denomination_id: "01359"
+#        CotesduRhoneVillagesVisan:
+#          name: "Côtes du Rhône Villages Visan"
+#          color: "#EF6C00"
+#          denomination_id: 
+        CotesduVivarais:
+          name: "Cotes du Vivarais"
+          color: "#4527A0"
+          denomination_id: "01374"
+        CrozesHermitage:
+          name: "Crozes Hermitage"
+          color: "#00695C"
+          denomination_id: "01365"
+        Gigondas:
+          name: "Gigondas"
+          color: "#D84315"
+          denomination_id: "01366"
+        GrignanlesAdhemar:
+          name: "Grignan les Adhémar"
+          color: "#283593"
+          denomination_id: "02295"
+        Hermitage:
+          name: "Hermitage"
+          color: "#0277BD"
+          denomination_id: "01367"
+#        HermitagePaille:
+#          name: "Hermitage Paille"
+#          color: "#37474F"
+#          denomination_id: 
+        Lirac:
+          name: "Lirac"
+          color: "#EF5350"
+          denomination_id: "01368"
+        Rasteau:
+          name: "Rasteau"
+          color: "#FFEE58"
+          denomination_id: "01403"
+        SaintJoseph:
+          name: "Saint Joseph"
+          color: "#EC407A"
+          denomination_id: "01369"
+        SaintPeray:
+          name: "Saint Peray"
+          color: "#AB47BC"
+          denomination_id: "01370"
+        Tavel:
+          name: "Tavel"
+          color: "#66BB6A"
+          denomination_id: "01372"
+#        Vacqueyras:
+#          name: "Vacqueyras"
+#          color: "#8D6E63"
+#          denomination_id: 
+        VDNMuscatdeBeaumesdeVenise:
+          name: "VDN Muscat de Beaumes de Venise"
+          color: "#42A5F5"
+          denomination_id: "01398"
+        VDNRasteau:
+          name: "VDN Rasteau"
+          color: "#26C6DA"
+          denomination_id: "01403"
+        Vinsobres:
+          name: "Vinsobres"
+          color: "#9CCC65"
+          denomination_id: "02770"
