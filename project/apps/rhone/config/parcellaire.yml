@@ -1,0 +1,12 @@
+all:
+  configuration:
+    parcellaire:
+      aires:
+        cotedurhone:
+          name: "Côtes du Rhône"
+          color: "#b6166b"
+          denumination_id: "01344"
+        cdrvillage:
+          name: "Côtes du Rhône Villages"
+          color: "#52e536"
+          denumination_id: "01345"
