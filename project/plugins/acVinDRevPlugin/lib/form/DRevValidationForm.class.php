@@ -42,6 +42,7 @@ class DRevValidationForm extends acCouchdbForm
             if ($this->getDocument()->exist('date_commission') && $this->getDocument()->date_commission) {
                 $this->setDefault('date_commission', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_commission)->format('d/m/Y'));
             } elseif(count($degustations) > 0) {
+                $this->setDefault('date_commission', array_key_first($degustations));
                 $this->setWidget('degustation',new bsWidgetFormChoice( array('choices' => $degustations), array('required' => true)));
                 $this->setValidator('degustation', new sfValidatorPass(array('required' => false)));
                 $this->widgetSchema['date_commission']->setAttribute('required', false);
