@@ -5,8 +5,8 @@ all:
         communes-aoc:
           name: "AOC Côte de Provence"
           color: "#e58ebc"
-          denumination_id: "01382"
+          denomination_id: "01382"
         communes-stevictoire:
           name: "AOC Sainte-Victoire"
           color: "#52e536"
-          denumination_id: "01702"
+          denomination_id: "01702"

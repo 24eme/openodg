@@ -232,7 +232,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         return null;
     }
-    
+
     public function getSuperficieInAire($airename) {
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
             if ($infos["name"] != $airename) {
@@ -246,7 +246,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             }
             $geoparcelle = geoPHP::load($this->getGeoJson());
             $global_pc = 0;
-            foreach($this->document->getGeoPHPDelimitations($infos['denumination_id']) as $d) {
+            foreach($this->document->getGeoPHPDelimitations($infos['denomination_id']) as $d) {
                 $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
                 if ($pc > 0.99) {
                     $global_pc = 1;
