@@ -75,8 +75,8 @@ class ParcellaireClient extends acCouchdbClient {
     public function getDenominations() {
         $res = array();
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $a) {
-            if ($a["denumination_id"]) {
-                $res[$a["denumination_id"]] = $a["denumination_id"];
+            if ($a["denomination_id"]) {
+                $res[$a["denomination_id"]] = $a["denomination_id"];
             }
         }
         return array_keys($res);
