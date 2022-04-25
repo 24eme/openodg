@@ -125,6 +125,11 @@ class Organisme
         return $this->getInfo('oi');
     }
 
+    public function getOiMed() {
+
+        return $this->getInfo('oimed');
+    }
+
     public function getUrl() {
 
         return $this->getInfo('url');
