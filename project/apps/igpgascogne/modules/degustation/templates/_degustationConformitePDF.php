@@ -78,10 +78,6 @@
 
 <table>
   <tr>
-    <td>Nous vous invitons à nous signaler toute modification ultérieure dans la constitution ou la destination finale de ces lots.</td>
-  </tr>
-  <br/>
-  <tr>
     <td>Veuillez accepter, Madame, Monsieur, nos plus sincères et cordiales salutations.</td>
   </tr>
 </table>
