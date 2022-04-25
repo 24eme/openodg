@@ -118,6 +118,7 @@
                 <th class="col-xs-1 text-right">Prix unitaire</th>
                 <th class="col-xs-1 text-right">TVA</th>
                 <th class="col-xs-1 text-right">Total HT</th>
+                <th class="col-xs-1 text-right"></th>
             </tr>
         </thead>
         <tbody>
@@ -134,6 +135,11 @@
                             <td class="text-right"><?php echoFloat($detail->prix_unitaire); ?> €</td>
                             <td class="text-right"><?php echo ($detail->taux_tva) ? echoFloat($detail->montant_tva)." €" : null; ?></td>
                             <td class="text-right"><?php echo echoFloat($detail->montant_ht); ?> €</td>
+                            <td>
+                                <?php if($first): ?>
+                                <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-xs btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                         <?php $first = false; ?>
                     <?php endforeach; ?>
