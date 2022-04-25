@@ -687,8 +687,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       $lot = $this->getLotOrigine();
       $libelle = ($this->isDeclassement())? 'Déclassement' : 'Changement de dénomination';
       $libelle .= ($this->isTotal())? '' : ' partiel';
+      $libelle .= ' n° '.$this->numero_archive.' -';
       $libelle .= ' lot de '.$this->origine_produit_libelle.' '.$this->origine_millesime;
-      $libelle .= ' (logement '.$this->origine_numero_logement_operateur.')';
+      $libelle .= ' - logement '.$this->origine_numero_logement_operateur.' ';
       $libelle .= ($this->isPapier())? ' (Papier)' : ' (Télédéclaration)';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),

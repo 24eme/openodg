@@ -23,7 +23,10 @@ class ExportChgtDenomPDF extends ExportDeclarationLotsPDF {
 
 
     protected function getHeaderTitle() {
-       return "Changement de dénomination";
+       if ($this->chgtdenom->isDeclassement()) {
+           return "Déclassement n° ".$this->chgtdenom->numero_archive;
+       }
+       return "Changement de dénomination n° ".$this->chgtdenom->numero_archive;
     }
 
 
