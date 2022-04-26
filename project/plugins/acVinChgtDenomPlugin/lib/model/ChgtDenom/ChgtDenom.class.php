@@ -812,9 +812,21 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getFirstChgtDenomFacturable($produitFilter = null)
     {
-      $chgtdenom = $this->getChgtDenomToday($produitFilter);
-      $first = current($chgtdenom);
-      return $first !== false && $first->_id == $this->_id;
+      $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
+          $this->identifiant,
+          substr($this->validation, 0, 7)
+      );
+
+      $today = [];
+      foreach ($chgtdenoms as $chgt) {
+          if ($chgt->validation_odg && substr($chgt->validation, 0, 10) === substr($this->validation, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
+              $today[$chgt->_id] = $chgt->_id;
+          }
+      }
+      ksort($today);
+
+      $first = current($today);
+      return $first !== false && $first == $this->_id;
     }
 
     public function getSecondChgtDenomFacturable($produitFilter = null)
@@ -902,24 +914,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         return false;
-    }
-
-    private function getChgtDenomToday($produitFilter = null)
-    {
-        $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
-            $this->identifiant,
-            substr($this->validation, 0, 4)
-        );
-
-        $today = [];
-        foreach ($chgtdenoms as $chgt) {
-            if ($chgt->validation_odg && substr($chgt->validation, 0, 10) === substr($this->validation, 0, 10) && $this->matchFilter($produitFilter, $chgt)) {
-                $today[$chgt->_id] = $chgt;
-            }
-        }
-        ksort($today);
-
-        return $today;
     }
 
     private function origineFilter($filter)
