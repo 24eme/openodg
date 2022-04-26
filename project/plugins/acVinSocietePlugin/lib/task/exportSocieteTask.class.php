@@ -37,7 +37,7 @@ EOF;
              sleep(2);
              $cpt = 0;
          }
-        $soc = SocieteClient::getInstance()->find($socdata->id, acCouchdbClient::HYDRATE_JSON);
+        $soc = SocieteClient::getInstance()->find($socdata->id);
 
         $export = new ExportSocieteCSV($soc, false);
         echo $export->export();

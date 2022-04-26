@@ -35,6 +35,7 @@ class ExportComptesCsv
             "Email",
             "Site",
             "Compte Type",
+            "En alerte",
             "Tags",
             "N° Compte Type"
         ];
@@ -89,6 +90,7 @@ class ExportComptesCsv
                 $compte->email,
                 "https://$domaine/$type/$compte->identifiant/visualisation",
                 $compte->compte_type,
+                $compte->isEnAlerte(),
                 implode(',',$tagsArray),
                 $compte->_id
             ];
