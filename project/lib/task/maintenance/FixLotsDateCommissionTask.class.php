@@ -64,9 +64,13 @@ EOF;
 
         if($lotOrigine) {
             $doc->changement_date_commission = $lotOrigine->date_commission;
-            if ( $last == $doc->_id && (date('Ymd') - str_replace('-', '', $doc->validation_odg)) > 200) {
+            if ( $last == $doc->_id && (date('Ymd') - str_replace('-', '', $doc->validation_odg)) > 10000) {
                 $doc->changement_affectable = false;
             }
+        }
+
+        if ( $last == $doc->_id && (date('Ymd') - str_replace('-', '', $doc->validation_odg)) > 10000) {
+            $doc->origine_affectable = false;
         }
 
         if($doc->changement_specificite == "UNDEFINED") {
