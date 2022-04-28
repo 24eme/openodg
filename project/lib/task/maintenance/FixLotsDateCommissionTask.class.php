@@ -76,9 +76,13 @@ EOF;
         $doc->updateStatut();
         $doc->generateLots();
 
-        if($doc->save()) {
-            echo $doc->_id.": saved\n";
-        }
+       try {
+           if($doc->save()) {
+               echo $doc->_id.": saved\n";
+           }
+       } catch(Error $e) {
+           echo $doc->_id.": error\n";
+       }
     }
   }
 }
