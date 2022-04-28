@@ -45,13 +45,36 @@ EOF;
     foreach($ids as $id) {
         $doc = DeclarationClient::getInstance()->find($id);
         $lotOrigine = $doc->getLotOrigine();
+
+        $mouvements = LotsClient::getInstance()->getHistory($doc->identifiant, $doc->changement_origine_lot_unique_id);
+        $ordre = array();
+        $degust = null;
+        foreach($mouvements as $m) {
+            if (strpos($m->id, 'DEGUSTATION') !== false) {
+                $degust = $m->id;
+            }
+            $ordre[explode(' ', $m->value->date)[0]] = $m->id;
+        }
+
+        if ($degust) {
+            $doc->changement_origine_id_document = $degust;
+        }
+
+        $last = array_pop($ordre);
+
         if($lotOrigine) {
             $doc->changement_date_commission = $lotOrigine->date_commission;
+            if ( $last == $doc->_id && (date('Ymd') - str_replace('-', '', $doc->validation_odg)) > 200) {
+                $doc->changement_affectable = false;
+            }
         }
 
         if($doc->changement_specificite == "UNDEFINED") {
             $doc->changement_specificite = "";
         }
+
+        $doc->updateStatut();
+        $doc->generateLots();
 
         if($doc->save()) {
             echo $doc->_id.": saved\n";
