@@ -84,6 +84,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     if(!$intention) {
         return;
     }
+    $intention->updateParcelles();
 	foreach ($intention->getParcelles() as $parcelle) {
 	    $produit = $parcelle->getProduit();
         $hash = str_replace('/declaration/', '', $produit->getHash());
