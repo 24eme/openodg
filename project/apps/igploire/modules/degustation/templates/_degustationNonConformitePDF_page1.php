@@ -44,7 +44,7 @@
   <tr><td>
     <ul>
       <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
-        <li><strong>Soit de vous opposer aux conclusions de ce contrôle et de demander un reprélèvement du même lot.</strong> Dans ce cas, veuillez nous retourner la fiche jointe dûment complétée. Le dossier sera transmis à l'ASJVAS (organisme d'inspection) sur notre demande ou sous quinzaine à compter de la date du présent courrier. (Frais à votre charge : 50€ HT)<br/>Attention : Durant cette période, votre lot NE peut PAS être commercialisé.</li>
+        <li><strong>Soit de vous opposer aux conclusions de ce contrôle et de demander un reprélèvement du même lot.</strong> Dans ce cas, veuillez nous retourner la fiche jointe dûment complétée. Le dossier sera transmis à l'ASSVAS (organisme d'inspection) sur notre demande ou sous quinzaine à compter de la date du présent courrier. (Frais à votre charge : 50€ HT)<br/>Attention : Durant cette période, votre lot NE peut PAS être commercialisé.</li>
       <?php else: ?>
         <li>Soit d’exécuter l’action corrective recommandée dans la fiche de non-conformité ci jointe. Dans cette hypothèse, votre vin pourra être soumis à une deuxième dégustation après que nous ayons procédé à un nouveau prélèvement, et ce dans un délai minimum de 15 jours à compter de la réception de votre demande de nouvelle présentation. Notez qu’après travail le vin concerné par la deuxième présentation peut être relogé&nbsp;:
           <ul>
