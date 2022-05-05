@@ -36,7 +36,7 @@
   foreach($lots as $k => $lot):
 ?>
   <div class="alert block-chgtDenom col-sm-<?php if (count($lots) == 1): ?>12<?php else: ?>6<?php endif; ?>">
-  <?php if($chgtDenom->isDeclassement() && $lot->statut == Lot::STATUT_DECLASSE): ?>
+  <?php if($chgtDenom->isDeclassement() && ($lot->statut == Lot::STATUT_DECLASSE || $lot->statut == Lot::STATUT_DECLASSE_OLD)): ?>
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
   <?php endif; ?>
     <div class="row">
