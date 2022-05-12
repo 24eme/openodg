@@ -1,3 +1,4 @@
+<?php $gitcommit = str_replace("\n", "", file_get_contents('../../.git/ORIG_HEAD'));?><!doctype html>
 <!doctype html>
 <!-- ####### PLEASE KEEP ####### -->
 <!--[if lte IE 6 ]><html class="no-js ie6 ielt7 ielt8 ielt9" lang="fr"><![endif]-->
@@ -15,7 +16,9 @@
         <link rel="icon" type="image/x-icon" href="/favico_igp13.ico" />
         <link rel="icon" type="image/png" href="/favico_igp13.png" />
 
-        <?php include_stylesheets() ?>
+        <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
         <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
