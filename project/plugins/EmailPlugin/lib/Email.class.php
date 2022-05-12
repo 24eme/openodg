@@ -18,10 +18,13 @@ class Email {
     }
 
     public function sendDRevValidation($drev) {
+        $nbSent = 0;
         $messages = $this->getMessagesDRevValidation($drev);
         foreach($messages as $message) {
             $this->getMailer()->send($message);
+            $nbSent++;
         }
+        return $nbSent;
     }
 
     public function getMessagesDRevValidation($drev) {
@@ -53,6 +56,10 @@ class Email {
     }
 
     public function getMessageDRevValidationDeclarant($drev) {
+        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+
+            return array();
+        }
         if (!$drev->declarant->email) {
 
             return array();
@@ -105,6 +112,10 @@ class Email {
     }
 
     public function getMessageDRevConfirmee($drev) {
+        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+
+            return array();
+        }
         if (!$drev->declarant->email) {
 
             return array();
@@ -132,6 +143,10 @@ class Email {
     }
 
     public function getMessageDrevPapierConfirmee($drev) {
+        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+
+            return array();
+        }
         if (!$drev->declarant->email) {
 
             return array();

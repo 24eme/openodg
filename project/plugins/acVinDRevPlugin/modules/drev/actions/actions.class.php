@@ -706,9 +706,11 @@ class drevActions extends sfActions {
             $this->drev->cleanLots();
             $this->drev->save();
 
-            Email::getInstance()->sendDRevValidation($this->drev);
+            $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
 
-            $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
+            if($nbSent > 0) {
+                $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
+            }
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
@@ -758,8 +760,10 @@ class drevActions extends sfActions {
         }
 
         if($this->drev->validation_odg) {
-            Email::getInstance()->sendDRevValidation($this->drev);
-            $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
+            $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
+            if($nbSent > 0) {
+                $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
+            }
         }
 
         return $this->redirect('drev_visualisation', $params);
