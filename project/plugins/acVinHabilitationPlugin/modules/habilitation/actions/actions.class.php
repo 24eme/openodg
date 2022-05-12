@@ -125,7 +125,7 @@ class habilitationActions extends sfActions {
         }
 
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->habilitations = HabilitationClient::getInstance()->getLastHabilitationsOrCreate($this->etablissement->identifiant);
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
@@ -136,11 +136,11 @@ class habilitationActions extends sfActions {
         }
 
         if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && !HabilitationConfiguration::getInstance()->isSuiviParDemande()) {
-          $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
+          $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitations[0]);
         }
 
         if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
-            $this->editForm = new HabilitationEditionForm($this->habilitation);
+            $this->editForm = new HabilitationEditionForm($this->habilitations[0]);
         }
 
         if($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && class_exists("EtablissementChoiceForm")) {
@@ -281,7 +281,12 @@ class habilitationActions extends sfActions {
 
     public function executeDemandeCreation(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->habilitation = $this->getRoute()->getLastHabilitationOrCreate();
+
+        if (!$this->habilitation->_rev) {
+            $this->habilitation->save();
+            $this->habilitation = HabilitationClient::getInstance()->find($this->habilitation->_id);
+        }
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');

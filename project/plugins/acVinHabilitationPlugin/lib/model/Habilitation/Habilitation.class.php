@@ -24,8 +24,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->constructId();
     }
 
+    public function getEtablissementIdentifiant() {
+        return explode('C', $this->identifiant)[0];
+    }
+
     public function getDeclarant(){
-        $etablissement = EtablissementClient::getInstance()->find($this->identifiant);
+        $etablissement = EtablissementClient::getInstance()->find($this->getEtablissementIdentifiant());
         if(!$etablissement){
           return null;
         }
@@ -44,6 +48,14 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $declarant->telephone_mobile = $compte->telephone_mobile;
         $declarant->email = $compte->email ;
 
+        if ($this->exist('chais_id') && $this->chais_id) {
+            $declarant->nom = $etablissement->chais->get($this->chais_id)->nom;
+            $declarant->raison_sociale = $etablissement->chais[$this->chais_id]->nom;;
+            $declarant->adresse = $etablissement->chais[$this->chais_id]->adresse;
+            $declarant->commune = $etablissement->chais[$this->chais_id]->commune;
+            $declarant->code_postal = $etablissement->chais[$this->chais_id]->code_postal;
+        }
+
         return $declarant;
 
     }
@@ -54,7 +66,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     private function getTheoriticalId() {
       $date = str_ireplace("-","",$this->date);
-      return 'HABILITATION-' . $this->identifiant. '-'. $date;
+      if ($this->exist('chais_id') && $this->chais_id) {
+            return sprintf('HABILITATION-%sC%02d-%s', $this->getEtablissementIdentifiant(), $this->chais_id, $date);
+      }
+      return 'HABILITATION-' . $this->getEtablissementIdentifiant(). '-'. $date;
     }
 
     public function constructId() {
@@ -69,7 +84,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getProduitsConfig() {
-      return HabilitationClient::getProduitsConfig($this->getConfiguration());
+      return HabilitationClient::getInstance()->getProduitsConfig($this->getConfiguration());
     }
 
     public function getProduitsHabilites() {
@@ -122,10 +137,14 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->_get('validation_odg');
     }
 
-    public function initDoc($identifiant,$date) {
+    public function initDoc($identifiant, $date, $chaisid = null) {
         $this->identifiant = $identifiant;
         $this->date = $date;
         $etablissement = $this->getEtablissementObject();
+        if ($chaisid) {
+            $this->add('chais_id', $chaisid);
+            $this->identifiant = sprintf('%sC%02d', $identifiant, $this->chais_id);
+        }
         $this->constructId();
     }
 
@@ -169,7 +188,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getEtablissementObject() {
 
-        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+        return EtablissementClient::getInstance()->findByIdentifiant($this->getEtablissementIdentifiant());
+    }
+
+    public function getEtablissementChais() {
+        $e = $this->getEtablissementObject();
+        if (!$this->exist('chais_id') || !$this->chais_id) {
+            return $e;
+        }
+        return $e->chais[$this->chais_id];
     }
 
     public function getSociete() {
@@ -177,7 +204,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
   public function isLastOne(){
-    $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+    $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, null, acCouchdbClient::HYDRATE_JSON);
     if(!$last) {
         return true;
     }
@@ -232,7 +259,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
   public function getFullHistorique() {
     $historique = array();
-    foreach (HabilitationClient::getInstance()->getHistory($this->identifiant, $this->date, acCouchdbClient::HYDRATE_JSON) as $hab) {
+    foreach (HabilitationClient::getInstance()->getHistory($this->getEtablissementIdentifiant(), $this->date, acCouchdbClient::HYDRATE_JSON, null, 'ALL') as $hab) {
       if (isset($hab->historique)) {
         $historique = array_merge($historique, $hab->historique);
       }
@@ -247,7 +274,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
             return true;
         }
 
-        $lastHabilitation = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $lastHabilitation = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, null, acCouchdbClient::HYDRATE_JSON);
         if($lastHabilitation->_id != $this->_id) {
 
             return true;
@@ -320,7 +347,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function save() {
         $this->constructId();
 
-        $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, null, acCouchdbClient::HYDRATE_JSON);
 
         if($last && $last->_id > $this->_id) {
             $this->add('lecture_seule', true);

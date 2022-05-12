@@ -170,22 +170,22 @@ class HabilitationClient extends acCouchdbClient {
             return $doc;
         }
 
-        public function createDoc($identifiant, $date = '') {
+        public function createDoc($identifiant, $chaisid = null, $date = '') {
           if (!$date) {
             $date = date('Y-m-d');
           }
-          return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+          return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
         }
 
-        public function createOrGetDocFromIdentifiantAndDate($identifiant, $date)
+        public function createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid = null)
         {
-            $habilitation_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
+            $habilitation_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date, $chaisid);
             if ($habilitation_found && $habilitation_found->date === $date) {
               return $habilitation_found;
             }
             if (!$habilitation_found) {
               $habilitation = new Habilitation();
-              $habilitation->initDoc($identifiant,$date);
+              $habilitation->initDoc($identifiant, $date, $chaisid);
               $etablissement = $habilitation->getEtablissementObject();
             }else{
               $habilitation_found->date = $date;
@@ -193,11 +193,12 @@ class HabilitationClient extends acCouchdbClient {
               $habilitation_found = null;
             }
 
+
             return $habilitation;
         }
 
-        public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-          $h = $this->getHistory($identifiant, $date, $hydrate);
+        public function findPreviousByIdentifiantAndDate($identifiant, $date, $chaisid = 0, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $h = $this->getHistory($identifiant, $date, $hydrate, null, $chaisid);
           if (!count($h)) {
             return NULL;
           }
@@ -220,22 +221,46 @@ class HabilitationClient extends acCouchdbClient {
             return null;
         }
 
-        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = "0000-00-00") {
+        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = null, $chaisid = '0') {
+            if (!$dateDebut) {
+                $dateDebut = '0000-00-00';
+            }
 
-            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
+            if ($chaisid == 'ALL') {
+                return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
+                        ->endkey(sprintf(self::TYPE_COUCHDB."-%sC99-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
+            }
+            if ($chaisid == 0) {
+                return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
                         ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
+            }
+            if ($chaisid == 3){
+                throw new sfException("chais 3");
+            }
+            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $dateDebut)))
+                    ->endkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $date)))->execute($hydrate);
+            
         }
 
-        public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99', $hydrate);
+        public function getLastHabilitation($identifiant, $chaisid = 0, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99', $chaisid, $hydrate);
         }
 
-        public function getLastHabilitationOrCreate($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-            $habilitation = $this->getLastHabilitation($identifiant);
+        public function getLastHabilitationsOrCreate($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+            $habilitations = array();
+            $habilitations[] = $this->getLastHabilitationOrCreate($identifiant, 0, $hydrate);
+            for ($i = 1 ; $i < count($habilitations[0]->getEtablissementObject()->chais) ; $i++) {
+                $habilitations[] = $this->getLastHabilitationOrCreate($identifiant, $i, $hydrate);
+            }
+            return $habilitations;
+        }
+
+        public function getLastHabilitationOrCreate($identifiant, $chaisid = 0, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+
+            $habilitation = $this->getLastHabilitation($identifiant, $chaisid);
 
             if(!$habilitation) {
-
-                $habilitation = $this->createDoc($identifiant);
+                $habilitation = $this->createDoc($identifiant, $chaisid);
             }
 
             return $habilitation;
@@ -330,8 +355,8 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation->demandes->get($keyDemande);
         }
 
-        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
-            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+        public function createDemandeAndSave($identifiant, $chaisid, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
             ksort($demandesKey);

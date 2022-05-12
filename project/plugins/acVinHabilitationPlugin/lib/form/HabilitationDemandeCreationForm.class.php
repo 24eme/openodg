@@ -56,9 +56,9 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
                 }
             }
         }
-
         $demande = HabilitationClient::getInstance()->createDemandeAndSave(
-            $this->getDocument()->identifiant,
+            $this->getDocument()->getEtablissementIdentifiant(),
+            $this->getDocument()->getChaisId(),
             $values['demande'],
             $values['produit'],
             $values['activites'],
@@ -69,5 +69,9 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
         );
 
         return $demande;
+    }
+    
+    public function getEtablissementChais() {
+        return $this->getDocument()->getEtablissementChais();
     }
 }
