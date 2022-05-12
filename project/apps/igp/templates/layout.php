@@ -42,7 +42,7 @@
         <![endif]-->
         <!-- ####### PLEASE KEEP ####### -->
 
-            <div id="header">
+            <div id="header" class="hidden-print">
                 <?php include_partial('global/nav'); ?>
             </div>
 
