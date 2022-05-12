@@ -1,5 +1,5 @@
 <?php use_helper("Date") ?>
-<ol class="breadcrumb">
+<ol class="breadcrumb hidden-print">
   <?php if (!isset($degustation)): ?>
   <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <?php else: ?>
