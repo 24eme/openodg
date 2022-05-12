@@ -49,7 +49,7 @@ habilitation_edition:
 habilitation_ajout:
   url: /habilitation/declarant/:identifiant/ajout
   param: { module: habilitation, action: ajout }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object
@@ -59,7 +59,7 @@ habilitation_ajout:
 habilitation_demande_globale:
   url: /habilitation/declarant/:identifiant/demande/globale
   param: { module: habilitation, action: demandeGlobale }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object
@@ -69,7 +69,7 @@ habilitation_demande_globale:
 habilitation_demande_creation:
   url: /habilitation/declarant/:identifiant/demande/creation
   param: { module: habilitation, action: demandeCreation }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object
@@ -79,7 +79,7 @@ habilitation_demande_creation:
 habilitation_demande_edition:
   url: /habilitation/declarant/:identifiant/demande/edition/:demande
   param: { module: habilitation, action: demandeEdition }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object
@@ -89,7 +89,7 @@ habilitation_demande_edition:
 habilitation_demande_visualisation:
   url: /habilitation/declarant/:identifiant/demande/visualisation/:demande
   param: { module: habilitation, action: demandeVisualisation }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object
@@ -104,7 +104,7 @@ habilitation_export_historique:
 habilitation_demande_suppression_derniere:
   url: /habilitation/declarant/:identifiant/demande/suppression_derniere/:demande/:date/:statut
   param: { module: habilitation, action: demandeSuppressionDerniere }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object
@@ -114,7 +114,7 @@ habilitation_demande_suppression_derniere:
 habilitation_demande_commentaire_modification:
   url: /habilitation/declarant/:identifiant/demande/commentaire_modification/:demande/:date/:statut
   param: { module: habilitation, action: demandeModificationCommentaire }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object
@@ -124,7 +124,7 @@ habilitation_demande_commentaire_modification:
 certipaq_diff:
   url: /habilitation/certipaq/:identifiant/diff
   param: { module: habilitation, action certipaqDiff }
-  class: EtablissementRoute
+  class: EtablissementChaisRoute
   options:
     model:    Etablissement
     type:     object

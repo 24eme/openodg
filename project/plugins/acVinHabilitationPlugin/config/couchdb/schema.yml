@@ -6,6 +6,7 @@ Habilitation:
       _rev: { }
       type: { }
       identifiant: { }
+      chais_id: { required: false }
       validation: { required: false }
       validation_odg: { required: false }
       etape: { required: false }

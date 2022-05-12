@@ -1,5 +1,5 @@
 <?php
 
-class HabilitationDeclarantRoute extends EtablissementRoute implements InterfaceHabilitationRoute {
+class HabilitationDeclarantRoute extends EtablissementChaisRoute implements InterfaceHabilitationRoute {
 
 }

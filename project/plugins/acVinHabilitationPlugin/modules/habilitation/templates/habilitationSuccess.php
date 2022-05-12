@@ -4,11 +4,9 @@
     width: auto;
   }
 </style>
-
 <?php use_helper('Date'); ?>
-<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
-  $etablissement = $habilitation->getEtablissementObject();
- ?>
+<?php $habilitation = $habilitations[0]; ?>
+<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation )); ?>
 <div class="page-header no-border">
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
@@ -38,6 +36,13 @@
   <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
 <?php endif; ?>
 
+<?php foreach($habilitations as $hid => $habilitation): $etablissement = $habilitation->getEtablissementObject()->getRawValue(); ?>
+    <?php if (!$hid): ?>
+        <h3>Chais principal</h3>
+    <?php else: ?>
+        <h3>Chais secondaire - <?php echo $habilitation->declarant->nom; ?></h3>
+        <h4 class="text-muted"><?php echo $habilitation->declarant->adresse; ?> <?php echo $habilitation->declarant->code_postal; ?> <?php echo $habilitation->declarant->commune; ?></h4>
+    <?php endif; ?>
     <table style="margin-top: 30px;" class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
             <tr>
@@ -81,7 +86,7 @@
 
     <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
-        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
+        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', array('identifiant' => $habilitation->identifiant) ) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
         </div>
     <?php endif; ?>
 
@@ -92,7 +97,8 @@
             </div>
         </div>
     <?php endif; ?>
-
+<?php endforeach; ?>
+<?php $habilitation = $habilitations[0]; ?>
     <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
     <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
@@ -172,17 +178,17 @@
 <?php endif; ?>
 
 <?php if(isset($ajoutForm)): ?>
-<?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $etablissement), 'form' => $ajoutForm)); ?>
+<?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $habilitation->getEtablissementChais()), 'form' => $ajoutForm)); ?>
 <?php endif; ?>
 
 <?php if(isset($formDemandeCreation)): ?>
-<?php include_partial('habilitation/demandeCreationForm', array('form' => $formDemandeCreation, 'etablissement' => $etablissement)); ?>
+<?php include_partial('habilitation/demandeCreationForm', array('form' => $formDemandeCreation)); ?>
 <?php endif; ?>
 
 <?php if(isset($formDemandeGlobale)): ?>
-<?php include_partial('habilitation/demandeGlobaleForm', array('form' => $formDemandeGlobale, 'etablissement' => $etablissement)); ?>
+<?php include_partial('habilitation/demandeGlobaleForm', array('form' => $formDemandeGlobale)); ?>
 <?php endif; ?>
 
 <?php if(isset($formDemandeEdition)): ?>
-<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande, 'urlRetour' => $urlRetour)); ?>
+<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'demande' => $demande, 'urlRetour' => $urlRetour)); ?>
 <?php endif; ?>
