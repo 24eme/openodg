@@ -55,7 +55,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 
 	protected function getProduitsByRegion($region) {
 		$produits = array();
-		$regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+		$regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
 		foreach ($this->getProduits() as $hash => $produit) {
 		  	foreach ($regionRadixProduits as $filtre) {
 				if(!preg_match("|".$filtre."|", $hash)){
@@ -71,7 +71,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 
 	public function getSyndicats() {
 		$syndicats = array();
-		foreach (DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
 			if(!count($this->getProduitsByRegion($region))) {
 					continue;
 			}
@@ -112,7 +112,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 			$produits[$produit->getHash()] = $produit;
 		}
 
-		foreach (DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
 			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region);
 			foreach($produitsByRegion as $hash => $produit) {
 				unset($produits[$hash]);

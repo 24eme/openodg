@@ -10,7 +10,7 @@ class declarationActions extends sfActions {
       }
       $this->regionParam = $request->getParameter('region',null);
       if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
-        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($region);
+        $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
         if($regionRadixProduits){
             $params = $request->getGetParameters();
             $params['region'] = $region;
@@ -18,7 +18,7 @@ class declarationActions extends sfActions {
         }
       }
       if($this->regionParam){  //&& $this->getUser()->getTeledeclarationDrevRegion()){
-        $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($this->regionParam);
+        $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($this->regionParam);
         if($regionRadixProduits){
           $request->setParameter('produits-filtre',$regionRadixProduits);
         }
@@ -118,7 +118,7 @@ class declarationActions extends sfActions {
         }
 
         if($this->regionParam){
-          $regionRadixProduits = DrevConfiguration::getInstance()->getOdgProduits($this->regionParam);
+          $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($this->regionParam);
           if($regionRadixProduits){
             $request->setParameter('produits-filtre',$regionRadixProduits);
           }
@@ -168,7 +168,7 @@ class declarationActions extends sfActions {
 
     protected function buildSearch(sfWebRequest $request) {
 
-        $hasProduitsFilter = (class_exists("DrevConfiguration") && DrevConfiguration::getInstance()->hasOdgProduits());
+        $hasProduitsFilter = (class_exists("RegionConfiguration") && RegionConfiguration::getInstance()->hasOdgProduits());
         $this->query = $request->getParameter('query', array());
         if (!$this->query){
             $this->query = array();

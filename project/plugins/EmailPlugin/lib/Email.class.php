@@ -78,7 +78,7 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $odgs = sfConfig::get('drev_configuration_drev', []);
         foreach ($drev->declaration->getSyndicats() as $syndicat) {
-            $infos = DrevConfiguration::getInstance()->getOdgRegionInfos($syndicat);
+            $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat);
             if($drev->isValidateOdgByRegion($syndicat)) {
                 continue;
             }

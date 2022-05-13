@@ -48,50 +48,10 @@ class DRevConfiguration {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
 
-    public function hasOdgProduits() {
-      return isset($this->configuration['odg']) && count($this->configuration['odg']);
-    }
-
-    public function getOdgProduits($odgName) {
-      if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName]['produits']) ){
-        return array();
-      }
-      return $this->configuration['odg'][$odgName]['produits'];
-    }
-
-    public function getOdgINAOHabilitationFile($odgName) {
-      if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName]['inao']) ){
-        return null;
-      }
-      return $this->configuration['odg'][$odgName]['inao'];
-    }
-
-    public function getOdgRegions(){
-      if(!$this->hasOdgProduits()){
-        return array();
-      }
-      return array_keys($this->configuration['odg']);
-    }
-
     public function hasHabilitationINAO() {
         return isset($this->configuration['habilitation_inao']) && ($this->configuration['habilitation_inao']);
     }
-
-    public function getOdgRegionInfos($region){
-        if(!isset($this->configuration['odg']) || !array_key_exists($region,$this->configuration['odg']) || !isset($this->configuration['odg'][$region]) ){
-            return null;
-        }
-        $odgInfos = array();
-        foreach ($this->configuration['odg'][$region] as $key => $value) {
-          if(is_string($value) && preg_match("/^%.+%$/",$value)){
-            $odgInfos[$key] = sfConfig::get(str_replace("%",'',$value), '');
-          }else{
-            $odgInfos[$key] = $value;
-          }
-        }
-        return $odgInfos;
-    }
-
+    
     public function hasValidationOdgAuto(){
       return isset($this->configuration['validation_odg']) && $this->configuration['validation_odg'] == 'auto';
     }
@@ -115,7 +75,7 @@ class DRevConfiguration {
     public function hasValidationOdgAdminOrAuto(){
       return $this->hasValidationOdgAdmin() || $this->hasValidationOdgAuto();
     }
-
+    
     public function hasCgu(){
       return isset($this->configuration['cgu']) && boolval($this->configuration['cgu']);
     }
