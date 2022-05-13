@@ -10,6 +10,7 @@ all:
           produits:
             - "TRANQ/appellations/BEA"
             - "VDN/appellations/VDB"
+          habilitation_produits: "/Beaumes de Venise/"
         CAIRANNE:
           nom: "Syndicat de l’AOC Cairanne"
           adresse: "6 place des Vignerons, 84290 CAIRANNE"
@@ -17,6 +18,7 @@ all:
           email: "%app_drev_CAIRANNE_email%"
           produits:
             - "TRANQ/appellations/CAR"
+          habilitation_produits:  "/Cairanne/"
         VINSOBRES:
           nom: "Comité des Vignerons de Vinsobres"
           adresse: "8 rue Gironde, 26110 Vinsobres"
@@ -24,13 +26,15 @@ all:
           email: "%app_drev_VINSOBRES_email%"
           produits:
             - "TRANQ/appellations/VBR"
-        CHATEAUNEUFDUPAPE:
+          habilitation_produits: "/Vinsobres/"
+        CHATEAU_NEUF:
           nom: "Syndicat des Vignerons de Châteauneuf-du-Pape"
           adresse: "25 avenue Général De Gaulle, 84231 Châteauneuf-du-Pape"
           telephone: "%app_drev_CHATEAUNEUFDUPAPE_telephone%"
           email: "%app_drev_CHATEAUNEUFDUPAPE_email%"
           produits:
             - "TRANQ/appellations/CDP"
+          habilitation_produits: "/Chateauneuf du Pape/"
         LIRAC:
           nom: "Syndicat de l'AOC Lirac"
           adresse: "Chemin des Chênes, 30126 Lirac"
@@ -38,6 +42,7 @@ all:
           email: "%app_drev_LIRAC_email%"
           produits:
             - "TRANQ/appellations/LIR"
+          habilitation_produits: "/Lirac/"
         GIGONDAS:
           nom: "Syndicat de Gigondas "
           adresse: "8 rue du fond du sac, 84190 Gigondas"
@@ -45,3 +50,4 @@ all:
           email: "%app_drev_GIGONDAS_email%"
           produits:
             - "TRANQ/appellations/GIG"
+          habilitation_produits: "/Gigondas/"

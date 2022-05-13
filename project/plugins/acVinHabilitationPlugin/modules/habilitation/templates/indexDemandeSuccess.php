@@ -63,6 +63,11 @@
         <div class="list-group">
             <p class="text-muted"><i><?php echo $nbResultats ?> demande<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
         </div>
+        <h4>Région</h4>
+        <div class="list-group">
+            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></a>
+        </div>
+
         <h4>Trié par</h4>
         <div class="list-group">
             <?php foreach($sorts as $libelle => $keys): ?>
