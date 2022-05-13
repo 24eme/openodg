@@ -366,6 +366,12 @@ degustation_lot_conforme_appel:
   requirements:
     sf_method: [get]
 
+degustation_lot_lever_nonconformite:
+  url: /degustation/lots/:id/:lot/lever
+  param: { module: degustation, action: lotLeverNonConformite }
+  requirements:
+    sf_method: [get]
+
 degustation_etiquette_pdf:
   url: /degustation/:id/etiquettes/pdf
   param: { module: degustation, action: etiquettesPrlvmtPdf }

@@ -88,6 +88,16 @@ class DegustationLot extends BaseDegustationLot {
         $this->getDocument()->generateMouvementsLots();
     }
 
+    public function leverNonConformite($date = null)
+    {
+        if(!$date){
+            $date = date('Y-m-d');
+        }
+        $this->statut = Lot::STATUT_NONCONFORME_LEVEE;
+        $this->nonconformite_levee = $date;
+        $this->getDocument()->generateMouvementsLots();
+    }
+
     public function setConformiteLot($conformite, $motif = null, $observation = null)
     {
         if ($this->conformiteEditable() === false) {
