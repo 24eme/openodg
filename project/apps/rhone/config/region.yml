@@ -27,7 +27,7 @@ all:
           produits:
             - "TRANQ/appellations/VBR"
           habilitation_produits: "/Vinsobres/"
-        CHATEAU_NEUF:
+        CHATEAUNEUF:
           nom: "Syndicat des Vignerons de Châteauneuf-du-Pape"
           adresse: "25 avenue Général De Gaulle, 84231 Châteauneuf-du-Pape"
           telephone: "%app_drev_CHATEAUNEUFDUPAPE_telephone%"
