@@ -1,0 +1,47 @@
+all:
+  configuration:
+    region:
+      odg:
+        BEAUMESVENISES:
+          nom: "Conservatoire AOC Beaumes Venise"
+          adresse: "Place du marché à coté de la poste, 84190 Beaumes-de-Venise"
+          telephone: "%app_drev_BEAUMESVENISES_telephone%"
+          email: "%app_drev_BEAUMESVENISES_email%"
+          produits:
+            - "TRANQ/appellations/BEA"
+            - "VDN/appellations/VDB"
+        CAIRANNE:
+          nom: "Syndicat de l’AOC Cairanne"
+          adresse: "6 place des Vignerons, 84290 CAIRANNE"
+          telephone: "%app_drev_CAIRANNE_telephone%"
+          email: "%app_drev_CAIRANNE_email%"
+          produits:
+            - "TRANQ/appellations/CAR"
+        VINSOBRES:
+          nom: "Comité des Vignerons de Vinsobres"
+          adresse: "8 rue Gironde, 26110 Vinsobres"
+          telephone: "%app_drev_VINSOBRES_telephone%"
+          email: "%app_drev_VINSOBRES_email%"
+          produits:
+            - "TRANQ/appellations/VBR"
+        CHATEAUNEUFDUPAPE:
+          nom: "Syndicat des Vignerons de Châteauneuf-du-Pape"
+          adresse: "25 avenue Général De Gaulle, 84231 Châteauneuf-du-Pape"
+          telephone: "%app_drev_CHATEAUNEUFDUPAPE_telephone%"
+          email: "%app_drev_CHATEAUNEUFDUPAPE_email%"
+          produits:
+            - "TRANQ/appellations/CDP"
+        LIRAC:
+          nom: "Syndicat de l'AOC Lirac"
+          adresse: "Chemin des Chênes, 30126 Lirac"
+          telephone: "%app_drev_LIRAC_telephone%"
+          email: "%app_drev_LIRAC_email%"
+          produits:
+            - "TRANQ/appellations/LIR"
+        GIGONDAS:
+          nom: "Syndicat de Gigondas "
+          adresse: "8 rue du fond du sac, 84190 Gigondas"
+          telephone: "%app_drev_GIGONDAS_telephone%"
+          email: "%app_drev_GIGONDAS_email%"
+          produits:
+            - "TRANQ/appellations/GIG"

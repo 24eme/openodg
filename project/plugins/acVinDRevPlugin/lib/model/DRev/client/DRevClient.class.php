@@ -184,7 +184,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         if (!$identifiant) {
             return array();
         }
-        $regions = DrevConfiguration::getInstance()->getOdgRegions();
+        $regions = RegionConfiguration::getInstance()->getOdgRegions();
         foreach($regions as $region) {
             $produits = $drev->getProduits($region);
             if (!count($produits)) {

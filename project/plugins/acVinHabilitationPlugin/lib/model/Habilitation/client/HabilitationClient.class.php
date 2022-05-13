@@ -281,7 +281,7 @@ class HabilitationClient extends acCouchdbClient {
                 return false;
             }
 
-            $produits = DRevConfiguration::getInstance()->getOdgProduits($region);
+            $produits = RegionConfiguration::getInstance()->getOdgProduits($region);
             foreach($produits as $hash) {
                 if($habilitation->containHashProduit($hash)) {
                     return true;

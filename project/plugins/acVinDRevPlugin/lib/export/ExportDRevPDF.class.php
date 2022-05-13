@@ -7,7 +7,7 @@ class ExportDRevPDF extends ExportPDF {
 
     public function __construct($drev, $region = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->drev = $drev;
-        if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && !DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
+        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && !RegionConfiguration::getInstance()->hasPDFUniqueRegion()) {
             $this->regions = $this->drev->declaration->getSyndicats();
         }
 
@@ -89,7 +89,7 @@ class ExportDRevPDF extends ExportPDF {
         $titre = sprintf("Déclaration de Revendication %s", $this->drev->campagne);
         $region = $this->getRegion();
         if($region) {
-            $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+            $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
             $titre .= " (".$infos['nom'].")";
         }
 
@@ -101,7 +101,7 @@ class ExportDRevPDF extends ExportPDF {
             return sprintf("<span style='color:#ff0000;'>%s     %s - %s - %s - %s - %s</span>", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
         }
 
-        $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+        $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
 
         return sprintf("%s - %s", (isset($infos) && $infos['nom']) ? $infos['nom'] : null, (isset($infos) && isset($infos['adresse'])) ? $infos['adresse'] : null);
     }

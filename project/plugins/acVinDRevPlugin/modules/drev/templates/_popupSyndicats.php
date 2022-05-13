@@ -13,7 +13,7 @@
     </div>
     <div class="modal-body">
       <?php foreach($syndicats as $syndicat): ?>
-        <?php $s = DRevConfiguration::getInstance()->getOdgRegionInfos($syndicat); ?>
+        <?php $s = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat); ?>
         <h4><?php echo $s['nom']; ?></h4>
         <div class="row">
           <div class="col-xs-3">Adresse : </div>

@@ -1121,13 +1121,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $date = date('c');
         }
 
-        if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
             throw new sfException("La validation nécessite une région");
         }
 
         $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
 
-        if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
+        if(RegionConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
 
@@ -1150,7 +1150,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     $produit->setStatutOdg($statut);
                 }
             } else {
-                foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+                foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
                     $this->setStatutOdgByRegion($statut, $region);
                 }
             }
@@ -1193,7 +1193,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produit->validateOdg($date);
             }
         } else {
-            foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+            foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
                 $this->validateOdg($date, $region);
             }
         }

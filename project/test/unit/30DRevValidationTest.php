@@ -114,7 +114,7 @@ $drev->setStatutOdgByRegion(DRevClient::STATUT_EN_ATTENTE);
 $t->is($drev->getStatutOdg(), DRevClient::STATUT_EN_ATTENTE, "La DREV est bien mise au statut mise en attente");
 
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
-    foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+    foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
         $drev->validateOdg($date_validation_odg_1, $region);
     }
 } else {
@@ -167,7 +167,7 @@ $t->is(count($vigilance), 1, "Il y a un point de vigilance la DRev modificatrice
 
 $drev_modificative->validate($date_validation_2);
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
-    foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+    foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
         $drev_modificative->validateOdg($date_validation_odg_2, $region);
     }
 } else {
@@ -207,7 +207,7 @@ $drev->documents->add('test_en_attente')->statut = DRevDocuments::STATUT_EN_ATTE
 $drev->documents->add('test_recu')->statut = DRevDocuments::STATUT_RECU;
 $t->is(count($drev->getDocumentsAEnvoyer()), 1, "1 document à envoyer");
 
-foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
     $configDRev = sfConfig::get('drev_configuration_drev');
     $configDRev['odg'][$region]['email_notification'] = 'email@email.email';
     sfConfig::set('drev_configuration_drev', $configDRev);
@@ -233,7 +233,7 @@ if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     $t->is($messages[0]->getSubject(), "Validation de votre Déclaration de Revendication", "Sujet du mail de validation");
 }
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
-    foreach(DRevConfiguration::getInstance()->getOdgRegions() as $region) {
+    foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
         $drev->validateOdg(null, $region);
     }
 } else {
