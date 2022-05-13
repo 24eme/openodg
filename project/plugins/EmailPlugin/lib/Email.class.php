@@ -37,11 +37,6 @@ class Email {
             return array();
         }
 
-        if($drev->isPapier()) {
-
-            return Email::getInstance()->getMessageDrevPapierConfirmee($drev);
-        }
-
         if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
 
             return Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev);
