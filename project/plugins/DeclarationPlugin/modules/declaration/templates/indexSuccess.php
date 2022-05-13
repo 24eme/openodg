@@ -74,7 +74,7 @@
         <?php if ($regionParam) : ?>
         <h4>Région</h4>
         <div class="list-group">
-            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo $regionParam; ?></a>
+            <span class="list-group-item active"><span class="badge"><?php echo $nbResultats; ?></span> <?php echo str_replace('_', ' ', $regionParam); ?></a>
         </div>
         <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
