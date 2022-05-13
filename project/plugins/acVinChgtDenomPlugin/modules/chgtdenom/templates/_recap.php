@@ -35,14 +35,15 @@
   $lots = $chgtDenom->getLotsWithPseudoDeclassement();
   foreach($lots as $k => $lot):
 ?>
+  <?php $isLotDeclasseFictif = ($k == (count($lots) - 1) && $chgtDenom->isDeclassement()); ?>
   <div class="alert block-chgtDenom col-sm-<?php if (count($lots) == 1): ?>12<?php else: ?>6<?php endif; ?>">
-  <?php if($chgtDenom->isDeclassement() && $lot->statut == Lot::STATUT_DECLASSE): ?>
+  <?php if($chgtDenom->isDeclassement() && ($lot->statut == Lot::STATUT_DECLASSE || $lot->statut == Lot::STATUT_DECLASSE_OLD)): ?>
     <div id="declassement_filigrane" class="text-danger">Déclassé</div>
   <?php endif; ?>
     <div class="row">
       <div class="col-xs-8">
         <h4>Dos. <?php echo $lot->campagne; ?>
-          <?php if($k == (count($lots) - 1) && $chgtDenom->isDeclassement()): ?>
+          <?php if($isLotDeclasseFictif): ?>
               – <strong>déclassé</strong>
           <?php else: ?>
               n°&nbsp;<strong><?php echo $lot->numero_dossier; ?></strong> –
@@ -75,7 +76,7 @@
             <div>
               <div style="border: none;" class="m-3">
                 Logement :
-                <?php if($lot->isLogementEditable()): ?>
+                <?php if($lot->isLogementEditable() && !$isLotDeclasseFictif): ?>
                   <a href="#" data-toggle="modal" data-target="#modal_lot_logement_<?= ($lot->isLotOrigine()) ? 'origine' : 'change' ?>">
                     <strong><?php echo $lot->numero_logement_operateur; ?></strong>&nbsp;<span class="glyphicon glyphicon-edit">&nbsp;</span>
                   </a>

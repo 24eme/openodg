@@ -167,4 +167,9 @@ class DRevConfiguration {
         return ConfigurationClient::getCurrent()->declaration->isRevendicationParLots();
     }
 
+    public function isSendMailToOperateur() {
+
+        return $this->configuration['send_email_operateur'];
+    }
+
 }

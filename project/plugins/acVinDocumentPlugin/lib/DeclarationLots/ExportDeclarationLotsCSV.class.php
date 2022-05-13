@@ -83,8 +83,8 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             "PAPIER;".
             $docOrigine->validation.";".
             $docOrigine->validation_odg.";".
-            ($docOrigine->exist('date_degustation_voulue') ? $docOrigine->date_degustation_voulue : null).";".
-            ($docOrigine->exist('envoi_oi') ? $docOrigine->envoi_oi : null).";".
+            (($docOrigine && $docOrigine->exist('date_degustation_voulue')) ? $docOrigine->date_degustation_voulue : null).";".
+            (($docOrigine && $docOrigine->exist('envoi_oi')) ? $docOrigine->envoi_oi : null).";".
             Organisme::getCurrentOrganisme().";".
             $docOrigine->_id.";".
             $lot->unique_id.";".

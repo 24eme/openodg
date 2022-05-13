@@ -45,17 +45,48 @@ EOF;
     foreach($ids as $id) {
         $doc = DeclarationClient::getInstance()->find($id);
         $lotOrigine = $doc->getLotOrigine();
+
+        $mouvements = LotsClient::getInstance()->getHistory($doc->identifiant, $doc->changement_origine_lot_unique_id);
+        $ordre = array();
+        $degust = null;
+        foreach($mouvements as $m) {
+            if (strpos($m->id, 'DEGUSTATION') !== false) {
+                $degust = $m->id;
+            }
+            $ordre[explode(' ', $m->value->date)[0]] = $m->id;
+        }
+
+        if ($degust) {
+            $doc->changement_origine_id_document = $degust;
+        }
+
+        $last = array_pop($ordre);
+
         if($lotOrigine) {
             $doc->changement_date_commission = $lotOrigine->date_commission;
+            if ( $last == $doc->_id && ('20220401' - str_replace('-', '', $doc->validation_odg)) > 10000) {
+                $doc->changement_affectable = false;
+            }
+        }
+
+        if ( $last == $doc->_id && ('20220401' - str_replace('-', '', $doc->validation_odg)) > 10000) {
+            $doc->origine_affectable = false;
         }
 
         if($doc->changement_specificite == "UNDEFINED") {
             $doc->changement_specificite = "";
         }
 
-        if($doc->save()) {
-            echo $doc->_id.": saved\n";
-        }
+        $doc->updateStatut();
+        $doc->generateLots();
+
+       try {
+           if($doc->save()) {
+               echo $doc->_id.": saved\n";
+           }
+       } catch(Error $e) {
+           echo $doc->_id.": error\n";
+       }
     }
   }
 }

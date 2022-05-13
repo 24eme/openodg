@@ -296,6 +296,10 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->autoUpdateLdap();
     }
 
+    public function isEnAlerte() {
+        return ($this->exist('en_alerte') && $this->en_alerte);
+    }
+
     protected function doSave() {
         $this->add('date_modification', date('Y-m-d'));
     }

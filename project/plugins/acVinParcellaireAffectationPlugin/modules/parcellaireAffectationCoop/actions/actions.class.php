@@ -158,6 +158,9 @@ class parcellaireAffectationCoopActions extends sfActions {
             $this->renderText($export->export());
             $header = false;
         }
+        if ($header) {
+            $this->renderText("Aucune affectation validée");
+        }
 
         $attachement = sprintf("attachment; filename=export_affectation_parcellaire_%s_%s_%s.csv", $etablissement->identifiant, $parcellaireAffectationCoop->getPeriode(), date('YmdHis'));
         $this->response->setContentType('text/csv');

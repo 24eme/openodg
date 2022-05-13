@@ -132,7 +132,7 @@ Facture:
               definition:
                 fields:
                   date : { }
-                  montant: { }
+                  montant: { type: float }
                   type_reglement: { }
                   commentaire: { }
                   execute: {required: false}

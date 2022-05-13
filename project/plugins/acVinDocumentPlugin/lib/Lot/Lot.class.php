@@ -39,7 +39,8 @@ abstract class Lot extends acCouchdbDocumentTree
 
     const STATUT_CHANGE_SRC = "99_CHANGE_SRC";
     const STATUT_CHANGEABLE = "00_CHANGEABLE";
-    const STATUT_DECLASSE = "10_DECLASSE";
+    const STATUT_DECLASSE = "05_DECLASSE";
+    const STATUT_DECLASSE_OLD = "10_DECLASSE";
 
     const CONFORMITE_CONFORME = "CONFORME";
     const CONFORMITE_NONCONFORME_MINEUR = "NONCONFORME_MINEUR";
@@ -72,6 +73,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_CHANGE_SRC => 'Changé (source)',
         self::STATUT_CHANGE_DEST => 'Changé (destination)',
         self::STATUT_DECLASSE => 'Déclassé',
+        self::STATUT_DECLASSE_OLD => 'Déclassé',
         self::STATUT_ELEVAGE_EN_ATTENTE => 'En élevage',
         self::STATUT_ELEVE => 'Fin de l\'élevage',
 
@@ -94,6 +96,7 @@ abstract class Lot extends acCouchdbDocumentTree
             Lot::STATUT_RECOURS_OC => "warning",
             Lot::STATUT_CONFORME_APPEL => "success",
             Lot::STATUT_DECLASSE => "danger",
+            Lot::STATUT_DECLASSE_OLD => "danger",
             Lot::STATUT_ELEVAGE_EN_ATTENTE => "warning",
             Lot::STATUT_ELEVE => "warning",
             Lot::STATUT_NONAFFECTABLE => "success"
@@ -130,6 +133,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_PRELEVE,
         self::STATUT_DEGUSTE,
         self::STATUT_CHANGE,
+        self::STATUT_DECLASSE_OLD,
         self::STATUT_DECLASSE
     );
 

@@ -14,8 +14,6 @@ default:
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"
 
-  stylesheets:    [compile_default.css, ../components/vins/vins.css, /js/lib/leaflet/leaflet.css]
-
   javascripts:    [lib/jquery/jquery.min.js, lib/jquery.plugins.min.js?201709221633, lib/bootstrap/bootstrap.min.js, lib/bootstrap3-typeahead.min.js, lib/bootstrap-switch.min.js, lib/leaflet/leaflet.js, global.js?20201123, compte.js, drev.js?202105041230, drevmarc.js, form.js?201801171851, parcellaire.js, degustation.js]
 
   has_layout:     true

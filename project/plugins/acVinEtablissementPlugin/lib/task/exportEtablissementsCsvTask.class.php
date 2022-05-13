@@ -38,7 +38,7 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "Login,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut,PPM,Organisme,Identifiant etablissement,doc id\n";
+        echo "Login,Titre,Raison sociale,Adresse,Adresse 2,Adresse 3,Code postal,Commune,CVI,SIRET,Téléphone bureau,Fax,Téléphone mobile,Email,Activité,Réception ODG,Enresgistrement ODG,Transmission AVPI,Date Habilitation,Date Archivage,Observation,Etat,IR,Ordre,Zone,Code comptable,Famille,Date de dernière modification,Statut,En Alerte,PPM,Organisme,Identifiant etablissement,doc id\n";
 
        $cpt = 0;
         foreach($results->rows as $row) {
@@ -49,8 +49,8 @@ EOF;
             }
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             $societe = SocieteClient::getInstance()->find($etablissement->id_societe, acCouchdbClient::HYDRATE_JSON);
-            $compte = CompteClient::getInstance()->find($etablissement->compte, acCouchdbClient::HYDRATE_JSON);
-            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, null, acCouchdbClient::HYDRATE_JSON);
+            $compte = CompteClient::getInstance()->find($etablissement->compte);
+            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, acCouchdbClient::HYDRATE_JSON);
 
             $habilitationActivites = '';
             if (isset($compte->tags->activite)) {
@@ -114,6 +114,7 @@ EOF;
             $etablissement->famille.",".
             $compte->date_modification.",".
             $etablissement->statut.",".
+            $compte->isEnAlerte().",".
             $etablissement->ppm.",".
             Organisme::getCurrentOrganisme().",".
             $etablissement->identifiant.",".
