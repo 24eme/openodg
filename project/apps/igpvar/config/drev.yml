@@ -11,3 +11,4 @@ all:
       degustation: true
       specificite_lot: true
       engagement_pdf: true
+      send_email_operateur: false
