@@ -683,6 +683,22 @@ class degustationActions extends sfActions {
         return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
     }
 
+    public function executeLotLeverNonConformite(sfWebRequest $request) {
+        $docid = $request->getParameter('id');
+        $lotid = $request->getParameter('lot');
+        $doc = DegustationClient::getInstance()->find($docid);
+        $this->forward404Unless($doc);
+        $lot = $doc->getLot($lotid);
+        $this->forward404Unless($lot);
+
+        $lot->leverNonConformite();
+
+        $doc->generateMouvementsLots();
+        $doc->save();
+
+        return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
+    }
+
     public function executeLotReputeConforme(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $unique_id = $request->getParameter('unique_id');

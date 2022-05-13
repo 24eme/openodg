@@ -70,6 +70,7 @@ Degustation:
                   affectable: {}
                   recours_oc: {}
                   conforme_appel: {}
+                  nonconformite_levee: {}
                   a_redeguster: {required: false}
                   preleve: {}
       mouvements_lots:
