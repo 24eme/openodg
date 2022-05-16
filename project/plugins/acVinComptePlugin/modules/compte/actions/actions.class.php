@@ -439,7 +439,7 @@ class compteActions extends sfCredentialActions {
           $this->results = $resset->getResults();
           $this->nb_results = $resset->getTotalHits();
           $this->facets = $resset->getFacets();
-      }catch(sfException $e) {
+      }catch(Exception $e) {
           $this->results = array();
           $this->nb_results = 0;
           $this->facets = array();
