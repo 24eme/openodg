@@ -352,8 +352,8 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
-        public function getDemande($identifiant, $keyDemande, $date) {
-            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+        public function getDemande($identifiant, $keyDemande, $date, $chaisid = null) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
 
             return $habilitation->demandes->get($keyDemande);
         }
@@ -379,7 +379,11 @@ class HabilitationClient extends acCouchdbClient {
                     $biggerNum = (int) $matches[1];
                 }
             }
-            $key = sprintf($baseKey."%02d", $biggerNum + 1);
+            if ($chaisid > 0) {
+                $key = sprintf('%s%02d-C%02d', $baseKey, $biggerNum + 1, $chaisid);
+            }else {
+                $key = sprintf($baseKey."%02d", $biggerNum + 1);
+            }
             $demande = $habilitation->demandes->add($key);
 
             $demande->produit = $produitHash;
@@ -399,7 +403,11 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = true) {
-            $demande = $this->getDemande($identifiant, $keyDemande, $date);
+            $chaisid = null;
+            if (strpos($keyDemande, 'C') !== false) {
+                $chaisid = intval(explode('C', $keyDemande)[1]);
+            }
+            $demande = $this->getDemande($identifiant, $keyDemande, $date, $chaisid);
             $habilitation = $demande->getDocument();
 
             $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur);
@@ -424,7 +432,10 @@ class HabilitationClient extends acCouchdbClient {
                 $demande->date_habilitation = $demande->date;
             }
 
-            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" ".(($creation) ? "a été créée" : "est passée")." au statut \"".$demande->getStatutLibelle()."\"";
+            $descriptionHistorique  = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" ";
+            $descriptionHistorique .= ($creation) ? "a été créée" : "est passée";
+            $descriptionHistorique .= (strpos($habilitation->identifiant, 'C') !== false) ? ' pour le chais secondaire "'.$habilitation->declarant->nom.'"' : '';
+            $descriptionHistorique .= " au statut \"".$demande->getStatutLibelle()."\"";
 
             $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
             $historique->iddoc .= ":".$demande->getHash();

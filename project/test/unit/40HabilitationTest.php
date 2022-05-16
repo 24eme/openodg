@@ -12,6 +12,12 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant, '9999-
   $habilitation->delete(false);
 }
 
+if ($viti->exist('chais')) {
+    $viti->remove('chais');
+    $viti->save();
+    $viti = EtablissementClient::getInstance()->find($viti->_id);
+}
+
 $t->comment("Création d'un doc dans le passé");
 $date = '2007-10-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
