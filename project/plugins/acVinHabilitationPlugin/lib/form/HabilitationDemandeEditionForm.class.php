@@ -77,7 +77,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
 
         $demandeKey = $this->demande->getKey();
 
-        if($values['activites'] && count($values['activites']) && count($values['activites']) < count($this->demande->getActivitesLibelle())) {
+        if(isset($values['activites']) && $values['activites'] && count($values['activites']) && count($values['activites']) < count($this->demande->getActivitesLibelle())) {
 
             $newDemandes = HabilitationClient::getInstance()->splitDemandeAndSave($this->getDocument()->identifiant, $demandeKey, $values['activites']);
 
