@@ -1,5 +1,5 @@
 {
-  "_id": "CONFIGURATION-20200801",
+  "_id": "CONFIGURATION-20210801",
   "type": "Configuration",
   "campagne": null,
   "labels": {},
@@ -2782,7 +2782,9 @@
                 "attributs": {
                   "rendement": 38,
                   "rendement_vci": 3,
-                  "rendement_vci_total": 9
+                  "rendement_vci_total": 19,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "CDP": {
@@ -3149,7 +3151,9 @@
                 "attributs": {
                   "rendement": 41,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "COR": {
@@ -3251,9 +3255,11 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 42,
+                  "rendement": 40,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "CRO": {
@@ -3355,9 +3361,11 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 42,
+                  "rendement": 35,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "CRH": {
@@ -3510,9 +3518,11 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 50,
+                  "rendement": 45,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "GIG": {
@@ -4180,7 +4190,9 @@
                 "attributs": {
                   "rendement": -1,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "SJO": {
@@ -4430,7 +4442,9 @@
                 "attributs": {
                   "rendement": 48,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "TAV": {
@@ -4534,7 +4548,9 @@
                 "attributs": {
                   "rendement": -1,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "VAC": {
@@ -4612,11 +4628,11 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
-                                "code_comptable": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
                                 "code_douane": "1R538S",
                                 "cepages_autorises": [],
                                 "interpro": {
@@ -4626,6 +4642,13 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -4649,11 +4672,11 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
-                                "code_comptable": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
                                 "code_douane": "1S538S",
                                 "cepages_autorises": [],
                                 "interpro": {
@@ -4663,6 +4686,13 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": -1,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -4686,11 +4716,11 @@
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
-                                "code_comptable": null,
+                                "libelle": "",
+                                "format_libelle": "",
+                                "code": "",
+                                "code_produit": "",
+                                "code_comptable": "",
                                 "code_douane": "1B538S",
                                 "cepages_autorises": [],
                                 "interpro": {
@@ -4700,6 +4730,13 @@
                                       "cvo": []
                                     }
                                   }
+                                },
+                                "attributs": {
+                                  "rendement": null,
+                                  "rendement_conseille": null,
+                                  "rendement_dr": null,
+                                  "rendement_vci": null,
+                                  "rendement_vci_total": null
                                 }
                               }
                             }
@@ -4712,7 +4749,9 @@
                 "attributs": {
                   "rendement": -1,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               },
               "VBR": {
@@ -5452,7 +5491,9 @@
                 "attributs": {
                   "rendement": 56,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               }
             }
@@ -5686,10 +5727,11 @@
                   }
                 },
                 "attributs": {
-                  "rendement": 30,
+                  "rendement": 25,
                   "rendement_conseille": 25,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_dr": null
                 }
               },
               "VDR": {
@@ -5867,7 +5909,9 @@
                 "attributs": {
                   "rendement": -1,
                   "rendement_vci": 0,
-                  "rendement_vci_total": 0
+                  "rendement_vci_total": 0,
+                  "rendement_conseille": null,
+                  "rendement_dr": null
                 }
               }
             }
