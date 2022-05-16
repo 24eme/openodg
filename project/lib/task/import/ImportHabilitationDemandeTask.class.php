@@ -104,7 +104,7 @@ EOF;
             }
 
             try {
-                $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
+                $demande = HabilitationClient::getInstance()->createDemandeAndSave($identifiant, HabilitationClient::CHAIS_PRINCIPAL, $typeDemande, $produit, $activites, "COMPLET", $dateCompletude, $commentaire, "import", false);
                 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($identifiant, $demande->getKey(), $dateEnregistrement, "ENREGISTREMENT", null, "import", false);
 
                 if($pourqui) {
