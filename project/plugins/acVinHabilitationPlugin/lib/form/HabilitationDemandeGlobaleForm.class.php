@@ -20,9 +20,13 @@ class HabilitationDemandeGlobaleForm extends HabilitationDemandeCreationForm
         $produits = $this->getDocument()->getProduitsHabilites();
         foreach($produits as $produit) {
             $activites = array_keys($produit->getActivitesHabilites());
-
+            $chaisid = null;
+            if ($this->getDocument()->getHash()){
+                $chaisid = $this->getDocument->getChaisId();
+            }
             $demande = HabilitationClient::getInstance()->createDemandeAndSave(
-                $this->getDocument()->identifiant,
+                $this->getDocument()->getEtablissementIdentifiant(),
+                $chaisid,
                 $values['demande'],
                 $produit->getHash(),
                 array_keys($produit->getActivitesHabilites()),

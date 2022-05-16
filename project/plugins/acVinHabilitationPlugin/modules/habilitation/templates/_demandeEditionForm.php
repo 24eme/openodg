@@ -3,7 +3,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
                 <div class="modal-header">
-                    <a href="<?php echo url_for("habilitation_declarant", $etablissement) ?>" class="close" aria-hidden="true">&times;</a>
+                    <a href="<?php echo url_for("habilitation_declarant", $form->getEtablissementChais()) ?>" class="close" aria-hidden="true">&times;</a>
                     <h4 class="modal-title" id="myModalLabel">Demande <?php echo elision("de", strtolower($demande->getDemandeLibelle())) ?></h4>
 					<?php echo $demande->libelle ?>
                 </div>
@@ -54,10 +54,10 @@
 				<?php endif; ?>
                 <div class="modal-footer">
 					<?php if($form instanceof sfForm): ?>
-                    <a class="btn btn-default pull-left" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>
+                    <a class="btn btn-default pull-left" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $form->getEtablissementChais()) ?>">Annuler</a>
                     <button type="submit" class="btn btn-success pull-right">Valider le changement</button>
 					<?php else: ?>
-						<a class="btn btn-default" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $etablissement) ?>">Fermer</a>
+						<a class="btn btn-default" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $form->getEtablissementChais()) ?>">Fermer</a>
 					<?php endif; ?>
 				</div>
             </form>

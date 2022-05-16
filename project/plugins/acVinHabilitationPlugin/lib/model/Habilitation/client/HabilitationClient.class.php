@@ -250,7 +250,7 @@ class HabilitationClient extends acCouchdbClient {
             $habilitations = array();
             $habilitations[] = $this->getLastHabilitationOrCreate($identifiant, 0, $hydrate);
             if ($habilitations[0]->getEtablissementObject() && $habilitations[0]->getEtablissementObject()->exist('chais')) {
-                for ($i = 1 ; $i < count($habilitations[0]->getEtablissementObject()->exist('chais')) ; $i++) {
+                for ($i = 1 ; $i < count($habilitations[0]->getEtablissementObject()->chais) ; $i++) {
                     $habilitations[] = $this->getLastHabilitationOrCreate($identifiant, $i, $hydrate);
                 }
             }
