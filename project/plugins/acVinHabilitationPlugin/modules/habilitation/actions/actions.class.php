@@ -185,7 +185,7 @@ class habilitationActions extends sfActions {
 
     public function executeAjout(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->habilitation = $this->getRoute()->getLastHabilitationOrCreate();
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
@@ -259,7 +259,7 @@ class habilitationActions extends sfActions {
 
     public function executeDemandeGlobale(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->habilitation = $this->getRoute()->getLastHabilitationOrCreate();
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
@@ -338,7 +338,7 @@ class habilitationActions extends sfActions {
 
     public function executeDemandeEdition(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->habilitation = $this->getRoute()->getLastHabilitationOrCreate();
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
 
@@ -398,7 +398,7 @@ class habilitationActions extends sfActions {
         }
 
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->habilitation = $this->getRoute()->getLastHabilitationOrCreate();
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
         $this->urlRetour = $request->getParameter('retour', false);
@@ -410,7 +410,7 @@ class habilitationActions extends sfActions {
 
     public function executeDemandeSuppressionDerniere(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->habilitation = $this->getRoute()->getLastHabilitationOrCreate();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
 
         if($this->demande->date != $request->getParameter('date') || $this->demande->statut != $request->getParameter('statut')) {
