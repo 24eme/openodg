@@ -613,4 +613,5 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         }
         return $this->getOrAdd('chais')->add();
     }
+
 }
