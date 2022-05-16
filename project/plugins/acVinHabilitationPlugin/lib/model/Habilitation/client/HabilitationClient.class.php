@@ -243,10 +243,10 @@ class HabilitationClient extends acCouchdbClient {
             if ($chaisid > 100){
                 throw new sfException("chais id trop grand ".$chaisid);
             }
-            if ($c)
+
             return $this->startkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $dateDebut)))
                     ->endkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $date)))->execute($hydrate);
-            
+
         }
 
         public function getLastHabilitation($identifiant, $chaisid = 0, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
