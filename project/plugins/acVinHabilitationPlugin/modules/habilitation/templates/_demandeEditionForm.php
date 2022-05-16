@@ -55,6 +55,7 @@
                 <div class="modal-footer">
 					<?php if($form instanceof sfForm): ?>
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <a class="btn btn-default pull-left" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>
                     <button type="submit" class="btn btn-success pull-right">Valider le changement</button>
 					<?php else: ?>
@@ -65,6 +66,12 @@
 					<?php else: ?>
 						<a class="btn btn-default" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $demande->getDocument()->getEtablissementChais()) ?>">Fermer</a>
 >>>>>>> 3de80e3d11 (Globalisation des demandes et éditions de ces dernieres)
+=======
+                    <a class="btn btn-default pull-left" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $form->getEtablissementChais()) ?>">Annuler</a>
+                    <button type="submit" class="btn btn-success pull-right">Valider le changement</button>
+					<?php else: ?>
+						<a class="btn btn-default" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $form->getEtablissementChais()) ?>">Fermer</a>
+>>>>>>> 1766c1f33e (Gestion d'autres de cas d'habilitation sans chais)
 					<?php endif; ?>
 				</div>
             </form>

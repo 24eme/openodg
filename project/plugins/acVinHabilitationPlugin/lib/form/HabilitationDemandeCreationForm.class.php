@@ -61,10 +61,9 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
         if ($this->getDocument()->exist('chais_id')) {
             $chais_id = $this->getDocument()->chais_id;
         }
-
         $demande = HabilitationClient::getInstance()->createDemandeAndSave(
             $this->getDocument()->getEtablissementIdentifiant(),
-            $this->getDocument()->getChaisId(),
+            $chais_id,
             $values['demande'],
             $values['produit'],
             $values['activites'],
