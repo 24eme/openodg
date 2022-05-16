@@ -433,6 +433,17 @@ class compteActions extends sfCredentialActions {
       $q->setLimit($res_by_page);
       $q->setFrom($from);
       $this->addTagFacetsToQuerry($q);
+      try {
+          $index = acElasticaManager::getType('COMPTE');
+          $resset = $index->search($q);
+          $this->results = $resset->getResults();
+          $this->nb_results = $resset->getTotalHits();
+          $this->facets = $resset->getFacets();
+      }catch(Exception $e) {
+          $this->results = array();
+          $this->nb_results = 0;
+          $this->facets = array();
+      }
 
       $index = acElasticaManager::getType('COMPTE');
       $resset = $index->search($q);
