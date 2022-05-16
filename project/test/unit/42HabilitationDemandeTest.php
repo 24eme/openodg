@@ -8,7 +8,7 @@ if ($application != 'rhone') {
     return;
 }
 
-$t = new lime_test(87);
+$t = new lime_test(96);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -16,6 +16,12 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
   $habilitation = HabilitationClient::getInstance()->find($k);
   $habilitation->delete(false);
+}
+
+if ($viti->exist('chais')) {
+    $viti->remove('chais');
+    $viti->save();
+    $viti = EtablissementClient::getInstance()->find($viti->_id);
 }
 
 $config = ConfigurationClient::getCurrent();
@@ -39,7 +45,7 @@ $statut = "DEPOT";
 $commentaire = "Envoyé par courrier";
 $premierCommentaire = $commentaire;
 $auteur = "Syndicat";
-$activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR);
+$activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR);
 
 $demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur, false);
 $habilitation = $demande->getDocument();
@@ -55,7 +61,7 @@ $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est "
 $t->ok($demande instanceof HabilitationDemande, "La demande est une instance de HabilitationDemande");
 $t->is($demande->getKey(), $keyDemande1, "La clé de la demande est ".$keyDemande1);
 $t->is($demande->produit, $produitConfig->getHash(), "La hash produit est ".$produitConfig->getHash());
-$t->is($demande->libelle, $produitConfig->getLibelleComplet().": Vinificateur, Élaborateur", "Le libellé produit est ".$produitConfig->getLibelleComplet());
+$t->is($demande->libelle, $produitConfig->getLibelleComplet().": Vinificateur", "Le libellé produit est ".$produitConfig->getLibelleComplet());
 $t->is($demande->activites->toArray(true, false), $activites, "Les activites sont bien stockées");
 $t->is($demande->date, $date, "La date du statut est ".$date);
 $t->is($demande->date_habilitation, $date, "La date d'habilitation est ".$date);
@@ -66,7 +72,7 @@ $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
 $t->is($habilitation->historique->get(0)->iddoc, $habilitation->_id.":".$demande->getHash(), "L'id du doc contient la hash");
-$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation \"".$produitConfig->getLibelleComplet().": Vinificateur, Élaborateur\" a été créée au statut \"Dépôt\"", "La description de l'action est ok");
+$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation \"".$produitConfig->getLibelleComplet().": Vinificateur\" a été créée au statut \"Dépôt\"", "La description de l'action est ok");
 $t->is($habilitation->historique->get(0)->statut, $demande->statut, "Le statut de la demande est dans l'historique");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
@@ -96,7 +102,7 @@ $t->is($demande->commentaire, $premierCommentaire, "La commentaire n'a pas boug�
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
-$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation \"".$produitConfig->getLibelleComplet().": Vinificateur, Élaborateur\" est passée au statut \"Complet\"", "La description de l'action est ok");
+$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation \"".$produitConfig->getLibelleComplet().": Vinificateur\" est passée au statut \"Complet\"", "La description de l'action est ok");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
@@ -218,7 +224,7 @@ $t->is($defaults, array('_revision' => $habilitation->_rev), "Aucune valeur par 
 $values = array(
     '_revision' => $habilitation->_rev,
     'produit' => $produitConfig2->getHash(),
-    'activites' => array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR),
+    'activites' => array(HabilitationClient::ACTIVITE_VINIFICATEUR),
     'demande' => 'RETRAIT',
     'date' => (new DateTime("now - 1 week"))->format('d/m/Y'),
     'statut' => 'DEPOT',
@@ -329,9 +335,9 @@ $t->is($habilitationLast->historique[count($habilitationLast->historique) - 1]->
 
 $t->comment("Split des demandes");
 
-$date = (new DateTime("-1 day"))->format('Y-m-d');
+$date = (new DateTime("-1 month"))->format('Y-m-d');
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), "DEPOT", $date, null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR), "DEPOT", $date, null, "Testeur", true);
 
 $demandeKey = $demande->getKey();
 
@@ -341,9 +347,9 @@ $newDemandes = HabilitationClient::getInstance()->splitDemandeAndSave($viti->ide
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 
-$t->is($habilitationLast->demandes->get($newDemandes[1]->getKey())->activites->toArray(true, false), array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), "La demande initiale n'a plus que 2 activités");
-$t->is($habilitationLast->demandes->get($newDemandes[1]->getKey())->libelle, "Côtes du Rhône Villages: Vinificateur, Élaborateur", "Le libellé de la demande initiale n'a plus que 2 activités");
-$t->is($newDemandes[1]->getFullHistorique()[0]->description, 'La demande d\'habilitation "Côtes du Rhône Villages: Vinificateur, Élaborateur" a été créée au statut "Dépôt"', "L'historique a bien été créé");
+$t->is($habilitationLast->demandes->get($newDemandes[1]->getKey())->activites->toArray(true, false), array(HabilitationClient::ACTIVITE_VINIFICATEUR), "La demande initiale n'a plus que 2 activités");
+$t->is($habilitationLast->demandes->get($newDemandes[1]->getKey())->libelle, "Côtes du Rhône Villages: Vinificateur", "Le libellé de la demande initiale n'a plus que 2 activités");
+$t->is($newDemandes[1]->getFullHistorique()[0]->description, 'La demande d\'habilitation "Côtes du Rhône Villages: Vinificateur" a été créée au statut "Dépôt"', "L'historique a bien été créé");
 
 $t->is($habilitationLast->demandes->get($newDemandes[0]->getKey())->activites->toArray(true, false), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR), "La nouvelle demande a les 2 activités demandées");
 $t->is($habilitationLast->demandes->get($newDemandes[0]->getKey())->libelle, "Côtes du Rhône Villages: Conditionneur, Producteur", "Le libellé de la nouvelle demande initiale n'a les 2 activités demandées");
@@ -360,3 +366,37 @@ foreach($habilitationLast->getFullHistorique() as $h) {
 $t->is(count($historiqueInitiale), 0, "L'historique de la demande initiale a été supprimé");
 
 HabilitationClient::getInstance()->splitDemandeAndSave($viti->identifiant, $newDemandes[0]->getKey(), array(HabilitationClient::ACTIVITE_PRODUCTEUR));
+
+$t->is(count(HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant)->getFullHistorique()), 38, "L'historique contient bien tout l'historique des demandes");
+
+$chais = $viti->getNewChais();
+$chais->nom = "Chais secondaire";
+$viti->save();
+$viti = EtablissementClient::getInstance()->find($viti->_id);
+$t->is($viti->chais[1]->nom, "Chais secondaire", 'Chais secondaire bien présent');
+
+$demande2aire = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $chais->getKey(), "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_ELABORATEUR), "DEPOT", $date, null, "Testeur", true);
+$demande2aireKey = $demande2aire->getKey();
+$t->is($demande2aire->getDocument()->identifiant, $viti->identifiant.'C01', "La demande est bien liée à une habilitation du 2d chais");
+$t->is($demande2aire->getDocument()->declarant->nom, 'Chais secondaire', 'Le déclarant reprend bien les information du chais');
+
+$historiqueInitiale = array();
+$habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+foreach($habilitationLast->getFullHistorique() as $h) {
+    if(!preg_match("/".$demande2aireKey."/", $h->iddoc)) {
+        continue;
+    }
+    $historiqueInitiale[] = $h;
+}
+$t->is(count(HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant)->getFullHistorique()), 39, "L'historique contient bien tout l'historique des demandes");
+$t->is(count($historiqueInitiale), 1, "L'historique de la demande du chais secondaire ($demande2aireKey) est bien présente");
+$t->is(explode('"', $historiqueInitiale[0]->description)[3], 'Chais secondaire', "La demande fait bien référence au chais secondaire");
+
+$date = (new DateTime("-15 day"))->format('Y-m-d');
+
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_ELABORATEUR), "DEPOT", $date, null, "Testeur", true);
+$t->is(count(HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant)->getFullHistorique()), 40, "L'historique contient bien l'historique plus l'habilitation sur le chais principal");
+$demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $demande2aire->getKey(), $date, "VALIDE", null, "Testeur", true);
+$t->is(count(HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant)->getFullHistorique()), 43, "L'historique contient bien l'historique avec la demande finale du chais secondaire");
+
+//HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $demandeKey, $date, "COMPLET", null, "Testeur", true);
