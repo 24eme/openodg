@@ -531,4 +531,42 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $etablissements;
     }
 
+    public function  getLiaisonOfType($type) {
+        $liaisons = array();
+        if ($this->exist('liaisons_operateurs')) {
+            foreach ($this->liaisons_operateurs as $k => $o) {
+                if ($o->type_liaison == $type) {
+                    $liaisons[] = $o;
+                }
+            }
+        }
+        return $liaisons;
+    }
+
+    public function getLaboLibelle() {
+        $labos = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_LABO);
+        if (!count($labos)) {
+            return null;
+        }
+        return $labos[0]->libelle_etablissement;
+    }
+
+    public function getLiaisonsOperateursSorted() {
+        $liaisonsOperateurs = $this->liaisons_operateurs->toArray();
+
+        uasort($liaisonsOperateurs, function($a, $b) {
+            return $a->libelle_etablissement > $b->libelle_etablissement;
+        });
+
+        return $liaisonsOperateurs;
+    }
+
+    public function getNewChais() {
+        if (!$this->exist('chais') || !count($this->chais)) {
+            $this->getOrAdd('chais')->add();
+        }
+        return $this->chais->add();
+
+    }
+
 }

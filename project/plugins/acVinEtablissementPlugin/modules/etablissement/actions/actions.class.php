@@ -109,7 +109,7 @@ class etablissementActions extends sfCredentialActions {
 
     public function executeChaiAjout(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->chai = $this->etablissement->getOrAdd('chais')->add();
+        $this->chai = $this->etablissement->getNewChais();
         $this->num = count($this->etablissement->chais) -1;
         $this->societe = $this->etablissement->getSociete();
         $this->form = new EtablissementChaiModificationForm($this->chai);
