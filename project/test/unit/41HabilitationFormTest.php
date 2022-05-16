@@ -7,14 +7,14 @@ $t = new lime_test(15);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
-foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
+foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant, '9999-99-99', acCouchdbClient::HYDRATE_DOCUMENT, null, 'ALL') as $k => $v) {
   $habilitation = HabilitationClient::getInstance()->find($k);
   $habilitation->delete(false);
 }
 
 $t->comment("Création des docs");
 $date = '2012-01-01';
-$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, $date);
+$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, null, $date);
 $habilitation->save();
 
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc dans le passé est bien construit");

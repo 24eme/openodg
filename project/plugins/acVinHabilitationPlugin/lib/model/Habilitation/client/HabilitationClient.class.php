@@ -31,6 +31,9 @@ class HabilitationClient extends acCouchdbClient {
     const DEMANDE_RETRAIT = "RETRAIT";
     const DEMANDE_RESILIATION = "RESILIATION";
 
+    const CHAIS_PRINCIPAL = null;
+    const CHAIS_TOUS = 'ALL';
+
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
         self::DEMANDE_RETRAIT => "Retrait",
@@ -171,6 +174,9 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function createDoc($identifiant, $chaisid = null, $date = '') {
+          if ($chaisid && (intval($chaisid).'' !== $chaisid.'')) {
+              throw new sfException('mauvais format pour $chaisid : '.$chaisid);
+          }
           if (!$date) {
             $date = date('Y-m-d');
           }
@@ -234,9 +240,10 @@ class HabilitationClient extends acCouchdbClient {
                 return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
                         ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
             }
-            if ($chaisid == 3){
-                throw new sfException("chais 3");
+            if ($chaisid > 100){
+                throw new sfException("chais id trop grand ".$chaisid);
             }
+            if ($c)
             return $this->startkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $dateDebut)))
                     ->endkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $date)))->execute($hydrate);
             
@@ -507,8 +514,8 @@ class HabilitationClient extends acCouchdbClient {
             $newKeyDemande2 = null;
             foreach($demande->getFullHistorique() as $historique) {
                 if(!$newKeyDemande1) {
-                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
-                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activitesToKeep, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, HabilitationClient::CHAIS_PRINCIPAL, $demande->demande, $demande->produit, $activites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, HabilitationClient::CHAIS_PRINCIPAL, $demande->demande, $demande->produit, $activitesToKeep, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
                     continue;
                 }
 

@@ -117,7 +117,7 @@ $t->comment("Création d'une demande");
 $date = (new DateTime("-6 month"))->format('Y-m-d');
 $habilitation_produit = $produit_conf->getAppellation();
 $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE);
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $habilitation_produit->getHash(), $activites, "COMPLET", $date, "commentaire",  "Syndicat pour certipaq", false);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, "HABILITATION", $habilitation_produit->getHash(), $activites, "COMPLET", $date, "commentaire",  "Syndicat pour certipaq", false);
 
 $param = CertipaqDI::getInstance()->getParamNouvelOperateurFromDemande($demande);
 $param = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($param);

@@ -13,7 +13,7 @@ $t = new lime_test(87);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des habilitations précédentes
-foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
+foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant, '9999-99-99', acCouchdbClient::HYDRATE_DOCUMENT, null, 'ALL') as $k => $v) {
   $habilitation = HabilitationClient::getInstance()->find($k);
   $habilitation->delete(false);
 }
@@ -41,10 +41,10 @@ $premierCommentaire = $commentaire;
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR);
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur, false);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur, false);
 $habilitation = $demande->getDocument();
 
-$demande2 = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur);
+$demande2 = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur);
 
 $key2 = $viti->identifiant."-".str_replace("-", "", $date)."02";
 $t->is($demande2->getKey(), $key2, "La clé de la seconde demande est : ".$key2);
@@ -165,7 +165,7 @@ $commentaire = "";
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR);
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire, $auteur, false);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire, $auteur, false);
 
 $habilitation = $demande->getDocument();
 $keyDemande2 = $demande->getKey();
@@ -307,12 +307,12 @@ $t->is(count($demandes), count($habilitation->getProduitsHabilites()), "La form 
 
 $t->comment("Type de demande \"RESILIATION\"");
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), "VALIDE", date('Y-m-d'), null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, "HABILITATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), "VALIDE", date('Y-m-d'), null, "Testeur", true);
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->get($demande->produit)->activites->get($demande->activites->getFirst())->statut, "HABILITE", "Le produit est habilité pour l'activité CONDITIONNEUR");
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "RESILIATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), "COMPLET", date('Y-m-d'), null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, "RESILIATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), "COMPLET", date('Y-m-d'), null, "Testeur", true);
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->get($demande->produit)->activites->get($demande->activites->getFirst())->statut, "DEMANDE_RESILIATION", "Le produit est au statut demande de résiliation");
@@ -331,7 +331,7 @@ $t->comment("Split des demandes");
 
 $date = (new DateTime("-1 day"))->format('Y-m-d');
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), "DEPOT", $date, null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), "DEPOT", $date, null, "Testeur", true);
 
 $demandeKey = $demande->getKey();
 

@@ -7,7 +7,7 @@ $t = new lime_test(37);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des habilitations précédentes
-foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
+foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant, '9999-99-99', acCouchdbClient::HYDRATE_DOCUMENT, null, 'ALL') as $k => $v) {
   $habilitation = HabilitationClient::getInstance()->find($k);
   $habilitation->delete(false);
 }
@@ -136,11 +136,11 @@ $t->ok($habilitation->containHashProduit($produitConfigComplet->getHash()), "La 
 $t->ok($habilitation->containHashProduit("/appellations/".$produitConfigComplet->getAppellation()->getKey()), "Une partie de la hash produit est reconnu");
 $t->ok(!$habilitation->containHashProduit("/hashquinexistepas/".$produitConfigComplet->getAppellation()->getKey()), "La hash n'est pas reconnu");
 
-$drevConfig = sfConfig::get('drev_configuration_drev');
+$drevConfig = sfConfig::get('region_configuration_region');
 $drevConfigOrigin = $drevConfig;
 $drevConfig['odg']['TEST'] = array('produits' => array("/appellations/".$produitConfigComplet->getAppellation()->getKey()));
-$drevConfig = sfConfig::set('drev_configuration_drev', $drevConfig);
+$drevConfig = sfConfig::set('region_configuration_region', $drevConfig);
 
 $t->ok(HabilitationClient::getInstance()->isRegionInHabilitation($viti->identifiant, "TEST"), "L'habilitation fait partie de la région");
 
-sfConfig::set('drev_configuration_drev', $drevConfigOrigin);
+sfConfig::set('region_configuration_region', $drevConfigOrigin);
