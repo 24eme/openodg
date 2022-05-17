@@ -75,7 +75,7 @@ class etablissementActions extends sfCredentialActions {
       $this->etablissement = $this->getRoute()->getEtablissement();
       $this->societe = $this->etablissement->getSociete();
       $this->num = $request->getParameter('num');
-      $this->chai = $this->etablissement->getOrAdd('chais')->getOrAdd($this->num);
+      $this->chai = $this->etablissement->getChaisByNum($this->num);
       $this->form = new EtablissementChaiModificationForm($this->chai);
       if ($request->isMethod(sfWebRequest::POST)) {
           $this->form->bind($request->getParameter($this->form->getName()));

@@ -152,7 +152,10 @@ class habilitationActions extends sfActions {
         }
 
         if($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
-            $this->editForm = new HabilitationEditionForm($this->habilitations[0]);
+            $this->editForms = array();
+            foreach ($this->habilitations as $habilitation) {
+                $this->editForms[$habilitation->_id] = new HabilitationEditionForm($habilitation);
+            }
         }
 
         if($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && class_exists("EtablissementChoiceForm")) {
@@ -256,12 +259,12 @@ class habilitationActions extends sfActions {
         if (!$this->editForm->isValid()) {
             $this->getUser()->setFlash("error", 'Une erreur est survenue.');
 
-            return $this->redirect('habilitation_declarant', $this->etablissement);
+            return $this->redirect('habilitation_declarant', $this->habilitation->getEtablissementChais());
         }
 
         $this->editForm->save();
 
-        return $this->redirect('habilitation_declarant', $this->etablissement);
+        return $this->redirect('habilitation_declarant', $this->habilitation->getEtablissementChais());
     }
 
     public function executeDemandeGlobale(sfWebRequest $request) {
@@ -301,6 +304,7 @@ class habilitationActions extends sfActions {
     public function executeDemandeCreation(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = $this->getRoute()->getLastHabilitationOrCreate();
+
 
         if (!$this->habilitation->_rev) {
             $this->habilitation->save();
@@ -436,14 +440,14 @@ class habilitationActions extends sfActions {
             throw new sfError403Exception();
         }
 
-        HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->etablissement->identifiant, $request->getParameter('demande'));
+        HabilitationClient::getInstance()->deleteDemandeLastStatutAndSave($this->habilitation->identifiant, $request->getParameter('demande'));
 
         if(HabilitationClient::getInstance()->getDemandeHabilitationsByTypeDemandeAndStatut($this->demande->demande, $this->demande->statut)) {
             $this->getUser()->setFlash('info', "Cette suppression n'a pas fait évoluer le statut de l'habilitation, il faudra le faire manuellement si besoin.");
         }
 
 
-        return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->etablissement->identifiant, 'demande' => $request->getParameter('demande')));
+        return $this->redirect('habilitation_demande_edition', array('identifiant' => $this->habilitation->identifiant, 'demande' => $request->getParameter('demande')));
     }
 
     public function executeDemandeModificationCommentaire(sfWebRequest $request) {

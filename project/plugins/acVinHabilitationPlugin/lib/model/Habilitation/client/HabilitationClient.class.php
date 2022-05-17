@@ -233,7 +233,14 @@ class HabilitationClient extends acCouchdbClient {
             if (!$dateDebut) {
                 $dateDebut = '0000-00-00';
             }
-
+            if (strpos($identifiant, 'C') !== false) {
+                $e = explode('C', $identifiant);
+                if ($chaisid && $e[1] != $chaisid) {
+                    throw new sfException("Incohérence entre le chais ($chaisid) et l'identifiant ($identifiant)");
+                }
+                $chaisid = intval($e[1]);
+                $identifiant = $e[0];
+            }
             if ($chaisid == 'ALL') {
                 return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
                         ->endkey(sprintf(self::TYPE_COUCHDB."-%sC99-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
@@ -408,6 +415,9 @@ class HabilitationClient extends acCouchdbClient {
             $chaisid = null;
             if (strpos($keyDemande, 'C') !== false) {
                 $chaisid = intval(explode('C', $keyDemande)[1]);
+            }
+            if ($chaisid && strpos($identifiant, 'C') === false) {
+                throw new sfException("incohérence la demande ($keyDemande) à un chais alors que l'identifiant non ($identifiant)");
             }
             $demande = $this->getDemande($identifiant, $keyDemande, $date, $chaisid);
             $habilitation = $demande->getDocument();

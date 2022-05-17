@@ -74,8 +74,8 @@
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" >
-                        <?php if(isset($editForm)): ?>
-                        <a class="btn btn-xs btn-default <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>invisible<?php endif; ?>" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <?php if(isset($editForms)): ?>
+                        <a class="btn btn-xs btn-default <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>invisible<?php endif; ?>" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getDocument()->_id.'_'.$habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                         <?php endif; ?>
                       </td>
                 </tr>
@@ -98,8 +98,11 @@
         </div>
     <?php endif; ?>
 <?php endforeach; ?>
-<?php $habilitation = $habilitations[0]; ?>
+
+
+<?php $hab_entete = 0 ; foreach($habilitations as $hid => $habilitation): $etablissement = $habilitation->getEtablissementObject()->getRawValue(); ?>
     <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if (!$hab_entete): ?>
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
     <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
         <thead>
@@ -112,6 +115,7 @@
             </tr>
         </thead>
         <tbody>
+    <?php endif; $hab_entete = 1; ?>
             <?php foreach ($habilitation->getDemandesSortedOldToRecent() as $d): ?>
             <tr class="<?php if(!$d->isOuvert()): ?>hidden tohide<?php endif; ?> <?php if(!$d->isOuvert()): ?>transparence-sm<?php endif; ?>">
                 <td><?php echo $d->getDemandeLibelle() ?></td>
@@ -121,16 +125,19 @@
                 <td class="text-center">
                     <?php if($habilitation->isLastOne()): ?>
                     <?php if($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
-                        <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
+                        <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $habilitation->getEtablissementChais(), 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
                     <?php else: ?>
-                        <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir</a></td>
+                        <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $habilitation->getEtablissementChais(), 'demande' => $d->getKey())) ?>">Voir</a></td>
                     <?php endif; ?>
                     <?php endif; ?>
             </tr>
             <?php endforeach; ?>
-        </tbody>
-    </table>
     <?php endif; ?>
+<?php endforeach; ?>
+<?php if ($hab_entete): ?>
+</tbody>
+</table>
+<?php endif; ?>
 
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
@@ -162,20 +169,22 @@
       </tbody>
     </table>
 
-<?php if(isset($editForm)): ?>
+<?php foreach($habilitations as $hid => $habilitation): ?>
+<?php if(isset($editForms[$habilitation->_id])): ?>
 <form role="form" class="ajaxForm" action="<?php echo url_for("habilitation_edition", $habilitation) ?>" method="post">
     <?php
-    echo $editForm->renderHiddenFields();
-    echo $editForm->renderGlobalErrors();
+    echo $editForms[$habilitation->_id]->renderHiddenFields();
+    echo $editForms[$habilitation->_id]->renderGlobalErrors();
 
-    foreach ($habilitation->getProduits() as $key => $produitAppellation):
-      foreach ($produitAppellation->activites as $keyActivite => $activite):
-        include_partial('habilitation/popupEditionForm', array('url' => url_for('habilitation_edition', $habilitation), 'editForm' => $editForm,'idPopup' => 'editForm_'.$activite->getHashForKey(), 'produitCepage' => $produitAppellation, 'details' => $activite));
-      endforeach;
-    endforeach;
+    foreach ($habilitation->getProduits() as $key => $produitAppellation) {
+        foreach ($produitAppellation->activites as $keyActivite => $activite) {
+            include_partial('habilitation/popupEditionForm', array('url' => url_for('habilitation_edition', $habilitation), 'editForm' => $editForms[$habilitation->_id], 'idPopup' => 'editForm_'.$habilitation->_id.'_'.$activite->getHashForKey(), 'produitCepage' => $produitAppellation, 'details' => $activite));
+        }
+    }
     ?>
 </form>
 <?php endif; ?>
+<?php endforeach; ?>
 
 <?php if(isset($ajoutForm)): ?>
 <?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $habilitation->getEtablissementChais()), 'form' => $ajoutForm)); ?>
