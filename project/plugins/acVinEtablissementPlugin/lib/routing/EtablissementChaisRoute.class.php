@@ -37,8 +37,10 @@ class EtablissementChaisRoute extends sfObjectRoute implements InterfaceEtabliss
     }
 
     protected function doConvertObjectToArray($object = null) {
-
-        return array("identifiant" => $object->getIdentifiant());
+        if (!$object->getHash()) {
+            return array("identifiant" => $object->getIdentifiant());
+        }
+        return array("identifiant" => sprintf('%sC%02d', $object->getDocument()->identifiant, $object->getKey()) );
     }
 
     public function getEtablissement() {
@@ -50,8 +52,15 @@ class EtablissementChaisRoute extends sfObjectRoute implements InterfaceEtabliss
 	    return $this->etablissement;
     }
     
+    public function getIdentifiant() {
+        if (!$this->chaisid) {
+            return $this->etablissement->identifiant;
+        }
+        return sprintf('%sC%02d', $this->etablissement->identifiant, $this->chaisid);
+    }
+    
     public function getLastHabilitationOrCreate() {
-        return HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->getEtablissement()->identifiant);
+        return HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->getEtablissement()->identifiant, $this->chaisid);
     }
     
 }

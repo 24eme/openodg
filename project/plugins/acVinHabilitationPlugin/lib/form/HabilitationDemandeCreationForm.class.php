@@ -57,8 +57,8 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
             }
         }
         $chais_id = null;
-        if ($this->getDocument()->getHash()) {
-            $chais_id = $this->getDocument()->getChaisId();
+        if ($this->getDocument()->exist('chais_id')) {
+            $chais_id = $this->getDocument()->chais_id;
         }
         $demande = HabilitationClient::getInstance()->createDemandeAndSave(
             $this->getDocument()->getEtablissementIdentifiant(),

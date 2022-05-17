@@ -196,8 +196,14 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getEtablissementChais() {
         $e = $this->getEtablissementObject();
+        if (!$e) {
+            throw new sfException("Etablissement not found");
+        }
         if (!$this->exist('chais_id') || !$this->chais_id) {
             return $e;
+        }
+        if (!isset($e->chais[$this->chais_id]) || !$e->chais[$this->chais_id] ) {
+            throw new sfException($this->_id." Chais (".$this->chais_id.") not found in ".$e->_id);
         }
         return $e->chais[$this->chais_id];
     }

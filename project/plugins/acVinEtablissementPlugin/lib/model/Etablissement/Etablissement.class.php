@@ -566,7 +566,16 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $this->getOrAdd('chais')->add();
         }
         return $this->chais->add();
-
+    }
+    
+    public function getChaisByNum($num) {
+        if (!$this->exist('chais') || !count($this->chais)) {
+            $this->getOrAdd('chais')->add();
+        }
+        if (isset($this->chais[$num])) {
+            return $this->chais[$num];
+        }
+        return $this->getOrAdd('chais')->add();
     }
 
 }
