@@ -7,7 +7,7 @@ class ExportDRevPDF extends ExportPDF {
 
     public function __construct($drev, $region = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->drev = $drev;
-        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && !RegionConfiguration::getInstance()->hasPDFUniqueRegion()) {
+        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && !DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
             $this->regions = $this->drev->declaration->getSyndicats();
         }
 
