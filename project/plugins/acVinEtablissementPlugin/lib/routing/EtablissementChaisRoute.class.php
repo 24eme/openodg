@@ -49,4 +49,9 @@ class EtablissementChaisRoute extends sfObjectRoute implements InterfaceEtabliss
 
 	    return $this->etablissement;
     }
+    
+    public function getLastHabilitationOrCreate() {
+        return HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->getEtablissement()->identifiant);
+    }
+    
 }
