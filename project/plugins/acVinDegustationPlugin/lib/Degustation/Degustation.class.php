@@ -1173,7 +1173,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateur->getOrAdd('confirmation');
             $degustateur->confirmation = true;
 
-            return $this->degustateur;
+            return $degustateur;
 		}
 
 		public function setDateEmailConvocationDegustateur($date, $compteId, $college) {
