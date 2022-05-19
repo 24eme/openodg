@@ -61,6 +61,8 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | while read subhab; do
     mkdir -p $SUBDIR
     head -n 1 $EXPORTDIR/habilitation.csv > $SUBDIR/habilitation.csv
     cat $EXPORTDIR/habilitation.csv | grep "$SUBFILTRE" >> $SUBDIR/habilitation.csv
+    head -n 1 $EXPORTDIR/drev.csv > $SUBDIR/drev.csv
+    cat $EXPORTDIR/drev.csv | grep "$SUBFILTRE" >> $SUBDIR/drev.csv
 done
 
 sleep 60
