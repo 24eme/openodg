@@ -74,7 +74,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                 }
                 $configProduit = $produit->getConfig();
 
-                $csv .= sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";%s;%s;%s\n",
+                $csv .= sprintf("\"%s\";\"%s\";%s;%s;%s;%s;%s;%s;%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
                       $raison_sociale,
                       $identifiant,
                       method_exists($configProduit, "getCertification") ? $configProduit->getCertification()->getKey() : null,
