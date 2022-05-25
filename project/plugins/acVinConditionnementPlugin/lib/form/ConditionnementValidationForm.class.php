@@ -12,7 +12,7 @@ class ConditionnementValidationForm extends acCouchdbForm
     }
 
     public function configure() {
-        if(!$this->getDocument()->isPapier()) {
+        if(!$this->getDocument()->isPapier() && !$this->getDocument()->validation) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
@@ -53,7 +53,7 @@ class ConditionnementValidationForm extends acCouchdbForm
             }
         }
 
-        if($this->getDocument()->isPapier()) {
+        if($this->getDocument()->isPapier() && !$this->getDocument()->validation) {
             $this->setWidget('date', new sfWidgetFormInput());
             $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
             $this->getWidget('date')->setLabel("Date de réception du document");
