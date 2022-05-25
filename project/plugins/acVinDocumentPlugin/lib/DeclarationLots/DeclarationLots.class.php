@@ -211,10 +211,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
         if(is_null($date)) {
             $date = date('Y-m-d');
         }
-        if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
             throw new sfException("La validation nécessite une région");
         }
-        if(DrevConfiguration::getInstance()->hasOdgProduits() && $region){
+        if(RegionConfiguration::getInstance()->hasOdgProduits() && $region){
             return $this->validateOdgByRegion($date, $region);
         }
 
