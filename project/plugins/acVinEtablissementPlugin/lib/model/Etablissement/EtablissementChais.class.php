@@ -10,6 +10,22 @@ class EtablissementChais extends BaseEtablissementChais {
       $this->autocalcule = false;
     }
 
+    public static function getIdentifiantEtablissementPart($identifiant) {
+
+        return preg_replace('/([0-9]+)C.*$/', '\1', $identifiant);
+    }
+
+    public static function getIdentifiantChaiPart($identifiant) {
+        $identifiant = preg_replace('/^.*[0-9]+C?/', '', $identifiant);
+
+        if(!$identifiant) {
+
+            return null;
+        }
+
+        return intval($identifiant);
+    }
+
     public function isSameAdresseThanEtablissement() {
       return !($this->_get('nom') || $this->_get('adresse') || $this->_get('code_postal') || $this->_get('commune'));
     }
