@@ -173,7 +173,7 @@ class HabilitationClient extends acCouchdbClient {
             return $doc;
         }
 
-        public function createDoc($identifiant, $chaisid = null, $date = '') {
+        public function createDoc($identifiant, $chaisid = self::CHAIS_PRINCIPAL, $date = '') {
           if ($chaisid && (intval($chaisid).'' !== $chaisid.'')) {
               throw new sfException('mauvais format pour $chaisid : '.$chaisid);
           }
@@ -183,7 +183,7 @@ class HabilitationClient extends acCouchdbClient {
           return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
         }
 
-        public function createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid = null)
+        public function createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid = self::CHAIS_PRINCIPAL)
         {
             $habilitation_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date, $chaisid);
             if ($habilitation_found && $habilitation_found->date === $date) {
@@ -203,7 +203,7 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation;
         }
 
-        public function findPreviousByIdentifiantAndDate($identifiant, $date, $chaisid = 0, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        public function findPreviousByIdentifiantAndDate($identifiant, $date, $chaisid = self::CHAIS_PRINCIPAL, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
           $h = $this->getHistory($identifiant, $date, $hydrate, null, $chaisid);
           if (!count($h)) {
             return NULL;
@@ -227,7 +227,7 @@ class HabilitationClient extends acCouchdbClient {
             return null;
         }
 
-        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = null, $chaisid = '0') {
+        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = null, $chaisid = self::CHAIS_PRINCIPAL) {
             if (!$dateDebut) {
                 $dateDebut = '0000-00-00';
             }
@@ -239,11 +239,11 @@ class HabilitationClient extends acCouchdbClient {
                 $chaisid = intval($e[1]);
                 $identifiant = $e[0];
             }
-            if ($chaisid == 'ALL') {
+            if ($chaisid === self::CHAIS_TOUS) {
                 return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
                         ->endkey(sprintf(self::TYPE_COUCHDB."-%sC99-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
             }
-            if ($chaisid == 0) {
+            if (!$chaisid) {
                 return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
                         ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
             }
@@ -359,7 +359,7 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
-        public function getDemande($identifiant, $keyDemande, $date, $chaisid = null) {
+        public function getDemande($identifiant, $keyDemande, $date, $chaisid = self::CHAIS_PRINCIPAL) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
 
             return $habilitation->demandes->get($keyDemande);

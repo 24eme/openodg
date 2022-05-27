@@ -137,7 +137,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->_get('validation_odg');
     }
 
-    public function initDoc($identifiant, $date, $chaisid = null) {
+    public function initDoc($identifiant, $date, $chaisid = self::CHAIS_PRINCIPAL) {
         $this->identifiant = $identifiant;
         $this->date = $date;
         $etablissement = $this->getEtablissementObject();

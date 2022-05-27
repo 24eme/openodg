@@ -396,7 +396,7 @@ $date = (new DateTime("-15 day"))->format('Y-m-d');
 
 $demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, HabilitationClient::CHAIS_PRINCIPAL, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_ELABORATEUR), "DEPOT", $date, null, "Testeur", true);
 $t->is(count(HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant)->getFullHistorique()), 40, "L'historique contient bien l'historique plus l'habilitation sur le chais principal");
-$demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $demande2aire->getKey(), $date, "VALIDE", null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->updateDemandeAndSave($demande2aire->getDocument()->identifiant, $demande2aire->getKey(), $date, "VALIDE", null, "Testeur", true);
 $t->is(count(HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant)->getFullHistorique()), 43, "L'historique contient bien l'historique avec la demande finale du chais secondaire");
 
 //HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $demandeKey, $date, "COMPLET", null, "Testeur", true);
