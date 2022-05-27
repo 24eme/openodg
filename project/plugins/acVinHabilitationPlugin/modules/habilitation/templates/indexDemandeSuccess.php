@@ -77,7 +77,7 @@
         </div>
         <div class="checkbox" style="margin-bottom: 20px;">
             <label>
-                <input data-href="<?php echo url_for('habilitation_demande', array('voirtout' => (!$voirtout)*1)) ?>" id="habilitation_voirtout" <?php if($voirtout): ?>checked="checked"<?php endif; ?> type="checkbox" value="1" /> Demandes terminées
+                <input data-href="<?php echo url_for('habilitation_demande', array('voirtout' => (!$voirtout)*1, 'region' => $regionParam)); ?>" id="habilitation_voirtout" <?php if($voirtout): ?>checked="checked"<?php endif; ?> type="checkbox" value="1" /> Demandes terminées
             </label>
         </div>
         <?php if($query && count($query) > 0): ?>
