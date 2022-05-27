@@ -18,11 +18,11 @@ class NavConfiguration {
 
     public function load() {
         $this->nav_configuration = array();
-        $this->nav_configuration['stats'] = sfConfig::get($this->getAppPath(), array());
-        $regions = array(sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion());
         if (sfContext::getInstance()->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
             $regions = RegionConfiguration::getInstance()->getOdgRegions();
+            $this->nav_configuration['stats'] = sfConfig::get($this->getAppPath(), array());
         }
+        $regions = array(sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion());
         if (count($regions)) {
             $this->nav_configuration['stats'][] = array('name' => 'Export Crus', 'url' => '#', 'title' => 1);
             foreach($regions as $r) {
