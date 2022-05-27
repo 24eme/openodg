@@ -70,6 +70,10 @@
                 </ul>
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
+                <?php if( $sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) ): ?>
+                    <li><a tabindex="-1" href="https://extranet.syndicat-cotesdurhone.com/" title="Extranet">Extranet</a></li>
+                    <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte"><span class="glyphicon glyphicon-user"></span></a></li>
+                <?php endif; ?>
                 <?php if(NavConfiguration::getInstance()->hasStatLinks()): ?>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-stats"></span><span class="caret"></span></a>
@@ -93,9 +97,6 @@
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
                   </ul>
                 </li>
-                <?php elseif($sf_user->isAuthenticated()): ?>
-                 <li><a tabindex="-1" href="https://extranet.syndicat-cotesdurhone.com/" title="Extranet">Extranet</a></li>
-                 <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte"><span class="glyphicon glyphicon-user"></span></a></li>
                 <?php endif; ?>
                 <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte && !$sf_user->isUsurpationCompte()) : ?>
                      <li><a tabindex="-1" href="<?php echo url_for('auth_usurpation', array('identifiant' => $compte->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
