@@ -7,7 +7,7 @@ if ($application == 'loire') {
     $t->ok(true, "Pas d'habilitation pour loire");
     return;
 }
-$t = new lime_test(37);
+$t = new lime_test(39);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -70,6 +70,8 @@ $t->is($habProduit->activites[$activiteKey]->statut, HabilitationClient::STATUT_
 $t->is(count($habilitation->historique), 3, "la modification de l'activité a été enregistrée dans l'historique");
 $t->is($habilitation->historique[2]->statut, HabilitationClient::STATUT_HABILITE, "Le statut est écrit dans l'historique");
 
+$habilitationPrecedente = $habilitation;
+
 $t->comment('Habilitation à une autre date');
 $date = '2010-10-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
@@ -78,6 +80,8 @@ $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-
 $t->is(count($habilitation->declaration), 1, "l'habilitation n'est pas vierge de produit");
 $t->is(count($habilitation->historique), 0, "l'habilitation est vierge d'historique");
 $t->is($habilitation->isLectureSeule(), false, "l'habilitation n'est pas en lecture seule");
+$t->ok($habilitation->getPrevious(), "Récupération de l'habilitation précédente");
+$t->ok($habilitation->getPrevious()->_id, $habilitationPrecedente->_id, "_id de l'habilitation précédente");
 $t->is($habilitation->getPrevious()->isLectureSeule(), true, "l'habilitation précédente est en lecture seule");
 
 $habProduit = $habilitation->get($produitConfig->getHash());
