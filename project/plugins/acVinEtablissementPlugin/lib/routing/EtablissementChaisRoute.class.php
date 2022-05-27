@@ -7,14 +7,14 @@ class EtablissementChaisRoute extends sfObjectRoute implements InterfaceEtabliss
 
     protected function getObjectForParameters($parameters = null) {
         $identifiant = $parameters['identifiant'];
-        $splited = explode('C', $identifiant);
-        $etablissement_id = $splited[0];
+        $etablissement_id = EtablissementChais::getIdentifiantEtablissementPart($this->identifiant);
         $this->etablissement = EtablissementClient::getInstance()->find($etablissement_id);
         if (!$this->etablissement) {
             throw new sfException('Etablissement '.$etablissement_id.' non trouvé');
         }
-        if (isset($splited[1])) {
-            $this->chaisid = intval($splited[1]);
+        $chai_id = EtablissementChais::getIdentifiantChaiPart($identifiant);
+        if ($chai_id) {
+            $this->chaisid = $chai_id;
         }
         $myUser = sfContext::getInstance()->getUser();
         $compteUser = $myUser->getCompte();

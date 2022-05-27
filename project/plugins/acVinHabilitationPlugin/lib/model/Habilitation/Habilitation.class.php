@@ -25,7 +25,8 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function getEtablissementIdentifiant() {
-        return explode('C', $this->identifiant)[0];
+
+        return EtablissementChais::getIdentifiantEtablissementPart($this->identifiant);
     }
 
     public function getDeclarant(){

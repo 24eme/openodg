@@ -239,13 +239,13 @@ class HabilitationClient extends acCouchdbClient {
             if (!$dateDebut) {
                 $dateDebut = '0000-00-00';
             }
-            if (strpos($identifiant, 'C') !== false) {
-                $e = explode('C', $identifiant);
-                if ($chaisid && $e[1] != $chaisid) {
+            $chaisidFromIdentifiant = EtablissementChais::getIdentifiantChaiPart($identifiant);
+            if ($chaisidFromIdentifiant !== null) {
+                if ($chaisid && $chaisidFromIdentifiant != $chaisid) {
                     throw new sfException("Incohérence entre le chais ($chaisid) et l'identifiant ($identifiant)");
                 }
-                $chaisid = intval($e[1]);
-                $identifiant = $e[0];
+                $chaisid = $chaisidFromIdentifiant;
+                $identifiant = EtablissementChais::getIdentifiantEtablissementPart($identifiant);
             }
             if ($chaisid === self::CHAIS_TOUS) {
                 return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
@@ -419,11 +419,8 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = true) {
-            $chaisid = null;
-            if (strpos($keyDemande, 'C') !== false) {
-                $chaisid = intval(explode('C', $keyDemande)[1]);
-            }
-            if ($chaisid && strpos($identifiant, 'C') === false) {
+            $chaisid = EtablissementChais::getIdentifiantChaiPart($keyDemande);
+            if ($chaisid && EtablissementChais::getIdentifiantChaiPart($identifiant) !== null) {
                 throw new sfException("incohérence la demande ($keyDemande) à un chais alors que l'identifiant non ($identifiant)");
             }
             $demande = $this->getDemande($identifiant, $keyDemande, $date, $chaisid);
