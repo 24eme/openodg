@@ -51,12 +51,12 @@ class parcellaireActions extends sfActions {
     public function executeScrape(sfWebRequest $request)
     {
         $this->secureTeledeclarant();
-        
         $this->etablissement = $this->getRoute()->getEtablissement();
     }
 
     public function executeImport(sfWebRequest $request)
     {
+        $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $parcellaire_client = ParcellaireClient::getInstance();
 
