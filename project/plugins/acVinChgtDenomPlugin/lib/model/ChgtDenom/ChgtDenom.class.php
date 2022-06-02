@@ -369,7 +369,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 $this->archiver();
             }
             if (count($this->lots) && ($this->lots[0]->unique_id == $this->changement_origine_lot_unique_id)) {
-                if (($this->lots[0]->volume) && !($this->lots[0]->id_document_affectation) && !($this->lots[0]->statut == Lot::STATUT_CONFORME)) {
+                if (($this->lots[0]->volume) && !($this->lots[0]->id_document_affectation)) {
                     $this->lots[0]->affectable = $this->origine_affectable;
                 }else{
                     $this->lots[0]->affectable = false;

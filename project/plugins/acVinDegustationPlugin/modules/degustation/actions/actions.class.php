@@ -707,7 +707,6 @@ class degustationActions extends sfActions {
         if (!$lot->getMouvement(Lot::STATUT_AFFECTABLE)) {
             throw new sfException("Action impossible");
         }
-        $lot->statut = Lot::STATUT_CONFORME;
         $lot->affectable = false;
         $doc->save();
         return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
