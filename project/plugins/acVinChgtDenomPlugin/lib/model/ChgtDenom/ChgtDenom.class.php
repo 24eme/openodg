@@ -939,4 +939,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         return -1;
     }
+
+    public function verifyGenerateModificative()
+    {
+        return false;
+    }
 }
