@@ -1010,7 +1010,7 @@ class drevActions extends sfActions {
 
     protected function secureEtablissement($droits, $etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
-
+            throw new sfError403Exception($etablissement->_id." n'a pas les droits pour accéder à la DREV");
             return $this->forwardSecure();
         }
     }
