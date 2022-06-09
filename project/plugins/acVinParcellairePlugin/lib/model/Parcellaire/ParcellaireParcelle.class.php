@@ -263,7 +263,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
             $res = null;
             try {
-                $res = $this->geojsonInGeojsonAire($infos['denomination_id']);
+                $res = $this->geojsonInGeojsonAire($infos['denumination_id']);
             } catch (\Exception $e) {
                 $res = ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR;
             }
