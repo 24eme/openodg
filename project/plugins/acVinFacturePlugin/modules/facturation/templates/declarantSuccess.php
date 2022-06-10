@@ -31,7 +31,7 @@
   <li class="active"><a href="#factures" aria-controls="factures" role="tab" data-toggle="tab">Factures</a></li>
   <li><a href="#lignes" aria-controls="lignes" role="tab" data-toggle="tab">Lignes</a></li>
   <form method="GET" class="form-inline pull-right" style="display: inline-block;">
-      Campagne :
+      Exercice comptable :
       <select class="select2SubmitOnChange form-control" name="campagne">
           <option value="tous">Toutes</option>
           <?php foreach ($campagnes as $c): ?>
