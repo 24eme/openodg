@@ -4,3 +4,4 @@ all:
       validation_odg: 'admin'
       pdf_unique_region: true
       logement_adresse: false
+      denomination_auto: true
