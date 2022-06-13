@@ -31,9 +31,6 @@ class HabilitationClient extends acCouchdbClient {
     const DEMANDE_RETRAIT = "RETRAIT";
     const DEMANDE_RESILIATION = "RESILIATION";
 
-    const CHAIS_PRINCIPAL = null;
-    const CHAIS_TOUS = 'ALL';
-
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
         self::DEMANDE_RETRAIT => "Retrait",
@@ -173,25 +170,22 @@ class HabilitationClient extends acCouchdbClient {
             return $doc;
         }
 
-        public function createDoc($identifiant, $chaisid = self::CHAIS_PRINCIPAL, $date = '') {
-          if ($chaisid && (intval($chaisid).'' !== $chaisid.'')) {
-              throw new sfException('mauvais format pour $chaisid : '.$chaisid);
-          }
+        public function createDoc($identifiant, $date = '') {
           if (!$date) {
             $date = date('Y-m-d');
           }
-          return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
+          return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
         }
 
-        public function createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid = self::CHAIS_PRINCIPAL)
+        public function createOrGetDocFromIdentifiantAndDate($identifiant, $date)
         {
-            $habilitation_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date, $chaisid);
+            $habilitation_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
             if ($habilitation_found && $habilitation_found->date === $date) {
               return $habilitation_found;
             }
             if (!$habilitation_found) {
               $habilitation = new Habilitation();
-              $habilitation->initDoc($identifiant, $date, $chaisid);
+              $habilitation->initDoc($identifiant,$date);
               $etablissement = $habilitation->getEtablissementObject();
             }else{
               $habilitation_found->date = $date;
@@ -199,12 +193,11 @@ class HabilitationClient extends acCouchdbClient {
               $habilitation_found = null;
             }
 
-
             return $habilitation;
         }
 
-        public function findPreviousByIdentifiantAndDate($identifiant, $date, $chaisid = self::CHAIS_PRINCIPAL, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-          $h = $this->getHistory($identifiant, $date, $hydrate, null, $chaisid);
+        public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $h = $this->getHistory($identifiant, $date, $hydrate);
           if (!count($h)) {
             return NULL;
           }
@@ -227,56 +220,22 @@ class HabilitationClient extends acCouchdbClient {
             return null;
         }
 
-        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = null, $chaisid = self::CHAIS_PRINCIPAL) {
-            if (!$dateDebut) {
-                $dateDebut = '0000-00-00';
-            }
-            $chaisidFromIdentifiant = EtablissementChais::getIdentifiantChaiPart($identifiant);
-            if ($chaisidFromIdentifiant !== null) {
-                if ($chaisid && $chaisidFromIdentifiant != $chaisid) {
-                    throw new sfException("Incohérence entre le chais ($chaisid) et l'identifiant ($identifiant)");
-                }
-                $chaisid = $chaisidFromIdentifiant;
-                $identifiant = EtablissementChais::getIdentifiantEtablissementPart($identifiant);
-            }
-            if ($chaisid === self::CHAIS_TOUS) {
-                return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
-                        ->endkey(sprintf(self::TYPE_COUCHDB."-%sC99-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
-            }
-            if (!$chaisid) {
-                return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
+        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = "0000-00-00") {
+
+            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
                         ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
-            }
-            if ($chaisid > 100){
-                throw new sfException("chais id trop grand ".$chaisid);
-            }
-
-            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $dateDebut)))
-                    ->endkey(sprintf(self::TYPE_COUCHDB."-%sC%02d-%s", $identifiant, $chaisid, str_replace('-', '', $date)))->execute($hydrate);
-
         }
 
-        public function getLastHabilitation($identifiant, $chaisid = 0, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99', $chaisid, $hydrate);
+        public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99', $hydrate);
         }
 
-        public function getLastHabilitationsOrCreate($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-            $habilitations = array();
-            $habilitations[] = $this->getLastHabilitationOrCreate($identifiant, 0, $hydrate);
-            if ($habilitations[0]->getEtablissementObject() && $habilitations[0]->getEtablissementObject()->exist('chais')) {
-                for ($i = 1 ; $i < count($habilitations[0]->getEtablissementObject()->chais) ; $i++) {
-                    $habilitations[] = $this->getLastHabilitationOrCreate($identifiant, $i, $hydrate);
-                }
-            }
-            return $habilitations;
-        }
-
-        public function getLastHabilitationOrCreate($identifiant, $chaisid = 0, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-
-            $habilitation = $this->getLastHabilitation($identifiant, $chaisid);
+        public function getLastHabilitationOrCreate($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+            $habilitation = $this->getLastHabilitation($identifiant);
 
             if(!$habilitation) {
-                $habilitation = $this->createDoc($identifiant, $chaisid);
+
+                $habilitation = $this->createDoc($identifiant);
             }
 
             return $habilitation;
@@ -359,8 +318,8 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
-        public function getDemande($identifiant, $keyDemande, $date, $chaisid = self::CHAIS_PRINCIPAL) {
-            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
+        public function getDemande($identifiant, $keyDemande, $date) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
 
             return $habilitation->demandes->get($keyDemande);
         }
@@ -371,8 +330,8 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation->demandes->get($keyDemande);
         }
 
-        public function createDemandeAndSave($identifiant, $chaisid, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
-            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date, $chaisid);
+        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
             ksort($demandesKey);
@@ -386,11 +345,7 @@ class HabilitationClient extends acCouchdbClient {
                     $biggerNum = (int) $matches[1];
                 }
             }
-            if ($chaisid > 0) {
-                $key = sprintf('%s%02d-C%02d', $baseKey, $biggerNum + 1, $chaisid);
-            }else {
-                $key = sprintf($baseKey."%02d", $biggerNum + 1);
-            }
+            $key = sprintf($baseKey."%02d", $biggerNum + 1);
             $demande = $habilitation->demandes->add($key);
 
             $demande->produit = $produitHash;
@@ -410,11 +365,7 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur, $trigger = true) {
-            $chaisid = EtablissementChais::getIdentifiantChaiPart($keyDemande);
-            if ($chaisid && EtablissementChais::getIdentifiantChaiPart($identifiant) !== null) {
-                throw new sfException("incohérence la demande ($keyDemande) à un chais alors que l'identifiant non ($identifiant)");
-            }
-            $demande = $this->getDemande($identifiant, $keyDemande, $date, $chaisid);
+            $demande = $this->getDemande($identifiant, $keyDemande, $date);
             $habilitation = $demande->getDocument();
 
             $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur);
@@ -441,7 +392,6 @@ class HabilitationClient extends acCouchdbClient {
 
             $descriptionHistorique  = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" ";
             $descriptionHistorique .= ($creation) ? "a été créée" : "est passée";
-            $descriptionHistorique .= (strpos($habilitation->identifiant, 'C') !== false) ? ' pour le chais secondaire "'.$habilitation->declarant->nom.'"' : '';
             $descriptionHistorique .= " au statut \"".$demande->getStatutLibelle()."\"";
 
             $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
@@ -532,8 +482,8 @@ class HabilitationClient extends acCouchdbClient {
             $newKeyDemande2 = null;
             foreach($demande->getFullHistorique() as $historique) {
                 if(!$newKeyDemande1) {
-                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, HabilitationClient::CHAIS_PRINCIPAL, $demande->demande, $demande->produit, $activites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
-                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, HabilitationClient::CHAIS_PRINCIPAL, $demande->demande, $demande->produit, $activitesToKeep, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activitesToKeep, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
                     continue;
                 }
 
