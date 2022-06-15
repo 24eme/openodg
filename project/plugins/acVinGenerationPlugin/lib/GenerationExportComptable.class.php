@@ -21,7 +21,7 @@ class GenerationExportComptable extends GenerationAbstract
                 $paiementscomptafile = "generation/".$this->generation->date_emission."_paiements_isa.txt";
                 $clientscomptafile = '';
                 break;
-            case sel::EXPORT_TYPE_SAGE:
+            case self::EXPORT_TYPE_SAGE:
                 $facturescomptafile = "generation/".$this->generation->date_emission."_factures.sage";
                 $paiementscomptafile = "generation/".$this->generation->date_emission."_paiements.sage";
                 $clientscomptafile = "generation/".$this->generation->date_emission."_client.sage";
