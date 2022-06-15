@@ -10,3 +10,5 @@ all:
       modalite_paiement: "- comptant par virement ou chèques"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      export_type: "sage"
+      export_donotsave: true
