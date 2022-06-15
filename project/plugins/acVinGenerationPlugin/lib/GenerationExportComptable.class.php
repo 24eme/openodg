@@ -13,7 +13,8 @@ class GenerationExportComptable extends GenerationAbstract
         $paiementsfile = "generation/".$this->generation->date_emission."_paiements.csv";
         $clientsfile = "generation/".$this->generation->date_emission."_clients.csv";
 
-        $this->exporttype = sfConfig::get('configuration_facture_export_type');
+       $conffile = sfConfig::get('facture_configuration_facture');
+       $this->exporttype = $conffile['export_type'];
 
         switch ($this->exporttype) {
             case self::EXPORT_TYPE_ISA:
