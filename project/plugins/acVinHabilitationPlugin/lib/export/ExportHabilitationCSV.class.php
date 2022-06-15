@@ -4,17 +4,15 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
     protected $habilitation = null;
     protected $header = false;
-    protected $region = null;
 
     public static function getHeaderCsv() {
 
-        return "Nom Opérateur (Raison Sociale);Identifiant;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cépage;Produit (libellé appellation);CVI;Siret;Adresse (etablissement);Adresse complémentaire (etablissement);Adresse complémentaire 2 (etablissement);Code postal  (etablissement);Commune (etablissement);Téléphone fixe (etablissement);Téléphone mobile (etablissement);Email (etablissement);Adresse (société);Adresse complémentaire (société);Adresse complémentaire 2 (société);Code postal (société);Commune (société);Téléphone fixe (société);Téléphone mobile (société);Email (société);Activité;Statut;Date;Commentaire;Organisme;Id du doc;Hash produit\n";
+        return "Nom Opérateur (Raison Sociale);Identifiant;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cépage;Produit (libellé appellation);CVI Opérateur;Siret Opérateur;Adresse (etablissement);Adresse complémentaire (etablissement);Adresse complémentaire 2 (etablissement);Code postal  (etablissement);Commune (etablissement);Téléphone fixe (etablissement);Téléphone mobile (etablissement);Email (etablissement);Adresse (société);Adresse complémentaire (société);Adresse complémentaire 2 (société);Code postal (société);Commune (société);Téléphone fixe (société);Téléphone mobile (société);Email (société);Activité;Statut;Date;Id du doc;Commentaire\n";
     }
 
-    public function __construct($habilitation, $header = true, $region = null) {
+    public function __construct($habilitation, $header = true) {
         $this->habilitation = $habilitation;
         $this->header = $header;
-        $this->region = $region;
     }
 
     public function getFileName() {
@@ -87,6 +85,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                       $produit->libelle,
                       $cvi,
                       $siret,
+
                       $adresse,
                       $adresse_complementaire,
                       $adresse_complementaire_bis,
@@ -95,6 +94,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                       $tel_fixe,
                       $tel_portable,
                       $email,
+
                       $adresse_societe,
                       $adresse_complementaire_societe,
                       $adresse_complementaire_societe_bis,
@@ -103,14 +103,12 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                       $tel_fixe_societe,
                       $tel_portable_societe,
                       $email_societe,
+
                       $activite->getKey(),
                       $activite->statut,
                       $activite->date,
-                      $activite->commentaire,
-                      Organisme::getCurrentOrganisme(),
                       $this->habilitation->_id,
-                      $configProduit->getHash()
-                      );
+                      $activite->commentaire);
             }
         }
         return $csv;
@@ -120,8 +118,4 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
-
-    public function setExtraArgs($args) {
-    }
-
 }

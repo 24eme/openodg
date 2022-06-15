@@ -179,6 +179,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                     <span class="<?php if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT): ?>text-danger<?php else: ?>text-muted<?php endif; ?>">
                                     <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire" : '' ; ?>
                                     <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement" : '' ; ?>
+                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur" : '' ; ?>
                                     <?php echo $nom; ?>
                                     </span>
                                     <?php endforeach; ?>

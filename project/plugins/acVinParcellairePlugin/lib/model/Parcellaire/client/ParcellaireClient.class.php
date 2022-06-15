@@ -20,6 +20,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     const PARCELLAIRE_AIRE_TOTALEMENT = 'OUI';
     const PARCELLAIRE_AIRE_PARTIELLEMENT = 'PARTIEL';
+    const PARCELLAIRE_AIRE_EN_ERREUR = 'ERREUR';
     const PARCELLAIRE_AIRE_HORSDELAIRE = false;
 
     public static function getInstance() {

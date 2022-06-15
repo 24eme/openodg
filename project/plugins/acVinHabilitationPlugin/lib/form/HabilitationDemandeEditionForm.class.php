@@ -96,8 +96,4 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
 
         return $demande;
     }
-    
-    public function getEtablissementChais() {
-        return $this->getDocument()->getEtablissementChais();
-    }
 }

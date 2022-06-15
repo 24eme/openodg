@@ -4,9 +4,11 @@
     width: auto;
   }
 </style>
+
 <?php use_helper('Date'); ?>
-<?php $habilitation = $habilitations[0]; ?>
-<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation )); ?>
+<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
+  $etablissement = $habilitation->getEtablissementObject();
+ ?>
 <div class="page-header no-border">
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
@@ -36,13 +38,6 @@
   <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
 <?php endif; ?>
 
-<?php foreach($habilitations as $hid => $habilitation): $etablissement = $habilitation->getEtablissementObject()->getRawValue(); ?>
-    <?php if (!$hid): ?>
-        <h3>Chais principal</h3>
-    <?php else: ?>
-        <h3>Chais secondaire - <?php echo $habilitation->declarant->nom; ?></h3>
-        <h4 class="text-muted"><?php echo $habilitation->declarant->adresse; ?> <?php echo $habilitation->declarant->code_postal; ?> <?php echo $habilitation->declarant->commune; ?></h4>
-    <?php endif; ?>
     <table style="margin-top: 30px;" class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
             <tr>
@@ -74,8 +69,8 @@
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" >
-                        <?php if(isset($editForms)): ?>
-                        <a class="btn btn-xs btn-default <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>invisible<?php endif; ?>" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getDocument()->_id.'_'.$habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <?php if(isset($editForm)): ?>
+                        <a class="btn btn-xs btn-default <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>invisible<?php endif; ?>" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                         <?php endif; ?>
                       </td>
                 </tr>
@@ -86,7 +81,7 @@
 
     <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
-        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', array('identifiant' => $habilitation->identifiant) ) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
+        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Saisie d’une demande</a>
         </div>
     <?php endif; ?>
 
@@ -97,12 +92,8 @@
             </div>
         </div>
     <?php endif; ?>
-<?php endforeach; ?>
 
-
-<?php $hab_entete = 0 ; foreach($habilitations as $hid => $habilitation): $etablissement = $habilitation->getEtablissementObject()->getRawValue(); ?>
     <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
-    <?php if (!$hab_entete): ?>
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
     <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
         <thead>
@@ -115,7 +106,6 @@
             </tr>
         </thead>
         <tbody>
-    <?php endif; $hab_entete = 1; ?>
             <?php foreach ($habilitation->getDemandesSortedOldToRecent() as $d): ?>
             <tr class="<?php if(!$d->isOuvert()): ?>hidden tohide<?php endif; ?> <?php if(!$d->isOuvert()): ?>transparence-sm<?php endif; ?>">
                 <td><?php echo $d->getDemandeLibelle() ?></td>
@@ -125,19 +115,16 @@
                 <td class="text-center">
                     <?php if($habilitation->isLastOne()): ?>
                     <?php if($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
-                        <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $habilitation->getEtablissementChais(), 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
+                        <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
                     <?php else: ?>
-                        <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $habilitation->getEtablissementChais(), 'demande' => $d->getKey())) ?>">Voir</a></td>
+                        <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir</a></td>
                     <?php endif; ?>
                     <?php endif; ?>
             </tr>
             <?php endforeach; ?>
+        </tbody>
+    </table>
     <?php endif; ?>
-<?php endforeach; ?>
-<?php if ($hab_entete): ?>
-</tbody>
-</table>
-<?php endif; ?>
 
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
@@ -169,35 +156,33 @@
       </tbody>
     </table>
 
-<?php foreach($habilitations as $hid => $habilitation): ?>
-<?php if(isset($editForms[$habilitation->_id])): ?>
+<?php if(isset($editForm)): ?>
 <form role="form" class="ajaxForm" action="<?php echo url_for("habilitation_edition", $habilitation) ?>" method="post">
     <?php
-    echo $editForms[$habilitation->_id]->renderHiddenFields();
-    echo $editForms[$habilitation->_id]->renderGlobalErrors();
+    echo $editForm->renderHiddenFields();
+    echo $editForm->renderGlobalErrors();
 
-    foreach ($habilitation->getProduits() as $key => $produitAppellation) {
-        foreach ($produitAppellation->activites as $keyActivite => $activite) {
-            include_partial('habilitation/popupEditionForm', array('url' => url_for('habilitation_edition', $habilitation), 'editForm' => $editForms[$habilitation->_id], 'idPopup' => 'editForm_'.$habilitation->_id.'_'.$activite->getHashForKey(), 'produitCepage' => $produitAppellation, 'details' => $activite));
-        }
-    }
+    foreach ($habilitation->getProduits() as $key => $produitAppellation):
+      foreach ($produitAppellation->activites as $keyActivite => $activite):
+        include_partial('habilitation/popupEditionForm', array('url' => url_for('habilitation_edition', $habilitation), 'editForm' => $editForm,'idPopup' => 'editForm_'.$activite->getHashForKey(), 'produitCepage' => $produitAppellation, 'details' => $activite));
+      endforeach;
+    endforeach;
     ?>
 </form>
 <?php endif; ?>
-<?php endforeach; ?>
 
 <?php if(isset($ajoutForm)): ?>
-<?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $habilitation->getEtablissementChais()), 'form' => $ajoutForm)); ?>
+<?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $etablissement), 'form' => $ajoutForm)); ?>
 <?php endif; ?>
 
 <?php if(isset($formDemandeCreation)): ?>
-<?php include_partial('habilitation/demandeCreationForm', array('form' => $formDemandeCreation)); ?>
+<?php include_partial('habilitation/demandeCreationForm', array('form' => $formDemandeCreation, 'etablissement' => $etablissement)); ?>
 <?php endif; ?>
 
 <?php if(isset($formDemandeGlobale)): ?>
-<?php include_partial('habilitation/demandeGlobaleForm', array('form' => $formDemandeGlobale)); ?>
+<?php include_partial('habilitation/demandeGlobaleForm', array('form' => $formDemandeGlobale, 'etablissement' => $etablissement)); ?>
 <?php endif; ?>
 
 <?php if(isset($formDemandeEdition)): ?>
-<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'demande' => $demande, 'urlRetour' => $urlRetour)); ?>
+<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande, 'urlRetour' => $urlRetour)); ?>
 <?php endif; ?>
