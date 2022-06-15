@@ -43,7 +43,6 @@ class GenerationExportComptable extends GenerationAbstract
         $with_headers = !count($this->generation->documents);
         if ($with_headers) {
             fwrite($handle_factures, ExportFactureCSV::getHeaderCsv());
-            fwrite($handle_clients, ExportCompteCSV::getHeaderCsv());
         }
 
         foreach(FactureEtablissementView::getInstance()->getFactureNonVerseeEnCompta() as $vfacture) {
@@ -71,8 +70,6 @@ class GenerationExportComptable extends GenerationAbstract
             if(!$compte) {
                 throw new sfException(sprintf("Document COMPTE-%s introuvable", $facture->identifiant));
             }
-
-            $export = new ExportCompteCSV($compte, false);
 
             fwrite($handle_clients, $export->export());
 
