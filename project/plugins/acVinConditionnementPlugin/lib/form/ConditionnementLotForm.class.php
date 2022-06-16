@@ -111,7 +111,7 @@ class ConditionnementLotForm extends acCouchdbObjectForm
     {
         $produits = array();
         foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if(!$produit->isRevendicationParLots()) {
+            if(!ConditionnementConfiguration::getInstance()->hasAllProduits() && !$produit->isRevendicationParLots()) {
                 continue;
             }
             if (!$produit->isActif()) {

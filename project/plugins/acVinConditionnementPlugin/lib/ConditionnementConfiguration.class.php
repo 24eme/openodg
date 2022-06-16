@@ -97,4 +97,8 @@ class ConditionnementConfiguration {
         return $this->configuration['contenances'];
       }
     }
+
+    public function hasAllProduits() {
+        return isset($this->configuration['all_produits']) && ($this->configuration['all_produits']);
+    }
 }
