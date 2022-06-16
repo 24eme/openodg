@@ -47,22 +47,34 @@ class DegustationSelectionDegustateursForm extends acCouchdbForm {
         return $defaults;
     }
 
-	public function save() {
-	$values = $this->getValues();
-	$doc = $this->getDocument();
-    $doc->getOrAdd('degustateurs');
-    foreach ($values['degustateurs'] as $college => $items) {
-        if($college == $this->college){
-          $doc->degustateurs->remove($college);
+    public function save() {
+        $values = $this->getValues();
+        $doc = $this->getDocument();
+        $doc->getOrAdd('degustateurs');
+
+        if ($doc->degustateurs->exist($this->college) === false) {
+            $doc->degustateurs->add($this->college, []);
         }
-        foreach ($items as $compteId => $val) {
-            if (isset($val['selectionne']) && !empty($val['selectionne'])) {
-                $doc->addDegustateur($compteId, $college);
+
+        $degustateurs_actuels = $doc->degustateurs->{$this->college};
+        $degustateurs_selectionnes = $values['degustateurs'][$this->college];
+
+        $doc->degustateurs->remove($this->college);
+
+        foreach ($degustateurs_selectionnes as $degustateur_id => $val) {
+            if (! $val['selectionne']) {
+                continue;
+            }
+
+            $degustateur = $doc->addDegustateur($degustateur_id, $this->college);
+
+            if (array_key_exists($degustateur_id, $degustateurs_actuels->toArray(1, 0))) {
+                $doc->degustateurs->{$this->college}->{$degustateur_id} = $degustateurs_actuels[$degustateur_id];
             }
         }
+
+        $doc->save();
     }
-    $doc->save();
-	}
 
     public function getDegustateursByCollege() {
         if (!$this->degustateurs) {

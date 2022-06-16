@@ -2,13 +2,13 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if ($application != 'igp13') {
+if (strpos($application, 'igp') === false) {
     $t = new lime_test(1);
     $t->ok(true, "pass AOC");
     return;
 }
 
-$t = new lime_test(141);
+$t = new lime_test(149);
 
 $annee = (date('Y')-1)."";
 if ($annee < 8){
@@ -23,19 +23,36 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 
 $degustPorteurMemoire =  CompteTagsView::getInstance()->findOneCompteByTag('automatique', 'degustateur_porteur_de_memoire');
 
+foreach (CompteTagsView::getInstance()->listByTags('manuel', 'test_degustateur_technicien') as $k => $v) {
+    CompteClient::getInstance()->find($v->id)->delete();
+}
+
+foreach (CompteTagsView::getInstance()->listByTags('manuel', 'test_degustateur_usager_du_produit') as $k => $v) {
+    CompteClient::getInstance()->find($v->id)->delete();
+}
 
 $degustTechnicien = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($degustPorteurMemoire->getSociete());
 $degustTechnicien->nom = 'Actualys';
 $degustTechnicien->prenom = 'Degustateur technicien';
 $degustTechnicien->add('droits');
 $degustTechnicien->droits->add(null, 'degustateur:technicien');
+$degustTechnicien->addTag('manuel', 'test_degustateur_technicien');
 $degustTechnicien->save();
+
+$degustTechnicien2 = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($degustPorteurMemoire->getSociete());
+$degustTechnicien2->nom = 'Actualys';
+$degustTechnicien2->prenom = 'Degustateur technicien 2';
+$degustTechnicien2->add('droits');
+$degustTechnicien2->droits->add(null, 'degustateur:technicien');
+$degustTechnicien2->addTag('manuel', 'test_degustateur_technicien');
+$degustTechnicien2->save();
 
 $degustUsager = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($degustPorteurMemoire->getSociete());
 $degustUsager->nom = 'Actualys';
 $degustUsager->prenom = 'Degustateur usager';
 $degustUsager->add('droits');
 $degustUsager->droits->add(null, 'degustateur:usager_du_produit');
+$degustUsager->addTag('manuel', 'test_degustateur_usager_du_produit');
 $degustUsager->save();
 
 foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication', $campagne, 0, 99999, "%05d") as $r) {
@@ -433,3 +450,34 @@ $t->comment('On confirme le dernier degustateur');
 $degustation->degustateurs->degustateur_porteur_de_memoire->get($degustPorteurMemoire->_id)->add('confirmation', 1);
 
 $t->is($degustation->hasAllDegustateursConfirmation(), true, "Les dégustateurs ont tous signalé leurs présence");
+
+$t->comment('Retour sur la page de sélection de dégustateurs');
+$t->comment('On rajoute un technicien');
+$degustation->addDegustateur($degustTechnicien2->_id, 'degustateur_technicien', 1);
+$t->ok($degustation->degustateurs->degustateur_technicien->{$degustTechnicien2->_id}->confirmation, "Le dégustateur technicien 2 est confirmé");
+$t->is($degustation->degustateurs->degustateur_technicien->{$degustTechnicien2->_id}->numero_table, 1, "Le dégustateur technicien 2 est a la table A");
+$degustation->save();
+
+$t->comment('On retourne sur le formulaire et on retire un technicien');
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+
+$formTechnicien = new DegustationSelectionDegustateursForm($degustation, array(), array('college' => 'degustateur_technicien'));
+$defaultsTechnicien = $formTechnicien->getDefaults();
+$t->ok(isset($defaultsTechnicien['degustateurs']['degustateur_technicien'][$degustTechnicien->_id]), 'Notre dégustateur 1 est dans le formulaire comme technicien');
+$t->ok(isset($defaultsTechnicien['degustateurs']['degustateur_technicien'][$degustTechnicien2->_id]), 'Notre dégustateur 2 est dans le formulaire comme technicien');
+
+$valuesRev = array(
+    '_revision' => $degustation->_rev,
+);
+
+$valuesRev['degustateurs']['degustateur_technicien'][$degustTechnicien2->_id]['selectionne'] = 1;
+
+$formTechnicien->bind($valuesRev);
+$formTechnicien->save();
+
+$degustation = DegustationClient::getInstance()->find($degustation->_id);
+$t->is(count($degustation->degustateurs->degustateur_technicien), 1, "Il n'y a plus qu'un technicien");
+$tech = $degustation->degustateurs->degustateur_technicien->toArray(1, 0);
+$t->is($degustTechnicien2->_id, key($tech), "C'est le technicien sélectionné");
+$t->ok($degustation->degustateurs->degustateur_technicien->{$degustTechnicien2->_id}->confirmation, "Le dégustateur a gardé sa confirmation");
+$t->is($degustation->degustateurs->degustateur_technicien->{$degustTechnicien2->_id}->numero_table, 1, "Le dégustateur a gardé son numéro de table");
