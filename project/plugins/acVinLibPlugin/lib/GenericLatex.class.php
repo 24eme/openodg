@@ -76,7 +76,7 @@ class GenericLatex {
 
   public function getPDFFile() {
     $filename = $this->getLatexDestinationDir().$this->getPublicFileName();
-    if(file_exists($filename))
+    if(file_exists($filename) && is_readable($filename))
       return $filename;
     $tmpfile = $this->generatePDF();
     if (!file_exists($tmpfile)) {
