@@ -81,7 +81,7 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->apporteur = $request->getParameter('apporteur');
-        $this->parcellaireAffectationCoop->apporteurs->{'ETABLISSEMENT-'.$this->apporteur}->intention = ($request->getParameter('sens'));
+        $this->parcellaireAffectationCoop->apporteurs->{'ETABLISSEMENT-'.$this->apporteur}->apporteur = ($request->getParameter('sens'));
         $this->parcellaireAffectationCoop->save();
         return $this->redirect('parcellaireaffectationcoop_liste', array('sf_subject' => $this->parcellaireAffectationCoop));
     }
