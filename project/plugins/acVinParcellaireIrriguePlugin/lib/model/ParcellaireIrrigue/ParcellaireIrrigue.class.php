@@ -113,8 +113,13 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   			$parcelle = $this->getDocument()->get($hash);
   			$parcelle->date_irrigation = $date;
   			$parcelle->irrigation = 1;
+            unset($irrigations[$hash]);
   		}
   	}
+
+    if(count($irrigations) > 0) {
+        throw new Exception("Des parcelles déja irrigués disparaissent : ".$this->_id);
+    }
   }
 
   public function getConfiguration() {
