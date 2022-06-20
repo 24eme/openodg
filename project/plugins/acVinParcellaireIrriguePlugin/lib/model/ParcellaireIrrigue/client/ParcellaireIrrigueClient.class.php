@@ -20,6 +20,7 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
           if ($doc_found && $doc_found->date === $date) {
+              $doc_found->updateParcelles();
               if($papier) {
                   $doc_found->add('papier', 1);
               } else {
