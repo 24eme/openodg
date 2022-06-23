@@ -33,7 +33,7 @@
                         <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent("IGP ".$lotInfo->getRawValue()->lot->produit_libelle)), 58, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent($lotInfo->lot->getConfig()->getCertification()->libelle." ".$lotInfo->getRawValue()->lot->produit_libelle)), 58, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
                   <tr>
