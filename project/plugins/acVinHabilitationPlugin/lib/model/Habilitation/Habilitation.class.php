@@ -333,14 +333,19 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
 
-        if($last && $last->_id > $this->_id) {
-            $this->add('lecture_seule', true);
+        if($last) {
+            if ($last->_id > $this->_id)) {
+                $this->add('lecture_seule', true);
+            }elseif (!$last->exist('lecture_seule') || !$last->lecture_seule {
+                $last->add('lecture_seule', true);
+                $last->save();
+            }
         }
 
         parent::save();
         $precedente = $this->getPrevious();
 
-        if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
+        if($precedente && !$precedente->isLectureSeule()) {
             $precedente->add('lecture_seule', true);
             $precedente->save();
         }
