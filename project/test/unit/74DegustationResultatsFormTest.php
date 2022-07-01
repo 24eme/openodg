@@ -188,22 +188,6 @@ $t->ok($mailEnvoye, 'Le mail de resultats a été envoyé');
 
 $doc->save();
 
-$lotNonConforme = current($lotNonConformes);
-$t->is(count(DegustationClient::getInstance()->getManquements()), 1, 'Il apparait en manquement');
-
-$lotNonConforme->recours_oc = true;
-$lotNonConforme->statut = Lot::STATUT_RECOURS_OC;
-$doc->save();
-
-$t->ok($lotNonConforme->getMouvement(Lot::STATUT_RECOURS_OC), 'Le lot a le mouvement de recours');
-
-try {
-    $lotNonConforme->setConformiteLot(Lot::CONFORMITE_CONFORME);
-    $t->fail('Exception si on change un lot en recours oc');
-} catch (sfException $e) {
-    $t->pass('Exception si on change un lot en recours oc');
-}
-
 $t->comment('Notifications');
 $doc->setMailEnvoyeEtablissement($etbIdentifiant, 0);
 $t->is($doc->isMailEnvoyeEtablissement($etbIdentifiant), false, 'On remet les mails à non envoyé');
