@@ -18,7 +18,7 @@
               </tr>
               <tr style="line-height:12px;">
                 <td colspan="2" style="overflow-wrap:break-word; text-align: center;">
-                  <?php echo tdStart() ?><strong>&nbsp;IGP&nbsp;<?php echo $lotInfo->produit_libelle .' '.  $lotInfo->millesime;  ?></strong>
+                  <?php echo tdStart() ?><strong>&nbsp;<?php echo $lotInfo->getConfig()->getCertification()->libelle ?>&nbsp;<?php echo $lotInfo->produit_libelle .' '.  $lotInfo->millesime;  ?></strong>
                 </td>
               </tr>
               <tr style="line-height:16px;">
