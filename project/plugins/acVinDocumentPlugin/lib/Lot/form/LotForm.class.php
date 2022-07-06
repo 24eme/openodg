@@ -2,6 +2,7 @@
 class LotForm extends acCouchdbObjectForm
 {
     const NBCEPAGES = 5;
+    private $all_produits;
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
@@ -24,6 +25,7 @@ class LotForm extends acCouchdbObjectForm
     }
 
     public function configure() {
+        $this->all_produit = false;
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
 
@@ -103,7 +105,7 @@ class LotForm extends acCouchdbObjectForm
     {
         $produits = array();
         foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if(!$produit->isRevendicationParLots()) {
+            if((!$this->all_produits && !ConditionnementConfiguration::getInstance()->hasAllProduits()) && !$produit->isRevendicationParLots()) {
                 continue;
             }
             if (!$produit->isActif()) {
