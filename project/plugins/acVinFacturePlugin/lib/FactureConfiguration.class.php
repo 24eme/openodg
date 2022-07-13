@@ -121,4 +121,18 @@ class FactureConfiguration {
 
         return Organisme::getInstance($region)->getInfo($key);
     }
+
+    public function hasDonotSaveExportFacture() {
+        return
+                isset($this->configuration['export_donotsave']) &&
+                ($this->configuration['export_donotsave'])
+              ;
+    }
+
+    public function getExportType() {
+        if (!isset($this->configuration['export_type'])) {
+            return null;
+        }
+        return $this->configuration['export_type'];
+    }
 }

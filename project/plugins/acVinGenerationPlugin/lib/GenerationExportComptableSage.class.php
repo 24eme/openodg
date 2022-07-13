@@ -1,10 +1,7 @@
 <?php
 
-class GenerationExportComptable extends GenerationAbstract
+class GenerationExportComptableSage extends GenerationAbstract
 {
-
-    const EXPORT_TYPE_ISA = 'isa';
-    const EXPORT_TYPE_SAGE = 'sage';
 
 
     public function generate() {
@@ -13,37 +10,18 @@ class GenerationExportComptable extends GenerationAbstract
         $paiementsfile = "generation/".$this->generation->date_emission."_paiements.csv";
         $clientsfile = "generation/".$this->generation->date_emission."_clients.csv";
 
-       $conffile = sfConfig::get('facture_configuration_facture');
-       $this->exporttype = $conffile['export_type'];
-
-        switch ($this->exporttype) {
-            case self::EXPORT_TYPE_ISA:
-                $facturescomptafile = "generation/".$this->generation->date_emission."_factures_isa.txt";
-                $paiementscomptafile = "generation/".$this->generation->date_emission."_paiements_isa.txt";
-                $clientscomptafile = '';
-                break;
-            case self::EXPORT_TYPE_SAGE:
-                $facturescomptafile = "generation/".$this->generation->date_emission."_factures.sage";
-                $paiementscomptafile = "generation/".$this->generation->date_emission."_paiements.sage";
-                $clientscomptafile = "generation/".$this->generation->date_emission."_client.sage";
-                break;
-            default:
-                throw new sfException("Type d'export comptable non connu ".$this->exporttype);
-        }
+        $facturescomptafile = "generation/".$this->generation->date_emission."_factures_sage.txt";
+        $paiementscomptafile = "generation/".$this->generation->date_emission."_paiements_sage.txt";
+        $clientscomptafile = '';
 
         $date_facturation = $this->generation->arguments->exist('date_facturation') ? Date::getIsoDateFromFrenchDate($this->generation->arguments->get('date_facturation')) : null;
 
         $handle_factures = fopen(sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", 'a');
         $handle_clients = fopen(sfConfig::get('sf_web_dir')."/".$clientsfile, 'a');
 
-        if(!class_exists("ExportFactureCSV")){
-
-            throw new sfException("La classe ExportFactureCSV n'existe pas");
-        }
-
         $with_headers = !count($this->generation->documents);
         if ($with_headers) {
-            fwrite($handle_factures, ExportFactureCSV::getHeaderCsv());
+            fwrite($handle_factures, ExportFactureCSV4Sage::getHeaderCsv());
         }
 
         foreach(FactureEtablissementView::getInstance()->getFactureNonVerseeEnCompta() as $vfacture) {
@@ -58,11 +36,12 @@ class GenerationExportComptable extends GenerationAbstract
             }
 
             if(!$facture->versement_comptable) {
-                $export = new ExportFactureCSV($facture, false);
-                fwrite($handle_factures, $export->exportFacture());
+                $export = new ExportFactureCSV4Sage($facture, false);
+                fwrite($handle_factures, $export->export());
                 $this->generation->documents->add(null, $facture->_id);
-                if (!sfConfig::has('configuration_facture_export_donotsave') || !sfConfig::get('configuration_facture_export_donotsave')) {
+                if (!FactureConfiguration::getInstance()->hasDonotSaveExportFacture()){
                     $facture->versement_comptable = 1;
+                    $facture->versement_comptable_paiement = 1;
                     $facture->save();
                 }
             }
@@ -72,7 +51,8 @@ class GenerationExportComptable extends GenerationAbstract
                 throw new sfException(sprintf("Document COMPTE-%s introuvable", $facture->identifiant));
             }
 
-            fwrite($handle_clients, $export->export());
+            $compte_export = new ExportCompteCsv($compte);
+            fwrite($handle_clients, $compte_export->export());
 
         }
 
@@ -81,25 +61,14 @@ class GenerationExportComptable extends GenerationAbstract
         fclose($handle_clients);
 
         shell_exec(sprintf("cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", sfConfig::get('sf_web_dir')."/".$facturesfile));
-
-        switch ($this->exporttype) {
-            case self::EXPORT_TYPE_ISA:
-                file_put_contents(sfConfig::get('sf_web_dir')."/".$facturescomptafile, shell_exec(sprintf("bash %s/bin/facture/csvfacture2isacompta.sh %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$facturesfile)));
-                break;
-            case self::EXPORT_TYPE_SAGE:
-                file_put_contents(sfConfig::get('sf_web_dir')."/".$facturescomptafile, shell_exec(sprintf("bash %s/bin/facture/csv2sage.sh %s %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$clientsfile, sfConfig::get('sf_web_dir')."/".$facturesfile)));
-                break;
-        }
+        file_put_contents(sfConfig::get('sf_web_dir')."/".$facturescomptafile, shell_exec(sprintf("bash %s/bin/facture/csv2sage.sh %s %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$clientsfile, sfConfig::get('sf_web_dir')."/".$facturesfile)));
 
         if(count($this->generation->documents)) {
-            if ($clientscomptafile && filesize(sfConfig::get('sf_web_dir')."/".$clientscomptafile)) {
-                $this->generation->add('fichiers')->add(urlencode("/".$clientscomptafile), 'Export Comptable des societes');
-                if (filesize(sfConfig::get('sf_web_dir')."/".$clientsfile)) {
-                    $this->generation->add('fichiers')->add(urlencode("/".$clientsfile), 'Export CSV des societes');
-                }
-            }
             if (filesize(sfConfig::get('sf_web_dir')."/".$facturescomptafile)) {
                 $this->generation->add('fichiers')->add(urlencode("/".$facturescomptafile), 'Export Comptable des factures');
+            }
+            if (filesize(sfConfig::get('sf_web_dir')."/".$clientsfile)) {
+                $this->generation->add('fichiers')->add(urlencode("/".$clientsfile), 'Export CSV des societes');
             }
             if (filesize(sfConfig::get('sf_web_dir')."/".$facturesfile)) {
                 $this->generation->add('fichiers')->add(urlencode("/".$facturesfile), 'Export CSV des factures');
@@ -150,11 +119,6 @@ class GenerationExportComptable extends GenerationAbstract
 
             shell_exec(sprintf("cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$paiementsfile.".tmp", sfConfig::get('sf_web_dir')."/".$paiementsfile));
 
-            switch ($this->exporttype) {
-                case self::EXPORT_TYPE_ISA:
-                    file_put_contents(sfConfig::get('sf_web_dir')."/".$paiementscomptafile, shell_exec(sprintf("bash %s/bin/facture/csvpaiement2isacompta.sh %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$paiementsfile)));
-                    break;
-            }
 
             if(count($this->generation->documents)) {
                 if (filesize(sfConfig::get('sf_web_dir')."/".$paiementscomptafile)) {
