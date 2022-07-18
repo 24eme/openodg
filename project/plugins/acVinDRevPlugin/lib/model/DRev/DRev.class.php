@@ -1755,7 +1755,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     /**** MOUVEMENTS ****/
 
     public function getTemplateFacture() {
-        if($templateName = FactureConfiguration::getInstance()->getUniqueTemplateFactureName($this->getPeriode())){
+        if($templateName = FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne($this->getPeriode())){
           return TemplateFactureClient::getInstance()->find($templateName);
         }
         return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getPeriode());

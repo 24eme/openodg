@@ -33,7 +33,7 @@ foreach(ChgtDenomClient::getInstance()->getHistory($viti->identifiant, acCouchdb
 }
 
 //Suppression des factures précédentes
-foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
+foreach(FactureClient::getInstance()->getFacturesByCompte($societe->identifiant) as $k => $f) {
     FactureClient::getInstance()->delete($f);
 }
 
@@ -60,7 +60,7 @@ if ($oldmandat) {
 }
 
 //Suppression des factures
-foreach(FactureClient::getInstance()->getFacturesByCompte($socVitiCompte->identifiant) as $k => $f) {
+foreach(FactureClient::getInstance()->getFacturesByCompte($societe->identifiant) as $k => $f) {
     FactureClient::getInstance()->delete($f);
 }
 
@@ -73,7 +73,7 @@ $periode = (date('Y')-1)."";
 
 acCouchdbManager::getClient()->storeDoc(json_decode(str_replace("%periode%", $periode, file_get_contents(dirname(__FILE__).'/../data/template_facture_igp.json'))));
 
-$t->comment("Création d'une drev");
+$t->comment("Création d'une drev $periode");
 
 $config = ConfigurationClient::getCurrent();
 $produit_hash = null;
