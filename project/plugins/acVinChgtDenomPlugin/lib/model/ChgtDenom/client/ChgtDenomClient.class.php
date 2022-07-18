@@ -28,8 +28,8 @@ class ChgtDenomClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function getHistoryCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $campagne_from = intval($campagne)."0000000000";
-        $campagne_to = (intval($campagne)+1)."9999999999";
+        $campagne_from = $campagne."0000000000";
+        $campagne_to = ($campagne+1)."9999999999";
         return $this->startkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_from))
                     ->endkey(sprintf("CHGTDENOM-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
