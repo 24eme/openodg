@@ -36,7 +36,7 @@ class facturationActions extends sfActions
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
-              $generation->arguments->add('modele', FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne($generation->getAnnee()));
+              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
               $generation->save();
 
               return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
@@ -163,7 +163,7 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-            $generation->arguments->add('modele', FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne($generation->getAnnee()));
+            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
@@ -435,7 +435,7 @@ class facturationActions extends sfActions
     }
 
     public function executeRedirectTemplate(sfWebRequest $request) {
-        $template = FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne();
+        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne();
         return $this->redirect('facturation_template', array('id' => $template));
     }
 

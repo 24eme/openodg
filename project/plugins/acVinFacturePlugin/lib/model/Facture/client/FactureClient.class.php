@@ -347,20 +347,6 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
-    public function getTemplateFactureFromConfigurationAndCampagne($campagne_start = null){
-        $template = FactureConfiguration::getinstance()->getUniqueTemplateFactureName();
-        if (!$campagne_start) {
-            $campagne_start = date('Y');
-        }
-        for($d = $campagne_start ; $d > $campagne_start - 5 ; $d--) {
-            $id = sprintf($template, $d);
-            if (TemplateFactureClient::getInstance()->find($id)) {
-                return $id;
-            }
-        }
-        throw sfException("Object TEMPLATE-FACTURE not found from template $template");
-    }
-
     public function createFacturesBySoc($mouvements, $date_facturation, $message_communication = null, $generation = null) {
       if(!$generation){
           $generation = new Generation();
