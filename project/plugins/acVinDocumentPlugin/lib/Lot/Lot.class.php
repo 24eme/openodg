@@ -969,12 +969,12 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffecte() {
 
-        return preg_match('/^DEGUST/', $this->id_document_affectation);
+        return $this->id_document_affectation && (strpos($this->id_document_affectation, 'DEGUST') === 0);
     }
 
     public function isChange() {
 
-        return preg_match('/^CHGTDENOM/', $this->id_document_affectation);
+        return $this->id_document_affectation && (strpos($this->id_document_affectation, 'CHGTDENOM') === 0);
     }
 
     public function getDestinationShort()

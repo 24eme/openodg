@@ -8,23 +8,23 @@ class acCouchdbDocumentCollectionArrayIterator extends ArrayIterator {
         parent::__construct($doc_collection->getDatas());
     }
 
-    public function current() {
+    public function current(): mixed {
         return $this->_doc_collection->get($this->key());
     }
 
-    public function offsetGet($index) {
+    public function offsetGet(mixed $index): mixed {
         return $this->_doc_collection->offsetGet($index);
     }
 
-    public function offsetSet($index, $newval) {
-        return $this->_doc_collection->offsetSet($index, $newval);
+    public function offsetSet(mixed $index, mixed $newval): void {
+        $this->_doc_collection->offsetSet($index, $newval);
     }
 
-    public function  offsetExists($index) {
+    public function  offsetExists(mixed $index): bool {
         return $this->_doc_collection->offsetExists($index);
     }
 
-    public function offsetUnset($index) {
-        return $this->_doc_collection->offsetUnset($index);
+    public function offsetUnset(mixed $index): void {
+        $this->_doc_collection->offsetUnset($index);
     }
 }

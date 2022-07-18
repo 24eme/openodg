@@ -18,7 +18,7 @@ abstract class acCouchdbCollection implements IteratorAggregate, ArrayAccess, Co
         return $this->_datas;
     }
 
-    public function getIterator() {
+    public function getIterator(): Traversable {
         return new acCouchdbDocumentCollectionArrayIterator($this);
     }
 
@@ -43,23 +43,23 @@ abstract class acCouchdbCollection implements IteratorAggregate, ArrayAccess, Co
         }
     }
 
-    public function offsetGet($index) {
+    public function offsetGet(mixed $index): mixed {
         return $this->get($index);
     }
 
-    public function offsetSet($index, $newval) {
+    public function offsetSet(mixed $index, mixed $newval): void {
         throw new acCouchdbException('Do not set a document use add');
     }
 
-    public function offsetExists($index) {
+    public function offsetExists(mixed $index): bool {
         return $this->contains($index);
     }
 
-    public function offsetUnset($offset) {
-        return $this->remove($offset);
+    public function offsetUnset(mixed $offset): void {
+        $this->remove($offset);
     }
 
-    public function count() {
+    public function count(): int {
         return count($this->_datas);
     }
 

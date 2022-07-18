@@ -32,7 +32,7 @@ class VersionDocument
     }
 
     public static function buildRectificative($version) {
-        if (preg_match('/^R([0-9]{2})/', $version, $matches)) {
+        if ($version && preg_match('/^R([0-9]{2})/', $version, $matches)) {
 
             return (int) $matches[1];
         }
@@ -41,7 +41,7 @@ class VersionDocument
     }
 
     public static function buildModificative($version) {
-        if (preg_match('/M([0-9]{2})$/', $version, $matches)) {
+        if ($version && preg_match('/M([0-9]{2})$/', $version, $matches)) {
 
             return (int) $matches[1];
         }

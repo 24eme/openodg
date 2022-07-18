@@ -181,7 +181,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
         $this->changement_millesime = $lot->millesime;
         $this->changement_volume = $lot->volume;
-        $this->changement_specificite = preg_replace('/ *\d+ème dégustation/', '', $lot->specificite);
+        if ($lot->specificite) {
+            $this->changement_specificite = preg_replace('/ *\d+ème dégustation/', '', $lot->specificite);
+        }
         $this->changement_numero_logement_operateur = $lot->numero_logement_operateur;
         $this->changement_affectable = $lot->affectable;
         $this->changement_cepages = $lot->cepages;
