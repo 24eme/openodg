@@ -36,7 +36,7 @@ class facturationActions extends sfActions
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
-              $generation->arguments->add('modele', FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne());
+              $generation->arguments->add('modele', FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne($generation->getAnnee()));
               $generation->save();
 
               return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
@@ -163,7 +163,7 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-            $generation->arguments->add('modele', FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne());
+            $generation->arguments->add('modele', FactureClient::getInstance()->getTemplateFactureFromConfigurationAndCampagne($generation->getAnnee()));
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
