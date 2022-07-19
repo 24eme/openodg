@@ -107,6 +107,9 @@ class ParcellaireAffectationDestinationForm extends acCouchdbForm {
         $list = array();
         foreach ($results as $res) {
             $data = $res->getData()['doc'];
+            if(!$data['cvi']) {
+                continue;
+            }
             $list[$data['cvi']] = sprintf("%s - %s - %s", $data['nom_a_afficher'], $data['cvi'], $data['commune']);
         }
 
