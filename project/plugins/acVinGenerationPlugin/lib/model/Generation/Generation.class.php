@@ -102,4 +102,14 @@ class Generation extends BaseGeneration {
       return Anonymization::hideIfNeeded($this->_get('somme'));
   }
 
+  public function getAnnee() {
+      if (!$this->exist('arguments') || !$this->arguments->exist('date_mouvement')) {
+        return substr($this->date_emission, 0, 4);
+      }
+      if (strpos($this->arguments->date_mouvement, '/')) {
+          return substr($this->arguments->date_mouvement, -4);
+      }
+      return substr($this->arguments->date_mouvement, 0, 4);
+  }
+
 }

@@ -2,6 +2,7 @@
 class LotForm extends acCouchdbObjectForm
 {
     const NBCEPAGES = 5;
+    private $all_produits;
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
@@ -24,6 +25,7 @@ class LotForm extends acCouchdbObjectForm
     }
 
     public function configure() {
+        $this->all_produit = false;
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
 
@@ -31,7 +33,7 @@ class LotForm extends acCouchdbObjectForm
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
 
         $this->setWidget('millesime', new bsWidgetFormInput());
-        $this->setValidator('millesime', new sfValidatorInteger(array('required' => false)));
+        $this->setValidator('millesime', new sfValidatorChoice(array('required' => false, 'choices' => $this->getMillesimes())));
 
         $this->setWidget('numero_logement_operateur', new bsWidgetFormInput());
         $this->setValidator('numero_logement_operateur', new sfValidatorString(array('required' => false)));
@@ -103,7 +105,7 @@ class LotForm extends acCouchdbObjectForm
     {
         $produits = array();
         foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if(!$produit->isRevendicationParLots()) {
+            if((!$this->all_produits && !ConditionnementConfiguration::getInstance()->hasAllProduits()) && !$produit->isRevendicationParLots()) {
                 continue;
             }
             if (!$produit->isActif()) {
@@ -117,5 +119,13 @@ class LotForm extends acCouchdbObjectForm
     public function getCepages()
     {
         return array_merge(array('' => ''), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
+    }
+
+    public function getMillesimes() {
+        $m = array('NM', 'nm');
+        for($i = 0 ; $i < 10 ; $i++) {
+            $m[] = date('Y') - $i;
+        }
+        return $m;
     }
 }

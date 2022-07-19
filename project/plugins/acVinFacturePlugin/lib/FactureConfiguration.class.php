@@ -41,11 +41,11 @@ class FactureConfiguration {
       return $this->configuration['echeances'];
     }
 
-    public function getUniqueTemplateFactureName($campagne = null){
-      if(!$campagne || !isset($this->configuration['uniq_template_prefix']) || !$this->configuration['uniq_template_prefix']){
+    public function getUniqueTemplateFactureName(){
+      if(!isset($this->configuration['uniq_template_prefix']) || !$this->configuration['uniq_template_prefix']){
         return null;
       }
-      return $this->configuration['uniq_template_prefix']."-".$campagne;
+      return $this->configuration['uniq_template_prefix']."-%s";
     }
 
     public function isFacturationAllEtablissements(){
@@ -120,5 +120,19 @@ class FactureConfiguration {
     public function getInfo($key, $region = null) {
 
         return Organisme::getInstance($region)->getInfo($key);
+    }
+
+    public function hasDonotSaveExportFacture() {
+        return
+                isset($this->configuration['export_donotsave']) &&
+                ($this->configuration['export_donotsave'])
+              ;
+    }
+
+    public function getExportType() {
+        if (!isset($this->configuration['export_type'])) {
+            return null;
+        }
+        return $this->configuration['export_type'];
     }
 }

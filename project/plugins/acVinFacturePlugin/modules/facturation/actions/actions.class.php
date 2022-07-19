@@ -29,7 +29,6 @@ class facturationActions extends sfActions
         }
          $this->formSociete->bind($request->getParameter($this->formSociete->getName()));
          $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
-         $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
          if($this->formSociete->isValid()) {
               $soc = SocieteClient::getInstance()->find($this->formSociete->getValue('identifiant'));
               return $this->redirect('facturation_declarant', array('id' => $soc->getMasterCompte()->_id));
@@ -37,7 +36,7 @@ class facturationActions extends sfActions
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
-              $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
               $generation->save();
 
               return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
@@ -82,8 +81,6 @@ class facturationActions extends sfActions
         if($request->getParameter('q')) {
           $defaults['requete'] = $request->getParameter('q');
         }
-
-        $options = array('modeles' => TemplateFactureClient::getInstance()->findAll(),'uniqueTemplateFactureName' => $this->getUniqueTemplateFactureName());
 
         $this->form = new FactureGenerationForm();
 
@@ -150,7 +147,6 @@ class facturationActions extends sfActions
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
 
             $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
-            $this->uniqueTemplateFactureName = $this->getUniqueTemplateFactureName();
 
             $this->setTemplate('declarant');
 
@@ -167,7 +163,7 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-            $generation->arguments->add('modele', $this->uniqueTemplateFactureName);
+            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
@@ -439,7 +435,7 @@ class facturationActions extends sfActions
     }
 
     public function executeRedirectTemplate(sfWebRequest $request) {
-        $template = $this->getUniqueTemplateFactureName();
+        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne();
         return $this->redirect('facturation_template', array('id' => $template));
     }
 
@@ -451,11 +447,6 @@ class facturationActions extends sfActions
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
 
         throw new sfStopException();
-    }
-
-    protected function getUniqueTemplateFactureName(){
-      $cm = new CampagneManager(date('m-d'),CampagneManager::FORMAT_PREMIERE_ANNEE);
-      return FactureConfiguration::getinstance()->getUniqueTemplateFactureName($cm->getCurrent());
     }
 
     protected function forwardCompteSecure(){
