@@ -23,7 +23,7 @@ function(doc) {
     }
 
     campagne = doc.campagne;
-    if (doc.type == "DR") {
+    if (campagne.length == 4) {
       campagne = campagne;
       campagneplusun = parseInt(campagne) + 1;
       campagne = campagne + "-" + campagneplusun;

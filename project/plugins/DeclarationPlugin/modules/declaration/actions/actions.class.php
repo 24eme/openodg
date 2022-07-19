@@ -296,7 +296,7 @@ class declarationActions extends sfActions {
               if($not_in_result){
                 continue;
               }
-              $campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE].'-'.($row->key[DeclarationTousView::KEY_CAMPAGNE]+1);
+              $campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE];
               if(!array_key_exists($campagne,$configurations)){
                  $configurations[$campagne] = ConfigurationClient::getConfigurationByCampagne($campagne);
               }
