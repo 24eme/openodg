@@ -77,8 +77,6 @@ class CompteLdap extends acVinLdap {
           $info['postalCode']       = trim($compte->code_postal);
       if ($compte->telephone_bureau)
           $info['telephoneNumber']  = trim(str_replace("_", "", $compte->telephone_bureau));
-      if ($compte->fax)
-          $info['facsimileTelephoneNumber'] = trim(str_replace("_", "", $compte->fax));
       if ($compte->telephone_mobile)
           $info['mobile']           = str_replace("_", "", $compte->telephone_mobile);
       if ($compte->exist('mot_de_passe')) {
