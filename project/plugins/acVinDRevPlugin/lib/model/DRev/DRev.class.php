@@ -1563,7 +1563,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDateDepot()
 	{
-        if(!$this->exist('date_depot') || !$this->date_depot) {
+        if(!$this->exist('date_depot') || !$this->_get('date_depot')) {
 
             return $this->getDateValidation();
         }
