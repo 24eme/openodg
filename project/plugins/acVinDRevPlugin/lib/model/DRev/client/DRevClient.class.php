@@ -283,7 +283,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function retrieveRelatedDrev($identifiant, $periode, $drev_produit_filter = null) {
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, $periode * 1);
+
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, preg_replace('/-.*/', '', $periode));
         if ($drev && $drev_produit_filter) {
             foreach ($drev->lots as $lot) {
                 if(strpos($lot->produit_hash, $drev_produit_filter) !== false) {
