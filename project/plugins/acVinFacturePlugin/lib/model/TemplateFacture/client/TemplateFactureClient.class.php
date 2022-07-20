@@ -25,7 +25,7 @@ class TemplateFactureClient extends acCouchdbClient {
     public function getTemplateIdFromCampagne($campagne_start = null) {
         $template = FactureConfiguration::getinstance()->getUniqueTemplateFactureName();
         if (!$template){
-            $template = "TEMPLATE-FACTURE-AOC-%s";
+            return null;
         }
         if (!$campagne_start) {
             $campagne_start = date('Y');
@@ -40,7 +40,14 @@ class TemplateFactureClient extends acCouchdbClient {
     }
 
     public function findByCampagne($campagne, $hydrate = self::HYDRATE_DOCUMENT){
-        return $this->find($this->getTemplateIdFromCampagne(), $hydrate);
+        $id = $this->getTemplateIdFromCampagne();
+
+        if(!$id) {
+
+            return null;
+        }
+
+        return $this->find($id, $hydrate);
     }
 
 

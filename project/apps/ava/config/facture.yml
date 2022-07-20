@@ -8,3 +8,4 @@ all:
       uniq_template_prefix: false
       export_sage_width_txt: true
       delais_paiement: "+30 days"
+      uniq_template_prefix: "TEMPLATE-FACTURE-AOC-%s"
