@@ -7,7 +7,7 @@
 					<h4 class="modal-title" id="myModalLabel">Créer une demande</h4>
 				</div>
 				<div class="modal-body">
-                    <?php include_partial('habilitation/demandeForm', array('form' => $form)); ?>
+                    <?php include_partial('habilitation/demandeForm', array('form' => $form, 'with_site' => true)); ?>
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-default btn pull-left" href="<?php echo url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>

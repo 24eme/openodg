@@ -23,7 +23,10 @@ class HabilitationDemande extends BaseHabilitationDemande {
             return $this->_get('libelle');
         }
 
-        $this->libelle = $this->getProduitLibelle().": ".implode(", ", $this->getActivitesLibelle())    ;
+        $this->libelle = $this->getProduitLibelle().": ".implode(", ", $this->getActivitesLibelle());
+        if ($this->exist('sites')) {
+            $this->libelle .= ' (Site '.implode(', ', array_values($this->sites->toArray())).')';
+        }
 
         return $this->_get('libelle');
     }

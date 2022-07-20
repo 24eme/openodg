@@ -142,8 +142,8 @@ class HabilitationClient extends acCouchdbClient {
         return $habilitations[$typeDemande][$statut];
     }
 
-    public function getLibelleActivite($key) {
-
+    public function getLibelleActivite($fullkey) {
+        $key = explode('-', $fullkey)[0];
         if(!isset($this->getActivites()[$key])) {
 
             return $key;
@@ -279,7 +279,7 @@ class HabilitationClient extends acCouchdbClient {
           return $etbIds;
         }
 
-        public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activites, $statut, $commentaire = "") {
+        public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activites, $sites, $statut, $commentaire = "") {
             $last = $this->getLastHabilitation($etablissementIdentifiant);
             $habilitation = $this->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
             if($habilitation && $last && $habilitation->_id < $last->_id) {
@@ -312,7 +312,7 @@ class HabilitationClient extends acCouchdbClient {
             }
 
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($etablissementIdentifiant, $date);
-            $habilitation->updateHabilitation($hash_produit, $activites, $statut, $commentaire, $date);
+            $habilitation->updateHabilitation($hash_produit, $activites, $sites, $statut, $commentaire, $date);
             $habilitation->save();
 
             $dateCourante = $date;
@@ -321,7 +321,7 @@ class HabilitationClient extends acCouchdbClient {
                     break;
                 }
 
-                $habilitationSuivante->updateHabilitation($hash_produit, $activites, $statut, $commentaire, $date);
+                $habilitationSuivante->updateHabilitation($hash_produit, $activites, $sites, $statut, $commentaire, $date);
                 $habilitationSuivante->save();
                 $dateCourante = $habilitationSuivante->date;
             }
@@ -339,7 +339,7 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation->demandes->get($keyDemande);
         }
 
-        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur, $trigger = true) {
+        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $sites, $statut, $date, $commentaire, $auteur, $trigger = true) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
@@ -360,10 +360,14 @@ class HabilitationClient extends acCouchdbClient {
             $demande->produit = $produitHash;
             $demande->activites = $activites;
             $demande->demande = $demandeStatut;
-
+            if ($sites && count($sites)) {
+                $demande->add('sites');
+                foreach($sites as $k => $v) {
+                    $demande->sites->add($k, $v);
+                }
+            }
             $demande->commentaire = $commentaire;
             $demande->getLibelle();
-
             $this->updateDemandeStatut($demande, $date, $statut, $commentaire, $auteur, true);
 
             $habilitation->save();
@@ -399,7 +403,8 @@ class HabilitationClient extends acCouchdbClient {
                 $demande->date_habilitation = $demande->date;
             }
 
-            $descriptionHistorique  = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" ";
+            $descriptionHistorique  = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()));
+            $descriptionHistorique  .= " pour \"".$demande->getLibelle()."\" ";
             $descriptionHistorique .= ($creation) ? "a été créée" : "est passée";
             $descriptionHistorique .= " au statut \"".$demande->getStatutLibelle()."\"";
 
@@ -489,10 +494,14 @@ class HabilitationClient extends acCouchdbClient {
 
             $newKeyDemande1 = null;
             $newKeyDemande2 = null;
+            $sites = null;
+            if ($demande->exist('sites')) {
+                $sites = $demande->sites->toArray();
+            }
             foreach($demande->getFullHistorique() as $historique) {
                 if(!$newKeyDemande1) {
-                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
-                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activitesToKeep, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande1 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activites, $sites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
+                    $newKeyDemande2 = $this->createDemandeAndSave($identifiant, $demande->demande, $demande->produit, $activitesToKeep, $sites, $historique->statut, $historique->date, $historique->commentaire, $historique->auteur, false)->getKey();
                     continue;
                 }
 
@@ -557,8 +566,12 @@ class HabilitationClient extends acCouchdbClient {
 
                 return;
             }
+            $sites = array();
+            if($demande->exist('sites')) {
+                $sites = $demande->sites->toArray();
+            }
 
-            $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), $statutHabilitation, $commentaire);
+            $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), $sites, $statutHabilitation, $commentaire);
         }
 
         public function getProduitsConfig($config) {

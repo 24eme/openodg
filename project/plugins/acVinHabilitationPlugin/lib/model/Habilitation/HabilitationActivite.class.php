@@ -6,7 +6,10 @@
 
 class HabilitationActivite extends BaseHabilitationActivite {
 
-  public function updateHabilitation($statut, $commentaire = "", $date = ''){
+  public function updateHabilitation($statut, $site, $commentaire = "", $date = ''){
+      if ($site) {
+        $this->add('site', $site);
+      }
       if($date == $this->getDocument()->date || !$date) {
         $this->addHistoriqueActiviteChanges($this->statut,$statut,$commentaire);
       }
@@ -47,14 +50,22 @@ class HabilitationActivite extends BaseHabilitationActivite {
   private function addHistoriqueActiviteChanges($old_statut,$statut,$commentaire){
     $activite = HabilitationClient::getInstance()->getLibelleActivite($this->getKey());
     $produitLibelle = $this->getParent()->getParent()->getLibelle();
+    $site = '';
+    if ($this->hasSite()) {
+        $site = " du site ".$this->site;
+    }
     if($old_statut == $statut){
-      $description = $produitLibelle." : pour l'activité \"".$activite."\", le commentaire a changé";
+      $description = $produitLibelle.$site." : pour l'activité \"".$activite."\", le commentaire a changé";
     }elseif (!$old_statut) {
-      $description = $produitLibelle." : activité \"".$activite."\", est passé en statut \"".HabilitationClient::$statuts_libelles[$statut]."\"";
+      $description = $produitLibelle.$site." : activité \"".$activite."\", est passé en statut \"".HabilitationClient::$statuts_libelles[$statut]."\"";
     }else{
-      $description = $produitLibelle." : activité \"".$activite."\", statut changé de \"".HabilitationClient::$statuts_libelles[$old_statut]."\" à \"".HabilitationClient::$statuts_libelles[$statut]."\"";
+      $description = $produitLibelle.$site." : activité \"".$activite."\", statut changé de \"".HabilitationClient::$statuts_libelles[$old_statut]."\" à \"".HabilitationClient::$statuts_libelles[$statut]."\"";
     }
     $this->getDocument()->addHistorique($description, $commentaire, null, $statut);
+  }
+
+  public function hasSite() {
+    return $this->exist('site') && $this->site;
   }
 
 }

@@ -6,7 +6,6 @@ Habilitation:
       _rev: { }
       type: { }
       identifiant: { }
-      chais_id: { required: false }
       validation: { required: false }
       validation_odg: { required: false }
       etape: { required: false }
@@ -53,6 +52,7 @@ Habilitation:
                               date: {  }
                               commentaire: {  }
                               statut: {  }
+                              site: { required: false }
       demandes:
         type: collection
         definition:
@@ -70,6 +70,12 @@ Habilitation:
                   commentaire: { }
                   produit: { }
                   produit_libelle: { }
+                  sites:
+                    required: false
+                    type: collection
+                    definition:
+                      fields:
+                        *: { }
                   activites:
                     type: array_collection
                     definition:

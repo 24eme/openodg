@@ -12,6 +12,24 @@
     </div>
 </div>
     <hr />
+<?php if(!isset($form['site']) || (isset($with_site) && $with_site) ): ?>
+<div class="row form-group">
+    <div class="col-xs-4 text-right control-label">
+        Site :
+    </div>
+<?php if(isset($form['site'])): ?>
+    <div class="col-xs-6">
+        <span class="text-danger"><?php echo $form['site']->renderError() ?></span>
+        <?php echo $form['site']->render(array("data-placeholder" => "Séléctionnez un site", "class" => "form-control", "required" => true)) ?>
+    </div>
+<?php else: ?>
+    <div class="col-xs-6 form-control-static">
+        Site principal
+  </div>
+<?php endif; ?>
+</div>
+<hr />
+<?php endif; ?>
 <?php if(isset($form['produit']) && isset($form['activites'])): ?>
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">
@@ -70,6 +88,22 @@
 
 
 <?php if(isset($demande)): ?>
+    <div class="row form-group">
+        <div class="col-xs-4 text-right control-label">
+            Site :
+        </div>
+        <div class="col-xs-6">
+            <p class="form-control-static">
+    <?php if ($demande->exist('sites')): ?>
+        <?php foreach($demande->sites as $k => $c): ?>
+            <?php echo $c; ?>
+        <?php endforeach ?>
+    <?php else: ?>
+            Principal
+    <?php endif; ?>
+            </p>
+        </div>
+    </div>
     <div class="row form-group">
         <div class="col-xs-4 text-right control-label">
             Produit :
