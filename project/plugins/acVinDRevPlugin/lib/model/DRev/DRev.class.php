@@ -1083,6 +1083,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->cleanDoc();
         $this->validation = $date;
+        if(!$this->exist('date_depot') || !$this->date_depot) {
+            $this->add('date_depot', $this->getDateValidation());
+        }
 
         foreach($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
@@ -1105,6 +1108,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
+        if(!$this->exist('date_depot') || !$this->date_depot) {
+            $this->add('date_depot', $this->getDateValidation());
+        }
+
         $this->validation = null;
         $this->validation_odg = null;
         if($this->exist('etape')) {
@@ -1552,6 +1559,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return $this->_get('date_commission');
+    }
+
+    public function getDateDepot()
+	{
+        if(!$this->exist('date_depot') || !$this->date_depot) {
+
+            return $this->getDateValidation();
+        }
+
+        return $this->_get('date_depot');
     }
 
 	public function getDateValidation($format = 'Y-m-d')
