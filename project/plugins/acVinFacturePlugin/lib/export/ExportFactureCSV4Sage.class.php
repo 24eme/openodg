@@ -78,7 +78,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
             $csv .= $this->facture->date_facturation . ';';
             $csv .= $this->facture->date_emission . ';';
             $csv .= $this->facture->getNumeroOdg() . ';';
-            $csv .= $libelle.';';
+            $csv .= $libelle.' - '.$l->libelle.';';
             $csv .= self::formatNumeroCompte($l->produit_identifiant_analytique).';;;;';
             $csv .= (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';';
             $csv .= abs($l->montant_ht) . ';;;';
@@ -96,7 +96,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
                 $csv .= $this->facture->date_facturation . ';';
                 $csv .= $this->facture->date_emission . ';';
                 $csv .= $this->facture->getNumeroOdg() . ';';
-                $csv .= $libelle.';';
+                $csv .= $libelle.' - TVA '.$l->libelle.';';
                 $csv .= $this->getSageCompteGeneralTVA($l).';;;;';
                 $csv .= (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';';
                 $csv .= abs($l->montant_tva) . ';;;';
