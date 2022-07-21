@@ -95,7 +95,7 @@ class GenerationExportComptableSage extends GenerationAbstract
 
             if(!$facture->versement_comptable_paiement) {
                 $export = new ExportFacturePaiementsCSV($facture, false, true);
-                $csvPaiement = $export->exportFacturePaiements($date_mouvement, true);
+                $csvPaiement = $export->exportFacturePaiements($date_mouvement, !FactureConfiguration::getInstance()->hasDonotSaveExportFacture() );
                 $paiements_buffer .= $csvPaiement;
                 if($csvPaiement) {
                     $this->generation->documents->add(null, $facture->_id);
