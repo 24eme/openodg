@@ -11,4 +11,10 @@ all:
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
       export_type: "sage"
+      codejournal_facture: 'VE'
+      codejournal_paiement: '5200'
+      comptetva_normal: '44571001'
+      comptetva_superreduit: ''
+      numerocompte_minlength: 8
+      numerocompte_banquepaiement: '51200001'
       export_donotsave: true

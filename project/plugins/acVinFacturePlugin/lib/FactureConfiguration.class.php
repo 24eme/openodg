@@ -135,4 +135,48 @@ class FactureConfiguration {
         }
         return $this->configuration['export_type'];
     }
+
+    public function getCodeJournalFacture() {
+        if (!isset($this->configuration['codejournal_facture'])) {
+            return "VE00";
+        }
+        return $this->configuration['codejournal_facture'];
+    }
+
+    public function getCodeJournalPaiement() {
+        if (!isset($this->configuration['codejournal_paiement'])) {
+            return "5200";
+        }
+        return $this->configuration['codejournal_paiement'];
+
+    }
+
+    public function getCompteTVANormal() {
+        if (!isset($this->configuration['comptetva_normal'])) {
+            return "445710";
+        }
+        return $this->configuration['comptetva_normal'];
+    }
+
+    public function getCompteTVASuperReduit() {
+        if (!isset($this->configuration['comptetva_superreduit'])) {
+            return "445711";
+        }
+        return $this->configuration['comptetva_superreduit'];
+    }
+
+    public function getNumeroCompteMinLength() {
+        if (!isset($this->configuration['numerocompte_minlength'])) {
+            return null;
+        }
+        return intval($this->configuration['numerocompte_minlength']);
+    }
+
+    public function getNumeroCompteBanquePaiement() {
+        if (!isset($this->configuration['numerocompte_banquepaiement'])) {
+            return '511150';
+        }
+        return $this->configuration['numerocompte_banquepaiement'];
+    }
+
 }
