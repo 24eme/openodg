@@ -8,7 +8,7 @@ class ExportCompteCsv implements InterfaceDeclarationExportCsv
 
     public static function getHeaderCsv() {
 
-        return "numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;n° identifiant;n° siret;statut;téléphone;fax;email;site\n";
+        return "numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;code naf;n° identifiant;n° siret;statut;téléphone;fax;email;site\n";
     }
 
     public function __construct($compte, $header = true, $region = null) {
@@ -40,13 +40,14 @@ class ExportCompteCsv implements InterfaceDeclarationExportCsv
                             $this->compte->code_postal,
                             $this->compte->commune,
                             $this->compte->pays,
+                            '', #NAF
                             $this->compte->identifiant,
                             $this->compte->societe_informations->siret,
                             $this->compte->statut,
                             ($this->compte->telephone_bureau) ? $this->compte->telephone_bureau : $this->compte->telephone_mobile,
                             $this->compte->fax,
                             $this->compte->email,
-                            "https://$domaine/$type/$this->compte->identifiant/visualisation",
+                            "https://$domaine/$type/".$this->compte->identifiant."/visualisation",
                           );
 
         return $csv;
