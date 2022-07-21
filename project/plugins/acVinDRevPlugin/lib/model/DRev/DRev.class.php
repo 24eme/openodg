@@ -958,12 +958,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
+    public static function buildDetailKey($denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
         if($denominationComplementaire || $hidden_denom){
             $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }
+
+        return $detailKey;
+    }
+
+    public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
+        $detailKey = self::buildDetailKey($denominationComplementaire, $hidden_denom);
 
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
@@ -1098,8 +1104,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $lot->date = $date;
             }
         }
-
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
+
+
     }
 
     public function delete() {

@@ -6,7 +6,7 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbForm
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null)
     {
         $this->produits = array();
-        parent::__construct($object, $options, $CSRFSecret);
+        parent::__construct($object, array(), $options, $CSRFSecret);
     }
 
     public function configure()
