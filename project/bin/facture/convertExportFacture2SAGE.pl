@@ -7,8 +7,9 @@ $verbose = shift;
 while(<STDIN>) {
     chomp;
     @field = split/;/ ;
-    next if ($field[0] ne 'VE00' && $field[0] ne '5200');
-    next if (!$field[10]); #si montant à 0, l'ignorer
+    #Vérifie que le journal débute bien par une valeur attendue
+    next if ($field[0] =~ /^[A-Z5]/);
+    next if (! ($field[10] * 1)); #si montant à 0 ou entête, l'ignorer
     print "Ecriture générale;" if ($verbose);
     print "#MECG\n";
     print "code journal;" if ($verbose);
