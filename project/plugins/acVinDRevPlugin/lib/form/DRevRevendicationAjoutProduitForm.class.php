@@ -27,11 +27,11 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbForm
             $this->widgetSchema['denomination_complementaire']->setLabel("");
             $this->validatorSchema['denomination_complementaire'] = new sfValidatorString(array('required' => false));
         }
-
-        if(count($this->getDocument()->getDenominationAuto())) {
+        if(DrevConfiguration::getInstance()->hasDenominationAuto()) {
             $this->widgetSchema['denomination_auto'] = new sfWidgetFormChoice(array('expanded' => true, 'choices' => $this->getDenominationAuto(), 'renderer_options' => array('formatter' => array($this, 'formatter'))));
             $this->widgetSchema['denomination_auto']->setLabel("");
             $this->validatorSchema['denomination_auto'] = new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDenominationAuto())));
+            $this->setDefault('denomination_auto', DRevClient::DENOMINATION_CONVENTIONNEL);
         }
         $this->widgetSchema->setNameFormat('drev_revendication_ajout_produit[%s]');
     }
@@ -57,12 +57,8 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbForm
     }
 
     public function getDenominationAuto() {
-        $labels = array();
-        foreach($this->getDocument()->getDocument()->getDenominationAuto() as $denomination) {
-            $labels[$denomination] = DRevClient::$denominationsAuto[$denomination];
-        }
 
-        return $labels;
+        return DrevClient::$denominationsAuto;
     }
 
     public function formatter($widget, $inputs)
