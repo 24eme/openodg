@@ -35,6 +35,14 @@
     opacity: 0.80;
 }
 
+tr .show-on-tr-hover {
+    visibility: hidden;
+}
+
+tr:hover .show-on-tr-hover {
+    visibility: visible;
+}
+
 .panel-body-success {
 
   border-color: rgba(130, 147, 69, 0.4);
