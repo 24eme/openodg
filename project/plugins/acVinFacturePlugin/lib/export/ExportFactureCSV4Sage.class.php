@@ -29,7 +29,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire\n";
+        return "#code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire\n";
     }
 
     public function export() {
@@ -78,7 +78,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
             $csv .= $this->facture->date_facturation . ';';
             $csv .= $this->facture->date_emission . ';';
             $csv .= $this->facture->getNumeroOdg() . ';';
-            $csv .= $libelle.';';
+            $csv .= $libelle.' - '.$l->libelle.';';
             $csv .= self::formatNumeroCompte($l->produit_identifiant_analytique).';;;;';
             $csv .= (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';';
             $csv .= abs($l->montant_ht) . ';;;';
@@ -96,7 +96,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
                 $csv .= $this->facture->date_facturation . ';';
                 $csv .= $this->facture->date_emission . ';';
                 $csv .= $this->facture->getNumeroOdg() . ';';
-                $csv .= $libelle.';';
+                $csv .= $libelle.' - TVA '.$l->libelle.';';
                 $csv .= $this->getSageCompteGeneralTVA($l).';;;;';
                 $csv .= (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';';
                 $csv .= abs($l->montant_tva) . ';;;';
@@ -142,34 +142,36 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
         }
 
         if($this->facture->isPayee()) {
-            $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
-            $csv .= $this->facture->date_paiement . ';';
-            $csv .= $this->facture->date_paiement . ';';
-            $csv .= $this->facture->getNumeroOdg() . ';';
-            $csv .= $this->getLibelleFacture().';';
-            $csv .= self::formatNumeroCompte('411000').';';
-            $csv .= $this->facture->code_comptable_client . ';;';
-            $csv .= $this->facture->date_echeance . ';CREDIT;';
-            $csv .= $this->facture->montant_paiement . ';;;';
-            $csv .= $this->facture->_id . ';';
-            $csv .= self::TYPE_LIGNE_PAIEMENT . ';';
-            $csv .= $this->facture->declarant->nom . ';';
-            $csv .= $this->facture->code_comptable_client . ';;;;';
-            $csv .= $this->facture->reglement_paiement;
-            $csv .= "\n";
-            $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
-            $csv .= $this->facture->date_paiement . ';';
-            $csv .= $this->facture->date_paiement . ';';
-            $csv .= $this->facture->getNumeroOdg() . ';';
-            $csv .= $this->getLibelleFacture().';';
-            $csv .= self::formatNumeroCompte(FactureConfiguration::getInstance()->getNumeroCompteBanquePaiement()).';;;';
-            $csv .= $this->facture->date_echeance . ';DEBIT;';
-            $csv .= $this->facture->montant_paiement . ';;;';
-            $csv .= $this->facture->_id . ';';
-            $csv .= self::TYPE_LIGNE_PAIEMENT . ';';
-            $csv .= $this->facture->declarant->nom . ';';
-            $csv .= $this->facture->code_comptable_client . ';;;;';
-            $csv .= "\n";
+            foreach($this->facture->paiements as $p) if (!$p->versement_comptable) {
+                $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
+                $csv .= $p->date . ';';
+                $csv .= $p->date . ';';
+                $csv .= $this->facture->getNumeroOdg() . ';';
+                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->commentaire.';';
+                $csv .= self::formatNumeroCompte('411000').';';
+                $csv .= $this->facture->code_comptable_client . ';;';
+                $csv .= $this->facture->date_echeance . ';CREDIT;';
+                $csv .= $this->facture->montant_paiement . ';;;';
+                $csv .= $this->facture->_id . ';';
+                $csv .= self::TYPE_LIGNE_PAIEMENT . ';';
+                $csv .= $this->facture->declarant->nom . ';';
+                $csv .= $this->facture->code_comptable_client . ';;;;';
+                $csv .= $this->facture->reglement_paiement;
+                $csv .= "\n";
+                $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
+                $csv .= $p->date . ';';
+                $csv .= $p->date . ';';
+                $csv .= $this->facture->getNumeroOdg() . ';';
+                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->commentaire.';';
+                $csv .= self::formatNumeroCompte(FactureConfiguration::getInstance()->getNumeroCompteBanquePaiement()).';;;';
+                $csv .= $this->facture->date_echeance . ';DEBIT;';
+                $csv .= $this->facture->montant_paiement . ';;;';
+                $csv .= $this->facture->_id . ';';
+                $csv .= self::TYPE_LIGNE_PAIEMENT . ';';
+                $csv .= $this->facture->declarant->nom . ';';
+                $csv .= $this->facture->code_comptable_client . ';;;;';
+                $csv .= "\n";
+            }
         }
 
         return $csv;
@@ -195,7 +197,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
     }
 
     protected static function formatNumeroCompte($c) {
-        $minlength = FactureConfiguration::getInstance()->getNumeroCompteMinLength();
+        $minlength = 8;
         $diff = $minlength - strlen($c);
         if (!$minlength || $diff < 1) {
             return $c;
