@@ -195,7 +195,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
     }
 
     protected static function formatNumeroCompte($c) {
-        $minlength = FactureConfiguration::getInstance()->getNumeroCompteMinLength();
+        $minlength = 8;
         $diff = $minlength - strlen($c);
         if (!$minlength || $diff < 1) {
             return $c;

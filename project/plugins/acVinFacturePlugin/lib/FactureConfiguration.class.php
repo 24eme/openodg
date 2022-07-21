@@ -165,13 +165,6 @@ class FactureConfiguration {
         return $this->configuration['comptetva_superreduit'];
     }
 
-    public function getNumeroCompteMinLength() {
-        if (!isset($this->configuration['numerocompte_minlength'])) {
-            return null;
-        }
-        return intval($this->configuration['numerocompte_minlength']);
-    }
-
     public function getNumeroCompteBanquePaiement() {
         if (!isset($this->configuration['numerocompte_banquepaiement'])) {
             return '511150';
