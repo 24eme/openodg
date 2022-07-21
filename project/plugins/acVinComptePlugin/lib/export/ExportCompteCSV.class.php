@@ -30,7 +30,7 @@ class ExportCompteCsv implements InterfaceDeclarationExportCsv
         $domaine = sfConfig::get('app_routing_context_production_host');
         $type = strtolower($this->compte->type);
 
-        $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+        $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                             $this->compte->getCodeComptable(),
                             $this->compte->nom_a_afficher,
                             "CLIENT",
