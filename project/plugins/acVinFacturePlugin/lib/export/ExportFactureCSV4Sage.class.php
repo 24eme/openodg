@@ -10,8 +10,6 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
     const TYPE_LIGNE_PAIEMENT = 'PAIEMENT';
     const TYPE_LIGNE_ECHEANCE = 'ECHEANCE';
     const TYPE_LIGNE_TVA = 'TVA';
-    const CODE_JOURNAL_FACTURE = "VE00";
-    const CODE_JOURNAL_PAIEMENT = "5200";
 
     public function __construct($doc_or_id, $header = true, $region = null) {
         if ($doc_or_id instanceof Facture) {
@@ -76,11 +74,11 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
                 $commentaire = $matches[1];
             }
 
-            $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_ht) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
+            $csv .= FactureConfiguration::getInstance()->getCodeJournalFacture().';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_ht) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
 
             $csv .= "\n";
             if($l->montant_tva) {
-                $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$this->getSageCompteGeneral($l).';;;;' . (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_tva) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
+                $csv .= FactureConfiguration::getInstance()->getCodeJournalFacture().';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';'.$this->getSageCompteGeneralTVA($l).';;;;' . (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_tva) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
 
                 $csv .= "\n";
             }
@@ -88,7 +86,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
 
         }
 
-        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
+        $csv .= FactureConfiguration::getInstance()->getCodeJournalFacture().';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->getNumeroOdg() . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
 
         $csv .= "\n";
 
@@ -104,24 +102,29 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
         }
 
         if($this->facture->isPayee()) {
-            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';CREDIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;".$this->facture->reglement_paiement;
+            $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';CREDIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;".$this->facture->reglement_paiement;
             $csv .= "\n";
-            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';511150;;;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
+            $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->getNumeroOdg() . ';'.$this->getLibelleFacture().';511150;;;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
             $csv .= "\n";
         }
 
         return $csv;
     }
 
-    protected function getSageCompteGeneral($ligne) {
+    protected function getSageCompteGeneralTVA($ligne) {
+        $code = null;
         if ($ligne->getTauxTva() == 0.20) {
 
-            return "445710";
+            $code = FactureConfiguration::getInstance()->getCompteTVANormal();
         }
 
         if ($ligne->getTauxTva() == 0.021) {
 
-            return "445711";
+            $code = FactureConfiguration::getInstance()->getCompteTVASuperReduit();
+        }
+
+        if ($code) {
+            return $code;
         }
 
         throw new sfException(sprintf("Code sage du Taux de TVA introuvable : %s (%s)", $ligne->getTauxTva(), $ligne->getDocument()->_id));

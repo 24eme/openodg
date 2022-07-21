@@ -11,4 +11,8 @@ all:
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
       export_type: "sage"
+      codejournal_facture: 'VE'
+      codejournal_paiement: '51200001'
+      comptetva_normal: '44571001'
+      comptetva_superreduit: ''
       export_donotsave: true
