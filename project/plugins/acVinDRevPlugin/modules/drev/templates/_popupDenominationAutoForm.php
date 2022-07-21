@@ -6,19 +6,12 @@
 			<div class="modal-content">
 					<div class="modal-header">
 						<?php if($drev->exist('denomination_auto')): ?><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><?php endif; ?>
-						<h4 class="modal-title" id="myModalLabel">Êtes vous certifié en Agriculture Biologique&nbsp;?</h4>
+						<h4 class="modal-title" id="myModalLabel">Avez-vous des certifications&nbsp;?</h4>
 					</div>
 					<div class="modal-body">
-						<div class="row">
-							<div class="col-xs-12" style="font-weight: normal; ">
-								<br/>
-									<i>Pour vous faciliter la saisie de cette Drev, merci de nous indiquer si vous revendiquez des volumes en :</i>
-								<br/>
-							</div>
-						</div>
-						<div class="form-group row">
+						<p>Pour vous faciliter la saisie de cette DRev, merci de nous indiquer si vous revendiquez des volumes en :</p>
+						<div class="form-group row" style="margin-bottom: 0;">
 							<div class="col-xs-12">
-								<br/>
 								<span class="error"><?php echo $form['denomination_auto']->renderError() ?></span>
 								<div class="form-inline">
 	  								<div class="controls-row checkbox-group required">
