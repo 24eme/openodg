@@ -31,12 +31,8 @@ class DrevRevendicationProduitDenominationAutoForm extends acCouchdbForm
 
 
     public function getDenominationAuto() {
-        $labels = array();
-        foreach($this->getDocument()->getDocument()->getDenominationAuto() as $denomination) {
-            $labels[$denomination] = DRevClient::$denominationsAuto[$denomination];
-        }
 
-        return $labels;
+        return DrevClient::$denominationsAuto;
     }
 
     public function formatter($widget, $inputs)

@@ -23,19 +23,19 @@
 						</div>
 					</div>
 					<?php endif; ?>
-					<?php if(isset($form['denomination_complementaire'])): ?>
-					<span class="error"><?php echo $form['denomination_complementaire']->renderError() ?></span>
-					<div class="form-group row">
-						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['denomination_complementaire']->render(array("placeholder" => "(Optionnel) Saisissez une mention valorisante", "class" => "form-control", "required" => false)) ?>
-						</div>
-					</div>
-					<?php endif; ?>
                     <?php if(isset($form['denomination_auto'])): ?>
 					<span class="error"><?php echo $form['denomination_auto']->renderError() ?></span>
 					<div class="form-group row" style="margin-bottom: 0;">
 						<div class="col-xs-10 col-xs-offset-1">
 						<?php echo $form['denomination_auto']->render(array("required" => false)) ?>
+						</div>
+					</div>
+					<?php endif; ?>
+					<?php if(isset($form['denomination_complementaire'])): ?>
+					<span class="error"><?php echo $form['denomination_complementaire']->renderError() ?></span>
+					<div class="form-group row">
+						<div class="col-xs-10 col-xs-offset-1">
+						<?php echo $form['denomination_complementaire']->render(array("placeholder" => "(Optionnel) Saisissez une mention valorisante", "class" => "form-control", "required" => false)) ?>
 						</div>
 					</div>
 					<?php endif; ?>
