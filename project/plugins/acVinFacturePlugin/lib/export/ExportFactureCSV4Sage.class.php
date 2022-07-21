@@ -29,7 +29,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire\n";
+        return "#code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire\n";
     }
 
     public function export() {

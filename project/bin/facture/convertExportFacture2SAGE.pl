@@ -8,7 +8,7 @@ while(<STDIN>) {
     chomp;
     @field = split/;/ ;
     #Vérifie que le journal débute bien par une valeur attendue
-    next if ($field[0] =~ /^[A-Z5]/);
+    next unless ($field[0] =~ /^[A-Z5]/);
     next if (! ($field[10] * 1)); #si montant à 0 ou entête, l'ignorer
     print "Ecriture générale;" if ($verbose);
     print "#MECG\n";
