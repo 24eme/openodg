@@ -6,7 +6,7 @@
             	<?php echo $form->renderGlobalErrors(); ?>
 				<div class="modal-header">
 					<a href="<?php echo url_for('drev_revendication_superficie', $drev) ?>" class="close">&times;</a>
-					<h4 class="modal-title" id="myModalLabel">Modifier le label du produit</h4>
+					<h4 class="modal-title" id="myModalLabel">Modifier la certification du produit</h4>
 				</div>
 				<div class="modal-body">
                     <div class="form-group row">
