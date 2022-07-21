@@ -35,7 +35,7 @@
             <?php foreach($form['produits'] as $hash => $formProduit): ?>
                 <?php $produit = $drev->get($hash); ?>
                 <tr class="produits vertical-center">
-                    <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?> <small class="pull-right" style="margin-top: 3px;"><?php echoFloat($produit->recolte->superficie_total) ?> ha</small></td>
+                    <td><?php echo $produit->getRawValue()->getLibelleCompletHTML() ?> <small class="pull-right" style="margin-top: 3px;"><?php echoFloat(round($produit->recolte->superficie_total, 2)) ?> ha</small></td>
                     <td class="text-right"><?php if($produit->getPlafondStockVci()): ?><?php echoFloat($produit->getPlafondStockVci()) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td><?php echo $formProduit['stock_precedent']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['rafraichi']->render(array('class' => 'form-control text-right input-float  sum_stock_final', 'placeholder' => "hl")) ?></td>
