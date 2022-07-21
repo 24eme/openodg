@@ -23,7 +23,7 @@ class GenerationExportComptableSage extends GenerationAbstract
         if ($with_headers) {
             fwrite($handle_factures, ExportFactureCSV4Sage::getHeaderCsv());
         }
-
+        $with_compte_header = $with_headers;
         foreach(FactureEtablissementView::getInstance()->getFactureNonVerseeEnCompta() as $vfacture) {
             $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
 
@@ -51,8 +51,9 @@ class GenerationExportComptableSage extends GenerationAbstract
                 throw new sfException(sprintf("Document COMPTE-%s introuvable", $facture->identifiant));
             }
 
-            $compte_export = new ExportCompteCsv($compte);
+            $compte_export = new ExportCompteCsv($compte, $with_compte_header);
             fwrite($handle_clients, $compte_export->export());
+            $with_compte_header = false;
 
         }
 
