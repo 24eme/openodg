@@ -24,6 +24,17 @@ class DRevProduit extends BaseDRevProduit
 		return $this->getLibelle();
 	}
 
+    public function getLibelleCompletHTML()
+	{
+        $libelle = $this->getConfig()->getLibelleComplet();
+
+        if($this->denomination_complementaire) {
+            $libelle .= ' <span class="text-muted">'.$this->denomination_complementaire.'</span>';
+        }
+
+        return $libelle;
+    }
+
 	public function getChildrenNode()
     {
         return $this->getCepages();

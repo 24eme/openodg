@@ -38,8 +38,7 @@
                 <?php $produit = $drev->get($hash); ?>
                 <tr class="produits vertical-center">
                     <td>
-                    	<?php echo $produit->getLibelleComplet() ?>
-
+                        <?php echo $produit->getRawValue()->getLibelleCompletHTML() ?>
                         <?php if(DrevConfiguration::getInstance()->hasDenominationAuto()): ?>
                         <?php if($produit->denomination_complementaire): ?>
                             <a title="Modifier le label" class="text-muted transparence-md show-on-tr-hover ajax" href="<?php echo url_for('drev_revendication_produit_denomination_auto', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getHash()))) ?>"><small><span class="glyphicon glyphicon-pencil"></span></small></a>

@@ -33,7 +33,7 @@
                   <?php foreach ($drev->declaration->getProduitsVci() as $produit) : ?>
                     <tr>
                       <td>
-                        <?php echo $produit->getLibelleComplet() ?>
+                        <?php echo $produit->getRawValue()->getLibelleCompletHTML() ?>
                         <small class="pull-right">
                           <span class="<?php if($produit->getRendementVci() > $produit->getConfig()->getRendementVci()): ?>text-danger<?php endif; ?>">&nbsp;<?php echoFloat(round($produit->getRendementVci(), 2)); ?></span>
                           <span data-toggle="tooltip" title="Rendement&nbsp;VCI&nbsp;de&nbsp;l'année&nbsp;| Σ&nbsp;rendement&nbsp;cumulé"
