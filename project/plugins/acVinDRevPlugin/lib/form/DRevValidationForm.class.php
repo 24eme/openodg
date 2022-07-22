@@ -20,6 +20,11 @@ class DRevValidationForm extends acCouchdbForm
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
             }
+            foreach($this->getDocument()->documents as $k => $v) {
+                if (isset($this->widgetSchema['engagement_'.$k])) {
+                    $this->setDefault('engagement_'.$k, 1);
+                }
+            }
           }
 
             if (DrevConfiguration::getInstance()->hasDegustation()) {
@@ -72,12 +77,6 @@ class DRevValidationForm extends acCouchdbForm
                 }
             }
             $this->embedForm('lots', $formDegustable);
-        }
-
-        foreach($this->getDocument()->documents as $k => $v) {
-            if (isset($this->widgetSchema['engagement_'.$k])) {
-                $this->setDefault('engagement_'.$k, 1);
-            }
         }
 
         $this->widgetSchema->setNameFormat('validation[%s]');
