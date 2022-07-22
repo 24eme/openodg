@@ -35,6 +35,14 @@
 
 	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
+    <?php elseif($sf_user->isAdmin()) : ?>
+        <hr />
+        <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
+            <h3>&nbsp;Engagement(s)&nbsp;</h3>
+            <?php foreach($drev->documents as $docKey => $doc): ?>
+                    <p>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></p>
+            <?php endforeach; ?>
+        <?php endif; ?>
     <?php endif; ?>
     <hr />
     <div class="row row-margin row-button">
@@ -54,7 +62,9 @@
             </div>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }">
+                <span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;<?php if ($sf_user->isAdmin()): ?>Valider et Approuver<?php else: ?>Valider la déclaration<?php endif; ?>
+            </button>
         </div>
     </div>
 </form>
