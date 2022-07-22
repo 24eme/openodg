@@ -549,6 +549,31 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication_superficie', $this->drev);
     }
 
+    public function executeRevendicationProduitDenominationAuto(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->produit = $this->drev->get(str_replace('__', '/', $request->getParameter('hash')));
+
+        $this->form = new DrevRevendicationProduitDenominationAutoForm($this->produit);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+            $this->getUser()->setFlash("error", 'Une erreur est survenue.');
+
+            return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
+
+        $this->form->save();
+
+        return $this->redirect('drev_revendication_superficie', $this->drev);
+    }
+
     public function executeRevendicationCepageSuppressionProduit(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);

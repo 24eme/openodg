@@ -30,10 +30,6 @@ class DRevConfiguration {
         }
     }
 
-    public function hasPrelevements() {
-
-        return isset($this->configuration['prelevements']) && boolval($this->configuration['prelevements']);
-    }
 
     public function hasImportDRWithMentionsComplementaire() {
 

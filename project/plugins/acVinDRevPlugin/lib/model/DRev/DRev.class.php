@@ -958,12 +958,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
+    public static function buildDetailKey($denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
 
         if($denominationComplementaire || $hidden_denom){
             $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }
+
+        return $detailKey;
+    }
+
+    public function addProduit($hash, $denominationComplementaire = null, $hidden_denom = null) {
+        $detailKey = self::buildDetailKey($denominationComplementaire, $hidden_denom);
 
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
@@ -1083,6 +1089,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->cleanDoc();
         $this->validation = $date;
+        if(!$this->exist('date_depot') || !$this->date_depot) {
+            $this->add('date_depot', $this->getDateValidation());
+        }
 
         foreach($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
@@ -1095,8 +1104,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $lot->date = $date;
             }
         }
-
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
+
+
     }
 
     public function delete() {
@@ -1105,6 +1115,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
+        if(!$this->exist('date_depot') || !$this->date_depot) {
+            $this->add('date_depot', $this->getDateValidation());
+        }
+
         $this->validation = null;
         $this->validation_odg = null;
         if($this->exist('etape')) {
@@ -1552,6 +1566,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return $this->_get('date_commission');
+    }
+
+    public function getDateDepot()
+	{
+        if(!$this->exist('date_depot') || !$this->_get('date_depot')) {
+
+            return $this->getDateValidation();
+        }
+
+        return $this->_get('date_depot');
     }
 
 	public function getDateValidation($format = 'Y-m-d')

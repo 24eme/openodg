@@ -9,7 +9,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_BIO = "BIO";
     const DENOMINATION_HVE = "HVE";
     const DENOMINATION_CONVENTIONNEL = "CONVENTIONNEL";
-    const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
+    const DENOMINATION_BIO_LIBELLE_AUTO = "AB";
     const DENOMINATION_HVE_LIBELLE_AUTO = "HVE";
     const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_CONDITIONNEMENT';
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
@@ -27,8 +27,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public static $denominationsAuto = array(
         self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
-        self::DENOMINATION_HVE => "HVE",
-        self::DENOMINATION_BIO => "Bio",
+        self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
+        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
     );
 
     public static $lotDestinationsType = array(
@@ -283,7 +283,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function retrieveRelatedDrev($identifiant, $periode, $drev_produit_filter = null) {
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, $periode * 1);
+
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, preg_replace('/-.*/', '', $periode));
         if ($drev && $drev_produit_filter) {
             foreach ($drev->lots as $lot) {
                 if(strpos($lot->produit_hash, $drev_produit_filter) !== false) {

@@ -1,7 +1,6 @@
 all:
   configuration:
     drev:
-      prelevements: true
       mentions_complementaire: false
       import_with_mentions_complementaire: false
       denomination_auto: false
