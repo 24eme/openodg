@@ -74,6 +74,9 @@ class DRevValidationForm extends acCouchdbForm
             $this->embedForm('lots', $formDegustable);
         }
 
+        foreach($this->getDocument()->documents as $k => $v) {
+            $this->setDefault('engagement_'.$k, 1);
+        }
 
         $this->widgetSchema->setNameFormat('validation[%s]');
     }
