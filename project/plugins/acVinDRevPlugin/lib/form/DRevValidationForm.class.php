@@ -75,7 +75,9 @@ class DRevValidationForm extends acCouchdbForm
         }
 
         foreach($this->getDocument()->documents as $k => $v) {
-            $this->setDefault('engagement_'.$k, 1);
+            if (isset($this->widgetSchema['engagement_'.$k])) {
+                $this->setDefault('engagement_'.$k, 1);
+            }
         }
 
         $this->widgetSchema->setNameFormat('validation[%s]');
