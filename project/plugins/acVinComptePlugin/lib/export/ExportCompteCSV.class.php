@@ -8,7 +8,7 @@ class ExportCompteCsv implements InterfaceDeclarationExportCsv
 
     public static function getHeaderCsv() {
 
-        return "numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;code naf;n° identifiant;n° siret;statut;date creation;téléphone;fax;email;site\n";
+        return "#numéro de compte;intitulé;type (client/fournisseur);abrégé;adresse;address complément;code postal;ville;pays;code naf;n° identifiant;n° siret;statut;date creation;téléphone;fax;email;site\n";
     }
 
     public function __construct($compte, $header = true, $region = null) {
