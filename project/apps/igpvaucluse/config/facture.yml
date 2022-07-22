@@ -16,4 +16,3 @@ all:
       comptetva_normal: '44571001'
       comptetva_superreduit: ''
       numerocompte_banquepaiement: '51200001'
-      export_donotsave: true
