@@ -17,7 +17,7 @@ class GenerationExportComptableSage extends GenerationAbstract
         $date_facturation = $this->generation->arguments->exist('date_facturation') ? Date::getIsoDateFromFrenchDate($this->generation->arguments->get('date_facturation')) : null;
 
         $handle_factures = fopen(sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", 'a');
-        $handle_clients = fopen(sfConfig::get('sf_web_dir')."/".$clientsfile, 'a');
+        $handle_clients = fopen(sfConfig::get('sf_web_dir')."/".$clientsfile.".tmp", 'a');
 
         $with_headers = !count($this->generation->documents);
         if ($with_headers) {
@@ -62,6 +62,7 @@ class GenerationExportComptableSage extends GenerationAbstract
         fclose($handle_clients);
 
         shell_exec(sprintf("cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", sfConfig::get('sf_web_dir')."/".$facturesfile));
+        shell_exec(sprintf("cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$clientsfile.".tmp", sfConfig::get('sf_web_dir')."/".$clientsfile));
         file_put_contents(sfConfig::get('sf_web_dir')."/".$facturescomptafile, shell_exec(sprintf("bash %s/bin/facture/csv2sage.sh %s %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$clientsfile, sfConfig::get('sf_web_dir')."/".$facturesfile)));
 
         if(count($this->generation->documents)) {
