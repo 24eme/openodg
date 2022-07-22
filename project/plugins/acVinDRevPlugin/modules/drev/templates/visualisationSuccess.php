@@ -61,6 +61,15 @@
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
 <hr />
+<?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
+    <h3>&nbsp;Engagement(s)&nbsp;</h3>
+    <?php foreach($drev->documents as $docKey => $doc): ?>
+            <p>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></p>
+    <?php endforeach; ?>
+<hr />
+<?php endif; ?>
+
+
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $drev->identifiant, 'campagne' => $drev->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
