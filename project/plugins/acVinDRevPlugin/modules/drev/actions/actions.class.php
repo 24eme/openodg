@@ -689,19 +689,21 @@ class drevActions extends sfActions {
         }
         $this->form->save();
 
-        $this->drev->remove('documents');
-        $documents = $this->drev->getOrAdd('documents');
+        if (!$this->isAdmin) {
+            $this->drev->remove('documents');
+            $documents = $this->drev->getOrAdd('documents');
 
-        foreach ($this->validation->getEngagements() as $engagement) {
-            if(!$this->form->getValue("engagement_".$engagement->getCode())) {
-                continue;
+            foreach ($this->validation->getEngagements() as $engagement) {
+                if(!$this->form->getValue("engagement_".$engagement->getCode())) {
+                    continue;
+                }
+                $document = $documents->add($engagement->getCode());
+                $document->libelle = $engagement->getMessage();
+                if($engagement->getInfo()) {
+                    $document->libelle .= " : ".$engagement->getInfo();
+                }
+                $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
             }
-            $document = $documents->add($engagement->getCode());
-            $document->libelle = $engagement->getMessage();
-            if($engagement->getInfo()) {
-                $document->libelle .= " : ".$engagement->getInfo();
-            }
-            $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
         }
 
         if (DrevConfiguration::getInstance()->hasDegustation()) {
