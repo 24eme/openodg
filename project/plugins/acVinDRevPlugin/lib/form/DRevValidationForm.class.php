@@ -57,7 +57,7 @@ class DRevValidationForm extends acCouchdbForm
             }
         }
 
-        if(sfContext::getInstance()->getUser()->isAdmin()) {
+        if(sfContext::getInstance()->getUser()->isAdmin() && !$this->getDocument()->validation) {
             if($this->getDocument()->exist('date_depot') && $this->getDocument()->_get('date_depot')) {
                 $this->setDefault('date_depot', DateTime::createFromFormat('Y-m-d', $this->getDocument()->_get('date_depot'))->format('d/m/Y'));
             } elseif($this->getDocument()->isTeledeclare()) {
