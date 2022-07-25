@@ -169,4 +169,31 @@ class DouaneImportCsvFile {
         return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, $this->drev_produit_filter);
     }
 
+    public function extractLabels($mentionComplementaire) {
+        $labels = array();
+
+        $wordSeparatorStart = "(^|[ \/\-]{1})";
+        $wordSeparatorEnd = "([ \/\-]{1}|$)";
+
+        if(preg_match('/'.$wordSeparatorStart.'conversion'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
+
+        } elseif(preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|
+FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
+        }
+
+        if(preg_match('/'.$wordSeparatorStart.'(demeter|biody|biodynamie)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_DEMETER] = DRevClient::DENOMINATION_DEMETER;
+        }
+
+        if(preg_match('/'.$wordSeparatorStart.'(hve|h.v.e.|haute valeur environnementale|hve3)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_HVE] = DRevClient::DENOMINATION_HVE;
+        }
+
+        ksort($labels);
+
+        return $labels;
+    }
+
 }
