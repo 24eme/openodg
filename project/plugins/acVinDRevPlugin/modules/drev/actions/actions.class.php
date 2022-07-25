@@ -869,6 +869,10 @@ class drevActions extends sfActions {
             $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
+        if($this->getUser()->isAdmin() && !$this->drev->validation_odg) {
+            $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
+        }
+
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
@@ -886,6 +890,26 @@ class drevActions extends sfActions {
           return $this->redirect('drev_validation_admin', $this->drev);
         }
 
+        return $this->redirect('drev_visualisation', $this->drev);
+    }
+
+    public function executeUpdateCommentaire(sfWebRequest $request)
+    {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
+
+        $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
+        $this->drevCommentaireValidationForm->bind($request->getParameter($this->drevCommentaireValidationForm->getName()));
+
+        if (! $this->drevCommentaireValidationForm->isValid()) {
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        if($this->drevCommentaireValidationForm->getValue("commentaire")) {
+            $this->drev->commentaire = $this->drevCommentaireValidationForm->getValue("commentaire");
+        }
+
+        $this->drev->save();
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
