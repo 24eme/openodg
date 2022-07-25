@@ -66,6 +66,7 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
             $id = $e->key[EtablissementAllView::KEY_ETABLISSEMENT_ID];
             $tags = array('export' => array(), 'produit' => array(), 'domaines' => array(), 'documents' => array());
 
+            if (class_exists('SV12MouvementsConsultationView')) {
             $mvts = SV12MouvementsConsultationView::getInstance()->getByIdentifiantAndCampagne($id, $campagne);
             foreach ($mvts as $m) {
                 $produit_libelle = $this->getProduitLibelle($m->produit_hash);
@@ -75,6 +76,8 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
                 $tags['produit'][$produit_libelle] = 1;
                 $tags['documents']['SV12'] = 1;
             }
+            }
+            if (class_exists('SV12MouvementsConsultationView')) {
             $mvts = DRMMouvementsConsultationView::getInstance()->getByIdentifiantAndCampagne($id, $campagne);
             foreach ($mvts as $m) {
                 $produit_libelle = $this->getProduitLibelle($m->produit_hash);
@@ -87,30 +90,34 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
                     $tags['export'][$this->replaceAccents($m->detail_libelle)] = 1;
                 }
             }
-
+            }
+            if (class_exists('SV12MouvementsConsultationView')) {
             $contratDomaines = VracDomainesView::getInstance()->findDomainesByVendeur(str_replace('ETABLISSEMENT-', '', $id), date('Y'), 1000);
             foreach ($contratDomaines->rows as $domaineView) {
                 $domaine = $this->replaceAccents($domaineView->key[VracDomainesView::KEY_DOMAINE]);
                 $tags['domaines'][$domaine] = 1;
             }
-
+            }
             $etablissement = EtablissementClient::getInstance()->findByIdentifiant(str_replace('ETABLISSEMENT-', '', $id));
             if (!$etablissement) {
                 throw new sfException("etablissement $id non trouvé");
             }
+            if (class_exists('SV12MouvementsConsultationView')) {
             $factures = FactureSocieteView::getInstance()->getYearFaturesBySociete($etablissement->getSociete());
             if (count($factures)) {
                 $tags['documents']['Facture'] = 1;
             }
-
-            $types_view = DeclarationIdentifiantView::getInstance()->getByIdentifiant($id);
+            }
+            $compte = $etablissement->getContact();
+            if (class_exists('DeclarationIdentifiantView')) {
+            $types_view = DeclarationIdentifiantView::getInstance()->getByIdentifiant($compte->identifiant);
             foreach($types_view->rows as $t) {
-                if ($t->key[DeclarationIdentifiantView::KEY_CAMPAGNE] >= date('Y') - 1) {
-                    $tags['documents'][$t->key[DeclarationIdentifiantView::KEY_TYPE]] = 1;
+                $date = date('Y') - 1;
+                if ($t->key[DeclarationIdentifiantView::KEY_CAMPAGNE] >= $date) {
+                    $tags['documents'][$t->key[DeclarationIdentifiantView::KEY_TYPE].'_'.$date] = 1;
                 }
             }
-
-            $compte = $etablissement->getContact();
+            }
             if ($options['reinitialisation_tags_export']) {
                 $compte->tags->remove('export');
                 $this->logSection("reset tags export", $compte->identifiant);
