@@ -253,6 +253,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds .= ';'.$famille;
           $colExtraIds .= ';'.substr($this->campagne, 0, 4);
           $colExtraIds .= ';'.$familles_lignes[$k];
+          $colExtraIds .= ';'.implode('|', $this->extractLabels($p[9]));
 
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;
