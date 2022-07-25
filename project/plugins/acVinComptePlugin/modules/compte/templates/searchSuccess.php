@@ -175,7 +175,12 @@
     							$tagsManuels[] = $f['key'];
     						}
     					?>
-    					  <a class="list-group-item list-group-item-xs <?php echo $active ?>" href="<?php echo ($active)? url_for('compte_search', $sargs) : url_for('compte_search', $targs); ?>"><?php echo str_replace('_', ' ', $f['key']) ?> <span class="badge" style="position: absolute; right: 10px;"><?php echo $count; ?></span></a>
+                        <a
+                        <?php if($active && !$not): ?>
+    					  onclick="if(confirm('Souhaitez-vous voir les comptes sans tag <?php echo $f['key']; ?> ?')){ document.location = '<?php echo url_for('compte_search', $sargs).",!".$type.':'.$f['key']; ?>'; return false; }"
+                        <?php endif; ?>
+                        class="list-group-item list-group-item-xs <?php echo $active ?>" href="<?php echo ($active)? url_for('compte_search', $sargs) : url_for('compte_search', $targs); ?>"><?php echo str_replace('_', ' ', $f['key']) ?>
+                            <span class="badge" style="position: absolute; right: 10px;"><?php echo $count; ?></span></a>
 					<?php endforeach; ?>
 					</div>
 			    <?php endif; ?>
