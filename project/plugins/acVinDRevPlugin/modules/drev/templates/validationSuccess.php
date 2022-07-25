@@ -9,25 +9,6 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php if(isset($form["date"])): ?>
-    <div class="row">
-        <?php if ($form["date"]->getError()): ?>
-            <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
-        <?php endif; ?>
-        <div class="form-group <?php if ($form["date"]->getError()): ?>has-error<?php endif; ?>">
-            <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
-            <div class="col-xs-6">
-                <div class="input-group date-picker">
-                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
-
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
@@ -36,13 +17,27 @@
 	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php elseif($sf_user->isAdmin()) : ?>
-        <hr />
         <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
+            <hr />
             <h3>&nbsp;Engagement(s)&nbsp;</h3>
             <?php foreach($drev->documents as $docKey => $doc): ?>
                     <p>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></p>
             <?php endforeach; ?>
         <?php endif; ?>
+    <?php endif; ?>
+    <?php if($sf_user->isAdmin()) : ?>
+        <hr />
+        <h3>Validation <small>(seulement visible par l'ODG)</small></h3>
+        <?php echo $form["date_depot"]->renderError(); ?>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <?php echo $form["date_depot"]->renderLabel("Date de dépot ou de réception :", array("class" => "col-xs-3 control-label")); ?>
+            <div class="input-group date-picker-week col-xs-3">
+            <?php echo $form["date_depot"]->render(array("class" => "form-control", "placeholder" => "", "required" => "true")); ?>
+            <div class="input-group-addon">
+                <span class="glyphicon-calendar glyphicon"></span>
+            </div>
+            </div>
+        </div>
     <?php endif; ?>
     <hr />
     <div class="row row-margin row-button">

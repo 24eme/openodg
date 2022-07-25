@@ -1091,9 +1091,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->cleanDoc();
         $this->validation = $date;
-        if(!$this->exist('date_depot') || !$this->date_depot) {
-            $this->add('date_depot', $this->getDateValidation());
-        }
 
         foreach($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
@@ -1492,6 +1489,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function save($saveDependants = true) {
         $this->archiver();
+
+        if($this->date_validation && (!$this->exist('date_depot') || !$this->date_depot)) {
+            $this->add('date_depot', $this->date_validation);
+        }
+
         $this->updateAddressCurrentLots();
         if ($this->isValideeOdg()) {
             $this->generateMouvementsLots();
@@ -1574,7 +1576,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	{
         if(!$this->exist('date_depot') || !$this->_get('date_depot')) {
 
-            return $this->getDateValidation();
+            return null;
         }
 
         return $this->_get('date_depot');
