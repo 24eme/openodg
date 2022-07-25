@@ -318,9 +318,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
       return false;
   }
 
-  public function updateHabilitation($hash_produit, $activites, $statut, $commentaire = "", $date = ''){
+  public function updateHabilitation($hash_produit, $activites, $sites, $statut, $commentaire = "", $date = ''){
+        if (!$sites) {
+            $sites = array();
+        }
         foreach($activites as $activite) {
-            $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $statut, $commentaire, $date);
+            $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $sites, $statut, $commentaire, $date);
         }
   }
 

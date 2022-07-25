@@ -43,7 +43,10 @@ class acCouchdbHash {
      * @return void
      */
     public function __construct($hash) {
-        $tab_hash = explode('/', $hash);
+        $tab_hash = array();
+        if ($hash) {
+            $tab_hash = explode('/', $hash);
+        }
         $this->_hash = array();
         foreach ($tab_hash as $item) {
             if (trim($item) != '') {

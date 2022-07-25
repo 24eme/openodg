@@ -41,10 +41,10 @@ $premierCommentaire = $commentaire;
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR);
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur, false);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, null, $statut, $date, $commentaire,  $auteur, false);
 $habilitation = $demande->getDocument();
 
-$demande2 = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire,  $auteur);
+$demande2 = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, null, $statut, $date, $commentaire,  $auteur);
 
 $key2 = $viti->identifiant."-".str_replace("-", "", $date)."02";
 $t->is($demande2->getKey(), $key2, "La clé de la seconde demande est : ".$key2);
@@ -66,7 +66,7 @@ $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
 $t->is($habilitation->historique->get(0)->iddoc, $habilitation->_id.":".$demande->getHash(), "L'id du doc contient la hash");
-$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation \"".$produitConfig->getLibelleComplet().": Vinificateur, Élaborateur\" a été créée au statut \"Dépôt\"", "La description de l'action est ok");
+$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation pour \"".$produitConfig->getLibelleComplet().": Vinificateur, Élaborateur\" a été créée au statut \"Dépôt\"", "La description de l'action est ok");
 $t->is($habilitation->historique->get(0)->statut, $demande->statut, "Le statut de la demande est dans l'historique");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
@@ -96,7 +96,7 @@ $t->is($demande->commentaire, $premierCommentaire, "La commentaire n'a pas boug�
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
-$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation \"".$produitConfig->getLibelleComplet().": Vinificateur, Élaborateur\" est passée au statut \"Complet\"", "La description de l'action est ok");
+$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation pour \"".$produitConfig->getLibelleComplet().": Vinificateur, Élaborateur\" est passée au statut \"Complet\"", "La description de l'action est ok");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
@@ -165,7 +165,7 @@ $commentaire = "";
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR);
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, $statut, $date, $commentaire, $auteur, false);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, $produitConfig->getHash(), $activites, null, $statut, $date, $commentaire, $auteur, false);
 
 $habilitation = $demande->getDocument();
 $keyDemande2 = $demande->getKey();
@@ -223,6 +223,7 @@ $values = array(
     'date' => (new DateTime("now - 1 week"))->format('d/m/Y'),
     'statut' => 'DEPOT',
     'commentaire' => "Est venu directement nous voir",
+    'site' => HabilitationDemandeCreationForm::SITE_PRINCIPAL,
 );
 
 $form->bind($values);
@@ -307,31 +308,31 @@ $t->is(count($demandes), count($habilitation->getProduitsHabilites()), "La form 
 
 $t->comment("Type de demande \"RESILIATION\"");
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), "VALIDE", date('Y-m-d'), null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), null, "VALIDE", date('Y-m-d'), null, "Testeur", true);
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->get($demande->produit)->activites->get($demande->activites->getFirst())->statut, "HABILITE", "Le produit est habilité pour l'activité CONDITIONNEUR");
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "RESILIATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), "COMPLET", date('Y-m-d'), null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "RESILIATION", $produitConfig->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR), null, "COMPLET", date('Y-m-d'), null, "Testeur", true);
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->get($demande->produit)->activites->get($demande->activites->getFirst())->statut, "DEMANDE_RESILIATION", "Le produit est au statut demande de résiliation");
-$t->is($habilitationLast->historique[count($habilitationLast->historique) - 3]->description, "La demande de résiliation \"Côtes du Rhône: Conditionneur\" a été créée au statut \"Complet\"", "Historique de la demande");
+$t->is($habilitationLast->historique[count($habilitationLast->historique) - 3]->description, "La demande de résiliation pour \"Côtes du Rhône: Conditionneur\" a été créée au statut \"Complet\"", "Historique de la demande");
 $t->is($habilitationLast->historique[count($habilitationLast->historique) - 2]->description, "Côtes du Rhône : activité \"Conditionneur\", statut changé de \"Habilité\" à \"Demande de résiliation\"", "Historique d'habilitation");
-$t->is($habilitationLast->historique[count($habilitationLast->historique) - 1]->description, "La demande de résiliation \"Côtes du Rhône: Conditionneur\" est passée au statut \"Enregistrement\"", "Historique de la demande");
+$t->is($habilitationLast->historique[count($habilitationLast->historique) - 1]->description, "La demande de résiliation pour \"Côtes du Rhône: Conditionneur\" est passée au statut \"Enregistrement\"", "Historique de la demande");
 
 $demande = HabilitationClient::getInstance()->updateDemandeAndSave($viti->identifiant, $demande->getKey(), date('Y-m-d'), "VALIDE", null, "Testeur", true);
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->get($demande->produit)->activites->get($demande->activites->getFirst())->statut, "RESILIE", "Le produit est au statut résilié");
-$t->is($habilitationLast->historique[count($habilitationLast->historique) - 2]->description, "La demande de résiliation \"Côtes du Rhône: Conditionneur\" est passée au statut \"Validé\"", "Historique de la demande");
+$t->is($habilitationLast->historique[count($habilitationLast->historique) - 2]->description, "La demande de résiliation pour \"Côtes du Rhône: Conditionneur\" est passée au statut \"Validé\"", "Historique de la demande");
 $t->is($habilitationLast->historique[count($habilitationLast->historique) - 1]->description, "Côtes du Rhône : activité \"Conditionneur\", statut changé de \"Demande de résiliation\" à \"Résilié\"", "Historique de l'habilitation");
 
 $t->comment("Split des demandes");
 
 $date = (new DateTime("-1 day"))->format('Y-m-d');
 
-$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), "DEPOT", $date, null, "Testeur", true);
+$demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, "HABILITATION", $produitConfig2->getHash(), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR, HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), null, "DEPOT", $date, null, "Testeur", true);
 
 $demandeKey = $demande->getKey();
 
@@ -343,11 +344,11 @@ $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti
 
 $t->is($habilitationLast->demandes->get($newDemandes[1]->getKey())->activites->toArray(true, false), array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR), "La demande initiale n'a plus que 2 activités");
 $t->is($habilitationLast->demandes->get($newDemandes[1]->getKey())->libelle, "Côtes du Rhône Villages: Vinificateur, Élaborateur", "Le libellé de la demande initiale n'a plus que 2 activités");
-$t->is($newDemandes[1]->getFullHistorique()[0]->description, 'La demande d\'habilitation "Côtes du Rhône Villages: Vinificateur, Élaborateur" a été créée au statut "Dépôt"', "L'historique a bien été créé");
+$t->is($newDemandes[1]->getFullHistorique()[0]->description, 'La demande d\'habilitation pour "Côtes du Rhône Villages: Vinificateur, Élaborateur" a été créée au statut "Dépôt"', "L'historique a bien été créé");
 
 $t->is($habilitationLast->demandes->get($newDemandes[0]->getKey())->activites->toArray(true, false), array(HabilitationClient::ACTIVITE_CONDITIONNEUR, HabilitationClient::ACTIVITE_PRODUCTEUR), "La nouvelle demande a les 2 activités demandées");
 $t->is($habilitationLast->demandes->get($newDemandes[0]->getKey())->libelle, "Côtes du Rhône Villages: Conditionneur, Producteur", "Le libellé de la nouvelle demande initiale n'a les 2 activités demandées");
-$t->is($newDemandes[0]->getFullHistorique()[0]->description, 'La demande d\'habilitation "Côtes du Rhône Villages: Conditionneur, Producteur" a été créée au statut "Dépôt"', "L'historique a bien été créé");
+$t->is($newDemandes[0]->getFullHistorique()[0]->description, 'La demande d\'habilitation pour "Côtes du Rhône Villages: Conditionneur, Producteur" a été créée au statut "Dépôt"', "L'historique a bien été créé");
 
 $t->ok(!$habilitationLast->demandes->exist($demandeKey), "La demande initiale a été supprimée");
 $historiqueInitiale = array();
