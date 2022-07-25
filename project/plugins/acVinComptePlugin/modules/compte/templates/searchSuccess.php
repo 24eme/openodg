@@ -4,14 +4,6 @@
     <li class="active"><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
 </ol>
 
-<script type="text/javascript">
-   $(document).ready(function() {
-   $(".removetag").click(function() {
-       return confirm('Etes vous sur(e) de vouloir supprimer définivement ce tag pour ces <?php echo $nb_results; ?> fiches ?');
-     });
-   $("#contacts_all").click(function () { $('#recherche_contact_form').submit(); });
-    });
-</script>
 <div class="row">
     <section class="col-xs-9" id="contenu_etape">
 		<form id="recherche_contact_form">
