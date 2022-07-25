@@ -175,9 +175,8 @@ class DouaneImportCsvFile {
         $wordSeparatorStart = "(^|[ \/\-]{1})";
         $wordSeparatorEnd = "([ \/\-]{1}|$)";
 
-        if(preg_match('/'.$wordSeparatorStart.'conversion'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        if(preg_match('/'.$wordSeparatorStart.'(conversion|conv)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
-
         } elseif(preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|
 FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
