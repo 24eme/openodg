@@ -83,9 +83,10 @@
         <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
         <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
         <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
-        <br/>
-        <div class="form-group">
-          <button type="submit" form="formUpdateCommentaire" class="btn btn-default btn-lg btn-upper">Modifier le commentaire</button>
+        <div class="form-group text-right" style="margin-top: 10px">
+          <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
+            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
+          </button>
         </div>
     </form>
   <?php endif; ?>
