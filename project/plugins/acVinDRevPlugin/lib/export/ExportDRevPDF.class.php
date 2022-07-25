@@ -111,8 +111,8 @@ class ExportDRevPDF extends ExportPDF {
         $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
         );
         $region = $this->getRegion();
-        if (!$this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
-            $date = new DateTime($this->drev->validation);
+        if (!$this->drev->isPapier() && $this->drev->getDateDepot()) {
+            $date = new DateTime($this->drev->getDateDepot());
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
             if($region && $this->drev->getValidationOdgDateByRegion($region)){
               $dateOdg = new DateTime($this->drev->getValidationOdgDateByRegion($region));
@@ -131,8 +131,8 @@ class ExportDRevPDF extends ExportPDF {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }
 
-        if ($this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
-            $date = new DateTime($this->drev->validation);
+        if ($this->drev->isPapier() && $this->drev->getDateDepot()) {
+            $date = new DateTime($this->drev->getDateDepot());
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
         return $header_subtitle;
