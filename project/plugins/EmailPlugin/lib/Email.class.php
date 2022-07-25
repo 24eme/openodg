@@ -28,12 +28,12 @@ class Email {
     }
 
     public function getMessagesDRevValidation($drev) {
-        if(!$drev->validation) {
+        if($drev->isPapier()) {
+
             return array();
         }
 
-        if($drev->isPapier() && !$drev->validation_odg) {
-
+        if(!$drev->validation) {
             return array();
         }
 
