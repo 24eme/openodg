@@ -37,6 +37,7 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
             new sfCommandOption('reinitialisation_tags_produit', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', false),
             new sfCommandOption('reinitialisation_tags_export', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', false),
             new sfCommandOption('reinitialisation_tags_domaines', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', false),
+            new sfCommandOption('reinitialisation_tags_documents', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', true),
             new sfCommandOption('debug', null, sfCommandOption::PARAMETER_OPTIONAL, 'use only one code creation', '0'),
         ));
 
@@ -129,6 +130,10 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
             if ($options['reinitialisation_tags_domaines']) {
                 $compte->tags->remove('domaines');
                 $this->logSection("reset tags produit", $compte->identifiant);
+            }
+            if ($options['reinitialisation_tags_documents']) {
+                $compte->tags->remove('documents');
+                $this->logSection("reset tags documents", $compte->identifiant);
             }
             if (!count($tags)) {
                 continue;
