@@ -77,6 +77,7 @@
   <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
       <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
       <pre><?php echo $drev->commentaire; ?></pre>
+      <hr />
   <?php elseif(!$drev->getValidationOdg()): ?>
     <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
     <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
