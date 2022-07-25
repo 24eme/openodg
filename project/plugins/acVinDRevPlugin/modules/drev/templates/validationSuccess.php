@@ -27,7 +27,7 @@
     <?php endif; ?>
     <?php if($sf_user->isAdmin()) : ?>
         <hr />
-        <h3>Validation <small>(seulement visible par l'ODG)</small></h3>
+        <h3>Validation</h3>
         <?php echo $form["date_depot"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
             <?php echo $form["date_depot"]->renderLabel("Date de dépot ou de réception :", array("class" => "col-xs-3 control-label")); ?>
