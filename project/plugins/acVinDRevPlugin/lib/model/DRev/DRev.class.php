@@ -755,7 +755,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT] = null;
             }
 
-            $labelsDouane = explode("|", $line[DRCsvFile::CSV_LABEL_CALCULEE]);
+            $labelsDouane = array();
+            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE])) {
+                $labelsDouane = explode("|", $line[DRCsvFile::CSV_LABEL_CALCULEE]);
+            }
 
             $complement = null;
             if (DRevConfiguration::getInstance()->hasDenominationAuto() && (in_array(DRevClient::DENOMINATION_BIO, $labelsDouane) || in_array(DRevClient::DENOMINATION_DEMETER, $labelsDouane))) {
