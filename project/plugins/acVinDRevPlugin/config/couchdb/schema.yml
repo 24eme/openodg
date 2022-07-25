@@ -35,6 +35,7 @@ DRev:
       type_archive:  { required: false }
       version: {  }
       numero_archive: {  }
+      commentaire: { }
       declarant:
         type: collection
         class: DRevDeclarant

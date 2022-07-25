@@ -69,6 +69,29 @@
 <hr />
 <?php endif; ?>
 
+<?php if (isset($form)): ?>
+</form>
+<?php endif; ?>
+
+<?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
+  <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
+      <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+      <pre><?php echo $drev->commentaire; ?></pre>
+  <?php elseif(!$drev->getValidationOdg()): ?>
+    <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+    <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
+        <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
+        <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
+        <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+        <br/>
+        <div class="form-group">
+          <button type="submit" form="formUpdateCommentaire" class="btn btn-default btn-lg btn-upper">Modifier le commentaire</button>
+        </div>
+    </form>
+  <?php endif; ?>
+<hr />
+<?php endif; ?>
+
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
@@ -111,9 +134,7 @@
         </div>
     </div>
 </div>
-<?php if (isset($form)): ?>
-</form>
-<?php endif; ?>
+
 <?php include_partial('drev/popupConfirmationValidation', array('approuver' => false)); ?>
 <?php if (!$sf_user->isAdmin() && MandatSepaConfiguration::getInstance()->isActive() && !$drev->getEtablissementObject()->getSociete()->hasMandatSepa()): ?>
 <?php include_partial('mandatsepa/popupPropositionInscriptionPrelevement'); ?>
