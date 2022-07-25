@@ -89,8 +89,8 @@
           </button>
         </div>
     </form>
+    <hr />
   <?php endif; ?>
-<hr />
 <?php endif; ?>
 
 

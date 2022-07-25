@@ -57,13 +57,18 @@ class DRevValidationForm extends acCouchdbForm
             }
         }
 
-        if(!$this->getDocument()->validation && $this->getDocument()->isPapier()) {
-            $this->setWidget("date", new sfWidgetFormInput());
-            $this->setValidator("date", new sfValidatorDate(
+        if(sfContext::getInstance()->getUser()->isAdmin()) {
+            if($this->getDocument()->exist('date_depot') && $this->getDocument()->_get('date_depot')) {
+                $this->setDefault('date_depot', DateTime::createFromFormat('Y-m-d', $this->getDocument()->_get('date_depot'))->format('d/m/Y'));
+            } elseif($this->getDocument()->isTeledeclare()) {
+                $this->setDefault('date_depot', date('d/m/Y'));
+            }
+            $this->setWidget("date_depot", new sfWidgetFormInput());
+            $this->setValidator("date_depot", new sfValidatorDate(
                 array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true),
-                array('required' => 'La date de réception du document est requise')
+                array('required' => 'La date de dépot du document est requise')
             ));
-            $this->getWidget("date")->setLabel("Date de réception du document");
+            $this->getWidget("date_depot")->setLabel("Date de dépôt ou de réception :");
         }
 
         if(!$this->getDocument()->validation_odg && $this->isAdmin) {
@@ -93,6 +98,10 @@ class DRevValidationForm extends acCouchdbForm
           foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
             $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
          }
+        }
+
+        if(isset($values['date_depot']) && $values['date_depot']) {
+            $this->getDocument()->add('date_depot', $values['date_depot']);
         }
 
        $this->getDocument()->save();

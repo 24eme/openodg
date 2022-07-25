@@ -710,14 +710,7 @@ class drevActions extends sfActions {
             $this->drev->setDateDegustationSouhaitee($this->form->getValue('date_degustation_voulue'));
         }
 
-        $dateValidation = date('c');
-
-        if($this->form->getValue("date")) {
-            $dt = new DateTime($this->form->getValue("date"));
-            $dateValidation = $dt->modify('+1 minute')->format('c');
-        }
-
-        $this->drev->validate($dateValidation);
+        $this->drev->validate(date('c'));
         $this->drev->cleanLots();
         $this->drev->save();
         if(!$this->getUser()->hasDrevAdmin()){
