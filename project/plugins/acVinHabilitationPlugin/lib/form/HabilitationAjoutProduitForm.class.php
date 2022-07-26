@@ -73,6 +73,7 @@ class HabilitationAjoutProduitForm extends acCouchdbForm
                                                               $values['hashref'],
                                                               $values['date'],
                                                               $values["activites"],
+                                                              null,
                                                               $values['statut'],
                                                               $values['commentaire']);
     }
