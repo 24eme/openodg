@@ -65,6 +65,7 @@ class HabilitationEditionForm extends acCouchdbForm
                                                                     $activite->getProduitHash(),
                                                                     $values['date_'.$idWidgets],
                                                                     array($activite->getKey()),
+                                                                    null,
                                                                     $values['statut_'.$idWidgets],
                                                                     $values['commentaire_'.$idWidgets]);
             }
