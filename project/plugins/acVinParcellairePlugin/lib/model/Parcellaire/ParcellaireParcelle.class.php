@@ -257,13 +257,13 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         return 0;
     }
-    
+
     public function isInAires() {
         $aires = [];
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
             $res = null;
             try {
-                $res = $this->geojsonInGeojsonAire($infos['denumination_id']);
+                $res = $this->geojsonInGeojsonAire($infos['denomination_id']);
             } catch (\Exception $e) {
                 $res = ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR;
             }
