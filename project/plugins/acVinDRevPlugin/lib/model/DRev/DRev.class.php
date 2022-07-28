@@ -1766,6 +1766,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$apporteurs) {
             return 0;
         }
+        if (!$this->validation || explode('T', $this->validation)[0] < date('Y').'-06-15') {
+            return 0;
+        }
         return $apporteurs + 1;
     }
 
