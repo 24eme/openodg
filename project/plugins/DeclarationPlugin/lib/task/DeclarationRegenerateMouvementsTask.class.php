@@ -15,7 +15,7 @@ class DeclarationRegenerateMouvementsTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('onlydeletemouvements', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', false),
             new sfCommandOption('flagfacture', null, sfCommandOption::PARAMETER_REQUIRED, 'set the mouvement to facture = 1', false),
-
+            new sfCommandOption('createnewmodif', null, sfCommandOption::PARAMETER_REQUIRED, 'créer une modificatrice au lieu de mettre les mouvements dans le document passé en argument', false),
         ));
 
         $this->namespace = 'declaration';
@@ -33,6 +33,13 @@ EOF;
 
 
         $drev = DeclarationClient::getInstance()->find($arguments['doc_id']);
+        if ($options['createnewmodif']) {
+            $drev = $drev->generateModificative();
+            $drev->validate();
+            $drev->validateOdg();
+            $drev->save();
+        }
+
         $drev->remove('mouvements');
         $drev->add('mouvements');
         if (!$options['onlydeletemouvements']) {
