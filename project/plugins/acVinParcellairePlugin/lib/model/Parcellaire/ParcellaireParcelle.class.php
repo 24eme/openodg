@@ -7,6 +7,7 @@ require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
  *
  */
 class ParcellaireParcelle extends BaseParcellaireParcelle {
+    private static $_AIRES = [];
 
     public function getProduit() {
 
@@ -257,13 +258,13 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         return 0;
     }
-    
+
     public function isInAires() {
         $aires = [];
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
             $res = null;
             try {
-                $res = $this->geojsonInGeojsonAire($infos['denumination_id']);
+                $res = $this->geojsonInGeojsonAire($infos['denomination_id']);
             } catch (\Exception $e) {
                 $res = ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR;
             }
@@ -286,11 +287,16 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             throw new sfException("php-geos needed");
         }
         $geoparcelle = geoPHP::load($this->getGeoJson());
-        $aire = $this->document->getGeoPHPDelimitations($inao_denomination_id);
-        if (!$aire) {
+
+        if (isset(self::$_AIRES[$inao_denomination_id]) === false) {
+            self::$_AIRES[$inao_denomination_id] = $this->document->getGeoPHPDelimitations($inao_denomination_id);
+        }
+
+        if (!self::$_AIRES[$inao_denomination_id]) {
             return null;
         }
-        foreach($aire as $d) {
+
+        foreach(self::$_AIRES[$inao_denomination_id] as $d) {
             $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
             if ($pc > 0.99) {
                 return ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT;
