@@ -163,10 +163,10 @@ class DouaneImportCsvFile {
         return $csv;
     }
 
-    public function getRelatedDrev() {
+    public function getRelatedDrev($with_filter = true) {
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
-        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, $this->drev_produit_filter);
+        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, ($with_filter) ? $this->drev_produit_filter : null);
     }
 
     public function extractLabels($mentionComplementaire) {

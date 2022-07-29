@@ -36,7 +36,8 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
             13 => "19",
         );
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
-        $drev = $this->getRelatedDrev();
+        $drev_filter = $this->getRelatedDrev();
+        $drev = $this->getRelatedDrev(false);
 
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
@@ -94,6 +95,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = Organisme::getCurrentOrganisme();
                 $produit[] = ($p)? $p->getHash() : '';
                 $produit[] = ($drev) ? $drev->_id : '';
+                $produit[] = ($drev_filter) ? 'FILTERED'.$drev_filter->_id : '';
                 $produit[] = ($this->doc)? $this->doc->_id : '';
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
