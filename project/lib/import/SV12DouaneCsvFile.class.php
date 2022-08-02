@@ -29,7 +29,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         $secondPage = false;
         $cpt = 1;
         $indexCodeProduit = 3;
-        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+        $this->identifiant = (isset($this->etablissement) && $this->etablissement)? $this->etablissement->identifiant : null;
         $drev_filter = $this->getRelatedDrev();
         $drev = $this->getRelatedDrev(false);
 

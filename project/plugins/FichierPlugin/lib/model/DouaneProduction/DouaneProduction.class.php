@@ -348,7 +348,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $item->tiers_raison_sociale = $tiers->raison_sociale;
                 $item->tiers_cvi = $tiers->cvi;
             }else{
-                $item->tiers_raison_sociale = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
+                $item->tiers_raison_sociale = preg_replace('/(^"|"$)/', '', $data[DouaneCsvFile::CSV_TIERS_LIBELLE]);
                 $item->tiers_cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
             }
         }
