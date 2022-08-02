@@ -73,7 +73,7 @@
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
           "callback_parameters": [
-            "NEGOCIANT_VINIFICATEUR OR COOPERATIVE"
+            "/appellations/CDG"
           ]
         }
       }
@@ -96,7 +96,7 @@
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
           "callback_parameters": [
-            "NEGOCIANT_VINIFICATEUR OR COOPERATIVE"
+            "/appellations/CDG"
           ]
         }
       }
