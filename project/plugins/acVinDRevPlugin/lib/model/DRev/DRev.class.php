@@ -1686,6 +1686,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return true;
     }
 
+    public function hasVolumeRevendiqueLots($produitFilter = null) {
+
+        return $this->getVolumeRevendiqueLots($produitFilter) > 0;
+    }
+
     public function getVolumeRevendiqueLots($produitFilter = null){
         return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
     }
