@@ -18,8 +18,9 @@
       </thead>
       <tbody>
         <?php foreach ($mouvements->getRawValue() as $id => $mouvements): ?>
+            <?php $etablissement = EtablissementClient::getInstance()->retrieveById($id, acCouchdbClient::HYDRATE_JSON); ?>
             <tr>
-                <td colspan="4" title="<?php echo $id ?>"><?php echo EtablissementClient::getInstance()->retrieveById($id, acCouchdbClient::HYDRATE_JSON)->raison_sociale ?></td>
+                <td colspan="4" title="<?php echo $id ?>"><?php echo $etablissement->raison_sociale ?> <small class="text-muted"><?php echo $etablissement->famille; ?></small></td>
                 <td colspan="3">
                     <a href="<?php echo url_for('facturation_declarant', ['id' => $id]) ?>#mouvements" class="btn btn-xs btn-default pull-right">
                         <?php if($withDetails): ?>
