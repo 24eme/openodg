@@ -62,7 +62,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function setModalitePaiement($modalitePaiement) {
-        $modalitePaiement = str_replace("%iban%", Organisme::getInstance()->getIban(), $modalitePaiement);
+        $modalitePaiement = str_replace(array("%iban%", "%bic%"), array(Organisme::getInstance()->getIban(), Organisme::getInstance()->getBic()), $modalitePaiement);
 
         return $this->_set('modalite_paiement', $modalitePaiement);
     }
