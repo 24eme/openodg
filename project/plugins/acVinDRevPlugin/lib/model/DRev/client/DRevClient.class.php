@@ -223,6 +223,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         foreach ($filters as $filter) {
             if (strpos($filter, 'appellations') !== false) {
                 $match = $match && $this->matchFilterProduit($lot, $filter);
+            } elseif (strpos($filter, 'millesime') !== false) {
+                $match = $match && $this->matchFilterMillesime($lot, $filter);
             } elseif (strpos($filter, 'deja') !== false) {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
@@ -271,6 +273,21 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         }
 
         if($produitFilter && $isExcludeMode && preg_match($regexpFilter, $lot->getProduitHash())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function matchFilterMillesime($lot, $filter)
+    {
+        if(strpos($filter, 'millesime_courant') !== false && $lot->millesime != $lot->getDocument()->getPeriode()) {
+
+            return false;
+        }
+
+        if(strpos($filter, 'millesime_precedent') !== false && $lot->millesime >= intval($lot->getDocument()->getPeriode())) {
+
             return false;
         }
 

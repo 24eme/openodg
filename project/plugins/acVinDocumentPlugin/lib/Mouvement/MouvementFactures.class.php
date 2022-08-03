@@ -20,6 +20,10 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
             $this->date = $doc->date_commission;
         }
 
+        if($cotisation->getConfigDate()) {
+            $this->date = str_replace("%periode+1%", $doc->getPeriode()+1, $cotisation->getConfigDate());
+        }
+
         $this->type = $doc->type;
         if($doc->exist('campagne')) {
             $this->campagne = $doc->campagne;
