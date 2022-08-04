@@ -281,12 +281,12 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     private function matchFilterMillesime($lot, $filter)
     {
-        if(strpos($filter, 'millesime_courant') !== false && $lot->millesime != $lot->getDocument()->getPeriode()) {
+        if(strpos($filter, '/millesime/courant') !== false && $lot->millesime != $lot->getDocument()->getPeriode()) {
 
             return false;
         }
 
-        if(strpos($filter, 'millesime_precedent') !== false && $lot->millesime >= intval($lot->getDocument()->getPeriode())) {
+        if(strpos($filter, '/millesime/precedent') !== false && $lot->millesime >= intval($lot->getDocument()->getPeriode())) {
 
             return false;
         }

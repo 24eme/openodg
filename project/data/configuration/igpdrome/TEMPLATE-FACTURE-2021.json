@@ -8,18 +8,18 @@
        "DRev"
    ],
    "cotisations": {
-       "cotisationSyndicale": {
+       "00_cotisationSyndicale": {
            "modele": "CotisationsCollection",
            "callback": "",
            "libelle": "",
            "code_comptable": "706100",
            "details": {
-               "volumeRevendiqueMillesimePrecedent": {
+               "volumeRevendiqueMillesimeAnterieur": {
                    "modele": "CotisationVariable",
                    "prix": 0.05,
-                   "tva": 0.2,
+                   "tva": 0,
                    "unite": "hl",
-                   "libelle": "Cotisation Syndicale volume revendiqué Millésime %millesime_precedent%",
+                   "libelle": "Cotisation Syndicale volume revendiqué millésime %millesime_precedent%",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -27,15 +27,15 @@
                    "date": "%periode+1%-07-31",
                    "callback": "getVolumeRevendiqueLots",
                    "callback_parameters": [
-                       "millesime_precedent"
+                       "/millesime/precedent"
                    ]
                },
                "volumeRevendiqueMillesimeCourant": {
                    "modele": "CotisationVariable",
                    "prix": 0.05,
-                   "tva": 0.2,
+                   "tva": 0,
                    "unite": "hl",
-                   "libelle": "Cotisation Syndicale volume revendiqué Millésime %millesime_courant%",
+                   "libelle": "Cotisation Syndicale volume revendiqué millésime %millesime_courant%",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -43,9 +43,72 @@
                    "date": "%periode+1%-07-31",
                    "callback": "getVolumeRevendiqueLots",
                    "callback_parameters": [
-                       "millesime_courant"
+                       "/millesime/courant"
                    ]
                }
+           }
+       },
+       "01_cotisationMediterranee": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "706100",
+           "details": {
+               "volumeRevendiqueMillesimeAnterieur": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation Méditerranée volume revendiqué millésime %millesime_precedent%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "date": "%periode+1%-07-31",
+                   "callback": "getVolumeRevendiqueLots",
+                   "callback_parameters": [
+                       "/millesime/precedent AND /appellations/MED"
+                   ]
+               },
+               "volumeRevendiqueMillesimeCourant": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Cotisation Méditerranée volume revendiqué millésime %millesime_courant%",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "date": "%periode+1%-07-31",
+                   "callback": "getVolumeRevendiqueLots",
+                   "callback_parameters": [
+                       "/millesime/courant AND /appellations/MED"
+                   ]
+               }
+           }
+       },
+       "02_changementDenominationMediterranee": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "",
+           "code_comptable": "706100",
+           "details": {
+               "volumeChange": {
+                    "modele": "CotisationVariable",
+                    "prix": 0.15,
+                    "tva": 0,
+                    "libelle": "Cotisation Méditerranée changement de dénomination",
+                    "complement_libelle": "",
+                    "docs": [
+                    "ChgtDenom"
+                    ],
+                    "date": "%periode+1%-07-31",
+                    "callback": "getVolumeFacturable",
+                    "callback_parameters": [
+                    "/appellations/MED"
+                    ]
+                }
            }
        }
    }
