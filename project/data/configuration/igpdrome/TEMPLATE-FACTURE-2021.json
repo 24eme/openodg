@@ -5,7 +5,8 @@
    "template": "IGP",
    "libelle": "2021 - IGP Drôme",
    "docs": [
-       "DRev"
+       "DRev",
+       "ChgtDenom"
    ],
    "cotisations": {
        "00_cotisationSyndicale": {
@@ -98,6 +99,7 @@
                     "modele": "CotisationVariable",
                     "prix": 0.15,
                     "tva": 0,
+                    "unite": "hl",
                     "libelle": "Cotisation Méditerranée changement de dénomination",
                     "complement_libelle": "",
                     "docs": [
