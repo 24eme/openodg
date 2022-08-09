@@ -58,7 +58,7 @@ class GenerationExportComptableIsa extends GenerationAbstract
 
         }
 
-//        $this->generation->save();
+        $this->generation->save();
         fclose($handle_factures);
         fclose($handle_clients);
 
@@ -80,8 +80,6 @@ class GenerationExportComptableIsa extends GenerationAbstract
                 $this->generation->add('fichiers')->add(urlencode("/".$facturesfile), 'Export CSV des factures');
             }
         }
-        print_r($this->generation->fichiers);
-        exit;
         $this->generation->save();
 
 
@@ -115,7 +113,7 @@ class GenerationExportComptableIsa extends GenerationAbstract
 
         }
 
-        //$this->generation->save();
+        $this->generation->save();
 
         if ($paiements_buffer) {
             $handle_paiements = fopen(sfConfig::get('sf_web_dir')."/".$paiementsfile.".tmp", 'a');

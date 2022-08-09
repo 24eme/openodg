@@ -1686,6 +1686,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return true;
     }
 
+    public function hasVolumeRevendiqueLots($produitFilter = null) {
+
+        return $this->getVolumeRevendiqueLots($produitFilter) > 0;
+    }
+
     public function getVolumeRevendiqueLots($produitFilter = null){
         return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
     }
@@ -1757,12 +1762,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
 
-    public function getNbApporteursPlusOneFromDouane() {
+    public function getNbApporteursPlusOneFromDouane($produitFilter = null) {
         $douane = $this->getDR();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
             return 0;
         }
-        $apporteurs = $douane->getNbApporteurs();
+        $apporteurs = $douane->getNbApporteurs($produitFilter);
         if (!$apporteurs) {
             return 0;
         }
@@ -1829,6 +1834,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement = DRevMouvementFactures::freeInstance($this);
           $mouvement->detail_identifiant = $this->numero_archive;
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
+          $mouvement->detail_libelle = str_replace(array('%millesime_precedent%', '%millesime_courant%'), array($this->getPeriode() - 1, $this->getPeriode()), $mouvement->detail_libelle);
 
           $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
           if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {

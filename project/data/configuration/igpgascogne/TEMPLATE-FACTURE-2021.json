@@ -25,9 +25,9 @@
           "docs": [
             "DRev"
           ],
-          "callback": "isDeclarantFamille",
+          "callback": "hasVolumeRevendiqueLots",
           "callback_parameters": [
-            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE AND /appellations/CDG"
           ]
         }
       }
@@ -48,9 +48,9 @@
           "docs": [
             "DRev"
           ],
-          "callback": "isDeclarantFamille",
+          "callback": "hasVolumeRevendiqueLots",
           "callback_parameters": [
-            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE AND /appellations/CDG"
           ]
         }
       }
@@ -73,7 +73,7 @@
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
           "callback_parameters": [
-            "NEGOCIANT_VINIFICATEUR OR COOPERATIVE"
+            "/appellations/CDG"
           ]
         }
       }
@@ -96,7 +96,7 @@
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
           "callback_parameters": [
-            "NEGOCIANT_VINIFICATEUR OR COOPERATIVE"
+            "/appellations/CDG"
           ]
         }
       }

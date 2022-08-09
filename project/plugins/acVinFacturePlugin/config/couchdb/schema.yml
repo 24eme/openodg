@@ -224,6 +224,7 @@ TemplateFacture:
                               complement: { required: false }
                               complement_libelle: { }
                               unite: { required: false }
+                              date: { required: false }
                               intervalles:
                                 required: false
                                 type: collection
