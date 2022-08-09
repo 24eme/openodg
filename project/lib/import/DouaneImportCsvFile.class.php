@@ -146,6 +146,7 @@ class DouaneImportCsvFile {
                     $p[] = Organisme::getCurrentOrganisme();
                     $p[] = $produit->getHash();
                     $p[] = $donnee->drev_id;
+                    $p[] = $donnee->drev_produit_filter;
                     $p[] = $this->doc->_id;
                     $p[] = $donnee->document_famille;
                     $p[] = substr($this->campagne, 0, 4);
