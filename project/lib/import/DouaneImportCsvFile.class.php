@@ -138,7 +138,7 @@ class DouaneImportCsvFile {
                         $p[] = ($t->siege->commune) ? $t->siege->commune : $t->commune;
                     } else {
                         $p[] = $donnee->tiers_cvi;
-                        $p[] = DouaneImportCsvFile::cleanRaisonSociale("CVI non reconnu : ".preg_replace('/(^"|"$)/', '', $donnee->tiers_raison_sociale));
+                        $p[] = ($donnee->tiers_cvi) ? DouaneImportCsvFile::cleanRaisonSociale("CVI non reconnu : ".preg_replace('/(^"|"$)/', '', $donnee->tiers_raison_sociale)) : '';
                         $p[] = null;
                         $p[] = null;
                     }
