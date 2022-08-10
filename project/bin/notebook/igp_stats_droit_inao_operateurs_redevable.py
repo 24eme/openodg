@@ -98,7 +98,7 @@ final = lignes_volume_revendique
 #VOLUME EN INSTANCE DE CONTROLE  
 
 lots = lots.query("Millésime == @millesime");
-lots["Volume"].fillna(0)
+lots["Volume"] = lots["Volume"].fillna(0)
 lots = lots.fillna("")
 lots_ini = lots
 
