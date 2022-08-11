@@ -13,7 +13,7 @@ import dateutil.relativedelta
 pd.set_option('display.max_columns', None)
 
 dossier_igp = "exports_"+sys.argv[1]
-igp = sys.argv[1].replace('igp',"")
+igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
 
 if(len(sys.argv)<2):
     print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")

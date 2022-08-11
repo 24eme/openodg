@@ -225,10 +225,14 @@ mkdir -p $EXPORTDIR/stats
 
 cd bin/notebook/
 
-if [[ $APPLICATION == igp* ]];then
-  ls igp_*.py | while read script; do python3 $script $APPLICATION;done
+if ! test "$APPLICATION_PYTHON_EXPORT"; then
+    APPLICATION_PYTHON_EXPORT=$APPLICATION
+fi
+
+if [[ $APPLICATION_PYTHON_EXPORT == igp* ]];then
+  ls igp_*.py | while read script; do python3 $script $APPLICATION_PYTHON_EXPORT;done
 else
-  ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+  ls "$APPLICATION_PYTHON_EXPORT"_*.py | while read script; do python3 $script;done
 fi
 
 cd -
