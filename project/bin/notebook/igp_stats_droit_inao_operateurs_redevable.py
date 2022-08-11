@@ -25,7 +25,7 @@ if(len(sys.argv)>2):
     millesime = sys.argv[2]
     
 exportdir = '../../web/'+dossier_igp
-outputdir = exportdir+'/stats/'+millesime
+outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
 
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)

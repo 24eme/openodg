@@ -19,8 +19,8 @@ millesime = str(datetime.now().year - 1)
 
 if(len(sys.argv) > 2 and re.search("^[0-9]{4}$", sys.argv[2])):
     millesime = sys.argv[2]
-    
-outputdir = path_igp+'/stats/'+millesime
+
+outputdir = path_igp.replace('/GLOBAL', '')+'/stats/'+millesime
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)   
     
