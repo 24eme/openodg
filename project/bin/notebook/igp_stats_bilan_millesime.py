@@ -36,7 +36,7 @@ else:
     datemax_exact =  str(int(today.year)-1)+'-12-31'
     
 exportdir = '../../web/'+dossier_igp
-outputdir = exportdir+'/stats/'+millesime
+outputdir = exportdir.replace('/GLOBAL',"")+'/stats/'+millesime
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)   
 
