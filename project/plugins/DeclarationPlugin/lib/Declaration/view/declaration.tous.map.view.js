@@ -138,6 +138,9 @@ function(doc) {
     var type = doc.type;
 
     var date = null;
+    if(doc.date) {
+	    date = doc.date;
+    }
     if(validation && validation !== false && validation !== true) {
 	    date = validation;
     }
