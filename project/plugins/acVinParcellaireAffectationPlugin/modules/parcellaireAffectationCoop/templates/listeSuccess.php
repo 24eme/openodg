@@ -38,7 +38,13 @@
                 <?php else: ?>
                     <span class="glyphicon glyphicon-ban-circle transparence-md"></span>
                     <br/>
-                    <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "1")) ?>">Ré-Activer</a>
+                    <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "1")) ?>">
+                    <?php if ($apporteur->intention): ?>
+                        MaJ
+                    <?php else: ?>
+                        Ré-Activer
+                    <?php endif; ?>
+                    </a>
                 <?php endif; ?>
             </td>
         </tr>
