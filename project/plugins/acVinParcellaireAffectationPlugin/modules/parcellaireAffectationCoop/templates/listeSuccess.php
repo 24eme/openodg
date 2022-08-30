@@ -23,22 +23,22 @@
         <tr class="hamzastyle-item <?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_NON_IDENTIFIEE): ?>text-muted<?php endif; ?>" data-words='<?php echo json_encode(array($apporteur->getStatutLibelle(), $apporteur->nom, $apporteur->cvi), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>' >
             <td><?php echo $apporteur->cvi; ?></td>
             <td><?php echo $apporteur->nom; ?></td>
-            <td style="<?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>background-color: rgba(169, 197, 50, 0.4) ;<?php endif; ?>" class="text-center <?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>bg-success text-success<?php elseif($apporteur->intention) :?>text-primary<?php endif; ?>">
+            <td style="<?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>background-color: rgba(169, 197, 50, 0.4) ;<?php endif; ?>" class="text-center <?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>bg-success text-success<?php elseif($apporteur->intention) :?> text-primary<?php endif; ?>">
                 <?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?><span class="glyphicon glyphicon-ok-sign"></span><?php endif; ?> <?php echo $apporteur->getStatutLibelle(); ?>
             </td>
             <td class="text-center">
                 <?php if($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
-                    <a class="text-success" href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $parcellaireAffectationCoop, 'id_document' => $apporteur->getAffectationParcellaire()->_id)) ?>">Voir la déclaration</a>
+                    <a class="text-success" href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $parcellaireAffectationCoop, 'id_document' => $apporteur->getAffectationParcellaire()->_id)) ?>">Voir la déclaration</a><br/><br/>
                 <?php elseif($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_EN_COURS): ?>
-                    <a href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Continuer la déclaration</a>
+                    <a href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Continuer la déclaration</a><br/><br/>
                 <?php elseif($apporteur->getStatut() == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR): ?>
                     <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Saisir la déclaration</a>
                     -<br/>
-                    <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "0")) ?>">Pas cette année</a>
+                    <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "0")) ?>">Pas cette année</a>
                 <?php else: ?>
                     <span class="glyphicon glyphicon-ban-circle transparence-md"></span>
                     <br/>
-                    <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "1")) ?>">Ré-Activer</a>
+                    <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "1")) ?>">Ré-Activer</a>
                 <?php endif; ?>
             </td>
         </tr>
