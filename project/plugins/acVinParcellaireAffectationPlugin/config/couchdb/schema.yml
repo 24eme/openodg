@@ -112,6 +112,7 @@ ParcellaireAffectationCoop:
                   provenance: { }
                   apporteur: { }
                   intention: { }
+                  nb_parcelles_identifiees: { type: integer }
                   nom: { }
                   cvi: { }
 #PARCELLAIREINTENTIONAFFECTATION
