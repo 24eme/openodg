@@ -310,6 +310,7 @@
                 $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").removeAttr("disabled");
                 $(this).parent().parent().parent().parent().parent().parent().find("input.bsswitch-input").trigger('change');
                 $(this).trigger('update');
+                $(this)[0].dispatchEvent(new Event('change-native'));
             } else {
                 $(this).parent().parent().parent().addClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-on");

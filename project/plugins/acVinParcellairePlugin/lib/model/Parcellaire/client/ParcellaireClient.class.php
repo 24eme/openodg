@@ -20,6 +20,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     const PARCELLAIRE_AIRE_TOTALEMENT = 'OUI';
     const PARCELLAIRE_AIRE_PARTIELLEMENT = 'PARTIEL';
+    const PARCELLAIRE_AIRE_EN_ERREUR = 'ERREUR';
     const PARCELLAIRE_AIRE_HORSDELAIRE = false;
 
     public static function getInstance() {
@@ -75,7 +76,9 @@ class ParcellaireClient extends acCouchdbClient {
     public function getDenominations() {
         $res = array();
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $a) {
-            $res[$a["denumination_id"]] = $a["denumination_id"];
+            if ($a["denomination_id"]) {
+                $res[$a["denomination_id"]] = $a["denomination_id"];
+            }
         }
         return array_keys($res);
     }

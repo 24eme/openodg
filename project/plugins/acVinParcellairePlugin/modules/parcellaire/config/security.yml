@@ -9,3 +9,9 @@ visualisation:
 
 parcellairePDF:
   credentials: []
+
+scrape:
+  credentials: []
+
+import:
+  credentials: []

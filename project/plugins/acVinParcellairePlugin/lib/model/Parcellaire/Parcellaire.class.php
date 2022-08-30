@@ -91,16 +91,26 @@ class Parcellaire extends BaseParcellaire {
     public function countSameParcelle($commune, $section, $numero_parcelle, $lieu, $hashProduit = null, $cepage = null, $campagne_plantation = null){
         $sameParcelle = 0;
 
-        foreach ($this->declaration as $produitKey => $produitParcelles) {
-          foreach ($produitParcelles->detail as $pKey => $parcelleExists) {
-            if(($parcelleExists->commune == $commune) &&
-                ($parcelleExists->section == $section) &&
-                ($parcelleExists->numero_parcelle == $numero_parcelle) &&
-                ($parcelleExists->lieu == $lieu)){
-                  $sameParcelle++;
-                }
-          }
+        foreach ($this->getParcelles() as $parcelleExistante) {
+            if ($parcelleExistante->section !== $section) {
+                continue;
+            }
+
+            if ($parcelleExistante->numero_parcelle !== $numero_parcelle) {
+                continue;
+            }
+
+            if (KeyInflector::slugify($parcelleExistante->lieu) !== KeyInflector::slugify($lieu)) {
+                continue;
+            }
+
+            if (KeyInflector::slugify($parcelleExistante->commune) !== KeyInflector::slugify($commune)) {
+                continue;
+            }
+
+            $sameParcelle++;
         }
+
         return $sameParcelle;
 
     }
@@ -256,7 +266,7 @@ class Parcellaire extends BaseParcellaire {
 
         if(strpos($import, "Document is missing attachment")) {
             sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
-            $this->cache_geojson = false;
+            $this->cache_geojson = array();
         }else{
             $this->cache_geojson = json_decode($import);
         }
