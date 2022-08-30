@@ -52,6 +52,7 @@ Habilitation:
                               date: {  }
                               commentaire: {  }
                               statut: {  }
+                              site: { required: false }
       demandes:
         type: collection
         definition:
@@ -69,6 +70,12 @@ Habilitation:
                   commentaire: { }
                   produit: { }
                   produit_libelle: { }
+                  sites:
+                    required: false
+                    type: collection
+                    definition:
+                      fields:
+                        *: { }
                   activites:
                     type: array_collection
                     definition:

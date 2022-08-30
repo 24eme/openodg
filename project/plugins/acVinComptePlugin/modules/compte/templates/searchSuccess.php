@@ -4,14 +4,6 @@
     <li class="active"><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
 </ol>
 
-<script type="text/javascript">
-   $(document).ready(function() {
-   $(".removetag").click(function() {
-       return confirm('Etes vous sur(e) de vouloir supprimer définivement ce tag pour ces <?php echo $nb_results; ?> fiches ?');
-     });
-   $("#contacts_all").click(function () { $('#recherche_contact_form').submit(); });
-    });
-</script>
 <div class="row">
     <section class="col-xs-9" id="contenu_etape">
 		<form id="recherche_contact_form">
@@ -167,16 +159,28 @@
                     <?php foreach($ftype['buckets'] as $f): ?>
                         <?php if (preg_match('/^(export|produit)_/', $f['key'])) { continue; } ?>
     					<?php
+    						$active = (isset($selected_typetags->getRawValue()[$type]) && in_array($f['key'], $selected_typetags->getRawValue()[$type]))? 'active' : '';
+                            $count = $f['doc_count'];
+                            $not = '';
+                            if (($f['doc_count'] < 0)) {
+                                $active = 'active';
+                                $count = '!';
+                                $not = '!';
+                            }
                             $targs = $args_copy->getRawValue();
                             $sargs = $args_copy->getRawValue();
     						$targs['tags'] = implode(',', array_merge($selected_rawtags->getRawValue(), array($type.':'.$f['key'])));
-    						$sargs['tags'] = implode(',', array_diff($selected_rawtags->getRawValue(), array($type.':'.$f['key'])));
-    						$active = (isset($selected_typetags->getRawValue()[$type]) && in_array($f['key'], $selected_typetags->getRawValue()[$type]))? 'active' : '';
+    						$sargs['tags'] = implode(',', array_diff($selected_rawtags->getRawValue(), array($not.$type.':'.$f['key'])));
     						if ($type == 'manuel') {
     							$tagsManuels[] = $f['key'];
     						}
     					?>
-    					  <a class="list-group-item list-group-item-xs <?php echo $active ?>" href="<?php echo ($active)? url_for('compte_search', $sargs) : url_for('compte_search', $targs); ?>"><?php echo str_replace('_', ' ', $f['key']) ?> <span class="badge" style="position: absolute; right: 10px;"><?php echo $f['doc_count'] ?></span></a>
+                        <a
+                        <?php if($active && !$not): ?>
+    					  onclick="if(confirm('Souhaitez-vous voir les comptes sans tag <?php echo $f['key']; ?> ?')){ document.location = '<?php echo url_for('compte_search', $sargs).",!".$type.':'.$f['key']; ?>'; return false; }"
+                        <?php endif; ?>
+                        class="list-group-item list-group-item-xs <?php echo $active ?>" href="<?php echo ($active)? url_for('compte_search', $sargs) : url_for('compte_search', $targs); ?>"><?php echo str_replace('_', ' ', $f['key']) ?>
+                            <span class="badge" style="position: absolute; right: 10px;"><?php echo $count; ?></span></a>
 					<?php endforeach; ?>
 					</div>
 			    <?php endif; ?>

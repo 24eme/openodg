@@ -272,17 +272,35 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return false;
     }
 
-  public function isHabiliteFor($hash_produit, $activite) {
+    public function reorderByConf() {
+		$children = array();
 
-    if(!$this->addProduit($hash_produit)){
-      return false;
-    }
+		foreach($this as $hash => $child) {
+			$children[$hash] = $child->getData();
+		}
 
-    if (!$this->addProduit($hash_produit)->exist('activites')) {
-      return false;
+		foreach($children as $hash => $child) {
+			$this->remove($hash);
+		}
+
+		foreach($this->getConfig()->getProduits() as $hash => $child) {
+			$hashProduit = str_replace("/declaration/", "", $hash);
+			if(!array_key_exists($hashProduit, $children)) {
+				continue;
+			}
+			$this->add($hashProduit, $children[$hashProduit]);
+		}
+	}
+
+    public function isHabiliteFor($hash_produit, $activite) {
+        if (!$this->addProduit($hash_produit)) {
+            return false;
+        }
+        if (!$this->addProduit($hash_produit)->exist('activites')) {
+            return false;
+        }
+        return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
     }
-    return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
-  }
 
   public function containHashProduit($hash) {
       foreach($this->getProduits() as $produit) {
@@ -300,9 +318,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
       return false;
   }
 
-  public function updateHabilitation($hash_produit, $activites, $statut, $commentaire = "", $date = ''){
+  public function updateHabilitation($hash_produit, $activites, $sites, $statut, $commentaire = "", $date = ''){
+        if (!$sites) {
+            $sites = array();
+        }
         foreach($activites as $activite) {
-            $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $statut, $commentaire, $date);
+            $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $sites, $statut, $commentaire, $date);
         }
   }
 
@@ -321,16 +342,21 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function save() {
         $this->constructId();
 
-        $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
 
-        if($last && $last->_id > $this->_id) {
-            $this->add('lecture_seule', true);
+        if($last && $last->_id != $this->_id) {
+            if ($last->_id > $this->_id) {
+                $this->add('lecture_seule', true);
+            }elseif (!$last->exist('lecture_seule') || !$last->lecture_seule) {
+                $last->add('lecture_seule', true);
+                $last->save();
+            }
         }
 
         parent::save();
         $precedente = $this->getPrevious();
 
-        if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
+        if($precedente && !$precedente->isLectureSeule()) {
             $precedente->add('lecture_seule', true);
             $precedente->save();
         }

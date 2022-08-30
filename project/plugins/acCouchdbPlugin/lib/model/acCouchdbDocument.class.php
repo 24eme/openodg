@@ -173,7 +173,7 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
     }
 
     public function isModified() {
-        if($this->getBigDocumentSize() > 0 && strlen($this->_serialize_loaded_json) > $this->getBigDocumentSize()) {
+        if($this->getBigDocumentSize() > 0 && $this->_serialize_loaded_json && strlen($this->_serialize_loaded_json) > $this->getBigDocumentSize()) {
 
             return true;
         };

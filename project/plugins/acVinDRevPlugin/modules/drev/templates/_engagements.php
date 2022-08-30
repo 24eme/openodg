@@ -9,7 +9,7 @@
     		</ul>
     	</div>
 
-        <?php foreach ($validation->getEngagements() as $engagement): ?>
+        <?php foreach ($validation->getEngagements() as $engagement): if (isset($form['engagement_' . $engagement->getCode()])): ?>
         <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
             <div class="checkbox">
                 <label>
@@ -20,6 +20,6 @@
                 </label>
             </div>
             </div>
-        <?php endforeach; ?>
+        <?php endif; endforeach; ?>
     </div>
 </div>

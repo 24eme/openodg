@@ -18,25 +18,23 @@ class Email {
     }
 
     public function sendDRevValidation($drev) {
+        $nbSent = 0;
         $messages = $this->getMessagesDRevValidation($drev);
         foreach($messages as $message) {
             $this->getMailer()->send($message);
+            $nbSent++;
         }
+        return $nbSent;
     }
 
     public function getMessagesDRevValidation($drev) {
-        if(!$drev->validation) {
-            return array();
-        }
-
-        if($drev->isPapier() && !$drev->validation_odg) {
-
-            return array();
-        }
-
         if($drev->isPapier()) {
 
-            return Email::getInstance()->getMessageDrevPapierConfirmee($drev);
+            return array();
+        }
+
+        if(!$drev->validation) {
+            return array();
         }
 
         if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
@@ -53,6 +51,10 @@ class Email {
     }
 
     public function getMessageDRevValidationDeclarant($drev) {
+        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+
+            return array();
+        }
         if (!$drev->declarant->email) {
 
             return array();
@@ -77,7 +79,7 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $odgs = sfConfig::get('drev_configuration_drev', []);
         foreach ($drev->declaration->getSyndicats() as $syndicat) {
-            $infos = DrevConfiguration::getInstance()->getOdgRegionInfos($syndicat);
+            $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat);
             if($drev->isValidateOdgByRegion($syndicat)) {
                 continue;
             }
@@ -105,6 +107,10 @@ class Email {
     }
 
     public function getMessageDRevConfirmee($drev) {
+        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+
+            return array();
+        }
         if (!$drev->declarant->email) {
 
             return array();
@@ -132,6 +138,10 @@ class Email {
     }
 
     public function getMessageDrevPapierConfirmee($drev) {
+        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+
+            return array();
+        }
         if (!$drev->declarant->email) {
 
             return array();

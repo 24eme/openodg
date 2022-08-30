@@ -88,7 +88,7 @@ $t->is($full[0]->date, $habilitation->historique[0]->date, "l'historique complet
 
 $t->comment("Habilitation d'une autre activité à une nouvelle date supérieur à la dernière");
 $date = '2012-10-01';
-HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array(HabilitationClient::ACTIVITE_VINIFICATEUR), HabilitationClient::STATUT_DEMANDE_HABILITATION);
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array(HabilitationClient::ACTIVITE_VINIFICATEUR), null, HabilitationClient::STATUT_DEMANDE_HABILITATION);
 
 $id = "HABILITATION-".$viti->identifiant."-".str_replace("-", "", $date);
 $habilitation = HabilitationClient::getInstance()->find($id);
@@ -102,7 +102,7 @@ $t->comment("Insertion d'une habilitation entre deux autres");
 $habilitationLastBefore = HabilitationClient::getInstance()->find($idLast);
 
 $date = '2011-10-01';
-HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), HabilitationClient::STATUT_HABILITE);
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), null, HabilitationClient::STATUT_HABILITE);
 
 $id = "HABILITATION-".$viti->identifiant."-".str_replace("-", "", $date);
 $habilitation = HabilitationClient::getInstance()->find($id);
@@ -120,7 +120,7 @@ $t->comment("Insertion d'une habilitation au début avec perte de logique");
 $date = '2009-10-01';
 
 try {
-HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), HabilitationClient::STATUT_RETRAIT);
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), null, HabilitationClient::STATUT_RETRAIT);
     $t->fail("L'habitation n'a pas pu être créer car il y a une perte de logique");
 } catch (Exception $e) {
     $t->pass("L'habitation n'a pas pu être créer car il y a une perte de logique");
@@ -141,11 +141,11 @@ $t->ok($habilitation->containHashProduit($produitConfigComplet->getHash()), "La 
 $t->ok($habilitation->containHashProduit("/appellations/".$produitConfigComplet->getAppellation()->getKey()), "Une partie de la hash produit est reconnu");
 $t->ok(!$habilitation->containHashProduit("/hashquinexistepas/".$produitConfigComplet->getAppellation()->getKey()), "La hash n'est pas reconnu");
 
-$drevConfig = sfConfig::get('drev_configuration_drev');
+$drevConfig = sfConfig::get('region_configuration_region');
 $drevConfigOrigin = $drevConfig;
 $drevConfig['odg']['TEST'] = array('produits' => array("/appellations/".$produitConfigComplet->getAppellation()->getKey()));
-$drevConfig = sfConfig::set('drev_configuration_drev', $drevConfig);
+$drevConfig = sfConfig::set('region_configuration_region', $drevConfig);
 
 $t->ok(HabilitationClient::getInstance()->isRegionInHabilitation($viti->identifiant, "TEST"), "L'habilitation fait partie de la région");
 
-sfConfig::set('drev_configuration_drev', $drevConfigOrigin);
+sfConfig::set('region_configuration_region', $drevConfigOrigin);

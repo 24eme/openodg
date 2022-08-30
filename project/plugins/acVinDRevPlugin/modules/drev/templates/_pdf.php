@@ -133,7 +133,7 @@ Les produits déclarés sont du millésime du VCI
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
-
+<?php if($drev->exist('lot')): ?>
     <br/><br/>
     <span class="h3">&nbsp;Prélèvement&nbsp;</span><br/>
     <?php if($drev->isAllDossiersHaveSameAddress()): ?>
@@ -180,7 +180,7 @@ Les produits déclarés sont du millésime du VCI
       </tbody>
     </table>
     <?php endif; ?>
-
+<?php endif; ?>
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) && DRevConfiguration::getInstance()->hasEngagementsPdf()): ?>
     <br />
     <div><span class="h3">&nbsp;Engagement(s)&nbsp;</span></div>

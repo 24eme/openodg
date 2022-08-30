@@ -6,7 +6,7 @@ class DRevDenominationAutoForm extends acCouchdbObjectForm
     {
         $denominationAutoChoices = $this->getDenominationAutoChoices();
         $this->setWidgets(array(
-            'denomination_auto' => new sfWidgetFormChoice(array('multiple' => true, 'expanded' => true,'choices' => $denominationAutoChoices, 'renderer_options' => array('formatter' => array($this, 'formatter'))))
+            'denomination_auto' => new sfWidgetFormChoice(array('multiple' => true, 'expanded' => true, 'choices' => $denominationAutoChoices, 'renderer_options' => array('formatter' => array($this, 'formatter'))))
         ));
 
         $this->setValidators(array(

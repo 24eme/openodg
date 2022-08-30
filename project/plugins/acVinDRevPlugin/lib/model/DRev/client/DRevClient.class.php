@@ -7,9 +7,11 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_BIO_TOTAL_DEPRECATED = "BIO_TOTAL";
     const DENOMINATION_BIO_PARTIEL_DEPRECATED = "BIO_PARTIEL";
     const DENOMINATION_BIO = "BIO";
+    const DENOMINATION_CONVERSION_BIO = "CONVERSION_BIO";
     const DENOMINATION_HVE = "HVE";
+    const DENOMINATION_DEMETER = "DEMETER";
     const DENOMINATION_CONVENTIONNEL = "CONVENTIONNEL";
-    const DENOMINATION_BIO_LIBELLE_AUTO = "Agriculture Biologique";
+    const DENOMINATION_BIO_LIBELLE_AUTO = "AB";
     const DENOMINATION_HVE_LIBELLE_AUTO = "HVE";
     const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_CONDITIONNEMENT';
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
@@ -27,8 +29,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public static $denominationsAuto = array(
         self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
-        self::DENOMINATION_HVE => "HVE",
-        self::DENOMINATION_BIO => "Bio",
+        self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
+        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
     );
 
     public static $lotDestinationsType = array(
@@ -184,7 +186,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         if (!$identifiant) {
             return array();
         }
-        $regions = DrevConfiguration::getInstance()->getOdgRegions();
+        $regions = RegionConfiguration::getInstance()->getOdgRegions();
         foreach($regions as $region) {
             $produits = $drev->getProduits($region);
             if (!count($produits)) {
@@ -221,6 +223,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         foreach ($filters as $filter) {
             if (strpos($filter, 'appellations') !== false) {
                 $match = $match && $this->matchFilterProduit($lot, $filter);
+            } elseif (strpos($filter, 'millesime') !== false) {
+                $match = $match && $this->matchFilterMillesime($lot, $filter);
             } elseif (strpos($filter, 'deja') !== false) {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
@@ -275,6 +279,21 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return true;
     }
 
+    private function matchFilterMillesime($lot, $filter)
+    {
+        if(strpos($filter, '/millesime/courant') !== false && $lot->millesime != $lot->getDocument()->getPeriode()) {
+
+            return false;
+        }
+
+        if(strpos($filter, '/millesime/precedent') !== false && $lot->millesime >= intval($lot->getDocument()->getPeriode())) {
+
+            return false;
+        }
+
+        return true;
+    }
+
     private function matchFilterConformite($lot, $filter)
     {
         $not = strpos($filter, 'NOT') === 0;
@@ -283,7 +302,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function retrieveRelatedDrev($identifiant, $periode, $drev_produit_filter = null) {
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, $periode * 1);
+
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, preg_replace('/-.*/', '', $periode));
         if ($drev && $drev_produit_filter) {
             foreach ($drev->lots as $lot) {
                 if(strpos($lot->produit_hash, $drev_produit_filter) !== false) {

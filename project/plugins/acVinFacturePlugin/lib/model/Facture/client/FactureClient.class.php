@@ -347,7 +347,6 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
-
     public function createFacturesBySoc($mouvements, $date_facturation, $message_communication = null, $generation = null) {
       if(!$generation){
           $generation = new Generation();

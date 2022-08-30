@@ -49,3 +49,4 @@ all:
           "BIB 30l": 0.3
           "BIB 32L": 0.32
           "BIB 33L": 0.33
+      all_produits: false

@@ -43,7 +43,7 @@
   <tr><td>Compte tenu de ce résultat, vous pouvez décider :</td></tr><br/>
   <tr><td>
     <ul>
-      <li>Soit d'abandonner la mention cépage sur votre étiquette et commercialiser votre vin en IGP var générique (sans mention de cépage);</li><br/>
+      <li>Soit d'abandonner la mention cépage sur votre étiquette et commercialiser votre vin en IGP générique (sans mention de cépage);</li><br/>
       <li>Soit de nous transmettre les éléments de traçabilité attestant que le vin dégusté provient bien du cépage revendiqué.</li>
     </ul>
   </td></tr>

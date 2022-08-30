@@ -11,15 +11,15 @@
 
 <div class="page-header no-border">
     <h2>Déclaration de Revendication <?php echo $drev->periode ?>
+    <small class="pull-right" style="font-size:55%; margin-top: 2px;">
     <?php if($drev->isPapier()): ?>
-    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
-      <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
+    <span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->getDateDepot()): ?> reçue le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($drev->validation): ?>
-    <small class="pull-right" style="font-size:50%">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> signée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->validation_odg): ?> et approuvée le <?php echo format_date($drev->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
+    Télédéclaration<?php if($drev->getDateDepot()): ?> signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->validation_odg): ?> et approuvée le <?php echo format_date($drev->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
     <?php if ($sf_user->hasDrevAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'InnovAgro le ".format_date($drev->envoi_oi, 'dd/MM') ; } ?>
     <?php if ($sf_user->isAdmin() && $drev->validation_odg): ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a><?php endif; ?>
-  </small>
+    </small>
     </h2>
 </div>
 
@@ -61,6 +61,40 @@
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
 <hr />
+<?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
+    <h3>&nbsp;Engagement(s)&nbsp;</h3>
+    <?php foreach($drev->documents as $docKey => $doc): ?>
+            <p>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></p>
+    <?php endforeach; ?>
+<hr />
+<?php endif; ?>
+
+<?php if (isset($form)): ?>
+</form>
+<?php endif; ?>
+
+<?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
+  <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
+      <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+      <pre><?php echo $drev->commentaire; ?></pre>
+      <hr />
+  <?php elseif(!$drev->getValidationOdg()): ?>
+    <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+    <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
+        <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
+        <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
+        <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+        <div class="form-group text-right" style="margin-top: 10px">
+          <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
+            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
+          </button>
+        </div>
+    </form>
+    <hr />
+  <?php endif; ?>
+<?php endif; ?>
+
+
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $drev->identifiant, 'campagne' => $drev->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
@@ -102,9 +136,7 @@
         </div>
     </div>
 </div>
-<?php if (isset($form)): ?>
-</form>
-<?php endif; ?>
+
 <?php include_partial('drev/popupConfirmationValidation', array('approuver' => false)); ?>
 <?php if (!$sf_user->isAdmin() && MandatSepaConfiguration::getInstance()->isActive() && !$drev->getEtablissementObject()->getSociete()->hasMandatSepa()): ?>
 <?php include_partial('mandatsepa/popupPropositionInscriptionPrelevement'); ?>

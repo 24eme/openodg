@@ -23,7 +23,7 @@
         <div class="panel-body">
             <p class="explications"><?php if(!$parcellaireIrrigue): ?>Identifier<?php else: ?>Mettre à jour<?php endif; ?> vos parcelles irriguées.<br />&nbsp;</p>
           	<div class="actions">
-                <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => false)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer<?php else: ?>Continuer<?php endif; ?> la télédéclaration</a>
+                <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => false)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer la télédéclaration<?php else: ?>Visualiser et continuer à déclarer<?php endif; ?></a>
                 <?php if ($sf_user->isAdmin()): ?>
                 <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => true)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php if(!$parcellaireIrrigue): ?>Saisir<?php else: ?>Poursuivre<?php endif; ?> la déclaration papier</a>
                 <?php endif; ?>

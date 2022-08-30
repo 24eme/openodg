@@ -22,14 +22,32 @@ class TemplateFactureClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findByCampagne($campagne){
-      //TODO: Transformer les templates des autres instance en TEMPLATE-FACTURE-CAMPAGNE
-      $campagne = substr($campagne,0,4);
-      if($templateFactureAoc = $this->find("TEMPLATE-FACTURE-AOC-".$campagne)){
-        return $templateFactureAoc;
-      }
+    public function getTemplateIdFromCampagne($campagne_start = null) {
+        $template = FactureConfiguration::getinstance()->getUniqueTemplateFactureName();
+        if (!$template){
+            return null;
+        }
+        if (!$campagne_start) {
+            $campagne_start = date('Y');
+        }
+        for($d = $campagne_start ; $d > $campagne_start - 10 ; $d--) {
+            $id = sprintf($template, $d);
+            if ($this->find($id, self::HYDRATE_JSON)) {
+                return $id;
+            }
+        }
+        throw sfException("Object TEMPLATE-FACTURE not found from template $template");
+    }
 
-      return $this->find("TEMPLATE-FACTURE-".$campagne);
+    public function findByCampagne($campagne, $hydrate = self::HYDRATE_DOCUMENT){
+        $id = $this->getTemplateIdFromCampagne();
+
+        if(!$id) {
+
+            return null;
+        }
+
+        return $this->find($id, $hydrate);
     }
 
 

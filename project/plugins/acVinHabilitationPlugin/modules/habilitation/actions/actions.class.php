@@ -12,6 +12,18 @@ class habilitationActions extends sfActions {
             $filtres["Statut"] = "/^(?!".implode("$|", HabilitationClient::getInstance()->getStatutsFerme())."$)/";
         }
 
+        $this->regionParam = $request->getParameter('region');
+        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
+            $params = array();
+            $params['region'] = $region;
+            return $this->redirect('habilitation_demande', $params);
+        }
+
+        $regionProduitsFiltre = RegionConfiguration::getInstance()->getOdgHabilitationProduits($this->regionParam);
+        if ($this->regionParam && $regionProduitsFiltre) {
+            $filtres["Produit"] = $regionProduitsFiltre;
+        }
+
         $this->buildSearch($request,
                         'habilitation',
                         'demandes',

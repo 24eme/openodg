@@ -29,11 +29,13 @@ DRev:
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
       denomination_auto: { required: false }
+      date_depot: { required: false }
       date_degustation_voulue: { required: false }
       date_commission: { required: false }
       type_archive:  { required: false }
       version: {  }
       numero_archive: {  }
+      commentaire: { }
       declarant:
         type: collection
         class: DRevDeclarant

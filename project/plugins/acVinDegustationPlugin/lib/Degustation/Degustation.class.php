@@ -237,6 +237,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             switch($statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL, null, $lot->conforme_appel));
+				case Lot::STATUT_NONCONFORME_LEVEE:
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE, null, $lot->nonconformite_levee));
                 case Lot::STATUT_RECOURS_OC:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC, null, $lot->recours_oc));
                     $statut = Lot::STATUT_NONCONFORME;
@@ -1171,7 +1173,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $degustateur->getOrAdd('confirmation');
             $degustateur->confirmation = true;
 
-            return $this->degustateur;
+            return $degustateur;
 		}
 
 		public function setDateEmailConvocationDegustateur($date, $compteId, $college) {
@@ -1194,7 +1196,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Gestion PDF ****/
 
-		public function getEtiquettesFromLots($maxLotsParPlanche){
+		public function getEtiquettesFromLots($maxLotsParPlanche, $identifiant = null){
 			$nbLots = 0;
 			$planche = 0;
 			$etiquettesPlanches = array();
@@ -1203,6 +1205,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$lots = array();
 
 			foreach ($this->getLotsPrelevables() as $lot) {
+                if($identifiant && $identifiant != $lot->declarant_identifiant) {
+                    continue;
+                }
 				$lots[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant.$lot->unique_id] = $lot;
 			}
 			$lotsSorted = $lots;

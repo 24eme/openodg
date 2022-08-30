@@ -13,7 +13,7 @@ import dateutil.relativedelta
 pd.set_option('display.max_columns', None)
 
 dossier_igp = "exports_"+sys.argv[1]
-igp = sys.argv[1].replace('igp',"")
+igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
 
 if(len(sys.argv)<2):
     print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
@@ -25,7 +25,7 @@ if(len(sys.argv)>2):
     millesime = sys.argv[2]
     
 exportdir = '../../web/'+dossier_igp
-outputdir = exportdir+'/stats/'+millesime
+outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
 
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)
@@ -98,6 +98,7 @@ final = lignes_volume_revendique
 #VOLUME EN INSTANCE DE CONTROLE  
 
 lots = lots.query("Millésime == @millesime");
+lots["Volume"] = lots["Volume"].fillna(0)
 lots = lots.fillna("")
 lots_ini = lots
 

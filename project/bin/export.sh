@@ -112,6 +112,16 @@ php bin/export/export_liste_inao.php $EXPORTDIR/habilitation_demandes.csv.part |
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_inao.csv.part > $EXPORTDIR/habilitation_demandes_inao.csv
 rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_inao.csv.part
 
+echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '/' | while read subhab; do
+    eval 'SUBDIR=$EXPORT_SUB_HABILITATION_'$subhab'_DIR'
+    eval 'SUBFILTRE=$EXPORT_SUB_HABILITATION_'$subhab'_FILTRE'
+    mkdir -p $SUBDIR
+    head -n 1 $EXPORTDIR/habilitation.csv > $SUBDIR/habilitation.csv
+    cat $EXPORTDIR/habilitation.csv | grep "$SUBFILTRE" >> $SUBDIR/habilitation.csv
+    head -n 1 $EXPORTDIR/drev.csv > $SUBDIR/drev.csv
+    cat $EXPORTDIR/drev.csv | grep "$SUBFILTRE" >> $SUBDIR/drev.csv
+done
+
 sleep $EXPORTSLEEP
 
 if [ -z $IS_NO_VINIF ]; then
@@ -186,7 +196,7 @@ echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Date commission;Date lot;Num
 join -t ";" -a 1 -1 18 -2 37 $EXPORTDIR/lots-historique.csv.sorted $EXPORTDIR/lots_hash.csv | awk -F ';' 'BEGIN{ OFS=";" }{ $1=""; print $0 }' | sed 's/^;//' >> $EXPORTDIR/lots-historique.csv.sorted.join
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots-historique.csv.sorted.join > $EXPORTDIR/lots-historique.csv
 
-grep 'Affecté à une dégustation (destination)' $EXPORTDIR/lots-historique.csv.part | sort -t ';' -k 8,8 -r | awk -F ';' '{ uniq = $17 ; if ( ! unicite[uniq] ) { print $17";"$13 ; unicite[uniq] = uniq ; }  }' | sort -t ';' -k 1,1 > $EXPORTDIR/lots-passages.csv
+grep 'Affecté à une dégustation (destination)' $EXPORTDIR/lots-historique.csv.part | sort -t ';' -k 9,9 -r | awk -F ';' '{ uniq = $18 ; if ( ! unicite[uniq] ) { print $18";"$14 ; unicite[uniq] = uniq ; }  }' | sort -t ';' -k 1,1 > $EXPORTDIR/lots-passages.csv
 tail -n +2 $EXPORTDIR/lots_cleancepages.csv.part | sort -t ';' -k 37,37 > $EXPORTDIR/lots_cleancepages.csv.part.sorted
 echo "Origine;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Campagne;Date commission;Date lot;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Destination;Date de destination;Pays de destination;Elevage;Centilisation;Date prélévement;Conformité;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Hash produit;Passage" > $EXPORTDIR/lots_cleancepages_passages.csv.part
 join -t ';' -a 1 -1 37 -2 1 $EXPORTDIR/lots_cleancepages.csv.part.sorted  $EXPORTDIR/lots-passages.csv | awk -F ';' 'BEGIN{OFS=";"}  {$1=""; print $0}' | sed 's/^;//'  >> $EXPORTDIR/lots_cleancepages_passages.csv.part
@@ -215,10 +225,14 @@ mkdir -p $EXPORTDIR/stats
 
 cd bin/notebook/
 
-if [[ $APPLICATION == igp* ]];then
-  ls igp_*.py | while read script; do python3 $script $APPLICATION;done
+if ! test "$APPLICATION_PYTHON_EXPORT"; then
+    APPLICATION_PYTHON_EXPORT=$APPLICATION
+fi
+
+if [[ $APPLICATION_PYTHON_EXPORT == igp* ]];then
+  ls igp_*.py | while read script; do python3 $script $APPLICATION_PYTHON_EXPORT;done
 else
-  ls "$APPLICATION"_*.py | while read script; do python3 $script;done
+  ls "$APPLICATION_PYTHON_EXPORT"_*.py | while read script; do python3 $script;done
 fi
 
 cd -

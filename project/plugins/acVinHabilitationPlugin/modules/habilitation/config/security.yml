@@ -1,17 +1,17 @@
 all:
-  credentials: [[ADMIN, habilitation]]
+  credentials: [[ADMIN, habilitation, teledeclaration_drev_admin]]
 
 indexDemande:
-  credentials: [[ADMIN, habilitation, stalker]]
+  credentials: [[ADMIN, habilitation, teledeclaration_drev_admin, stalker]]
 
 indexHabilitation:
-  credentials: [[ADMIN, habilitation, stalker]]
+  credentials: [[ADMIN, habilitation, teledeclaration_drev_admin, stalker]]
 
 etablissementSelection:
-  credentials: [[ADMIN, habilitation, stalker]]
+  credentials: [[ADMIN, habilitation, teledeclaration_drev_admin, stalker]]
 
 exportHistorique:
-  credentials: [[ADMIN, habilitation, stalker]]
+  credentials: [[ADMIN, habilitation, teledeclaration_drev_admin, stalker]]
 
 declarant:
   credentials: []

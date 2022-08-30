@@ -88,12 +88,18 @@ class DegustationLot extends BaseDegustationLot {
         $this->getDocument()->generateMouvementsLots();
     }
 
+    public function leverNonConformite($date = null)
+    {
+        if(!$date){
+            $date = date('Y-m-d');
+        }
+        $this->statut = Lot::STATUT_NONCONFORME_LEVEE;
+        $this->nonconformite_levee = $date;
+        $this->getDocument()->generateMouvementsLots();
+    }
+
     public function setConformiteLot($conformite, $motif = null, $observation = null)
     {
-        if ($this->conformiteEditable() === false) {
-            throw new sfException('Impossible de changer la conformité du lot '.$this->getUniqueId());
-        }
-
         $this->conformite = $conformite;
         $this->setMotif($motif);
         $this->setObservation($observation);
@@ -103,15 +109,6 @@ class DegustationLot extends BaseDegustationLot {
         } else {
             $this->statut = Lot::STATUT_NONCONFORME;
         }
-    }
-
-    public function conformiteEditable()
-    {
-        if ($this->getMouvement(Lot::STATUT_RECOURS_OC)) {
-            return false;
-        }
-
-        return true;
     }
 
     public function setConformite($conformite){

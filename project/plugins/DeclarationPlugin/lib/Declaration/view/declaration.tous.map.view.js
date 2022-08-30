@@ -23,7 +23,7 @@ function(doc) {
     }
 
     campagne = doc.campagne;
-    if (doc.type == "DR") {
+    if (campagne.length == 4) {
       campagne = campagne;
       campagneplusun = parseInt(campagne) + 1;
       campagne = campagne + "-" + campagneplusun;
@@ -138,6 +138,9 @@ function(doc) {
     var type = doc.type;
 
     var date = null;
+    if(doc.date) {
+	    date = doc.date;
+    }
     if(validation && validation !== false && validation !== true) {
 	    date = validation;
     }

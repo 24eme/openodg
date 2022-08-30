@@ -200,7 +200,8 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $this->enhanced_donnees = array();
         $colonnesid = array();
         $colonneid = 0;
-        $drev = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne(), $drev_produit_filter);
+        $drev = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne());
+        $drev_produit_filter = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne(), $drev_produit_filter);
         foreach($this->donnees as $i => $donnee) {
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
@@ -237,6 +238,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnee->colonneid = $colonnesid[$produitid];
             }
             $d->colonneid = $donnee->colonneid;
+            if ($drev_produit_filter) {
+                $d->drev_produit_filter = $drev_produit_filter->_id;
+            }else{
+                $d->drev_produit_filter = null;
+            }
             if ($drev) {
                 $d->drev_id = $drev->_id;
             }else{
@@ -348,7 +354,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $item->tiers_raison_sociale = $tiers->raison_sociale;
                 $item->tiers_cvi = $tiers->cvi;
             }else{
-                $item->tiers_raison_sociale = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
+                $item->tiers_raison_sociale = preg_replace('/(^"|"$)/', '', $data[DouaneCsvFile::CSV_TIERS_LIBELLE]);
                 $item->tiers_cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
             }
         }
@@ -385,12 +391,27 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return eval("return $calcul;");
     }
 
-    public function getTotalValeur($numLigne, $famille = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array()) {
-        $value = 0;
 
+    public function matchFilterProduit($produitHash, $produitFilter) {
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
+
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produitHash)) {
+
+            return false;
+        }
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produitHash)) {
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public function getTotalValeur($numLigne, $famille = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array()) {
+        $value = 0;
 
         foreach($this->getEnhancedDonnees() as $donnee) {
             if ($famille && $donnee->colonne_famille != $famille) {
@@ -402,10 +423,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if (in_array($donnee->colonne_famille, $throw_familles)) {
                 throw new sfException("Famille $donnee->colonne_famille non permise");
             }
-            if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $donnee->produit)) {
-                continue;
-            }
-            if($produitFilter && $produitExclude && preg_match($regexpFilter, $donnee->produit)) {
+            if($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
                 continue;
             }
             if($donnee->categorie != str_replace("L", "", $numLigne)) {
@@ -417,12 +435,16 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
 
         return $value;
     }
-    public function getNbApporteurs() {
+    public function getNbApporteurs($produitFilter = null) {
         $apporteurs = array();
         foreach($this->donnees as $donnee) {
-            if ($donnee->tiers) {
-                $apporteurs[$donnee->tiers] = 1;
+            if (!$donnee->tiers_cvi) {
+                continue;
             }
+            if ($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
+                continue;
+            }
+            $apporteurs[$donnee->tiers_cvi] = 1;
         }
         return count($apporteurs);
     }

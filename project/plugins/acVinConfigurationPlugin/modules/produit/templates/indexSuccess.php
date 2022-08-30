@@ -32,6 +32,10 @@
       <div class="col-xs-7"><?php echo $organisme->getIban(); ?></div>
     </div>
     <div class="row">
+      <div class="col-xs-1">BIC :</div>
+      <div class="col-xs-7"><?php echo $organisme->getBic(); ?></div>
+    </div>
+    <div class="row">
       <div class="col-xs-1">Paiement&nbsp;:</div>
       <div class="col-xs-11"><?php echo FactureConfiguration::getInstance()->getModaliteDePaiement(); ?></div>
     </div>

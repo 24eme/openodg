@@ -7,7 +7,7 @@ class ExportDRevPDF extends ExportPDF {
 
     public function __construct($drev, $region = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->drev = $drev;
-        if(!$region && DrevConfiguration::getInstance()->hasOdgProduits() && !DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
+        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && !DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
             $this->regions = $this->drev->declaration->getSyndicats();
         }
 
@@ -89,7 +89,7 @@ class ExportDRevPDF extends ExportPDF {
         $titre = sprintf("Déclaration de Revendication %s", $this->drev->campagne);
         $region = $this->getRegion();
         if($region) {
-            $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+            $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
             $titre .= " (".$infos['nom'].")";
         }
 
@@ -98,10 +98,10 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getFooterText() {
         if(!$this->getRegion()) {
-            return sprintf("<span style='color:#ff0000;'>%s     %s - %s - %s - %s - %s</span>", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
+            return sprintf("<span style='color:#ff0000;'>%s - %s - %s - %s - %s - %s</span>", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
         }
 
-        $infos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+        $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
 
         return sprintf("%s - %s", (isset($infos) && $infos['nom']) ? $infos['nom'] : null, (isset($infos) && isset($infos['adresse'])) ? $infos['adresse'] : null);
     }
@@ -111,8 +111,8 @@ class ExportDRevPDF extends ExportPDF {
         $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
         );
         $region = $this->getRegion();
-        if (!$this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
-            $date = new DateTime($this->drev->validation);
+        if (!$this->drev->isPapier() && $this->drev->getDateDepot()) {
+            $date = new DateTime($this->drev->getDateDepot());
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
             if($region && $this->drev->getValidationOdgDateByRegion($region)){
               $dateOdg = new DateTime($this->drev->getValidationOdgDateByRegion($region));
@@ -131,8 +131,8 @@ class ExportDRevPDF extends ExportPDF {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }
 
-        if ($this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
-            $date = new DateTime($this->drev->validation);
+        if ($this->drev->isPapier() && $this->drev->getDateDepot()) {
+            $date = new DateTime($this->drev->getDateDepot());
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
         return $header_subtitle;

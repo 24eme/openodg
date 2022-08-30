@@ -137,8 +137,8 @@ class DouaneImportCsvFile {
                         $p[] = null;
                         $p[] = ($t->siege->commune) ? $t->siege->commune : $t->commune;
                     } else {
-                        $p[] = null;
-                        $p[] = null;
+                        $p[] = $donnee->tiers_cvi;
+                        $p[] = ($donnee->tiers_cvi) ? DouaneImportCsvFile::cleanRaisonSociale("CVI non reconnu : ".preg_replace('/(^"|"$)/', '', $donnee->tiers_raison_sociale)) : '';
                         $p[] = null;
                         $p[] = null;
                     }
@@ -146,6 +146,7 @@ class DouaneImportCsvFile {
                     $p[] = Organisme::getCurrentOrganisme();
                     $p[] = $produit->getHash();
                     $p[] = $donnee->drev_id;
+                    $p[] = $donnee->drev_produit_filter;
                     $p[] = $this->doc->_id;
                     $p[] = $donnee->document_famille;
                     $p[] = substr($this->campagne, 0, 4);
@@ -163,10 +164,36 @@ class DouaneImportCsvFile {
         return $csv;
     }
 
-    public function getRelatedDrev() {
+    public function getRelatedDrev($with_filter = true) {
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
-        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, $this->drev_produit_filter);
+        return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, ($with_filter) ? $this->drev_produit_filter : null);
+    }
+
+    public function extractLabels($mentionComplementaire) {
+        $labels = array();
+
+        $wordSeparatorStart = "(^|[ \/\-]{1})";
+        $wordSeparatorEnd = "([ \/\-]{1}|$)";
+
+        if(preg_match('/'.$wordSeparatorStart.'(conversion|conv)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
+        } elseif(preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|
+FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
+        }
+
+        if(preg_match('/'.$wordSeparatorStart.'(demeter|biody|biodynamie)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_DEMETER] = DRevClient::DENOMINATION_DEMETER;
+        }
+
+        if(preg_match('/'.$wordSeparatorStart.'(hve|h.v.e.|haute valeur environnementale|hve3)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_HVE] = DRevClient::DENOMINATION_HVE;
+        }
+
+        ksort($labels);
+
+        return $labels;
     }
 
 }

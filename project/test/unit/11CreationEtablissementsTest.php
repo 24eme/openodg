@@ -23,7 +23,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(39);
+$t = new lime_test(51);
 $t->comment('création des différentes établissements');
 
 $societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
@@ -101,6 +101,7 @@ $comptenego->save();
 $t->is($comptenego->tags->automatique->toArray(true, false), array('etablissement','negociant'), "Création d'un etablissement nego met à jour le compte");
 $t->is($etablissementnego->region, EtablissementClient::REGION_CVO, "L'établissement est en région CVO après le save");
 
+$t->comment('Liaisons');
 $etablissementnego = EtablissementClient::getInstance()->find($etablissementnego->_id);
 $etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
 $etablissementnego->addLiaison('COOPERATEUR', $etablissementviti->_id, true);
@@ -127,6 +128,36 @@ $etablissementviti->getSociete()->switchStatusAndSave();
 $etablissementnego = EtablissementClient::getInstance()->find($etablissementnego->_id);
 $t->is(count($etablissementnego->liaisons_operateurs->toArray(1,0)), 1, "le nego a reprise sa liaison avec le viti réactivé");
 
+$t->comment('Suspension / activation etablissement uniquement');
+$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
+$etablissementviti->setStatut(SocieteClient::STATUT_SUSPENDU);
+$etablissementviti->save();
+
+$t->ok($etablissementviti->isSuspendu(), "L'établissement viti est suspendu");
+$t->is($etablissementviti->getSociete()->isSuspendu(), false, "La societe viti n'est pas suspendue");
+$t->is($etablissementviti->isSameCompteThanSociete(), false, "Le compte de la societe est différent");
+$t->is($etablissementviti->getMasterCompte()->isSuspendu(), true, "Le compte de l'établissement est suspendu");
+$liaisons_viti = $etablissementviti->liaisons_operateurs->toArray(1,0);
+$t->is(count($liaisons_viti), 1, "L'etablissement viti suspendu a gardé sa liaison");
+$t->is(current($liaisons_viti)['type_liaison'], "COOPERATIVE", "C'est une liaison coop");
+
+$etablissementnego = EtablissementClient::getInstance()->find($etablissementnego->_id);
+$liaisons_nego = $etablissementnego->liaisons_operateurs->toArray(1,0);
+$t->is(count($liaisons_nego), 0, "le nego n'a plus de liaison avec le viti suspendu");
+
+$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
+$etablissementviti->setStatut(SocieteClient::STATUT_ACTIF);
+$t->is($etablissementviti->isSuspendu(), false, "L'établissement viti est actif");
+$liaisons_viti = $etablissementviti->liaisons_operateurs->toArray(1,0);
+$t->is(count($liaisons_viti), 1, "L'etablissement viti suspendu a gardé sa liaison");
+$t->is(current($liaisons_viti)['type_liaison'], "COOPERATIVE", "C'est une liaison coop");
+
+$etablissementnego = EtablissementClient::getInstance()->find($etablissementnego->_id);
+$liaisons_nego = $etablissementnego->liaisons_operateurs->toArray(1,0);
+$t->is(count($liaisons_nego), 1, "le nego a retrouvé sa liaison avec le viti");
+$t->is(current($liaisons_nego)['type_liaison'], "COOPERATEUR", "C'est une liaison coop");
+
+$t->comment('Ajout établissement');
 $societenego = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_nego_region_2_societe')->getSociete();
 $etablissementnego = $societenego->createEtablissement(EtablissementFamilles::FAMILLE_NEGOCIANT);
 $etablissementnego->region = EtablissementClient::REGION_CVO;

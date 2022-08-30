@@ -1,7 +1,6 @@
 all:
   configuration:
     drev:
-      prelevements: true
       mentions_complementaire: false
       import_with_mentions_complementaire: false
       denomination_auto: false
@@ -13,6 +12,7 @@ all:
       degustation: false
       engagement_pdf: false
       logement_adresse: true
+      send_email_operateur: true
       specificites:
         bio: "bio"
         HVE: "HVE"

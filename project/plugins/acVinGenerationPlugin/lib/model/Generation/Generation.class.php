@@ -23,11 +23,8 @@ class Generation extends BaseGeneration {
 
   public function save() {
     $this->nb_documents = count($this->documents);
-    if (count($this->fichiers) && $this->statut != GenerationClient::GENERATION_STATUT_ENERREUR) {
-      $this->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
-    }
     if (!$this->nb_documents && $this->statut == GenerationClient::GENERATION_STATUT_GENERE) {
-	$this->nb_documents = count($this->fichiers);
+	   $this->nb_documents = count($this->fichiers);
     }
 
     $this->setDateMaj(date('YmdHis'));
@@ -100,6 +97,16 @@ class Generation extends BaseGeneration {
 
   public function getSomme() {
       return Anonymization::hideIfNeeded($this->_get('somme'));
+  }
+
+  public function getAnnee() {
+      if (!$this->exist('arguments') || !$this->arguments->exist('date_mouvement')) {
+        return substr($this->date_emission, 0, 4);
+      }
+      if (strpos($this->arguments->date_mouvement, '/')) {
+          return substr($this->arguments->date_mouvement, -4);
+      }
+      return substr($this->arguments->date_mouvement, 0, 4);
   }
 
 }

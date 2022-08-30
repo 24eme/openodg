@@ -19,15 +19,17 @@ millesime = str(datetime.now().year - 1)
 
 if(len(sys.argv) > 2 and re.search("^[0-9]{4}$", sys.argv[2])):
     millesime = sys.argv[2]
-    
-outputdir = path_igp+'/stats/'+millesime
+
+outputdir = path_igp.replace('/GLOBAL', '')+'/stats/'+millesime
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)   
     
 millesime_precedent = str(int(millesime) - 1)
 
 moisjour = "12-31"
-    
+if '%s-%s' % (str(int(millesime) + 1), moisjour) > '%04d-%02d-%02d' % ( datetime.now().year, datetime.now().month, datetime.now().day ):
+    moisjour = '07-31'
+
 if(len(sys.argv) > 3 and re.search("^[0-9]{2}-[0-9]{2}$", sys.argv[3])):
     moisjour = sys.argv[3]
     

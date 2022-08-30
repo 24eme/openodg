@@ -41,11 +41,11 @@ class FactureConfiguration {
       return $this->configuration['echeances'];
     }
 
-    public function getUniqueTemplateFactureName($campagne = null){
-      if(!$campagne || !isset($this->configuration['uniq_template_prefix']) || !$this->configuration['uniq_template_prefix']){
+    public function getUniqueTemplateFactureName(){
+      if(!isset($this->configuration['uniq_template_prefix']) || !$this->configuration['uniq_template_prefix']){
         return null;
       }
-      return $this->configuration['uniq_template_prefix']."-".$campagne;
+      return $this->configuration['uniq_template_prefix']."-%s";
     }
 
     public function isFacturationAllEtablissements(){
@@ -121,4 +121,55 @@ class FactureConfiguration {
 
         return Organisme::getInstance($region)->getInfo($key);
     }
+
+    public function hasDonotSaveExportFacture() {
+        return
+                isset($this->configuration['export_donotsave']) &&
+                ($this->configuration['export_donotsave'])
+              ;
+    }
+
+    public function getExportType() {
+        if (!isset($this->configuration['export_type'])) {
+            return null;
+        }
+        return $this->configuration['export_type'];
+    }
+
+    public function getCodeJournalFacture() {
+        if (!isset($this->configuration['codejournal_facture'])) {
+            return "VE00";
+        }
+        return $this->configuration['codejournal_facture'];
+    }
+
+    public function getCodeJournalPaiement() {
+        if (!isset($this->configuration['codejournal_paiement'])) {
+            return "5200";
+        }
+        return $this->configuration['codejournal_paiement'];
+
+    }
+
+    public function getCompteTVANormal() {
+        if (!isset($this->configuration['comptetva_normal'])) {
+            return "445710";
+        }
+        return $this->configuration['comptetva_normal'];
+    }
+
+    public function getCompteTVASuperReduit() {
+        if (!isset($this->configuration['comptetva_superreduit'])) {
+            return "445711";
+        }
+        return $this->configuration['comptetva_superreduit'];
+    }
+
+    public function getNumeroCompteBanquePaiement() {
+        if (!isset($this->configuration['numerocompte_banquepaiement'])) {
+            return '511150';
+        }
+        return $this->configuration['numerocompte_banquepaiement'];
+    }
+
 }

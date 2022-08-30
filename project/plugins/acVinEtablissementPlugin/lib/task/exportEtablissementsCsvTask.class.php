@@ -50,7 +50,7 @@ EOF;
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             $societe = SocieteClient::getInstance()->find($etablissement->id_societe, acCouchdbClient::HYDRATE_JSON);
             $compte = CompteClient::getInstance()->find($etablissement->compte);
-            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, acCouchdbClient::HYDRATE_JSON);
+            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, null, acCouchdbClient::HYDRATE_JSON);
 
             $habilitationActivites = '';
             if (isset($compte->tags->activite)) {

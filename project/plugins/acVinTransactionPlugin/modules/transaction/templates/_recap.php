@@ -60,6 +60,10 @@
                       <?php endif; ?>
                         <td>
                         <?php echo showProduitCepagesLot($lot) ?>
+                        <?php if($lot->isInElevage()):?>
+                          <br>
+                          <small class="text-muted"> en élevage </small>
+                        <?php endif; ?>
                         </td>
                         <td class="text-right"><?php echo $lot->pays; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>

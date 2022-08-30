@@ -43,8 +43,8 @@ class produitActions extends sfActions
 
       $this->notDisplayDroit = true;
       $this->produits = array();
-      $this->produitsOdg = DRevConfiguration::getInstance()->getOdgProduits($this->odg);
-      $this->odgInfos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->odg);
+      $this->produitsOdg = RegionConfiguration::getInstance()->getOdgProduits($this->odg);
+      $this->odgInfos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->odg);
       foreach($this->config->declaration->getProduits($this->date) as $produit) {
           foreach($this->produitsOdg as $produitOdgHash) {
               if(!preg_match('|'.$produitOdgHash.'|', $produit->getHash())) {
@@ -114,7 +114,7 @@ class produitActions extends sfActions
 
   public function executeHabilitation(sfWebRequest $request) {
     $this->odg = $request->getParameter('odg');
-    $this->odgInfos = DRevConfiguration::getInstance()->getOdgRegionInfos($this->odg);
+    $this->odgInfos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->odg);
 
     $this->getResponse()->setHttpHeader('Content-Type', 'application/csv');
     $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');

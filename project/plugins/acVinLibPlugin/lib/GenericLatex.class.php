@@ -13,7 +13,10 @@ class GenericLatex {
     }
     fwrite($leFichier, $this->getLatexFileContents());
     fclose($leFichier);
-    $retour = chmod($fn,intval('0660',8));
+    $current_umask = umask();
+    umask(0000);
+    chmod($fn,intval('0660',8));
+    umask($current_umask);
     return $fn;
   }
 
@@ -53,6 +56,12 @@ class GenericLatex {
     if (!file_exists($pdfpath)) {
       throw new sfException("pdf not created ($pdfpath): ".$output);
     }
+
+    $current_umask = umask();
+    umask(0000);
+    chmod($pdfpath, 0660);
+    umask($current_umask);
+
     return $pdfpath;
   }
 
@@ -67,7 +76,7 @@ class GenericLatex {
 
   public function getPDFFile() {
     $filename = $this->getLatexDestinationDir().$this->getPublicFileName();
-    if(file_exists($filename))
+    if(file_exists($filename) && is_readable($filename))
       return $filename;
     $tmpfile = $this->generatePDF();
     if (!file_exists($tmpfile)) {

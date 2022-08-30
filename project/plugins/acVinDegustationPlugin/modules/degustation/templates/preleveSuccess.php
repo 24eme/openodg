@@ -77,9 +77,13 @@
               </div>
       	</td>
         <td class="edit text-center">
-          <span>
             <a class="text-muted" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le logement <?php echo $lot->numero_logement_operateur.' de '.$lot->volume."hl" ?> ?');" title="Supprimer le logement" href="<?php echo url_for('degustation_supprimer_lot_non_preleve', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-trash"></i></a>
-          </span>
+
+          <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
+              <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'anonymat4labo' => true]) ?>" class="btn btn-default btn-xs transparence-md pull-right" title="Étiquettes de prélèvement (avec anonymat labo)"><span class="glyphicon glyphicon-th"></span></a>
+          <?php else : ?>
+              <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant]) ?>" class="btn btn-default btn-xs pull-right transparence-md pull-right" title="Étiquettes de prélèvement"><span class="glyphicon glyphicon-th"></span></a>
+          <?php endif ?>
         </td>
       </tr>
     <?php endforeach; ?>

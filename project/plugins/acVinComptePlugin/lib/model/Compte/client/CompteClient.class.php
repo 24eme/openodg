@@ -135,6 +135,7 @@ class CompteClient extends acCouchdbClient {
       $q->addFacet($elasticaFacet);
       try {
           $index = acElasticaManager::getType('COMPTE');
+          $resset = $index->search($q);
       } catch(Exception $e) {
           return array();
       }
@@ -290,7 +291,11 @@ class CompteClient extends acCouchdbClient {
       }
       return strcmp($a->id, $b->id);
     }
+
     public function calculCoordonnees($adresse, $commune, $code_postal) {
+        if (!$adresse) {
+		$adresse = '';
+	}
         $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
         $url = CompteClient::API_ADRESSE_URL.'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
 

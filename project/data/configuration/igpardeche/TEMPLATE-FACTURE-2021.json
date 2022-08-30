@@ -27,7 +27,10 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getVolumeVininifieFromDocumentDouanier"
+                   "callback": "getVolumeVininifieFromDocumentDouanier",
+                   "callback_parameters": [
+                       "NOT certifications/VSIG"
+                   ]
                }
            }
        },

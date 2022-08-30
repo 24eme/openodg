@@ -41,6 +41,10 @@
     _doc.ready(function()
     {
         $.formModificationCompte();
+        $(".removetag").click(function() {
+            return confirm('Etes vous sur(e) de vouloir supprimer définivement ce tag pour ces <?php echo $nb_results; ?> fiches ?');
+        });
+        $("#contacts_all").click(function () { $('#recherche_contact_form').submit(); });
     });
 
 })(jQuery);

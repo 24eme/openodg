@@ -93,15 +93,23 @@ class HabilitationProduit extends BaseHabilitationProduit {
       return false;
     }
 
-    public function updateHabilitation($activite, $statut, $commentaire = "", $date = ''){
+    public function updateHabilitation($activite, $sites, $statut, $commentaire = "", $date = ''){
         if (!$this->exist('activites')) {
           $this->initActivites();
         }
         if (!$this->activites->exist($activite)) {
           throw new sfException('activite '.$activite.' non supportée');
         }
-        $a = $this->add('activites')->add($activite);
-        return $this->activites->get($activite)->updateHabilitation($statut, $commentaire, $date);
+        if (!$sites || !count($sites)) {
+            $a = $this->add('activites')->add($activite);
+            $this->activites->get($activite)->updateHabilitation($statut, null, $commentaire, $date);
+        }else {
+            foreach($sites as $k => $site) {
+                $kactivite = $activite.'-'.$k;
+                $a = $this->add('activites')->add($kactivite);
+                $this->activites->get($kactivite)->updateHabilitation($statut, $site, $commentaire, $date);
+            }
+        }
     }
 
 

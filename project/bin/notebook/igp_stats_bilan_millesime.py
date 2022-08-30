@@ -16,7 +16,7 @@ if(len(sys.argv)<2):
     print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
     exit()
 dossier_igp = "exports_"+sys.argv[1]
-igp = sys.argv[1].replace('igp',"")
+igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
 today= datetime.now()
 
 if(len(sys.argv)>2):
@@ -36,7 +36,7 @@ else:
     datemax_exact =  str(int(today.year)-1)+'-12-31'
     
 exportdir = '../../web/'+dossier_igp
-outputdir = exportdir+'/stats/'+millesime
+outputdir = exportdir.replace('/GLOBAL',"")+'/stats/'+millesime
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)   
 

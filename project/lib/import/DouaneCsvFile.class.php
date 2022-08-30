@@ -32,13 +32,14 @@ class DouaneCsvFile
   const CSV_ORGANISME = 27;
   const CSV_HASH_PRODUIT = 28;
   const CSV_LAST_DREV_ID_IF_EXISTS = 29;
-  const CSV_DOCUMENT_ID = 30;
-  const CSV_FAMILLE_DOCUMENT_CALCULEE = 31;
-  const CSV_MILLESIME = 32;
-  const CSV_FAMILLE_LIGNE_CALCULEE = 33;
-  const CSV_SUBCOLONNE_DOUANE_ID = 32;
+  const CSV_LAST_DREV_ID_IF_WITH_FILTER_EXISTS = 30;
+  const CSV_DOCUMENT_ID = 31;
+  const CSV_FAMILLE_DOCUMENT_CALCULEE = 32;
+  const CSV_MILLESIME = 33;
+  const CSV_FAMILLE_LIGNE_CALCULEE = 34;
+  const CSV_LABEL_CALCULEE = 35;
 
-  const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Valeur Motif / Raison Sociale Tiers;Code Commune Tiers;Commune Tiers;Id Colonne;Organisme;Hash produit;Last DRev id if exist;Doc Id;Famille calculee;Millesime;Famille ligne calculee'."\n";
+  const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Valeur Motif / Raison Sociale Tiers;Code Commune Tiers;Commune Tiers;Id Colonne;Organisme;Hash produit;Last DRev id if exist;Last DRev id with produit filter if exist;Doc Id;Famille calculee;Millesime;Famille ligne calculee;label calculee'."\n";
 
   protected $file = null;
   protected $separator = null;

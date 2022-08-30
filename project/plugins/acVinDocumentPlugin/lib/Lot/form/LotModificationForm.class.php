@@ -4,7 +4,7 @@ class LotModificationForm extends LotForm
 {
     public function configure() {
         parent::configure();
-
+        $this->all_produits = true;
         $this->widgetSchema->setNameFormat('lot_modification[%s]');
     }
 

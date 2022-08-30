@@ -83,6 +83,8 @@ class GenerationExportSage extends GenerationAbstract
         fclose($handle_clients);
 
         if($hasExportSageWithTxt){
+          shell_exec(sprintf("mv %s %s ; cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$facturesfile, sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", sfConfig::get('sf_web_dir')."/".$facturesfile));
+          shell_exec(sprintf("mv %s %s ; cat %s | iconv -f UTF8 -t ISO-8859-1//TRANSLIT > %s", sfConfig::get('sf_web_dir')."/".$facturesfile, sfConfig::get('sf_web_dir')."/".$facturesfile.".tmp", sfConfig::get('sf_web_dir')."/".$clientsfile.".tmp", sfConfig::get('sf_web_dir')."/".$clientsfile));
           file_put_contents(sfConfig::get('sf_web_dir')."/".$sagefile, shell_exec(sprintf("bash %s/bin/facture/csv2sage.sh %s %s", sfConfig::get('sf_root_dir'), sfConfig::get('sf_web_dir')."/".$clientsfile, sfConfig::get('sf_web_dir')."/".$facturesfile)));
         }else{
           $clientsfileIbm437Content = shell_exec(sprintf("cat %s | iconv -f UTF8 -t IBM437//TRANSLIT", sfConfig::get('sf_web_dir')."/".$clientsfile));

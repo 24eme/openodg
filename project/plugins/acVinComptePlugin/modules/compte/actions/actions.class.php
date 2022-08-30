@@ -122,6 +122,7 @@ class compteActions extends sfCredentialActions {
 
     private function initSearch(sfWebRequest $request, $extratag = null, $excludeextratag = false) {
       $query = $request->getParameter('q', '*');
+      $this->notfacets = array();
       $this->hasFilters = false;
       if($query == ""){
         $query.="*";
@@ -134,17 +135,26 @@ class compteActions extends sfCredentialActions {
       }
       $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
       $this->selected_typetags = array();
+      $this->selected_nottypetags = array();
       if (count($this->selected_rawtags) > 0) {
           $this->hasFilters = true;
       }
       foreach ($this->selected_rawtags as $t) {
-		if (preg_match('/^([^:]+):(.+)$/', $t, $m)) {
-	  		if (!isset($this->selected_typetags[$m[1]])) {
-	    		$this->selected_typetags[$m[1]] = array();
+		if (preg_match('/^(\!?)([^:]+):(.+)$/', $t, $m)) {
+	  		if (!isset($this->selected_typetags[$m[2]])) {
+	    		$this->selected_typetags[$m[2]] = array();
 	  		}
-	  		$this->selected_typetags[$m[1]][] = $m[2];
+	  		$this->selected_typetags[$m[2]][] = $m[1].$m[3];
+            if ($m[1]) {
+                $query .=  ' NOT(';
+                $this->selected_nottypetags[$m[2]][] = $m[3];
+            }
+            $t = $m[2].':'.$m[3];
 		}
 		$query .= ' doc.tags.'.$t;
+        if ($m[1]) {
+            $query .= ') ';
+        }
       }
       $this->real_q = $query;
       if ($extratag) {
@@ -439,7 +449,12 @@ class compteActions extends sfCredentialActions {
           $this->results = $resset->getResults();
           $this->nb_results = $resset->getTotalHits();
           $this->facets = $resset->getFacets();
-      }catch(sfException $e) {
+          foreach($this->selected_nottypetags as $type => $nottags) {
+                foreach($nottags as $nottag) {
+                    $this->facets[$type]['buckets'][] = array('key' => $nottag, 'doc_count' => -1);
+                }
+          }
+      }catch(Exception $e) {
           $this->results = array();
           $this->nb_results = 0;
           $this->facets = array();

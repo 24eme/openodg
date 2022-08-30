@@ -11,7 +11,7 @@
     <div class="col-xs-12 ">
         <div class="well">
             <span>
-                Les sociétés suivantes possède un raison sociale proche de <strong>"<?php echo $raison_sociale; ?>"</strong> et sont aussi de type <strong><?php echo $type; ?></strong>
+                Les sociétés suivantes possède un raison sociale proche de <strong>"<?php echo $raison_sociale; ?>"</strong>.
             </span>
         </div>
     </div>

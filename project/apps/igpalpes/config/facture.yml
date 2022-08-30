@@ -8,5 +8,5 @@ all:
       export_sage_width_txt: true
       all_etablissements: true
       modalite_paiement: "- comptant  par virement ou chèques"
-      uniq_template_prefix: "TEMPLATE-FACTURE"
+      uniq_template_prefix: false
       paiements: true

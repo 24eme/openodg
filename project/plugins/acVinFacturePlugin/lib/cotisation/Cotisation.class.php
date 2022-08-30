@@ -59,6 +59,13 @@ class Cotisation
 		return $this->getConfig()->callback_parameters->toArray(true, false);
 	}
 
+    public function getConfigDate() {
+		if(!$this->getConfig()->exist('date')) {
+			return null;
+		}
+		return $this->getConfig()->date;
+	}
+
 
 	protected function getDoc() {
 

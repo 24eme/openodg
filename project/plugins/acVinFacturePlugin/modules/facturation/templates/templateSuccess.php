@@ -21,7 +21,8 @@
 <?php foreach($template->cotisations as $cotisation): ?>
     <?php foreach($cotisation->details as $detail): ?>
     <tr>
-        <td><?php echo $cotisation->libelle ?> <?php echo $detail->libelle ?></td>
+        <td><?php echo $cotisation->libelle ?> <?php echo $detail->libelle ?>
+        <?php if($detail->exist('date')): ?><br /><small class="text-muted">Date : <?php echo $detail->date ?></small><?php endif; ?></td>
         <td><?php echo $cotisation->code_comptable ?></td>
         <td><?php echo str_replace("Cotisation", "", $detail->modele) ?></td>
         <td class="text-right"><?php echo $detail->prix ?>&nbsp;€</td>
