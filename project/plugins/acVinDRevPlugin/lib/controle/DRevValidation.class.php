@@ -69,6 +69,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC));
 
         /* Lots */
 
@@ -77,6 +79,10 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', "Ce lot IGP est inexistant dans la DR.");
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
+
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_libre',"Le volume de Méditerranée Rosé est supérieur au volume commerciable libre");
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Le volume de Méditerranée rosé de la DR est supérieur au volume complémentaire de développement maximum");
+
     }
 
     public function controle()
@@ -92,6 +98,7 @@ class DRevValidation extends DeclarationLotsValidation
           $produits[$hash] = $produit;
         }
         $this->controleNeant();
+        $this->controleVolumeMediterraneeRoseDeclare();
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleEngagementMutage();
@@ -360,5 +367,41 @@ class DRevValidation extends DeclarationLotsValidation
                 }
             }
         }
+    }
+
+    protected function controleVolumeMediterraneeRoseDeclare(){
+        $cvi_operateur = $this->document->declarant->cvi;
+        $volumeTotalMediterraneeRose = $this->document->summerizeProduitsLotsByCouleur()["Méditerranée Rosé"]["volume_total"];
+
+        $volumeCommercialisableLibre = $this->getVolumeCommercialisableAndVolumeComplementaireMax($cvi_operateur)['volume_commercialisable_libre'];
+        $volumeMaxAutorisé = $this->getVolumeCommercialisableAndVolumeComplementaireMax($cvi_operateur)['volume_complementaire_de_developpement_max'];
+
+        if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRose) && ($volumeTotalMediterraneeRose < $volumeMaxAutorisé)):
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_libre', '', $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+        elseif($volumeMaxAutorisé < $volumeTotalMediterraneeRose):
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', '', $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC,'');
+        endif;
+    }
+
+    protected function getVolumeCommercialisableAndVolumeComplementaireMax($cvi){
+
+        $configFile = fopen(dirname(__FILE__).'/../../config/VIP2C2022.csv', "r");
+
+        while (!feof($configFile) ) {
+            $line[] = fgetcsv($configFile);
+        }
+        fclose($configFile);
+
+        foreach($line as $l){
+            if($l[0] == $cvi){
+                $result = array();
+                $result['volume_commercialisable_libre'] = $l[1];
+                $result['volume_complementaire_de_developpement_max'] = $l[2];
+                return $result;
+            }
+        }
+        return false;
     }
 }

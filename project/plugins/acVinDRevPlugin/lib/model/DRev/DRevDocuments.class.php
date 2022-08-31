@@ -17,6 +17,8 @@ class DRevDocuments extends BaseDRevDocuments
 	const DOC_DEPASSEMENT_CONSEIL = 'DEPASSEMENT_CONSEIL';
 	const DOC_ELEVAGE_CONTACT_SYNDICAT = 'ELEVAGE_CONTACT_SYNDICAT';
 	const DOC_REVENDICATION_SUPERFICIE_DAE = 'REVENDICATION_SUPERFICIE_DAE';
+    const DOC_VIP2C_OUEX_CONDITIONNEMENT = "VIP2C_OUEX_CONDITIONNEMENT";
+    const DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC= "VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC";
 
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
@@ -56,7 +58,11 @@ class DRevDocuments extends BaseDRevDocuments
 		DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF => "Je n'ai aucune parcelle avec un % de manquants > à 20%",
 		DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP => "Je m'engage à transmettre à mon ODG la liste de mes parcelles avec un % de manquants > à 20%",
 		DRevDocuments::DOC_DEPASSEMENT_CONSEIL => "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil",
-		DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT => "Je m'engage à contacter le syndicat quand le vin sera prêt");
+		DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT => "Je m'engage à contacter le syndicat quand le vin sera prêt",
+        DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT => "Je m'engage à avoir un avis de conditionnement pour les volumes de Méditerranée Rosé en plus",
+        DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC => "Je m'engage à avoir un contrat de vente en vrac pour les volumes de Méditerranée Rosé en plus"
+
+    );
 
 	private static $_statut_libelles = array(
 		self::STATUT_EN_ATTENTE => 'En attente de réception',
