@@ -12,6 +12,7 @@ import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 datemax = None
+datemin = None
 millesime = None
 
 
@@ -26,37 +27,33 @@ if sys.argv[0].find('launcher') == -1 :
 
     igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
 
+    date = '%04d-%02d-%02d' % (datetime.now().year, datetime.now().month, datetime.now().day)
     if(len(sys.argv)>2):
-        millesime = sys.argv[2]
-
+        date = sys.argv[2]
     if(len(sys.argv)>3):
-        datemax = sys.argv[3]
+        datemin = sys.argv[3]
+
 else:
     igp = "gascogne"
-    datemax = "2022-07-31"
-    millesime = "2021"
+    date = "2022-07-31"
 
 
-# In[3]:
+# In[12]:
 
-
-today= datetime.now()
+fromday= datetime(int(date[0:4]), int(date[5:7]), int(date[8:10]))
 
 dossier_igp = "exports_igp"+igp
 
-if not millesime:
-    debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
-    millesime = str(debutcampagne.year)
+debutcampagne = fromday - dateutil.relativedelta.relativedelta(months=10)
+millesime = str(debutcampagne.year)
 
-if(datemax == "08-12"):  #si troisieme argument vaut 08-12  on prend en compte le 01-08 et le 31-12
-    datemin = str(int(millesime)+1)+'-07-31'
-    datemax = str(int(millesime)+2)+'-01-01'
-datemax_exact = str(int(millesime)+1)+'-12-31'
+if (fromday.month > 7):
+    datemax = str(int(millesime) + 1)+'-08-01'
+    datemax_exact =  str(int(millesime) + 1)+'-07-31'
+else:
+    datemax = str(int(fromday.year))+'-01-01'
+    datemax_exact =  str(int(fromday.year)-1)+'-12-31'
 
-if not datemax:
-    datemax = str(int(today.year))+'-01-01'
-    datemax_exact =  str(int(today.year)-1)+'-12-31'
-    
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir.replace('/GLOBAL',"")+'/stats/'+millesime
 
@@ -64,27 +61,22 @@ if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)
 
 drev_lots = pd.read_csv(exportdir+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
-lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
 changement_deno = pd.read_csv(exportdir+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
 
-#lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
 changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changement_deno["Type"] == "DRev:Changé") ]
-changement_deno = changement_deno[changement_deno["Date de commission"] < datemax]
-if ("datemin" in locals()): changement_deno = changement_deno[changement_deno["Date de commission"] > datemin]
 
 lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
-
+lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 
 # In[ ]:
 
 
 drev_lots = drev_lots.rename(columns = {'Date de commission': 'Date_lot'})
-
 drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
 drev_lots = drev_lots.query("Date_lot < @datemax")
-if ("datemin" in locals()): drev_lots = drev_lots.query("Date_lot > @datemin")
+if datemin: drev_lots = drev_lots.query("Date_lot > @datemin")
 drev_lots['Lieu'] = drev_lots['Lieu'].fillna('')
 drev_lots = drev_lots.groupby(['Appellation','Couleur','Lieu','Produit'])[["Volume"]].sum()
 drev_lots ['Type'] = "VOLUME REVENDIQUE"
@@ -95,18 +87,15 @@ final = drev_lots
 # In[ ]:
 
 
-
 lots = lots.query("Millésime == @millesime")
 lots = lots[lots["Date commission"] < datemax]
-if ("datemin" in locals()) : lots = lots[lots["Date de commission"] > datemin]
+if datemin : lots = lots[lots["Date commission"] > datemin]
 
-conforme = "Conforme"
-rep_conforme = "Réputé conforme"
-conforme_appel="Conforme en appel"
-elevage="En élevage"
-
-lots = lots.rename(columns = {'Statut de lot': 'Statut_de_lot'})
-lots = lots.query("Statut_de_lot != @conforme & Statut_de_lot != @rep_conforme & Statut_de_lot != @conforme_appel & Statut_de_lot != @elevage");
+lots = lots[
+    (lots['Statut de lot'] != "Conforme") &
+    (lots['Statut de lot'] != "Réputé conforme") &
+    (lots['Statut de lot'] != "Conforme en appel")
+]
 
 lots['Lieu'] = lots['Lieu'].fillna('')
 lots = lots.groupby(['Appellation','Couleur','Lieu','Produit'])[['Volume']].sum()
@@ -130,6 +119,8 @@ changement_denomination = changement_denomination.query("Origine_Millésime == @
 
 type_de_changement = "DECLASSEMENT"
 changement_denomination_declassement = changement_denomination.query("Type_de_changement == @type_de_changement")
+changement_denomination_declassement = changement_denomination_declassement[changement_denomination_declassement["Origine Date de commission"] < datemax]
+if datemin : changement_denomination_declassement = changement_denomination_declassement[changement_denomination_declassement["Origine Date de commission"] > datemin]
 changement_denomination_declassement = changement_denomination_declassement.groupby(['Origine Appellation','Origine Couleur','Origine Lieu','Origine Produit'])[["Volume changé"]].sum()
 changement_denomination_declassement  = changement_denomination_declassement.reset_index()
 changement_denomination_declassement['Type']= 'DECLASSEMENT'
@@ -142,6 +133,8 @@ final = final.append(changement_denomination_declassement,sort= True)
 
 type_de_changement = "CHANGEMENT"
 changement_denomination = changement_denomination.query("Type_de_changement == @type_de_changement")
+changement_denomination = changement_denomination[changement_denomination["Date de commission"] < datemax]
+if datemin : changement_denomination = changement_denomination[changement_denomination["Date de commission"] > datemin]
 changement_denomination = changement_denomination.groupby(['Origine Appellation','Origine Couleur','Origine Lieu','Origine Produit','Appellation','Couleur','Lieu','Produit'])[["Volume changé"]].sum()
 changement_denomination = changement_denomination.reset_index()
 changement_denomination['Type'] = "CHANGEMENT DENOMINATION SRC = PRODUIT"
@@ -209,7 +202,7 @@ tab_cal['type_declassement'] =  final.query("Type == @type_declassement").groupb
 tab_cal = tab_cal.fillna(0)
 
 tab_cal['A'] = tab_cal['type_vol_revendique'] - tab_cal['type_instance_conformite']
-tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1) 
+tab_cal ['B'] = (tab_cal['type_changement_deno_dest_produit'] - tab_cal['type_changement_deno_src_produit'] - tab_cal['type_declassement']) * (-1)
 tab_cal['A-B'] =  tab_cal['A'] - tab_cal ['B']
 tab_cal = tab_cal.reset_index(level=['Appellation','Lieu','Couleur','Produit'])
 
@@ -219,7 +212,7 @@ tab_cal = tab_cal[['Appellation','Couleur','Lieu','Produit','type_vol_revendique
 # In[ ]:
 
 
-if ("datemin" in locals()):
+if (datemin):
 
     min = str(int(millesime)+1)+'-08-01'
     max = str(int(millesime)+1)+'-12-31'

@@ -29,7 +29,7 @@ if sys.argv[0].find('launcher') == -1 :
 else:
     igp = 'gascogne'
     campagne ="2021-2022"
-    datelimite = '2022-08-01'
+    date = '2022-08-01'
 
 
 # In[43]:
@@ -44,67 +44,59 @@ outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
 
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)
-    
+
 datelimite = str(datetime.now().year)+'-08-01'
 datelimite_exact = str(datetime.now().year)+'-07-31'
-    
+
 if(datetime.now().month >= 10):
     datelimite = str(datetime.now().year + 1)+'-01-01'
     datelimite_exact = str(datetime.now().year)+'-12-31'
-    
+
 if(datetime.now().month <= 3):
     datelimite = str(datetime.now().year )+'-01-01'
     datelimite_exact = str(datetime.now().year - 1)+'-12-31'
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
 drev_lots = drev_lots[drev_lots["Date de commission"] < datelimite]
-
+drev_lots = drev_lots[drev_lots["Millésime"] == millesime]
+drev_lots['Volume'] = drev_lots['Volume'].fillna(0)
+drev_lots = drev_lots.fillna("")
+drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
 
 # In[ ]:
 
 
 etablissements = pd.read_csv(exportdir+"/etablissements.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Login': 'str', 'Identifiant etablissement': 'str', 'CVI': 'str', 'SIRET': 'str'}, index_col=False, low_memory=False)
 societe = pd.read_csv(exportdir+"/societe.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Téléphone' :'str', 'Téléphone portable': 'str'}, index_col=False, low_memory=False)
-lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", index_col=False, low_memory=False)
+lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
 lots = lots.rename(columns = {'Id Opérateur':'Identifiant'})
+lots = lots[lots["Date commission"] < datelimite]
+lots = lots[lots["Millésime"] == millesime]
+lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 
 changement_denomination = pd.read_csv(exportdir+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
-changement_denomination = changement_denomination[changement_denomination["Date de commission"] < datelimite]
-
-
-# In[ ]:
-
-
-lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
-drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
+changement_denomination = changement_denomination[changement_denomination["Origine Millésime"] == millesime]
 changement_denomination = changement_denomination[(changement_denomination["Type"] == "DRev") | (changement_denomination["Type"] == "DRev:Changé") ]
-
+changement_denomination =  changement_denomination.fillna("")
+changement_denomination_initial = changement_denomination
 
 # In[ ]:
 
-
-drev_lots = drev_lots.query("Millésime == @millesime");
-
-drev_lots['Volume'] = drev_lots['Volume'].fillna(0)
-drev_lots = drev_lots.fillna("") 
-
-#drev_lots.loc[drev_lots.Volume ==  '', 'Volume'] = 0 
-
-#VOLUME REVENDIQUE  
+#VOLUME REVENDIQUE
 lignes_volume_revendique = drev_lots.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id'])[["Volume"]].sum()
-lignes_volume_revendique = lignes_volume_revendique.reset_index()             
+lignes_volume_revendique = lignes_volume_revendique.reset_index()
 lignes_volume_revendique = lignes_volume_revendique[['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id','Volume']]
 lignes_volume_revendique['Type'] = "VOLUME REVENDIQUE"
 
 
 drev_lots = drev_lots.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
-drev_lots = drev_lots.reset_index()             
+drev_lots = drev_lots.reset_index()
 drev_lots = drev_lots[['Identifiant','Appellation','Couleur','Produit','Lieu','Volume']]
 
 final = lignes_volume_revendique
 
 
-#VOLUME EN INSTANCE DE CONTROLE  
+#VOLUME EN INSTANCE DE CONTROLE
 
 lots = lots.query("Millésime == @millesime");
 lots["Volume"] = lots["Volume"].fillna(0)
@@ -114,29 +106,28 @@ lots_ini = lots
 lots = lots[lots["Date commission"] < datelimite]
 lots = lots[lots["Volume"] > 0]
 
-lignes_volume_instance_controle = lots[(lots['Statut de lot'] != "Conforme") & (lots['Statut de lot'] != "Réputé conforme") & (lots['Statut de lot'] != "Conforme en appel") & (lots['Statut de lot'] != "En élevage")]
+lignes_volume_instance_controle = lots[
+    (lots['Statut de lot'] != "Conforme") &
+    (lots['Statut de lot'] != "Réputé conforme") &
+    (lots['Statut de lot'] != "Conforme en appel")
+]
 lignes_volume_instance_controle = lignes_volume_instance_controle.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id'])[["Volume"]].sum()
 lignes_volume_instance_controle = lignes_volume_instance_controle.reset_index()
 
-lignes_volume_instance_controle= lignes_volume_instance_controle[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu','Lot unique Id']]
+lignes_volume_instance_controle = lignes_volume_instance_controle[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu','Lot unique Id']]
 lignes_volume_instance_controle['Type'] = "VOLUME EN INSTANCE DE CONTROLE"
 
 
-final = final.append(lignes_volume_instance_controle,sort= True)    
+final = final.append(lignes_volume_instance_controle,sort= True)
 
-#CHANGEMENT DE DENO & DECLASSEMENT   
-
-changement_denomination =  changement_denomination.fillna("")    
-changement_denomination = changement_denomination.query("Millésime == @millesime")
-changement_denomination_initial = changement_denomination
-
+#CHANGEMENT DE DENO & DECLASSEMENT
 
 #DECLASSEMENT
-
 lignes_declassement = changement_denomination[changement_denomination['Type de changement'] == "DECLASSEMENT"]
-lignes_declassement = lignes_declassement.fillna("")    
+lignes_declassement = lignes_declassement[lignes_declassement["Origine Date de commission"] < datelimite]
+lignes_declassement = lignes_declassement.fillna("")
 lignes_declassement = lignes_declassement.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Origin Lot unique Id'])[["Volume changé"]].sum()
-lignes_declassement = lignes_declassement.reset_index()  
+lignes_declassement = lignes_declassement.reset_index()
 lignes_declassement = lignes_declassement.rename(columns = {'Origine Appellation': 'Appellation','Origine Couleur':'Couleur','Origine Lieu':'Lieu','Origin Lot unique Id':'Lot unique Id','Volume changé':'Volume','Origine Produit':'Produit'})
 lignes_declassement['Type']= 'DECLASSEMENT'
 lignes_declassement = lignes_declassement[['Identifiant','Appellation','Couleur','Produit','Lieu','Lot unique Id','Volume','Type']]
@@ -147,8 +138,9 @@ final = final.append(lignes_declassement,sort= True)
 #CHANGEMENT DENOMINATION SRC = PRODUIT
 
 changement_deno = changement_denomination[changement_denomination['Type de changement'] == "CHANGEMENT"]
+changement_deno = changement_deno[changement_deno["Date de commission"] < datelimite]
 
-changement_deno = changement_deno.fillna("") 
+changement_deno = changement_deno.fillna("")
 
 
 changement_deno = changement_deno.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Appellation','Couleur','Lieu','Produit','Origin Lot unique Id'])[["Volume changé"]].sum()
@@ -171,7 +163,8 @@ final = final.append(changement_deno,sort= True)
 #CHANGEMENT DENOMINATION DEST = PRODUIT
 
 changement_deno_dest = changement_denomination[changement_denomination['Type de changement'] == "CHANGEMENT"]
-changement_deno_dest = changement_deno_dest.fillna("")    
+changement_deno_dest = changement_deno_dest[changement_deno_dest["Date de commission"] < datelimite]
+changement_deno_dest = changement_deno_dest.fillna("")
 changement_deno_dest = changement_deno_dest.groupby(['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origine Lieu','Lot unique Id','Appellation','Couleur','Lieu','Produit'])[["Volume changé"]].sum()
 changement_deno_dest = changement_deno_dest.reset_index()
 changement_deno_dest = changement_deno_dest.rename(columns = {'Volume changé':'Volume'})
@@ -194,9 +187,9 @@ final['url']= "https://"+igp+".igp.vins.24eme.fr/historique/"+final['Identifiant
 
 
 
-#on mets en commun chaque volume d'un lot par opérateur en fonction du produit et de son type (volume revendique, en cours de controle ...) 
+#on mets en commun chaque volume d'un lot par opérateur en fonction du produit et de son type (volume revendique, en cours de controle ...)
 final = final.groupby(['Identifiant','Appellation','Couleur','Produit','Type','Lieu'])[["Volume"]].sum()
-final = final.reset_index()  
+final = final.reset_index()
 
 final = final.sort_values(by=['Identifiant','Appellation','Couleur'])
 
@@ -216,7 +209,7 @@ tab_cal = final.groupby(['Identifiant','Appellation','Couleur','Produit','Lieu']
 
 
 
-tab_cal['type_vol_revendique'] =  final.query("Type == @type_vol_revendique").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()      
+tab_cal['type_vol_revendique'] =  final.query("Type == @type_vol_revendique").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
 tab_cal['type_instance_controle'] =  final.query("Type == @type_instance_controle").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
 tab_cal['type_changement_deno_src_produit'] =  final.query("Type == @type_changement_deno_src_produit").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
 tab_cal['type_changement_deno_dest_produit'] =  final.query("Type == @type_changement_deno_dest_produit").groupby(['Identifiant','Appellation','Couleur','Produit','Lieu'])[["Volume"]].sum()
@@ -235,7 +228,7 @@ tab_cal = tab_cal.reset_index(level=['Identifiant','Appellation','Couleur','Prod
 tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B']]
 
 
-tab_cal = pd.merge(tab_cal,drev_lots,how='left',left_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],right_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],suffixes=("", " info-operateur"))    
+tab_cal = pd.merge(tab_cal,drev_lots,how='left',left_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],right_on=["Identifiant",'Appellation','Couleur','Lieu','Produit'],suffixes=("", " info-operateur"))
 tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B']]
 
 #print(tab_cal)
@@ -253,7 +246,7 @@ tab_cal = tab_cal[['Identifiant','Appellation','Couleur','Produit','Volume','Lie
 
 
 etablissements = pd.merge(etablissements,societe,how='outer',left_on="Login",right_on='Identifiant',suffixes=('',' societe'))
-tab_cal = pd.merge(tab_cal,etablissements,how='left',left_on=['Identifiant'],right_on=['Identifiant etablissement'],suffixes=(''," etablissement"))    
+tab_cal = pd.merge(tab_cal,etablissements,how='left',left_on=['Identifiant'],right_on=['Identifiant etablissement'],suffixes=(''," etablissement"))
 tab_cal = tab_cal[['Identifiant','Titre societe','Raison sociale societe','Titre', 'Raison sociale','CVI','SIRET','Famille',"Adresse societe","Adresse 2 societe",'Adresse 3 societe','Code postal societe','Commune societe', 'Pays', 'Code comptable societe','Téléphone',"Téléphone portable",'Fax societe','Email societe','Appellation','Couleur','Produit','Volume','Lieu','type_vol_revendique','type_instance_controle','type_changement_deno_dest_produit','type_changement_deno_src_produit','type_declassement','A','B','A-B','Somme Volume lots.csv']]
 tab_cal = tab_cal.rename(columns = {'Raison sociale': 'Nom etablissement','Raison sociale societe':'Nom societe','Adresse societe':'Adresse','Adresse 2 societe':'Adresse 2','Adresse 3 societe':'Adresse 3','Code postal societe':'Code postal','Email Operateur':'Email','Fax societe':'Fax'})
 
@@ -263,7 +256,7 @@ tab_cal.reset_index(drop=True).to_csv(outputdir+'/'+datelimite_exact+'_'+millesi
 needincoherence = (len(lots) == len(lots_ini))
 
 #pour comparer avec incoherence:
-if (needincoherence):           
+if (needincoherence):
 
     incoherent = tab_cal
     incoherent['Difference A-B / Somme Lots.csv'] = round(incoherent['A-B'] - incoherent['Somme Volume lots.csv'],5)
@@ -275,7 +268,7 @@ if (needincoherence):
     #pour avoir l'unique id du lot
     changement_denomination_initial = changement_denomination_initial[['Identifiant','Origine Appellation','Origine Couleur','Origine Produit','Origin Lot unique Id']]
 
-    changement_denomination_initial.drop_duplicates(keep = 'first')  
+    changement_denomination_initial.drop_duplicates(keep = 'first')
 
     incoherent = pd.merge(incoherent,changement_denomination_initial,how='left',left_on = ['Identifiant','Appellation','Couleur','Produit'], right_on = ['Identifiant','Origine Appellation','Origine Couleur','Origine Produit'], suffixes=('',' plus'))
 
