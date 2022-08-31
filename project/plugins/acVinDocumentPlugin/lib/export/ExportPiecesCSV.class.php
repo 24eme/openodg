@@ -19,7 +19,7 @@ class ExportPiecesCSV {
     }
 
     public function protectStr($str) {
-    	return str_replace('-', ';',  str_replace('"', '', $str));
+    	return str_replace(';', '-',  str_replace('"', '', $str));
     }
 
     protected function formatFloat($value) {
