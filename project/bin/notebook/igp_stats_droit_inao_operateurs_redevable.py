@@ -99,12 +99,11 @@ final = lignes_volume_revendique
 #VOLUME EN INSTANCE DE CONTROLE
 
 lots = lots.query("Millésime == @millesime");
+lots = lots[lots["Date commission"] < datelimite]
+lots = lots[lots["Volume"] > 0]
 lots["Volume"] = lots["Volume"].fillna(0)
 lots = lots.fillna("")
 lots_ini = lots
-
-lots = lots[lots["Date commission"] < datelimite]
-lots = lots[lots["Volume"] > 0]
 
 lignes_volume_instance_controle = lots[
     (lots['Statut de lot'] != "Conforme") &
