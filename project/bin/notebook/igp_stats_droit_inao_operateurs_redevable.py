@@ -276,21 +276,3 @@ if (needincoherence):
 
     incoherent.reset_index(drop=True).to_csv(outputdir+'/incoherent.csv', encoding="iso8859_15", sep=";",index=False,  decimal=",")
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
