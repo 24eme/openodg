@@ -11,39 +11,57 @@ from datetime import datetime
 import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
+datemax = None
+millesime = None
 
-if(len(sys.argv)<2):
-    print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
-    exit()
-dossier_igp = "exports_"+sys.argv[1]
-igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
+
+# In[2]:
+
+
+if sys.argv[0].find('launcher') == -1 :
+
+    if(len(sys.argv)<2):
+        print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
+        exit()
+
+    igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
+
+    if(len(sys.argv)>2):
+        millesime = sys.argv[2]
+
+    if(len(sys.argv)>3):
+        datemax = sys.argv[3]
+else:
+    igp = "gascogne"
+    datemax = "2022-07-31"
+    millesime = "2021"
+
+
+# In[3]:
+
+
 today= datetime.now()
 
-if(len(sys.argv)>2):
-    millesime = sys.argv[2]
-else:
+dossier_igp = "exports_igp"+igp
+
+if not millesime:
     debutcampagne = today - dateutil.relativedelta.relativedelta(months=10)
     millesime = str(debutcampagne.year)
-    
-if(len(sys.argv)>3):
-    datemax = sys.argv[3]
-    if(sys.argv[3] == "08-12"):  #si troisieme argument vaut 08-12  on prend en compte le 01-08 et le 31-12
-        datemin = str(int(millesime)+1)+'-07-31'
-        datemax = str(int(millesime)+2)+'-01-01'
-        datemax_exact = str(int(millesime)+1)+'-12-31'
-else:
+
+if(datemax == "08-12"):  #si troisieme argument vaut 08-12  on prend en compte le 01-08 et le 31-12
+    datemin = str(int(millesime)+1)+'-07-31'
+    datemax = str(int(millesime)+2)+'-01-01'
+datemax_exact = str(int(millesime)+1)+'-12-31'
+
+if not datemax:
     datemax = str(int(today.year))+'-01-01'
     datemax_exact =  str(int(today.year)-1)+'-12-31'
     
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir.replace('/GLOBAL',"")+'/stats/'+millesime
-if(not os.path.isdir(outputdir)):
-    os.mkdir(outputdir)   
 
-#dossier_igp = "exports_igpgascogne"
-#igp = "gascogne"
-#datemax = "2022-01-01"
-#millesime = "2019"
+if(not os.path.isdir(outputdir)):
+    os.mkdir(outputdir)
 
 drev_lots = pd.read_csv(exportdir+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'}, low_memory=False)
 lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str'}, index_col=False, low_memory=False)
@@ -52,16 +70,16 @@ changement_deno = pd.read_csv(exportdir+"/changement_denomination.csv", encoding
 #lots = lots[(lots['Origine'] == "DRev") | (lots['Origine'] == "DRev:Changé") ]
 drev_lots = drev_lots[drev_lots["Type"] == "DRev"]
 changement_deno = changement_deno[(changement_deno["Type"] == "DRev") | (changement_deno["Type"] == "DRev:Changé") ]
-changement_deno = changement_deno[changement_deno["Date de validation ODG"] < datemax]
-if ("datemin" in locals()): changement_deno = changement_deno[changement_deno["Date de validation ODG"] > datemin]
+changement_deno = changement_deno[changement_deno["Date de commission"] < datemax]
+if ("datemin" in locals()): changement_deno = changement_deno[changement_deno["Date de commission"] > datemin]
 
-lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
+lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
 
 
 # In[ ]:
 
 
-drev_lots = drev_lots.rename(columns = {'Date lot': 'Date_lot'})
+drev_lots = drev_lots.rename(columns = {'Date de commission': 'Date_lot'})
 
 drev_lots['Millesime'] = millesime
 drev_lots = drev_lots.query("Millésime == @millesime")
@@ -79,8 +97,8 @@ final = drev_lots
 
 
 lots = lots.query("Millésime == @millesime")
-lots = lots[lots["Date lot"] < datemax]
-if ("datemin" in locals()) : lots = lots[lots["Date lot"] > datemin]
+lots = lots[lots["Date commission"] < datemax]
+if ("datemin" in locals()) : lots = lots[lots["Date de commission"] > datemin]
 
 conforme = "Conforme"
 rep_conforme = "Réputé conforme"

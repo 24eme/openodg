@@ -11,19 +11,34 @@ from datetime import datetime
 import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
+millesime = None
 
-dossier_igp = "exports_"+sys.argv[1]
-igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
 
-if(len(sys.argv)<2):
-    print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
-    exit()
+# In[42]:
 
-millesime = str((datetime.now() - dateutil.relativedelta.relativedelta(months=10)).year)
-    
-if(len(sys.argv)>2):
-    millesime = sys.argv[2]
-    
+
+if sys.argv[0].find('launcher') == -1 :
+    if(len(sys.argv)<2):
+        print ("DONNER EN PARAMETRE DU SCRIPT LE NOM DE L'IGP")
+        exit()
+
+    igp = sys.argv[1].replace('igp',"").replace('/GLOBAL',"")
+
+    if(len(sys.argv)>2):
+        millesime = sys.argv[2]
+else:
+    igp = 'gascogne'
+    campagne ="2021-2022"
+    datelimite = '2022-08-01'
+
+
+# In[43]:
+
+
+dossier_igp = "exports_igp"+igp
+if not millesime:
+    millesime = str((datetime.now() - dateutil.relativedelta.relativedelta(months=10)).year)
+
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
 
@@ -41,14 +56,8 @@ if(datetime.now().month <= 3):
     datelimite = str(datetime.now().year )+'-01-01'
     datelimite_exact = str(datetime.now().year - 1)+'-12-31'
 
-    """
-dossier_igp = "exports_igpgascogne"
-igp = 'gascogne'
-campagne ="2020-2021"
-datelimite = '2021-08-01'
-"""
-drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str'}, low_memory=False)
-drev_lots = drev_lots[drev_lots["Date lot"] < datelimite]
+drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
+drev_lots = drev_lots[drev_lots["Date de commission"] < datelimite]
 
 
 # In[ ]:
@@ -60,7 +69,7 @@ lots = pd.read_csv(exportdir+"/lots.csv", encoding="iso8859_15", delimiter=";", 
 lots = lots.rename(columns = {'Id Opérateur':'Identifiant'})
 
 changement_denomination = pd.read_csv(exportdir+"/changement_denomination.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Campagne': 'str', 'Millésime':'str','Origine Millésime':'str'}, index_col=False, low_memory=False)
-changement_denomination = changement_denomination[changement_denomination["Date de validation ODG"] < datelimite]
+changement_denomination = changement_denomination[changement_denomination["Date de commission"] < datelimite]
 
 
 # In[ ]:
@@ -102,7 +111,7 @@ lots["Volume"] = lots["Volume"].fillna(0)
 lots = lots.fillna("")
 lots_ini = lots
 
-lots = lots[lots["Date lot"] < datelimite]
+lots = lots[lots["Date commission"] < datelimite]
 lots = lots[lots["Volume"] > 0]
 
 lignes_volume_instance_controle = lots[(lots['Statut de lot'] != "Conforme") & (lots['Statut de lot'] != "Réputé conforme") & (lots['Statut de lot'] != "Conforme en appel") & (lots['Statut de lot'] != "En élevage")]
