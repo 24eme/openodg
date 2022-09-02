@@ -1271,13 +1271,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->etablissement;
     }
 
-    public function initProduits() {
-        $produits = $this->getConfigProduits();
-        foreach ($produits as $produit) {
-            $this->addProduit($produit->getHash());
-        }
-    }
-
     protected function updateProduitDetailFromCSV($csv) {
         $this->resetProduitDetail();
         foreach ($csv as $line) {
@@ -1506,6 +1499,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->saveDocumentsDependants();
         }
 
+        $this->hasVolumeSeuilAndSetIfNecessary(); //fonction dans laquelle si il le cvi du declarant
+                                                                                         //se trouve dans le csvdeConf alors ajoute le champs volume_revendique_seuil.
         return $saved;
     }
 
@@ -2413,4 +2408,63 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return -1;
     }
 
+
+    public function hasVolumeSeuilAndSetIfNecessary(){
+
+        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+            return false;
+        }
+
+        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
+
+        if(!($this->getCampagne() == DRevConfiguration::getInstance()->getCampagneVolumeSeuil())){
+            return false;
+        }
+        if(!$produit->exist('volume_revendique_seuil') && !($this->getVolumeSeuilFromCSV($this->declarant->cvi))){
+            return false;
+        }
+        if($produit->exist('volume_revendique_seuil')){
+            return true;
+        }
+
+        $volumeSeuil = $this->getVolumeSeuilFromCSV($this->declarant->cvi);
+        $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
+        $this->save();
+
+        return true;
+
+    }
+
+    public function getVolumeRevendiqueSeuil($produit){
+        foreach($this->getProduits() as $p){
+            if($p['libelle'] == $produit){
+                return $p["volume_revendique_seuil"];
+            }
+        }
+    }
+
+    public function getVolumeCommercialisableLibre($produit){
+        $volumeSeuil = $this->getVolumeRevendiqueSeuil($produit);
+        return $volumeSeuil*(100/105);
+    }
+
+    protected function getVolumeSeuilFromCSV($cvi){
+        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()){
+            return null;
+        }
+
+        $configFile =fopen(sfConfig::get('sf_root_dir').DRevConfiguration::getInstance()->getVIP2CCsvPath(), "r");
+
+        $volumes = array();
+        while (!feof($configFile) ) {
+            $line = fgetcsv($configFile);
+            $volumes[$line[3]] = $line[11];
+        }
+        fclose($configFile);
+
+        if (!isset($volumes[$cvi])) {
+            return null;
+        }
+        return $volumes[$cvi];
+    }
 }

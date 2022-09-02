@@ -14,7 +14,7 @@
                             continue;
                         endif;
                     endforeach;
-                    if($VIP2C):?> <li class="text-left" style="list-style-type: none;">Merci de sélectionner <strong>1</strong> engagement qui explique pourquoi le volume de Méditerrannée rosé dépasse le volume autorisé</li>
+                    if($VIP2C):?> <li class="text-left" style="list-style-type: none;">Merci de sélectionner <strong>1</strong> engagement qui justifie le dépassement du volume de Méditerrannée rosé</li>
                     <?php else: ?><li class="text-left" style="list-style-type: none;">Merci de sélectionner vos engagements.</li>
                     <?php endif; ?>
     		</ul>
