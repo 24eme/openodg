@@ -10,6 +10,11 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     done
     exit
 fi
+if ! test $1 ; then
+    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+else
+    . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
+fi
 
 if test -f $LOCK ; then
     exit 1
