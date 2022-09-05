@@ -14,6 +14,7 @@ if ! test $1 ; then
     . $(echo $0 | sed 's/[^\/]*$//')config.inc
 else
     . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
+    SEQ="/tmp/compte_update_ldap_"$1".seq"
 fi
 
 if test -f $LOCK ; then
