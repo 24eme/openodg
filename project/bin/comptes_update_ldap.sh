@@ -1,8 +1,16 @@
 #!/bin/bash
 
-. bin/config.inc
 LOCK="/tmp/compte_update_ldap.lock"
 SEQ="/tmp/compte_update_ldap.seq"
+
+# Mode multi app
+if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        bash $(echo $0 | sed 's/[^\/]*$//')export.sh $app;
+    done
+    exit
+fi
+
 if test -f $LOCK ; then
     exit 1
 fi
