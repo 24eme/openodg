@@ -21,7 +21,7 @@ if test -f $LOCK ; then
     exit 1
 fi
 touch $LOCK
-if ! test -s $SEQ; then
+if ! test -s $SEQ || ! grep '[0-9]' $SEQ > /dev/null ; then
     echo 0 > $SEQ
 fi
 
