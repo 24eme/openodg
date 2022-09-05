@@ -2415,11 +2415,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return false;
         }
 
-        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
+        if(!isset($this->document->declaration[DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil()])){
+            return false;
+        }
 
         if(!($this->getCampagne() == DRevConfiguration::getInstance()->getCampagneVolumeSeuil())){
             return false;
         }
+
+        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
+
+
         if(!$produit->exist('volume_revendique_seuil') && !($this->getVolumeSeuilFromCSV($this->declarant->cvi))){
             return false;
         }
@@ -2435,16 +2441,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     }
 
-    public function getVolumeRevendiqueSeuil($produit){
-        foreach($this->getProduits() as $p){
-            if($p['libelle'] == $produit){
-                return $p["volume_revendique_seuil"];
-            }
+    public function getVolumeRevendiqueSeuil($hash){
+        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+            return null;
         }
+
+        if(!isset($this->document->declaration[$hash])){
+            return null;
+        }
+        $produit = $this->document->declaration->get($hash)->DEFAUT;
+
+        if(! $produit->exist('volume_revendique_seuil')){
+            return null;
+        }
+        return $produit->volume_revendique_seuil;
+
     }
 
-    public function getVolumeCommercialisableLibre($produit){
-        $volumeSeuil = $this->getVolumeRevendiqueSeuil($produit);
+    public function getVolumeCommercialisableLibre($hash){
+        $volumeSeuil = $this->getVolumeRevendiqueSeuil($hash);
         return $volumeSeuil*(100/105);
     }
 
@@ -2452,13 +2467,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!DRevConfiguration::getInstance()->hasVolumeSeuil()){
             return null;
         }
-
         $configFile =fopen(sfConfig::get('sf_root_dir').DRevConfiguration::getInstance()->getVIP2CCsvPath(), "r");
 
         $volumes = array();
         while (!feof($configFile) ) {
             $line = fgetcsv($configFile);
-            $volumes[$line[3]] = $line[11];
+            $volumes[$line[3]] = str_replace(",","",$line[11]);
         }
         fclose($configFile);
 

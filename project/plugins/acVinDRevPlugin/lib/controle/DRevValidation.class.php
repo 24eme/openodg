@@ -80,9 +80,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
 
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"Les volumes de Méditerranée Rosé déclarés sont supérieurs aux volumes commercialisables, ils se trouvent dans les 5% du volume de développement collectif".$this->document->getVolumeCommercialisableLibre("Méditerranée Rosé")."si vous dépassez les".$this->document->getVolumeRevendiqueSeuil("Méditerranée Rosé")."hl, vous devrez choisir un engagement entre 2 engagements ...");
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Les volumes de Méditerranée Rosé déclarés sont supérieurs aux volumes libres à la revendication/commercialisation (".$this->document->getVolumeRevendiqueSeuil("Méditerranée Rosé")." hl)");
-
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"Les volumes de Méditerranée Rosé déclarés sont supérieurs aux volumes commercialisables, ils se trouvent dans les 5% du volume de développement collectif".$this->document->getVolumeCommercialisableLibre(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())."si vous dépassez les".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())."hl, vous devrez choisir un engagement entre 2 engagements ...");
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Les volumes de Méditerranée Rosé déclarés sont supérieurs aux volumes libres à la revendication/commercialisation (".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl)");
     }
 
     public function controle()
@@ -370,26 +369,22 @@ class DRevValidation extends DeclarationLotsValidation
     }
 
     protected function controleVolumeMediterraneeRoseDeclare(){
+        if(!$this->document->hasVolumeSeuilAndSetIfNecessary()){
+            return null;
+        }
+        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->getConfig()->getLibelleComplet();
 
-        if(DRevConfiguration::getInstance()->hasVolumeSeuil()){
+        $volumeTotalMediterraneeRoseDeclare = $this->document->summerizeProduitsLotsByCouleur()[$produit]['volume_lots'];
+        $volumeCommercialisableLibre = $this->document->getVolumeCommercialisableLibre(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
+        $volumeMaxAutorise = $this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
 
-            $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->getConfig()->getLibelleComplet();
+        if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRoseDeclare) && ($volumeTotalMediterraneeRoseDeclare < $volumeMaxAutorise)):
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable', '', $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+        elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare):
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC,'');
+        endif;
 
-            $volumeTotalMediterraneeRoseDeclare = $this->document->summerizeProduitsLotsByCouleur()[$produit]['volume_lots'];
-
-            if($this->document->hasVolumeSeuilAndSetIfNecessary($produit)){
-
-                $volumeCommercialisableLibre = $this->document->getVolumeCommercialisableLibre($produit);
-                $volumeMaxAutorise = $this->document->getVolumeRevendiqueSeuil($produit);
-
-                if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRoseDeclare) && ($volumeTotalMediterraneeRoseDeclare < $volumeMaxAutorise)):
-                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable', '', $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare):
-                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
-                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC,'');
-                endif;
-                }
-            }
         }
 }
