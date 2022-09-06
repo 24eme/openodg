@@ -628,7 +628,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$drev = clone $this;
         $drev->remove('declaration');
     	$drev->add('declaration');
-        $drev->updateDeclaration();
+        $drev->updateDeclarationFromDocumentDouanier();
         $drev->_rev = "FICTIVE";
     	return $drev;
     }
