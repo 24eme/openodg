@@ -7,7 +7,12 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($dr):?>panel-success<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">DR  <?php echo $periode; ?></h3>
+            <h3 class="panel-title">
+                DR  <?php echo $periode; ?>
+<?php if ( $sf_user->isAdmin() && $dr->isValideeOdg() ): ?>
+                <span class="pull-right"><span class="glyphicon glyphicon-ok-circle"></span></span>
+<?php endif; ?>
+            </h3>
         </div>
             <div class="panel-body">
                 <p class="explications">Espace de saisie de la Déclaration de Récolte pour le déclarant.</p>

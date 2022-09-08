@@ -26,4 +26,11 @@ class DR extends BaseDR {
         }
         parent::save();
     }
+
+    public function isValideeOdg() {
+        if (DRConfiguration::getInstance()->hasValidationDR()) {
+            return boolval($this->getValidationOdg());
+        }
+        return false;
+    }
 }
