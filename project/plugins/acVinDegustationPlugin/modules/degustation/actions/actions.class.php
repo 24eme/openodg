@@ -633,6 +633,9 @@ class degustationActions extends sfActions {
         }
 
         $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
+        if(!$this->campagnes) {
+            $this->campagnes = array(ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate(date('Y-m-d')));
+        }
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
 
