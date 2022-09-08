@@ -20,6 +20,19 @@ class TransactionClient extends acCouchdbClient {
 
         return $doc;
     }
+    public function findBrouillon($identifiant, $campagne = null)
+    {
+        if (!$campagne) {
+            $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent();
+        }
+        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, $campagne, $identifiant);
+        foreach ($docs->rows as $doc) {
+            if ($doc->key[4] == DeclarationTousView::STATUT_BROUILLON) {
+                return $this->find($doc->id);
+            }
+        }
+        return null;
+    }
 
     public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
