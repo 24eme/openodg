@@ -28,6 +28,16 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_selection_lots', $degustation);
     }
 
+    public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+            $this->redirect('degustation');
+        }
+
+        return $this->redirect('degustation_declarant_lots_liste', $form->getEtablissement());
+    }
+
     public function executeListe(sfWebRequest $request)
     {
         $this->annee = $request->getParameter('campagne');
