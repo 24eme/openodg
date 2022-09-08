@@ -5,12 +5,6 @@ class degustationActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         $this->form = new DegustationCreationForm();
 
-        if(class_exists("EtablissementChoiceForm")) {
-            $this->formEtablissement= new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array(), true);
-        } elseif(class_exists("LoginForm")) {
-            $this->formEtablissement = new LoginForm();
-        }
-
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
