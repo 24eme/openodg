@@ -50,7 +50,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
 
-        $this->addControle(self::TYPE_ERROR, 'drev_habilitation_odg', "Vous n'êtes pas habilité pour ce produit");
+        $this->addControle(self::TYPE_ERROR, 'drev_habilitation_odg', "Vous n'êtes pas habilité en vinification pour ce produit");
 
         $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
