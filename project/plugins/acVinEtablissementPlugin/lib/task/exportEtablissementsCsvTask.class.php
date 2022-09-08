@@ -42,15 +42,15 @@ EOF;
 
        $cpt = 0;
         foreach($results->rows as $row) {
-           $cpt++;
+            $cpt++;
             if($cpt > 250) {
                 sleep(3);
                 $cpt = 0;
             }
+
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             $societe = SocieteClient::getInstance()->find($etablissement->id_societe, acCouchdbClient::HYDRATE_JSON);
-            $compte = CompteClient::getInstance()->find($etablissement->compte);
-            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, null, acCouchdbClient::HYDRATE_JSON);
+            $compte = CompteClient::getInstance()->find($etablissement->compte, acCouchdbClient::HYDRATE_JSON);
 
             $habilitationActivites = '';
             if (isset($compte->tags->activite)) {
@@ -114,7 +114,7 @@ EOF;
             $etablissement->famille.",".
             $compte->date_modification.",".
             $etablissement->statut.",".
-            $compte->isEnAlerte().",".
+            (isset($compte->en_alerte) && $compte->en_alerte).",".
             $etablissement->ppm.",".
             Organisme::getCurrentOrganisme().",".
             $etablissement->identifiant.",".
