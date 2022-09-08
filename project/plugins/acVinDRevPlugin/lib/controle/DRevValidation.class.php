@@ -50,6 +50,8 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
 
+        $this->addControle(self::TYPE_ERROR, 'drev_habilitation_odg', "Vous n'êtes pas habilité pour ce produit");
+
         $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
@@ -98,6 +100,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->controleEngagementParcelleManquante();
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleHabilitationINAO();
+        $this->controleHabilitationODG();
         $this->controleBailleurs();
         $this->controleLots();
     }
@@ -300,6 +303,13 @@ class DRevValidation extends DeclarationLotsValidation
         }
         foreach($this->document->getNonHabilitationINAO() as $produit) {
             $this->addPoint(self::TYPE_WARNING, 'drev_habilitation_inao', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }
+    }
+
+    protected function controleHabilitationODG()
+    {
+        foreach($this->document->getNonHabilitationODG() as $produit) {
+            $this->addPoint(self::TYPE_ERROR, 'drev_habilitation_odg', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
     }
 
