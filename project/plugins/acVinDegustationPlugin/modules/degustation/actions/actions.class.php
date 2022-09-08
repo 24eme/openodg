@@ -12,6 +12,10 @@ class degustationActions extends sfActions {
 
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON);
 
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
