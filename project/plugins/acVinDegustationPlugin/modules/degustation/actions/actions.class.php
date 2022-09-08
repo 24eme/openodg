@@ -19,6 +19,10 @@ class degustationActions extends sfActions {
 
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON);
 
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -33,6 +37,16 @@ class degustationActions extends sfActions {
         $degustation = $this->form->save();
 
         return $this->redirect('degustation_selection_lots', $degustation);
+    }
+
+    public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+            $this->redirect('degustation');
+        }
+
+        return $this->redirect('degustation_declarant_lots_liste', $form->getEtablissement());
     }
 
     public function executeListe(sfWebRequest $request)

@@ -61,11 +61,13 @@
     </div>
 </form>
 
+<?php if(isset($formEtablissement)): ?>
 <div class="row row-margin">
     <div class="col-xs-12">
         <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="page-header no-border">
     <h2>Les dernières dégustations</h2>
