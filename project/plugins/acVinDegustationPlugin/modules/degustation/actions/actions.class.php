@@ -4,6 +4,13 @@ class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $this->form = new DegustationCreationForm();
+
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->formEtablissement= new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array(), true);
+        } elseif(class_exists("LoginForm")) {
+            $this->formEtablissement = new LoginForm();
+        }
+
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
@@ -618,6 +625,13 @@ class degustationActions extends sfActions {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
         $this->forward404Unless($this->etablissement);
+
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->formEtablissement = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
+        } elseif(class_exists("LoginForm")) {
+            $this->formEtablissement = new LoginForm();
+        }
+
         $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
