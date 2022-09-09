@@ -8,6 +8,12 @@
   <li><a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne)); ?>" ><?php echo $campagne ?></a>
 </ol>
 
+<div class="row row-margin">
+    <div class="col-xs-12">
+        <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
+    </div>
+</div>
+
 <div class="page-header no-border">
   <div class="pull-right">
       <?php if ($sf_user->hasDrevAdmin()): ?>

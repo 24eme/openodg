@@ -84,7 +84,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getProduits($region = null) {
-
+        if (!$this->exist('declaration') || !count($this->get('declaration'))) {
+            $this->updateDeclaration();
+        }
         return $this->declaration->getProduits($region);
     }
 
@@ -624,10 +626,28 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getFictiveFromDocumentDouanier() {
     	$drev = clone $this;
-    	$drev->remove('declaration');
+        $drev->remove('declaration');
     	$drev->add('declaration');
-    	$drev->importFromDocumentDouanier();
+        $drev->updateDeclarationFromDocumentDouanier();
+        $drev->_rev = "FICTIVE";
     	return $drev;
+    }
+
+    public function updateDeclaration() {
+        $this->updateDeclarationFromDocumentDouanier();
+        foreach($this->getProduitsLots() as $produit) {
+            $produit->superficie_revendique = 0;
+            $produit->volume_revendique_total = 0;
+        }
+        foreach ($this->getLots() as $lot) {
+            $produit = $lot->getProduitRevendique();
+            $produit->superficie_revendique = $produit->recolte->superficie_total;
+            $produit->volume_revendique_total += $lot->volume;
+        }
+    }
+
+    public function updateDeclarationFromDocumentDouanier() {
+    	$this->importFromDocumentDouanier();
     }
 
     public function getBailleurs() {
@@ -2372,6 +2392,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }catch(Exception $e) {
             return array();
         }
+    }
+
+    public function getNonHabilitationODG() {
+        $habilitation = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
+        $nonHabilitationODG = array();
+        foreach($this->getProduits() as $hash => $produit) {
+            if (!$habilitation->isHabiliteFor($produit->getConfig()->getAppellation()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+                $nonHabilitationODG[$hash] = $produit;
+            }
+        }
+        return $nonHabilitationODG;
     }
 
     public function hasProduitWithMutageAlcoolique() {

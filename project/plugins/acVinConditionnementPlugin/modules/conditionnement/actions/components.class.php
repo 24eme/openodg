@@ -3,9 +3,15 @@
 class conditionnementComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $this->conditionnement = ConditionnementClient::getInstance()->findBrouillon($this->etablissement->identifiant);
+        $campagne = $request->getParameter('campagne');
+        $date = date('Y-m-d');
+        if ($campagne != ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($date)) {
+            $date = substr($request->getParameter('campagne'), 5, 4).'-07-31';
+        }
+
+        $this->conditionnement = ConditionnementClient::getInstance()->findBrouillon($this->etablissement->identifiant, $campagne);
         if (!$this->conditionnement) {
-            $this->conditionnement = ConditionnementClient::getInstance()->findByIdentifiantAndDate($this->etablissement->identifiant, date('Y-m-d'));
+            $this->conditionnement = ConditionnementClient::getInstance()->findByIdentifiantAndDate($this->etablissement->identifiant, $date);
         }
     }
 

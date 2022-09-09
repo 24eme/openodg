@@ -654,3 +654,7 @@ degustation_retirer:
     type: object
   requirements:
     sf_method: [get]
+
+degustation_etablissement_selection:
+  url: /degustations-etablissement-selection
+  param: { module: degustation, action: etablissementSelection }
