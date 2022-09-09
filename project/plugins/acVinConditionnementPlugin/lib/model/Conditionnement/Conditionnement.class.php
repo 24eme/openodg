@@ -79,4 +79,10 @@ class Conditionnement extends BaseConditionnement
 
         return false;
     }
+
+    public function getVolumeLotsFacturables($produitFilter = null){
+
+        return $this->getVolumeRevendiqueLots($produitFilter);
+    }
+
 }
