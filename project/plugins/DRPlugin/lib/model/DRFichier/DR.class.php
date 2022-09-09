@@ -29,7 +29,7 @@ class DR extends BaseDR {
 
     public function isValideeOdg() {
         if (DRConfiguration::getInstance()->hasValidationDR()) {
-            return boolval($this->getValidationOdg());
+            return $this->exist('validation_odg') && ($this->validation_odg);
         }
         return false;
     }
