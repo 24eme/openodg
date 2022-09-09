@@ -966,6 +966,7 @@ class degustationActions extends sfActions {
       $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
       $this->forward404Unless(
             $this->getUser()->isAdmin() ||
+            $this->getUser()->isStalker() ||
             $request->getParameter('action') != 'degustationConformitePDF' ||
             $this->getUser()->getCompte()->getSociete()->identifiant == $etablissement->getSociete()->identifiant
       );
@@ -981,6 +982,7 @@ class degustationActions extends sfActions {
       $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
       $this->forward404Unless(
           $this->getUser()->isAdmin() ||
+          $this->getUser()->isStalker() ||
           $request->getParameter('action') != 'degustationNonConformitePDF' ||
           strpos($lot->declarant_identifiant, $this->getUser()->getCompte()->getSociete()->identifiant) === 0
       );
