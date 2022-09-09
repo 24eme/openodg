@@ -69,8 +69,14 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT));
+
+        $contrats = $this->document->getContratsFromAPI();
+
+        foreach($contrats as $k=>$v){
+            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC).$v['numero']." avec ".$v['acheteur'].".");
+        }
 
         /* Lots */
 
@@ -80,8 +86,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
 
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"Les volumes de Méditerranée Rosé déclarés sont supérieurs aux volumes commercialisables, ils se trouvent dans les 5% du volume de développement collectif".$this->document->getVolumeCommercialisableLibre(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())."si vous dépassez les".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())."hl, vous devrez choisir un engagement entre 2 engagements ...");
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Les volumes de Méditerranée Rosé déclarés sont supérieurs aux volumes libres à la revendication/commercialisation (".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl)");
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"Pour la campagne ".DRevConfiguration::getInstance()->getCampagneVolumeSeuil().", la filière a mis en place un Volume Individuel de Production Commercialisable Certifiée (VIP2C) pour le Méditerranée Rosé . Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Pour la campagne ".DRevConfiguration::getInstance()->getCampagneVolumeSeuil().", la filière a mis en place un Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl de Méditerranée Rosé qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
     }
 
     public function controle()
@@ -379,12 +385,16 @@ class DRevValidation extends DeclarationLotsValidation
         $volumeMaxAutorise = $this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
 
         if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRoseDeclare) && ($volumeTotalMediterraneeRoseDeclare < $volumeMaxAutorise)):
-            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable', '', $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',  $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
         elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare):
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC,'');
-        endif;
 
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+
+            $contrats = $this->document->getContratsFromAPI();
+            foreach($contrats as $k=>$v){
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+            }
+        endif;
         }
 }

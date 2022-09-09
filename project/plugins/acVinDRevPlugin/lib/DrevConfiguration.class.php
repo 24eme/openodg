@@ -152,4 +152,10 @@ class DRevConfiguration {
         return null;
     }
 
+    public function getMillesime(){
+        if($this->getCampagneVolumeSeuil()){
+            return(substr($this->getCampagneVolumeSeuil(),0,4));
+        }
+        return null;
+    }
 }

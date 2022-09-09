@@ -7,14 +7,14 @@
     	    <ul class="error_list">
                 <?php
                     foreach($validation->getEngagements() as $engagement):
-                        if(($engagement->getCode() == "VIP2C_OUEX_CONDITIONNEMENT") or ($engagement->getCode() == "VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC")):
+                        if(($engagement->getCode() == "VIP2C_OUEX_CONDITIONNEMENT") or preg_match('/VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC/',$engagement->getCode())):
                             $VIP2C = true;
                         else:
                             $VIP2C = false;
                             continue;
                         endif;
                     endforeach;
-                    if($VIP2C):?> <li class="text-left" style="list-style-type: none;">Merci de sélectionner <strong>1</strong> engagement qui justifie le dépassement du volume de Méditerrannée rosé</li>
+                    if($VIP2C):?> <li class="text-left" style="list-style-type: none;">Merci de ne sélectionner qu' <strong>1</strong> seul engagement qui justifie le dépassement du volume de Méditerrannée rosé</li>
                     <?php else: ?><li class="text-left" style="list-style-type: none;">Merci de sélectionner vos engagements.</li>
                     <?php endif; ?>
     		</ul>

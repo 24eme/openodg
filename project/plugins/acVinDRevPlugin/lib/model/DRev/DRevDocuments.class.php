@@ -11,14 +11,16 @@ class DRevDocuments extends BaseDRevDocuments
 	const DOC_VCI = 'VCI';
 	const DOC_MUTAGE_DECLARATION = 'MUTAGE_DECLARATION';
 	const DOC_PARCELLES_MANQUANTES_15_OUEX_INF = 'PARCELLES_MANQUANTES_15_OUEX_INF';
-	const DOC_PARCELLES_MANQUANTES_15_OUEX_SUP = 'PARCELLES_MANQUANTES_15_OUEX_SUP';	
+	const DOC_PARCELLES_MANQUANTES_15_OUEX_SUP = 'PARCELLES_MANQUANTES_15_OUEX_SUP';
 	const DOC_PARCELLES_MANQUANTES_20_OUEX_INF = 'PARCELLES_MANQUANTES_20_OUEX_INF';
 	const DOC_PARCELLES_MANQUANTES_20_OUEX_SUP = 'PARCELLES_MANQUANTES_20_OUEX_SUP';
 	const DOC_DEPASSEMENT_CONSEIL = 'DEPASSEMENT_CONSEIL';
 	const DOC_ELEVAGE_CONTACT_SYNDICAT = 'ELEVAGE_CONTACT_SYNDICAT';
 	const DOC_REVENDICATION_SUPERFICIE_DAE = 'REVENDICATION_SUPERFICIE_DAE';
     const DOC_VIP2C_OUEX_CONDITIONNEMENT = "VIP2C_OUEX_CONDITIONNEMENT";
+
     const DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC= "VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC";
+    const DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC_SUITE = "DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC_SUITE";
 
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
@@ -59,9 +61,8 @@ class DRevDocuments extends BaseDRevDocuments
 		DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP => "Je m'engage à transmettre à mon ODG la liste de mes parcelles avec un % de manquants > à 20%",
 		DRevDocuments::DOC_DEPASSEMENT_CONSEIL => "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil",
 		DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT => "Je m'engage à contacter le syndicat quand le vin sera prêt",
-        DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT => "Je m'engage à avoir un avis de conditionnement pour les volumes de Méditerranée Rosé en plus",
-        DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC => "Je m'engage à avoir un contrat de vente en vrac pour les volumes de Méditerranée Rosé en plus"
-
+        DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT => "En revendiquant au de là de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C) de Méditerranée Rosé, je m'engage à fournir à l'IVSE ma déclaration de conditionnement pour les lots de Méditerranée Rosé de cette revendication.",
+        DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC => "En revendiquant au de là de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C) de Méditerranée Rosé, je certifie que les lots de cette revendication sont commercialisés via le Contrat n° "
     );
 
 	private static $_statut_libelles = array(
