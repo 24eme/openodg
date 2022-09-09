@@ -9,7 +9,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 DR  <?php echo $periode; ?>
-<?php if ( $sf_user->isAdmin() && $dr->isValideeOdg() ): ?>
+<?php if ( $sf_user->isAdmin() && $dr && $dr->isValideeOdg() ): ?>
                 <span class="pull-right"><span class="glyphicon glyphicon-ok-circle"></span></span>
 <?php endif; ?>
             </h3>

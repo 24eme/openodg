@@ -6,7 +6,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 Revendication <?php echo $periode; ?>
-<?php if ( $sf_user->isAdmin() && $drev->isValideeOdg() ): ?>
+<?php if ( $sf_user->isAdmin() && $drev && $drev->isValideeOdg() ): ?>
                 <span class="pull-right"><span class="glyphicon glyphicon-ok-circle"></span></span>
 <?php endif; ?>
             </h3>
