@@ -20,12 +20,16 @@
 <?php if ($compte->getSociete()->getMasterCompte()->exist('alternative_logins') && count($compte->getSociete()->getMasterCompte()->alternative_logins)) : ?>
 <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Logins Interpro&nbsp;:</div>
 <div style="margin-bottom: 5px;" class="col-xs-9"><?php echo implode(', ', $compte->getSociete()->getMasterCompte()->alternative_logins->getRawValue()->toArray()); ?></div>
+</div>
+<div class="row">
 <?php endif; ?>
 <?php if($compte->exist('droits') && count($compte->getRawValue()->droits->toArray(true, false)) > 0): ?>
 <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Droits&nbsp;:</div>
 <div style="margin-bottom: 5px;" class="col-xs-9">
         <?php echo implode(", ", $compte->getRawValue()->droits->toArray(true, false)); ?>
 </div>
+</div>
+<div class="row">
 <?php endif; ?>
 <?php if($compte->exist('region') && $compte->region): ?>
 <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Region&nbsp;:</div>
