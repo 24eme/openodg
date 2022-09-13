@@ -152,7 +152,8 @@ class FichierClient extends acCouchdbClient {
             "Identification" => "Habilitation / Identification",
             "Degustation" => "Dégustation",
             "Facture" => "Facture",
-            "ChgtDenom" => "Changement de dénomination"
+            "ChgtDenom" => "Changement de dénomination",
+            "OI" => "OI",
         );
     }
 }

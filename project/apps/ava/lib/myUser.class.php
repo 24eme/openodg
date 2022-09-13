@@ -11,7 +11,6 @@ class myUser extends sfBasicSecurityUser
     const CREDENTIAL_ADMIN = CompteClient::DROIT_ADMIN;
     const CREDENTIAL_TOURNEE = CompteClient::DROIT_TOURNEE;
     const CREDENTIAL_CONTACT = CompteClient::DROIT_CONTACT;
-    const CREDENTIAL_HABILITATION = 'habilitation';
 
     protected $etablissement = null;
     protected $compte = null;
@@ -137,6 +136,6 @@ class myUser extends sfBasicSecurityUser
 
     public function hasTeledeclaration() {
 
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin() && !$this->isStalker();
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(AppUser::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin() && !$this->isStalker();
     }
 }
