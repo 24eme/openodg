@@ -16,6 +16,6 @@ fi
 
 rsync -aO $WORKINGDIR"/web/generation/" $COUCHDISTANTHOST":"$WORKINGDIR"/web/generation"
 rsync -aO $WORKINGDIR"/"$EXPORTDIR"/" $COUCHDISTANTHOST":"$WORKINGDIR"/"$EXPORTDIR
-if test "$EXTRA_SYNC" ; then
+if test "$EXTRA_SYNC" && test -d "$EXTRA_SYNC" ; then
     rsync -aO $EXTRA_SYNC"/" $COUCHDISTANTHOST":"$EXTRA_SYNC
 fi
