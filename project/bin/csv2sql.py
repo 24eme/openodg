@@ -35,30 +35,30 @@ if os.path.exists(sys.argv[2]+"/drev.csv") and os.path.getsize(sys.argv[2]+"/dre
 
 if os.path.exists(sys.argv[2]+"/dr.csv") and os.path.getsize(sys.argv[2]+"/dr.csv"):
     sys.stderr.write(sys.argv[2]+"/dr.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/dr.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
-    csv['CVI'] = csv['CVI'].zfill(10)
-    csv['CVI Tiers'] = csv['CVI Tiers'].zfill(10)
+    csv = pd.read_csv(sys.argv[2]+"/dr.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'CVI': 'str', 'Code': 'str', 'CVI Tiers':'str', 'Millesime': 'str', 'Bailleur PPM': 'str', 'Code Commune': 'str'})
+    csv['CVI'] = csv['CVI'].str.zfill(10)
+    csv['CVI Tiers'] = csv['CVI Tiers'].str.zfill(10)
     csv.to_sql('dr', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/sv12.csv") and os.path.getsize(sys.argv[2]+"/sv12.csv"):
     sys.stderr.write(sys.argv[2]+"/sv12.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/sv12.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
-    csv['CVI'] = csv['CVI'].zfill(10)
-    csv['CVI Tiers'] = csv['CVI Tiers'].zfill(10)
+    csv = pd.read_csv(sys.argv[2]+"/sv12.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'CVI': 'str', 'Code': 'str', 'CVI Tiers':'str', 'Millesime': 'str', 'Bailleur PPM': 'str', 'Code Commune': 'str'})
+    csv['CVI'] = csv['CVI'].str.zfill(10)
+    csv['CVI Tiers'] = csv['CVI Tiers'].str.zfill(10)
     csv.to_sql('sv12', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/sv11.csv") and os.path.getsize(sys.argv[2]+"/sv11.csv"):
     sys.stderr.write(sys.argv[2]+"/sv11.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/sv11.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
-    csv['CVI'] = csv['CVI'].zfill(10)
-    csv['CVI Tiers'] = csv['CVI Tiers'].zfill(10)
+    csv = pd.read_csv(sys.argv[2]+"/sv11.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'CVI': 'str', 'Code': 'str', 'CVI Tiers':'str', 'Millesime': 'str', 'Bailleur PPM': 'str', 'Code Commune': 'str'})
+    csv['CVI'] = csv['CVI'].str.zfill(10)
+    csv['CVI Tiers'] = csv['CVI Tiers'].str.zfill(10)
     csv.to_sql('sv11', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/production.csv") and os.path.getsize(sys.argv[2]+"/production.csv"):
     sys.stderr.write(sys.argv[2]+"/production.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/production.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
-    csv['CVI'] = csv['CVI'].zfill(10)
-    csv['CVI Tiers'] = csv['CVI Tiers'].zfill(10)
+    csv = pd.read_csv(sys.argv[2]+"/production.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'CVI': 'str', 'Code': 'str', 'CVI Tiers':'str', 'Millesime': 'str', 'Bailleur PPM': 'str', 'Code Commune': 'str'})
+    csv['CVI'] = csv['CVI'].str.zfill(10)
+    csv['CVI Tiers'] = csv['CVI Tiers'].str.zfill(10)
     csv.to_sql('production', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/drev_marc.csv") and os.path.getsize(sys.argv[2]+"/drev_marc.csv"):
@@ -143,27 +143,27 @@ if os.path.exists(sys.argv[2]+"/comptes.csv") and os.path.getsize(sys.argv[2]+"/
 
 if os.path.exists(sys.argv[2]+"/lots.csv") and os.path.getsize(sys.argv[2]+"/lots.csv"):
     sys.stderr.write(sys.argv[2]+"/lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'})
     csv.to_sql('lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/lots-historique.csv") and os.path.getsize(sys.argv[2]+"/lots-historique.csv"):
     sys.stderr.write(sys.argv[2]+"/lots-historique.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/lots-historique.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv = pd.read_csv(sys.argv[2]+"/lots-historique.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'})
     csv.to_sql('lots-historique', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/drev_lots.csv") and os.path.getsize(sys.argv[2]+"/drev_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/drev_lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/drev_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv = pd.read_csv(sys.argv[2]+"/drev_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'})
     csv.to_sql('drev_lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/conditionnement_lots.csv") and os.path.getsize(sys.argv[2]+"/conditionnement_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/conditionnement_lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/conditionnement_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv = pd.read_csv(sys.argv[2]+"/conditionnement_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'})
     csv.to_sql('conditionnement_lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/transaction_lots.csv") and os.path.getsize(sys.argv[2]+"/transaction_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/transaction_lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/transaction_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv = pd.read_csv(sys.argv[2]+"/transaction_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime':'str'})
     csv.to_sql('transaction_lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/changement_denomination.csv") and os.path.getsize(sys.argv[2]+"/changement_denomination.csv"):
