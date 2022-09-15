@@ -40,11 +40,10 @@
                     <td>
                         <?php echo $produit->getRawValue()->getLibelleCompletHTML() ?>
                         <?php if(DrevConfiguration::getInstance()->hasDenominationAuto()): ?>
-                        <?php if($produit->denomination_complementaire): ?>
-                            <a title="Modifier la certification" class="text-muted transparence-md show-on-tr-hover ajax" href="<?php echo url_for('drev_revendication_produit_denomination_auto', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getHash()))) ?>"><small><span class="glyphicon glyphicon-pencil"></span></small></a>
-                        <?php else: ?>
-                            <a title="Ajouter une certification" class="text-muted transparence-md show-on-tr-hover ajax" href="<?php echo url_for('drev_revendication_produit_denomination_auto', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getHash()))) ?>"><small><span class="glyphicon glyphicon-plus"></span></small></a>
-                        <?php endif; ?>
+                            <?php if(!$produit->denomination_complementaire): ?>
+                            <span class="text-muted">Conventionnel</span>
+                            <?php endif; ?>
+                            <a title="Définir ou modifier la certification" class="text-muted transparence-md show-on-tr-hover ajax" href="<?php echo url_for('drev_revendication_produit_denomination_auto', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getHash()))) ?>"><small><span class="glyphicon glyphicon-pencil"></span></small></a>
                         <?php endif; ?>
                         <a class="text-muted transparence-lg show-on-tr-hover pull-right ajax" href="<?php echo url_for('drev_revendication_cepage_suppression', array('id' => $drev->_id, 'hash' => str_replace('/', '__', $produit->getParent()->getHash()))) ?>" onclick='return confirm("Êtes vous sûr de vouloir supprimer le produit <?php echo $produit->getLibelleComplet() ?> de votre DRev <?php echo $drev->periode ?> ?");'><span class="glyphicon glyphicon-remove"></span></a>
                     </td>
