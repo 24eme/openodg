@@ -184,10 +184,10 @@ FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
         }
 
         if(preg_match('/'.$wordSeparatorStart.'(feuille)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
-            $labels[DRevClient::JEUNE_VIGNE] = DRevClient::JEUNE_VIGNE;
+            $labels[DRevClient::DENOMINATION_JEUNE_VIGNE] = DRevClient::DENOMINATION_JEUNE_VIGNE;
         }
 
-        if(array_key_exists(DRevClient::JEUNE_VIGNE, $labels) && array_key_exists(DRevClient::DENOMINATION_BIO, $labels)) {
+        if(array_key_exists(DRevClient::DENOMINATION_JEUNE_VIGNE, $labels) && array_key_exists(DRevClient::DENOMINATION_BIO, $labels)) {
             unset($labels['DENOMINATION_BIO']);
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
         }
