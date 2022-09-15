@@ -61,6 +61,9 @@ class CompteLdap extends acVinLdap {
       } else {
 	        $info['sn']             = $compte->nom_a_afficher;
       }
+      if (!$info['o']) {
+          $info['o']                = $info['sn'];
+      }
       if ($compte->getPrenom()){
           $info['givenName']        = $compte->getPrenom();
       }

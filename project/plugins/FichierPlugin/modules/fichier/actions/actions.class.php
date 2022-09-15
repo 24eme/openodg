@@ -121,7 +121,9 @@ class fichierActions extends sfActions
 
 		$categories = null;
 
-		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_OI)) {
+			$categories = array('OI' => "OI");
+		}else if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 			$categories = array('Identification' => "Identification");
 		}
 

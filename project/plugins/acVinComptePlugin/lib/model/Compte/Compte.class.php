@@ -314,7 +314,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function isSocieteContact() {
-        return ($this->getSociete()->compte_societe == $this->_id);
+        return ($this->getSociete() && ($this->getSociete()->compte_societe == $this->_id));
     }
 
     private function removeFournisseursTag() {

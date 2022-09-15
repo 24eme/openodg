@@ -84,7 +84,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getProduits($region = null) {
-
+        if (!$this->exist('declaration') || !count($this->get('declaration'))) {
+            $this->updateDeclaration();
+        }
         return $this->declaration->getProduits($region);
     }
 
@@ -624,10 +626,28 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getFictiveFromDocumentDouanier() {
     	$drev = clone $this;
-    	$drev->remove('declaration');
+        $drev->remove('declaration');
     	$drev->add('declaration');
-    	$drev->importFromDocumentDouanier();
+        $drev->updateDeclarationFromDocumentDouanier();
+        $drev->_rev = "FICTIVE";
     	return $drev;
+    }
+
+    public function updateDeclaration() {
+        $this->updateDeclarationFromDocumentDouanier();
+        foreach($this->getProduitsLots() as $produit) {
+            $produit->superficie_revendique = 0;
+            $produit->volume_revendique_total = 0;
+        }
+        foreach ($this->getLots() as $lot) {
+            $produit = $lot->getProduitRevendique();
+            $produit->superficie_revendique = $produit->recolte->superficie_total;
+            $produit->volume_revendique_total += $lot->volume;
+        }
+    }
+
+    public function updateDeclarationFromDocumentDouanier() {
+    	$this->importFromDocumentDouanier();
     }
 
     public function getBailleurs() {
@@ -1271,13 +1291,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->etablissement;
     }
 
-    public function initProduits() {
-        $produits = $this->getConfigProduits();
-        foreach ($produits as $produit) {
-            $this->addProduit($produit->getHash());
-        }
-    }
-
     protected function updateProduitDetailFromCSV($csv) {
         $this->resetProduitDetail();
         foreach ($csv as $line) {
@@ -1506,6 +1519,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->saveDocumentsDependants();
         }
 
+        $this->hasVolumeSeuilAndSetIfNecessary(); //fonction dans laquelle si il le cvi du declarant
+                                                                                         //se trouve dans le csvdeConf alors ajoute le champs volume_revendique_seuil.
         return $saved;
     }
 
@@ -2379,6 +2394,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
+    public function getNonHabilitationODG() {
+        $habilitation = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
+        $nonHabilitationODG = array();
+        foreach($this->getProduits() as $hash => $produit) {
+            if (!$habilitation || !$habilitation->isHabiliteFor($produit->getConfig()->getAppellation()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+                $nonHabilitationODG[$hash] = $produit;
+            }
+        }
+        return $nonHabilitationODG;
+    }
+
     public function hasProduitWithMutageAlcoolique() {
         foreach($this->getProduits() as $produit) {
 
@@ -2413,4 +2439,95 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return -1;
     }
 
+
+    public function hasVolumeSeuilAndSetIfNecessary(){
+
+        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+            return false;
+        }
+
+        if(!isset($this->document->declaration[DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil()])){
+            return false;
+        }
+
+        if(!($this->getCampagne() == DRevConfiguration::getInstance()->getCampagneVolumeSeuil())){
+            return false;
+        }
+
+        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
+
+
+        if(!$produit->exist('volume_revendique_seuil') && !($this->getVolumeSeuilFromCSV($this->declarant->cvi))){
+            return false;
+        }
+        if($produit->exist('volume_revendique_seuil')){
+            return true;
+        }
+
+        $volumeSeuil = $this->getVolumeSeuilFromCSV($this->declarant->cvi);
+        $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
+        $this->save();
+
+        return true;
+
+    }
+
+    public function getVolumeRevendiqueSeuil($hash){
+        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+            return null;
+        }
+
+        if(!isset($this->document->declaration[$hash])){
+            return null;
+        }
+        $produit = $this->document->declaration->get($hash)->DEFAUT;
+
+        if(! $produit->exist('volume_revendique_seuil')){
+            return null;
+        }
+        return $produit->volume_revendique_seuil;
+
+    }
+
+    public function getVolumeCommercialisableLibre($hash){
+        $volumeSeuil = $this->getVolumeRevendiqueSeuil($hash);
+        return $volumeSeuil*(100/105);
+    }
+
+    protected function getVolumeSeuilFromCSV($cvi){
+        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()){
+            return null;
+        }
+        $configFile =fopen(sfConfig::get('sf_root_dir').DRevConfiguration::getInstance()->getVIP2CCsvPath(), "r");
+
+        $volumes = array();
+        while (!feof($configFile) ) {
+            $line = fgetcsv($configFile);
+            $volumes[$line[3]] = str_replace(",","",$line[11]);
+        }
+        fclose($configFile);
+
+        if (!isset($volumes[$cvi])) {
+            return null;
+        }
+        return $volumes[$cvi];
+    }
+
+
+    public function getContratsFromAPI(){
+
+        $api_link = sfConfig::get('app_api_contrats_link');
+        $secret = sfConfig::get('app_api_contrats_secret');
+        $cvi = $this->declarant->cvi;
+        $millesime = DRevConfiguration::getInstance()->getMillesime();
+        $epoch = (string)time();
+
+        $md5 = md5($secret."/".$cvi."/".$millesime."/".$epoch);
+
+        $content = file_get_contents($api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5);
+
+        $result = json_decode($content,true);
+
+        return($result);
+    }
 }

@@ -180,8 +180,8 @@ class declarationActions extends sfActions {
 
             return $this->redirect('declaration');
         }
-
-        return $this->redirect('declaration_etablissement', $form->getEtablissement());
+        $redirect_url = $request->getParameter('redirect_url', 'declaration_etablissement');
+        return $this->redirect($redirect_url, $form->getEtablissement());
     }
 
     public function executeEtablissement(sfWebRequest $request) {

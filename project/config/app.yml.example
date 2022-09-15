@@ -116,3 +116,6 @@ all:
   secret: mon_code_secret # 32 caracteres
   viticonnect:
     secret: "SECRET"
+  api_contrats:
+    link: "LINK"
+    secret: "SECRET"

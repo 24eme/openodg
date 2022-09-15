@@ -84,7 +84,7 @@ $b->click('button[id="lots_continue"]', array("drev_lots" => array("lots" => arr
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 
-$b->click('button[id="btn-validation-document-drev"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
+$b->click('button[id="btn-validation-document"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
 $b->with('response')->begin()->checkElement('tr.hamzastyle-item', 2)->end();

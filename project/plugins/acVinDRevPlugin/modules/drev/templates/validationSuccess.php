@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }">
+            <button type="button" id="btn-validation-document" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper">
                 <span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;<?php if ($sf_user->isAdmin()): ?>Valider et Approuver<?php else: ?>Valider la déclaration<?php endif; ?>
             </button>
         </div>

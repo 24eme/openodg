@@ -4,6 +4,7 @@ class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $this->form = new DegustationCreationForm();
+
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
@@ -11,6 +12,10 @@ class degustationActions extends sfActions {
         $this->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
 
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON);
+
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -26,6 +31,16 @@ class degustationActions extends sfActions {
         $degustation = $this->form->save();
 
         return $this->redirect('degustation_selection_lots', $degustation);
+    }
+
+    public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+            $this->redirect('degustation');
+        }
+
+        return $this->redirect('degustation_declarant_lots_liste', $form->getEtablissement());
     }
 
     public function executeListe(sfWebRequest $request)
@@ -618,7 +633,17 @@ class degustationActions extends sfActions {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
         $this->forward404Unless($this->etablissement);
+
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->formEtablissement = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
+        } elseif(class_exists("LoginForm")) {
+            $this->formEtablissement = new LoginForm();
+        }
+
         $this->campagnes = MouvementLotHistoryView::getInstance()->getCampagneFromDeclarantMouvements($identifiant);
+        if(!$this->campagnes) {
+            $this->campagnes = array(ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate(date('Y-m-d')));
+        }
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
 
@@ -941,6 +966,7 @@ class degustationActions extends sfActions {
       $etablissement = EtablissementClient::getInstance()->findByIdentifiant($request->getParameter('identifiant'));
       $this->forward404Unless(
             $this->getUser()->isAdmin() ||
+            $this->getUser()->isStalker() ||
             $request->getParameter('action') != 'degustationConformitePDF' ||
             $this->getUser()->getCompte()->getSociete()->identifiant == $etablissement->getSociete()->identifiant
       );
@@ -956,6 +982,7 @@ class degustationActions extends sfActions {
       $lot = $this->degustation->getLotByNumDossierNumArchive($lot_dossier, $lot_archive);
       $this->forward404Unless(
           $this->getUser()->isAdmin() ||
+          $this->getUser()->isStalker() ||
           $request->getParameter('action') != 'degustationNonConformitePDF' ||
           strpos($lot->declarant_identifiant, $this->getUser()->getCompte()->getSociete()->identifiant) === 0
       );

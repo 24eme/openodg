@@ -50,6 +50,8 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_WARNING, 'drev_habilitation_inao', "Vous ne semblez pas habilité pour ce produit");
 
+        $this->addControle(self::TYPE_ERROR, 'drev_habilitation_odg', "Vous n'êtes pas habilité en vinification pour ce produit");
+
         $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
@@ -69,6 +71,14 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT));
+
+        $contrats = $this->document->getContratsFromAPI();
+
+        foreach($contrats as $k=>$v){
+            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC).$v['numero']." avec ".$v['acheteur'].".");
+        }
 
         /* Lots */
 
@@ -77,6 +87,9 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'lot_igp_inexistant_dans_dr_warn', "Ce lot IGP est inexistant dans la DR.");
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
+
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"Pour la campagne ".DRevConfiguration::getInstance()->getCampagneVolumeSeuil().", la filière a mis en place un Volume Individuel de Production Commercialisable Certifiée (VIP2C) pour le Méditerranée Rosé . Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Pour la campagne ".DRevConfiguration::getInstance()->getCampagneVolumeSeuil().", la filière a mis en place un Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl de Méditerranée Rosé qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
     }
 
     public function controle()
@@ -92,12 +105,14 @@ class DRevValidation extends DeclarationLotsValidation
           $produits[$hash] = $produit;
         }
         $this->controleNeant();
+        $this->controleVolumeMediterraneeRoseDeclare();
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleEngagementMutage();
         $this->controleEngagementParcelleManquante();
         $this->controleProduitsDocumentDouanier($produits);
         $this->controleHabilitationINAO();
+        $this->controleHabilitationODG();
         $this->controleBailleurs();
         $this->controleLots();
     }
@@ -303,6 +318,13 @@ class DRevValidation extends DeclarationLotsValidation
         }
     }
 
+    protected function controleHabilitationODG()
+    {
+        foreach($this->document->getNonHabilitationODG() as $produit) {
+            $this->addPoint(self::TYPE_ERROR, 'drev_habilitation_odg', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }
+    }
+
     protected function controleBailleurs(){
         if(!sfContext::getInstance()->getUser()->hasDrevAdmin()) {
             return;
@@ -361,4 +383,28 @@ class DRevValidation extends DeclarationLotsValidation
             }
         }
     }
+
+    protected function controleVolumeMediterraneeRoseDeclare(){
+        if(!$this->document->hasVolumeSeuilAndSetIfNecessary()){
+            return null;
+        }
+        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->getConfig()->getLibelleComplet();
+
+        $volumeTotalMediterraneeRoseDeclare = $this->document->summerizeProduitsLotsByCouleur()[$produit]['volume_lots'];
+        $volumeCommercialisableLibre = $this->document->getVolumeCommercialisableLibre(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
+        $volumeMaxAutorise = $this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
+
+        if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRoseDeclare) && ($volumeTotalMediterraneeRoseDeclare < $volumeMaxAutorise)):
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',  $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+        elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare):
+            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+
+            $contrats = $this->document->getContratsFromAPI();
+            foreach($contrats as $k=>$v){
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+            }
+        endif;
+        }
 }

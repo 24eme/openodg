@@ -133,7 +133,7 @@ Les produits déclarés sont du millésime du VCI
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
-<?php if($drev->exist('lot')): ?>
+<?php if($drev->exist('lots')): ?>
     <br/><br/>
     <span class="h3">&nbsp;Prélèvement&nbsp;</span><br/>
     <?php if($drev->isAllDossiersHaveSameAddress()): ?>

@@ -102,9 +102,9 @@ class parcellaireActions extends sfActions {
         echo $this->content;
         exit;
     }
-    
+
     public function secureTeledeclarant() {
-        if(!$this->getUser()->isAdmin() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
+        if(!$this->getUser()->isAdmin() && !$this->getUser()->isStalker() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
             throw new sfError403Exception();
         }
     }
