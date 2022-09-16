@@ -812,6 +812,11 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getFirstChgtDenomFacturable($produitFilter = null)
     {
+
+      if ($this->isDeclassement()) {
+        return;
+      }
+
       $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
           $this->identifiant,
           substr($this->validation, 0, 7)
