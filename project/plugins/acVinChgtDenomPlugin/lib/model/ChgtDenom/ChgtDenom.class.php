@@ -886,6 +886,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             return;
         }
 
+        if ($this->isDeclassement()) {
+            return;
+        }
+
       return $this->changement_volume;
     }
 
