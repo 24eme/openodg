@@ -7,7 +7,7 @@ class parcellaireIrrigableActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
-        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDocFromPrevious($etablissement->identifiant, $campagne);
         $parcellaireIrrigable->save();
 
         return $this->redirect('parcellaireirrigable_edit', $parcellaireIrrigable);
@@ -18,7 +18,7 @@ class parcellaireIrrigableActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() + 1);
-        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
+        $parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->createDocFromPrevious($etablissement->identifiant, $campagne, true);
         $parcellaireIrrigable->save();
 
         return $this->redirect('parcellaireirrigable_edit', $parcellaireIrrigable);
