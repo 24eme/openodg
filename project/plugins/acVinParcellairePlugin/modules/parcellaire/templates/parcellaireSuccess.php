@@ -267,7 +267,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
-<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Dounaier</a>
+<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
 </div>
 <?php endif; ?>
 
