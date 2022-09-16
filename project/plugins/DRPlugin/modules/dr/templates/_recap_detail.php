@@ -11,7 +11,13 @@
     </thead>
     <thead>
         <tr>
-            <th class="text-center col-xs-5 clearfix">Produits <small class="pull-right text-muted">Rdmt L5|L15</small></th>
+            <th class="text-center col-xs-5 clearfix">Produits
+<?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
+                <small class="pull-right text-muted">Rdmt L5|L15</small>
+<?php else: ?>
+                <small class="pull-right text-muted">Rdmt L15</small>
+<?php endif; ?>
+            </th>
             <?php $produits = $dr->getProduitsDetail(); ?>
             <?php foreach ($produits['lignes']->getRawValue() as $libelle): ?>
                 <th class="text-center" style="cursor: help" title="<?= DouaneCsvFile::getCategorieLibelle($dr->type, $libelle) ?>">L<?= $libelle ?></th>
@@ -24,6 +30,7 @@
                 <td>
                     <?= $produit['libelle'] ?>
                     <small class="pull-right text-muted">
+<?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                         <span title="Rendement L5" style="cursor: help">
                             <?php if ($produit['lignes']['05']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
                                 <?= round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) ?>
@@ -31,6 +38,7 @@
                             <?php endif ?>
                         </span> hl/ha
                         |
+<?php endif ?>
                         <span title="Rendement L15" style="cursor: help">
                             <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
                                 <?= round($produit['lignes']['15']['val'] / $produit['lignes']['04']['val'], 2) ?>

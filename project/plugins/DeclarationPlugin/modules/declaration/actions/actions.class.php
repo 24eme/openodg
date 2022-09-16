@@ -130,11 +130,7 @@ class declarationActions extends sfActions {
         }
 
         if ($doc_type == "DR") {
-            if (DRConfiguration::getInstance()->hasValidationDR()) {
-                return $this->redirect('dr_visualisation', ['id' => $doc_id]);
-            }
-
-            return $this->redirect('get_fichier', ['id' => $doc_id]);
+            return $this->redirect('dr_visualisation', ['id' => $doc_id]);
         }
 
         // Doc sans page de visu
