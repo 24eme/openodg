@@ -158,4 +158,9 @@ class DRevConfiguration {
         }
         return null;
     }
+
+    public function hasEmailDisabled() {
+        return isset($this->configuration['email_disabled']) && boolval($this->configuration['email_disabled']);
+    }
+
 }
