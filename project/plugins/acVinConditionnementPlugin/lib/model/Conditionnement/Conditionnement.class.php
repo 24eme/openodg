@@ -85,4 +85,11 @@ class Conditionnement extends BaseConditionnement
         return $this->getVolumeRevendiqueLots($produitFilter);
     }
 
+    public function getProduits($region = null) {
+        if (!$this->exist('declaration') || !count($this->get('declaration'))) {
+            return array();
+        }
+        return $this->declaration->getProduits($region);
+    }
+
 }

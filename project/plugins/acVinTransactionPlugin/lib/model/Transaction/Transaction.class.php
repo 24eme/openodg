@@ -61,4 +61,12 @@ class Transaction extends BaseTransaction
 
         return $this->saveDeclaration($saveDependants);
     }
+
+    public function getProduits($region = null) {
+        if (!$this->exist('declaration') || !count($this->get('declaration'))) {
+            return array();
+        }
+        return $this->declaration->getProduits($region);
+    }
+
 }
