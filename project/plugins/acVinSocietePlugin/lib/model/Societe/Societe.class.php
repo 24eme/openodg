@@ -442,6 +442,10 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       $needSave = true;
     }
 
+    if ($compteOrEtablissement->exist('siret') && $compteOrEtablissement->siret != $this->siret) {
+      $needSave = true;
+    }
+
     if (CompteGenerique::isSameAdresseComptes($compteOrEtablissement, $compteMasterOrigin)) {
         $ret = $this->pushAdresseTo($compteOrEtablissement);
         $needSave = $needSave || $ret;
