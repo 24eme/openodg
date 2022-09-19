@@ -48,6 +48,12 @@ class DRevProduitRecolteForm extends acCouchdbObjectForm {
             }
         }
 
+        if ($this->getOption('disabled_dr') && $this->getObject()->getDocument()->hasDocumentDouanier() && !$dejaSaisi) {
+            foreach($this as $key => $item) {
+                $this->getWidget($key)->setAttribute('class', 'hidden');
+            }
+        }
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 

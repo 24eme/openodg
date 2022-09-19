@@ -726,7 +726,9 @@ class drevActions extends sfActions {
             $this->drev->cleanLots();
             $this->drev->save();
 
-            $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
+            if (!DrevConfiguration::getInstance()->hasEmailDisabled()) {
+                $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
+            }
 
             if($nbSent > 0) {
                 $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
@@ -748,7 +750,9 @@ class drevActions extends sfActions {
             $this->drev->save();
         }
 
-        Email::getInstance()->sendDRevValidation($this->drev);
+        if (!DrevConfiguration::getInstance()->hasEmailDisabled()) {
+            Email::getInstance()->sendDRevValidation($this->drev);
+        }
 
         return $this->redirect('drev_confirmation', $this->drev);
     }
@@ -779,7 +783,7 @@ class drevActions extends sfActions {
             $mother = $mother->getMother();
         }
 
-        if($this->drev->validation_odg) {
+        if($this->drev->validation_odg && !DrevConfiguration::getInstance()->hasEmailDisabled()) {
             $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
             if($nbSent > 0) {
                 $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
@@ -1031,18 +1035,6 @@ class drevActions extends sfActions {
             return $etape;
         }
         return ($drevEtapes->isLt($drev->etape, $etape)) ? $etape : $drev->etape;
-    }
-
-    protected function sendDRevValidation($drev) {
-        $pdf = new ExportDRevPdf($drev, null, 'pdf', true);
-        $pdf->setPartialFunction(array($this, 'getPartial'));
-        $pdf->removeCache();
-        $pdf->generate();
-        Email::getInstance()->sendDRevValidation($drev);
-    }
-
-    protected function sendDrevConfirmee($drev) {
-        Email::getInstance()->sendDrevConfirmee($drev);
     }
 
     protected function secure($droits, $doc) {

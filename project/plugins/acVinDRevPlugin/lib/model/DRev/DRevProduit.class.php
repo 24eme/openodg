@@ -152,6 +152,9 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
+        if(is_null($this->superficie_revendique)) {
+			return false;
+		}
 
 		if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
 

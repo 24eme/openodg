@@ -151,6 +151,7 @@ class DouaneImportCsvFile {
                     $p[] = $donnee->document_famille;
                     $p[] = substr($this->campagne, 0, 4);
                     $p[] = $donnee->colonne_famille;
+                    $p[] = implode('|', DouaneImportCsvFile::extractLabels($p[11]));
                     $produits[] = $p;
                 }
             }
@@ -170,7 +171,7 @@ class DouaneImportCsvFile {
         return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne, ($with_filter) ? $this->drev_produit_filter : null);
     }
 
-    public function extractLabels($mentionComplementaire) {
+    public static function extractLabels($mentionComplementaire) {
         $labels = array();
 
         $wordSeparatorStart = "(^|[ \/\-]{1})";

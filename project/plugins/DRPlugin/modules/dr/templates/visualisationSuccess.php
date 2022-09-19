@@ -44,7 +44,7 @@
             <i class="glyphicon glyphicon-file"></i> DR
         </a>
     </div>
-
+<?php if(DRConfiguration::getInstance()->hasValidationDR()): ?>
     <div class="col-xs-4 text-right">
         <?php if ($sf_user->isAdmin()): ?>
             <?php if($dr->exist('validation_odg') && $dr->validation_odg): ?>
@@ -67,4 +67,5 @@
             <?php endif ?>
         <?php endif ?>
     </div>
+<?php endif; ?>
 </div>
