@@ -35,7 +35,7 @@ class DRevProduitRecolteForm extends acCouchdbObjectForm {
             $this->setValidator('vci_constitue', new sfValidatorNumber(array('required' => false)));
         }
 
-        $dejaSaisi = $this->getObject()->getDocument()->hasDocumentDouanier();
+        $dejaSaisi = false;
         foreach($this as $key => $item) {
             if($this->getObject()->get($key)) {
                 $dejaSaisi = true;
@@ -45,9 +45,12 @@ class DRevProduitRecolteForm extends acCouchdbObjectForm {
         if ($this->getOption('disabled_dr') && $dejaSaisi) {
             foreach($this as $key => $item) {
                 $this->getWidget($key)->setAttribute('disabled', 'disabled');
-                if(is_null($this->getObject()->get($key))) {
-                    $this->getWidget($key)->setAttribute('class', 'hidden');
-                }
+            }
+        }
+
+        if ($this->getOption('disabled_dr') && $this->getObject()->getDocument()->hasDocumentDouanier() && !$dejaSaisi) {
+            foreach($this as $key => $item) {
+                $this->getWidget($key)->setAttribute('class', 'hidden');
             }
         }
 
