@@ -62,7 +62,7 @@ DRev:
           fields:
             '*':
               type: collection
-              class: DRevDeclaration
+              class: DRevDeclarationCepage
               definition:
                 fields:
                   '*':

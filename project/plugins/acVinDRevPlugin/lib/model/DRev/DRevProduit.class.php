@@ -171,6 +171,10 @@ class DRevProduit extends BaseDRevProduit
 		return null;
 	}
 
+    public function getCepage() {
+        return $this->getParent();
+    }
+
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
         if(is_null($this->superficie_revendique)) {
 			return false;
@@ -289,12 +293,14 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function hasDonneesRecolte() {
-	    if ($this->exist('recolte')) {
-	        foreach ($this->recolte as $k => $v) {
-	            if ($v && $v > 0) {
-	                return true;
-	            }
-	        }
+        foreach($this->getCouleur()->getProduits() as $p) {
+	       if ($p->exist('recolte')) {
+	           foreach ($p->recolte as $k => $v) {
+	               if ($v && $v > 0) {
+	                   return true;
+	               }
+	           }
+            }
 	    }
 	    return false;
 	}
@@ -354,6 +360,10 @@ class DRevProduit extends BaseDRevProduit
 
 	public function getVolumeRevendiqueCommecialisable() {
 		return $this->volume_revendique_total - $this->getVolumeReserveInterproAndButoir();
+	}
+
+	public function getSommeProduitsCepage($hash) {
+		return $this->getCepage()->getSommeProduits($hash);
 	}
 
 }
