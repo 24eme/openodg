@@ -42,6 +42,7 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
       if (isset($values['recolte']) && isset($values['recolte']['vci_constitue']) && $values['recolte']['vci_constitue']) {
         $this->getObject()->vci->constitue = $values['recolte']['vci_constitue'];
       }
+
       parent::doUpdateObject($values);
     }
 
