@@ -40,6 +40,9 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
     public function getSommeProduits($subhash) {
         $somme = 0;
         foreach($this->getProduits() as $p) {
+            if(!$p->exist($subhash)) {
+                continue;
+            }
             $somme += $p->get($subhash);
         }
         return $somme;
