@@ -2573,6 +2573,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $api_link = sfConfig::get('app_api_contrats_link');
         $secret = sfConfig::get('app_api_contrats_secret');
+        if (!$api_link || !$secret) {
+            return array();
+        }
+
         $cvi = $this->declarant->cvi;
         $millesime = DRevConfiguration::getInstance()->getMillesime();
         $epoch = (string)time();
