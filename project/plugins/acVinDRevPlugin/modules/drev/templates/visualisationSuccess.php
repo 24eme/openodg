@@ -74,12 +74,24 @@
 <?php endif; ?>
 
 <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
+  <?php $hasmodal = false; ?>
   <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
-      <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+      <h3 class="">Commentaire interne <small>(seulement visible par l'ODG - <a href='#' data-toggle="modal" data-target="#drev-edit-comment">Éditer</a>)</small></h3>
       <pre><?php echo $drev->commentaire; ?></pre>
-      <hr />
-  <?php elseif(!$drev->getValidationOdg()): ?>
+      <div class="modal fade" id="drev-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title" id="myModalLabel">Edition du commentaire</h4>
+                      </div>
+                      <div class="modal-body">
+<?php $hasmodal = true; ?>
+<?php endif; ?>
+<?php if(!$drev->getValidationOdg()): ?>
     <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+<?php endif; ?>
+<?php if($drevCommentaireValidationForm && (!$drev->getValidationOdg() || $hasmodal)): ?>
     <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
         <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
         <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
@@ -90,8 +102,14 @@
           </button>
         </div>
     </form>
-    <hr />
-  <?php endif; ?>
+<?php endif; ?>
+<?php if($hasmodal): ?>
+                </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+<hr />
 <?php endif; ?>
 
 

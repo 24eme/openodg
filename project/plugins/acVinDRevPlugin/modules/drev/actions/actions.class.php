@@ -866,7 +866,7 @@ class drevActions extends sfActions {
             $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
-        if($this->getUser()->isAdmin() && !$this->drev->validation_odg) {
+        if($this->getUser()->isAdmin()) {
             $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
         }
 
