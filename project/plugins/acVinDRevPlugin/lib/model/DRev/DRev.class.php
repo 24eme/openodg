@@ -588,7 +588,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$typeDocumentDouanier = $this->getDocumentDouanierType();
     	$csvFiles = $this->getDocumentsDouaniers('csv');
 
-
     	if (!count($csvFiles)) {
     		$docDouanier = $this->getDocumentDouanier();
     		if ($docDouanier &&  $docDouanier->exist('donnees') && count($docDouanier->donnees) >= 1) {

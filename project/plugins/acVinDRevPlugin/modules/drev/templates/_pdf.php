@@ -37,7 +37,7 @@
         <th class="th" style="text-align: left; width: 400px;">Produit</th>
         <th class="th" style="text-align: center; width: 137px;">Superficie revendiquée</th>
         <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->periode-1 ?> issu du VCI</th>
-        <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->periode ?></th>
+        <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->periode ?> <?php if($drev->hasVSI()): ?><small><br />(VSI compris)</small><?php endif; ?></th>
         <th class="th" style="text-align: center; width: 137px;">Volume revendiqué net total <?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small><?php endif; ?></th>
     </tr>
     <?php foreach($drev->declaration->getProduitsWithoutLots($region) as $produit): ?>
@@ -45,7 +45,7 @@
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->superficie_revendique): ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ha</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_vci): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_recolte): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_recolte) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_recolte): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_recolte) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?><?php if ($produit->volume_revendique_issu_vsi): ?><small><br />+ VSI <?php echo sprintFloatFr($produit->volume_revendique_issu_vsi) ?> hl</small>&nbsp;&nbsp;&nbsp;<?php endif ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_total): ?><?php echo sprintFloatFr($produit->volume_revendique_total) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
         </tr>
     <?php endforeach; ?>

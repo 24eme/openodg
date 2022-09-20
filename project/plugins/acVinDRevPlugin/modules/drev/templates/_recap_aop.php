@@ -8,7 +8,7 @@
           <th class="col-xs-1 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
           <th class="col-xs-1 text-center">Volume millesime <?php echo $drev->periode-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
           <?php if($drev->hasVSI()): ?>
-          <th class="col-xs-1 text-center">Volume<br />issu du<br />VSI&nbsp;<small class="text-muted">(hl)</small></th>
+          <th class="col-xs-1 text-center">Volume<br />millésime <?php echo $drev->periode ?><br />issu du VSI&nbsp;<small class="text-muted">(hl)</small></th>
           <?php endif; ?>
           <th class="col-xs-1 text-center">Volume issu de la récolte <?php echo $drev->periode ?>&nbsp;<small class="text-muted">(hl)</small></th>
           <th class="col-xs-1 text-center">Volume revendiqué net total&nbsp;<?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small>&nbsp;<?php endif; ?><small class="text-muted">(hl)</small></th>
