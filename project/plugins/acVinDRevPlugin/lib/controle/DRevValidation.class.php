@@ -34,7 +34,9 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_warn', "Le rendement sur le volume revendiqué n'est pas respecté (peut être lié à un achat de vendange ou l'intégration de VCI stocké chez un négociant)");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_conseille', "Le rendement sur le volume revendiqué dépasse le rendement légal il vous faut disposer d'une dérogation pour être autorisé à revendiquer ce rendement");
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
+        $this->addControle(self::TYPE_ERROR, 'vci_rendement', "Le volume revendiqué en VCI dépasse le rendement autorisé");
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
+        $this->addControle(self::TYPE_ERROR, 'vsi_rendement', "Le volume revendiqué en VSI dépasse le rendement autorisé");
         $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_complement', 'Vous revendiquez un volume supérieur à celui qui figure sur votre déclaration douanière en L15');
         $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_dr', 'Certaines informations provenant de votre déclaration douanière sont manquantes');
 
@@ -310,6 +312,9 @@ class DRevValidation extends DeclarationLotsValidation
             $vol = $produit->vci->stock_final - round($produit->getPlafondStockVci(), 4);
             $point->setMessage($point->getMessage() . " soit $vol hl");
         }
+        if(round($produit->getCepage()->getRendementVCIConstitue(), 2) > $produit->getConfig()->getRendementVci()) {
+            $point = $this->addPoint(self::TYPE_ERROR, 'vci_rendement', $produit->getLibelleComplet() . ' (rendement VCI de ' . round($produit->getCepage()->getRendementVciConstitue(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVci().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        }
     }
 
     protected function controleHabilitationINAO()
@@ -415,6 +420,14 @@ class DRevValidation extends DeclarationLotsValidation
     public function controleVsi() {
         if(!$this->document->hasVsi()) {
             return;
+        }
+
+        foreach($this->document->getProduits() as $produit) {
+            if(round($produit->getCepage()->getRendementVsi(), 2) <= $produit->getConfig()->getRendementVci()) {
+                continue;
+            }
+
+            $point = $this->addPoint(self::TYPE_ERROR, 'vsi_rendement', $produit->getLibelleComplet() . ' (rendement VSI de ' . round($produit->getCepage()->getRendementVsi(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVci().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
 
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, '');
