@@ -202,8 +202,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasProblemEcartPieds() {
-      if ($this->exist('ecart_rang') && $this->exist('ecart_pieds') && $this->ecart_rang && $this->ecart_pieds) {
-        return (($this->ecart_rang * $this->ecart_pieds) > 25000);
+      $ecart_max = sfConfig::get('app_parcellaire_ecart_pieds_max', null);
+      if ($ecart_max && $this->exist('ecart_rang') && $this->exist('ecart_pieds') && $this->ecart_rang && $this->ecart_pieds) {
+        return (($this->ecart_rang * $this->ecart_pieds) > $ecart_max);
       }
       return false;
     }
