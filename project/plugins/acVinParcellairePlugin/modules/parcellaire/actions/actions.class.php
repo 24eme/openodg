@@ -55,6 +55,7 @@ class parcellaireActions extends sfActions {
     {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->noscrape = $request->getParameter('noscrape', false);
     }
 
     public function executeImport(sfWebRequest $request)
@@ -62,6 +63,7 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $parcellaire_client = ParcellaireClient::getInstance();
+        $this->noscrape = $request->getParameter('noscrape', false);
 
         try {
             $errors = [];
@@ -70,7 +72,7 @@ class parcellaireActions extends sfActions {
 
             $msg = '';
 
-            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors)) {
+            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors, null, !$noscrape)) {
                 $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {

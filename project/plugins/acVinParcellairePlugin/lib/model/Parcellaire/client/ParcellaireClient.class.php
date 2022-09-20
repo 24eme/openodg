@@ -118,11 +118,14 @@ class ParcellaireClient extends acCouchdbClient {
      * @throws Exception Si aucun CVI trouvé
      * @return string Le fichier le plus récent
      */
-    public function scrapeParcellaireCSV($cvi, $contextInstance = null)
+    public function scrapeParcellaireCSV($cvi, $scrappe = true, $contextInstance = null)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
-        $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
+        $status = 0;
+        if ($scrappe) {
+            $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
+        }
 
         $file = $scrapydocs.'/parcellaire-'.$cvi.'.csv';
 
@@ -182,9 +185,7 @@ class ParcellaireClient extends acCouchdbClient {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
         $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
 
-        if($scrapping) {
-            $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $contextInstance);
-        }
+        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $scrapping, $contextInstance);
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
