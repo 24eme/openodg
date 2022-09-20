@@ -72,7 +72,7 @@ class parcellaireActions extends sfActions {
 
             $msg = '';
 
-            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors, null, !$noscrape)) {
+            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
                 $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {
