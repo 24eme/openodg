@@ -31,7 +31,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public static $denominationsAuto = array(
         self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
         self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
-        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
+        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO." hors conversion",
     );
 
     public static $lotDestinationsType = array(
