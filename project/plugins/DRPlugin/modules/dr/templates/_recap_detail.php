@@ -6,7 +6,7 @@
     <thead>
         <tr>
             <th class="col-xs-5" style="border-top: hidden; border-left: hidden"></th>
-            <th colspan="7" class="text-center">Lignes</th>
+            <th colspan="10" class="text-center">Lignes</th>
         </tr>
     </thead>
     <thead>
@@ -49,7 +49,7 @@
                 </td>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
                 <td class="text-right" title="Ligne L<?= $l ?>">
-                  <?= ($p['val'] === '—') ? '—' : round($p['val'], $p['decimals'] ?? 2) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
+                  <?= ($p['val'] === '—') ? '—' : echoFloat($p['val']) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
                 </td>
                 <?php endforeach ?>
             </tr>
@@ -57,7 +57,7 @@
         <tr>
             <th class="text-right"><strong>Total</strong></th>
             <?php foreach ($produit['lignes'] as $l => $p): ?>
-                <th class="text-right"><strong><?= echoFloat($dr->getTotalValeur($l)) ?></strong> <span class='text-muted'><?= $p['unit'] ?></span></th>
+                <th class="text-right"><strong><?= echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
             <?php endforeach ?>
         </tr>
     </tbody>
