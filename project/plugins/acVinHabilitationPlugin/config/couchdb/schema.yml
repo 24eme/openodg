@@ -53,6 +53,7 @@ Habilitation:
                               commentaire: {  }
                               statut: {  }
                               site: { required: false }
+                              activite: { }
       demandes:
         type: collection
         definition:
