@@ -18,9 +18,6 @@ all:
           ENREGISTREMENT: "Enregistrement"
           TRANSMIS_CI: "Transmis au Contrôle Interne"
           TRAITE_CI: "Traité par le Contrôle Interne"
-          TRANSMIS_OIVR: "Transmis à l'OIVR"
-          AVIS_CONFORME_OIVR: "Avis conforme de l'OIVR"
-          AVIS_NONCONFORME_OIVR: "Avis non conforme de l'OIVR"
           TRANSMIS_VINO: "Transmis à VINOMED"
           AVIS_CONFORME_VINO: "Avis conforme de VINOMED"
           AVIS_NONCONFORME_VINO: "Avis non conforme de VINOMED"
@@ -40,8 +37,6 @@ all:
           ANNULE: "Annulé"
         automatique:
           COMPLET: ENREGISTREMENT
-          AVIS_CONFORME_OIVR: TRANSMIS_INAO
-          AVIS_NONCONFORME_OIVR: TRANSMIS_INAO
           AVIS_CONFORME_VINO: TRANSMIS_INAO
           AVIS_NONCONFORME_VINO: TRANSMIS_INAO
           VALIDE_ODG: VALIDE
