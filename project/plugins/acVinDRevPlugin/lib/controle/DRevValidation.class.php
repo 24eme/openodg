@@ -74,6 +74,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT));
 
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
+
         $contrats = $this->document->getContratsFromAPI();
 
         foreach($contrats as $k=>$v){
@@ -115,6 +117,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->controleHabilitationODG();
         $this->controleBailleurs();
         $this->controleLots();
+        $this->controleVsi();
     }
 
     protected function controleNeant()
@@ -407,4 +410,12 @@ class DRevValidation extends DeclarationLotsValidation
             }
         endif;
         }
+
+    public function controleVsi() {
+        if(!$this->document->hasVsi()) {
+            return;
+        }
+
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, '');
+    }
 }
