@@ -293,7 +293,7 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function hasDonneesRecolte() {
-        foreach($this->getCouleur()->getProduits() as $p) {
+        foreach($this->getCepage()->getProduits() as $p) {
 	       if ($p->exist('recolte')) {
 	           foreach ($p->recolte as $k => $v) {
 	               if ($v && $v > 0) {
