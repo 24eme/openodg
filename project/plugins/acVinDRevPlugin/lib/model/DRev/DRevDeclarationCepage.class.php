@@ -64,6 +64,14 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
         return $this->getSommeProduits('volume_revendique_rendement') / $superficie;
     }
 
+    public function getRendementVSI() {
+        $superficie = $this->getSommeProduits('superficie_revendique');
+        if (!$superficie) {
+            return null;
+        }
+        return $this->getSommeProduits('volume_revendique_issu_vsi') / $superficie;
+    }
+
     public function getRendementEffectifHorsVCI() {
         $superficie = $this->getSommeProduits('superficie_revendique');
         if (!$superficie) {
