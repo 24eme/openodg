@@ -852,6 +852,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VSI_L18) {
+                if(!$produitRecolte->exist('vsi')) {
+                    $produitRecolte->add('vsi');
+                }
+                $produitRecolte->vsi += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
                 $produitRecolte->superficie_total += round(VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]), 4);
@@ -926,6 +932,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             if ($produitRecolte->vci_constitue) {
                 $produit->vci->constitue = $produitRecolte->vci_constitue;
+            }
+
+            if ($p->recolte->exist('vsi') && $p->recolte->vsi) {
+                $produitRecolte->add('vsi');
+                $produitRecolte->vsi += $p->recolte->vsi;
             }
 
             if (! $p->vci->stock_precedent) {
@@ -1423,6 +1434,47 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     {
     	$tabId = explode('-', $this->_id);
     	return (strlen($tabId[(count($tabId) - 1)]) > 4)? true : false;
+    }
+
+    public function hasVSI()
+    {
+        foreach ($this->declaration->getProduits() as $produit) {
+    		if($produit->recolte->exist('vsi') && $produit->recolte->vsi > 0) {
+
+                return true;
+            }
+
+            if($produit->exist('volume_revendique_issu_vsi') && $produit->volume_revendique_issu_vsi > 0) {
+
+                return true;
+            }
+    	}
+
+        return false;
+    }
+
+    public function hasVCIConstitue()
+    {
+        foreach ($this->declaration->getProduits() as $produit) {
+    		if($produit->recolte->vci_constitue > 0) {
+
+                return true;
+            }
+    	}
+
+        return false;
+    }
+
+    public function hasVCIRevendique()
+    {
+        foreach ($this->declaration->getProduits() as $produit) {
+    		if($produit->volume_revendique_issu_vci > 0) {
+
+                return true;
+            }
+    	}
+
+        return false;
     }
 
     public function canHaveSuperficieVinifiee()

@@ -30,7 +30,10 @@ class DRevProduitRecolteForm extends acCouchdbObjectForm {
             $this->setValidator('volume_sur_place', new sfValidatorNumber(array('required' => false)));
         }
 
-        if(in_array('vci_constitue', $this->getOption('fields'))) {
+        if(in_array('vsi', $this->getOption('fields')) && $this->getObject()->exist('vsi')) {
+            $this->setWidget('vsi', new bsWidgetFormInputFloat());
+            $this->setValidator('vsi', new sfValidatorNumber(array('required' => false)));
+        } elseif(in_array('vci_constitue', $this->getOption('fields'))) {
             $this->setWidget('vci_constitue', new bsWidgetFormInputFloat());
             $this->setValidator('vci_constitue', new sfValidatorNumber(array('required' => false)));
         }

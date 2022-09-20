@@ -75,6 +75,7 @@ DRev:
                         superficie_revendique: { type: float }
                         volume_revendique_issu_recolte: { type: float }
                         volume_revendique_issu_vci: { type: float }
+                        volume_revendique_issu_vsi: { type: float, required: false }
                         volume_revendique_issu_mutage: { type: float }
                         volume_revendique_total: { type: float }
                         volume_revendique_seuil: { type: float, required: false }
@@ -105,6 +106,7 @@ DRev:
                               superficie_total: { type: float }
                               recolte_nette: { type: float }
                               vci_constitue: { type: float }
+                              vsi: { type: float, required: false }
       prelevements:
         required: false
         type: collection

@@ -7,6 +7,9 @@
         <th class="col-xs-4"><?php if (count($drev->declaration->getProduitsWithoutLots()) > 1): ?>Produits revendiqués<?php else: ?>Produit revendiqué<?php endif; ?></th>
           <th class="col-xs-1 text-center">Superficie revendiquée&nbsp;<small class="text-muted">(ha)</small></th>
           <th class="col-xs-1 text-center">Volume millesime <?php echo $drev->periode-1 ?> issu du VCI&nbsp;<small class="text-muted">(hl)</small></th>
+          <?php if($drev->hasVSI()): ?>
+          <th class="col-xs-1 text-center">Volume<br />issu du<br />VSI&nbsp;<small class="text-muted">(hl)</small></th>
+          <?php endif; ?>
           <th class="col-xs-1 text-center">Volume issu de la récolte <?php echo $drev->periode ?>&nbsp;<small class="text-muted">(hl)</small></th>
           <th class="col-xs-1 text-center">Volume revendiqué net total&nbsp;<?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small>&nbsp;<?php endif; ?><small class="text-muted">(hl)</small></th>
         <?php else: ?>
@@ -24,6 +27,9 @@
             <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php if($produit->superficie_revendique): ?><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small><?php endif; ?></td>
             <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): ?>
               <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+            <?php endif; ?>
+            <?php if($drev->hasVSI()): ?>
+            <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vsi') ?>"><?php if($produit->volume_revendique_issu_vsi): ?><?php echoFloat($produit->volume_revendique_issu_vsi) ?> <small class="text-muted">hl</small><?php endif; ?></td>
             <?php endif; ?>
             <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_recolte') ?>"><?php if($produit->volume_revendique_issu_recolte): ?><?php echoFloat($produit->volume_revendique_issu_recolte) ?> <small class="text-muted">hl</small><?php endif; ?></td>
             <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_total') ?>"><?php if($produit->volume_revendique_total): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>

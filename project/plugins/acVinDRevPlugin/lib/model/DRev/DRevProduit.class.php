@@ -61,6 +61,23 @@ class DRevProduit extends BaseDRevProduit
 		return $this->vci->complement + $this->vci->substitution + $this->vci->rafraichi + $this->vci->destruction;
 	}
 
+    public function getVolumeRevendiqueIssuVsi() {
+		if(!$this->exist('volume_revendique_issu_vsi')) {
+			return 0;
+		}
+
+		return $this->_get('volume_revendique_issu_vsi');
+    }
+
+	public function getVolumeRevendiqueIssuVciVsi() {
+		$volume = $this->volume_revendique_issu_vci;
+		if($this->exist('volume_revendique_issu_vsi')) {
+			$volume += $this->volume_revendique_issu_vsi;
+		}
+
+		return $volume;
+	}
+
 	public function getVolumeRevendiqueRendement() {
 		if($this->exist('volume_revendique_issu_mutage') && $this->volume_revendique_issu_mutage) {
 			return ($this->volume_revendique_total - $this->volume_revendique_issu_mutage);
@@ -117,7 +134,10 @@ class DRevProduit extends BaseDRevProduit
 			$this->volume_revendique_issu_vci = ((float) $this->vci->complement) + ((float) $this->vci->substitution) + ((float) $this->vci->rafraichi);
 			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement);
 		}
-		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci + (float) $this->volume_revendique_issu_mutage);
+        if($this->recolte->exist('vsi') && $this->recolte->vsi) {
+            $this->add('volume_revendique_issu_vsi', $this->recolte->vsi);
+        }
+		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci_vsi + (float) $this->volume_revendique_issu_mutage);
 
 		if ($this->hasReserveInterpro()) {
 			$this->add('dont_volume_revendique_reserve_interpro', $this->getVolumeReserveInterpro());
