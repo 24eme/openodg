@@ -89,4 +89,12 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
 		return $this->getSommeProduits('volume_revendique_issu_recolte') / $superficie;
     }
 
+    public function getRendementDrL15(){
+		$superficie = $this->getSommeProduits('recolte/superficie_total');
+		if ($superficie) {
+			return $this->getSommeProduits('recolte/volume_sur_place_revendique') / $superficie;
+		}
+		return 0;
+	}
+
 }

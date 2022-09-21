@@ -176,26 +176,26 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
-        if(is_null($this->superficie_revendique)) {
+        if(is_null($this->getSommeProduitsCepage('superficie_revendique'))) {
 			return false;
 		}
 
-		if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
+		if($this->getSommeProduitsCepage('recolte/volume_total') == $this->getSommeProduitsCepage('recolte/volume_sur_place')) {
 
 			return true;
 		}
 
-		if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_total)) {
+		if($this->getSommeProduitsCepage('recolte/volume_sur_place') == ($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_total'))) {
 
 			return true;
 		}
 
-        if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_sur_place)) {
+        if($this->getSommeProduitsCepage('recolte/volume_sur_place') == ($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_sur_place'))) {
 
 			return true;
 		}
 
-        if ($this->recolte->volume_sur_place_revendique == $this->recolte->volume_sur_place_revendique) {
+        if ($this->getSommeProduitsCepage('recolte/volume_sur_place_revendique') == $this->getSommeProduitsCepage('recolte/volume_sur_place_revendique')) {
 
             return true;
         }
