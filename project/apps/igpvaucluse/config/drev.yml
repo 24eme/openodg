@@ -11,6 +11,5 @@ all:
       specificite_lot: true
       engagement_pdf: true
       volume_seuil:
-        fichier_csv: "/data/configuration/VIP2C2022.csv"
         hash: certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT
         campagne: 2022-2023

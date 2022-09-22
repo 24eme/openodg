@@ -131,13 +131,6 @@ class DRevConfiguration {
         return isset($this->configuration['volume_seuil']) && boolval($this->configuration['volume_seuil']);
     }
 
-    public function getVIP2CCsvPath(){
-        if(isset($this->configuration['volume_seuil']['fichier_csv']) && boolval($this->configuration['volume_seuil']['fichier_csv'])){
-            return($this->configuration['volume_seuil']['fichier_csv']);
-        }
-        return null;
-    }
-
     public function getProduitHashWithVolumeSeuil(){
         if(isset($this->configuration['volume_seuil']['hash']) && boolval($this->configuration['volume_seuil']['hash'])){
             return($this->configuration['volume_seuil']['hash']);
