@@ -259,13 +259,13 @@ class DRevValidation extends DeclarationLotsValidation
             }
         }
         if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
 
         if ($this->document->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/volume_sur_place')) {
-            $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/recolte_nette')) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15_dr_zero', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } else {
 
 	        if ((round($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') + $produit->getSommeProduitsCepage('vci/rafraichi'), 4)) != round($produit->getSommeProduitsCepage('recolte/recolte_nette'), 4) && round($produit->getSommeProduitsCepage('recolte/volume_total'), 4) == round($produit->getSommeProduitsCepage('recolte/volume_sur_place'), 4)) {
@@ -283,11 +283,11 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, $produit->getLibelleComplet());
             }else{
-        	    $this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        	    $this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
             }
         }
         if (($produit->getConfig()->getRendement() > $produit->getSommeProduitsCepage('volume_revendique_issu_recolte')) && ($produit->vci->stock_precedent > 0) && ($produit->vci->stock_precedent > $produit->vci->complement) && ($produit->getPlafondStockVci() > $produit->vci->complement)) {
-        	$this->addPoint(self::TYPE_WARNING, 'vci_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
+        	$this->addPoint(self::TYPE_WARNING, 'vci_complement', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 
         if($produit->getConfig()->hasMutageAlcoolique()) {
