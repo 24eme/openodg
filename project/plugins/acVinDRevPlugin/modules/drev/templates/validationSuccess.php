@@ -27,8 +27,8 @@
     <?php endif; ?>
     <?php if($sf_user->isAdmin()) : ?>
         <hr />
-<?php if (isset($form["date_depot"])): ?>
         <h3>Validation</h3>
+<?php if (isset($form["date_depot"])): ?>
         <?php echo $form["date_depot"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
             <?php echo $form["date_depot"]->renderLabel("Date de dépot ou de réception :", array("class" => "col-xs-3 control-label")); ?>
@@ -40,7 +40,7 @@
             </div>
         </div>
 <?php elseif($drev->isTeledeclare()): ?>
-<p>DRev télédéclarée</p>
+<p>DRev télédéclarée signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?></p>
 <?php endif; ?>
     <?php endif; ?>
     <hr />
