@@ -27,6 +27,7 @@
     <?php endif; ?>
     <?php if($sf_user->isAdmin()) : ?>
         <hr />
+<?php if (isset($form["date_depot"])): ?>
         <h3>Validation</h3>
         <?php echo $form["date_depot"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
@@ -38,6 +39,9 @@
             </div>
             </div>
         </div>
+<?php elseif($drev->isTeledeclare()): ?>
+<p>DRev télédéclarée</p>
+<?php endif; ?>
     <?php endif; ?>
     <hr />
     <div class="row row-margin row-button">
