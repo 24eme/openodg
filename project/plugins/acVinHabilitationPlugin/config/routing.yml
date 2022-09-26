@@ -130,3 +130,20 @@ certipaq_diff:
     type:     object
   requirements:
     sf_method: [get, post]
+
+certipaq_demande_type:
+  url: /habilitation/declarant/:identifiant/certipaq/:demande/type
+  param: { module: habilitation, action certipaqType }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+
+certipaq_demande_output:
+  url: /habilitation/declarant/:identifiant/certipaq/:demande/output/:type
+  param: { module: habilitation, action certipaqOutput }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+

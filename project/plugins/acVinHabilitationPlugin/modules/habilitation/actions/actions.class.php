@@ -662,4 +662,19 @@ class habilitationActions extends sfActions {
         }
     }
 
+    public function executeCertipaqType(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->demande = $request->getParameter('demande');
+        $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
+    }
+
+    public function executeCertipaqOutput(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+        $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
+
+        $this->param = CertipaqDI::getInstance()->getCertipaqParam($request->getParameter('type'), $this->demande);
+    }
 }
