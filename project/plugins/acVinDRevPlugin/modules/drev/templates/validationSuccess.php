@@ -1,3 +1,4 @@
+<?php use_helper('Date') ?>
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'validation', 'drev' => $drev)) ?>
 
