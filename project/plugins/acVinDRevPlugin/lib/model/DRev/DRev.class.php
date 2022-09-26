@@ -15,6 +15,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     const BOUTEILLE_GRDCRU = 'bouteille_GRDCRU';
     const BOUTEILLE_VTSGN = 'bouteille_VTSGN';
     const DEFAULT_KEY = 'DEFAUT';
+    const VIP2C_COLONNE_CVI = 3;
+    const VIP2C_COLONNE_NOM = 11;
 
     public static $prelevement_libelles = array(
         self::CUVE => "Dégustation conseil",
@@ -2573,12 +2575,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!DRevConfiguration::getInstance()->hasVolumeSeuil()){
             return null;
         }
-        $configFile =fopen(sfConfig::get('sf_root_dir').DRevConfiguration::getInstance()->getVIP2CCsvPath(), "r");
+        $configFile = fopen(sfConfig::get('sf_root_dir').sfConfig::get('app_api_contrats_fichier_csv'),"r");
 
         $volumes = array();
         while (!feof($configFile) ) {
             $line = fgetcsv($configFile);
-            $volumes[$line[3]] = str_replace(",","",$line[11]);
+            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_NOM]);
         }
         fclose($configFile);
 
