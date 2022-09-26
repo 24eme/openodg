@@ -65,12 +65,52 @@ class CertipaqDI extends CertipaqService
         return $adresses;
     }
 
-    public function fillSites($habilitation) {
+    public function fillSitesHabilite($habilitation) {
         $sites = array();
         $sites[0]['nom_site'] = $habilitation->getEtablissementObject()->getNom();
         $sites[0]['capacite_cuverie'] = null;
         $this->fillAdresseAndContact($sites[0], $habilitation->getEtablissementObject());
         return $sites;
+    }
+
+    public function addSitesHabilites(& $sites, $habilitation) {
+        $etablissement = $habilitation->getEtablissementObject();
+        if ($etablissement->exist('chais')) {
+            foreach($habilitation->getChaisHabilite() as $chais) {
+                $sites[] = $this->fillSiteFromChais($chais);
+            }
+        }
+        return $sites;
+    }
+
+    public function addSitesNonHabilites(& $sites, $habilitation) {
+        $etablissement = $habilitation->getEtablissementObject();
+        if ($etablissement->exist('chais')) {
+            foreach($habilitation->getChaisSansHabilitation() as $chais) {
+                $sites[] = $this->fillSiteFromChais($chais);
+            }
+        }
+        return $sites;
+    }
+
+    public function fillSiteFromChais($chais) {
+        $site = array();
+        $site['nom_site'] = $chais->nom;
+        $site['adresse'] = $chais->adresse;
+        $site['cp'] = $chais->code_postal;
+        $site['ville'] = $chais->commune;
+        $site['latitude'] = $chais->lat;
+        $site['longitude'] = $chais->lon;
+        if ($chais->archive) {
+            $site['commentaire'] = "Archivé";
+        }
+        $site['outils_production'] = array();
+        foreach($chais->attributs as $ka => $a) {
+            $site['outils_production'] = array(
+                'nom_outil' => $a
+            );
+        }
+        return $site;
     }
 
     public function fillHabilitationsFromDemande($demande) {
@@ -92,13 +132,14 @@ class CertipaqDI extends CertipaqService
         return $habilitations;
     }
 
-    public function fillHabilitations($habilitation) {
+    public function fillHabilitations($habilitation, $site = '') {
         $habilitations = array();
         foreach($habilitation->declaration as $k => $declaration) {
             $certipaq_produit = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($declaration->getConfig());
             if ($certipaq_produit) {
                 foreach($declaration->activites as $activite_nom => $activite) {
-                    if (!$activite->statut) {
+                    $activite_site = ($activite->exist('site') && $activite->site) ? $activite->site : '';
+                    if (!$activite->statut || $site != $activite_site) {
                         continue;
                     }
                     $habilitation = array();
@@ -121,16 +162,20 @@ class CertipaqDI extends CertipaqService
                 }
             }
         }
+        $habilitation = (array) $habilitation;
+        usort($habilitations, "CertipaqDI::orderHabilitations");
         return $habilitations;
     }
 
     public function getOperateurFromHabilitation($habilitation) {
         $param = $this->fillOperateur($habilitation);
-        $param['sites'] = $this->fillSites($habilitation);
+        $param['sites'] = $this->fillSitesHabilite($habilitation);
         $param['sites'][0]['habilitations'] = $this->fillHabilitations($habilitation);
-        $h = (array) $param['sites'][0]['habilitations'];
-        usort($h, "CertipaqDI::orderHabilitations");
-        $param['sites'][0]['habilitations'] = $h;
+        $this->addSitesHabilites($param['sites'], $habilitation);
+        for($i = 1 ; $i < count($param['sites']) ; $i++) {
+            $param['sites'][$i]['habilitations'] = $this->fillHabilitations($habilitation, $param['sites'][$i]['nom_site']);
+        }
+        $this->addSitesNonHabilites($param['sites'], $habilitation);
         return $param;
     }
 
