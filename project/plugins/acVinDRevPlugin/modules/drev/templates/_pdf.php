@@ -37,7 +37,7 @@
         <th class="th" style="text-align: left; width: 400px;">Produit</th>
         <th class="th" style="text-align: center; width: 137px;">Superficie revendiquée</th>
         <th class="th" style="text-align: center; width: 137px;">Volume millesime <?php echo $drev->periode-1 ?> issu du VCI</th>
-        <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->periode ?> <?php if($drev->hasVSI()): ?><small><br />(VSI compris)</small><?php endif; ?></th>
+        <th class="th" style="text-align: center; width: 137px;">Volume issu de la récolte <?php echo $drev->periode ?></th>
         <th class="th" style="text-align: center; width: 137px;">Volume revendiqué net total <?php if($drev->hasProduitWithMutageAlcoolique()): ?><small>(alcool compris)</small><?php endif; ?></th>
     </tr>
     <?php foreach($drev->declaration->getProduitsWithoutLots($region) as $produit): ?>

@@ -216,7 +216,7 @@ class DRevValidation extends DeclarationLotsValidation
     protected function controleRecoltes()
     {
         foreach($this->document->getProduits() as $produit) {
-            if($produit->getConfig()->getRendementDrL15() && ($produit->getCouleur()->getRendementDrL15() > $produit->getConfig()->getRendementDrL15()) ) {
+            if($produit->getConfig()->getRendementDrL15() && ($produit->getCepage()->getRendementDrL15() > $produit->getConfig()->getRendementDrL15()) ) {
                 if(!array_key_exists($produit->getCouleur()->gethash(),$this->produit_revendication_rendement)){
                   $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
                   $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getCouleur()->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));

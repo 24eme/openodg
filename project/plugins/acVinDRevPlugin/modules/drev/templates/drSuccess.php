@@ -3,6 +3,7 @@
 <?php include_partial('drev/step', array('step' => 'dr_douane', 'drev' => $drev)) ?>
 <div class="page-header">
     <h2>Récupération des données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?></h2>
+</div>
     <?php if (!$drev->hasDocumentDouanier()): ?>
     <p class="text-center" style="margin-top: 20px;">Traitement des données Prodouane en cours</p>
     <p class="text-center"><span class="img-responsive center-block">

@@ -1,3 +1,4 @@
+<?php use_helper('Date') ?>
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'validation', 'drev' => $drev)) ?>
 
@@ -28,6 +29,7 @@
     <?php if($sf_user->isAdmin()) : ?>
         <hr />
         <h3>Validation</h3>
+<?php if (isset($form["date_depot"])): ?>
         <?php echo $form["date_depot"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
             <?php echo $form["date_depot"]->renderLabel("Date de dépot ou de réception :", array("class" => "col-xs-3 control-label")); ?>
@@ -38,6 +40,9 @@
             </div>
             </div>
         </div>
+<?php elseif($drev->isTeledeclare()): ?>
+<p>DRev télédéclarée signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?></p>
+<?php endif; ?>
     <?php endif; ?>
     <hr />
     <div class="row row-margin row-button">
