@@ -577,4 +577,19 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             $this->statut_odg = null;
         }
     }
+
+    public function isDeletable() {
+        if ($this->exist('validation_odg') && $this->validation_odg) {
+            return false;
+        }
+        if ($this->exist('statut_odg') && $this->statut_odg) {
+            return false;
+        }
+        if ($this->exist('mouvements') && count($this->mouvements) ) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

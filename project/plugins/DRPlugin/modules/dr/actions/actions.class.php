@@ -69,10 +69,32 @@ class drActions extends sfActions
         return $this->redirect('dr_visualisation', $this->dr);
     }
 
+    public function executeSuppression(sfWebRequest $request)
+    {
+        $dr = $this->getRoute()->getDR();
+
+        if (! $this->getUser()->isAdmin()) {
+            return $this->forwardSecure();
+        }
+        if ($dr->exist('validation_odg') && $dr->validation_odg) {
+            throw new sfException('Le document a une validation odg');
+        }
+        if ($dr->exist('statut_odg') && $dr->statut_odg) {
+            throw new sfException('La DR doit pas être mise en attente');
+        }
+        if ($dr->exist('mouvements') && count($dr->mouvements) ) {
+            throw new sfException('La DR doit pas avoir de mouvements');
+        }
+        $dr->delete();
+        return $this->redirect('declaration_etablissement', array('identifiant' => $dr->identifiant, 'campagne' => $dr->campagne));
+    }
+
     protected function forwardSecure()
     {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
 
         throw new sfStopException();
     }
+
+
 }

@@ -44,8 +44,8 @@
             <i class="glyphicon glyphicon-file"></i> PDF de la <?php echo $dr->type ; ?>
         </a>
     </div>
+<div class="col-xs-4 text-right">
 <?php if(DRConfiguration::getInstance()->hasValidationDR()): ?>
-    <div class="col-xs-4 text-right">
         <?php if ($sf_user->isAdmin()): ?>
             <?php if($dr->exist('validation_odg') && $dr->validation_odg): ?>
                 <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
@@ -66,6 +66,11 @@
                 </a>
             <?php endif ?>
         <?php endif ?>
-    </div>
 <?php endif; ?>
+<?php if ($sf_user->isAdmin() && $dr->isDeletable()): ?>
+    <a href="<?= url_for('dr_suppression', ['id' => $dr->_id]) ?>" class="btn text-danger" onclick="return confirm('Etes vous sur de vouloir supprimer ce document ?');">
+        Supprimer la <?php echo $dr->type ; ?>
+    </a>
+<?php endif; ?>
+</div>
 </div>
