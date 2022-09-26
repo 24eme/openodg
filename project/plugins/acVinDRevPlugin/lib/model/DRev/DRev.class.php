@@ -2470,7 +2470,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getNonHabilitationODG() {
-        $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->date_depot);
+        $date = $this->date_depot;
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+        $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date);
         $nonHabilitationODG = array();
         foreach($this->getProduits() as $hash_c => $produit_c) {
             $produit = $produit_c->getCepage();
