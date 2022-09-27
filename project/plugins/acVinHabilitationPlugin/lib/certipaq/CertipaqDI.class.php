@@ -137,7 +137,8 @@ class CertipaqDI extends CertipaqService
         foreach($habilitation->declaration as $k => $declaration) {
             $certipaq_produit = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($declaration->getConfig());
             if ($certipaq_produit) {
-                foreach($declaration->activites as $activite_nom => $activite) {
+                foreach($declaration->activites as $activite_nom_site => $activite) {
+                    $activite_nom = explode('-', $activite_nom_site)[0];
                     $activite_site = ($activite->exist('site') && $activite->site) ? $activite->site : '';
                     if (!$activite->statut || $site != $activite_site) {
                         continue;
