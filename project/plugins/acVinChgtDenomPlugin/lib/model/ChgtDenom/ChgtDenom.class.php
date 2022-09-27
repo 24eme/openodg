@@ -812,10 +812,15 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getFirstChgtDenomFacturable($produitFilter = null)
     {
+        if ($this->isDeclassement()) {
+          return;
+        }
 
-      if ($this->isDeclassement()) {
-        return;
-      }
+        return $this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
+    }
+
+    public function getFirstChgtDenomOrDeclassementFacturable($produitFilter = null)
+    {
 
       $chgtdenoms = ChgtDenomClient::getInstance()->getHistoryCampagne(
           $this->identifiant,
@@ -834,9 +839,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
       return $first !== false && $first == $this->_id;
     }
 
-    public function getSecondChgtDenomFacturable($produitFilter = null)
+    public function getSecondChgtDenomOrDeclassementFacturable($produitFilter = null)
     {
-        return !$this->getFirstChgtDenomFacturable($produitFilter);
+        return !$this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
     }
 
     public function matchFilter($produitFilter = null, $chgtdenom = null)
