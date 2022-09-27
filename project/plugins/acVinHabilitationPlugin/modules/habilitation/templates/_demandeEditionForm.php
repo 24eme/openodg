@@ -6,7 +6,9 @@
                     <a href="<?php echo url_for("habilitation_declarant", $etablissement) ?>" class="close" aria-hidden="true">&times;</a>
                     <h4 class="modal-title" id="myModalLabel">Demande <?php echo elision("de", strtolower($demande->getDemandeLibelle())) ?></h4>
 					<?php echo $demande->libelle ?>
+<?php if (CertipaqService::getInstance()->hasConfiguration()): ?>
 					<a style="margin-bottom: 30px;" class="pull-right" href="<?php echo url_for('certipaq_demande_type', array('identifiant' => $etablissement->identifiant, 'demande' => $demande->getKey())); ?>"><span class="glyphicon glyphicon-transfer"></span>&nbsp;Certipaq</a>
+<?php endif; ?>
                 </div>
                 <div class="modal-body" style="padding-bottom: 0;">
 					<table class="table table-condensed table-bordered table-striped">
