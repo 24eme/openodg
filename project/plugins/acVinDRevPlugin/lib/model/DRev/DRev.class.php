@@ -2615,4 +2615,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return($result);
     }
+
+    public function hasLotsProduitFilter($hash_or_filter) {
+        foreach ($this->lots as $lot) {
+            if(strpos($lot->produit_hash, $hash_or_filter) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
