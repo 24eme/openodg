@@ -249,7 +249,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds = ';'.Organisme::getCurrentOrganisme();
           $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
           $colExtraIds .= ($drev) ? ';'.$drev->_id : ';';
-          $colExtraIds .= ($drev->hasLotsProduitFilter($hashes[$k])) ? ';'.'FILTERED:'.$drev->_id : ';';
+          $colExtraIds .= ($drev && $drev->hasLotsProduitFilter($hashes[$k])) ? ';'.'FILTERED:'.$drev->_id : ';';
           $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
           $colExtraIds .= ';'.$famille;
           $colExtraIds .= ';'.substr($this->campagne, 0, 4);
