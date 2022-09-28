@@ -201,7 +201,6 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $colonnesid = array();
         $colonneid = 0;
         $drev = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne());
-        $drev_produit_filter = DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->getCampagne(), $drev_produit_filter);
         foreach($this->donnees as $i => $donnee) {
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
@@ -238,10 +237,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $donnee->colonneid = $colonnesid[$produitid];
             }
             $d->colonneid = $donnee->colonneid;
-            if ($drev_produit_filter) {
-                $d->drev_produit_filter = $drev_produit_filter->_id;
-            }else{
-                $d->drev_produit_filter = null;
+            $d->drev_produit_filter = null;
+            if ($drev && $drev->hasLotsProduitFilter($donnee->produit)) {
+                $d->drev_produit_filter = 'FILTERED:'.$drev->_id;
             }
             if ($drev) {
                 $d->drev_id = $drev->_id;
