@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if ! test $1 ; then
-    . $(echo $0 | sed 's/[^\/]*$//')config.inc
-else
-    . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
-fi
-
 EXPORTGLOBALDIR=web/exports_igp
 mkdir $EXPORTGLOBALDIR 2> /dev/null
 
@@ -22,6 +16,12 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
     grep -va FILTERED:DREV- $EXPORTGLOBALDIR/production.csv > $EXPORTGLOBALDIR/production.lignesansdrev.csv
 
     exit 0;
+fi
+
+if ! test $1 ; then
+    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+else
+    . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
 fi
 
 for file in $(find "$EXPORTDIR" -maxdepth 1 -type f -name "*.csv")
