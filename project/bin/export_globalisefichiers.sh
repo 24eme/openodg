@@ -18,18 +18,8 @@ if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
         bash $(echo $0 | sed 's/[^\/]*$//')export_globalisefichiers.sh $app;
     done
 
-    grep -a FILTEREDDREV- $EXPORTGLOBALDIR/production.csv > $EXPORTGLOBALDIR/production.csv.drev.part
-    grep -va FILTEREDDREV- $EXPORTGLOBALDIR/production.csv > $EXPORTGLOBALDIR/production.csv.sansdrev.part
-
-    head -n 1 $EXPORTGLOBALDIR/production.csv | iconv -f ISO88591 -t UTF8 > $EXPORTGLOBALDIR/production.csv.part
-    tail -n +2 $EXPORTGLOBALDIR/production.csv.drev.part $EXPORTGLOBALDIR/production.csv.sansdrev.part | grep -va ^== | grep -a ';' | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | sed 's/FILTEREDDREV-/DREV-/' >> $EXPORTGLOBALDIR/production.csv.part
-    cat $EXPORTGLOBALDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTGLOBALDIR/production.csv
-
-    for type in dr sv11 sv12 ; do
-        head -n 1 $EXPORTGLOBALDIR/production.csv.part  > $EXPORTGLOBALDIR/$type".csv.part"
-        cat $EXPORTGLOBALDIR/production.csv.part | grep -i "^"$type";" >> $EXPORTGLOBALDIR/$type".csv.part"
-        cat $EXPORTGLOBALDIR/$type".csv.part" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTGLOBALDIR/$type".csv"
-    done
+    grep -a FILTERED:DREV- $EXPORTGLOBALDIR/production.csv > $EXPORTGLOBALDIR/production.ligneavecdrev.csv
+    grep -va FILTERED:DREV- $EXPORTGLOBALDIR/production.csv > $EXPORTGLOBALDIR/production.lignesansdrev.csv
 
     exit 0;
 fi

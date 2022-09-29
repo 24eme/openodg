@@ -33,20 +33,20 @@ do
   cat $file | grep -E $HASHPRODUIT --binary-files=text >> $EXPORTFORAPPGLOBALSUBDIR/$FILENAME
 done
 
+head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
+tail -n +2 $EXPORTFORAPPGLOBALSUBDIR/production.ligneavecdrev.csv $EXPORTFORAPPGLOBALSUBDIR/production.lignesansdrev.csv | grep -va ^== | grep -a ';' | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | awk -F ';' '{print $1";"$2";"$3";"}' | sort -u | while read filter; do
+    grep -a "$filter" $GLOBALDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
+done
+mv $EXPORTFORAPPGLOBALSUBDIR/production.csv.part $EXPORTFORAPPGLOBALSUBDIR/production.csv
+
 cut -d ";" -f 2 $EXPORTFORAPPGLOBALSUBDIR/lots.csv $EXPORTFORAPPGLOBALSUBDIR/habilitation.csv | sed 's/"//g' | sort -u | sed -r 's/[0-9]{2}$//' > $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp
-cut -d ';' -f 3  $EXPORTFORAPPGLOBALSUBDIR/production.csv  | sed 's/"//g' | sort -u | sed -r 's/[0-9]{2}$//' >> $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp
+cut -d ";" -f 3 $EXPORTFORAPPGLOBALSUBDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp
 sort -u $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp > $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids
 
 head -n 1 $GLOBALDIR"/etablissements.csv" > $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv
 cat $GLOBALDIR"/etablissements.csv" | sort -t ";" -k 1,1 | join -t ";" -1 1 -2 1 - $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids >> $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv
 
 rm $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids
-
-head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
-awk -F ';' '{print $9}' $EXPORTFORAPPGLOBALSUBDIR/etablissements.csv  | grep '[0-9]' | sort -u | tr '\n' '|'  | sed 's/.$/\\)";\/p/' | sed 's/^/\/;"\\(/' | sed 's/|/\\|/g'  > $EXPORTFORAPPGLOBALSUBDIR/sed.cmd
-sed -n -f $EXPORTFORAPPGLOBALSUBDIR/sed.cmd $GLOBALDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
-mv $EXPORTFORAPPGLOBALSUBDIR/production.csv.part $EXPORTFORAPPGLOBALSUBDIR/production.csv
-rm $EXPORTFORAPPGLOBALSUBDIR/sed.cmd
 
 for type in dr sv11 sv12 ; do
     head -n 1 $EXPORTFORAPPGLOBALSUBDIR/production.csv  > $EXPORTFORAPPGLOBALSUBDIR/$type".csv.part"
