@@ -306,10 +306,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, preg_replace('/-.*/', '', $periode));
         if ($drev && $drev_produit_filter) {
-            foreach ($drev->lots as $lot) {
-                if(strpos($lot->produit_hash, $drev_produit_filter) !== false) {
-                    return $drev;
-                }
+            if ($drev->hasLotsProduitFilter($drev_produit_filter)) {
+                return $drev;
             }
             return null;
         }
