@@ -15,7 +15,7 @@
     <?php endif; ?>
     <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
-	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getEngagements()) > 0): ?>
+	<?php  if (count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php elseif($sf_user->isAdmin()) : ?>
         <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
@@ -26,7 +26,8 @@
             <?php endforeach; ?>
         <?php endif; ?>
     <?php endif; ?>
-    <?php if($sf_user->isAdmin()) : ?>
+    <?php if($sf_user->isAdmin()): ?>
+        <p id="notNeedToEngage" class="hidden"></p>
         <hr />
         <h3>Validation</h3>
 <?php if (isset($form["date_depot"])): ?>

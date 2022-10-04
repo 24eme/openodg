@@ -603,21 +603,23 @@
             $("input:checkbox[name*=validation]").each(function() {
                     $(this).parent().parent().parent().removeClass("has-error");
             });
-            $("#engagements .alert-danger").addClass("hidden");
-            engagements = new Array();
-            $("#engagements input:checkbox[name*=validation]").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')] = 0; })
-            $("#engagements input:checkbox[name*=validation]:checked").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')]++; })
-            is_valid = true;
-            $("#engagements input:checkbox[name*=validation]").each(function() { if (engagements[this.id.replace(/_OUEX_.*/, '')] != 1) {is_valid = false ;} })
-            if(! is_valid) {
-                $("#engagements .alert-danger").removeClass("hidden");
-                $("#engagements input:checkbox[name*=validation]:not(:checked)").each(function() {
-                    $(this).parent().parent().parent().addClass("has-error");
-                });
-                $("#engagements input:checkbox[name*=validation]:checked").each(function() {
-                    $(this).parent().parent().parent().removeClass("has-error");
-                });
-                return false;
+            if(!document.getElementById("notNeedToEngage")){
+              $("#engagements .alert-danger").addClass("hidden");
+              engagements = new Array();
+              $("#engagements input:checkbox[name*=validation]").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')] = 0; })
+              $("#engagements input:checkbox[name*=validation]:checked").each(function() { engagements[this.id.replace(/_OUEX_.*/, '')]++; })
+              is_valid = true;
+              $("#engagements input:checkbox[name*=validation]").each(function() { if (engagements[this.id.replace(/_OUEX_.*/, '')] != 1) {is_valid = false ;} })
+              if(! is_valid) {
+                  $("#engagements .alert-danger").removeClass("hidden");
+                  $("#engagements input:checkbox[name*=validation]:not(:checked)").each(function() {
+                      $(this).parent().parent().parent().addClass("has-error");
+                  });
+                  $("#engagements input:checkbox[name*=validation]:checked").each(function() {
+                      $(this).parent().parent().parent().removeClass("has-error");
+                  });
+                  return false;
+              }
             }
              if ($('#validation-form')[0].reportValidity()){
                $($(this).data('target')).modal('toggle');

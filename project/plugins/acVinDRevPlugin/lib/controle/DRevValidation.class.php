@@ -81,7 +81,7 @@ class DRevValidation extends DeclarationLotsValidation
         $contrats = $this->document->getContratsFromAPI();
 
         foreach($contrats as $k=>$v){
-            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec <strong>".$v['acheteur']."</strong>.");
+            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
         }
 
         /* Lots */
@@ -255,7 +255,9 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->produit_revendication_rendement[$produit->getHash()] = $produit->getHash();
             } elseif($produit->getConfig()->getRendementConseille() > 0 && round(($produit->getRendementEffectif()), 2) > round($produit->getConfig()->getRendementConseille(), 2)) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_rendement_conseille', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, $produit->getLibelleComplet());
+                if(!$this->document->isPapier()) {
+                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, $produit->getLibelleComplet());
+                }
             }
         }
         if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
@@ -281,7 +283,9 @@ class DRevValidation extends DeclarationLotsValidation
         if ( (!$produit->getSommeProduitsCepage('recolte/superficie_total') && $produit->getSommeProduitsCepage('superficie_revendique') > 0) || ($produit->getSommeProduitsCepage('superficie_revendique') > round($produit->getSommeProduitsCepage('recolte/superficie_total'), 4)) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, $produit->getLibelleComplet());
+                if(!$this->document->isPapier()) {
+                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, $produit->getLibelleComplet());
+                }
             }else{
         	    $this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
             }
@@ -403,9 +407,9 @@ class DRevValidation extends DeclarationLotsValidation
         $volumeCommercialisableLibre = $this->document->getVolumeCommercialisableLibre(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
         $volumeMaxAutorise = $this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
 
-        if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRoseDeclare) && ($volumeTotalMediterraneeRoseDeclare < $volumeMaxAutorise)):
+        if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRoseDeclare) && ($volumeTotalMediterraneeRoseDeclare < $volumeMaxAutorise)) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',  $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-        elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare):
+        } elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
 
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
@@ -414,14 +418,13 @@ class DRevValidation extends DeclarationLotsValidation
             foreach($contrats as $k=>$v){
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
             }
-        endif;
         }
+    }
 
     public function controleVsi() {
         if(!$this->document->hasVsi()) {
             return;
         }
-
         foreach($this->document->getProduits() as $produit) {
             if(round($produit->getCepage()->getRendementVsi(), 2) <= $produit->getConfig()->getRendementVci()) {
                 continue;
@@ -429,7 +432,9 @@ class DRevValidation extends DeclarationLotsValidation
 
             $point = $this->addPoint(self::TYPE_ERROR, 'vsi_rendement', $produit->getLibelleComplet() . ' (rendement VSI de ' . round($produit->getCepage()->getRendementVsi(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVci().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
-
+        if($this->document->isPapier()) {
+            return;
+        }
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, '');
     }
 }

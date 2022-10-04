@@ -2572,7 +2572,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getVolumeCommercialisableLibre($hash){
         $volumeSeuil = $this->getVolumeRevendiqueSeuil($hash);
-        return $volumeSeuil*(100/105);
+        return($volumeSeuil-($volumeSeuil*0.1)); #les prévenir à 10%
     }
 
     protected function getVolumeSeuilFromCSV($cvi){

@@ -689,7 +689,7 @@ class drevActions extends sfActions {
         }
         $this->form->save();
 
-        if (!$this->isAdmin) {
+        if (count($this->validation->getEngagements())) {
             $this->drev->remove('documents');
             $documents = $this->drev->getOrAdd('documents');
 

@@ -64,7 +64,17 @@
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
     <h3>&nbsp;Engagement(s)&nbsp;</h3>
     <?php foreach($drev->documents as $docKey => $doc): ?>
-            <p>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></p>
+        <p>&nbsp;<span style="font-family: Dejavusans">☑</span>
+            <?php
+            if($doc->exist('libelle') && $doc->libelle):
+                $libelle = preg_replace("#&gt;#",">",$doc->libelle);
+                $libelle = preg_replace("#&lt;#","<",$libelle);
+                echo($libelle);
+            else:
+                echo($drev->documents->getEngagementLibelle($docKey));
+            endif;
+            ?>
+        </p>
     <?php endforeach; ?>
 <hr />
 <?php endif; ?>
