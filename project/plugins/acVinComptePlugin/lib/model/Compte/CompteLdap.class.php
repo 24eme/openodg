@@ -81,7 +81,7 @@ class CompteLdap extends acVinLdap {
       if ($compte->telephone_bureau)
           $info['telephoneNumber']  = trim(str_replace("_", "", $compte->telephone_bureau));
       if ($compte->telephone_mobile)
-          $info['mobile']           = str_replace("_", "", $compte->telephone_mobile);
+          $info['mobile']           = trim(str_replace("_", "", $compte->telephone_mobile));
       if ($compte->exist('mot_de_passe')) {
 	        $info['userPassword']  = $compte->mot_de_passe;
 	        if(!$compte->isActif()) {
