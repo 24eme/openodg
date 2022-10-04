@@ -412,11 +412,15 @@ class DRevValidation extends DeclarationLotsValidation
         } elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
 
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+            if($this->document->hasDestinationConditionnement()){
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+            }
 
-            $contrats = $this->document->getContratsFromAPI();
-            foreach($contrats as $k=>$v){
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+            if($this->document->hasDestionationVrac()){
+                $contrats = $this->document->getContratsFromAPI();
+                foreach($contrats as $k=>$v){
+                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+                }
             }
         }
     }
