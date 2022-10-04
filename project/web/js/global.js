@@ -620,7 +620,7 @@
                 return false;
             }
              if ($('#validation-form')[0].reportValidity()){
-               $('#drev-confirmation-validation').modal('toggle');
+               $($(this).data('target')).modal('toggle');
              }
         });
     }
