@@ -92,8 +92,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
 
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"Pour la campagne ".DRevConfiguration::getInstance()->getCampagneVolumeSeuil().", la filière a mis en place un Volume Individuel de Production Commercialisable Certifiée (VIP2C) pour le Méditerranée Rosé . Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Pour la campagne ".DRevConfiguration::getInstance()->getCampagneVolumeSeuil().", la filière a mis en place un Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl de Méditerranée Rosé qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"Pour le millésime ".DRevConfiguration::getInstance()->getMillesime().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C) sur le Méditerranée Rosé . Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
+        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"Pour le millésime ".DRevConfiguration::getInstance()->getMillesime().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl de Méditerranée Rosé qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
     }
 
     public function controle()
@@ -412,11 +412,15 @@ class DRevValidation extends DeclarationLotsValidation
         } elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
 
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+            if($this->document->hasDestinationConditionnement()){
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+            }
 
-            $contrats = $this->document->getContratsFromAPI();
-            foreach($contrats as $k=>$v){
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+            if($this->document->hasDestionationVrac()){
+                $contrats = $this->document->getContratsFromAPI();
+                foreach($contrats as $k=>$v){
+                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+                }
             }
         }
     }
