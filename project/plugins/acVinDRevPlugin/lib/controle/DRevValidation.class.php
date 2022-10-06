@@ -59,6 +59,9 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
         $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->periode-1));
 
+
+        $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats', "POINT DE BLOCAGE CAR DESTINATION VRAC MAIS PAS DE CONTRATS DE COMMERCIALISATION (VRAC)");
+
         /*
          * Engagement
          */
@@ -418,6 +421,9 @@ class DRevValidation extends DeclarationLotsValidation
 
             if($this->document->hasDestionationVrac()){
                 $contrats = $this->document->getContratsFromAPI();
+                if(!count($contrats)){
+                    $this->addPoint(self::TYPE_ERROR, 'vip2c_pas_de_contrats',"");
+                }
                 foreach($contrats as $k=>$v){
                     $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
                 }
