@@ -77,7 +77,7 @@ class DegustationAffectionLotForm extends BaseForm
           $lot->setNumeroTable($values['numero_table']);
         }
 
-        if ($degustation->isAnonymized()) ) {
+        if ($degustation->isAnonymized()) {
             $key = $degustation->getNbLotsPreleves() + 1;
             $lot->anonymize($key);
         }
