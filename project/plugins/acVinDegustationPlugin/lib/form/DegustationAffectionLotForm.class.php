@@ -77,7 +77,7 @@ class DegustationAffectionLotForm extends BaseForm
           $lot->setNumeroTable($values['numero_table']);
         }
 
-        if (in_array($degustation->etape, array(DegustationEtapes::ETAPE_COMMISSION,DegustationEtapes::ETAPE_ANONYMATS)) ) {
+        if ($degustation->isAnonymized()) {
             $key = $degustation->getNbLotsPreleves() + 1;
             $lot->anonymize($key);
         }
