@@ -20,7 +20,11 @@
     		</ul>
     	</div>
 
-        <?php foreach ($validation->getEngagements() as $engagement): if (isset($form['engagement_' . $engagement->getCode()])): ?>
+        <?php foreach ($validation->getEngagements() as $engagement):
+            if(!$sf_user->isAdmin() && $engagement->getCode()== DRevDocuments::DOC_VIP2C_PAS_INFORMATION){
+                continue;
+            }
+            if (isset($form['engagement_' . $engagement->getCode()])): ?>
         <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
             <div class="checkbox">
                 <label>

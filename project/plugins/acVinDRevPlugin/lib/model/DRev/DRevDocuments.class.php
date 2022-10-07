@@ -22,9 +22,11 @@ class DRevDocuments extends BaseDRevDocuments
 
     const DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC= "VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC";
     const DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC_SUITE = "DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC_SUITE";
+    const DOC_VIP2C_PAS_INFORMATION= "VIP2C_PAS_INFORMATION";
 
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
+
 
 	private static $_document_libelles = array(
 		self::DOC_SV11 => 'SV11',
