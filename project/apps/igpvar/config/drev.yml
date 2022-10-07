@@ -12,3 +12,6 @@ all:
       engagement_pdf: true
       send_email_operateur: false
       email_disabled: true
+      volume_seuil:
+        hash: certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT
+        campagne: 2022-2023
