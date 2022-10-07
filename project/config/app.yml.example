@@ -119,4 +119,4 @@ all:
   api_contrats:
     link: "LINK"
     secret: "SECRET"
-    fichier_csv: "/path/to/VIP2C2022.csv"
+    fichier_csv: "path/to/VIP2C2022.csv"
