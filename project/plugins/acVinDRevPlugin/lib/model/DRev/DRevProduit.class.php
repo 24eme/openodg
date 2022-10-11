@@ -176,9 +176,11 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
-        if(is_null($this->getSommeProduitsCepage('superficie_revendique'))) {
+        if($this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
+
 			return false;
 		}
+
 
 		if($this->getSommeProduitsCepage('recolte/volume_total') == $this->getSommeProduitsCepage('recolte/volume_sur_place')) {
 
@@ -204,10 +206,10 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
-		if($this->vci->rafraichi + $this->vci->substitution)
-			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
+		if($this->getSommeProduitsCepage('vci/rafraichi') + $this->getSommeProduitsCepage('vci/substitution'))
+			return $this->getSommeProduitsCepage('recolte/recolte_nette') - $this->getSommeProduitsCepage('vci/rafraichi') - $this->getSommeProduitsCepage('vci/substitution');
 		else
-			return $this->recolte->recolte_nette;
+			return $this->getSommeProduitsCepage('recolte/recolte_nette');
 	}
 
 	public function getRendementVci(){
