@@ -236,10 +236,10 @@ class DRevValidation extends DeclarationLotsValidation
         if ($produit->isCleanable()) {
           return;
         }
-        if($produit->superficie_revendique === null) {
+        if($produit->getSommeProduitsCepage('superficie_revendique') === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
-        if($produit->volume_revendique_issu_recolte === null) {
+        if($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') === null) {
             if ($produit->hasDonneesRecolte()) {
                 $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             } else {
