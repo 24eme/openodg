@@ -57,6 +57,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
+
+        $this->addControle(self::TYPE_ERROR, 'dr_vci_vsi', "Du VCI et VSI ont été déclarés pour le même produit dans la déclaration de récolte");
         $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->periode-1));
 
 
@@ -307,6 +309,9 @@ class DRevValidation extends DeclarationLotsValidation
             }
         }
 
+        if ($produit->getSommeProduitsCepage('recolte/vci_constitue') > 0 && $produit->getSommeProduitsCepage('recolte/vsi') > 0) {
+            $this->addPoint(self::TYPE_ERROR, 'dr_vci_vsi', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        }
     }
 
     protected function controleVci($produit)
