@@ -56,12 +56,20 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
         return $this->getLibelleComplet();
     }
 
+    public function getVolumeRevendiqueRendement() {
+        $somme = 0;
+        foreach($this->getProduits() as $p) {
+            $somme += $p->getVolumeRevendiqueRendement();
+        }
+        return $somme;
+    }
+
     public function getRendementEffectif() {
         $superficie = $this->getSommeProduits('superficie_revendique');
         if (!$superficie) {
             return null;
         }
-        return $this->getSommeProduits('volume_revendique_rendement') / $superficie;
+        return $this->getVolumeRevendiqueRendement() / $superficie;
     }
 
     public function getRendementVCIConstitue() {
