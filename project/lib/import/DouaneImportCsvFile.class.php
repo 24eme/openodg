@@ -174,18 +174,18 @@ class DouaneImportCsvFile {
     public static function extractLabels($mentionComplementaire) {
         $labels = array();
 
-        $wordSeparatorStart = "(^|[ \/\-,\.\']{1})";
-        $wordSeparatorEnd = "([ \/\-,\.]{1}|$)";
+        $wordSeparatorStart = "(^|[ \/\-,\.\'\?°\(]{1})";
+        $wordSeparatorEnd = "([ \/\-,\.\?°\)]{1}|$)";
 
         if(preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
-        } elseif(preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        } elseif(preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BOILOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
         } elseif(preg_match('/'.$wordSeparatorStart.'(VIN ?BIOL|agriculture biol|AGRICBIOLOGIQUE)/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
         }
 
-        if(preg_match('/'.$wordSeparatorStart.'(feuille)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        if(preg_match('/'.$wordSeparatorStart.'(feuilles?)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_JEUNE_VIGNE] = DRevClient::DENOMINATION_JEUNE_VIGNE;
         }
 
