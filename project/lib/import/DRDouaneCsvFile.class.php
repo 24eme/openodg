@@ -145,7 +145,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         					}
         					if (isset($csv[$keyLigneBailleur][$i+1]) && $csv[$keyLigneBailleur][$i+1]) {
                                 $volumeBailleur = (float) str_replace(",", ".", $csv[$keyLigneBailleur][$i+1]);
-                                $ratios_bailleur[sprintf('%02d', $values[0])][$i] = $volumeBailleur / ($volume + $volumeBailleur);
+                                if ($volume + $volumeBailleur) {
+                                    $ratios_bailleur[sprintf('%02d', $values[0])][$i] = $volumeBailleur / ($volume + $volumeBailleur);
+                                }
         					}
         				}
         			}
