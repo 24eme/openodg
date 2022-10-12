@@ -62,4 +62,13 @@
         </tr>
     </tbody>
 </table>
-
+<?php $bailleurs = $dr->getBailleurs()->getRawValue(); ?>
+<?php if(count($bailleurs)): ?>
+    <p style="margin-top: -10px; margin-bottom: 20px;">
+    Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
+     <?php foreach($bailleurs as $b): ?>
+        <?php  if (!$b['etablissement_id']): continue; endif; ?>
+        <a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $b['etablissement_id'], 'campagne' => $dr->campagne)) ?>"><?php echo $b['raison_sociale']; ?></a>
+    <?php endforeach; ?>. Ces volumes ne figurent pas dans le tableau.
+    </p>
+<?php endif; ?>
