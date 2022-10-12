@@ -286,7 +286,7 @@ class DRevValidation extends DeclarationLotsValidation
 	        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
 	        }
         }
-        if ( (!$produit->getSommeProduitsCepage('recolte/superficie_total') && $produit->getSommeProduitsCepage('superficie_revendique') > 0) || ($produit->getSommeProduitsCepage('superficie_revendique') > round($produit->getSommeProduitsCepage('recolte/superficie_total'), 4)) ) {
+        if ( (!$produit->getSommeProduitsCepage('recolte/superficie_total') && $produit->getSommeProduitsCepage('superficie_revendique') > 0) || (round($produit->getSommeProduitsCepage('superficie_revendique'), 4) > round($produit->getSommeProduitsCepage('recolte/superficie_total'), 4)) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
                 if(!$this->document->isPapier()) {
