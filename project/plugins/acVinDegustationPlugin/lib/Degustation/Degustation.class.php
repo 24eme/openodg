@@ -1519,6 +1519,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getFacturationLotRedeguste($cotisation,$filters = null){
             return $this->buildMouvementsFacturesLotRedeguste($cotisation, $filters);
         }
+
+		public function buildMouvementsFacturesHasLotsRedeguste($cotisation,$filters = null){
+			$mouvements = $this->buildMouvementsFacturesLotRedeguste($cotisation,$filters);
+			$mvt_degust = array();
+			foreach ($mouvements as $declarant_identifiant => $mvts) {
+				foreach ($mvts as $keylot => $mvt) {
+					$mvt_degust[$declarant_identifiant] = array('DEGUSTATION_2deDegust' => $mvt);
+					break;
+				}
+			}
+			return $mvt_degust;
+		}
+
         public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
