@@ -1380,6 +1380,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsDegustesByAppelation(){
 			$degust = array();
 			foreach ($this->getLotsDegustes(true) as $key => $lot) {
+				if (!$lot->getConfig()) {
+					throw new sfException("configuration du lot ".$lot->getHash()." non trouvée :(");
+				}
 				$degust[$lot->getConfig()->getAppellation()->getLibelle()][] = $lot;
 			}
 
