@@ -467,6 +467,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!$including_leurre && $lot->isLeurre()){
 					continue;
 				}
+				if (!$lot->volume) {
+					continue;
+				}
 				//Les leurres n'ont pas de uniqid donc pas de mouvement
 				if($including_leurre && $lot->isLeurre() && $lot->statut === $statut){
 					$lots[] = $lot;
