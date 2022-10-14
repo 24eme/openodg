@@ -1004,7 +1004,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public static function buildDetailKey($denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
-
+        if(!$denominationComplementaire) {
+            $denominationComplementaire = '';
+        }
+        if(!$hidden_denom) {
+            $hidden_denom = '';
+        }
         if($denominationComplementaire || $hidden_denom){
             $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }

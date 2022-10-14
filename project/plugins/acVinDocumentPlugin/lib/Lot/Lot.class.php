@@ -754,7 +754,10 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getTypeProvenance()
     {
-        return substr($this->id_document_provenance, 0, 4);
+        if ($this->id_document_provenance) {
+            return substr($this->id_document_provenance, 0, 4);
+        }
+        return '';
     }
 
     abstract public function getMouvementFreeInstance();
@@ -964,17 +967,16 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffectable() {
 
-        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable;
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && ($this->volume);
     }
 
     public function isAffecte() {
-
-        return preg_match('/^DEGUST/', $this->id_document_affectation);
+        return ($this->id_document_affectation) && preg_match('/^DEGUST/', $this->id_document_affectation);
     }
 
     public function isChange() {
 
-        return preg_match('/^CHGTDENOM/', $this->id_document_affectation);
+        return ($this->id_document_affectation) && preg_match('/^CHGTDENOM/', $this->id_document_affectation);
     }
 
     public function getDestinationShort()

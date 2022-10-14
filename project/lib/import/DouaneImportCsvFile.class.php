@@ -177,15 +177,15 @@ class DouaneImportCsvFile {
         $wordSeparatorStart = "(^|[ \/\-,\.\'\?°\(]{1})";
         $wordSeparatorEnd = "([ \/\-,\.\?°\)]{1}|$)";
 
-        if(preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
-        } elseif(preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BOILOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BOILOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
-        } elseif(preg_match('/'.$wordSeparatorStart.'(VIN ?BIOL|agriculture biol|AGRICBIOLOGIQUE)/i', $mentionComplementaire)) {
+        } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(VIN ?BIOL|agriculture biol|AGRICBIOLOGIQUE)/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
         }
 
-        if(preg_match('/'.$wordSeparatorStart.'(feuilles?)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(feuilles?)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_JEUNE_VIGNE] = DRevClient::DENOMINATION_JEUNE_VIGNE;
         }
 
@@ -194,15 +194,15 @@ class DouaneImportCsvFile {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
         }
 
-        if(preg_match('/'.$wordSeparatorStart.'(non bio)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(non bio)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             unset($labels['DENOMINATION_BIO']);
         }
 
-        if(preg_match('/'.$wordSeparatorStart.'(demeter|biody|biodynamie|bio-dynamie|biodyn|biodynamique)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(demeter|biody|biodynamie|bio-dynamie|biodyn|biodynamique)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_DEMETER] = DRevClient::DENOMINATION_DEMETER;
         }
 
-        if(preg_match('/'.$wordSeparatorStart.'(hve|h.v.e.|haute valeur environnementale|hve3)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(hve|h.v.e.|haute valeur environnementale|hve3)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_HVE] = DRevClient::DENOMINATION_HVE;
         }
 
