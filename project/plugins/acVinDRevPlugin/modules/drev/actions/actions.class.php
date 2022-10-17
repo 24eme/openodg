@@ -931,9 +931,13 @@ class drevActions extends sfActions {
             $docid = $request->getParameter('id');
             $doc = acCouchdbManager::getClient()->find($docid);
             $this->forward404Unless($doc);
+
             $lot_unique_id = $request->getParameter('unique_id');
             $lot = $doc->getLot($lot_unique_id);
             $this->forward404Unless($lot);
+            if($lot->getDocOrigine()->isFactures()) {
+                throw new sfException("Le lot ne peut pas être supprimé car la DRev est facturée");
+            }
             $lot_index = $lot->getKey();
             $lot->getParent()->remove($lot_index);
             $lot->getDocument()->save();
