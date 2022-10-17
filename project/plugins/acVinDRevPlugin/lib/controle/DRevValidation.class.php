@@ -57,6 +57,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_WARNING, 'bailleurs', "Des bailleurs ne sont pas connus");
 
         $this->addControle(self::TYPE_ERROR, 'mutage_ratio', "Le volume d'alcool de mutage ajouté n'est pas compris entre 5 et 10% du volume récolté");
+
+        $this->addControle(self::TYPE_ERROR, 'dr_vci_vsi', "Du VCI et VSI ont été déclarés pour le même produit dans la déclaration de récolte");
         $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->periode-1));
 
 
@@ -223,9 +225,9 @@ class DRevValidation extends DeclarationLotsValidation
     {
         foreach($this->document->getProduits() as $produit) {
             if($produit->getConfig()->getRendementDrL15() && ($produit->getCepage()->getRendementDrL15() > $produit->getConfig()->getRendementDrL15()) ) {
-                if(!array_key_exists($produit->getCouleur()->gethash(),$this->produit_revendication_rendement)){
+                if(!array_key_exists($produit->getCepage()->gethash(),$this->produit_revendication_rendement)){
                   $type_msg = strtolower($this->document->getDocumentDouanierType()).'_recolte_rendement';
-                  $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getCouleur()->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+                  $this->addPoint(self::TYPE_WARNING,$type_msg , $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
                 }
             }
         }
@@ -236,10 +238,10 @@ class DRevValidation extends DeclarationLotsValidation
         if ($produit->isCleanable()) {
           return;
         }
-        if($produit->superficie_revendique === null) {
+        if($produit->getSommeProduitsCepage('superficie_revendique') === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
-        if($produit->volume_revendique_issu_recolte === null) {
+        if($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') === null) {
             if ($produit->hasDonneesRecolte()) {
                 $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             } else {
@@ -286,7 +288,7 @@ class DRevValidation extends DeclarationLotsValidation
 	        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
 	        }
         }
-        if ( (!$produit->getSommeProduitsCepage('recolte/superficie_total') && $produit->getSommeProduitsCepage('superficie_revendique') > 0) || ($produit->getSommeProduitsCepage('superficie_revendique') > round($produit->getSommeProduitsCepage('recolte/superficie_total'), 4)) ) {
+        if ( (!$produit->getSommeProduitsCepage('recolte/superficie_total') && $produit->getSommeProduitsCepage('superficie_revendique') > 0) || (round($produit->getSommeProduitsCepage('superficie_revendique'), 4) > round($produit->getSommeProduitsCepage('recolte/superficie_total'), 4)) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
                 if(!$this->document->isPapier()) {
@@ -307,6 +309,9 @@ class DRevValidation extends DeclarationLotsValidation
             }
         }
 
+        if ($produit->getSommeProduitsCepage('recolte/vci_constitue') > 0 && $produit->getSommeProduitsCepage('recolte/vsi') > 0) {
+            $this->addPoint(self::TYPE_ERROR, 'dr_vci_vsi', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        }
     }
 
     protected function controleVci($produit)

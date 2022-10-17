@@ -559,6 +559,12 @@ Configuration:
                                                   definition:
                                                     fields:
                                                       '*': {  }
+                                                cepages_autorises:
+                                                  type: array_collection
+                                                  required: false
+                                                  definition:
+                                                    fields:
+                                                      '*': {  }
                                                 mentions:
                                                   type: collection
                                                   definition:

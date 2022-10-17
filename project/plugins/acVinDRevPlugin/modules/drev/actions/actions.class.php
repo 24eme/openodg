@@ -927,6 +927,23 @@ class drevActions extends sfActions {
             return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
         }
 
+        public function executeDeleteLot(sfWebRequest $request) {
+            $docid = $request->getParameter('id');
+            $doc = acCouchdbManager::getClient()->find($docid);
+            $this->forward404Unless($doc);
+
+            $lot_unique_id = $request->getParameter('unique_id');
+            $lot = $doc->getLot($lot_unique_id);
+            $this->forward404Unless($lot);
+            if($lot->getDocOrigine()->isFactures()) {
+                throw new sfException("Le lot ne peut pas être supprimé car la DRev est facturée");
+            }
+            $lot_index = $lot->getKey();
+            $lot->getParent()->remove($lot_index);
+            $lot->getDocument()->save();
+
+            return $this->redirect('degustation_declarant_lots_liste',array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne));
+        }
 
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();

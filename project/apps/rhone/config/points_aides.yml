@@ -19,3 +19,5 @@ all:
         volume_revendique_issu_mutage: "Quantité d’alcool ajoutée pour le mutage (vin/ moûts non inclus)"
         volume_revendique_issu_vci: "Inscrivez le volume VCI revendiqué. Il est généré automatiquement à partir du volet 'répartition du VCI'."
         volume_revendique_net_total: "Le volume revendiqué total net correspond à la somme du volume revendiqué net issu de la récolte  et le VCI utilisé en complément de récolte. Pour le VDN, alcool de mutage compris."
+        volume_revendique_issu_vsi: "Volume revendiqué du VSI issu de la ligne 18 de la DR"
+        vsi: "Inscrivez le volume VSI. Il est indiqué dans la déclaration douanière (Ligne 18)."

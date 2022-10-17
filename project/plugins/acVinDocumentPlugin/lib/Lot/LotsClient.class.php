@@ -16,17 +16,26 @@ class LotsClient
     }
 
     public static function getCampagneFromUniqueId($uniqueId) {
+        if (!$uniqueId) {
+            return null;
+        }
         $params = explode('-', $uniqueId);
         return $params[0].'-'.$params[1];
     }
 
     public static function getNumeroDossierFromUniqueId($uniqueId) {
+        if (!$uniqueId) {
+            return null;
+        }
         $params = explode('-', $uniqueId);
 
         return $params[2];
     }
 
     public static function getNumeroArchiveFromUniqueId($uniqueId) {
+        if (!$uniqueId) {
+            return null;
+        }
         $params = explode('-', $uniqueId);
 
         return $params[3];
@@ -37,7 +46,7 @@ class LotsClient
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarant, $uniqueId)->rows;
         $first_mvt = current($mouvements);
 
-        if (strpos($first_mvt->value->document_id, "CHGTDENOM") === 0) {
+        if ($first_mvt && $first_mvt->value && $first_mvt->value->document_id && strpos($first_mvt->value->document_id, "CHGTDENOM") === 0) {
             $lot0_unique_id = ChgtDenomClient::getInstance()->find($first_mvt->value->document_id, acCouchdbClient::HYDRATE_JSON)->changement_origine_lot_unique_id;
 
             $mvmt_temp = [];

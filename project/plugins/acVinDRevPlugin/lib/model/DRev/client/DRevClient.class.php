@@ -217,7 +217,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public function matchFilter($lot, $produitFilter)
     {
-        $filters = explode(" AND ", $produitFilter);
+        $filters = [];
+        if ($produitFilter) {
+            $filters = explode(" AND ", $produitFilter);
+        }
         $etablissements = [];
         $match = true;
 

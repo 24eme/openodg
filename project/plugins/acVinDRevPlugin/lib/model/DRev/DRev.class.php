@@ -673,36 +673,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$csv) {
         return array();
       }
-        $etablissement = $this->getEtablissementObject();
-        $etablissementBailleurs = array();
-        foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
-            if(!$etablissementBailleur->ppm) {
-                continue;
-            }
-            if(!$etablissementBailleur->exist('liaisons_operateurs/METAYER_'.$etablissement->_id)) {
-                continue;
-            }
-            $etablissementBailleurs[$etablissementBailleur->ppm] = $etablissementBailleur;
-        }
 
-
-    	$bailleurs = array();
-    	foreach($csv as $line) {
-    		$produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
-    		if(!$produitConfig) {
-    			continue;
-    		}
-    		if (!$produitConfig->isActif()) {
-    			continue;
-    		}
-
-    		if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
-                $etablissement_id = isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : null;
-                $id = ($etablissement_id) ? $etablissement_id : $line[DRCsvFile::CSV_BAILLEUR_PPM];
-    			$bailleurs[$id]  = array('raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM], 'etablissement_id' => $etablissement_id, 'ppm' => $line[DRCsvFile::CSV_BAILLEUR_PPM]);
-    		}
-    	}
-    	return $bailleurs;
+        return DouaneProduction::getBailleursFromCsv($this->getEtablissementObject(), $csv, $this->getConfiguration());
     }
 
     public function importFromDocumentDouanier($force = false) {
@@ -1032,7 +1004,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public static function buildDetailKey($denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
-
+        if(!$denominationComplementaire) {
+            $denominationComplementaire = '';
+        }
+        if(!$hidden_denom) {
+            $hidden_denom = '';
+        }
         if($denominationComplementaire || $hidden_denom){
             $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }
@@ -1828,16 +1805,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
 
-    public function getVolumeVinFromDRPrecedente($produitFilter = null) {
-        $dr = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode()-1);
+    public function getVolumeIGPSIGFromDR($produitFilter = null) {
+        $dr = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
         if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
             return null;
         }
         return $dr->getTotalValeur("15", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL) + $dr->getTotalValeur("14", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
     }
 
-    public function getVolumeVinFromSV11Precedente($produitFilter = null) {
-        $sv11 = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode()-1);
+    public function getVolumeIGPSIGFromSV11($produitFilter = null) {
+        $sv11 = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
         if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
             return ;
         }
