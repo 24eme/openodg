@@ -1641,14 +1641,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function getForfaitConditionnement($cotisation){
-            return $this->buildMouvementsFacturesForfaitConditionnement($cotisation);
+        public function getForfaitConditionnement($cotisation, $filters = null){
+            return $this->buildMouvementsFacturesForfaitConditionnement($cotisation, $filters);
         }
-		public function buildMouvementsFacturesForfaitConditionnement($cotisation){
+		public function buildMouvementsFacturesForfaitConditionnement($cotisation, $filters = null){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsDegustables() as $lot) {
                 if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
+                    continue;
+                }
+				if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
