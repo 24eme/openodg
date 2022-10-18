@@ -1584,8 +1584,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->saveDocumentsDependants();
         }
 
-        $this->hasVolumeSeuilAndSetIfNecessary(); //fonction dans laquelle si il le cvi du declarant
-                                                                                         //se trouve dans le csvdeConf alors ajoute le champs volume_revendique_seuil.
+        $this->hasVolumeSeuilAndSetIfNecessary();
+
         return $saved;
     }
 
