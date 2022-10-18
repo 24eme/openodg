@@ -5,7 +5,7 @@ engine = create_engine('sqlite:///'+sys.argv[1], echo=False, encoding='iso-8859-
 
 if os.path.exists(sys.argv[2]+"/etablissements.csv") and os.path.getsize(sys.argv[2]+"/etablissements.csv"):
     sys.stderr.write(sys.argv[2]+"/etablissements.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/etablissements.csv", encoding='iso-8859-1', delimiter=";", index_col=False)
+    csv = pd.read_csv(sys.argv[2]+"/etablissements.csv", encoding='iso-8859-1', delimiter=";", index_col=False, dtype={'Code postal': 'str'})
     csv.to_sql('etablissement', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/chais.csv") and os.path.getsize(sys.argv[2]+"/chais.csv"):
