@@ -671,4 +671,8 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
         return -1;
     }
+
+    public function hasDocumentDouanier() {
+        return false;
+    }
 }
