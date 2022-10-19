@@ -230,6 +230,11 @@
               <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
             </div>
         <?php endif; ?>
+        <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
+        <hr/>
+        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form)); ?>
+        <hr/>
+        <?php endif; ?>
 
         <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
         <h3>Contrôle</h3>
