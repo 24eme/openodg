@@ -83,32 +83,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           $this->add('mouvements_lots');
       }
 
-      public function getSortedLots(){
-          if(!$this->exist('lots')) {
-              return array();
-          }
-          $lots = $this->_get('lots')->toArray(1,1);
-          if($lots){
-              return $this->_get('lots');
-          }
-          uasort($lots, "DeclarationLots::compareLots");
-          return $lots;
-      }
-
-      public static function compareLots($lotA, $lotB){
-          $dateA = $lotA->getDate();
-          $dateB = $lotB->getDate();
-          if(empty($dateA)){
-              if(!empty($dateB)){
-                  return $dateB;
-              }
-          }
-          return strcasecmp($dateA, $dateB);
-      }
-
       public function getLotsByCouleur($visualisation = true) {
           $couleurs = array();
-          foreach ($this->getSortedLots() as $lot) {
+          foreach ($this->getLots() as $lot) {
              if($visualisation && !$lot->hasVolumeAndHashProduit()){
                continue;
              }
@@ -136,6 +113,13 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
           $lot->initDefault();
           return $lot;
+      }
+
+      public function getLots(){
+          if(!$this->exist('lots')) {
+              $this->add('lots');
+          }
+          return $this->_get('lots');
       }
 
       public function getCurrentLots() {
@@ -218,7 +202,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             return $this->validateOdgByRegion($date, $region);
         }
 
-        foreach($this->getSortedLots() as $lot) {
+        foreach($this->getLots() as $lot) {
           if($lot->hasBeenEdited()) {
               continue;
           }
@@ -401,7 +385,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
       public function archiverLot($numeroDossier) {
           $lots = array();
-          foreach($this->getSortedLots() as $lot) {
+          foreach($this->getLots() as $lot) {
             if ($lot->numero_archive) {
                 continue;
             }
@@ -554,7 +538,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             return;
           }
 
-          foreach ($this->getSortedLots() as $lot) {
+          foreach ($this->getLots() as $lot) {
               if($lot->hasBeenEdited()) {
                   continue;
               }
