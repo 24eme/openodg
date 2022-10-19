@@ -14,8 +14,8 @@ Le tableau suivant récapitule le volume total revendiqué et le volume seuil qu
   <tbody>
     <tr>
       <th><?php echo $produitLibelle ?></th>
-      <td class="text-right"><?php echo $drev->getVolumeRevendiqueLots($drev->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->getConfig()->getHash());?> hl</td>
-      <td class="text-right"><?php echo $drev->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());?> hl</td>
+      <td class="text-right"><?php echoFloat($drev->getVolumeRevendiqueLots($drev->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->getConfig()->getHash()));?> hl</td>
+      <td class="text-right"><?php echoFloat($drev->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil()));?> hl</td>
     </tr>
 </tbody>
 </table>
