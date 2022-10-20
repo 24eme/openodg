@@ -2,7 +2,6 @@
 
 <div class="alert" role="alert" id="engagements">
     <div class="form-group">
-<?php print_r($form->getErrors()); ?>
         <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert">
     	    <ul class="error_list">
                 <li class="text-left" style="list-style-type: none;">Merci de sélectionner vos engagements.</li>
