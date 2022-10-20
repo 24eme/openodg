@@ -60,8 +60,8 @@
 
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
-<hr />
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
+    <hr />
     <h3>&nbsp;Engagement(s)&nbsp;</h3>
     <?php foreach($drev->documents as $docKey => $doc): ?>
         <p>&nbsp;<span style="font-family: Dejavusans">☑</span>
@@ -76,7 +76,6 @@
             ?>
         </p>
     <?php endforeach; ?>
-<hr />
 <?php endif; ?>
 
 <?php if (isset($form)): ?>
@@ -86,6 +85,7 @@
 <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
   <?php $hasmodal = false; ?>
   <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
+      <hr />
       <h3 class="">Commentaire interne <small>(seulement visible par l'ODG - <a href='#' data-toggle="modal" data-target="#drev-edit-comment">Éditer</a>)</small></h3>
       <pre><?php echo $drev->commentaire; ?></pre>
       <div class="modal fade" id="drev-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
@@ -99,6 +99,7 @@
 <?php $hasmodal = true; ?>
 <?php endif; ?>
 <?php if(!$drev->getValidationOdg()): ?>
+    <hr />
     <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
 <?php endif; ?>
 <?php if($drevCommentaireValidationForm && (!$drev->getValidationOdg() || $hasmodal)): ?>
@@ -119,9 +120,9 @@
     </div>
 </div>
 <?php endif; ?>
-<hr />
 <?php endif; ?>
 
+<hr />
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">

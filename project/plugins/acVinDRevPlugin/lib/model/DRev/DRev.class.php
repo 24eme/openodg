@@ -320,15 +320,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getLots(){
         if(!$this->exist('lots')) {
-
-            return array();
+            $this->add('lots');
         }
-        $lots = $this->_get('lots')->toArray(1,1);
-        if($lots){
-            return $this->_get('lots');
-        }
-        uasort($lots, "DRev::compareLots");
-        return $lots;
+        return $this->_get('lots');
     }
 
     public function getCurrentLots() {
@@ -394,17 +388,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return $lots;
-    }
-
-    public static function compareLots($lotA, $lotB){
-        $dateA = $lotA->getDate();
-        $dateB = $lotB->getDate();
-        if(empty($dateA)){
-            if(!empty($dateB)){
-                return $dateB;
-            }
-        }
-        return strcasecmp($dateA, $dateB);
     }
 
     public function getConfigProduits() {
@@ -1584,8 +1567,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->saveDocumentsDependants();
         }
 
-        $this->hasVolumeSeuilAndSetIfNecessary(); //fonction dans laquelle si il le cvi du declarant
-                                                                                         //se trouve dans le csvdeConf alors ajoute le champs volume_revendique_seuil.
+        $this->hasVolumeSeuilAndSetIfNecessary();
+
         return $saved;
     }
 

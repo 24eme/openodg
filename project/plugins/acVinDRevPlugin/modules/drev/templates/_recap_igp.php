@@ -226,9 +226,16 @@
         <?php endif; ?>
         <?php
             if($drev->isValideeOdg() && $drev->isModifiable()): ?>
+<div class="row">
             <div class="col-xs-12" style="margin-bottom: 20px;">
               <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
             </div>
+</div>
+        <?php endif; ?>
+        <hr/>
+        <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
+        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form)); ?>
+        <hr/>
         <?php endif; ?>
 
         <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>

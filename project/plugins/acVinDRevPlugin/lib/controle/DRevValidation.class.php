@@ -90,7 +90,7 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
             }
         }
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
         /* Lots */
 
@@ -439,7 +439,9 @@ class DRevValidation extends DeclarationLotsValidation
                 }
                 if($contrats && count($contrats)>1){
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_PAS_INFORMATION,"");
+                    if(sfContext::getInstance()->getUser()->hasDrevAdmin()) {
+                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_PAS_INFORMATION,"");
+                    }
                 }
             }
         }
