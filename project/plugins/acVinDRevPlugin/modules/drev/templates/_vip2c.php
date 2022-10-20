@@ -6,7 +6,7 @@ Le tableau suivant récapitule le volume total revendiqué et le volume seuil qu
 <?php
 
 $td_extra_class = "";
-if ( $drev->getVolumeRevendiqueLots($drev->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->getConfig()->getHash()) - $drev->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil()) < 0) {
+if ( $drev->getVolumeRevendiqueLots($drev->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->getConfig()->getHash()) - $drev->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil()) > 0) {
     $td_extra_class = " danger text-danger";
 }
 ?>
