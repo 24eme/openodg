@@ -665,6 +665,7 @@ class habilitationActions extends sfActions {
     public function executeCertipaqType(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->certipaq_operateur = CertipaqOperateur::getInstance()->findByEtablissement($this->etablissement);
         $this->demande = $request->getParameter('demande');
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
     }
