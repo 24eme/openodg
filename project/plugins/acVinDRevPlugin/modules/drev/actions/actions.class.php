@@ -934,7 +934,7 @@ class drevActions extends sfActions {
 
             $lot_unique_id = $request->getParameter('unique_id');
             $lot = $doc->getLot($lot_unique_id);
-            if ( ($doc->type == "DRev") && !($lot->id_document_affectation) ) {
+            if ( !($doc->type == "DRev") || ($lot->id_document_affectation) ) {
                 throw new sfException("Suppression possible que depuis une DRev qui n'a pas d'affectation");
             }
             $this->forward404Unless($lot);
