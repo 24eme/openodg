@@ -11,7 +11,7 @@
         </div>
         <?php if ($travauxmarc && $travauxmarc->validation): ?>
             <div class="panel-body">
-                <p>Votre déclaration d' a été validée pour cette année.</p>
+                <p>Votre déclaration a été validée pour cette année.</p>
             </div>
             <div class="panel-bottom">
                 <p>
