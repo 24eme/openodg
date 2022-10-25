@@ -230,6 +230,9 @@ class CertipaqDI extends CertipaqDeroulant
         $param = array();
         $param["dr_demande_identification_type_id"] = 3;
         $operateur = CertipaqOperateur::getInstance()->findByEtablissement($demande->getDocument()->getEtablissementObject());
+        if (!$operateur) {
+            throw new sfException("Opérateur non trouvé dans l'API Certipaq");
+        }
         if ($demande->exist('site') || count($operateur->sites) > 1) {
             throw new sfException("multi site non géré");
         }
