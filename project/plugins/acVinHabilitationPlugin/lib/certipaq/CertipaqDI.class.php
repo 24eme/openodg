@@ -28,7 +28,7 @@ class CertipaqDI extends CertipaqService
     private function fillAdresse(&$obj, $compte) {
         $obj['adresse'] = $compte->getAdresse();
         $obj['complement_adresse'] = $compte->getAdresseComplementaire();
-        $obj['cp'] = $compte->getCodePostal();
+        $obj['code_postal'] = $compte->getCodePostal();
         $obj['ville'] = $compte->getCommune();
         $obj['pays'] = $compte->getPays();
     }
@@ -37,17 +37,19 @@ class CertipaqDI extends CertipaqService
         $this->fillAdresse($obj, $compte);
         $obj['telephone'] = ($compte->getTelephoneBureau()) ? $compte->getTelephoneBureau() : $compte->getTelephonePerso();
         $obj['portable'] = $compte->getTelephoneMobile();
-        $obj['fax'] = '';
         $obj['email'] = $compte->getEmail();
     }
-    private function fillOperateur($habilitation) {
+
+    private function fillOperateur($habilitation, $with_contact = true) {
         $etablissement = $habilitation->getEtablissementObject();
         $operateur = array();
         $operateur['raison_sociale'] = $etablissement->raison_sociale;
         $operateur['nom_entreprise'] = $etablissement->nom;
         $operateur['siret'] = $etablissement->getSiret();
         $operateur['cvi'] = $etablissement->getCvi();
-        $this->fillAdresseAndContact($operateur, $etablissement);
+        if ($with_contact) {
+            $this->fillAdresseAndContact($operateur, $etablissement);
+        }
         return $operateur;
     }
 

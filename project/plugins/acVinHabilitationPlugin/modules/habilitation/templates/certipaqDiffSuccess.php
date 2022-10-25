@@ -59,7 +59,7 @@
 <?php print_tr("SIRET", $pseudo_operateur->siret, $certipaq_operateur->siret, 'nombre'); ?>
 <?php print_tr("CVI", $pseudo_operateur->cvi, $certipaq_operateur->cvi, 'nombre'); ?>
 <?php print_tr("Adresse", $pseudo_operateur->adresse, $certipaq_operateur->adresse, 'string'); ?>
-<?php print_tr("Code postal", $pseudo_operateur->cp, $certipaq_operateur->cp, 'nombre'); ?>
+<?php print_tr("Code postal", $pseudo_operateur->code_postal, $certipaq_operateur->cp, 'nombre'); ?>
 <?php print_tr("Ville", $pseudo_operateur->ville, $certipaq_operateur->ville, 'string'); ?>
 <?php print_tr("Pays", $pseudo_operateur->pays, $certipaq_operateur->pays, 'pays'); ?>
 <?php print_tr("Telephone", $pseudo_operateur->telephone, $certipaq_operateur->telephone, 'nombre'); ?>
@@ -86,7 +86,7 @@
 <?php print_tr('Nom du site', $pseudo_site->nom_site, $site->nom_site); ?>
 <?php print_tr('Capacité cuverie', $pseudo_site->capacite_cuverie, $site->capacite_cuverie, ''); ?>
 <?php print_tr('Adresse', $pseudo_site->adresse, $site->adresse." ".$site->complement_adresse, 'string'); ?>
-<?php print_tr('Code postal', $pseudo_site->cp, $site->cp, 'string'); ?>
+<?php print_tr('Code postal', $pseudo_site->code_postal, $site->cp, 'string'); ?>
 <?php print_tr('Ville', $pseudo_site->ville, $site->ville, 'string'); ?>
 <?php print_tr('Telephone', $pseudo_site->telephone, $site->telephone, 'nombre'); ?>
 <?php print_tr('Fax', $pseudo_site->fax, $site->fax, 'string'); ?>
