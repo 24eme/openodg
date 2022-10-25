@@ -107,6 +107,19 @@ class CertipaqDeroulant extends CertipaqService
         return $this->queryAndRes2hashid('dr/etat_demande');
     }
 
+    public function getListeDRDemandeIdentificationType()
+    {
+        return $this->queryAndRes2hashid('dr/demande_identification_type');
+    }
+
+    public function getListeDemandeIdentificationType() {
+        $id2libelle = array();
+        foreach ($this->getListeDRDemandeIdentificationType() as $idtype) {
+            $id2libelle[$idtype->id] = $idtype->libelle;
+        }
+        return $id2libelle;
+    }
+
     public function getListeProduitsCahiersDesCharges() {
         /*
         Array
@@ -200,6 +213,8 @@ class CertipaqDeroulant extends CertipaqService
             case 'dr_adresse_type_id':
                 $hash = $this->getListeTypesAdresses();
                 break;
+            case 'dr_demande_identification_type_id':
+                $hash = $this->getListeDemandeIdentificationType();
         }
         if (isset($hash[$id])) {
             return $hash[$id];

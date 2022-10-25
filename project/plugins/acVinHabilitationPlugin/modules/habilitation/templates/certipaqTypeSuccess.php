@@ -7,7 +7,7 @@
 
 <div>
 <p>Vous souhaitez convertir cette demande en requête Certipaq de :</p>
-<?php foreach(CertipaqDI::getInstance()->getDemandeIdentificationType() as $id => $nom): ?>
-    <p><?php echo link_to($nom, 'certipaq_demande_output', array('identifiant' => $etablissement->identifiant, 'demande' => $demande, 'type' => $id)); ?></p>
+<?php foreach(CertipaqDI::getInstance()->getListeDemandeIdentificationType() as $id => $nom): ?>
+    <p><?php echo link_to($nom, 'certipaq_demande_request_preview', array('identifiant' => $etablissement->identifiant, 'demande' => $demande, 'type' => $id)); ?></p>
 <?php endforeach; ?>
 </div>
