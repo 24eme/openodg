@@ -1,24 +1,28 @@
 <?php
 
-class PieceClient {
+class PieceClient extends acCouchdbClient {
 
-    public static function find($docId) {
-        $doc = acCouchdbManager::getClient()->find($docId);
+    public static function getInstance() {
+        return acCouchdbManager::getClient("Piece");
+    }
+
+    public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
+        $doc = parent::find($id);
         if(!$doc) {
-            throw new sfException("Document $docId not found");
+            throw new sfException("Document $id not found");
         }
         if (!$doc->exist('pieces')) {
-            throw new sfException("No piece found for document $docId");
+            throw new sfException("No piece found for document $id");
         }
         return $doc;
     }
 
-    public static function findUrlByIdAndPiece($docId, $pieceId, $fileParam) {
-        $doc = self::find($docId);
-        return self::getUrlForPieceId($doc, $pieceId, $fileParam);
+    public function findUrlByIdAndPiece($docId, $pieceId, $fileParam) {
+        $doc = $this->find($docId);
+        return $this->getUrlForPieceId($doc, $pieceId, $fileParam);
     }
 
-    public static function getUrlForPieceId($doc, $pieceId, $fileParam) {
+    public function getUrlForPieceId($doc, $pieceId, $fileParam) {
         if (!$doc->pieces->exist($pieceId)) {
             throw new sfException("Piece $pieceId in document $docId not found");
         }
@@ -27,15 +31,18 @@ class PieceClient {
         return ($fileParam) ? $url.'?file='.$fileParam : $url;
     }
 
-    public static function getPDFDataByDocId($docId) {
-        $doc = self::find($docId);
+    public function getFileContentsByDocIdAndTypes($docId, $types = array('.pdf', '.jpg', '.png')) {
+        $doc = $this->find($docId);
         $pieceId = null;
         $filename = null;
         foreach($doc->pieces as $id => $p) {
             $pieceId = $id;
             foreach($p->fichiers as $f) {
-                if (strpos($f, '.pdf') !== false) {
-                    $filename = $f;
+                foreach($types as $type) {
+                    if (strpos($f, $type) !== false) {
+                        $filename = $f;
+                        break 3;
+                    }
                 }
             }
         }

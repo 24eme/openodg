@@ -6,7 +6,7 @@ class pieceActions extends sfActions
     	$pieceId = str_replace('-', '/', $request->getParameter('piece_id'));
     	$fileParam = $request->getParameter('file', null);
         try {
-			return $this->redirect(PieceClient::findUrlByIdAndPiece($docId, $pieceId, $fileParam));
+			return $this->redirect(PieceClient::getInstance()->findUrlByIdAndPiece($docId, $pieceId, $fileParam));
 		} catch (sfException $e) {
 			return $this->forward404($e->getMessage());
 		}

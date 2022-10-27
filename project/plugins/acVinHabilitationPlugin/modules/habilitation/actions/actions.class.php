@@ -699,7 +699,7 @@ class habilitationActions extends sfActions {
                 if ($type) {
                     $cdc = $this->form->getCDCFamilleId();
                 }
-                $pdfdata = PieceClient::getPDFDataByDocId($v);
+                $pdfdata = PieceClient::getInstance()->getFileContentsByDocIdAndTypes($v);
                 $res[] = CertipaqDI::getInstance()->sendFichierForDemandeIdentification($this->request_id, $pdfdata, $type, $cdc);
             }
         }
