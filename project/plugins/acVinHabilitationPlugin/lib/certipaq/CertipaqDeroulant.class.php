@@ -207,7 +207,6 @@ class CertipaqDeroulant extends CertipaqService
             case 'site_id':
                 if ($operateur) {
                     $hash[$id] = CertipaqOperateur::getInstance()->getSiteFromIdAndOperateur($id, $operateur);
-                    print_r($hash[$id]); exit;
                 }
                 break;
             case 'dr_adresse_type_id':
