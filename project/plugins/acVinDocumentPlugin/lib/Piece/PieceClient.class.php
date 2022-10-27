@@ -49,7 +49,8 @@ class PieceClient extends acCouchdbClient {
         if ($pieceId === null || $filename === null) {
             throw new sfException("not pdf found id $docId");
         }
-        return file_get_contents($doc->getAttachmentUri($filename));
+        $mime = $doc->_attachments->get($filename)->content_type;
+        return array('file_data' => file_get_contents($doc->getAttachmentUri($filename)), 'file_name' => $filename, 'file_mime' => $mime);
     }
 
 }

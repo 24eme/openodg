@@ -320,8 +320,7 @@ class CertipaqDI extends CertipaqDeroulant
         if ($cdc_famille_id) {
             $param['dr_cdc_famille_id'] = $cdc_famille_id;
         }
-        $param['fichier'] = $fichier;
-        return $this->query('declaration/identification/'.$id.'/document', 'POST', $param);
+        return $this->query('declaration/identification/'.$id.'/document', 'POST', $param, array('fichier' => $fichier));
     }
 
     public function submitDemandeIdentification($id) {
