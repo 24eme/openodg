@@ -45,7 +45,7 @@ class HabilitationCertipaqDocumentsForm extends acCouchdbForm
     public function getFichiersDispos() {
         if (!$this->files) {
             $this->files = array('' => '');
-            foreach ( PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, true, null, null, array('fichier', 'DI', 'Identification', 'OI')) as $row) {
+            foreach ( PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, true, null, null, array(FichierClient::CATEGORIE_FICHIER, FichierClient::CATEGORIE_IDENTIFICATION, FichierClient::CATEGORIE_OI)) as $row) {
                 $this->files[$row->id] = $row->key[PieceAllView::KEYS_LIBELLE]." (".$row->key[PieceAllView::KEYS_DATE_DEPOT].')';
             }
         }
