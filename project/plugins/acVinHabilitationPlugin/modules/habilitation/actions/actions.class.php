@@ -716,7 +716,6 @@ class habilitationActions extends sfActions {
         $type = $request->getParameter('type');
         $confirm = $request->getParameter('confirm');
 
-        $this->param = CertipaqDI::getInstance()->getCertipaqParam($type, $this->demande, $confirm);
         if ($confirm) {
             try {
                 $res = CertipaqDI::getInstance()->postRequest($type, $this->demande);
@@ -728,14 +727,17 @@ class habilitationActions extends sfActions {
                 $this->res = array($e->getMessage());
             }
         }
-        $param_plus = CertipaqDeroulant::getInstance()->getParamWithObjFromIds((array)$this->param);
+        $this->param = CertipaqDI::getInstance()->getCertipaqParam($type, $this->demande, $confirm);
         $this->param_printable = array();
-        $this->params2printable($this->param, $param_plus);
+        $this->params2printable($this->param);
     }
 
-    private function params2printable($param, $param_plus, $extra_k_printable = null) {
+    private function params2printable($param, $param_plus = null, $extra_k_printable = null) {
         if (is_object($param)) {
             $param = (array) $param;
+        }
+        if ($param_plus === null) {
+            $param_plus = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($this->param);
         }
         if (is_object($param_plus)) {
             $param_plus = (array) $param_plus;
@@ -780,8 +782,7 @@ class habilitationActions extends sfActions {
     public function executeCertipaqDemandeView(sfWebRequest $request) {
         $this->id = $request->getParameter('request_id');
         $this->param = CertipaqDI::getInstance()->getDemandeIdentification($this->id);
-        $param_plus = CertipaqDeroulant::getInstance()->getParamWithObjFromIds((array) $this->param);
         $this->param_printable = array();
-        $this->params2printable($this->param, $param_plus);
+        $this->params2printable($this->param);
     }
 }
