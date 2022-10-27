@@ -7,7 +7,8 @@
 
 <div class="well">
 <?php if ($certipaq_operateur): ?>
-Opérateur Certipaq : <strong><?php echo $certipaq_operateur->raison_sociale; ?></strong> ( <?php echo $certipaq_operateur->siret; ?> - <?php echo $certipaq_operateur->cvi; ?> )
+Opérateur Certipaq trouvé : <strong><?php echo $certipaq_operateur->raison_sociale; ?></strong> ( <?php echo $certipaq_operateur->siret; ?> - <?php echo $certipaq_operateur->cvi; ?> )
+<a style="margin-bottom: 30px;" class="pull-right" href="<?php echo url_for('certipaq_diff', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-transfer"></span>&nbsp;Certipaq</a>
 <?php else:?>
 Opérateur non trouvé dans l'API Certipaq
 <?php endif; ?>
