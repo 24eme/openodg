@@ -112,6 +112,10 @@ class CertipaqDeroulant extends CertipaqService
         return $this->queryAndRes2hashid('dr/demande_identification_type');
     }
 
+    public function getListeDRtypeDocuments() {
+        return $this->queryAndRes2hashid('dr/type_documents');
+    }
+
     public function getListeDemandeIdentificationType() {
         $id2libelle = array();
         foreach ($this->getListeDRDemandeIdentificationType() as $idtype) {
@@ -195,6 +199,9 @@ class CertipaqDeroulant extends CertipaqService
                 break;
             case 'dr_cdc_produit_id':
                 $hash = $this->getListeProduitsCahiersDesCharges();
+                break;
+            case 'dr_type_documents_id':
+                $hash = $this->getListeDRtypeDocuments();
                 break;
             case 'operateur_id':
                 try {

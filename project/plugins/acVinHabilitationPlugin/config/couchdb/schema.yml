@@ -71,6 +71,7 @@ Habilitation:
                   commentaire: { }
                   produit: { }
                   produit_libelle: { }
+                  oc_demande_id: {required: false}
                   sites:
                     required: false
                     type: collection

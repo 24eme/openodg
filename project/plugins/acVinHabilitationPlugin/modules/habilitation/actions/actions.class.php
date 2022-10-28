@@ -700,10 +700,10 @@ class habilitationActions extends sfActions {
                     $cdc = $this->form->getCDCFamilleId();
                 }
                 $pdfdata = PieceClient::getInstance()->getFileContentsByDocIdAndTypes($v);
-                $res[] = CertipaqDI::getInstance()->sendFichierForDemandeIdentification($this->request_id, $pdfdata, $type, $cdc);
+                $res[] = CertipaqDI::getInstance()->sendFichierForDemandeIdentification($this->demande, $pdfdata, $type, $cdc);
             }
         }
-        $res[] = CertipaqDI::getInstance()->submitDemandeIdentification($this->request_id);
+        $res[] = CertipaqDI::getInstance()->submitDemandeIdentification($this->demande);
         return $this->redirect('certipaq_demande_identification_view', array('request_id' => $this->request_id));
     }
 
@@ -711,6 +711,9 @@ class habilitationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+        if ($this->demande->exist('oc_demande_id')) {
+            return $this->redirect('certipaq_demande_identification_view', array('request_id' => $this->demande->oc_demande_id));
+        }
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
         $type = $request->getParameter('type');
@@ -718,9 +721,8 @@ class habilitationActions extends sfActions {
 
         if ($confirm) {
             try {
-                $res = CertipaqDI::getInstance()->postRequest($type, $this->demande);
-                if ($res && is_array($res)) {
-                    $id = array_shift($res);
+                $id = CertipaqDI::getInstance()->postRequest($type, $this->demande);
+                if ($id) {
                     return $this->redirect('certipaq_demande_identification_documents', array('request_id' => $id, 'identifiant' => $this->etablissement->_id, 'demande' => $this->demande->getKey()));
                 }
             } catch(sfException $e) {
@@ -782,6 +784,10 @@ class habilitationActions extends sfActions {
     public function executeCertipaqDemandeView(sfWebRequest $request) {
         $this->id = $request->getParameter('request_id');
         $this->param = CertipaqDI::getInstance()->getDemandeIdentification($this->id);
+        if (preg_match('/\[(\d+\-\d+)(\d\d)\]/', $this->param['commentaires_odg'], $m)) {
+            $this->habilitation = HabilitationClient::getInstance()->find('HABILITATION-'.$m[1]);
+            $this->demande = $this->habilitation->demandes->get($m[1].$m[2]);
+        }
         $this->param_printable = array();
         $this->params2printable($this->param);
     }

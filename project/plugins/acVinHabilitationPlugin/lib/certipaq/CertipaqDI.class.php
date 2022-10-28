@@ -175,7 +175,14 @@ class CertipaqDI extends CertipaqDeroulant
     public function postRequest($type, $demande) {
         $args = $this->getCertipaqParam($type, $demande);
         $res = $this->queryAndRes2hashid('declaration/identification', 'POST', $args);
-        return $res;
+        if (!$res || !is_array($res)) {
+            throw sfException("Request failed: ".$res);
+        }
+        $id = array_shift($res);
+        $demande->add('oc_demande_id', $id);
+        $demande->getDocument()->addHistorique("Demande Certipaq pour \"".$demande->libelle."\"", "Numéro de demande ".$id, null, "Crée");
+        $demande->getDocument()->save();
+        return $id;
     }
 
     public function getCertipaqParam($type, $demande, $tobesubmitted = true) {
@@ -222,7 +229,7 @@ class CertipaqDI extends CertipaqDeroulant
         $param['adresses'] = $this->fillAdresses($habilitation);
         $param['sites'] = [];// $this->fillSitesHabilite($habilitation);
         $param['habilitations'] = array($this->fillHabilitationsFromDemande($demande));
-        $param['informations_autres'] = $demande->commentaire;
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
@@ -245,7 +252,7 @@ class CertipaqDI extends CertipaqDeroulant
                 $param['habilitations'][0][$i]['site_id'] = $operateur->sites[0]->id;
             }
         }
-        $param['informations_autres'] = $demande->commentaire;
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
@@ -260,7 +267,7 @@ class CertipaqDI extends CertipaqDeroulant
         $param["operateur_id"] = $operateur->id;
         $param['site'] = array_shift($this->fillSitesHabilite($habilitation));
         $param['habilitations'] = $this->fillHabilitationsFromDemande($demande);
-        $param['informations_autres'] = $demande->commentaire;
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
@@ -279,6 +286,7 @@ class CertipaqDI extends CertipaqDeroulant
         }else{
             $param["operateur"]["objet_modification"] = "Modification Raison sociale / SIRET / CVI";
         }
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
@@ -310,21 +318,31 @@ class CertipaqDI extends CertipaqDeroulant
         return $this->queryAndRes2hashid('declaration/identification/'.$id);
     }
 
-    public function getDocumentForDemandeIdentification($id) {
+    public function getDocumentForDemandeIdentification($demande) {
+        $id = $demande->oc_demande_id;
         return $this->queryAndRes2hashid('declaration/identification/'.$id.'/req_docs');
     }
 
-    public function sendFichierForDemandeIdentification($id, $fichier, $type_document = 0, $cdc_famille_id = null) {
+    public function sendFichierForDemandeIdentification($demande, $fichier, $type_document = 0, $cdc_famille_id = null) {
         $param = array();
         $param['dr_type_documents_id'] = $type_document;
+        $type_document = $this->keyid2obj('dr_type_documents_id', $type_document);
         if ($cdc_famille_id) {
             $param['dr_cdc_famille_id'] = $cdc_famille_id;
         }
-        return $this->query('declaration/identification/'.$id.'/document', 'POST', $param, array('fichier' => $fichier));
+        $id = $demande->oc_demande_id;
+        $ret = $this->query('declaration/identification/'.$id.'/document', 'POST', $param, array('fichier' => $fichier));
+        $demande->getDocument()->addHistorique("Fichier ".$type_document->libelle." à Certipaq pour \"".$demande->libelle."\"", $id.' / '.$fichier['file_name'], null, 'Envoyé');
+        $demande->getDocument()->save();
+        return $ret;
     }
 
-    public function submitDemandeIdentification($id) {
-        return $this->queryAndRes2hashid('declaration/identification/'.$id.'/submit', 'POST');
+    public function submitDemandeIdentification($demande) {
+        $id = $demande->oc_demande_id;
+        $ret = $this->queryAndRes2hashid('declaration/identification/'.$id.'/submit', 'POST');
+        $demande->getDocument()->addHistorique("Demande Certipaq pour \"".$demande->libelle."\"", $id, null, "Transmise");
+        $demande->getDocument()->save();
+        return $ret;
     }
 
 }

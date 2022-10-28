@@ -26,7 +26,7 @@ class HabilitationCertipaqDocumentsForm extends acCouchdbForm
 
     public function getFichiersAttendus() {
         if (!is_array($this->query_document)) {
-            $this->query_document = CertipaqDI::getInstance()->getDocumentForDemandeIdentification($this->certipaq_demande_id);
+            $this->query_document = CertipaqDI::getInstance()->getDocumentForDemandeIdentification($this->demande);
         }
         if (!isset($this->query_document[0])) {
             return array();
