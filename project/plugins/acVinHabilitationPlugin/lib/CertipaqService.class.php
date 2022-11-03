@@ -3,6 +3,7 @@
 class CertipaqService
 {
     private static $_instances = [];
+    private $_tmpfiles = [];
     protected $configuration;
     const TOKEN_CACHE_FILENAME = 'certipaq_access_token';
     const TOKEN_TIME_VALIDITY = 2700;
@@ -16,6 +17,12 @@ class CertipaqService
         $this->configuration = sfConfig::get('app_certipaq_oauth');
         if (!$this->configuration && get_class($this) != 'CertipaqService') {
             throw new sfException('CertipaqService Error : Yml configuration not found for Certipaq');
+        }
+    }
+
+    function __destruct() {
+        foreach ($this->_tmpfiles as $tmpfile) {
+            unlink($tmpfile);
         }
     }
 
@@ -152,8 +159,8 @@ class CertipaqService
                 }
                 $tmpfile = tempnam("/tmp", "upload");
                 file_put_contents($tmpfile, $file_param['file_data']);
-                $payload[$k] = new \cURLFile($tmpfile, $file_param['file_name'], $file_param['file_mime']);
-                unlink($tmpfile);
+                $payload[$k] = new CURLFile($tmpfile, $file_param['file_name'], $file_param['file_mime']);
+                $this->_tmpfiles[] = $tmpfile;
             }
             $content_type = 'multipart/form-data';
         }else{
