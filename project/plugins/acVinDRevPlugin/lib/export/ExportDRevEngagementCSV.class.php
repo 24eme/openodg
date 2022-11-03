@@ -20,7 +20,7 @@ class ExportDRevEngagementCSV{
 
 
     public static function getHeaderCsv() {
-        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Tag Engagement;Statut Engagement;Libelle Engagement\n";
+        return "Organisme;Doc Id;Campagne;Identifiant;Famille;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Tag Engagement;Statut Engagement;Libelle Engagement\n";
     }
 
     public function __construct($drev = null,$header = true) {
@@ -39,9 +39,12 @@ class ExportDRevEngagementCSV{
         if($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        $ligneBase = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s",
-        $drev->campagne,
+        $ligneBase = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
+        Organisme::getCurrentOrganisme(),
         $drev->_id,
+        $drev->campagne,
+        $drev->identifiant,
+        $drev->declarant->famille,
         $drev->declarant->cvi,
         $drev->declarant->siret,
         $this->protectStr($drev->declarant->raison_sociale),
@@ -73,9 +76,12 @@ class ExportDRevEngagementCSV{
                 continue;
             }
 
-            $ligneBase = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s",
-            $drev->campagne,
+            $ligneBase = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
+            Organisme::getCurrentOrganisme(),
             $drev->_id,
+            $drev->campagne,
+            $drev->identifiant,
+            $drev->declarant->famille,
             $drev->declarant->cvi,
             $drev->declarant->siret,
             $this->protectStr($drev->declarant->raison_sociale),
@@ -90,7 +96,6 @@ class ExportDRevEngagementCSV{
                 $csv .= sprintf(";%s;%s;%s\n",$tag,$document->statut,$libelle);
             }
         }
-        print($csv);
         return $csv;
     }
 

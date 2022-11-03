@@ -43,6 +43,7 @@ EOF;
         $csv = $export->export();
 
         print($csv);
+        return;
     }
 }
 
