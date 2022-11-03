@@ -68,8 +68,7 @@ class ExportDRevEngagementCSV{
             $csv .= self::getHeaderCsv();
         }
 
-
-        foreach(DeclarationTousView::getInstance()->getAllByType('DRev') as $json_doc){
+        foreach(DeclarationExportView::getInstance()->getDeclarations('DRev')->rows as $json_doc){
             $drev = DRevClient::getInstance()->find($json_doc->id);
 
             if(!$drev->exist('documents')){
