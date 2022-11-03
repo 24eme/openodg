@@ -221,6 +221,11 @@ php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.c
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part
 
+
+php symfony drev:engagements $SYMFONYTASKOPTIONS > $EXPORTDIR/engagements.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/engagements.csv.part > $EXPORTDIR/engagements.csv
+rm $EXPORTDIR/engagements.csv.part
+
 mkdir -p $EXPORTDIR/stats
 
 cd bin/notebook/
