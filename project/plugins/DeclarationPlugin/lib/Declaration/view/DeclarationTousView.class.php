@@ -40,4 +40,12 @@ class DeclarationTousView extends acCouchdbView
                             ->reduce(false)
                             ->getView($this->design, $this->view);
     }
+
+    public function getAllByType($type){
+        $keys = array($type);
+        return $this->client->startkey($keys)
+                            ->endkey(array_merge($keys, array(array())))
+                            ->reduce(false)
+                            ->getView($this->design, $this->view)->rows;
+    }
 }

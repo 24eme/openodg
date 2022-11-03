@@ -4,8 +4,9 @@ class ExportEngagementsCSVTask extends sfBaseTask{
 
     protected function configure()
     {
+
         $this->addArguments(array(
-            new sfCommandArgument('drev_id', sfCommandArgument::REQUIRED, "Id de la DRev"),
+            new sfCommandArgument('drev_id', sfCommandArgument::OPTIONAL, "Id de la DRev"),
         ));
 
         $this->addOptions(array(
@@ -27,13 +28,18 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $context = sfContext::createInstance($this->configuration);
 
-        $drev = DRevClient::getInstance()->find($arguments['drev_id']);
+        if (isset($arguments['drev_id']) && $arguments['drev_id']) {
 
-        if(!$drev) {
-            die("DREV ".$arguments['drev_id']." non trouvée");
+            $drev = DRevClient::getInstance()->find($arguments['drev_id']);
+            $export = new ExportDRevEngagementCSV($drev);
+
+            $csv = $export->exportForOneDRev();
+
+            print($csv);
+            return;
         }
 
-        $export = new ExportDRevEngagementCSV($drev);
+        $export = new ExportDRevEngagementCSV();
         $csv = $export->export();
 
         print($csv);
