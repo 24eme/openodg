@@ -122,9 +122,9 @@ class fichierActions extends sfActions
 		$categories = null;
 
 		if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_OI)) {
-			$categories = array('OI' => "OI");
+			$categories = array(FichierClient::CATEGORIE_OI => FichierClient::CATEGORIE_OI);
 		}else if(!$this->getUser()->isAdmin() && $this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
-			$categories = array('Identification' => "Identification");
+			$categories = array(FichierClient::CATEGORIE_IDENTIFICATION => FichierClient::CATEGORIE_IDENTIFICATION);
 		}
 
     	$this->form = new FichierForm($this->fichier, null, array('categories' => $categories));

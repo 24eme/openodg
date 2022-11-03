@@ -8,14 +8,17 @@ class CertipaqDeroulant extends CertipaqService
 
     private function res2hashid($res) {
         $objs = array();
-        foreach($res as $o) {
-            $objs[$o->id] = $o;
+        foreach($res as $k => $o) {
+            if (isset($o->id)) {
+                $k = $o->id;
+            }
+            $objs[$k] = $o;
         }
         return $objs;
     }
 
-    private function queryAndRes2hashid($endpoint) {
-        $res = $this->queryWithCache($endpoint);
+    protected function queryAndRes2hashid($endpoint, $method = 'GET', $payload = null) {
+        $res = $this->queryWithCache($endpoint, $method, $payload);
         return $this->res2hashid($res);
     }
 
@@ -104,6 +107,23 @@ class CertipaqDeroulant extends CertipaqService
         return $this->queryAndRes2hashid('dr/etat_demande');
     }
 
+    public function getListeDRDemandeIdentificationType()
+    {
+        return $this->queryAndRes2hashid('dr/demande_identification_type');
+    }
+
+    public function getListeDRtypeDocuments() {
+        return $this->queryAndRes2hashid('dr/type_documents');
+    }
+
+    public function getListeDemandeIdentificationType() {
+        $id2libelle = array();
+        foreach ($this->getListeDRDemandeIdentificationType() as $idtype) {
+            $id2libelle[$idtype->id] = $idtype->libelle;
+        }
+        return $id2libelle;
+    }
+
     public function getListeProduitsCahiersDesCharges() {
         /*
         Array
@@ -153,7 +173,7 @@ class CertipaqDeroulant extends CertipaqService
         return $this->queryAndRes2hashid('dr/adresse_type');
     }
 
-    public function keyid2obj($k, $id, $obj = null) {
+    public function keyid2obj($k, $id, $operateur = null) {
         $hash = array();
         if (!$id) {
             return null;
@@ -180,19 +200,27 @@ class CertipaqDeroulant extends CertipaqService
             case 'dr_cdc_produit_id':
                 $hash = $this->getListeProduitsCahiersDesCharges();
                 break;
+            case 'dr_type_documents_id':
+                $hash = $this->getListeDRtypeDocuments();
+                break;
             case 'operateur_id':
-                $o = CertipaqOperateur::getInstance()->find($id, true);
-                $hash[$id] = $o;
+                try {
+                    $o = CertipaqOperateur::getInstance()->find($id, true);
+                    $hash[$id] = $o;
+                }catch (Exception $e) {}
                 break;
             case 'operateurs_sites_id':
             case 'entrepot_operateurs_sites_id':
-                if ($obj) {
-                    $hash[$id] = CertipaqOperateur::getInstance()->getSiteFromIdAndOperateur($id, $obj);
+            case 'site_id':
+                if ($operateur) {
+                    $hash[$id] = CertipaqOperateur::getInstance()->getSiteFromIdAndOperateur($id, $operateur);
                 }
                 break;
             case 'dr_adresse_type_id':
                 $hash = $this->getListeTypesAdresses();
                 break;
+            case 'dr_demande_identification_type_id':
+                $hash = $this->getListeDemandeIdentificationType();
         }
         if (isset($hash[$id])) {
             return $hash[$id];
@@ -200,15 +228,16 @@ class CertipaqDeroulant extends CertipaqService
         return null;
     }
 
-    public function getParamWithObjFromIds($param) {
+    public function getParamWithObjFromIds($param, $operateur = null) {
         if (!$param || (!is_array($param) && !($param instanceof stdClass))) {
             return $param;
         }
+        $param = (array) $param;
         $newparam = $param;
         foreach ($param as $k => $v) {
             if (strpos($k, '_id') !== false) {
                 $name = str_replace('_id', '', $k);
-                $o = $this->keyid2obj($k, $v);
+                $o = $this->keyid2obj($k, $v, $operateur);
                 if ($o) {
                     $newparam[$name] = $o;
                 }
