@@ -150,7 +150,10 @@ class CertipaqService
                 if (!isset($file_param['file_data']) || !isset($file_param['file_name']) || !isset($file_param['file_mime'])) {
                     throw new sfException('file param file_data, file_name and file_mime required');
                 }
-                $payload[$k] = new \CURLStringFile($file_param['file_data'], $file_param['file_name'], $file_param['file_mime']);
+                $tmpfile = tempnam("/tmp", "upload");
+                file_put_contents($tmpfile, $file_param['file_data']);
+                $payload[$k] = new \cURLFile($tmpfile, $file_param['file_name'], $file_param['file_mime']);
+                unlink($tmpfile);
             }
             $content_type = 'multipart/form-data';
         }else{
