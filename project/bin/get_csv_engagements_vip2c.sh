@@ -3,7 +3,7 @@ EXPORTGLOBALDIR=web/exports_igp
 EXPORTIVSEDIR=web/exports_ivse
 
 head -n 1 $EXPORTGLOBALDIR/engagements.csv > $EXPORTIVSEDIR/engagements_vip2c.new.csv
-grep -a VIP $EXPORTGLOBALDIR/engagements.csv >> $EXPORTIVSEDIR/engagements_vip2c.new.csv
+grep -a VIP2C $EXPORTGLOBALDIR/engagements.csv >> $EXPORTIVSEDIR/engagements_vip2c.new.csv
 
 if [ -e $EXPORTIVSEDIR/engagements_vip2c.csv ]
 then
