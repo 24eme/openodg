@@ -5,10 +5,15 @@ EXPORTIVSEDIR=web/exports_ivse
 head -n 1 $EXPORTGLOBALDIR/engagements.csv > $EXPORTIVSEDIR/engagements_vip2c.new.csv
 grep -a VIP $EXPORTGLOBALDIR/engagements.csv >> $EXPORTIVSEDIR/engagements_vip2c.new.csv
 
-DIFF=$(diff $EXPORTIVSEDIR/engagements_vip2c.csv $EXPORTIVSEDIR/engagements_vip2c.new.csv)
-if [ "$DIFF" != "" ]
+if [ -e $EXPORTIVSEDIR/engagements_vip2c.csv ]
 then
-    mv $EXPORTIVSEDIR/engagements_vip2c.new.csv $EXPORTIVSEDIR/engagements_vip2c.csv
+    DIFF=$(diff $EXPORTIVSEDIR/engagements_vip2c.csv $EXPORTIVSEDIR/engagements_vip2c.new.csv)
+    if [ "$DIFF" != "" ]
+    then
+        mv $EXPORTIVSEDIR/engagements_vip2c.new.csv $EXPORTIVSEDIR/engagements_vip2c.csv
+    else
+        rm $EXPORTIVSEDIR/engagements_vip2c.new.csv
+    fi
 else
-    rm $EXPORTIVSEDIR/engagements_vip2c.new.csv
+    mv $EXPORTIVSEDIR/engagements_vip2c.new.csv $EXPORTIVSEDIR/engagements_vip2c.csv
 fi
