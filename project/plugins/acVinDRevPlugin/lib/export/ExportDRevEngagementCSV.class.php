@@ -68,14 +68,15 @@ class ExportDRevEngagementCSV{
             $csv .= self::getHeaderCsv();
         }
 
-
-        foreach(DeclarationTousView::getInstance()->getAllByType('DRev') as $json_doc){
+        foreach(DeclarationExportView::getInstance()->getDeclarations('DRev')->rows as $json_doc){
             $drev = DRevClient::getInstance()->find($json_doc->id);
 
             if(!$drev->exist('documents')){
                 continue;
             }
-
+            if(!$drev->isMaster()){
+                continue;
+            }
             $ligneBase = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
             Organisme::getCurrentOrganisme(),
             $drev->_id,
