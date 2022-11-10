@@ -74,7 +74,9 @@ class ExportDRevEngagementCSV{
             if(!$drev->exist('documents')){
                 continue;
             }
-
+            if(!$drev->isMaster()){
+                continue;
+            }
             $ligneBase = sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s",
             Organisme::getCurrentOrganisme(),
             $drev->_id,
