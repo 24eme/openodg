@@ -319,6 +319,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getLots(){
+        if(!$this->exist('lots') && !ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()) {
+
+            return array();
+        }
+
         if(!$this->exist('lots')) {
             $this->add('lots');
         }
