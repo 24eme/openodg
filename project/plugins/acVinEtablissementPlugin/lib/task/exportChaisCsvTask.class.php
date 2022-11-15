@@ -35,7 +35,7 @@ EOF;
         $results = EtablissementClient::getInstance()->findAll();
 
         $withoutLiaisons = (isset($options['without-liaisons']) && $options['without-liaisons']);
-        echo "Identifiant chais,Identifiant,Type,Chais Activites,Raison sociale,Nom,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET\n";
+        echo "Identifiant chais,Identifiant,Type,Chais Activites,Raison sociale,Nom,Adresse 1,Adresse 2,Adresse 3,Code postal,Commune,Nom Contact,Tèl Contact, Carte,Position,Archivé,IdCIVP,EA1,EA2,SIRET,Organisme,DocId\n";
         $this->activitesCorespondance = array_flip(EtablissementClient::$chaisAttributsInImport);
         if(!$withoutLiaisons){
            $cpt = 0;
@@ -90,7 +90,10 @@ EOF;
                     $this->protectIso($chai->commune).",".
                     $this->transformNom($this->protectIso($etablissement->raison_sociale)).",".
                     $etablissement->telephone_bureau.",".
-                    ",,".$isArchivee.",,,,".$etablissement->siret."\n";
+                    ",,".$isArchivee.",,,,".$etablissement->siret.','.
+                    Organisme::getCurrentOrganisme().",".
+                    $etablissement->_id.
+                    "\n";
                     }
                 }
                 if(!$withoutLiaisons && isset($etablissement->liaisons_operateurs)){
@@ -156,7 +159,10 @@ EOF;
                         $this->protectIso($chaiDistant->commune).",".
                         $this->transformNom($etablissement->raison_sociale).",".
                         $telephone.",".
-                        ",,".$isArchivee.",,,,".$etablissement->siret."\n";
+                        ",,".$isArchivee.",,,,".$etablissement->siret.','.
+                        Organisme::getCurrentOrganisme().",".
+                        $etablissement->_id.
+                        "\n";
                         }
                 }
         }
