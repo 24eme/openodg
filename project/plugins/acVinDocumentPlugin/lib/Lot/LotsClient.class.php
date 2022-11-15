@@ -64,6 +64,105 @@ class LotsClient
         return $mouvements;
     }
 
+    public function getSuivi($declarant, $uniqueId)
+    {
+        $suivi = ['ORIGINE' => [], 'DEGUSTATION' => [], 'ISSUE' => []];
+        $history = $this->getHistory($declarant, $uniqueId);
+
+        foreach($history as $entry) {
+            $lot = $entry->value;
+            if($lot->lot_unique_id != $uniqueId) {
+                continue;
+            }
+            if(empty($suivi['ORIGINE'])) {
+                $suivi['ORIGINE']['DATE'] = $lot->date;
+                $suivi['ORIGINE']['TYPE'] = $lot->document_type;
+                $suivi['ORIGINE']['INITIAL_TYPE'] = $lot->initial_type;
+                $suivi['ORIGINE']['STATUT'] = $lot->statut;
+                $suivi['ORIGINE']['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $suivi['ORIGINE']['VOLUME'] = $lot->volume;
+            }
+            if($lot->statut == Lot::STATUT_CONFORME && $lot->document_type == DegustationClient::TYPE_MODEL) {
+                $d = [];
+                $d['DATE'] = $lot->date;
+                $d['STATUT'] = $lot->statut;
+                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['VOLUME'] = $lot->volume;
+                $suivi['DEGUSTATION'][] = $d;
+                $suivi['ISSUE'] = $d;
+
+                break;
+            }
+
+            if($lot->statut == Lot::STATUT_NONCONFORME && $lot->document_type == DegustationClient::TYPE_MODEL) {
+                $d = [];
+                $d['DATE'] = $lot->date;
+                $d['STATUT'] = $lot->statut;
+                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['VOLUME'] = $lot->volume;
+                $suivi['DEGUSTATION'][] = $d;
+                $suivi['ISSUE'] = $d;
+            }
+
+            if($lot->statut == Lot::STATUT_CHANGE_DEST) {
+                $d = [];
+                $d['DATE'] = $lot->date;
+                $d['STATUT'] = $lot->statut;
+                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['VOLUME'] = $lot->volume;
+                $suivi['ISSUE'] = $d;
+            }
+
+            if($lot->statut == Lot::STATUT_RECOURS_OC) {
+                $d = [];
+                $d['DATE'] = $lot->date;
+                $d['STATUT'] = $lot->statut;
+                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['VOLUME'] = $lot->volume;
+                $suivi['ISSUE'] = $d;
+            }
+
+            if($lot->statut == Lot::STATUT_MANQUEMENT_EN_ATTENTE) {
+                $d = [];
+                $d['DATE'] = $lot->date;
+                $d['STATUT'] = $lot->statut;
+                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['VOLUME'] = $lot->volume;
+                $suivi['ISSUE'] = $d;
+                break;
+            }
+
+            if($lot->statut == Lot::STATUT_CONFORME_APPEL) {
+                $d = [];
+                $d['DATE'] = $lot->date;
+                $d['STATUT'] = $lot->statut;
+                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['VOLUME'] = $lot->volume;
+                $suivi['ISSUE'] = $d;
+
+                break;
+            }
+
+            if($lot->statut == Lot::STATUT_DECLASSE || $lot->statut == Lot::STATUT_DECLASSE_OLD) {
+                $d = [];
+                $d['DATE'] = $lot->date;
+                $d['STATUT'] = Lot::STATUT_DECLASSE;
+                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut(Lot::STATUT_DECLASSE);
+                $d['VOLUME'] = $lot->volume;
+                $suivi['ISSUE'] = $d;
+
+                break;
+            }
+        }
+
+        if(empty($suivi['ISSUE'])) {
+
+            $suivi = null;
+        }
+
+        return $suivi;
+    }
+
     public function findByUniqueId($declarantIdentifiant, $uniqueId, $documentOrdre = null) {
 
         return $this->find($declarantIdentifiant, self::getCampagneFromUniqueId($uniqueId), self::getNumeroDossierFromUniqueId($uniqueId), self::getNumeroArchiveFromUniqueId($uniqueId), $documentOrdre, true);
