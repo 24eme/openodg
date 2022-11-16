@@ -74,6 +74,7 @@ class LotsClient
             if($lot->lot_unique_id != $uniqueId) {
                 continue;
             }
+            $lot->date = preg_replace('/ .*$/', '', $lot->date);
             if(empty($suivi['ORIGINE'])) {
                 $suivi['ORIGINE']['DATE'] = $lot->date;
                 $suivi['ORIGINE']['TYPE'] = $lot->document_type;
