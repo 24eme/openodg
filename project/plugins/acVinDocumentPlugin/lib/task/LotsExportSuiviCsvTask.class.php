@@ -33,7 +33,7 @@ EOF;
         $lots[$lot->value->declarant_identifiant.$lot->value->unique_id] = $lot->value;
     }
 
-    echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Millésime;Spécificités;Volume;Origine Date;1ere Degustation Date;1ere Degustation Statut;1ere Degustation Statut libelle;2eme Degustation Date;2eme Degustation Statut;2eme Degustation Statut Libelle;Issue Date;Issue Statut;Issue Statut libelle;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id;Hash produit\n";
+    echo "Origine;Id Opérateur;Nom Opérateur;Campagne;Num dossier;Num lot;Num logement Opérateur;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Millésime;Volume;Origine Date;1ere Degustation Date;1ere Degustation Statut;1ere Degustation Statut Libelle;1ere Degustation Detail;2eme Degustation Date;2eme Degustation Statut;2eme Degustation Statut Libelle;2eme Degustation Detail;Issue Date;Issue Statut;Issue Statut Libelle;Issue Detail;Organisme;Doc Id;Lot unique Id;Declarant Lot unique Id;Hash produit\n";
 
     foreach($lots as $lot) {
         $suivi = LotsClient::getInstance()->getSuivi($lot->declarant_identifiant, $lot->unique_id);
@@ -61,18 +61,20 @@ EOF;
         $ligne .= $produit[15].";";
         $ligne .= VarManipulator::protectStrForCsv($lot->produit_libelle).";";
         $ligne .= $lot->millesime.";";
-        $ligne .= (isset($lot->specificite) && $lot->specificite ? VarManipulator::protectStrForCsv($lot->specificite) : '').";";
         $ligne .= VarManipulator::floatizeForCsv($lot->volume).";";
         $ligne .= $suivi['ORIGINE']['DATE'].";";
         $ligne .= $suivi['DEGUSTATION'][0]['DATE'].";";
         $ligne .= $suivi['DEGUSTATION'][0]['STATUT'].";";
         $ligne .= VarManipulator::protectStrForCsv($suivi['DEGUSTATION'][0]['STATUT_LIBELLE']).";";
+        $ligne .= (isset($suivi['DEGUSTATION'][0]['DETAIL']) ? VarManipulator::protectStrForCsv($suivi['DEGUSTATION'][0]['DETAIL']) : null).";";
         $ligne .= $suivi['DEGUSTATION'][1]['DATE'].";";
         $ligne .= $suivi['DEGUSTATION'][1]['STATUT'].";";
         $ligne .= VarManipulator::protectStrForCsv($suivi['DEGUSTATION'][1]['STATUT_LIBELLE']).";";
+        $ligne .= (isset($suivi['DEGUSTATION'][1]['DETAIL']) ? VarManipulator::protectStrForCsv($suivi['DEGUSTATION'][1]['DETAIL']) : null).";";
         $ligne .= $suivi['ISSUE']['DATE'].";";
         $ligne .= $suivi['ISSUE']['STATUT'].";";
         $ligne .= VarManipulator::protectStrForCsv($suivi['ISSUE']['STATUT_LIBELLE']).";";
+        $ligne .= VarManipulator::protectStrForCsv($suivi['ISSUE']['DETAIL']).";";
         $ligne .= $appName.";";
         $ligne .= $lot->id_document.";";
         $ligne .= $lot->unique_id.";";

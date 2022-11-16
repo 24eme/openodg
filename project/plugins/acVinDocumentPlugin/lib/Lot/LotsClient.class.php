@@ -100,6 +100,7 @@ class LotsClient
                 $d['DATE'] = $lot->date;
                 $d['STATUT'] = $lot->statut;
                 $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['DETAIL'] = explode(" : ", $lot->detail)[0];
                 $d['VOLUME'] = $lot->volume;
                 $suivi['DEGUSTATION'][] = $d;
                 $suivi['ISSUE'] = $d;
@@ -110,6 +111,7 @@ class LotsClient
                 $d['DATE'] = $lot->date;
                 $d['STATUT'] = $lot->statut;
                 $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
+                $d['DETAIL'] = $lot->detail;
                 $d['VOLUME'] = $lot->volume;
                 $suivi['ISSUE'] = $d;
             }
