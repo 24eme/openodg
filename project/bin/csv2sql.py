@@ -159,6 +159,15 @@ if os.path.exists(sys.argv[2]+"/lots-historique.csv") and os.path.getsize(sys.ar
     csv[csv.columns[39]] = csv[csv.columns[39]].apply(lambda x: str(x))
     csv.to_sql('lots-historique', con=engine, if_exists='replace')
 
+if os.path.exists(sys.argv[2]+"/lots_suivi.csv") and os.path.getsize(sys.argv[2]+"/lots_suivi.csv"):
+    sys.stderr.write(sys.argv[2]+"/lots_suivi.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/lots_suivi.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    #CVI Opérateur
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
+    #Millésime
+    csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x))
+    csv.to_sql('lots_suivi', con=engine, if_exists='replace')
+
 if os.path.exists(sys.argv[2]+"/drev_lots.csv") and os.path.getsize(sys.argv[2]+"/drev_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/drev_lots.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/drev_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
