@@ -55,7 +55,9 @@ class DRevOI
 		$output = curl_exec($ch);
 		$info = curl_getinfo($ch);
 		if ($output === false || $info['http_code'] != 200) {
-			$result = "No cURL data returned (HTTP Code : ". $info['http_code']. ")";
+			$result = "No cURL data returned for $url_http \n".
+                      "(HTTP Code : ". $info['http_code']. " - $output)\n".
+                      $this->getXml($region);
 			if (curl_error($ch)) {
 				$result .= "\n". curl_error($ch);
 			}
