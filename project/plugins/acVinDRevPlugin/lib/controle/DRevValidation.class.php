@@ -62,7 +62,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->periode-1));
 
 
-        $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats',"Pour le millésime ".DRevConfiguration::getInstance()->getMillesime().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl de Méditerranée Rosé qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec IVSE.");
+        $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats',"Pour le millésime ".DRevConfiguration::getInstance()->getMillesime().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())." hl de Méditerranée Rosé qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
 
         /*
          * Engagement
@@ -90,7 +90,7 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
             }
         }
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
         /* Lots */
 
@@ -421,9 +421,8 @@ class DRevValidation extends DeclarationLotsValidation
         if(($volumeCommercialisableLibre < $volumeTotalMediterraneeRoseDeclare) && ($volumeTotalMediterraneeRoseDeclare < $volumeMaxAutorise)) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',  $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
         } elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-
             if($this->document->hasDestinationConditionnement()){
+                $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
             }
             if($this->document->hasDestionationVrac()){
@@ -433,12 +432,16 @@ class DRevValidation extends DeclarationLotsValidation
                     $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats', $produit,$this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
                 }
                 else{
+                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                     foreach($contrats as $k=>$v){
                         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
                     }
                 }
                 if($contrats && count($contrats)>1){
-                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_PAS_INFORMATION,"");
+                    $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
+                    if(sfContext::getInstance()->getUser()->hasDrevAdmin()) {
+                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_PAS_INFORMATION,"");
+                    }
                 }
             }
         }

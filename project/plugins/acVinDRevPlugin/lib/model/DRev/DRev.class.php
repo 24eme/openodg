@@ -319,16 +319,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getLots(){
-        if(!$this->exist('lots')) {
+        if(!$this->exist('lots') && !ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()) {
 
             return array();
         }
-        $lots = $this->_get('lots')->toArray(1,1);
-        if($lots){
-            return $this->_get('lots');
+
+        if(!$this->exist('lots')) {
+            $this->add('lots');
         }
-        uasort($lots, "DRev::compareLots");
-        return $lots;
+        return $this->_get('lots');
     }
 
     public function getCurrentLots() {
@@ -394,17 +393,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return $lots;
-    }
-
-    public static function compareLots($lotA, $lotB){
-        $dateA = $lotA->getDate();
-        $dateB = $lotB->getDate();
-        if(empty($dateA)){
-            if(!empty($dateB)){
-                return $dateB;
-            }
-        }
-        return strcasecmp($dateA, $dateB);
     }
 
     public function getConfigProduits() {
@@ -673,36 +661,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$csv) {
         return array();
       }
-        $etablissement = $this->getEtablissementObject();
-        $etablissementBailleurs = array();
-        foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
-            if(!$etablissementBailleur->ppm) {
-                continue;
-            }
-            if(!$etablissementBailleur->exist('liaisons_operateurs/METAYER_'.$etablissement->_id)) {
-                continue;
-            }
-            $etablissementBailleurs[$etablissementBailleur->ppm] = $etablissementBailleur;
-        }
 
-
-    	$bailleurs = array();
-    	foreach($csv as $line) {
-    		$produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
-    		if(!$produitConfig) {
-    			continue;
-    		}
-    		if (!$produitConfig->isActif()) {
-    			continue;
-    		}
-
-    		if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
-                $etablissement_id = isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : null;
-                $id = ($etablissement_id) ? $etablissement_id : $line[DRCsvFile::CSV_BAILLEUR_PPM];
-    			$bailleurs[$id]  = array('raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM], 'etablissement_id' => $etablissement_id, 'ppm' => $line[DRCsvFile::CSV_BAILLEUR_PPM]);
-    		}
-    	}
-    	return $bailleurs;
+        return DouaneProduction::getBailleursFromCsv($this->getEtablissementObject(), $csv, $this->getConfiguration());
     }
 
     public function importFromDocumentDouanier($force = false) {
@@ -1032,7 +992,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public static function buildDetailKey($denominationComplementaire = null, $hidden_denom = null) {
         $detailKey = self::DEFAULT_KEY;
-
+        if(!$denominationComplementaire) {
+            $denominationComplementaire = '';
+        }
+        if(!$hidden_denom) {
+            $hidden_denom = '';
+        }
         if($denominationComplementaire || $hidden_denom){
             $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire).trim($hidden_denom))), 0, 7);
         }
@@ -1607,8 +1572,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->saveDocumentsDependants();
         }
 
-        $this->hasVolumeSeuilAndSetIfNecessary(); //fonction dans laquelle si il le cvi du declarant
-                                                                                         //se trouve dans le csvdeConf alors ajoute le champs volume_revendique_seuil.
+        $this->hasVolumeSeuilAndSetIfNecessary();
+
         return $saved;
     }
 
@@ -2384,8 +2349,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $document->constructId();
         $document->clearMouvementsLots();
         $document->clearMouvementsFactures();
-        $document->remove('date_depot');
         $document->devalidate();
+        $document->remove('date_depot');
         foreach ($document->getProduitsLots() as $produit) {
           if($produit->exist("validation_odg") && $produit->validation_odg){
             $produit->validation_odg = null;

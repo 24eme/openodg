@@ -1,4 +1,4 @@
-<?php if($etablissement->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)): return; endif; ?>
+<?php if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && !$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)): print_r($etablissement->famille); return; endif; ?>
 
 <?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
@@ -6,7 +6,11 @@
         <div class="panel-heading">
             <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irrigables</h3>
         </div>
-        <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
+        <?php if (!$parcellaire): ?>
+        <div class="panel-body">
+            <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer d'irrigation</p>
+        </div>
+        <?php elseif ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
         <div class="panel-body">
             <p class="explications">Vous avez déjà validé votre Identification des parcelles irrigables.</p>
             <div class="actions">
@@ -49,5 +53,8 @@
                 </div>
             </div>
             <?php endif; ?>
+            <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigable')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            </div>
     </div>
 </div>

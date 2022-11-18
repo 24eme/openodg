@@ -22,7 +22,7 @@ class DRevDocuments extends BaseDRevDocuments
 
     const DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC= "VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC";
     const DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC_SUITE = "DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC_SUITE";
-    const DOC_VIP2C_PAS_INFORMATION= "VIP2C_PAS_INFORMATION";
+    const DOC_VIP2C_OUEX_PAS_INFORMATION= "DOC_VIP2C_OUEX_PAS_INFORMATION";
 
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
@@ -55,9 +55,8 @@ class DRevDocuments extends BaseDRevDocuments
 
 	private static $_engagement_libelles = array(
 		DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE => 'Je m\'engage à transmettre le DAE justifiant le transfert de récolte vers ce chais',
-		DRevDocuments::DOC_SV11 => 'Je m\'engage à joindre une copie de la SV11',
-		DRevDocuments::DOC_SV11 => 'Je m\'engage à joindre une copie de la SV11',
-		DRevDocuments::DOC_SV12 => 'Je m\'engage à joidre une copie du SV12',
+		DRevDocuments::DOC_SV11 => 'Je m\'engage à joindre une copie du SV11',
+		DRevDocuments::DOC_SV12 => 'Je m\'engage à joindre une copie du SV12',
 		DRevDocuments::DOC_VCI => 'Je m\'engage à transmettre le justificatif de destruction de VCI',
 		DRevDocuments::DOC_MUTAGE_DECLARATION => "Je m'engage à transmettre la déclaration de mutage à mon ODG",
 		DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF => "Je n'ai aucune parcelle avec un % de manquants > à 15%",

@@ -665,16 +665,130 @@ class habilitationActions extends sfActions {
     public function executeCertipaqType(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->certipaq_operateur = CertipaqOperateur::getInstance()->findByEtablissement($this->etablissement);
         $this->demande = $request->getParameter('demande');
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
     }
 
-    public function executeCertipaqOutput(sfWebRequest $request) {
+    public function executeCertipaqDemandeDocuments(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+        $this->request_id = $request->getParameter('request_id');
+        $this->form = new HabilitationCertipaqDocumentsForm($this->demande, $this->request_id);
+
+        if (count($this->form->getFichiersAttendus())) {
+            if (!$request->isMethod(sfWebRequest::POST)) {
+                return sfView::SUCCESS;
+            }
+
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if(!$this->form->isValid()) {
+                return sfView::SUCCESS;
+            }
+
+            $res = array();
+
+            foreach($this->form->getValues() as $k => $v) {
+                if (strpos($k, 'fichier_') === false) {
+                    continue;
+                }
+                $type = $this->form->getFichierTypeId($k);
+                $cdc = null;
+                if ($type) {
+                    $cdc = $this->form->getCDCFamilleId();
+                }
+                $pdfdata = PieceClient::getInstance()->getFileContentsByDocIdAndTypes($v);
+                $res[] = CertipaqDI::getInstance()->sendFichierForDemandeIdentification($this->demande, $pdfdata, $type, $cdc);
+            }
+        }
+        $res[] = CertipaqDI::getInstance()->submitDemandeIdentification($this->demande);
+        return $this->redirect('certipaq_demande_identification_view', array('request_id' => $this->request_id));
+    }
+
+    public function executeCertipaqDemandeRequest(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
+        if ($this->demande->exist('oc_demande_id')) {
+            return $this->redirect('certipaq_demande_identification_view', array('request_id' => $this->demande->oc_demande_id));
+        }
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        $this->param = CertipaqDI::getInstance()->getCertipaqParam($request->getParameter('type'), $this->demande);
+        $type = $request->getParameter('type');
+        $confirm = $request->getParameter('confirm');
+
+        if ($confirm) {
+            try {
+                $id = CertipaqDI::getInstance()->postRequest($type, $this->demande);
+                if ($id) {
+                    return $this->redirect('certipaq_demande_identification_documents', array('request_id' => $id, 'identifiant' => $this->etablissement->_id, 'demande' => $this->demande->getKey()));
+                }
+            } catch(sfException $e) {
+                $this->res = array($e->getMessage());
+            }
+        }
+        $this->param = CertipaqDI::getInstance()->getCertipaqParam($type, $this->demande, $confirm);
+        $this->param_printable = array();
+        $this->params2printable($this->param);
+    }
+
+    private function params2printable($param, $param_plus = null, $extra_k_printable = null) {
+        if (is_object($param)) {
+            $param = (array) $param;
+        }
+        if ($param_plus === null) {
+            $param_plus = CertipaqDeroulant::getInstance()->getParamWithObjFromIds($this->param);
+        }
+        if (is_object($param_plus)) {
+            $param_plus = (array) $param_plus;
+        }
+        foreach($param as $k => $o) {
+            $k_libelle = $k;
+            if ($extra_k_printable) {
+                $k_libelle = $extra_k_printable . ' / '.$k;
+            }
+            $o_printable = $o;
+            if (strpos($k, '_id')) {
+                $kplus = str_replace('_id', '', $k);
+                if (isset($param_plus[$kplus])) {
+                    $o = $param_plus[$kplus];
+                    if (!is_string($o)) {
+                        $o = (array) $o;
+                        if (isset($param_plus[$kplus]->libelle)) {
+                            $o_printable = $param_plus[$kplus]->libelle;
+                        }elseif (isset($param_plus[$kplus]->raison_sociale)) {
+                            $o_printable = $param_plus[$kplus]->raison_sociale;
+                        }
+                    }else{
+                        $o_printable = $o;
+                    }
+                    $k_libelle = ($extra_k_printable) ? $extra_k_printable . ' / '.$kplus : $kplus;
+                    unset($param_plus[$kplus]);
+                }
+                $this->param_printable[$k_libelle] = $o_printable;
+            }elseif (is_array($o) || is_object($o)) {
+                $this->params2printable($o, $param_plus[$k], $k_libelle);
+            }else{
+                $this->param_printable[$k_libelle] = $o_printable;
+            }
+        }
+    }
+
+    public function executeCertipaqDemandes(sfWebRequest $request) {
+        $this->param = CertipaqDI::getInstance()->getDemandesIdentification();
+        $this->param_printable = CertipaqDeroulant::getInstance()->getParamWithObjFromIds((array) $this->param);
+    }
+
+    public function executeCertipaqDemandeView(sfWebRequest $request) {
+        $this->id = $request->getParameter('request_id');
+        $this->param = CertipaqDI::getInstance()->getDemandeIdentification($this->id);
+        if (preg_match('/\[(\d+\-\d+)(\d\d)\]/', $this->param['commentaires_odg'], $m)) {
+            $this->habilitation = HabilitationClient::getInstance()->find('HABILITATION-'.$m[1]);
+            $this->demande = $this->habilitation->demandes->get($m[1].$m[2]);
+        }
+        $this->param_printable = array();
+        $this->params2printable($this->param);
     }
 }

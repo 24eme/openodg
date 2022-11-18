@@ -467,6 +467,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				if(!$including_leurre && $lot->isLeurre()){
 					continue;
 				}
+				if (!$lot->volume) {
+					continue;
+				}
 				//Les leurres n'ont pas de uniqid donc pas de mouvement
 				if($including_leurre && $lot->isLeurre() && $lot->statut === $statut){
 					$lots[] = $lot;
@@ -1380,6 +1383,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getLotsDegustesByAppelation(){
 			$degust = array();
 			foreach ($this->getLotsDegustes(true) as $key => $lot) {
+				if (!$lot->getConfig()) {
+					throw new sfException("configuration du lot ".$lot->getHash()." non trouvée :(");
+				}
 				$degust[$lot->getConfig()->getAppellation()->getLibelle()][] = $lot;
 			}
 
@@ -1519,6 +1525,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getFacturationLotRedeguste($cotisation,$filters = null){
             return $this->buildMouvementsFacturesLotRedeguste($cotisation, $filters);
         }
+
+		public function buildMouvementsFacturesHasLotsRedeguste($cotisation,$filters = null){
+			$mouvements = $this->buildMouvementsFacturesLotRedeguste($cotisation,$filters);
+			$mvt_degust = array();
+			foreach ($mouvements as $declarant_identifiant => $mvts) {
+				foreach ($mvts as $keylot => $mvt) {
+					$mvt_degust[$declarant_identifiant] = array('DEGUSTATION_2deDegust' => $mvt);
+					break;
+				}
+			}
+			return $mvt_degust;
+		}
+
         public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
@@ -1622,14 +1641,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function getForfaitConditionnement($cotisation){
-            return $this->buildMouvementsFacturesForfaitConditionnement($cotisation);
+        public function getForfaitConditionnement($cotisation, $filters = null){
+            return $this->buildMouvementsFacturesForfaitConditionnement($cotisation, $filters);
         }
-		public function buildMouvementsFacturesForfaitConditionnement($cotisation){
+		public function buildMouvementsFacturesForfaitConditionnement($cotisation, $filters = null){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsDegustables() as $lot) {
                 if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
+                    continue;
+                }
+				if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);

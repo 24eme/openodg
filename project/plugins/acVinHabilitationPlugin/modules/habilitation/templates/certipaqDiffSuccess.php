@@ -59,7 +59,7 @@
 <?php print_tr("SIRET", $pseudo_operateur->siret, $certipaq_operateur->siret, 'nombre'); ?>
 <?php print_tr("CVI", $pseudo_operateur->cvi, $certipaq_operateur->cvi, 'nombre'); ?>
 <?php print_tr("Adresse", $pseudo_operateur->adresse, $certipaq_operateur->adresse, 'string'); ?>
-<?php print_tr("Code postal", $pseudo_operateur->cp, $certipaq_operateur->cp, 'nombre'); ?>
+<?php print_tr("Code postal", $pseudo_operateur->code_postal, $certipaq_operateur->cp, 'nombre'); ?>
 <?php print_tr("Ville", $pseudo_operateur->ville, $certipaq_operateur->ville, 'string'); ?>
 <?php print_tr("Pays", $pseudo_operateur->pays, $certipaq_operateur->pays, 'pays'); ?>
 <?php print_tr("Telephone", $pseudo_operateur->telephone, $certipaq_operateur->telephone, 'nombre'); ?>
@@ -86,20 +86,20 @@
 <?php print_tr('Nom du site', $pseudo_site->nom_site, $site->nom_site); ?>
 <?php print_tr('Capacité cuverie', $pseudo_site->capacite_cuverie, $site->capacite_cuverie, ''); ?>
 <?php print_tr('Adresse', $pseudo_site->adresse, $site->adresse." ".$site->complement_adresse, 'string'); ?>
-<?php print_tr('Code postal', $pseudo_site->cp, $site->cp, 'string'); ?>
+<?php print_tr('Code postal', $pseudo_site->code_postal, $site->cp, 'string'); ?>
 <?php print_tr('Ville', $pseudo_site->ville, $site->ville, 'string'); ?>
 <?php print_tr('Telephone', $pseudo_site->telephone, $site->telephone, 'nombre'); ?>
 <?php print_tr('Fax', $pseudo_site->fax, $site->fax, 'string'); ?>
 <?php print_tr('Commentaire', "[N/A]", $site->commentaire); ?>
-<?php foreach($site->habilitations as $id => $h):  $pseudo_h = (object) $pseudo_site->habilitations[$id]; ?>
+<?php foreach($site->habilitations as $id => $h):  $pseudo_h = (object) @$pseudo_site->habilitations[$id]; ?>
 <?php print_tr("Hab $id : Numéro", "[N/A]", $h->num_habilitation); ?>
-<?php print_tr("Hab $id : Activité", $pseudo_h->dr_activites_operateurs->libelle, $h->dr_activites_operateurs->libelle, 'string'); ?>
-<?php print_tr("Hab $id : Cahier des charges", $pseudo_h->dr_cdc->libelle, $h->dr_cdc->libelle, 'string'); ?>
-<?php print_tr("Hab $id : CdC famille", $pseudo_h->dr_cdc_famille->libelle, $h->dr_cdc_famille->libelle, 'string'); ?>
-<?php print_tr("Hab $id : Statut", $pseudo_h->dr_statut_habilitation->libelle, $h->dr_statut_habilitation->libelle, 'string'); ?>
+<?php print_tr("Hab $id : Activité", @$pseudo_h->dr_activites_operateurs->libelle, $h->dr_activites_operateurs->libelle, 'string'); ?>
+<?php print_tr("Hab $id : Cahier des charges", @$pseudo_h->dr_cdc->libelle, $h->dr_cdc->libelle, 'string'); ?>
+<?php print_tr("Hab $id : CdC famille", @$pseudo_h->dr_cdc_famille->libelle, $h->dr_cdc_famille->libelle, 'string'); ?>
+<?php print_tr("Hab $id : Statut", @$pseudo_h->dr_statut_habilitation->libelle, $h->dr_statut_habilitation->libelle, 'string'); ?>
 <?php print_tr("Hab $id : Outil de production", "[N/A]", $h->outil_production->nom_outil, 'string'); ?>
-<?php print_tr("Hab $id : Date decision", $pseudo_h->date_decision, $h->date_decision, 'date'); ?>
-<?php print_tr("Hab $id : Date dossier_complet_odg", $pseudo_h->date_dossier_complet_odg, $h->date_dossier_complet_odg); ?>
+<?php print_tr("Hab $id : Date decision", @$pseudo_h->date_decision, $h->date_decision, 'date'); ?>
+<?php print_tr("Hab $id : Date dossier_complet_odg", @$pseudo_h->date_dossier_complet_odg, $h->date_dossier_complet_odg); ?>
 <?php print_tr("Hab $id : Date habilitation_maximum", "[N/A]", $h->date_habilitation_maximum); ?>
 <?php print_tr("Hab $id : Date reception_certipaq", "[N/A]", $h->date_reception_certipaq); ?>
 <?php print_tr("Hab $id : Date Validation_dossier_complet", "[N/A]", $h->date_validation_dossier_complet); ?>

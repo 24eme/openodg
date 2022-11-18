@@ -72,7 +72,7 @@
               <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle col-xs-12">
           </div>
           <br/>
-          <?php if(!$drev->validation_odg): ?>
+          <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
           <div class="row text-right">
             <div class="col-xs-3 col-xs-offset-9">
               <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
@@ -224,11 +224,26 @@
             </tbody>
           </table>
         <?php endif; ?>
-        <?php
-            if($drev->isValideeOdg() && $drev->isModifiable()): ?>
-            <div class="col-xs-12" style="margin-bottom: 20px;">
-              <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
-            </div>
+<div class="row">
+    <div class="col-xs-12" style="margin-bottom: 20px;">
+<?php if($drev->isValideeOdg() && $drev->isModifiable()): ?>
+          <a onclick="return confirm('Êtes vous sûr de vouloir revendiquer de nouveaux lots IGP ?')" class="btn btn-primary pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Revendiquer de nouveaux lots IGP</a>
+<?php elseif(!$drev->isValideeOdg()): ?>
+        <div class="pull-right">
+          <p class="text-danger">Des lots sont en attente d'approbation</p>
+          <p>Vous ne pouvez donc pas en ajouter de nouveaux</p>
+        </div>
+<?php else: ?>
+        <div class="pull-right">
+          <p class="text-danger">Cette DREV n'est la dernière et donc pas modifiable</p>
+        </div>
+<?php endif; ?>
+    </div>
+</div>
+        <hr/>
+        <?php if($drev->hasVolumeSeuilAndSetIfNecessary()): ?>
+        <?php include_partial('drev/vip2c', array('drev' => $drev, 'form' => $form)); ?>
+        <hr/>
         <?php endif; ?>
 
         <?php if (DrevConfiguration::getInstance()->hasDegustation()): ?>
