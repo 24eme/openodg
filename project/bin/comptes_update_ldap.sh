@@ -27,7 +27,7 @@ fi
 
 curl -s "http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_changes?feed=continuous&timeout=590000&since="$(cat $SEQ | sed 's/[^0-9]//g') | grep "COMPTE" | while read ligne
 do
-    echo $ligne | awk -F '"' '{print $3}' | sed 's/[^0-9]//g' > $SEQ
+    echo $ligne | sed 's/{"seq":"*//' | sed 's/"*,"id":".*/ /' > $SEQ
     php symfony compte:ldap-update $SYMFONYTASKOPTIONS $(echo $ligne | sed 's/.*"id":"//' | sed 's/".*//')
 done
 
