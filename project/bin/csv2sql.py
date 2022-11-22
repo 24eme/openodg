@@ -143,7 +143,7 @@ if os.path.exists(sys.argv[2]+"/comptes.csv") and os.path.getsize(sys.argv[2]+"/
 
 if os.path.exists(sys.argv[2]+"/lots.csv") and os.path.getsize(sys.argv[2]+"/lots.csv"):
     sys.stderr.write(sys.argv[2]+"/lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str', 'Millésime': 'str'})
     #CVI Opérateur
     csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
     #Millésime
@@ -161,7 +161,7 @@ if os.path.exists(sys.argv[2]+"/lots-historique.csv") and os.path.getsize(sys.ar
 
 if os.path.exists(sys.argv[2]+"/lots_suivi.csv") and os.path.getsize(sys.argv[2]+"/lots_suivi.csv"):
     sys.stderr.write(sys.argv[2]+"/lots_suivi.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/lots_suivi.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/lots_suivi.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str', 'Millésime': 'str'})
     #CVI Opérateur
     csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
     #Millésime
@@ -170,7 +170,7 @@ if os.path.exists(sys.argv[2]+"/lots_suivi.csv") and os.path.getsize(sys.argv[2]
 
 if os.path.exists(sys.argv[2]+"/drev_lots.csv") and os.path.getsize(sys.argv[2]+"/drev_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/drev_lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/drev_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/drev_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str', 'Millésime': 'str'})
     #CVI Opérateur
     csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
     #SIRET Opérateur
@@ -181,7 +181,7 @@ if os.path.exists(sys.argv[2]+"/drev_lots.csv") and os.path.getsize(sys.argv[2]+
 
 if os.path.exists(sys.argv[2]+"/conditionnement_lots.csv") and os.path.getsize(sys.argv[2]+"/conditionnement_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/conditionnement_lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/conditionnement_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/conditionnement_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str', 'Millésime': 'str'})
     #CVI Opérateur
     csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
     #SIRET Opérateur
@@ -192,7 +192,7 @@ if os.path.exists(sys.argv[2]+"/conditionnement_lots.csv") and os.path.getsize(s
 
 if os.path.exists(sys.argv[2]+"/transaction_lots.csv") and os.path.getsize(sys.argv[2]+"/transaction_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/transaction_lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/transaction_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/transaction_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str', 'Millésime': 'str'})
     #CVI Opérateur
     csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
     #SIRET Opérateur
