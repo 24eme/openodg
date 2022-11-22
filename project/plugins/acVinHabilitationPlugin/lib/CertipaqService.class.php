@@ -3,6 +3,7 @@
 class CertipaqService
 {
     private static $_instances = [];
+    private $_tmpfiles = [];
     protected $configuration;
     const TOKEN_CACHE_FILENAME = 'certipaq_access_token';
     const TOKEN_TIME_VALIDITY = 2700;
@@ -16,6 +17,12 @@ class CertipaqService
         $this->configuration = sfConfig::get('app_certipaq_oauth');
         if (!$this->configuration && get_class($this) != 'CertipaqService') {
             throw new sfException('CertipaqService Error : Yml configuration not found for Certipaq');
+        }
+    }
+
+    function __destruct() {
+        foreach ($this->_tmpfiles as $tmpfile) {
+            unlink($tmpfile);
         }
     }
 
@@ -116,13 +123,13 @@ class CertipaqService
         return json_decode($json);
     }
 
-    protected function query($endpoint, $method = 'GET', $payload = null)
+    protected function query($endpoint, $method = 'GET', $payload = null, $files = [])
     {
         $response = $this->httpQuery(
             $this->configuration['apiurl'].$endpoint,
             [
-                'http' => $this->getQueryHttpRequest($this->getToken(), $method, $payload)
-            ]
+                'http' => $this->getQueryHttpRequest($this->getToken(), $method, $payload, $files)
+            ],
         );
 
         $response = json_decode($response);
@@ -140,16 +147,35 @@ class CertipaqService
         return $this->cache[$cache_id];
     }
 
-    protected function getQueryHttpRequest($token, $method = 'GET', $payload = null)
+    protected function getQueryHttpRequest($token, $method = 'GET', $payload = null, $files_param = [])
     {
+        if (count($files_param)) {
+            if (!extension_loaded('curl')) {
+                throw new sfException("module curl needed");
+            }
+            foreach($files_param as $k => $file_param) {
+                if (!isset($file_param['file_data']) || !isset($file_param['file_name']) || !isset($file_param['file_mime'])) {
+                    throw new sfException('file param file_data, file_name and file_mime required');
+                }
+                $tmpfile = tempnam("/tmp", "upload");
+                file_put_contents($tmpfile, $file_param['file_data']);
+                $payload[$k] = new CURLFile($tmpfile, $file_param['file_name'], $file_param['file_mime']);
+                $this->_tmpfiles[] = $tmpfile;
+            }
+            $content_type = 'multipart/form-data';
+        }else{
+            $payload = ($payload) ? json_encode($payload, JSON_PRESERVE_ZERO_FRACTION) : null;
+            $content_type = 'application/json';
+        }
         return array(
             'headers'  => array(
                 "Host: ".$this->configuration['host'],
-                "Content-Type: application/json",
+                "Content-Type: ".$content_type,
+                'Accept: application/json',
                 "Authorization: Bearer $token"
             ),
             'method'  => $method,
-            'content' => ($payload) ? json_encode($payload, JSON_PRESERVE_ZERO_FRACTION) : null
+            'content' => $payload
         );
     }
 
@@ -171,7 +197,7 @@ class CertipaqService
         return file_get_contents($url, false, $context);
     }
 
-    protected function httpQueryCurl($url, $options)
+    protected function httpQueryCurl($url, $options, $file = null)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

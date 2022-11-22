@@ -2349,8 +2349,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $document->constructId();
         $document->clearMouvementsLots();
         $document->clearMouvementsFactures();
-        $document->remove('date_depot');
         $document->devalidate();
+        $document->remove('date_depot');
         foreach ($document->getProduitsLots() as $produit) {
           if($produit->exist("validation_odg") && $produit->validation_odg){
             $produit->validation_odg = null;

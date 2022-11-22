@@ -209,6 +209,10 @@ rm $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
 rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted $EXPORTDIR/lots_cleancepages.csv.part
 
+php symfony lots:export-suivi-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots_suivi.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots_suivi.csv.part > $EXPORTDIR/lots_suivi.csv
+rm $EXPORTDIR/lots_suivi.csv.part
+
 bash bin/export_docs.sh Degustation $EXPORTSLEEP $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
 rm $EXPORTDIR/degustations.csv.part
@@ -220,6 +224,11 @@ rm $EXPORTDIR/degustateurs.csv.part
 php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part
+
+
+php symfony drev:engagements $SYMFONYTASKOPTIONS > $EXPORTDIR/engagements.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/engagements.csv.part > $EXPORTDIR/engagements.csv
+rm $EXPORTDIR/engagements.csv.part
 
 mkdir -p $EXPORTDIR/stats
 

@@ -373,6 +373,9 @@ class FactureClient extends acCouchdbClient {
           $societe = SocieteClient::getInstance()->find($societeID);
 
           $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template);
+          if(!$f) {
+               continue;
+          }
           $f->save();
           $generation->somme += $f->total_ttc;
           $generation->add('documents')->add($cpt, $f->_id);

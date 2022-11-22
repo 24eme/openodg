@@ -39,7 +39,7 @@
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
-\def\EMETTEURADRESSE{<?php echo str_replace('–', '\\\\', $facture->emetteur->adresse); ?>}
+\def\EMETTEURADRESSE{<?php echo str_replace(['–', '\\"'], ['\\\\', ''], $facture->emetteur->adresse); ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
