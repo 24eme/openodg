@@ -67,7 +67,6 @@ class DRevValidation extends DeclarationLotsValidation
         /*
          * Engagement
          */
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV11));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV12));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VCI));
@@ -291,9 +290,6 @@ class DRevValidation extends DeclarationLotsValidation
         if ( (!$produit->getSommeProduitsCepage('recolte/superficie_total') && $produit->getSommeProduitsCepage('superficie_revendique') > 0) || (round($produit->getSommeProduitsCepage('superficie_revendique'), 4) > round($produit->getSommeProduitsCepage('recolte/superficie_total'), 4)) ) {
             if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
                 $this->addPoint(self::TYPE_WARNING, 'revendication_superficie_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
-                if(!$this->document->isPapier()) {
-                    $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_REVENDICATION_SUPERFICIE_DAE, $produit->getLibelleComplet());
-                }
             }else{
         	    $this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
             }
