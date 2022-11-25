@@ -1,3 +1,4 @@
+<?php $gitcommit = file_exists('../../.git/ORIG_HEAD') ? str_replace("\n", "", file_get_contents('../../.git/ORIG_HEAD')) : null;?>
 <?php use_helper("Date") ?>
 
 <!doctype html>
@@ -17,7 +18,10 @@
         <link rel="icon" type="image/x-icon" href="/favico_igp13.ico" />
         <link rel="icon" type="image/png" href="/favico_igp13.png" />
 
-        <?php include_stylesheets() ?>
+        <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
+
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
+        <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
     </head>
     <body role="document">
             <div id="header">
@@ -33,9 +37,6 @@
                     <div class="page-header no-border">
                       <h2>Convocations à une dégustation</h2>
                     </div>
-
-                    <div class="row">
-                      <div class="col-xs-12">
                         <div class="panel panel-default" style="min-height: 160px">
                           <div class="panel-heading">
                             <h2 class="panel-title">
@@ -51,10 +52,15 @@
                             </h2>
                           </div>
                           <div class="panel-body">
+                            <?php if($presence && $emailSended): ?>
+                                <div class="alert alert-info">Vous venez de confirmer votre <strong>présence</strong> à la dégustation. Un email à été envoyé à votre syndicat pour l'informer de votre venue.</div>
+                            <?php elseif($emailSended): ?>
+                                <div class="alert alert-info">Vous venez d'informer de votre <strong>absence</strong> à la dégustation. Un email a été envoyé à votre syndicat pour l'informer.</div>
+                            <?php endif; ?>
                             <?php if($presence): ?>
-                            <p>Vous venez de confirmer votre venue à la dégustation qui se tiendra : </p>
+                            <p>Vous avez confirmé votre venue à la dégustation qui se tiendra : </p>
                             <?php else: ?>
-                            <p>Vous venez d'informer de votre absence à la dégustation qui se tiendra : </p>
+                            <p>Vous avez informé de votre absence à la dégustation qui se tiendra : </p>
                             <?php endif; ?>
                             <h3 class="text-center">
                             <small><?php echo $degustation->getLieuNom(); ?></small><br/>
@@ -80,9 +86,7 @@
                                     <?php endif; ?>
                                     </a>
                         </div>
-                        </div>
-                        </div>
-                </div>
+                    </div>
                 </section>
 
                 <footer id="footer" class="container hidden-xs hidden-sm text-center mt-5 mb-5" role="contentinfo">

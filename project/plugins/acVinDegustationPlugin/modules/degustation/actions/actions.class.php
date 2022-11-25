@@ -1161,10 +1161,23 @@ class degustationActions extends sfActions {
         }
         $degustateur = $degustateurs->get($this->college)->get($this->identifiant);
 
+        $previousPresence = null;
+        if($degustateurs->get($this->college)->get($this->identifiant)->exist('confirmation')) {
+            $previousPresence = $degustateurs->get($this->college)->get($this->identifiant)->get('confirmation');
+        }
+
         $degustateurs->get($this->college)->get($this->identifiant)->add('confirmation', boolval($this->presence));
+
         $this->degustation->save(false);
 
+        $this->emailSended = false;
+        if($previousPresence === $degustateurs->get($this->college)->get($this->identifiant)->get('confirmation')) {
+
+            return sfView::SUCCESS;
+        }
+
         Email::getInstance()->sendActionDegustateurAuthMail($this->degustation, $degustateur, boolval($this->presence));
+        $this->emailSended = true;
     }
 
     public function executeRetirerLot(sfWebRequest $request) {

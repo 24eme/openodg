@@ -113,7 +113,7 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_inao.csv.pa
 rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_inao.csv.part
 
 echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; do
-    eval 'SUBDIR=$EXPORT_SUB_HABILITATION_DIR_PREFIX"/'$subhab'"'
+    eval 'SUBDIR=$EXPORT_SUB_HABILITATION_'$subhab'_DIR'
     eval 'SUBFILTRE=$EXPORT_SUB_HABILITATION_'$subhab'_FILTRE'
     mkdir -p $SUBDIR
     head -n 1 $EXPORTDIR/habilitation.csv > $SUBDIR/habilitation.csv
