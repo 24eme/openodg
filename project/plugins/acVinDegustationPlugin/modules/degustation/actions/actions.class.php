@@ -1170,12 +1170,14 @@ class degustationActions extends sfActions {
 
         $this->degustation->save(false);
 
+        $this->emailSended = false;
         if($previousPresence === $degustateurs->get($this->college)->get($this->identifiant)->get('confirmation')) {
 
             return sfView::SUCCESS;
         }
 
         Email::getInstance()->sendActionDegustateurAuthMail($this->degustation, $degustateur, boolval($this->presence));
+        $this->emailSended = true;
     }
 
     public function executeRetirerLot(sfWebRequest $request) {
