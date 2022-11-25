@@ -1,3 +1,4 @@
+<?php $gitcommit = file_exists('../../.git/ORIG_HEAD') ? str_replace("\n", "", file_get_contents('../../.git/ORIG_HEAD')) : null;?>
 <?php use_helper("Date") ?>
 
 <!doctype html>
@@ -17,7 +18,10 @@
         <link rel="icon" type="image/x-icon" href="/favico_igp13.ico" />
         <link rel="icon" type="image/png" href="/favico_igp13.png" />
 
-        <?php include_stylesheets() ?>
+        <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
+
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
+        <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
     </head>
     <body role="document">
             <div id="header">
