@@ -457,6 +457,10 @@ class drevActions extends sfActions {
         //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
         // }
 
+        if($lot->id_document_affectation) {
+            throw new sfException("Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé.");
+        }
+
         if($lot){
             $this->drev->remove($lot->getHash());
         }
