@@ -2,6 +2,25 @@
 
 class SV12DouaneCsvFile extends DouaneImportCsvFile {
 
+    public function detectFormat() {
+        $csvFile = new CsvFile($this->filePath);
+        if(preg_match('/DECLARATION DE PRODUCTION SV12/i', $csvFile->getCsv()[0][0]) &&
+           preg_match('/Fournisseurs/i', $csvFile->getCsv()[3][0]) &&
+           preg_match('/Nom/i', $csvFile->getCsv()[4][0])) {
+
+            return "XlsSV12";
+        }
+        if(preg_match('/Code produit/i', $csvFile->getCsv()[0][0]) &&
+           preg_match('/D?nomination/i', $csvFile->getCsv()[0][1]) &&
+           preg_match('/CVI/i', $csvFile->getCsv()[0][3]) &&
+           preg_match('/Quantit/i', $csvFile->getCsv()[0][5])) {
+
+            return "CsvVendanges";
+        }
+
+        return null;
+    }
+
     public function convert() {
         $handler = fopen($this->filePath, 'r');
 
