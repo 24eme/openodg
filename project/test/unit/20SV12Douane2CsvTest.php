@@ -1,6 +1,6 @@
 <?php require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(34);
+$t = new lime_test(42);
 
 $config = ConfigurationClient::getCurrent();
 foreach($config->getProduits() as $produit) {
@@ -16,7 +16,7 @@ $t->ok($produit->getCodeDouane(), "configuration de base est OK : le produit a u
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv12_douane.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg');
-file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao%", "%libelle_produit%"), array("7523700100", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%cvi_1%", "%code_inao%", "%libelle_produit%"), array("7523700100", "7523700800", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
 
 $csv = new SV12DouaneCsvFile($csvTmpFile);
 $t->is($csv->detectFormat(), "XlsSV12", "Détéction du format du fichier XlsSV12");
@@ -88,9 +88,7 @@ $t->is($line[SV12CsvFile::CSV_FAMILLE_LIGNE_CALCULEE], "NEGOCIANT_VINIFICATEUR",
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv12_douane_vendanges.csv');
 
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').'-7523700100_'.date('Y').'00000000000C_'.date('dmYhis');
-file_put_contents($csvTmpFile, str_replace(array("%cvi_1%", "%code_inao_1%", "%libelle_produit_1%"), array("7523700800", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
-
-echo $csvTmpFile."\n";
+file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%cvi_1%", "%code_inao%", "%libelle_produit%"), array("7523700100", "7523700800", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
 
 $csv = new SV12DouaneCsvFile($csvTmpFile);
 $t->is($csv->detectFormat(), "CsvVendanges", "Détéction du format du fichier CsvVendanges");
@@ -99,10 +97,11 @@ unlink($csvTmpFile);
 
 $linesCsvVendanges = explode("\n", $csvConvert);
 
-$replacePattern = "/(ACTUALYS JEAN|NEUILLY|AUBIGNAN| - [^;]*)/";
+$replacePattern = "/(ACTUALYS JEAN|NEUILLY|GONFARON| - [^;]*)/";
 
 $t->is(preg_replace($replacePattern, "", $linesCsvVendanges[0]), preg_replace($replacePattern, "", $linesXlsSV12[0]), "Les 2 conversions donnent le même résultat sur la 1ère ligne");
 $t->is(preg_replace($replacePattern, "", $linesCsvVendanges[1]), preg_replace($replacePattern, "", $linesXlsSV12[1]), "Les 2 conversions donnent le même résultat sur la 2ème ligne");
 $t->is(preg_replace($replacePattern, "", $linesCsvVendanges[2]), preg_replace($replacePattern, "", $linesXlsSV12[2]), "Les 2 conversions donnent le même résultat sur la 3ème ligne");
 $t->is(preg_replace($replacePattern, "", $linesCsvVendanges[3]), preg_replace($replacePattern, "", $linesXlsSV12[3]), "Les 2 conversions donnent le même résultat sur la 4ème ligne");
-$t->is(preg_replace($replacePattern, "", $linesCsvVendanges[4]), preg_replace($replacePattern, "", $linesXlsSV12[(4)]), "Les 2 conversions donnent le même résultat sur la 5ème ligne");
+$t->is(preg_replace($replacePattern, "", $linesCsvVendanges[4]), preg_replace($replacePattern, "", $linesXlsSV12[4]), "Les 2 conversions donnent le même résultat sur la 5ème ligne");
+$t->is(preg_replace($replacePattern, "", $linesCsvVendanges[5]), preg_replace($replacePattern, "", $linesXlsSV12[5]), "Les 2 conversions donnent le même résultat sur la 6ème ligne");
