@@ -52,6 +52,9 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
             13 => "19",
         );
 
+        $drev_filter = $this->getRelatedDrev();
+        $drev = $this->getRelatedDrev(false);
+
         $known_produit = array();
         foreach ($csv as $key => $values) {
             if($key == 0) {
