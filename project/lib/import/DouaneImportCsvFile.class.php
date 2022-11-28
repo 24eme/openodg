@@ -102,4 +102,9 @@ class DouaneImportCsvFile {
       $this->campagne = $c;
     }
 
+    public function getFamilleCalculeeFromLigneDouane($has_volume_cave = false, $has_volume_coop = false, $has_volume_nego = false) {
+
+        return null; // Not implemented
+    }
+
 }

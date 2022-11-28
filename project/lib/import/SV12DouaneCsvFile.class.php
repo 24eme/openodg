@@ -87,7 +87,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = null;
                 $produit[] = null;
                 $produit[] = $cpt;
-                $produit[] = Organisme::getCurrentOrganisme();
+                $produit[] = "provence";
                 $produit[] = ($p)? $p->getHash() : '';
                 $produit[] = ($drev) ? $drev->_id : '';
                 $produit[] = ($drev_filter) ? 'FILTERED'.$drev_filter->_id : '';
@@ -198,7 +198,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
                 $produit[] = $cpt;
-                $produit[] = Organisme::getCurrentOrganisme();
+                $produit[] = "provence";
                 $produit[] = ($p)? $p->getHash() : '';
                 $produit[] = ($drev) ? $drev->_id : '';
                 $produit[] = ($drev_filter) ? 'FILTERED'.$drev_filter->_id : '';
