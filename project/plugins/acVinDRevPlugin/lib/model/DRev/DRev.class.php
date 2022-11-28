@@ -520,16 +520,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return $this->document_douanier_type;
         }
 
-        if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
+        $famille = $this->declarant->famille;
+
+        if($famille == 'PRODUCTEUR') {
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+        }
+
+        if($famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
 
             return DRCsvFile::CSV_TYPE_DR;
         }
 
-        if($this->declarant->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+        if($famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
 
             return SV11CsvFile::CSV_TYPE_SV11;
         }
-        if(preg_match('/^'.EtablissementFamilles::FAMILLE_NEGOCIANT.'/', $this->declarant->famille)) {
+        if(preg_match('/^'.EtablissementFamilles::FAMILLE_NEGOCIANT.'/', $famille)) {
 
             return SV12CsvFile::CSV_TYPE_SV12;
         }

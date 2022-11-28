@@ -130,7 +130,7 @@
     </div>
     <div class="col-xs-4 text-center">
         <div class="btn-group">
-            <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
+            <?php if ($sf_user->hasDrevAdmin() && $drev->getDocumentDouanier()): ?>
             <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default" >
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
             </a>
