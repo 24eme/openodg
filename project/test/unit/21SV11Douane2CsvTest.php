@@ -85,8 +85,6 @@ $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv11_douane_
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').'-7523700100_'.date('Y').'00000000000C_'.date('dmYhis');
 file_put_contents($csvTmpFile, str_replace(array("%cvi_1%", "%code_inao_1%", "%libelle_produit_1%"), array("7523700800", $produit->getCodeDouane(), $produit->getLibelleComplet()), $csvContentTemplate));
 
-echo $csvTmpFile."\n";
-
 $csv = new SV11DouaneCsvFile($csvTmpFile);
 $t->is($csv->detectFormat(), "CsvVendanges", "Détéction du format du fichier CsvVendanges");
 $csvConvert = $csv->convert();
