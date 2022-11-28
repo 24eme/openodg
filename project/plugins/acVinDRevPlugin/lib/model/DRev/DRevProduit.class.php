@@ -181,19 +181,36 @@ class DRevProduit extends BaseDRevProduit
 
     			return false;
     		}
+
+            if($this->getSommeProduitsCepage('recolte/volume_total') == $this->getSommeProduitsCepage('recolte/volume_sur_place')) {
+
+                return true;
+            }
+
+            if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_total'), 2)) {
+
+                return true;
+            }
+
+            if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_sur_place'), 2)) {
+
+                return true;
+            }
+
+            return false;
         }
 
-		if($this->getSommeProduitsCepage('recolte/volume_total') == $this->getSommeProduitsCepage('recolte/volume_sur_place')) {
+        if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
 
 			return true;
 		}
 
-		if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_total'), 2)) {
+		if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_total)) {
 
 			return true;
 		}
 
-        if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_sur_place'), 2)) {
+        if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_sur_place)) {
 
 			return true;
 		}
