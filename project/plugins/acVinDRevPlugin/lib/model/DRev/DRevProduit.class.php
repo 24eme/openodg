@@ -192,7 +192,7 @@ class DRevProduit extends BaseDRevProduit
 
 			return true;
 		}
-        var_dump(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2));
+
         if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_sur_place'), 2)) {
 
 			return true;
