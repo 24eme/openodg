@@ -50,6 +50,9 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
            12  => '15'
         );
 
+        $drev_filter = null;
+        $drev = null;
+
         $known_produit = array();
         foreach ($csv as $key => $values) {
             if($key == 0) {
@@ -136,8 +139,8 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         $cpt = 1;
         $indexCodeProduit = 3;
         $this->identifiant = (isset($this->etablissement) && $this->etablissement)? $this->etablissement->identifiant : null;
-        $drev_filter = $this->getRelatedDrev();
-        $drev = $this->getRelatedDrev(false);
+        $drev_filter = null;
+        $drev = null;
 
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {

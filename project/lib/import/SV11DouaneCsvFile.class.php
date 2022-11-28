@@ -53,6 +53,9 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         );
 
         $known_produit = array();
+        $drev_filter = null;
+        $drev = null;
+        
         foreach ($csv as $key => $values) {
             if($key == 0) {
                 $libellesLigne = $values;
@@ -137,8 +140,8 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
             13 => "19",
         );
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
-        $drev_filter = $this->getRelatedDrev();
-        $drev = $this->getRelatedDrev(false);
+        $drev_filter = null;
+        $drev = null;
 
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
