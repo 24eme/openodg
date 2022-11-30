@@ -177,7 +177,7 @@ class DRevProduit extends BaseDRevProduit
 
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
         if(!$this->getCepage()->hasProduitsSansDonneesRecolte()) {
-            if($this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
+            if(!$this->superficie_revendique || $this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
 
     			return false;
     		}
