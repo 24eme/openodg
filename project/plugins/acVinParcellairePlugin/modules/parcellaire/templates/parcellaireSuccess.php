@@ -55,7 +55,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
         </div>
     <?php endif; ?>
 
-    <div class="row">
+    <div class="row hidden">
       <div class="col-xs-5">
           <h3>Accès rapide</h3>
           <ul>
