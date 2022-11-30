@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
 /**
  * Model for Parcellaire
  *
@@ -8,6 +9,8 @@ class Parcellaire extends BaseParcellaire {
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    private $cache_geophpdelimitation = null;
+    private $cache_geojson = null;
 
     public function __construct() {
         parent::__construct();
@@ -177,7 +180,7 @@ class Parcellaire extends BaseParcellaire {
         foreach($this->getParcelles() as $p) {
             $cepage = $p->getCepage();
             if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                $cepage .= ' - jeunes feuilles';
+                $cepage .= ' - jeunes vignes';
             }
             if (!isset($synthese[$cepage])) {
                 $synthese[$cepage] = array();
@@ -185,6 +188,7 @@ class Parcellaire extends BaseParcellaire {
             }
             $synthese[$cepage]['superficie'] = round($synthese[$cepage]['superficie'] + $p->superficie, 6);
         }
+        ksort($synthese);
         return $synthese;
     }
 
@@ -202,7 +206,7 @@ class Parcellaire extends BaseParcellaire {
                     $libelles[] = '';
                 }
                 if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                    $libelles = array('jeunes feuilles');
+                    $libelles = array('jeunes vignes');
                 }
             }
             foreach($libelles as $libelle) {
@@ -225,6 +229,18 @@ class Parcellaire extends BaseParcellaire {
                 $synthese[$libelle]['Total']['superficie_max'] = round($synthese[$libelle]['Total']['superficie_max'] + $p->superficie, 6);
             }
         }
+
+        foreach ($synthese as $libelle => &$cepages) {
+            uksort($cepages, function ($cepage1, $cepage2) {
+                if ($cepage1 === "Total") {
+                    return -1;
+                }
+                if ($cepage2 === "Total") {
+                    return 1;
+                }
+                return strcmp($cepage1, $cepage2);
+            });
+        }
         return $synthese;
     }
 
@@ -246,6 +262,63 @@ class Parcellaire extends BaseParcellaire {
             return file_get_contents($this->getParcellairePDFUri());
         }
         return null;
+    }
+
+    public function getGeoJson(){
+        if ($this->cache_geojson !== null) {
+            return $this->cache_geojson;
+        }
+
+        $file_name = "import-cadastre-".$this->declarant->cvi."-parcelles.json";
+        $uri = $this->getAttachmentUri($file_name);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $import = curl_exec($ch);
+        curl_close($ch);
+
+        if(strpos($import, "Document is missing attachment")) {
+            sfContext::getInstance()->getLogger()->info("getGeoJson() : Document is missing attachment for ".$this->_id);
+            $this->cache_geojson = array();
+        }else{
+            $this->cache_geojson = json_decode($import);
+        }
+        return $this->cache_geojson;
+
+    }
+
+    public function getAire($inao_denomination_id = null) {
+        if (!$inao_denomination_id) {
+            $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
+        }
+        return ParcellaireClient::getInstance()->getAire($inao_denomination_id, $this->declaration->getCommunes());
+    }
+
+    public function getAires() {
+
+        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes());
+    }
+
+    public function getGeoPHPDelimitations($denom_id = null) {
+        if (!$denom_id) {
+            $denom_id = ParcellaireClient::getInstance()->getDefaultDenomination();
+        }
+        if (!geophp::geosInstalled()) {
+            throw new sfException("php-geos needed");
+        }
+        if (!$this->cache_geophpdelimitation) {
+            $this->cache_geophpdelimitation = [];
+            foreach(ParcellaireClient::getInstance()->getDenominations() as $did) {
+                foreach($this->getAire($did) as $d) {
+                    $this->cache_geophpdelimitation[$did][] = geoPHP::load($d);
+                }
+            }
+        }
+        if (!isset($this->cache_geophpdelimitation[$denom_id])) {
+            return array();
+        }
+        return $this->cache_geophpdelimitation[$denom_id];
     }
 
 }

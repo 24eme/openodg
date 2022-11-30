@@ -1,5 +1,17 @@
-index:
+all:
   credentials: ADMIN
 
 declarant:
-  credentials: ADMIN
+  credentials: []
+
+visualisation:
+  credentials: []
+
+parcellairePDF:
+  credentials: []
+
+scrape:
+  credentials: []
+
+import:
+  credentials: []

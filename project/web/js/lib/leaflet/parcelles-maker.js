@@ -1,15 +1,8 @@
 var parcellesStr = window.parcelles;
 var delimitationStr = window.delimitation;
 var allIdu = window.all_idu;
-var myMarker;
-var mygeojson;
-var myLayer=[];
-var fitBound;
+var parcelleSelected = null;
 var minZoom = 17;
-var listIdLayer=[];
-var myidus= [];
-var filters;
-var error = true;
 
 function parseString(dlmString){
     var mydlm = [];
@@ -20,7 +13,7 @@ function parseString(dlmString){
 }
 
 var map = L.map('map');
-
+map.on('click', function(e) { if(e.target && e.target.feature) { return; } clearParcelleSelected() });
 
 L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
         '&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&TILEMATRIXSET=PM'+
@@ -36,7 +29,7 @@ L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
     attribution: 'Map data &copy;' +
         '<a href="https://www.24eme.fr/">24eme Société coopérative</a>, ' +
         '<a href="https://cadastre.data.gouv.fr/">Cadastre</a>, ' +
-        'Imagery © <a href="https://www.igp.fr/">IGN</a>',
+        'Imagery © <a href="https://www.ign.fr/">IGN</a>',
     id: 'mapbox.light'
 }).addTo(map);
 
@@ -52,7 +45,7 @@ function onLocationFound(e) {
     var radius = e.accuracy / 100;
     L.marker(e.latlng,{icon: icon}).addTo(map);
     L.circle(e.latlng, radius).addTo(map);
-    map.setView(e.latlng, minZoom);    
+    map.setView(e.latlng, minZoom);
 }
 function onLocationError(e) {
     alert("Vous n'êtes actuellement pas localisable. Veuillez activer la localisation.");
@@ -80,218 +73,264 @@ function style(feature) {
     var color;
     color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
-        fillColor: color,
-        weight: 3,
-        opacity: 2,
-        color: 'white',
-        dashArray: '5',
-        fillOpacity: 0.7
+        fillColor: '#fff',
+        weight: 2,
+        opacity: 1,
+        color: 'red',
+        fillOpacity: 0.3
     };
 }
 
 /**
 * Css style default
 **/
-function styleDelimitation(){
+function styleDelimitation(color, opacity){
     return {
-        fillColor: '#d0f3fb',
+        fillColor: color,
         weight: 0,
-        opacity: 2,
-        color: 'white',
+        opacity: opacity,
+        dashArray: '5',
+        color: 'black',
         fillOpacity: 0.4
     }
 }
 
-/**
-* Close popup and delete marker showing on map
-**/
-function closeDisplayer(){
-    var res = false;
-    
-    if(myMarker){
-        map.removeLayer(myMarker);//remove preview marker, show one marker at the same time
-        res = true;
-    }
-    if(map._popup != null){
-        map.closePopup();//close popup if is opened
-        res = true;
-    }
-    return res;
-}
-
-/**
-* Use this function to load all map data (Geojson). ie add new Feature
-**/
-function loadGeoJson(){
-    mygeojson = L.geoJSON(parseString(parcellesStr), {
-    style: style,
-    onEachFeature: onEachFeature,
-    }).addTo(map);
-
-    zoomOnMap();
-}
-
-
 function zoomOnMap(){
-
-    closeDisplayer();
-    myMarker = null;
-
-    map.fitBounds(mygeojson.getBounds());
+    map.fitBounds(layers[parcelles_name].getBounds());
+    clearParcelleSelected()
 }
-
-mygeojson = L.geoJSON(parseString(delimitationStr),
-{
-    style: styleDelimitation
-}).addTo(map);
-zoomOnMap();
-
-loadGeoJson(); //Create map layer from geojson coordonates 
-
-
-function zoomToFeature(e) {
-    if(!closeDisplayer() || map.getZoom() < minZoom){
-
-        myMarker = L.marker(e.target.getCenter()).addTo(map); 
-        var f = map.fitBounds(e.target.getBounds());
-    }else{
-        map.openPopup(e.target._popup);
-        var popup = $(".leaflet-popup-content")[0];
-        minPopupWidth = popup.style.width;
-        var width = (e.target.feature.properties.parcellaires.length +1) * 80 +"px";
-        if(width > minPopupWidth){
-            popup.style.overflowX = "scroll";
-        }   
-    }
-}
-
+var sections = []
 function onEachFeature(feature, layer) {
     layer.on({
-        click: zoomToFeature,
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
     });
-    
-    var Cepages = "<th>Produits et cepages</th>";
-    var numParcelles = "<th>Parcelle N°</th>";
-    var Superficies = "<th>Superficies  <span>(ha)</span></th>";
-    var ecartPied = "<th>Écart Pieds</th>";
-    var ecartRang = "<th>Écart Rang</th>";
-    var compagnes = "<th>Année plantat°</th>";
-    feature.properties.parcellaires.forEach(function(parcelle){
-        numParcelles += '<td>'+parcelle["Numero parcelle"]+'</td>';
-        Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
-        compagnes += '<td>'+parcelle.Campagne+'</td>';
-        Superficies += '<td>'+parcelle.Superficie+'</td>';
-        ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
-        ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
-    });
-    
-    var popupContent ='<table class="table table-bordered table-condensed table-striped"><tbody>'+
-                    '<tr>'+numParcelles+'</tr>'+
-                    '<tr>'+Cepages+'</tr>'+
-                    '<tr>'+compagnes+'</tr>'+
-                    '<tr>'+Superficies+'</tr>'+
-                    '<tr>'+ecartPied+'</tr>'+
-                    '<tr>'+ecartRang+'</tr>'+
-                    '</tbody></table>';
-
-    if (feature.properties && feature.properties.popupContent) {
-        popupContent += feature.properties.popupContent;
-    }
-
-    layer.bindPopup(popupContent);
-
-    layer._events.click.reverse();
-
-}
-
-/**
-* show parcelle with maker on it in map  
-**/
-
-function showParcelle(id, htmlObj){
-    if(this.map) {
-        this.map.eachLayer(function(layer) {            
-            if(layer.feature){
-                //Check proprietie parcellaires to filter layer delimitation
-                if(Object.keys(layer.feature.properties).includes('parcellaires')){
-                    if(layer.feature.properties.parcellaires[0].IDU == id){
-                        error = false;
-                        closeDisplayer();
-                        this.myLayer = layer;
-                        center = myLayer.getCenter();
-                        this.myMarker = L.marker(center,  {
-
-                        }).addTo(map);
-                        
-                        this.map.fitBounds(this.myLayer.getBounds());
-                        var carte = document.getElementById("jump");
-                        carte.scrollIntoView();
-                    }
-                    
-                }   
-            }
-        });        
+    let section_text = feature.id.substring(5, 10).replace(/^0*/, '');
+    let parcelle_text = section_text+'&nbsp;'+feature.id.substring(10, 15).replace(/^0*/, '');
+    if (!sections[section_text]) {
+        sections[section_text] = layer.getBounds();
     }else{
-        alert("Error: Map empty !");
+        sections[section_text].extend(layer.getBounds());
     }
+    map.addLayer( new L.Marker(
+                    layer.getBounds().getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'parcellelabel',
+                                html: '<b>' +  parcelle_text + '</b>'
+                        })
+                    }
+                )
+            );
 }
+var layers = [];
+parcelles_name = '<span style="background-color: white; border: 2px solid red; width: 25px; display:inline-block;"> &nbsp; </span> Parcelles'
+layers[parcelles_name] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+for(i in sections) {
+    map.addLayer( new L.Marker(
+                    sections[i].getCenter(),
+                    {
+                        title: "MyLocation",
+                        icon: L.divIcon( iconOptions = {
+                                iconSize  : [15, 15],
+                                className : 'sectionlabel',
+                                html: '<b>' +  i + '</b>'
+                        })
+                    }
+                )
+            );
+}
+
+for(i in aires) {
+  name = '<span style="background-color: '+aires[i]['color']+'; width: 25px; display:inline-block;"> &nbsp; </span> ' + aires[i]['name'];
+  layers[name] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
+  layers[name].addTo(map);
+};
+layers[parcelles_name] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+layers[parcelles_name].addTo(map);
+
+L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
+map.addEventListener('overlayadd', function(e) {
+    for(name in layers) {
+        layers[name].bringToFront();
+    }
+    layers[parcelles_name].bringToFront();
+});
+
+zoomOnMap();
+
+
+map.on('zoomend', function() {
+    if (map.getZoom() > 15){
+        $('.parcellelabel').show();
+        $('.sectionlabel').hide();
+    } else {
+        $('.parcellelabel').hide();
+        $('.sectionlabel').show();
+    }
+});
+$('.parcellelabel').hide();
+$('.sectionlabel').show();
+
+function zoomToFeature(e) {
+  zoomToParcelle(e.target);
+  e.preventDefault();
+}
+
+function zoomToParcelle(layer) {
+  clearParcelleSelected();
+  map.fitBounds(layer.getBounds());
+  parcelleSelected = layer;
+  info.update(layer);
+}
+
+function clearParcelleSelected() {
+  if(!parcelleSelected) {
+    return;
+  }
+  parcelleSelected.setStyle(style(parcelleSelected.feature));
+  parcelleSelected = null;
+  info.update(null);
+}
+
+var info = L.control();
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this._div.style.display = 'none';
+    this.update();
+    return this._div;
+};
+
+// method that we will use to update the control based on feature properties passed
+info.update = function (layer) {
+  this._div.style.background = 'rgba(255,255,255,0.9)';
+  if(parcelleSelected) {
+    layer = parcelleSelected;
+    this._div.style.background = 'rgba(255,255,255,1)';
+    parcelleSelected.setStyle({
+        fillOpacity: 0.8
+    });
+  }
+  if(!layer) {
+    this._div.style.display = 'none';
+    return null
+  }
+  let props = layer.feature.properties;
+
+  this._div.style.display = 'block';
+  var Cepages = "<th>Produits et cepages</th>";
+  var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
+  var Superficies = "<th>Superficies  <span>(ha)</span></th>";
+  var ecartPied = "<th>Écart Pieds</th>";
+  var ecartRang = "<th>Écart Rang</th>";
+  var compagnes = "<th>Année plantat°</th>";
+  props.parcellaires.forEach(function(parcelle){
+      numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
+      Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
+      compagnes += '<td>'+parcelle.Campagne+'</td>';
+      Superficies += '<td>'+parcelle.Superficie+'</td>';
+      ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';
+      ecartRang +='<td>'+parcelle["Ecart rang"]+'</td>';
+  });
+
+  var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
+                  '<tr>'+numParcelles+'</tr>'+
+                  '<tr>'+Cepages+'</tr>'+
+                  '<tr>'+compagnes+'</tr>'+
+                  '<tr>'+Superficies+'</tr>'+
+                  '<tr>'+ecartPied+'</tr>'+
+                  '<tr>'+ecartRang+'</tr>'+
+                  '</tbody></table>';
+    this._div.innerHTML = popupContent;
+};
+
+$('#btn-close-info').on('click', function() {
+  clearParcelleSelected();
+});
+
+info.addTo(map);
+
+function highlightFeature(e) {
+  e.target.setStyle({
+      fillOpacity: 0.5
+  });
+  info.update(e.target);
+}
+
+function resetHighlight(e) {
+  e.target.setStyle({
+      fillOpacity: 0.3
+  });
+  info.update();
+}
+
+function showParcelle(id){
+    let layer = getParcelleLayer(id);
+
+    if(!layer) {
+      return;
+    }
+
+    zoomToParcelle(layer);
+    document.getElementById("jump").scrollIntoView();
+}
+
+function getParcelleLayer(id) {
+  let layerFinded = null;
+
+  map.eachLayer(function(layer) {
+      if(layer.feature){
+          if(Object.keys(layer.feature.properties).includes('parcellaires')){
+              if(layer.feature.properties.parcellaires[0].IDU == id){
+                layerFinded = layer;
+              }
+          }
+      }
+  });
+
+  return layerFinded;
+}
+
+
 /**
 * On select words filter, we filter map layers also.
-* myfilters it's input element  
+* myfilters it's input element
 **/
-function filterMapOn(myfilters){
-    filters = myfilters;
-    $(".hamzastyle-item").each(function(i, val){
-        var words = val.getAttribute("data-words");
-        if(filters.value && checkAllwords(eval(words),filters.value.split(","))){
-            let id = val.lastElementChild.firstElementChild.getAttribute("id");
-            myidus[id] = id;
-        }
+function filterMap() {
+    clearParcelleSelected();
+    let filters = $('#hamzastyle').val();
+    let terms = filters.split(",");
+    if(!terms.length) {
+      layers['Parcelles'].eachLayer(function(layer) {
+        layer._path.style.display = 'block';
+      })
+      return;
+    }
+
+    layers['Parcelles'].eachLayer(function(layer) {
+      layer._path.style.display = 'none';
     });
-    if(filters.value && Object.keys(myidus).length){
-        layerFilter(styleDelimitation(), Object.keys(myidus));
-        myidus=[];
-    }else{
-        layerFilter("default", myidus);
-    }
-}
 
-function checkAllwords(words, wordsfilter){
-    for(let i=0; i < wordsfilter.length; i++){
-
-        if(!words.includes(wordsfilter[i])){
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
-* hide layer(s) by changing color filling (function styleDelimitation)
-* show layer(s) by changing color filling with produit color (function style) 
-**/
-function layerFilter(styleCss, myidus){
-    if(map) {
-        closeDisplayer();
-        map.eachLayer(function(layer) {
-            if(layer.feature){
-                if(typeof(styleCss) == 'object' && !myidus.includes(layer.feature.id)){
-                   layer.setStyle(styleCss);                    
-                }else if(layer.feature.properties.hasOwnProperty('parcellaires')){
-                   layer.setStyle(style(layer.feature));
-                }
-            }
+    $(".hamzastyle-item").each(function(i, val){
+        let words = val.getAttribute("data-words");
+        terms.forEach(function(term) {
+          if(words.indexOf(term) > -1) {
+            getParcelleLayer(val.lastElementChild.firstElementChild.getAttribute("id"))._path.style.display = 'block';
+          }
         });
-    }
+    });
 }
 
 /**
 * Keep filter if the page reload
 **/
 $(window).on("load", function() {
-    filters = $("#hamzastyle")[0];
-    if(filters){
-        filterMapOn(filters);
+    if($("input#hamzastyle").val()){
+        filterMap();
     }
 });
 
@@ -318,11 +357,11 @@ $(document).ready(function(){
                     var p = document.createElement("p");
                     p.innerHTML = "non-trouvée";
                     parent.append(p);
-                    element.style.display = 'none'; 
-                }                
+                    element.style.display = 'none';
+                }
             });
         }
-    }    
+    }
    });
 })
 

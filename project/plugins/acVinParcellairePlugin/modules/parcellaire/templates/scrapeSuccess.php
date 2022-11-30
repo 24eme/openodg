@@ -13,6 +13,9 @@
     </span></p>
 </div>
 <form action="<?php echo url_for('parcellaire_import_csv', $etablissement); ?>" method="get" id="form">
+<?php if ($noscrape): ?>
+    <input type="hidden" name="noscrape" value="<?php echo $noscrape; ?>"/>
+<?php endif ?>
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
             <a href="<?php echo url_for('parcellaire_declarant', $etablissement) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>

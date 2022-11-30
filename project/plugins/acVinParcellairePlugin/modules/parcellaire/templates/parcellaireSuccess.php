@@ -9,11 +9,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
-    <ol class="breadcrumb">
-      <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-      <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $parcellaire->identifiant)); ?>"><?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>)</a></li>
-      <li class="active"><a href="">Parcellaire au <?php echo $parcellaire->getDateFr(); ?></a></li>
-    </ol>
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire</a></li>
+  <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
+</ol>
 <?php else: ?>
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
@@ -27,23 +26,14 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     <h2>Parcellaire</h2>
     <?php endif;?>
 </div>
-<?php if(!$sf_user->hasTeledeclaration()): ?>
+
 <div class="clearfix">
   <a href="<?= url_for('parcellaire_scrape_douane', $etablissement) ?>" class="btn btn-warning pull-right" style="margin-bottom: 10px;">
       <i class="glyphicon glyphicon-refresh"></i> Mettre à jour via Prodouane
   </a>
 </div>
-<?php endif;?>
 
 <?php include_partial('global/flash'); ?>
-
-<?php if(isset($form)): ?>
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'),  'noautofocus' => true)); ?>
-    </div>
-</div>
-<?php endif; ?>
 
 <div class="row">
     <div class="col-xs-12">
@@ -56,40 +46,56 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 </div>
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
-    $import = $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()); ?>
-    <?php if(!empty($import)): ?>
-     <div class="row" id="jump">
-            <div class="col-xs-12">
-                <a name="carte"></a><h3>Filtrer</h3>
-                <div class="form-group">
-                    <input id="hamzastyle" onchange="filterMapOn(this);" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" class="hamzastyle form-control" />
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-    <?php if($parcellaire && $parcellaire_client->getParcellaireGeoJson($parcellaire->getEtablissementObject()->getIdentifiant(), $parcellaire->getEtablissementObject()->getCvi()) != false): ?>
-        <div>
+    $import = $parcellaire->getGeoJson(); ?>
+
+    <?php if($parcellaire && $parcellaire->getGeoJson() != false): ?>
+        <div id="jump">
+            <a name="carte"></a>
             <?php include_partial('parcellaire/parcellaireMap', array('parcellaire' => $parcellaire)); ?>
         </div>
     <?php endif; ?>
 
+    <div class="row">
+      <div class="col-xs-5">
+          <h3>Accès rapide</h3>
+          <ul>
+            <?php foreach (array_keys($parcellesByCommune->getRawValue()) as $commune): ?>
+              <li style="list-style-type: disclosure-closed"><a href="#parcelles_<?php echo $commune ?>">Parcelles de <?php echo ucwords(strtolower($commune), "- \t\r\n\f\v") ?></a></li>
+            <?php endforeach ?>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_cepage">Synthèse par cépages</a></li>
+            <li style="list-style-type: disclosure-closed"><a href="#synthese_produit">Synthèse par produits</a></li>
+          </ul>
+      </div>
+    </div>
+
+    <?php if(!empty($import)): ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Filtrer</h3>
+            <div class="form-group">
+                <input id="hamzastyle" onchange="filterMap()" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <div class="row">
         <div class="col-xs-12">
             <?php foreach ($parcellesByCommune as $commune => $parcelles): ?>
-            	<h3><?php echo $commune ?></h3>
-
+                <h3 id="parcelles_<?php echo $commune ?>"><?php echo $commune ?></h3>
+            <?php
+                $superficie = 0;
+                $nb_parcelles = 0;
+                ?>
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
 		        	<tr>
-		                <th class="col-xs-2">Lieu-dit</th>
-                    <th class="col-xs-1" style="text-align: right;">Section</th>
-                    <th class="col-xs-1">N° parcelle</th>
-                    <th class="col-xs-3">Cépage</th>
+		                <th class="col-xs-1">Lieu-dit</th>
+                    <th class="col-xs-1">Section / N° parcelle</th>
+                    <th class="col-xs-4">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                     <th class="col-xs-1" style="text-align: right;">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
-                    <th class="col-xs-1">Écart Pieds</th>
-                    <th class="col-xs-1">Écart Rang</th>
+                    <th class="col-xs-1">Écart Pieds/Rang</th>
                     <?php if(!empty($import)): ?>
                     <th class="col-xs-1">Carte</th>
                     <?php endif; ?>
@@ -135,15 +141,15 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                             $classcepage = '';
                             if ($detail->hasProblemExpirationCepage()) {
                               $classline .=  ' warning';
-                              $classcepage .= ' text-warning strong';
+                              $classcepage .= ' text-warning strong hasProblemExpirationCepage';
                             }
                             if ($detail->hasProblemEcartPieds()) {
                               $classline .=  ' danger';
-                              $classecart .= ' text-danger strong';
+                              $classecart .= ' text-danger strong hasProblemEcartPieds';
                             }
                             if ($detail->hasProblemCepageAutorise()) {
                               $classline .= ' danger';
-                              $classcepage .= ' text-danger strong';
+                              $classcepage .= ' text-danger strong hasProblemCepageAutorise';
                             }
                             ?>
                             <?php
@@ -154,31 +160,49 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
+                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) {
+                                    $cepage .= ' - jeunes vignes';
+                                }
                             ?>
                             <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
-
+                            <?php $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"]; ?>
                                 <td style="<?php echo $styleproduit; ?>"><?php echo $lieu; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $section; $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"];?></td>
-                                <td class=""><?php echo $num_parcelle; ?></td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?></td>
+                                <td class="" style="text-align: center;">
+                                    <?php echo $section; ?> <?php echo $num_parcelle; ?></br>
+                                    <span class="text-muted"><?php echo $detail->idu; ?></span>
+                                </td>
+                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
+                                    <span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?><br/>
+                                    <?php $aires = $detail->isInAires(); if ($aires): ?>
+                                    <span class="text-muted">Aire(s):</span>
+                                    <?php foreach($aires as $nom => $a): ?>
+                                    <span class="<?php if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT): ?>text-danger<?php else: ?>text-muted<?php endif; ?>">
+                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire" : '' ; ?>
+                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement" : '' ; ?>
+                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur" : '' ; ?>
+                                    <?php echo $nom; ?>
+                                    </span>
+                                    <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
                                 <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie * $superficie_multiplicateur); ?>
                                 </td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_rang; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?> / <?php echo $ecart_rang; ?></td>
 
                                 <?php if(!empty($import)): ?>
-                                <td>
-                                    <div id="<?php echo $detail->idu; ?>" class="clearfix liencarto">
-                                        <a onclick="showParcelle('<?php echo $detail->idu; ?>')" class="pull-right">
-                                            <i class="glyphicon glyphicon-map-marker"></i> Voir la parcelle
-                                        </a>
+                                <td style="text-align: center;">
+                                    <div id="<?php echo $detail->idu; ?>">
+                                        <button class="btn btn-link" onclick="showParcelle('<?php echo $detail->idu; ?>')"><i class="glyphicon glyphicon-map-marker"></i></button>
                                     </div>
                                 </td>
                                 <?php endif; ?>
                             </tr>
+                            <?php $superficie = $superficie + $detail->superficie * $superficie_multiplicateur; ?>
+                            <?php $nb_parcelles++; ?>
                             <?php endforeach; ?>
                     </tbody>
+                    <tr><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoLongFloat($superficie); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
                 </table>
     <?php endforeach; ?>
         </div>
@@ -192,7 +216,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 
     if (count($synthese)):
 ?>
-<h3>Synthèse par cépages</h3>
+<h3 id="synthese_cepage">Synthèse par cépages</h3>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
@@ -211,6 +235,10 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 <?php
     endforeach;
 ?>
+    <tr>
+        <td><strong>Total</strong></td>
+        <td class="text-right"><strong><?php echo array_sum(array_column($synthese->getRawValue(), 'superficie')) ?></strong></td>
+    </tr>
   </tbody>
 </table>
 <?php endif; ?>
@@ -223,7 +251,13 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     }
     if (count($synthese)):
 ?>
-<h3>Synthèse par produits habilités</h3>
+<h3 id="synthese_produit">Synthèse par produits habilités</h3>
+
+<?php if (! HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant)): ?>
+    <div class="alert alert-warning" role="alert">
+    L'opérateur n'a pas d'<a href="<?php echo url_for('habilitation_declarant', ['identifiant' => $etablissement->identifiant]) ?>">habilitation</a>
+    </div>
+<?php endif ?>
 
 <table class="table table-bordered table-condensed table-striped tableParcellaire">
   <thead>
