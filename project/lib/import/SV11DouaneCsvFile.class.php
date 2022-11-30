@@ -99,6 +99,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
+                $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[2]));
                 $produits[] = $produit;
             }
             $cpt++;
