@@ -2552,6 +2552,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!isset($this->document->declaration[$hash])){
             return null;
         }
+
+        if (! $this->document->declaration->get($hash)->exist('DEFAUT')) {
+            return null;
+        }
+
         $produit = $this->document->declaration->get($hash)->DEFAUT;
 
         if(! $produit->exist('volume_revendique_seuil')){
