@@ -92,3 +92,7 @@ Version: 1.0
     border-radius: 5px;
     width: 300px;
 }
+
+#btn-close-info {
+    z-index: 100;
+}
