@@ -56,6 +56,10 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->noscrape = $request->getParameter('noscrape', false);
+
+        if($request->getParameter('url')) {
+            $this->url = $request->getParameter('url');
+        }
     }
 
     public function executeImport(sfWebRequest $request)
@@ -83,6 +87,11 @@ class parcellaireActions extends sfActions {
             $this->getUser()->setFlash('erreur_import', $msg);
         }else{
             $this->getUser()->setFlash('success_import', "La mise à jour a été un succès.");
+        }
+
+        if($request->getParameter('url')) {
+
+            return $this->redirect($request->getParameter('url'));
         }
 
         $this->redirect('parcellaire_declarant', $this->etablissement);
