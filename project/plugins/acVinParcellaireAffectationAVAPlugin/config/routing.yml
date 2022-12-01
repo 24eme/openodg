@@ -119,6 +119,16 @@ parcellaire_parcelles:
   requirements:
     sf_method: [get,post]
 
+parcellaire_parcelles_update_cvi:
+  url: /parcellaire-affectation/update-cvi-parcelles/:id/:appellation
+  param: { module: parcellaireAffectation, action: updateCVIParcelles }
+  class: ParcellaireAffectationRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaire_parcelle_ajout:
   url: /parcellaire-affectation/ajout-parcelle/:id/:appellation
   param: { module: parcellaireAffectation, action: ajoutParcelle }

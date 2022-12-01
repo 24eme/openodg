@@ -210,6 +210,17 @@ class parcellaireAffectationActions extends sfActions {
         }
     }
 
+    public function executeUpdateCVIParcelles(sfWebRequest $request) {
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireAffectationSecurity::EDITION, $this->parcellaire);
+        $this->appellation = $request->getParameter('appellation');
+
+        $this->parcellaire->initOrUpdateProduitsFromCVI();
+        $this->parcellaire->save();
+
+        return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
+    }
+
     public function executeAjoutParcelle(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->secure(ParcellaireAffectationSecurity::EDITION, $this->parcellaire);
