@@ -215,7 +215,15 @@ class parcellaireAffectationActions extends sfActions {
         $this->secure(ParcellaireAffectationSecurity::EDITION, $this->parcellaire);
         $this->appellation = $request->getParameter('appellation');
 
+        if(strpos($this->parcellaire->_id, 'PARCELLAIREAFFECTATIONCREMANT') === false) {
+            throw new Exception('Pas encore implementé');
+        }
+
+        $nbParcelles = count($this->parcellaire->declaration->getProduitsCepageDetails());
         $this->parcellaire->initOrUpdateProduitsFromCVI();
+        if(!$nbParcelles) {
+            $this->parcellaire->updateAffectationCremantFromLastAffectation();
+        }
         $this->parcellaire->save();
 
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
