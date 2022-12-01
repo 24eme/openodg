@@ -13,6 +13,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
     <h2>Saisie des <?php if ($parcellaire->isIntentionCremant()): ?>intentions de production<?php else: ?>parcelles<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
 </div>
 
+<?php if(strpos($parcellaire->_id, 'CREMANT') !== false): ?>
+<a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>" class="btn btn-sm btn-warning pull-right" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les parcelles via Prodouane</a>
+<?php endif; ?>
+
 <ul class="nav nav-tabs">
     <?php
     $selectedAppellationName = "";
@@ -121,8 +125,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                         </tbody>
                     </table>
                 </div>
-            <?php else : ?>
-                <p class="text-muted">Vous n'avez affecté aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> pour cette appellation.</p><br/>
+            <?php elseif(strpos($parcellaire->_id, 'CREMANT') !== false && !count($parcellaire->declaration->getProduitsCepageDetails())): ?>
+				<p class="text-muted">Nous n'avons trouvé aucune parcelle, vous pouvez <a class="btn btn-sm btn-default" href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>"><i class="glyphicon glyphicon-refresh"></i> Récupérer vos parcelles depuis Prodouane</a></p>
+			<?php else: ?>
+                <p class="text-muted">Vous n'avez aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> à affecter dans cette appellation.</p><br/>
             <?php endif; ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
