@@ -176,40 +176,65 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
-        if($this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
+        if(!$this->getCepage()->hasProduitsSansDonneesRecolte()) {
+            if(!$this->superficie_revendique || $this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
 
-			return false;
-		}
+    			return false;
+    		}
 
+            if($this->getSommeProduitsCepage('recolte/volume_total') == $this->getSommeProduitsCepage('recolte/volume_sur_place')) {
 
-		if($this->getSommeProduitsCepage('recolte/volume_total') == $this->getSommeProduitsCepage('recolte/volume_sur_place')) {
+                return true;
+            }
 
-			return true;
-		}
+            if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_total'), 2)) {
 
-		if($this->getSommeProduitsCepage('recolte/volume_sur_place') == ($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_total'))) {
+                return true;
+            }
 
-			return true;
-		}
+            if(round($this->getSommeProduitsCepage('recolte/volume_sur_place'), 2) == round($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_sur_place'), 2)) {
 
-        if($this->getSommeProduitsCepage('recolte/volume_sur_place') == ($this->getSommeProduitsCepage('recolte/recolte_nette') + $this->getSommeProduitsCepage('recolte/usages_industriels_sur_place'))) {
+                return true;
+            }
 
-			return true;
-		}
-
-        if ($this->getSommeProduitsCepage('recolte/volume_sur_place_revendique') == $this->getSommeProduitsCepage('recolte/volume_sur_place_revendique')) {
-
-            return true;
+            return false;
         }
+
+        if(!$this->hasDonneesRecolte()) {
+
+            return false;
+        }
+
+        if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
+
+			return true;
+		}
+
+		if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_total)) {
+
+			return true;
+		}
+
+        if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_sur_place)) {
+
+			return true;
+		}
 
 		return false;
 	}
 
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
-		if($this->getSommeProduitsCepage('vci/rafraichi') + $this->getSommeProduitsCepage('vci/substitution'))
-			return $this->getSommeProduitsCepage('recolte/recolte_nette') - $this->getSommeProduitsCepage('vci/rafraichi') - $this->getSommeProduitsCepage('vci/substitution');
+        if(!$this->getCepage()->hasProduitsSansDonneesRecolte()) {
+    		if($this->getSommeProduitsCepage('vci/rafraichi') + $this->getSommeProduitsCepage('vci/substitution'))
+    			return $this->getSommeProduitsCepage('recolte/recolte_nette') - $this->getSommeProduitsCepage('vci/rafraichi') - $this->getSommeProduitsCepage('vci/substitution');
+    		else
+    			return $this->getSommeProduitsCepage('recolte/recolte_nette');
+        }
+
+        if($this->vci->rafraichi + $this->vci->substitution)
+			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
 		else
-			return $this->getSommeProduitsCepage('recolte/recolte_nette');
+			return $this->recolte->recolte_nette;
 	}
 
 	public function getRendementVci(){
@@ -295,15 +320,14 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function hasDonneesRecolte() {
-        foreach($this->getCepage()->getProduits() as $p) {
-	       if ($p->exist('recolte')) {
-	           foreach ($p->recolte as $k => $v) {
-	               if ($v && $v > 0) {
-	                   return true;
-	               }
-	           }
-            }
-	    }
+       if ($this->exist('recolte')) {
+           foreach ($this->recolte as $k => $v) {
+               if ($v && $v > 0) {
+                   return true;
+               }
+           }
+        }
+
 	    return false;
 	}
 

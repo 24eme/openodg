@@ -29,8 +29,10 @@
               </div>
               <div class="col-md-3"><?php echo $lot->millesime; ?></div>
               <div class="col-md-1 text-right">
-                <?php if($isAdmin): ?>
-                  <a href="<?php echo url_for("drev_lots_delete", array('id' => $drev->_id, 'numArchive' => $lot->numero_archive)) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
+                <?php if($isAdmin && !$lot->id_document_affectation): ?>
+                    <a href="<?php echo url_for("drev_lots_delete", array('id' => $drev->_id, 'numArchive' => $lot->numero_archive)) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
+                <?php elseif($isAdmin): ?>
+                    <button type="button" style="opacity: 0.1; cursor: not-allowed;" onclick='return alert("Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé.");' class="close" title="Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé." aria-hidden="true">×</button>
                 <?php endif; ?>
               </div>
             </div>
@@ -61,8 +63,8 @@
             <a tabindex="-1" href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>?prec=1" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-            <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
-              <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default pull-left <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
+            <?php if ($sf_user->hasDrevAdmin() && $drev->getDocumentDouanier()): ?>
+              <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default pull-left" >
                   <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
               </a>
             <?php endif; ?>

@@ -52,6 +52,9 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
             13 => "19",
         );
 
+        $drev_filter = $this->getRelatedDrev();
+        $drev = $this->getRelatedDrev(false);
+
         $known_produit = array();
         $drev_filter = $this->getRelatedDrev();
         $drev = $this->getRelatedDrev(false);
@@ -61,7 +64,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 continue;
             }
             foreach (array_keys($index2L) as $v) {
-                if (!isset($values[$v])||!($values[$v]*1)) {
+                if (!isset($values[$v])||!VarManipulator::floatize($values[$v])) {
                     continue;
                 }
                 if (!isset($known_produit[$values[0]])) {
@@ -98,6 +101,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
+                $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[2]));
                 $produits[] = $produit;
             }
             $cpt++;

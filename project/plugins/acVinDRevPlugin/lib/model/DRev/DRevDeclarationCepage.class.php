@@ -23,6 +23,26 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
 		return $produits;
 	}
 
+    public function hasDonneesRecolte() {
+        foreach($this as $p) {
+           if($p->hasDonneesRecolte()) {
+
+               return true;
+           }
+        }
+        return false;
+    }
+
+    public function hasProduitsSansDonneesRecolte() {
+        foreach($this as $p) {
+            if(!$p->hasDonneesRecolte()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 	public function getProduits($region = null)
     {
 		if($region) {
@@ -38,9 +58,12 @@ class DRevDeclarationCepage extends BaseDRevDeclarationCepage
     }
 
     public function getSommeProduits($subhash) {
-        $somme = 0;
+        $somme = null;
         foreach($this->getProduits() as $p) {
             if(!$p->exist($subhash)) {
+                continue;
+            }
+            if(is_null($p->get($subhash))) {
                 continue;
             }
             $somme += $p->get($subhash);

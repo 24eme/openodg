@@ -21,7 +21,7 @@
 	<?php if ($codeProduit = $produit->getConfig()->getCodeProduit() && ($produit->hasVci() || $produit->superficie_revendique || $produit->volume_revendique_total)): ?>
 					<ligne>
 						<code_cvi_vin value="<?php echo $produit->getConfig()->getCodeDouane(); ?>" />
-                        <libelle_produit value="<?php echo $produit->getLibelleComplet(); ?>" />
+                        <libelle_produit value="<?php echo $produit->getConfig()->getLibelleComplet(); ?>" />
 <?php if ($produit->denomination_complementaire): ?>
                         <mention_valorisante value="<?php echo $produit->denomination_complementaire; ?>" />
 <?php endif; ?>

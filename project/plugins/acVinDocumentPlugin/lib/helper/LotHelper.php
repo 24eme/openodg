@@ -46,7 +46,7 @@ function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
     return " <".$tag.">&nbsp;</".$tag.">";
   }
   if ($maxcars) {
-      $text = substr($text, 0, $maxcars);
+      $text = substrUtf8($text, 0, $maxcars);
   }
   $html .= $text;
   $html .= "</".$tag.">";
