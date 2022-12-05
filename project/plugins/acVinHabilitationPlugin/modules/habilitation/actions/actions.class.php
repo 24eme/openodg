@@ -729,9 +729,15 @@ class habilitationActions extends sfActions {
                 $this->res = array($e->getMessage());
             }
         }
-        $this->param = CertipaqDI::getInstance()->getCertipaqParam($type, $this->demande, $confirm);
-        $this->param_printable = array();
-        $this->params2printable($this->param);
+        try {
+            $this->param = CertipaqDI::getInstance()->getCertipaqParam($type, $this->demande, $confirm);
+            $this->param_printable = array();
+            $this->params2printable($this->param);
+        } catch(sfException $e) {
+            $this->param['Erreur'] = $e->getMessage();
+            $this->param_printable = array();
+            $this->param_printable['Erreur'] = $e->getMessage();
+        }
     }
 
     private function params2printable($param, $param_plus = null, $extra_k_printable = null) {
