@@ -1012,9 +1012,13 @@ class drevActions extends sfActions {
 
     	$drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::VISUALISATION, $drev);
-      $drevOi = new DRevOI($drev, null);
-      $drevOi->send();
-
+        $drevOi = new DRevOI($drev, null);
+        if ($request->getParameter('debug')) {
+            header("Content-type: text/xml\n");
+            echo $drevOi->getXml();
+            exit;
+        }
+        $drevOi->send();
     	return $this->redirect('drev_visualisation', $drev);
     }
 
