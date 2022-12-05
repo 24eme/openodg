@@ -57,7 +57,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
             $code_postal = null;
             $commune = null;
             $adresseTab = explode(' — ', $lot->adresse_logement);
-            if (preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
+            if (isset($adresseTab[2]) && preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
                 $adresse = $adresseTab[1];
                 $code_postal = $adresseTab[2];
                 $commune = $adresseTab[3];

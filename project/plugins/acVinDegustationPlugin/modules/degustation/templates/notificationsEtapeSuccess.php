@@ -8,6 +8,7 @@
 
 <div class="page-header no-border">
   <h2>Notifications pour les opérateurs</h2>
+  <a class="pull-right btn btn-link btn-default" href="<?= url_for('degustation_export_csv', ['id' => $degustation->_id]) ?>"><i class="glyphicon glyphicon-export"></i> Export CSV</a>
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
 <div class="row row-condensed">
