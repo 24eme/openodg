@@ -109,6 +109,9 @@ class CertipaqDI extends CertipaqDeroulant
         $habilitations = array();
         $certipaq_produit = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($demande->getConfig());
         foreach($demande->getActivitesLibelle() as $activite) {
+            if (!$certipaq_produit->dr_cdc_famille_id || !$certipaq_produit->dr_cdc_id) {
+                throw new sfException("Information liée au cahier des charges ".$demande->getConfig()->libelle." non disponible depuis l'API");
+            }
             $habilitation = array();
             $habilitation['dr_cdc_famille_id'] = $certipaq_produit->dr_cdc_famille_id;
             $habilitation['dr_activites_operateurs'] = array();
