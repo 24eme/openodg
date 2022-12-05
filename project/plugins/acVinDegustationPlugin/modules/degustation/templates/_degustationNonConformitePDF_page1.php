@@ -46,7 +46,7 @@
       <li>
 <?php $url = 'https://'.$_SERVER['HTTP_HOST'].url_for('chgtdenom_create', array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne)); ?>
             <strong>Soit d’abandonner volontairement la dénomination correspondante</strong>.
-            Pour se faire, vous pouvez nous communiquer par mail ou courrier une déclaration de déclassement au moyen de la fiche jointe,
+            Pour ce faire, vous pouvez nous communiquer par mail ou courrier une déclaration de déclassement au moyen de la fiche jointe,
             ou de le faire en ligne depuis l'adresse : <a href="<?php echo $url ; ?>"><?php echo $url; ?></a>.
       </li>
       <?php if ($lot->isSecondPassage() || $lot->conformite != Lot::CONFORMITE_NONCONFORME_MINEUR): ?>
