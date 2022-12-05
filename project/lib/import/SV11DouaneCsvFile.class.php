@@ -139,7 +139,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
             12 => "18",
             13 => "19",
         );
-        $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+        $this->identifiant = (isset($this->etablissement) && $this->etablissement)? $this->etablissement->identifiant : null;
         $drev_filter = null;
         $drev = null;
 
