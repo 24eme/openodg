@@ -321,6 +321,17 @@ class degustationActions extends sfActions {
         }
     }
 
+    public function executeExportCsv(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+
+        $export = new ExportDegustationCSV($this->degustation);
+
+        $attachement = "attachment; filename=".$export->getFileName();
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement);
+
+        return $this->renderText($export->export());
+    }
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();

@@ -293,6 +293,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 	}
 
     public function isHabiliteFor($hash_produit, $activite) {
+        if(strpos($hash_produit, '/EFF/') !== false && $this->isHabiliteFor(str_replace('/EFF/', '/TRANQ/', $hash_produit), $activite))  {
+            return true;
+        }
+
         if (!$this->addProduit($hash_produit)) {
             return false;
         }
