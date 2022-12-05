@@ -69,7 +69,7 @@ class DRevOI
 		curl_close($ch);
 	}
 
-	protected function getXml($region = null) {
+	public function getXml($region = null) {
 		return $this->context->getController()->getAction('drev', 'main')->getPartial('drev/xml', array('drev' => $this->drev, 'region' => $region));
 	}
 }
