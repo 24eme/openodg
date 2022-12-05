@@ -326,6 +326,12 @@ class degustationActions extends sfActions {
 
         $export = new ExportDegustationCSV($this->degustation);
 
+        $this->response->setContent(utf8_decode($export->export()));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition', "attachment; filename=".$export->getFileName());
+
+        return sfView::NONE;
+
         $attachement = "attachment; filename=".$export->getFileName();
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement);
