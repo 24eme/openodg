@@ -33,8 +33,10 @@ class DRevLot extends BaseDRevLot
             return $this->getDocument()->addProduit($this->getConfigProduit()->getParent()->get('DEFAUT')->getHash());
         }
         //Cas de hash pas dans le catalogue produit :(
-        return $this->getDocument()->addProduit($this->produit_hash);
-
+        if ($this->produit_hash) {
+            return $this->getDocument()->addProduit($this->produit_hash);
+        }
+        throw new sfException("Cas d'un produit vide... : ".$this->unique_id);
         return null;
     }
 
