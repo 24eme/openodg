@@ -994,17 +994,10 @@ class drevActions extends sfActions {
             $drev->cleanDoc();
         }
 		$xml = $this->getPartial('drev/xml', array('drev' => $drev, 'region' => $region));
-        $this->getResponse()->setHttpHeader('md5', md5($xml));
-        $this->getResponse()->setHttpHeader('LastDocDate', date('r'));
-        $this->getResponse()->setHttpHeader('Last-Modified', date('r'));
-        $this->getResponse()->setHttpHeader('Pragma', '');
-        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
-        $this->getResponse()->setHttpHeader('Expires', '0');
         $this->getResponse()->setContentType('text/xml');
         if (!$region) {
             $region = 'TOUT';
         }
-        $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev."-".$region.".xml");
         return $this->renderText($xml);
     }
 
