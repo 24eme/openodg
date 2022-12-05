@@ -113,7 +113,7 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_inao.csv.pa
 rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_inao.csv.part
 
 echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; do
-    eval 'SUBDIR=$EXPORT_SUB_HABILITATION_DIR_PREFIX"/'$subhab'"'
+    eval 'SUBDIR=$EXPORT_SUB_HABILITATION_'$subhab'_DIR'
     eval 'SUBFILTRE=$EXPORT_SUB_HABILITATION_'$subhab'_FILTRE'
     mkdir -p $SUBDIR
     head -n 1 $EXPORTDIR/habilitation.csv > $SUBDIR/habilitation.csv
@@ -208,6 +208,10 @@ rm $EXPORTDIR/lots-historique.csv.sorted.join
 rm $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
 rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted $EXPORTDIR/lots_cleancepages.csv.part
+
+php symfony lots:export-suivi-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots_suivi.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots_suivi.csv.part > $EXPORTDIR/lots_suivi.csv
+rm $EXPORTDIR/lots_suivi.csv.part
 
 bash bin/export_docs.sh Degustation $EXPORTSLEEP $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv

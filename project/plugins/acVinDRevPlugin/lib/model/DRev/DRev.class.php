@@ -319,6 +319,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getLots(){
+        if(!$this->exist('lots') && !ConfigurationClient::getCurrent()->declaration->isRevendicationParLots()) {
+
+            return array();
+        }
+
         if(!$this->exist('lots')) {
             $this->add('lots');
         }
@@ -515,16 +520,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return $this->document_douanier_type;
         }
 
-        if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
+        $famille = $this->declarant->famille;
+
+        if($famille == 'PRODUCTEUR') {
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+        }
+
+        if($famille == EtablissementFamilles::FAMILLE_PRODUCTEUR || $famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
 
             return DRCsvFile::CSV_TYPE_DR;
         }
 
-        if($this->declarant->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+        if($famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
 
             return SV11CsvFile::CSV_TYPE_SV11;
         }
-        if(preg_match('/^'.EtablissementFamilles::FAMILLE_NEGOCIANT.'/', $this->declarant->famille)) {
+        if(preg_match('/^'.EtablissementFamilles::FAMILLE_NEGOCIANT.'/', $famille)) {
 
             return SV12CsvFile::CSV_TYPE_SV12;
         }
@@ -2344,8 +2355,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $document->constructId();
         $document->clearMouvementsLots();
         $document->clearMouvementsFactures();
-        $document->remove('date_depot');
         $document->devalidate();
+        $document->remove('date_depot');
         foreach ($document->getProduitsLots() as $produit) {
           if($produit->exist("validation_odg") && $produit->validation_odg){
             $produit->validation_odg = null;
@@ -2512,8 +2523,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return false;
         }
 
-        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
+        if(!$this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->exist('DEFAUT')) {
+            return false;
+        }
 
+        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
 
         if(!$produit->exist('volume_revendique_seuil') && !($this->getVolumeSeuilFromCSV($this->declarant->cvi))){
             return false;
@@ -2538,6 +2552,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!isset($this->document->declaration[$hash])){
             return null;
         }
+
+        if (! $this->document->declaration->get($hash)->exist('DEFAUT')) {
+            return null;
+        }
+
         $produit = $this->document->declaration->get($hash)->DEFAUT;
 
         if(! $produit->exist('volume_revendique_seuil')){

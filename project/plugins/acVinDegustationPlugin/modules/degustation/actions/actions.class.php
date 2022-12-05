@@ -321,6 +321,17 @@ class degustationActions extends sfActions {
         }
     }
 
+    public function executeExportCsv(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+
+        $export = new ExportDegustationCSV($this->degustation);
+
+        $attachement = "attachment; filename=".$export->getFileName();
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement);
+
+        return $this->renderText($export->export());
+    }
 
     public function executeDegustateursConfirmation(sfWebRequest $request) {
       $this->degustation = $this->getRoute()->getDegustation();
@@ -1161,10 +1172,23 @@ class degustationActions extends sfActions {
         }
         $degustateur = $degustateurs->get($this->college)->get($this->identifiant);
 
+        $previousPresence = null;
+        if($degustateurs->get($this->college)->get($this->identifiant)->exist('confirmation')) {
+            $previousPresence = $degustateurs->get($this->college)->get($this->identifiant)->get('confirmation');
+        }
+
         $degustateurs->get($this->college)->get($this->identifiant)->add('confirmation', boolval($this->presence));
+
         $this->degustation->save(false);
 
+        $this->emailSended = false;
+        if($previousPresence === $degustateurs->get($this->college)->get($this->identifiant)->get('confirmation')) {
+
+            return sfView::SUCCESS;
+        }
+
         Email::getInstance()->sendActionDegustateurAuthMail($this->degustation, $degustateur, boolval($this->presence));
+        $this->emailSended = true;
     }
 
     public function executeRetirerLot(sfWebRequest $request) {

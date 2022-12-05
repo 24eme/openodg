@@ -12,7 +12,10 @@
     <?php endif; ?>
     </span></p>
 </div>
-<form action="<?php echo url_for('parcellaire_import_csv', $etablissement); ?>" method="get" id="form">
+<form action="<?php echo url_for('parcellaire_import_csv', array('sf_subject' => $etablissement)); ?>" method="get" id="form">
+    <?php if(isset($url)): ?>
+        <input type="hidden" name="url" value="<?php echo $url; ?>"/>
+    <?php endif; ?>
 <?php if ($noscrape): ?>
     <input type="hidden" name="noscrape" value="<?php echo $noscrape; ?>"/>
 <?php endif ?>

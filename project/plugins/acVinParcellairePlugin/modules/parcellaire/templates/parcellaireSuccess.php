@@ -299,18 +299,18 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
 </table>
 <?php endif; ?>
 
-<?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
-<div class="text-center">
-<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
-</div>
-<?php endif; ?>
-
 <?php else: ?>
     <div class="row">
         <div class="col-xs-12">
             <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
         </div>
     </div>
+<?php endif; ?>
+
+<?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
+<div class="text-center">
+<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
+</div>
 <?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>

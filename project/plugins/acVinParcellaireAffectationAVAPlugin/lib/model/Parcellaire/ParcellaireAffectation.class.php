@@ -135,7 +135,18 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function initProduitsFromCVI() {
+    public function initOrUpdateProduitsFromCVI() {
+        $parcellesActives = array();
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if(!$parcelle->active) {
+                continue;
+            }
+            $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
+        }
+
+        $this->remove('declaration');
+        $this->add('declaration');
+
         $cepages_autorises = [
             'cepage_PB' => 'PINOT BLANC',
             'cepage_CD' => 'CHARDONNAY',
@@ -166,6 +177,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
                 }
             }
+        }
+
+        foreach($parcellesActives as $parcelleHash) {
+            if(!$this->exist($parcelleHash)) {
+                continue;
+            }
+
+            $this->get($parcelleHash)->active = 1;
         }
     }
 

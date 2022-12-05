@@ -145,64 +145,73 @@ if os.path.exists(sys.argv[2]+"/lots.csv") and os.path.getsize(sys.argv[2]+"/lot
     sys.stderr.write(sys.argv[2]+"/lots.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
     #CVI Opérateur
-    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Millésime
-    csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x))
+    csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/lots-historique.csv") and os.path.getsize(sys.argv[2]+"/lots-historique.csv"):
     sys.stderr.write(sys.argv[2]+"/lots-historique.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/lots-historique.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Lot Num dossier': 'str'})
     #Lot Code postal Opérateur
-    csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x))
+    csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Lot Millésime
-    csv[csv.columns[39]] = csv[csv.columns[39]].apply(lambda x: str(x))
+    csv[csv.columns[39]] = csv[csv.columns[39]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('lots-historique', con=engine, if_exists='replace')
+
+if os.path.exists(sys.argv[2]+"/lots_suivi.csv") and os.path.getsize(sys.argv[2]+"/lots_suivi.csv"):
+    sys.stderr.write(sys.argv[2]+"/lots_suivi.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/lots_suivi.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    #CVI Opérateur
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    #Millésime
+    csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    csv.to_sql('lots_suivi', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/drev_lots.csv") and os.path.getsize(sys.argv[2]+"/drev_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/drev_lots.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/drev_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
     #CVI Opérateur
-    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #SIRET Opérateur
-    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x))
+    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Millésime
-    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x))
+    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('drev_lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/conditionnement_lots.csv") and os.path.getsize(sys.argv[2]+"/conditionnement_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/conditionnement_lots.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/conditionnement_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
     #CVI Opérateur
-    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #SIRET Opérateur
-    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x))
+    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Millésime
-    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x))
+    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('conditionnement_lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/transaction_lots.csv") and os.path.getsize(sys.argv[2]+"/transaction_lots.csv"):
     sys.stderr.write(sys.argv[2]+"/transaction_lots.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/transaction_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
     #CVI Opérateur
-    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #SIRET Opérateur
-    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x))
+    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Millésime
-    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x))
+    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('transaction_lots', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/changement_denomination.csv") and os.path.getsize(sys.argv[2]+"/changement_denomination.csv"):
     sys.stderr.write(sys.argv[2]+"/changement_denomination.csv\n")
     csv = pd.read_csv(sys.argv[2]+"/changement_denomination.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
     #CVI Opérateur
-    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x))
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #SIRET Opérateur
-    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x))
+    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Origine Millésime
-    csv[csv.columns[26]] = csv[csv.columns[26]].apply(lambda x: str(x))
+    csv[csv.columns[26]] = csv[csv.columns[26]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Millésime
-    csv[csv.columns[45]] = csv[csv.columns[45]].apply(lambda x: str(x))
+    csv[csv.columns[45]] = csv[csv.columns[45]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('changement_denomination', con=engine, if_exists='replace')
 
 if os.path.exists(sys.argv[2]+"/factures.csv") and os.path.getsize(sys.argv[2]+"/factures.csv"):

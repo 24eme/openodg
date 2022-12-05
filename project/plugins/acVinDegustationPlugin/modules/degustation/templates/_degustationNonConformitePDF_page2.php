@@ -65,7 +65,7 @@
     <td>
       <strong>Action corrective proposée</strong>
       <ul>
-        <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
+        <?php if ($lot->isSecondPassage() || $lot->conformite != Lot::CONFORMITE_NONCONFORME_MINEUR): ?>
         <li>Recours OC/OI</li>
         <?php else: ?>
         <li>Mise en place d'une pratique oenologique permettant la disparition du défaut constaté</li>
@@ -83,7 +83,7 @@
   <td style="width: 36%"><strong>Signature&nbsp;du&nbsp;responsable&nbsp;de&nbsp;l'ODG&nbsp;:</strong><br/><?php echo Organisme::getInstance(null, 'degustation')->getResponsable() ?></td>
 </tr>
 </table>
-<?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
+<?php if ($lot->isSecondPassage() || $lot->conformite != Lot::CONFORMITE_NONCONFORME_MINEUR): ?>
 <p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner OBLIGATOIREMENT à l'ODG et à l'OI.</strong></p>
 <?php else: ?>
 <p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner à l'ODG.</strong></p>
@@ -96,7 +96,7 @@
       <br/><?php echo tdStart() ?> <?php echo echoCheck('Déclassement', false) ?><br/>
     </td>
     <td>
-      <?php if ($lot->isSecondPassage() || $lot->conformite == Lot::CONFORMITE_NONCONFORME_MAJEUR): ?>
+      <?php if ($lot->isSecondPassage() || $lot->conformite != Lot::CONFORMITE_NONCONFORME_MINEUR): ?>
         <br/><?php echo tdStart() ?> <?php echo echoCheck('Recours OC/OI (Frais à ma charge)', false) ?><br/>
       <?php else: ?>
         <br/><?php echo tdStart() ?> <?php echo echoCheck('Nouvelle dégustation', false) ?><br/>

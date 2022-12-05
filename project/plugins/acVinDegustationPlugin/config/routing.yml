@@ -114,6 +114,16 @@ degustation_notifications_etape:
   requirements:
     sf_method: [get]
 
+degustation_export_csv:
+  url: /degustation/:id/export_csv
+  param: { module: degustation, action: exportCsv }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_selection_lots:
   url: /degustation/:id/selection-lots
   param: { module: degustation, action: selectionLots }
