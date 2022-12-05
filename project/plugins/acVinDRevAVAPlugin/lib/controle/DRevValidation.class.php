@@ -350,7 +350,7 @@ class DRevValidation extends DocumentValidation {
                 $produit->volume_revendique !== null &&
                 $produit->detail->volume_sur_place !== null &&
                 $produit->detail->usages_industriels_total !== null &&
-                round($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total - $produit->detail->vci_total, 2) > $produit->volume_revendique
+                round($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total - $produit->detail->vci_total, 2) > round($produit->volume_revendique, 2)
         ) {
 	    $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
