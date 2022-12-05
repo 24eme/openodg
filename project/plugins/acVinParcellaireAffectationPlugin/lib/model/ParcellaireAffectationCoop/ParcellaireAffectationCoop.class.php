@@ -61,6 +61,9 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function buildApporteurs($sv11){
         $apporteurs = $this->apporteurs;
+        if (!$sv11) {
+            throw new sfException("SV11 absente");
+        }
         $sv11Apporteurs = $sv11->getApporteurs();
         $apporteursArray = array();
 
