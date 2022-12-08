@@ -326,6 +326,12 @@ class degustationActions extends sfActions {
 
         $export = new ExportDegustationCSV($this->degustation);
 
+        $this->response->setContent(utf8_decode($export->export()));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition', "attachment; filename=".$export->getFileName());
+
+        return sfView::NONE;
+
         $attachement = "attachment; filename=".$export->getFileName();
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement);
@@ -1198,10 +1204,6 @@ class degustationActions extends sfActions {
 
         $degustation = DegustationClient::getInstance()->find($degustation_id);
         $this->forward404Unless($degustation);
-
-        if ($degustation->isAnonymized()) {
-            throw new sfException('La dégustation est déjà anonimisée : impossible de retirer le lot '.$degustation_id.':'.$unique_id);
-        }
 
         $lot = $degustation->getLot($unique_id);
         $this->forward404Unless($lot);

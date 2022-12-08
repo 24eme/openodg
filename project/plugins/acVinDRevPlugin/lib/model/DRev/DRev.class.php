@@ -129,7 +129,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $couleurs[$couleur]['volume_total'] += $p->recolte->volume_total;
             if(isset($couleurs[$couleur]['volume_sur_place']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
                 $couleurs[$couleur]['volume_sur_place'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
-            } else {
+            } elseif($p->hasDonneesRecolte()) {
                 unset($couleurs[$couleur]['volume_sur_place']);
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
@@ -1141,7 +1141,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $lot->specificite = null;
             }
             if(!$lot->date) {
-            $lot->date = $date;
+                $lot->date = $date;
+            }
+            if (!$lot->produit_hash) {
+                throw new sfExcpetion("le lot ".$lot->unique_id." n'a pas de hash produit");
             }
         }
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);

@@ -176,7 +176,7 @@ class DRevProduit extends BaseDRevProduit
     }
 
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
-        if(!$this->getCepage()->hasProduitsSansDonneesRecolte()) {
+        if(!DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && !$this->getCepage()->hasProduitsSansDonneesRecolte()) {
             if(!$this->superficie_revendique || $this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
 
     			return false;
@@ -224,7 +224,7 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
-        if(!$this->getCepage()->hasProduitsSansDonneesRecolte()) {
+        if(!DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && !$this->getCepage()->hasProduitsSansDonneesRecolte()) {
     		if($this->getSommeProduitsCepage('vci/rafraichi') + $this->getSommeProduitsCepage('vci/substitution'))
     			return $this->getSommeProduitsCepage('recolte/recolte_nette') - $this->getSommeProduitsCepage('vci/rafraichi') - $this->getSommeProduitsCepage('vci/substitution');
     		else
