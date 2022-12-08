@@ -293,6 +293,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 	}
 
     public function isHabiliteFor($hash_produit, $activite) {
+        if(strpos($hash_produit, '/EFF/') !== false && $this->isHabiliteFor(str_replace('/EFF/', '/TRANQ/', $hash_produit), $activite))  {
+            return true;
+        }
+
         if (!$this->addProduit($hash_produit)) {
             return false;
         }
@@ -360,6 +364,35 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
             $precedente->add('lecture_seule', true);
             $precedente->save();
         }
+    }
+
+    public function getChaisSansHabilitation() {
+        return $this->getChaisDependingHabilitation(false);
+    }
+
+    public function getChaisHabilite() {
+        return $this->getChaisDependingHabilitation(true);
+    }
+
+    public function getChaisDependingHabilitation($has_hab) {
+        $chais = array();
+        if (!$this->getEtablissementObject()->exist('chais')) {
+            return array();
+        }
+        $chais_noms_habilite = array();
+        foreach($this->getProduitsHabilites() as $p) {
+            foreach ($p->activites as $pkey => $activite) {
+                if ($activite->exist('site') && $activite->site) {
+                    $chais_noms_habilite[$activite->site] = $activite->site;
+                }
+            }
+        }
+        foreach($this->getEtablissementObject()->chais as $chais_id => $c) {
+            if ($has_hab xor !isset($chais_noms_habilite[$c->nom])) {
+                $chais[] = $c;
+            }
+        }
+        return $chais;
     }
 
 }

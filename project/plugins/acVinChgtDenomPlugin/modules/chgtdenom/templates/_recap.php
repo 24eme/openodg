@@ -84,7 +84,11 @@
                   <strong><?php echo $lot->numero_logement_operateur; ?></strong>
                 <?php endif; ?>
               </div>
-
+              <?php if ($lot->adresse_logement): ?>
+                  <div style="border: none;" class="m-3">
+                  Adresse du site&nbsp;: <?php echo $lot->adresse_logement; ?>
+                  </div>
+              <?php endif; ?>
               <div style="border: none;" class="m-3">
                 Produit : <strong><?php echo showProduitCepagesLot($lot) ?></strong>
               </div>

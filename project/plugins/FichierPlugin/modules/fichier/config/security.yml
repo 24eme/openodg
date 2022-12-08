@@ -6,6 +6,8 @@ etablissementSelection:
   credentials: [[ADMIN, teledeclaration_drev_admin, habilitation, stalker]]
 upload:
   credentials: [[ADMIN, teledeclaration_drev_admin, habilitation]]
+csvgenerate:
+  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation, stalker]]
 get:
   credentials: []
 piecesHistorique:

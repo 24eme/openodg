@@ -26,6 +26,15 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
           return sprintf($id, $identifiant, $periode);
       }
 
+      public function createDocFromPrevious($identifiant, $periode, $papier = false, $type = self::TYPE_COUCHDB) {
+          $new = $this->createDoc($identifiant, $periode, $papier, $type);
+          $previous = $this->getLast($identifiant);
+          if ($previous) {
+              $new->declaration = clone $previous->declaration;
+          }
+          return $new;
+      }
+
       public function createDoc($identifiant, $periode, $papier = false, $type = self::TYPE_COUCHDB) {
           $parcellaireIrrigable = new parcellaireIrrigable();
           $parcellaireIrrigable->initDoc($identifiant, $periode, $type);

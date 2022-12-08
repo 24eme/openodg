@@ -11,6 +11,7 @@ class DRCsvFile extends DouaneCsvFile
   const CSV_LIGNE_CODE_COOPERATIVE_L8 = "8";
   const CSV_LIGNE_CODE_VOLUME_L9 = "9";
   const CSV_LIGNE_CODE_RECOLTE_NETTE_L15 = "15";
+  const CSV_LIGNE_CODE_VSI_L18 = "18";
   const CSV_LIGNE_CODE_VCI_L19 = "19";
   const CSV_LIGNE_CODE_ACHAT_TOLERANCE = "99";
 

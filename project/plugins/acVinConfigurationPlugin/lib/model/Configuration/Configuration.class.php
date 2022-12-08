@@ -74,17 +74,21 @@ class Configuration extends BaseConfiguration {
 
             return $this->identifyLibelleProduct[$libelle];
         }
+        $couleurs = array('blanc', 'rouge', 'rosé');
+        $libelle_couleur = $libelle;
+        while (count($couleurs)) {
+            $libelleSlugify = self::slugifyProduitLibelle($libelle_couleur);
 
-        $libelleSlugify = self::slugifyProduitLibelle($libelle);
+            foreach($this->getProduits() as $produit) {
+                $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
+                //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
+                if($libelleSlugify == $libelleProduitSlugify) {
+                    $this->identifyLibelleProduct[$libelle] = $produit;
 
-        foreach($this->getProduits() as $produit) {
-            $libelleProduitSlugify = self::slugifyProduitLibelle($produit->getLibelleFormat());
-            //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
-            if($libelleSlugify == $libelleProduitSlugify) {
-                $this->identifyLibelleProduct[$libelle] = $produit;
-
-                return $produit;
+                    return $produit;
+                }
             }
+            $libelle_couleur = $libelle." " . array_shift($couleurs);
         }
 
         return false;

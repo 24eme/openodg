@@ -10,4 +10,5 @@ all:
       modalite_paiement: "Par chèque ou virement à réception de facture."
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      export_type: "isa"
       exercice: "viticole"

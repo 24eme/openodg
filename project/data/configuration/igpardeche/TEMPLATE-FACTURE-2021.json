@@ -125,7 +125,7 @@
                    "docs": [
                        "ChgtDenom"
                    ],
-                   "callback": "getFirstChgtDenomFacturable",
+                   "callback": "getFirstChgtDenomOrDeclassementFacturable",
                    "callback_parameters": [
                    ]
                },
@@ -138,7 +138,7 @@
                    "docs": [
                        "ChgtDenom"
                    ],
-                   "callback": "getSecondChgtDenomFacturable",
+                   "callback": "getSecondChgtDenomOrDeclassementFacturable",
                    "callback_parameters": [
                    ]
                }

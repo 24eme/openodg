@@ -108,7 +108,7 @@
 </form>
 </div>
 
-<?php if($form["signataire"]->hasError()): ?>
+<?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">
 $('#parcellaireirrigable-confirmation-validation').modal('show')
 </script>

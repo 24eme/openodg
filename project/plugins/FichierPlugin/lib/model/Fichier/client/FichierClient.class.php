@@ -1,6 +1,18 @@
 <?php
 
 class FichierClient extends acCouchdbClient {
+
+    const CATEGORIE_DR = "Dr";
+    const CATEGORIE_SV11 = "Sv11";
+    const CATEGORIE_SV12 = "Sv12";
+    const CATEGORIE_DREV = "Drev";
+    const CATEGORIE_IDENTIFICATION = "Identification";
+    const CATEGORIE_DEGUSTATION = "Degustation";
+    const CATEGORIE_FACTURE = "Facture";
+    const CATEGORIE_CHGTDENOM = "ChgtDenom";
+    const CATEGORIE_OI = "OI";
+    const CATEGORIE_FICHIER = 'fichier';
+
     public static function getInstance()
     {
       return acCouchdbManager::getClient("Fichier");
@@ -145,14 +157,15 @@ class FichierClient extends acCouchdbClient {
     public function getCategories() {
 
         return array(
-            "Dr" => "DR",
-            "Sv11" => "SV11",
-            "Sv12" => "SV12",
-            "Drev" => "DRev",
-            "Identification" => "Habilitation / Identification",
-            "Degustation" => "Dégustation",
-            "Facture" => "Facture",
-            "ChgtDenom" => "Changement de dénomination"
+            self::CATEGORIE_DR => "DR",
+            self::CATEGORIE_SV11 => "SV11",
+            self::CATEGORIE_SV12 => "SV12",
+            self::CATEGORIE_DREV => "DRev",
+            self::CATEGORIE_IDENTIFICATION => "Habilitation / Identification",
+            self::CATEGORIE_DEGUSTATION => "Dégustation",
+            self::CATEGORIE_FACTURE => "Facture",
+            self::CATEGORIE_CHGTDENOM => "Changement de dénomination",
+            self::CATEGORIE_OI => "OI",
         );
     }
 }

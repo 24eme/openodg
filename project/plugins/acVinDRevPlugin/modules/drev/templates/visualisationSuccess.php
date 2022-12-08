@@ -18,7 +18,7 @@
     Télédéclaration<?php if($drev->getDateDepot()): ?> signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->validation_odg): ?> et approuvée le <?php echo format_date($drev->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
     <?php if ($sf_user->hasDrevAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'InnovAgro le ".format_date($drev->envoi_oi, 'dd/MM') ; } ?>
-    <?php if ($sf_user->isAdmin() && $drev->validation_odg): ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a><?php endif; ?>
+    <?php if ($sf_user->isAdmin() && $drev->validation_odg): ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a>&nbsp;<small><a href="<?php  echo url_for('drev_export_xml', $drev) ?>" class=""><span class="glyphicon glyphicon-console"/></a></small><?php endif; ?>
     </small>
     </h2>
 </div>
@@ -60,13 +60,22 @@
 
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
-<hr />
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
+    <hr />
     <h3>&nbsp;Engagement(s)&nbsp;</h3>
     <?php foreach($drev->documents as $docKey => $doc): ?>
-            <p>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></p>
+        <p>&nbsp;<span style="font-family: Dejavusans">☑</span>
+            <?php
+            if($doc->exist('libelle') && $doc->libelle):
+                $libelle = preg_replace("#&gt;#",">",$doc->libelle);
+                $libelle = preg_replace("#&lt;#","<",$libelle);
+                echo($libelle);
+            else:
+                echo($drev->documents->getEngagementLibelle($docKey));
+            endif;
+            ?>
+        </p>
     <?php endforeach; ?>
-<hr />
 <?php endif; ?>
 
 <?php if (isset($form)): ?>
@@ -74,26 +83,48 @@
 <?php endif; ?>
 
 <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
+  <?php $hasmodal = false; ?>
+  <hr/>
+  <h4>
+    Commentaire interne
+    <small>(seulement visible par l'ODG<?php if ($drev->getValidationOdg()): ?> - <a href="#" data-toggle="modal" data-target="#drev-edit-comment"><?php echo ($drev->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
+  </h4>
   <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
-      <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
       <pre><?php echo $drev->commentaire; ?></pre>
-      <hr />
-  <?php elseif(!$drev->getValidationOdg()): ?>
-    <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
-    <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
-        <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
-        <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
-        <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
-        <div class="form-group text-right" style="margin-top: 10px">
-          <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
-            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
-          </button>
-        </div>
-    </form>
-    <hr />
+  <?php endif ?>
+
+  <?php if ($drev->getValidationOdg()): ?>
+  <div class="modal fade" id="drev-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title" id="myModalLabel">Edition du commentaire</h4>
+              </div>
+              <div class="modal-body">
+    <?php $hasmodal = true; ?>
+  <?php endif; ?>
+  <?php if($drevCommentaireValidationForm): ?>
+                <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
+                    <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
+                    <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
+                    <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+                    <div class="form-group text-right" style="margin-top: 10px">
+                        <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
+                            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
+                        </button>
+                    </div>
+                </form>
+  <?php endif; ?>
+  <?php if($hasmodal): ?>
+              </div>
+          </div>
+      </div>
+  </div>
   <?php endif; ?>
 <?php endif; ?>
 
+<hr />
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
@@ -101,7 +132,7 @@
     </div>
     <div class="col-xs-4 text-center">
         <div class="btn-group">
-            <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
+            <?php if ($sf_user->hasDrevAdmin() && $drev->getDocumentDouanier()): ?>
             <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default" >
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
             </a>
@@ -131,7 +162,7 @@
         <?php if (!$drev->isMiseEnAttenteOdg()): ?>
                 <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
         <?php endif; ?>
-                <button type="button" name="validateOdg" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+                <button type="button" name="validateOdg" id="btn-validation-document" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
         <?php endif; ?>
         </div>
     </div>

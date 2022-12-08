@@ -32,9 +32,9 @@ bash bin/export_docs.sh Facture > $EXPORTDIR/facture.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/facture.csv.part > $EXPORTDIR/facture.csv
 rm $EXPORTDIR/facture.csv.part
 
-bash bin/export_docs.sh Parcellaire > $EXPORTDIR/parcellaire.csv.part
-iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR/parcellaire.csv
-rm $EXPORTDIR/parcellaire.csv.part
+bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaire_affectation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire_affectation.csv.part > $EXPORTDIR/parcellaire_affectation.csv
+rm $EXPORTDIR/parcellaire_affectation.csv.part
 
 bash bin/export_docs.sh TravauxMarc > $EXPORTDIR/travaux_marc.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/travaux_marc.csv.part > $EXPORTDIR/travaux_marc.csv

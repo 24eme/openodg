@@ -278,4 +278,12 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 
+    public function getSommeProduit($subhash) {
+        $somme = 0;
+        foreach($this->getProduits() as $p) {
+            $somme += $p->get($subhash);
+        }
+        return $somme;
+    }
+
 }

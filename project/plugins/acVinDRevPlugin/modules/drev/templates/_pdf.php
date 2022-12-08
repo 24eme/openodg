@@ -45,7 +45,7 @@
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->superficie_revendique): ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ha</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_vci): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_recolte): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_recolte) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_issu_recolte): ?><?php echo sprintFloatFr($produit->volume_revendique_issu_recolte) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?><?php if ($produit->volume_revendique_issu_vsi): ?><small><br />+ VSI <?php echo sprintFloatFr($produit->volume_revendique_issu_vsi) ?> hl</small>&nbsp;&nbsp;&nbsp;<?php endif ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if ($produit->volume_revendique_total): ?><?php echo sprintFloatFr($produit->volume_revendique_total) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
         </tr>
     <?php endforeach; ?>
@@ -133,7 +133,7 @@ Les produits déclarés sont du millésime du VCI
 <?php endforeach; ?>
 </table>
 <?php endif; ?>
-<?php if($drev->exist('lot')): ?>
+<?php if($drev->exist('lots')): ?>
     <br/><br/>
     <span class="h3">&nbsp;Prélèvement&nbsp;</span><br/>
     <?php if($drev->isAllDossiersHaveSameAddress()): ?>
@@ -187,7 +187,19 @@ Les produits déclarés sont du millésime du VCI
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php foreach($drev->documents as $docKey => $doc): ?>
         <tr>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></td>
+            <td class="td" style="text-align: left;">
+                <?php echo tdStart() ?>&nbsp;
+                <span style="font-family: Dejavusans">☑</span>
+                <?php
+                if($doc->exist('libelle') && $doc->libelle):
+                    $libelle = preg_replace("#&gt;#",">",$doc->libelle);
+                    $libelle = preg_replace("#&lt;#","<",$libelle);
+                    echo($libelle);
+                else:
+                    echo($drev->documents->getEngagementLibelle($docKey));
+                endif;
+                ?>
+            </td>
         </tr>
     <?php endforeach; ?>
     </table>

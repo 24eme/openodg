@@ -457,6 +457,10 @@ class drevActions extends sfActions {
         //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
         // }
 
+        if($lot->id_document_affectation) {
+            throw new sfException("Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé.");
+        }
+
         if($lot){
             $this->drev->remove($lot->getHash());
         }
@@ -689,7 +693,7 @@ class drevActions extends sfActions {
         }
         $this->form->save();
 
-        if (!$this->isAdmin) {
+        if (count($this->validation->getEngagements())) {
             $this->drev->remove('documents');
             $documents = $this->drev->getOrAdd('documents');
 
@@ -726,7 +730,9 @@ class drevActions extends sfActions {
             $this->drev->cleanLots();
             $this->drev->save();
 
-            $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
+            if (!DrevConfiguration::getInstance()->hasEmailDisabled()) {
+                $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
+            }
 
             if($nbSent > 0) {
                 $this->getUser()->setFlash("notice", "La déclaration de revendication papier a été validée et approuvée, un email a été envoyé au déclarant");
@@ -748,7 +754,9 @@ class drevActions extends sfActions {
             $this->drev->save();
         }
 
-        Email::getInstance()->sendDRevValidation($this->drev);
+        if (!DrevConfiguration::getInstance()->hasEmailDisabled()) {
+            Email::getInstance()->sendDRevValidation($this->drev);
+        }
 
         return $this->redirect('drev_confirmation', $this->drev);
     }
@@ -779,7 +787,7 @@ class drevActions extends sfActions {
             $mother = $mother->getMother();
         }
 
-        if($this->drev->validation_odg) {
+        if($this->drev->validation_odg && !DrevConfiguration::getInstance()->hasEmailDisabled()) {
             $nbSent = Email::getInstance()->sendDRevValidation($this->drev);
             if($nbSent > 0) {
                 $this->getUser()->setFlash("notice", "La déclaration a été approuvée. Un email a été envoyé au télédéclarant.");
@@ -862,7 +870,7 @@ class drevActions extends sfActions {
             $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
-        if($this->getUser()->isAdmin() && !$this->drev->validation_odg) {
+        if($this->getUser()->isAdmin()) {
             $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
         }
 
@@ -923,6 +931,26 @@ class drevActions extends sfActions {
             return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
         }
 
+        public function executeDeleteLot(sfWebRequest $request) {
+            $docid = $request->getParameter('id');
+            $doc = acCouchdbManager::getClient()->find($docid);
+            $this->forward404Unless($doc);
+
+            $lot_unique_id = $request->getParameter('unique_id');
+            $lot = $doc->getLot($lot_unique_id);
+            if ( !($doc->type == "DRev") || ($lot->id_document_affectation) ) {
+                throw new sfException("Suppression possible que depuis une DRev qui n'a pas d'affectation");
+            }
+            $this->forward404Unless($lot);
+            if($lot->getDocOrigine()->isFactures()) {
+                throw new sfException("Le lot ne peut pas être supprimé car la DRev est facturée");
+            }
+            $lot_index = $lot->getKey();
+            $lot->getParent()->remove($lot_index);
+            $lot->getDocument()->save();
+
+            return $this->redirect('degustation_declarant_lots_liste',array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne));
+        }
 
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
@@ -966,17 +994,10 @@ class drevActions extends sfActions {
             $drev->cleanDoc();
         }
 		$xml = $this->getPartial('drev/xml', array('drev' => $drev, 'region' => $region));
-        $this->getResponse()->setHttpHeader('md5', md5($xml));
-        $this->getResponse()->setHttpHeader('LastDocDate', date('r'));
-        $this->getResponse()->setHttpHeader('Last-Modified', date('r'));
-        $this->getResponse()->setHttpHeader('Pragma', '');
-        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
-        $this->getResponse()->setHttpHeader('Expires', '0');
         $this->getResponse()->setContentType('text/xml');
         if (!$region) {
             $region = 'TOUT';
         }
-        $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev."-".$region.".xml");
         return $this->renderText($xml);
     }
 
@@ -1031,18 +1052,6 @@ class drevActions extends sfActions {
             return $etape;
         }
         return ($drevEtapes->isLt($drev->etape, $etape)) ? $etape : $drev->etape;
-    }
-
-    protected function sendDRevValidation($drev) {
-        $pdf = new ExportDRevPdf($drev, null, 'pdf', true);
-        $pdf->setPartialFunction(array($this, 'getPartial'));
-        $pdf->removeCache();
-        $pdf->generate();
-        Email::getInstance()->sendDRevValidation($drev);
-    }
-
-    protected function sendDrevConfirmee($drev) {
-        Email::getInstance()->sendDrevConfirmee($drev);
     }
 
     protected function secure($droits, $doc) {

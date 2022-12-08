@@ -28,6 +28,17 @@ dr_devalidation:
   requirements:
     sf_method: [get]
 
+dr_suppression:
+  url: /dr/suppression/:id
+  param: { module: dr, action: suppression }
+  class: DRRoute
+  options:
+    model: DR
+    type:  object
+  requirements:
+    sf_method: [get]
+
+
 dr_enattente_admin:
   url: /dr/enattente/:id
   param: { module: dr, action: enattenteAdmin }

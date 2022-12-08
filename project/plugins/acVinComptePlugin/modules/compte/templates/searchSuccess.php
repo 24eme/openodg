@@ -54,13 +54,14 @@
             <?php $societe_informations = (isset($data['doc']['societe_informations'])) ? $data['doc']['societe_informations'] : null; ?>
 			<div class="list-group-item <?php if ($data['doc']['statut'] != 'ACTIF') echo 'disabled'; ?> <?php if (isset($data['doc']['en_alerte']) && $data['doc']['en_alerte']) echo 'en_alerte'; ?>">
                 <div class="row">
-                <div class="col-xs-8">
+                <div class="col-xs-9">
                     <?php if($data['doc']['compte_type'] == 'INTERLOCUTEUR'): ?><small class="text-muted"><span class="glyphicon glyphicon-calendar"></span> <?php if(isset($societe_informations['raison_sociale'])): echo Anonymization::hideIfNeeded($societe_informations['raison_sociale']); endif; ?></small><br/><?php endif; ?>
                     <span class="lead"><span class="<?php echo comptePictoCssClass($data['doc']) ?>"></span></span>
                     <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo ($data['doc']['nom_a_afficher'])? Anonymization::hideIfNeeded($data['doc']['nom_a_afficher']) : "inconnu"; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
+                    <?php if($data['doc']['compte_type'] == 'ETABLISSEMENT' && isset($data['doc']['etablissement_informations']['cvi']) && $data['doc']['etablissement_informations']['cvi']): ?><span class="text-muted">- <?php echo $data['doc']['etablissement_informations']['cvi']; ?></span><?php elseif($data['doc']['compte_type'] != 'INTERLOCUTEUR' && isset($data['doc']['societe_informations']['siret']) && $data['doc']['societe_informations']['siret']): ?><span class="text-muted">- <?php echo formatSIRET($data['doc']['societe_informations']['siret']); ?></span><?php endif; ?>
                     <?php if (isset($data['doc']['en_alerte']) && $data['doc']['en_alerte']) echo ' ⛔'; ?>
                     </span>
-               </div><div class="col-xs-4 text-right">
+               </div><div class="col-xs-3 text-right">
 <?php if(isset($societe_informations['type']) && $societe_informations['type']): ?><small class="text-muted label label-primary"><?php echo $societe_informations['type'] ?></small><?php endif; if ($data['doc']['statut'] != 'ACTIF') echo ' &nbsp; <small class="text-muted label label-default">'.CompteClient::$statutsLibelles[$data['doc']['statut']].'</small>'; ?>
                 </div>
                 <div class="col-xs-6">

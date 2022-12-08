@@ -7,19 +7,22 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($dr):?>panel-success<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">DR  <?php echo $periode; ?></h3>
+            <h3 class="panel-title">
+                DR  <?php echo $periode; ?>
+<?php if ( $sf_user->isAdmin() && $dr && $dr->isValideeOdg() ): ?>
+                <span class="pull-right"><span class="glyphicon glyphicon-ok-circle"></span></span>
+<?php endif; ?>
+            </h3>
         </div>
             <div class="panel-body">
                 <p class="explications">Espace de saisie de la Déclaration de Récolte pour le déclarant.</p>
                 <div class="actions">
                     <?php if(!$dr): ?>
-                    <a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
-                    <?php elseif(DRConfiguration::getInstance()->hasValidationDR()): ?>
+                        <a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
+                    <?php else: ?>
                         <a class="btn btn-block btn-default" href="<?php echo url_for('dr_visualisation', $dr) ?>">
                             <span class="glyphicon glyphicon-file"></span> Visualiser la synthèse de la DR
                         </a>
-                    <?php else: ?>
-                        <a class="btn btn-success btn-block" href="<?php echo url_for('get_fichier', array('id' => $dr->_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Télécharger la DR</a>
                 	<?php endif; ?>
                     <a class="btn btn-xs btn-block btn-default" href="<?php echo ($dr)? url_for('edit_fichier', $dr) : url_for('new_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => DRClient::TYPE_MODEL)); ?>"><span class="glyphicon glyphicon-pencil"></span> <?php echo ($dr)? ($dr->exist('donnees'))? 'Poursuivre les modifications' : 'Modifier la déclaration' : 'Saisir la déclaration'; ?></a>
                 </div>
@@ -40,8 +43,9 @@
                 <p class="explications">Espace de récupération de la Déclaration de production pour le déclarant.</p>
                 <div class="actions">
                   <?php if($sv): ?>
-                    <a class="btn btn-success btn-block" href="<?php echo url_for('get_fichier', array('id' => $sv->_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Télécharger la déclaration douanière</a>
-                    <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('upload_fichier', array('sf_subject' => $etablissement));  ?>?fichier_id=<?php echo $sv->_id; ?>"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Détails du fichier</a>
+                      <a class="btn btn-block btn-default" href="<?php echo url_for('dr_visualisation', $sv) ?>">
+                          <span class="glyphicon glyphicon-file"></span> Visualiser la synthèse du document
+                      </a>
                 	<?php else: ?>
                 	<a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => ($etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) ? 'SV11' : 'SV12')) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
                 	<?php endif; ?>

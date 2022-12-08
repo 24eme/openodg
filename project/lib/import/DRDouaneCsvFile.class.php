@@ -62,8 +62,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $achats = array();
         $ratios_bailleur = array();
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
-        $drev = $this->getRelatedDrev(false);
-        $drev_filter = $this->getRelatedDrev();
+        $drev = $this->getRelatedDrev();
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
                 //Cas de fin de tableur avec les achats tolérés
@@ -146,7 +145,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         					}
         					if (isset($csv[$keyLigneBailleur][$i+1]) && $csv[$keyLigneBailleur][$i+1]) {
                                 $volumeBailleur = (float) str_replace(",", ".", $csv[$keyLigneBailleur][$i+1]);
-                                $ratios_bailleur[sprintf('%02d', $values[0])][$i] = $volumeBailleur / ($volume + $volumeBailleur);
+                                if ($volume + $volumeBailleur) {
+                                    $ratios_bailleur[sprintf('%02d', $values[0])][$i] = $volumeBailleur / ($volume + $volumeBailleur);
+                                }
         					}
         				}
         			}
@@ -250,12 +251,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
           $colExtraIds = ';'.Organisme::getCurrentOrganisme();
           $colExtraIds .= (isset($hashes[$k]))? ';'.$hashes[$k] : ';';
           $colExtraIds .= ($drev) ? ';'.$drev->_id : ';';
-          $colExtraIds .= ($drev_filter) ? ';'.'FILTERED'.$drev_filter->_id : ';';
+          $colExtraIds .= ($drev && $drev->hasLotsProduitFilter($hashes[$k])) ? ';'.'FILTERED:'.$drev->_id : ';';
           $colExtraIds .= ($this->doc)? ';'.$this->doc->_id : ';';
           $colExtraIds .= ';'.$famille;
           $colExtraIds .= ';'.substr($this->campagne, 0, 4);
           $colExtraIds .= ';'.$familles_lignes[$k];
-          $colExtraIds .= ';'.implode('|', $this->extractLabels($p[9]));
+          $colExtraIds .= ';'.implode('|', DouaneImportCsvFile::extractLabels($p[9]));
 
 	        foreach ($exploitant[$k] as $sk => $e) {
                 $eOrigin = null;

@@ -372,3 +372,11 @@ drev_switch_eleve:
   options:
     model:    DRev
     type:     object
+
+drev_delete_lot:
+  url: /drev/:id/:unique_id/delete
+  param: {module: drev, action: deleteLot}
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object

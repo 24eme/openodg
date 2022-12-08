@@ -5,7 +5,7 @@
 
 <div class="page-header no-border clearfix">
     <h2>
-        Déclaration de Récolte <?= $dr->campagne ?>
+        Déclaration <?php if ($dr->type == 'DR') echo 'de Récolte'; else echo $dr->type; ?> <?= $dr->campagne ?>
         <small class="pull-right">
             <i class="glyphicon glyphicon-file"></i>
             Déclaration
@@ -41,11 +41,11 @@
 
     <div class="col-xs-4 text-center">
         <a class="btn btn-default" href="<?php echo url_for('get_fichier', array('id' => $dr->_id)) ?>">
-            <i class="glyphicon glyphicon-file"></i> DR
+            <i class="glyphicon glyphicon-file"></i> PDF de la <?php echo $dr->type ; ?>
         </a>
     </div>
-
-    <div class="col-xs-4 text-right">
+<div class="col-xs-4 text-right">
+<?php if(DRConfiguration::getInstance()->hasValidationDR()): ?>
         <?php if ($sf_user->isAdmin()): ?>
             <?php if($dr->exist('validation_odg') && $dr->validation_odg): ?>
                 <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
@@ -55,16 +55,22 @@
                 </a>
             <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
                 <a href="#" class="btn btn-default disabled">
-                    Approuver la DR
+                    Approuver la <?php echo $dr->type ; ?>
                 </a>
             <?php else : ?>
                 <a href="<?= url_for('dr_enattente_admin', ['id' => $dr->_id]) ?>" class="btn btn-default">
                     <?= ($dr->exist('statut_odg') && $dr->statut_odg) ? 'Enlever la mise en attente' : 'Mise en attente' ?>
                 </a>
                 <a href="<?= url_for('dr_approbation', ['id' => $dr->_id]) ?>" class="btn btn-success">
-                    Valider la DR
+                    Valider la <?php echo $dr->type ; ?>
                 </a>
             <?php endif ?>
         <?php endif ?>
-    </div>
+<?php endif; ?>
+<?php if ($sf_user->isAdmin() && $dr->isDeletable()): ?>
+    <a href="<?= url_for('dr_suppression', ['id' => $dr->_id]) ?>" class="btn text-danger" onclick="return confirm('Etes vous sur de vouloir supprimer ce document ?');">
+        Supprimer la <?php echo $dr->type ; ?>
+    </a>
+<?php endif; ?>
+</div>
 </div>

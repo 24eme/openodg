@@ -15,7 +15,8 @@ class AppUser extends sfBasicSecurityUser {
     const CREDENTIAL_STALKER = 'stalker';
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contacts";
-    const CREDENTIAL_HABILITATION = "habilitation";
+    const CREDENTIAL_HABILITATION = 'habilitation';
+    const CREDENTIAL_OI = 'OI';
     const CREDENTIAL_DREV_REGION = "COMPTE_REGION";
 
     public function signInOrigin($login_or_compte) {

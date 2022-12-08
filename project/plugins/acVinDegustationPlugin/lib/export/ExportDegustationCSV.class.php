@@ -7,7 +7,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
     protected $region = null;
 
     public static function getHeaderCsv() {
-        return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Num dossier;Num lot;Num logement Opérateur;Num Anonymat;Num Table;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Date prélévement;Conformité;Motif;Observation;Date envoi email resultat;Date recours;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Produit hash;\n";
+        return "Campagne;Date;Heure;Num archive;Lieu Dégustation;Adresse lieu;Code postal lieu;Commune lieu;Id Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Origine;Num dossier;Num lot;Num logement Opérateur;Num Anonymat;Num Table;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Cépages;Millésime;Spécificités;Volume;Statut de lot;Date prélévement;Conformité;Motif;Observation;Date envoi email resultat;Date recours;Date de conformité en appel;Organisme;Doc Id;Lot unique Id;Produit hash;\n";
     }
 
     public function __construct($degustation, $header = true, $region = null) {
@@ -57,7 +57,7 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
             $code_postal = null;
             $commune = null;
             $adresseTab = explode(' — ', $lot->adresse_logement);
-            if (preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
+            if (isset($adresseTab[2]) && preg_match('/^([0-9]{5})$/', $adresseTab[2])) {
                 $adresse = $adresseTab[1];
                 $code_postal = $adresseTab[2];
                 $commune = $adresseTab[3];
@@ -71,13 +71,14 @@ class ExportDegustationCSV implements InterfaceDeclarationExportCsv {
             $conformite = (isset(Lot::$libellesConformites[$lot->conformite]))? Lot::$libellesConformites[$lot->conformite] : $lot->conformite;
             $dateRecours = ($lot->recours_oc)? preg_split('/( |T)/', $lot->recours_oc, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
             $dateEmail = ($lot->email_envoye)? preg_split('/( |T)/', $lot->email_envoye, -1, PREG_SPLIT_NO_EMPTY)[0] : null;
-            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+            $csv .= str_replace('donnée non présente dans l\'import', '', sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
                 $ligne_base,
                 $lot->declarant_identifiant,
                 $lot->declarant_nom,
                 $this->protectStr($adresse),
                 $code_postal,
                 $this->protectStr($commune),
+                $lot->initial_type,
                 $lot->numero_dossier,
                 $lot->numero_archive,
                 $this->protectStr($lot->numero_logement_operateur),

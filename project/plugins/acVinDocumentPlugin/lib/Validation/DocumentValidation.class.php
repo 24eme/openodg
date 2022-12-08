@@ -69,7 +69,7 @@ abstract class DocumentValidation
         $point_controle->setInfo($info);
         $point_controle->setLien($lien);
 
-        $this->points[$type][] = $point_controle;
+        $this->points[$type][$code.$info.$lien] = $point_controle;
 
         return $point_controle;
     }

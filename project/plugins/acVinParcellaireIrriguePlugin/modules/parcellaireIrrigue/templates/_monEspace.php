@@ -30,6 +30,9 @@
             </div>
         </div>
       <?php endif; ?>
+      <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+          <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigue')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+      </div>
     </div>
 </div>
 <?php elseif ($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>
@@ -42,6 +45,9 @@
 			<p>Vous devez valider votre identification des parcelles irrigables pour pouvoir identifier vos parcelles irriguées.</p>
 			<div style="margin-top: 97px;"></div>
 		</div>
+        <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigue')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+        </div>
     </div>
 </div>
 <?php endif; ?>

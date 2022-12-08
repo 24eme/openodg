@@ -9,24 +9,23 @@ class DRevValidationForm extends acCouchdbForm
     }
     public function configure() {
         $this->isAdmin = $this->getOption('isAdmin');
-        if(!$this->getDocument()->isPapier() && !$this->getDocument()->validation) {
-          if(!$this->isAdmin){
+        if(!$this->getDocument()->validation) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
-                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
-
                 if (preg_match('/_OUEX_/', $engagement->getCode())) {
-                    $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
+                    $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
+                }else {
+                    $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
                 }
             }
-            foreach($this->getDocument()->documents as $k => $v) {
-                if (isset($this->widgetSchema['engagement_'.$k])) {
-                    $this->setDefault('engagement_'.$k, 1);
+            if ($this->getDocument()->exist('documents')) {
+                foreach($this->getDocument()->documents as $k => $v) {
+                    if (isset($this->widgetSchema['engagement_'.$k])) {
+                        $this->setDefault('engagement_'.$k, 1);
+                    }
                 }
             }
-          }
-
             if (DrevConfiguration::getInstance()->hasDegustation()) {
                 $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
                 $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));

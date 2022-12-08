@@ -133,7 +133,7 @@ if($has_aoc) {
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 
-$b->click('button[id="btn-validation-document-drev"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
+$b->click('button[id="btn-validation-document"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
 

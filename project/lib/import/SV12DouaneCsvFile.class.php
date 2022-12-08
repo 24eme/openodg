@@ -3,8 +3,118 @@
 class SV12DouaneCsvFile extends DouaneImportCsvFile {
 
     public function convert() {
-        $handler = fopen($this->filePath, 'r');
+        $format = $this->detectFormat();
 
+        if(!$format) {
+
+            return null;
+        }
+
+        return call_user_func(array($this, "convertFrom".$format));
+    }
+
+    public function detectFormat() {
+        $csvFile = new CsvFile($this->filePath);
+        if(preg_match('/DECLARATION DE PRODUCTION SV12/i', $csvFile->getCsv()[0][0]) &&
+           preg_match('/Fournisseurs/i', $csvFile->getCsv()[3][0]) &&
+           preg_match('/Nom/i', $csvFile->getCsv()[4][0])) {
+
+            return "XlsSV12";
+        }
+        if(preg_match('/Code produit/i', $csvFile->getCsv()[0][0]) &&
+           preg_match('/D?nomination/i', $csvFile->getCsv()[0][1]) &&
+           preg_match('/CVI/i', $csvFile->getCsv()[0][3]) &&
+           preg_match('/Quantit/i', $csvFile->getCsv()[0][5])) {
+
+            return "CsvVendanges";
+        }
+
+        return null;
+    }
+
+    public function convertFromCsvVendanges() {
+        $csvFile = new CsvFile($this->filePath);
+        $csv = $csvFile->getCsv();
+
+        if(preg_match('/-([0-9]{10})_/', $this->filePath, $matches)) {
+            $this->cvi = $matches[1];
+        }
+
+        $cpt = 1;
+        $index2L = array(
+            5 => '06kg',
+            6 => '07',
+            7 => '04',
+            9 => '15VF',
+           10 => '15M',
+           12  => '15'
+        );
+
+        $drev_filter = $this->getRelatedDrev();
+        $drev = $this->getRelatedDrev(false);
+
+        $known_produit = array();
+        foreach ($csv as $key => $values) {
+            if($key == 0) {
+                $libellesLigne = $values;
+                continue;
+            }
+            $values[12] = $values[9] + $values[10];
+            foreach (array_keys($index2L) as $v) {
+                if (!VarManipulator::floatize($values[$v])) {
+                    continue;
+                }
+                if (!isset($known_produit[$values[0]])) {
+                    $p = $this->configuration->findProductByCodeDouane($values[0]);
+                    if (!$p) {
+                        $produit = array(null, null, null, null, null, null, null);
+                    } else {
+                        $produit = array($p->getCertification()->getKey(), $p->getGenre()->getKey(), $p->getAppellation()->getKey(), $p->getMention()->getKey(), $p->getLieu()->getKey(), $p->getCouleur()->getKey(), $p->getCepage()->getKey());
+                    }
+                    $known_produit[$values[0]] = $produit;
+                }
+
+                $produit = $known_produit[$values[0]];
+                $produit[] = $values[0]; //Code douane
+                $produit[] = $values[1]; //Libelle produit
+                $produit[] = $values[2]; //Mention valorisante
+                $produit[] = $index2L[$v]; //Code categorie
+                $produit[] = DouaneCsvFile::getCategorieLibelle('SV12', $index2L[$v])." - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
+                if ($index2L[$v] == "04") {
+                    $produit[] = self::numerizeVal($values[$v], 4);
+                } else {
+                    $produit[] = self::numerizeVal($values[$v], 2);
+                }
+                $produit[] = '"'.$values[3].'"';
+                $produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[4]));
+                $produit[] = null;
+                $produit[] = null;
+                $produit[] = $cpt;
+                $produit[] = Organisme::getCurrentOrganisme();
+                $produit[] = ($p)? $p->getHash() : '';
+                $produit[] = ($drev) ? $drev->_id : '';
+                $produit[] = ($drev_filter) ? 'FILTERED'.$drev_filter->_id : '';
+                $produit[] = ($this->doc)? $this->doc->_id : '';
+                $produit[] = $this->getFamilleCalculeeFromLigneDouane();
+                $produit[] = substr($this->campagne, 0, 4);
+                $produit[] = $this->getFamilleCalculeeFromLigneDouane();
+                $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[2]));
+                $produits[] = $produit;
+            }
+            $cpt++;
+        }
+
+        $doc = $this->getEtablissementRows();
+
+        $csv = '';
+        foreach ($produits as $p) {
+            $csv .= implode(';', $doc).';;;'.implode(';', $p)."\n";
+        }
+
+        return $csv;
+    }
+
+    public function convertFromXlsSV12() {
         $index2L = array(
              6 => '06kg',
              7 => '07',
@@ -87,7 +197,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 	        			} else {
                             $produit[] = self::numerizeVal($values[$v], 2);
                         }
-	        			$produit[] = $values[1];
+                        $produit[] = '"'.$values[1].'"';
 	        			$produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[0]));
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;

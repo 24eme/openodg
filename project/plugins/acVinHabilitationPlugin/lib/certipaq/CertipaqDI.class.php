@@ -1,6 +1,6 @@
 <?php
 
-class CertipaqDI extends CertipaqService
+class CertipaqDI extends CertipaqDeroulant
 {
     public function getAll() {
         $param = array();
@@ -14,21 +14,10 @@ class CertipaqDI extends CertipaqService
         return $this->query('declaration/identification', 'GET', $params);
     }
 
-
-    public function getDemandeIdentificationType() {
-        return array(
-            "declaration_identification_nouvel_operateur_request" => "Nouvel opérateur",
-            "declaration_identification_extension_habilitation_request" => "Extention d'habilitation",
-            "declaration_identification_nouveau_site_production_request" => "Nouveau site de production",
-            "declaration_identification_modification_identite_request" => "Modification d'identité",
-            "declaration_identification_modification_outil_request" => "Modification d'outil",
-        );
-    }
-
     private function fillAdresse(&$obj, $compte) {
         $obj['adresse'] = $compte->getAdresse();
         $obj['complement_adresse'] = $compte->getAdresseComplementaire();
-        $obj['cp'] = $compte->getCodePostal();
+        $obj['code_postal'] = $compte->getCodePostal();
         $obj['ville'] = $compte->getCommune();
         $obj['pays'] = $compte->getPays();
     }
@@ -37,17 +26,19 @@ class CertipaqDI extends CertipaqService
         $this->fillAdresse($obj, $compte);
         $obj['telephone'] = ($compte->getTelephoneBureau()) ? $compte->getTelephoneBureau() : $compte->getTelephonePerso();
         $obj['portable'] = $compte->getTelephoneMobile();
-        $obj['fax'] = '';
         $obj['email'] = $compte->getEmail();
     }
-    private function fillOperateur($habilitation) {
+
+    private function fillOperateur($habilitation, $with_contact = true) {
         $etablissement = $habilitation->getEtablissementObject();
         $operateur = array();
         $operateur['raison_sociale'] = $etablissement->raison_sociale;
         $operateur['nom_entreprise'] = $etablissement->nom;
         $operateur['siret'] = $etablissement->getSiret();
         $operateur['cvi'] = $etablissement->getCvi();
-        $this->fillAdresseAndContact($operateur, $etablissement);
+        if ($with_contact) {
+            $this->fillAdresseAndContact($operateur, $etablissement);
+        }
         return $operateur;
     }
 
@@ -65,7 +56,7 @@ class CertipaqDI extends CertipaqService
         return $adresses;
     }
 
-    public function fillSites($habilitation) {
+    public function fillSitesHabilite($habilitation) {
         $sites = array();
         $sites[0]['nom_site'] = $habilitation->getEtablissementObject()->getNom();
         $sites[0]['capacite_cuverie'] = null;
@@ -73,17 +64,61 @@ class CertipaqDI extends CertipaqService
         return $sites;
     }
 
+    public function addSitesHabilites(& $sites, $habilitation) {
+        $etablissement = $habilitation->getEtablissementObject();
+        if ($etablissement->exist('chais')) {
+            foreach($habilitation->getChaisHabilite() as $chais) {
+                $sites[] = $this->fillSiteFromChais($chais);
+            }
+        }
+        return $sites;
+    }
+
+    public function addSitesNonHabilites(& $sites, $habilitation) {
+        $etablissement = $habilitation->getEtablissementObject();
+        if ($etablissement->exist('chais')) {
+            foreach($habilitation->getChaisSansHabilitation() as $chais) {
+                $sites[] = $this->fillSiteFromChais($chais);
+            }
+        }
+        return $sites;
+    }
+
+    public function fillSiteFromChais($chais) {
+        $site = array();
+        $site['nom_site'] = $chais->nom;
+        $site['adresse'] = $chais->adresse;
+        $site['cp'] = $chais->code_postal;
+        $site['ville'] = $chais->commune;
+        $site['latitude'] = $chais->lat;
+        $site['longitude'] = $chais->lon;
+        if ($chais->archive) {
+            $site['commentaire'] = "Archivé";
+        }
+        $site['outils_production'] = array();
+        foreach($chais->attributs as $ka => $a) {
+            $site['outils_production'] = array(
+                'nom_outil' => $a
+            );
+        }
+        return $site;
+    }
+
     public function fillHabilitationsFromDemande($demande) {
         $h = $demande->getExtractHistoriqueFromStatut('COMPLET');
         $habilitations = array();
         $certipaq_produit = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($demande->getConfig());
         foreach($demande->getActivitesLibelle() as $activite) {
+            if (!$certipaq_produit->dr_cdc_famille_id || !$certipaq_produit->dr_cdc_id) {
+                throw new sfException("Information liée au cahier des charges ".$demande->getConfig()->libelle." non disponible depuis l'API");
+            }
             $habilitation = array();
             $habilitation['dr_cdc_famille_id'] = $certipaq_produit->dr_cdc_famille_id;
             $habilitation['dr_activites_operateurs'] = array();
             $a = CertipaqDeroulant::getInstance()->findActivite($activite);
-            $habilitation['dr_activites_operateurs']['dr_activites_operateurs_id'] = $a->id;
-            $habilitation['dr_activites_operateurs']['num_habilitation'] = $demande->getKey();
+            $habilitation['dr_activites_operateurs'][0] = array();
+            $habilitation['dr_activites_operateurs'][0]['dr_activites_operateurs_id'] = $a->id;
+            $habilitation['dr_activites_operateurs'][0]['num_habilitation'] = $demande->getKey();
             $habilitation['dr_cdc'] = array();
             $habilitation['dr_cdc'][] = array('dr_cdc_id' => $certipaq_produit->dr_cdc_id);
             $habilitation['date_dossier_complet'] = $h->date;
@@ -92,13 +127,15 @@ class CertipaqDI extends CertipaqService
         return $habilitations;
     }
 
-    public function fillHabilitations($habilitation) {
+    public function fillHabilitations($habilitation, $site = '') {
         $habilitations = array();
         foreach($habilitation->declaration as $k => $declaration) {
             $certipaq_produit = CertipaqDeroulant::getInstance()->getCertipaqProduitFromConfigurationProduit($declaration->getConfig());
             if ($certipaq_produit) {
-                foreach($declaration->activites as $activite_nom => $activite) {
-                    if (!$activite->statut) {
+                foreach($declaration->activites as $activite_nom_site => $activite) {
+                    $activite_nom = explode('-', $activite_nom_site)[0];
+                    $activite_site = ($activite->exist('site') && $activite->site) ? $activite->site : '';
+                    if (!$activite->statut || $site != $activite_site) {
                         continue;
                     }
                     $habilitation = array();
@@ -116,88 +153,199 @@ class CertipaqDI extends CertipaqService
                     $habilitation['date_decision'] = $activite->date;
                     $habilitation['date_dossier_complet_odg'] = '';
                     $habilitation['outil_production'] = array('');
-                    $habilitation['order'] = $habilitation['dr_cdc']->libelle."".$habilitation['dr_activites_operateurs']->libelle."".$habilitation['dr_statut_habilitation']->cle;
+                    $habilitation['order'] =  CertipaqDI::getHabilitationOrderString( (object) $habilitation );
                     $habilitations[] = $habilitation;
                 }
             }
         }
+        $habilitation = (array) $habilitation;
+        usort($habilitations, "CertipaqDI::orderHabilitations");
         return $habilitations;
     }
 
     public function getOperateurFromHabilitation($habilitation) {
         $param = $this->fillOperateur($habilitation);
-        $param['sites'] = $this->fillSites($habilitation);
+        $param['sites'] = $this->fillSitesHabilite($habilitation);
         $param['sites'][0]['habilitations'] = $this->fillHabilitations($habilitation);
-        $h = (array) $param['sites'][0]['habilitations'];
-        usort($h, "CertipaqDI::orderHabilitations");
-        $param['sites'][0]['habilitations'] = $h;
+        $this->addSitesHabilites($param['sites'], $habilitation);
+        for($i = 1 ; $i < count($param['sites']) ; $i++) {
+            $param['sites'][$i]['habilitations'] = $this->fillHabilitations($habilitation, $param['sites'][$i]['nom_site']);
+        }
+        $this->addSitesNonHabilites($param['sites'], $habilitation);
         return $param;
     }
 
-    public function getParamNouvelOperateurFromDemande($demande) {
+    public function postRequest($type, $demande) {
+        $args = $this->getCertipaqParam($type, $demande);
+        $res = $this->queryAndRes2hashid('declaration/identification', 'POST', $args);
+        if (!$res || !is_array($res)) {
+            throw sfException("Request failed: ".$res);
+        }
+        $id = array_shift($res);
+        $demande->add('oc_demande_id', $id);
+        $demande->getDocument()->addHistorique("Demande Certipaq pour \"".$demande->libelle."\"", "Numéro de demande ".$id, null, "Crée");
+        $demande->getDocument()->save();
+        return $id;
+    }
+
+    public function getCertipaqParam($type, $demande, $tobesubmitted = true) {
+        switch ($type) {
+            case 1:
+            case 'Un nouvel opérateur':
+            case 'declaration_identification_nouvel_operateur_request':
+                return $this->getParamNouvelOperateurFromDemande($demande, $tobesubmitted);
+
+            case 2:
+            case "Une reprise d'un opérateur":
+            case 'declaration_identification_extension_habilitation_request':
+                throw new sfException("« reprise d'un opérateur » pas implémenté");
+
+            case 3:
+            case "Une demande de complément ou d'extension d'habilitation":
+            case 'declaration_identification_modification_identite_request':
+                return $this->getParamExtentionHabilitationFromDemande($demande, $tobesubmitted);
+
+            case 4:
+            case "Une demande d'habilitation pour un nouveau site de production":
+            case 'declaration_identification_nouveau_site_production_request':
+                return $this->getParamNouveauSiteFromDemande($demande, $tobesubmitted);
+
+            case 5:
+            case "Une modification de raison sociale et/ou de n° de SIRET et/ou n° CVI":
+                return $this->getParamRSSIRETCVIFromDemande($demande, $tobesubmitted);
+
+            case 6:
+            case "Une modification d'un outil de production'":
+            case 'declaration_identification_modification_outil_request':
+                throw new sfException("« modification d'un outil de production » pas implémenté");
+
+            default:
+                throw new sfException("Type certipaq non connu");
+        }
+    }
+
+    public function getParamNouvelOperateurFromDemande($demande, $tobesubmitted = true) {
         $habilitation = $demande->getDocument();
         $param = array();
-        $param['dr_demande_identification_type_id'] = "declaration_identification_nouvel_operateur_request";
+        $param['dr_demande_identification_type_id'] = 1;
         $param['operateur'] = $this->fillOperateur($habilitation);
         $param['adresses'] = $this->fillAdresses($habilitation);
-        $param['sites'] = $this->fillSites($habilitation);
-        $param['habilitations'] = $this->fillHabilitationsFromDemande($demande);
-        $param['informations_autres'] = $demande->commentaire;
+        $param['sites'] = [];// $this->fillSitesHabilite($habilitation);
+        $param['habilitations'] = array($this->fillHabilitationsFromDemande($demande));
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
-    public function getParamExtentionHabilitationFromDemande($demande) {
+    public function getParamExtentionHabilitationFromDemande($demande, $tobesubmitted = true) {
         $param = array();
-        $param["dr_demande_identification_type_id"] = "declaration_identification_extension_habilitation_request";
-        $param["operateur_id"] = 0;
-        $param['habilitations'] = $this->fillHabilitationsFromDemande($demande);
-        $param['informations_autres'] = $demande->commentaire;
+        $param["dr_demande_identification_type_id"] = 3;
+        $operateur = CertipaqOperateur::getInstance()->findByEtablissement($demande->getDocument()->getEtablissementObject());
+        if (!$operateur) {
+            throw new sfException("Opérateur non trouvé dans l'API Certipaq");
+        }
+        if ($demande->exist('site') || count($operateur->sites) > 1) {
+            throw new sfException("multi site non géré");
+        }
+        $param["operateur_id"] = $operateur->id;
+        $param['habilitations'] = array($this->fillHabilitationsFromDemande($demande));
+        for($i = 0 ; $i < count($param['habilitations'][0]) ; $i++) {
+            if ($tobesubmitted) {
+                $param['habilitations'][0][$i]['id'] = $operateur->sites[0]->id;
+            }else{
+                $param['habilitations'][0][$i]['site_id'] = $operateur->sites[0]->id;
+            }
+        }
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
-    public function getParamNouveauSiteFromDemande($demande) {
+    public function getParamNouveauSiteFromDemande($demande, $tobesubmitted = true) {
         $habilitation = $demande->getDocument();
         $param = array();
-        $param["dr_demande_identification_type_id"] =  "declaration_identification_nouveau_site_production_request";
-        $param["operateur_id"] =  0;
-        $param['sites'] = $this->fillSites($habilitation);
+        $param["dr_demande_identification_type_id"] =  4;
+        $operateur = CertipaqOperateur::getInstance()->findByEtablissement($demande->getDocument()->getEtablissementObject());
+        if ($demande->exist('site') || count($operateur->sites) > 1) {
+            throw new sfException("multi site non géré");
+        }
+        $param["operateur_id"] = $operateur->id;
+        $param['site'] = array_shift($this->fillSitesHabilite($habilitation));
         $param['habilitations'] = $this->fillHabilitationsFromDemande($demande);
-        $param['informations_autres'] = $demande->commentaire;
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
-    public function getParamModificationIdentiteFromDemande($demande) {
-        $etablissement = $demande->getDocument()->getEtablissementObject();
+    public function getParamRSSIRETCVIFromDemande($demande, $tobesubmitted = true) {
+        $habilitation = $demande->getDocument();
         $param = array();
-        $param["dr_demande_identification_type_id"] = "declaration_identification_modification_identite_request";
-        $param['operateur']["id"] = 0;
-        $param['operateur']["objet_modification"] = "Modification de l'identité";
-        $param['operateur']["raison_sociale"] = $etablissement->raison_sociale;
-        $param['operateur']["nom_entreprise"] = $etablissement->nom;
-        $param['operateur']["siret"] = $etablissement->getSiret();
-        $param['informations_autres'] = $demande->commentaire;
-        return $param;
-    }
-
-    public function getParamModificationOutilFromDemande($demande) {
-        $param = array();
-        $param["dr_demande_identification_type_id"] = "declaration_identification_modification_outil_request";
-        $param["id"] = 0;
-        $param["nom_outil"] = "";
-        $param["portee_habilitation"] = "";
-        $h = $demande->getExtractHistoriqueFromStatut('COMPLET');
-        $param["date_dossier_complet"] = $h->date;
-        $param["objet_modification"] = $demande->commentaire;
-        $param["informations_autres"] = $demande->commentaire;
+        $param["dr_demande_identification_type_id"] =  5;
+        $operateur = CertipaqOperateur::getInstance()->findByEtablissement($demande->getDocument()->getEtablissementObject());
+        if ($demande->exist('site') || count($operateur->sites) > 1) {
+            throw new sfException("multi site non géré");
+        }
+        $param["operateur"] = $this->fillOperateur($demande->getDocument(), false);
+        $param["operateur"]["id"] = $operateur->id;
+        if ($demande->commentaire) {
+            $param["operateur"]["objet_modification"] = $demande->commentaire;
+        }else{
+            $param["operateur"]["objet_modification"] = "Modification Raison sociale / SIRET / CVI";
+        }
+        $param['informations_autres'] = $demande->commentaire.' Id OpenOdg:['.$demande->getKey().']';
         return $param;
     }
 
     public static function orderHabilitations($a, $b) {
         $a = (object) $a;
         $b = (object) $b;
-        $a_order_libelle = $a->dr_cdc->libelle.$a->dr_activites_operateurs->libelle.$a->dr_statut_habilitation->cle;
-        $b_order_libelle = $b->dr_cdc->libelle.$b->dr_activites_operateurs->libelle.$b->dr_statut_habilitation->cle;
-        return strcmp($a_order_libelle, $b_order_libelle);
+        return strcmp($a->order, $b->order);
+    }
+
+    public static function getHabilitationOrderString($hab) {
+        return $hab->dr_cdc->libelle.'|'.$hab->dr_activites_operateurs->libelle.'|'.$hab->dr_statut_habilitation->cle;
+    }
+
+    public function getDemandesIdentification($type = null, $date_debut = null, $date_fin = null, $etat = null) {
+        $param = array();
+        if ($type) {
+            $param['dr_demande_identification_type_id'] = $type;
+        }
+        if ($date_debut && $date_fin) {
+            $param['date'] = array($date_debut, $date_fin);
+        }
+        if ($etat) {
+            $param['dr_etat_demande_id'] = $etat;
+        }
+        return $this->queryAndRes2hashid('declaration/identification', 'GET', $param);
+    }
+
+    public function getDemandeIdentification($id) {
+        return $this->queryAndRes2hashid('declaration/identification/'.$id);
+    }
+
+    public function getDocumentForDemandeIdentification($demande) {
+        $id = $demande->oc_demande_id;
+        return $this->queryAndRes2hashid('declaration/identification/'.$id.'/req_docs');
+    }
+
+    public function sendFichierForDemandeIdentification($demande, $fichier, $type_document = 0, $cdc_famille_id = null) {
+        $param = array();
+        $param['dr_type_documents_id'] = $type_document;
+        $type_document = $this->keyid2obj('dr_type_documents_id', $type_document);
+        if ($cdc_famille_id) {
+            $param['dr_cdc_famille_id'] = $cdc_famille_id;
+        }
+        $id = $demande->oc_demande_id;
+        $ret = $this->query('declaration/identification/'.$id.'/document', 'POST', $param, array('fichier' => $fichier));
+        $demande->getDocument()->addHistorique("Fichier ".$type_document->libelle." à Certipaq pour \"".$demande->libelle."\"", $id.' / '.$fichier['file_name'], null, 'Envoyé');
+        $demande->getDocument()->save();
+        return $ret;
+    }
+
+    public function submitDemandeIdentification($demande) {
+        $id = $demande->oc_demande_id;
+        $ret = $this->queryAndRes2hashid('declaration/identification/'.$id.'/submit', 'POST');
+        $demande->getDocument()->addHistorique("Demande Certipaq pour \"".$demande->libelle."\"", $id, null, "Transmise");
+        $demande->getDocument()->save();
+        return $ret;
     }
 
 }

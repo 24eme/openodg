@@ -130,11 +130,7 @@ class declarationActions extends sfActions {
         }
 
         if ($doc_type == "DR") {
-            if (DRConfiguration::getInstance()->hasValidationDR()) {
-                return $this->redirect('dr_visualisation', ['id' => $doc_id]);
-            }
-
-            return $this->redirect('get_fichier', ['id' => $doc_id]);
+            return $this->redirect('dr_visualisation', ['id' => $doc_id]);
         }
 
         // Doc sans page de visu
@@ -180,8 +176,8 @@ class declarationActions extends sfActions {
 
             return $this->redirect('declaration');
         }
-
-        return $this->redirect('declaration_etablissement', $form->getEtablissement());
+        $redirect_url = $request->getParameter('redirect_url', 'declaration_etablissement');
+        return $this->redirect($redirect_url, $form->getEtablissement());
     }
 
     public function executeEtablissement(sfWebRequest $request) {

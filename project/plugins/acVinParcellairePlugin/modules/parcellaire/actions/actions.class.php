@@ -55,6 +55,11 @@ class parcellaireActions extends sfActions {
     {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->noscrape = $request->getParameter('noscrape', false);
+
+        if($request->getParameter('url')) {
+            $this->url = $request->getParameter('url');
+        }
     }
 
     public function executeImport(sfWebRequest $request)
@@ -62,6 +67,7 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $parcellaire_client = ParcellaireClient::getInstance();
+        $this->noscrape = $request->getParameter('noscrape', false);
 
         try {
             $errors = [];
@@ -70,7 +76,7 @@ class parcellaireActions extends sfActions {
 
             $msg = '';
 
-            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors)) {
+            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
                 $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {
@@ -81,6 +87,11 @@ class parcellaireActions extends sfActions {
             $this->getUser()->setFlash('erreur_import', $msg);
         }else{
             $this->getUser()->setFlash('success_import', "La mise à jour a été un succès.");
+        }
+
+        if($request->getParameter('url')) {
+
+            return $this->redirect($request->getParameter('url'));
         }
 
         $this->redirect('parcellaire_declarant', $this->etablissement);
@@ -102,9 +113,9 @@ class parcellaireActions extends sfActions {
         echo $this->content;
         exit;
     }
-    
+
     public function secureTeledeclarant() {
-        if(!$this->getUser()->isAdmin() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
+        if(!$this->getUser()->isAdmin() && !$this->getUser()->isStalker() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
             throw new sfError403Exception();
         }
     }

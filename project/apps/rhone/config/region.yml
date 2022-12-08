@@ -51,3 +51,11 @@ all:
           produits:
             - "TRANQ/appellations/GIG"
           habilitation_produits: "/Gigondas/"
+        VACQUEYRAS:
+          nom: "Syndicat de Vacqueyras"
+          adresse: "158 route de Carpentras 84190 Vacqueyras"
+          telephone: "%app_drev_VACQUEYRAS_telephone%"
+          email: "%app_drev_VACQUEYRAS_email%"
+          produits:
+            - "TRANQ/appellations/VAC"
+          habilitation_produits: "/Vacqueyras/"

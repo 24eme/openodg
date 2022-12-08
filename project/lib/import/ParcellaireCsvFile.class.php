@@ -183,7 +183,6 @@ class ParcellaireCsvFile
 
             if (! $this->check($new_parcelle)) {
                 $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
-                throw new Exception("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
             }
             $this->contextInstance->getLogger()->info("Parcelle de ".$new_parcelle->getKey()." ajouté");
         }

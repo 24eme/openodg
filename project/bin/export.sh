@@ -112,14 +112,14 @@ php bin/export/export_liste_inao.php $EXPORTDIR/habilitation_demandes.csv.part |
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation_demandes_inao.csv.part > $EXPORTDIR/habilitation_demandes_inao.csv
 rm $EXPORTDIR/habilitation_demandes.csv.part $EXPORTDIR/habilitation_demandes_inao.csv.part
 
-echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '/' | while read subhab; do
+echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; do
     eval 'SUBDIR=$EXPORT_SUB_HABILITATION_'$subhab'_DIR'
     eval 'SUBFILTRE=$EXPORT_SUB_HABILITATION_'$subhab'_FILTRE'
     mkdir -p $SUBDIR
     head -n 1 $EXPORTDIR/habilitation.csv > $SUBDIR/habilitation.csv
-    cat $EXPORTDIR/habilitation.csv | grep "$SUBFILTRE" >> $SUBDIR/habilitation.csv
+    cat $EXPORTDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | grep "$SUBFILTRE" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/habilitation.csv
     head -n 1 $EXPORTDIR/drev.csv > $SUBDIR/drev.csv
-    cat $EXPORTDIR/drev.csv | grep "$SUBFILTRE" >> $SUBDIR/drev.csv
+    cat $EXPORTDIR/drev.csv | iconv -f ISO88591 -t UTF8 | grep "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drev.csv
 done
 
 sleep $EXPORTSLEEP
@@ -128,8 +128,8 @@ if [ -z $IS_NO_VINIF ]; then
   bash bin/export_docs.sh DR $EXPORTSLEEP $1 > $EXPORTDIR/production.csv.part
   bash bin/export_docs.sh SV11 $EXPORTSLEEP $1 >> $EXPORTDIR/production.csv.part
   bash bin/export_docs.sh SV12 $EXPORTSLEEP $1 >> $EXPORTDIR/production.csv.part
-  head -n 1 $EXPORTDIR/production.csv.part | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/production.csv
-  cat $EXPORTDIR/production.csv.part | grep -E '^(DR|SV)' | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | iconv -f UTF8 -t ISO88591//TRANSLIT >> $EXPORTDIR/production.csv
+  head -n 1 $EXPORTDIR/production.csv.part | sed 's/$/;Pseudo Production Id/' | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/production.csv
+  cat $EXPORTDIR/production.csv.part | grep -E '^(DR|SV)' |  awk -F ';' '{uniq = $1"-"$2"-"$4 ; pseudoid = $4"-"substr($2,0,4); gsub(/"/, "", pseudoid) ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0";"pseudoid  ; unicite[uniq] = $3 } }'  | iconv -f UTF8 -t ISO88591//TRANSLIT >> $EXPORTDIR/production.csv
 
   head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/dr.csv
   cat $EXPORTDIR/production.csv | grep -a '^DR' >> $EXPORTDIR/dr.csv
@@ -209,6 +209,10 @@ rm $EXPORTDIR/lots_hash.csv
 rm $EXPORTDIR/lots.csv.part
 rm $EXPORTDIR/lots-passages.csv $EXPORTDIR/lots_cleancepages_passages.csv.part $EXPORTDIR/lots_cleancepages.csv.part.sorted $EXPORTDIR/lots_cleancepages.csv.part
 
+php symfony lots:export-suivi-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/lots_suivi.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/lots_suivi.csv.part > $EXPORTDIR/lots_suivi.csv
+rm $EXPORTDIR/lots_suivi.csv.part
+
 bash bin/export_docs.sh Degustation $EXPORTSLEEP $1 > $EXPORTDIR/degustations.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/degustations.csv.part > $EXPORTDIR/degustations.csv
 rm $EXPORTDIR/degustations.csv.part
@@ -220,6 +224,11 @@ rm $EXPORTDIR/degustateurs.csv.part
 php symfony export:csv-configuration $SYMFONYTASKOPTIONS > $EXPORTDIR/produits.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/produits.csv.part > $EXPORTDIR/produits.csv
 rm $EXPORTDIR/produits.csv.part
+
+
+php symfony drev:engagements $SYMFONYTASKOPTIONS > $EXPORTDIR/engagements.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/engagements.csv.part > $EXPORTDIR/engagements.csv
+rm $EXPORTDIR/engagements.csv.part
 
 mkdir -p $EXPORTDIR/stats
 

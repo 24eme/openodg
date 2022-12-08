@@ -1,3 +1,4 @@
+<?php use_helper('Date') ?>
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'validation', 'drev' => $drev)) ?>
 
@@ -13,21 +14,32 @@
         <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
     <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
-
-	<?php  if (!$drev->isPapier() && ! $sf_user->isAdmin() && count($validation->getEngagements()) > 0): ?>
+	<?php  if (count($validation->getEngagements()) > 0): ?>
     	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
     <?php elseif($sf_user->isAdmin()) : ?>
         <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
             <hr />
             <h3>&nbsp;Engagement(s)&nbsp;</h3>
             <?php foreach($drev->documents as $docKey => $doc): ?>
-                    <p>&nbsp;<span style="font-family: Dejavusans">☑</span> <?php echo ($doc->exist('libelle') && $doc->libelle) ? $doc->libelle : $drev->documents->getEngagementLibelle($docKey);  ?></p>
+                    <p>&nbsp;<span style="font-family: Dejavusans">☑</span>
+                <?php
+                    if($doc->exist('libelle') && $doc->libelle):
+                        $libelle = preg_replace("#&gt;#",">",$doc->libelle);
+                        $libelle = preg_replace("#&lt;#","<",$libelle);
+                        echo($libelle);
+                    else:
+                        echo($drev->documents->getEngagementLibelle($docKey));
+                    endif;
+                ?></p>
+
             <?php endforeach; ?>
         <?php endif; ?>
     <?php endif; ?>
-    <?php if($sf_user->isAdmin()) : ?>
+    <?php if($sf_user->isAdmin()): ?>
+        <p id="notNeedToEngage" class="hidden"></p>
         <hr />
         <h3>Validation</h3>
+<?php if (isset($form["date_depot"])): ?>
         <?php echo $form["date_depot"]->renderError(); ?>
         <div class="form-group" style="margin-bottom: 20px;">
             <?php echo $form["date_depot"]->renderLabel("Date de dépot ou de réception :", array("class" => "col-xs-3 control-label")); ?>
@@ -38,6 +50,9 @@
             </div>
             </div>
         </div>
+<?php elseif($drev->isTeledeclare()): ?>
+<p>DRev télédéclarée signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?></p>
+<?php endif; ?>
     <?php endif; ?>
     <hr />
     <div class="row row-margin row-button">
@@ -46,8 +61,8 @@
         </div>
         <div class="col-xs-4 text-center">
             <div class="btn-group">
-                <?php if ($sf_user->hasDrevAdmin() && $drev->hasDocumentDouanier()): ?>
-                <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default <?php if(!$drev->hasDocumentDouanier()): ?>disabled<?php endif; ?>" >
+                <?php if ($sf_user->hasDrevAdmin() && $drev->getDocumentDouanier()): ?>
+                <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default" >
                     <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
                 </a>
                 <?php endif; ?>
@@ -57,7 +72,7 @@
             </div>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document-drev" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper" onclick="if ($('#validation-form')[0].reportValidity()){ $('#drev-confirmation-validation').modal('toggle') }">
+            <button type="button" id="btn-validation-document" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs() && $drev->isTeledeclare() && (!$sf_user->hasDrevAdmin() || $validation->hasFatales())): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper">
                 <span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;<?php if ($sf_user->isAdmin()): ?>Valider et Approuver<?php else: ?>Valider la déclaration<?php endif; ?>
             </button>
         </div>

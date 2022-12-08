@@ -8,6 +8,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_BIO_PARTIEL_DEPRECATED = "BIO_PARTIEL";
     const DENOMINATION_BIO = "BIO";
     const DENOMINATION_CONVERSION_BIO = "CONVERSION_BIO";
+    const DENOMINATION_JEUNE_VIGNE = "JEUNE_VIGNE";
     const DENOMINATION_HVE = "HVE";
     const DENOMINATION_DEMETER = "DEMETER";
     const DENOMINATION_CONVENTIONNEL = "CONVENTIONNEL";
@@ -30,7 +31,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public static $denominationsAuto = array(
         self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
         self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
-        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
+        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO." hors conversion",
     );
 
     public static $lotDestinationsType = array(
@@ -216,7 +217,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public function matchFilter($lot, $produitFilter)
     {
-        $filters = explode(" AND ", $produitFilter);
+        $filters = [];
+        if ($produitFilter) {
+            $filters = explode(" AND ", $produitFilter);
+        }
         $etablissements = [];
         $match = true;
 
@@ -305,10 +309,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($identifiant, preg_replace('/-.*/', '', $periode));
         if ($drev && $drev_produit_filter) {
-            foreach ($drev->lots as $lot) {
-                if(strpos($lot->produit_hash, $drev_produit_filter) !== false) {
-                    return $drev;
-                }
+            if ($drev->hasLotsProduitFilter($drev_produit_filter)) {
+                return $drev;
             }
             return null;
         }

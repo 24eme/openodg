@@ -40,6 +40,7 @@
                 <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
                 <li style="display:none;" class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php else: ?><?php echo url_for('facturation'); ?><?php endif; ?>">Facturation</a></li>
                 <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation_demande'); ?><?php endif; ?>">Habilitations</a></li>
+                <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
                 <li class="<?php if($route instanceof InterfaceCompteRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
             </ul>
             <?php elseif($sf_user->hasCredential(myUser::CREDENTIAL_DREV_ADMIN)): ?>
@@ -48,7 +49,8 @@
                     <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDeclarationRoute): ?><?php echo url_for('declaration_etablissement', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Déclarations</a></li>
                     <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?> <?php if(!$compte): ?>disabled<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Documents</a></li>
                     <li style="display:none;" class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?> <?php if(!$compte): ?>disabled<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Facturation</a></li>
-                        <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation_demande'); ?><?php endif; ?>">Habilitations</a></li>
+                    <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation_demande'); ?><?php endif; ?>">Habilitations</a></li>
+                    <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
                     <li class="<?php if($route instanceof InterfaceCompteRoute): ?>active<?php endif; ?> <?php if(!$compte): ?>disabled<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Contacts</a></li>
                 </ul>
             <?php elseif($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
@@ -56,6 +58,7 @@
                 <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
                 <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation_demande'); ?><?php endif; ?>">Habilitations</a></li>
                 <?php if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()): ?>
+                <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
                 <li class="<?php if($route instanceof InterfaceCompteRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('habilitation_demande'); ?><?php endif; ?>">Contacts</a></li>
                 <?php endif; ?>
             </ul>
@@ -70,12 +73,15 @@
                 </ul>
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <?php if(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app'))): ?>
+                <?php if( $sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) ): ?>
+                    <li><a tabindex="-1" href="https://extranet.syndicat-cotesdurhone.com/" title="Extranet">Extranet</a></li>
+                    <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte"><span class="glyphicon glyphicon-user"></span></a></li>
+                <?php endif; ?>
+                <?php if(NavConfiguration::getInstance()->hasStatLinks()): ?>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-stats"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <?php foreach(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app')) as $i => $navItem): ?>
+                    <?php foreach(NavConfiguration::getInstance()->getStatLinks() as $i => $navItem): ?>
                      <?php if($i > 0 && isset($navItem['title'])): ?><li role="separator" class="divider"></li><?php endif; ?>
                      <li>
                          <a href="<?php echo $navItem['url'] ?>">
@@ -87,15 +93,13 @@
                   </ul>
                 </li>
                 <?php endif; ?>
+                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
                   </ul>
                 </li>
-                <?php elseif($sf_user->isAuthenticated()): ?>
-                 <li><a tabindex="-1" href="https://extranet.syndicat-cotesdurhone.com/" title="Extranet">Extranet</a></li>
-                 <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte"><span class="glyphicon glyphicon-user"></span></a></li>
                 <?php endif; ?>
                 <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte && !$sf_user->isUsurpationCompte()) : ?>
                      <li><a tabindex="-1" href="<?php echo url_for('auth_usurpation', array('identifiant' => $compte->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
