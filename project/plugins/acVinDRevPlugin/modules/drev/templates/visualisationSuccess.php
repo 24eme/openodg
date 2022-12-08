@@ -84,6 +84,7 @@
 
 <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
   <?php $hasmodal = false; ?>
+  <hr/>
   <h4>
     Commentaire interne
     <small>(seulement visible par l'ODG<?php if ($drev->getValidationOdg()): ?> - <a href="#" data-toggle="modal" data-target="#drev-edit-comment"><?php echo ($drev->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
