@@ -1,6 +1,7 @@
 <?php
 abstract class DeclarationLotsValidation extends DocumentValidation
 {
+    private $lotselevage = [];
 
     public function configureLots()
     {
@@ -76,8 +77,17 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             }
 
             if ($lot->statut == Lot::STATUT_ELEVAGE) {
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, "$lot->produit_libelle ( $lot->volume hl )");
+                $this->lotselevage[$lot->produit_hash][] = [$lot->getProduitLibelle(), $lot->volume];
             }
+        }
+
+        if (count($this->lotselevage) > 0) {
+            $msg = [];
+            foreach ($this->lotselevage as $hash => $lots) {
+                $msg[] = count($lots) . " lot(s) de ".$lots[0][0]." (".array_sum(array_column($lots, 1))." hl)";
+            }
+
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, implode(', ', $msg));
         }
     }
 }
