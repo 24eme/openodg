@@ -59,7 +59,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $libellesLigne = $values;
                 continue;
             }
-            $values[12] = $values[9] + $values[10];
+            $values[12] = VarManipulator::floatize($values[9]) + VarManipulator::floatize($values[10]);
             foreach (array_keys($index2L) as $v) {
                 if (!VarManipulator::floatize($values[$v])) {
                     continue;
