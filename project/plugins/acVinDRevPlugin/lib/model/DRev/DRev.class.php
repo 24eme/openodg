@@ -662,13 +662,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$this->importFromDocumentDouanier();
     }
 
-    public function getBailleurs() {
+    public function getBailleurs($cave_particuliere_only = false) {
     	$csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
         return array();
       }
 
-        return DouaneProduction::getBailleursFromCsv($this->getEtablissementObject(), $csv, $this->getConfiguration());
+        return DouaneProduction::getBailleursFromCsv($this->getEtablissementObject(), $csv, $this->getConfiguration(), $cave_particuliere_only);
     }
 
     public function importFromDocumentDouanier($force = false) {
