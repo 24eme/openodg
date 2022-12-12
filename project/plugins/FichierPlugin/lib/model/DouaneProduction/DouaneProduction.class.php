@@ -590,16 +590,16 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return true;
     }
 
-    public function getBailleurs() {
+    public function getBailleurs($cave_particuliere_only = false) {
         $csv = $this->getCsv();
       if (!$csv) {
         return array();
       }
 
-        return DouaneProduction::getBailleursFromCsv($this->getEtablissementObject(), $csv, $this->getConfiguration());
+        return DouaneProduction::getBailleursFromCsv($this->getEtablissementObject(), $csv, $this->getConfiguration(), $cave_particuliere_only);
     }
 
-    public static function getBailleursFromCsv($etablissement, $csv, $configuration) {
+    public static function getBailleursFromCsv($etablissement, $csv, $configuration, $cave_particuliere_only = false) {
         $etablissementBailleurs = array();
         foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
             if(!$etablissementBailleur->ppm) {
@@ -630,6 +630,10 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     		}
 
             if(!trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
+                continue;
+            }
+
+            if ($cave_particuliere_only && ($line[DRCsvFile::CSV_LIGNE_CODE] != DRCsvFile::CSV_LIGNE_CODE_VOLUME_L9 || !trim($line[DRCsvFile::CSV_VALEUR])) ) {
                 continue;
             }
 

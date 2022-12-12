@@ -37,7 +37,7 @@
         <?php endforeach; ?>
       </tbody>
     </table>
-    <?php $bailleurs = $drev->getBailleurs()->getRawValue(); ?>
+    <?php $bailleurs = $drev->getBailleurs(true)->getRawValue(); ?>
     <?php if(count($bailleurs)): ?>
       <p style="margin-top: -10px; margin-bottom: 20px;">
         Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
