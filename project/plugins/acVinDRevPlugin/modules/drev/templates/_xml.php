@@ -17,8 +17,9 @@
 				<millesime value="<?php echo $drev->periode; ?>" />
 				<date_saisie value="<?php echo $drev->getDateValidation() ?>" />
 				<lignes>
-<?php foreach ($drev->declaration->getProduits($region) as $produit): ?>
-	<?php if ($codeProduit = $produit->getConfig()->getCodeProduit() && ($produit->hasVci() || $produit->superficie_revendique || $produit->volume_revendique_total)): ?>
+<?php foreach ($drev->declaration->getProduits($region) as $produit):
+    $codeProduit = $produit->getConfig()->getCodeProduit();
+	if ($codeProduit && ($produit->hasVci() || $produit->superficie_revendique || $produit->volume_revendique_total)): ?>
 					<ligne>
 						<code_cvi_vin value="<?php echo $produit->getConfig()->getCodeDouane(); ?>" />
                         <libelle_produit value="<?php echo $produit->getConfig()->getLibelleComplet(); ?>" />
