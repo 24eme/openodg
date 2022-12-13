@@ -84,42 +84,44 @@
 
 <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN) && $drev->exist('commentaire')): ?>
   <?php $hasmodal = false; ?>
+  <hr/>
+  <h4>
+    Commentaire interne
+    <small>(seulement visible par l'ODG<?php if ($drev->getValidationOdg()): ?> - <a href="#" data-toggle="modal" data-target="#drev-edit-comment"><?php echo ($drev->commentaire) ? 'Éditer' : 'Ajouter' ?></a><?php endif ?>)</small>
+  </h4>
   <?php if ($drev->getValidationOdg() && $drev->commentaire): ?>
-      <hr />
-      <h3 class="">Commentaire interne <small>(seulement visible par l'ODG - <a href='#' data-toggle="modal" data-target="#drev-edit-comment">Éditer</a>)</small></h3>
       <pre><?php echo $drev->commentaire; ?></pre>
-      <div class="modal fade" id="drev-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
-          <div class="modal-dialog">
-              <div class="modal-content">
-                      <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                          <h4 class="modal-title" id="myModalLabel">Edition du commentaire</h4>
-                      </div>
-                      <div class="modal-body">
-<?php $hasmodal = true; ?>
-<?php endif; ?>
-<?php if(!$drev->getValidationOdg()): ?>
-    <hr />
-    <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
-<?php endif; ?>
-<?php if($drevCommentaireValidationForm && (!$drev->getValidationOdg() || $hasmodal)): ?>
-    <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
-        <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
-        <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
-        <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
-        <div class="form-group text-right" style="margin-top: 10px">
-          <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
-            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
-          </button>
-        </div>
-    </form>
-<?php endif; ?>
-<?php if($hasmodal): ?>
-                </div>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
+  <?php endif ?>
+
+  <?php if ($drev->getValidationOdg()): ?>
+  <div class="modal fade" id="drev-edit-comment" role="dialog" aria-labelledby="Edition du commentaire" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title" id="myModalLabel">Edition du commentaire</h4>
+              </div>
+              <div class="modal-body">
+    <?php $hasmodal = true; ?>
+  <?php endif; ?>
+  <?php if($drevCommentaireValidationForm): ?>
+                <form id="formUpdateCommentaire" action="<?php echo url_for('drev_update_commentaire', $drev) ?>" method="post">
+                    <?php echo $drevCommentaireValidationForm->renderHiddenFields(); ?>
+                    <?php echo $drevCommentaireValidationForm->renderGlobalErrors(); ?>
+                    <?php echo $drevCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+                    <div class="form-group text-right" style="margin-top: 10px">
+                        <button type="submit" form="formUpdateCommentaire" class="btn btn-default">
+                            <i class="glyphicon glyphicon-floppy-disk"></i> Enregistrer le commentaire
+                        </button>
+                    </div>
+                </form>
+  <?php endif; ?>
+  <?php if($hasmodal): ?>
+              </div>
+          </div>
+      </div>
+  </div>
+  <?php endif; ?>
 <?php endif; ?>
 
 <hr />
