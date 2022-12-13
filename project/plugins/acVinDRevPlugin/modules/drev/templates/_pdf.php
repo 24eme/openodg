@@ -187,9 +187,7 @@ Les produits déclarés sont du millésime du VCI
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php foreach($drev->documents as $docKey => $doc): ?>
         <tr>
-            <td class="td" style="text-align: left;">
-                <?php echo tdStart() ?>&nbsp;
-                <span style="font-family: Dejavusans">☑</span>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☑</span>
                 <?php
                 if($doc->exist('libelle') && $doc->libelle):
                     $libelle = preg_replace("#&gt;#",">",$doc->libelle);
