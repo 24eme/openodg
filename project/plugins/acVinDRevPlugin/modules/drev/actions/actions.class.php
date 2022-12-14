@@ -859,7 +859,7 @@ class drevActions extends sfActions {
             $this->drev->cleanDoc();
         }
 
-        $this->drev->importFromDocumentDouanier();
+        $this->drev->importFromDocumentDouanier(true);
         $this->drev->save();
 
         $documents = $this->drev->getOrAdd('documents');
