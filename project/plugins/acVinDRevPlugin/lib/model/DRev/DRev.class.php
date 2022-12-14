@@ -685,8 +685,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       	return false;
       }
 	  try {
-        $this->importCSVDouane($csv);
-        return true;
+          //pour les DRev IGP, le fonctionne est un peu étrange
+          //du coup, on force la mise à jour via la suppression du noeud
+          //refacto souhaitable ?
+          if ($force && count($this->getProduitsWithoutLots()) == 0) {
+              $this->remove('declaration');
+              $this->add('declaration');
+          }
+          $this->importCSVDouane($csv);
+          return true;
       } catch (Exception $e) { }
       return false;
     }

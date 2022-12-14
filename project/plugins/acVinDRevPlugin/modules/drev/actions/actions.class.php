@@ -1044,12 +1044,6 @@ class drevActions extends sfActions {
 
     public function executeUpdateFromDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $p = $drev->getProduitsWithoutLots();
-        if(count($p)) {
-            throw new sfException('la mise à jour récolte supprime le noeud declaration => pas possible si il y a des produits sans lots');
-        }
-        $drev->remove('declaration');
-        $drev->add('declaration');
         $drev->importFromDocumentDouanier(true);
         $drev->save();
         return $this->redirect('drev_visualisation', $drev);
