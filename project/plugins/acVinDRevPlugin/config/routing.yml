@@ -380,3 +380,13 @@ drev_delete_lot:
   options:
     model:    DRev
     type:     object
+
+drev_update_recolte:
+  url: /drev/update/:id
+  param: { module: drev, action: updateFromDocumentDouanier }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
