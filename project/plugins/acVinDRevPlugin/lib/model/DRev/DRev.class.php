@@ -2356,7 +2356,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function generateModificative() {
 
-        return $this->version_document->generateModificative();
+        $drev = $this->version_document->generateModificative();
+        $drev->importFromDocumentDouanier(true);
+        return $drev;
     }
 
     public function verifyGenerateModificative() {
