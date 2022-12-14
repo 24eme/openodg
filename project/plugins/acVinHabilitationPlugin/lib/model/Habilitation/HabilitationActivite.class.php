@@ -19,7 +19,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
       $this->date = $date;
       $this->statut = $statut;
       $this->commentaire = $commentaire;
-      $this->activite = $this->getParent()->getKey();
+      $this->activite = $this->getKey();
   }
 
     public function getLibelle() {
