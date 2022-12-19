@@ -430,7 +430,6 @@ class DRevValidation extends DeclarationLotsValidation
                 else{
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                     foreach($contrats as $k=>$v){
-                        echo "POINT ";
                         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,'');
                     }
                 }
