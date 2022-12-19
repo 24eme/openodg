@@ -15,7 +15,9 @@ class DRevValidationForm extends acCouchdbForm
                 $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
                 if (preg_match('/_OUEX_/', $engagement->getCode())) {
                     $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
-                }else {
+                } elseif (preg_match('/_OU_/', $engagement->getCode())) {
+                    $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
+                } else {
                     $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
                 }
             }
