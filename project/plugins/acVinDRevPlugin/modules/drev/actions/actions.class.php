@@ -859,9 +859,6 @@ class drevActions extends sfActions {
             $this->drev->cleanDoc();
         }
 
-        $this->drev->importFromDocumentDouanier();
-        $this->drev->save();
-
         $documents = $this->drev->getOrAdd('documents');
         $this->regionParam = $request->getParameter('region',null);
         if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
@@ -1043,6 +1040,13 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Expires', '0');
 
         return $this->renderText($fileContent);
+    }
+
+    public function executeUpdateFromDocumentDouanier(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        $drev->importFromDocumentDouanier(true);
+        $drev->save();
+        return $this->redirect('drev_visualisation', $drev);
     }
 
     public function executeMain()

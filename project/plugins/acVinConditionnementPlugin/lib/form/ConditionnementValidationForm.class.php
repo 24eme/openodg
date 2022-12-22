@@ -19,6 +19,8 @@ class ConditionnementValidationForm extends acCouchdbForm
                 $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
                 if (preg_match('/_OUEX_/', $engagement->getCode())) {
                     $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
+                }elseif (preg_match('/_OU_/', $engagement->getCode())) {
+                    $this->getValidator('engagement_'.$engagement->getCode())->setOption('required', false);
                 }
             }
         }

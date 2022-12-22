@@ -31,10 +31,12 @@ class DRevOI
 			$sended[] = null;
 			$this->sendXml();
 		}
-		if(count($sended)){
-			 $this->drev->add('envoi_oi', date('c'));
-			 $this->drev->save();
-		}
+        if(count($sended)){
+            if (!$this->dev->exist('envoi_oi') || ! $this->dev->envoi_oi) {
+                $this->drev->add('envoi_oi', date('c'));
+                $this->drev->save();
+            }
+        }
 		return $sended;
 	}
 
