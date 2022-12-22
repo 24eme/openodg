@@ -77,8 +77,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC));
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT));
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
 
@@ -86,10 +86,10 @@ class DRevValidation extends DeclarationLotsValidation
 
         if($contrats){
             foreach($contrats as $k=>$v){
-                $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
             }
         }
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
         /* Lots */
 
@@ -419,7 +419,7 @@ class DRevValidation extends DeclarationLotsValidation
         } elseif($volumeMaxAutorise < $volumeTotalMediterraneeRoseDeclare) {
             if($this->document->hasDestinationConditionnement()){
                 $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONDITIONNEMENT,'');
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT,'');
             }
             if($this->document->hasDestionationVrac()){
                 $contrats = $this->document->getContratsFromAPI();
@@ -430,13 +430,13 @@ class DRevValidation extends DeclarationLotsValidation
                 else{
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                     foreach($contrats as $k=>$v){
-                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,'');
                     }
                 }
                 if($contrats && count($contrats)>1){
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise', $produit." (".$volumeTotalMediterraneeRoseDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                     if(sfContext::getInstance()->getUser()->hasDrevAdmin()) {
-                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OUEX_PAS_INFORMATION,"");
+                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION,"");
                     }
                 }
             }

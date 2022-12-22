@@ -3,7 +3,10 @@
                 <thead>
                   <tr>
                     <th class="text-center col-xs-5" style="border-top: hidden; border-left: hidden;"></th>
-                    <th class="text-center col-xs-2" colspan="2"><?php echo $drev->getDocumentDouanierType(); ?></th>
+                    <th class="text-center col-xs-2" colspan="2">
+                        <?php echo $drev->getDocumentDouanierType(); ?> &nbsp;
+                        <a href="<?php echo url_for('drev_update_recolte', array('sf_subject' => $drev)); ?>"><span class="glyphicon glyphicon-refresh">&nbsp;</span></a>
+                    </th>
                     <th class="text-center col-xs-5" colspan="3">DRev</th>
                   </tr>
                 </thead>

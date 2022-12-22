@@ -1042,6 +1042,13 @@ class drevActions extends sfActions {
         return $this->renderText($fileContent);
     }
 
+    public function executeUpdateFromDocumentDouanier(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        $drev->importFromDocumentDouanier(true);
+        $drev->save();
+        return $this->redirect('drev_visualisation', $drev);
+    }
+
     public function executeMain()
     {
     }
