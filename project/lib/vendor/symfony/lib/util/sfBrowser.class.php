@@ -14,15 +14,14 @@
  * @package    symfony
  * @subpackage util
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfBrowser.class.php 21908 2009-09-11 12:06:21Z fabien $
+ * @version    SVN: $Id$
  */
 class sfBrowser extends sfBrowserBase
 {
   protected
     $listeners        = array(),
     $context          = null,
-    $currentException = null,
-    $additionnalsConfig = array();
+    $currentException = null;
 
   /**
    * Calls a request to a uri.
@@ -36,10 +35,6 @@ class sfBrowser extends sfBrowserBase
 
     // we register a fake rendering filter
     sfConfig::set('sf_rendering_filter', array('sfFakeRenderingFilter', null));
-
-    foreach($this->additionnalsConfig as $keyConfig => $valueConfig) {
-        sfConfig::set($keyConfig, $valueConfig);
-    }
 
     $this->resetCurrentException();
 
@@ -135,10 +130,6 @@ class sfBrowser extends sfBrowserBase
   public function getUser()
   {
     return $this->context->getUser();
-  }
-
-  public function setAdditionnalsConfig($additionnalsConfig) {
-      $this->additionnalsConfig = $additionnalsConfig;
   }
 
   /**
