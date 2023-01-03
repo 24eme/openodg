@@ -1,6 +1,6 @@
 <?php
 
-class ImportParcellairesDouaniersTask extends sfBaseTask
+class ImportParcellaireDouanierTask extends sfBaseTask
 {
 
     protected function configure()
