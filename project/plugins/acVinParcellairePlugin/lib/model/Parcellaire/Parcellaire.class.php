@@ -9,6 +9,8 @@ class Parcellaire extends BaseParcellaire {
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
+    protected $habilitation = false;
     private $cache_geophpdelimitation = null;
     private $cache_geojson = null;
 
@@ -167,12 +169,24 @@ class Parcellaire extends BaseParcellaire {
         return false;
     }
 
+    public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
+            if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
+                $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
+            }
+            if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
+                $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
+            }
+            return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
+    }
+
     public function getProduitsByCepageFromHabilitationOrConfiguration($cepage) {
-        $hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
-        if (!$hab) {
+        if ($this->habilitation === false) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
+        }
+        if (!$this->habilitation) {
             return $this->getConfiguration()->getProduitsByCepage($cepage);
         }
-        return $hab->getProduitsByCepage($cepage);
+        return $this->habilitation->getProduitsByCepage($cepage);
     }
 
     public function getSyntheseCepages() {
@@ -199,7 +213,7 @@ class Parcellaire extends BaseParcellaire {
             $cepage = $p->getCepage();
             if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $libelles = array();
-                foreach($this->getProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
                     $libelles[] = $prod->getLibelleComplet();
                 }
                 if (!count($libelles)) {
