@@ -108,9 +108,9 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                                 <?php echoFloat($parcelle->getSuperficie()) ?>
                                             </div>
                                             <div class="col-xs-6 text-left">
-                                                <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC)): ?>
+                                                <?php if (!$parcellaire->isImportFromCVI() && (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC))): ?>
                                                     &nbsp;<a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <?php else: ?>
+                                                <?php elseif(!$parcellaire->isImportFromCVI()): ?>
                                                     <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
                                                 <?php endif; ?>
                                             </div>
@@ -125,14 +125,16 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                         </tbody>
                     </table>
                 </div>
-            <?php elseif(strpos($parcellaire->_id, 'CREMANT') !== false && !count($parcellaire->declaration->getProduitsCepageDetails())): ?>
+            <?php elseif($parcellaire->isImportFromCVI() && !count($parcellaire->declaration->getProduitsCepageDetails())): ?>
 				<p class="text-muted">Nous n'avons trouvé aucune parcelle, vous pouvez <a class="btn btn-default" href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>"><i class="glyphicon glyphicon-refresh"></i> Récupérer vos parcelles depuis Prodouane</a></p>
 			<?php else: ?>
                 <p class="text-muted">Vous n'avez aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> à affecter dans cette appellation.</p><br/>
             <?php endif; ?>
+			<?php if(!$parcellaire->isImportFromCVI()): ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
+			<?php endif; ?>
         </div>
     </div>
     <div class="row row-margin row-button">
