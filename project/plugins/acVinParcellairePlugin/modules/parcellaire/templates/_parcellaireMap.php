@@ -12,11 +12,15 @@
 }
 </style>
 <script type="text/javascript">
-	var parcelles = '<?php echo addslashes(json_encode($parcellaire->getRawValue()->getGeoJson())) ?>';
+<?php $geo = $parcellaire->getRawValue()->getGeoJson(); ?>
+<?php if ($geo): ?>
+	var parcelles = '<?php echo addslashes(json_encode($geo)) ?>';
+<?php else: ?>
+	var parcelles = '';
+<?php endif; ?>
     var aires = [];
     <?php foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos): $json = addslashes(implode("|", $parcellaire->getAire($infos['denomination_id'])->getRawValue())); if ($json): ?>
         aires.push({'geojson': '<?php echo $json ?>', 'color': '<?php echo $infos['color'] ?>', 'name': '<?php echo addslashes($infos['name']) ?>'});
     <?php endif; endforeach; ?>
-    console.log(aires);
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js?202204131636'); ?>
