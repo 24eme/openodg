@@ -196,26 +196,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             return;
         }
 
-        $cepages_autorises = [
-            'cepage_PB' => 'PINOT BLANC',
-            'cepage_CD' => 'CHARDONNAY',
-            'cepage_BN' => 'PINOT NOIR BLANC',
-            'cepage_RI' => 'RIESLING',
-            'cepage_PG' => 'PINOT GRIS',
-            'cepage_PN' => 'PINOT NOIR ROSé',
-            'cepage_BLRS' => 'BLANC + ROSé',
-            'cepage_RB' => 'REBêCHES',
-            'cepage_PNRaisin' => 'PINOT NOIR',
-            'cepage_AU' => 'AUXERROIS'
-        ];
-
         foreach ($prevParcellaireCremant->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
-            if (array_key_exists($parcelleCremant->getCepage()->getKey(), $cepages_autorises)) {
-                foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
-                    // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
-                    if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
-                        $parcelleAActiver->active = 1;
-                    }
+            foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
+                // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
+                if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
+                    $parcelleAActiver->active = 1;
                 }
             }
         }
