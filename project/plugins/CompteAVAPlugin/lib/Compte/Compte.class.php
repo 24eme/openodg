@@ -392,7 +392,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
 
         $result = json_decode($file);
 
-        if(!count($result)){
+        if(!count((array)$result)){
             return false;
         }
 
