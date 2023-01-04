@@ -215,12 +215,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     }
                 }
 
-                if ($c) {
-                    $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie * 100; // hectare -> are
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
+                if (!$c) {
+                    continue;
                 }
+
+                $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
+                $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie * 100; // hectare -> are
+                $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
             }
         }
 
@@ -250,7 +252,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach ($prevParcellaireCremant->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
             foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
-                // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
                 if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
                     $parcelleAActiver->active = 1;
                 }
