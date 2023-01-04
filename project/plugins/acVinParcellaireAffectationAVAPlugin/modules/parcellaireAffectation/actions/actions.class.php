@@ -32,7 +32,8 @@ class parcellaireAffectationActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
         $this->parcellaire = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
-        $this->parcellaire->initProduitFromLastParcellaire();
+        $this->parcellaire->updateFromLastParcellaire();
+
         $this->parcellaire->save();
 
         return $this->redirect('parcellaire_edit', $this->parcellaire);
