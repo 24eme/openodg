@@ -190,9 +190,9 @@ $list_idu = [];
                                         }else{
                                             echo '<span class="text-muted">';
                                         }
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire" : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement" : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur" : '' ;
+                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
+                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
+                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
                                         echo "$nom</span>";
                                         $separateur = ',';
                                     }?>
