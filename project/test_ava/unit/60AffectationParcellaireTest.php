@@ -181,8 +181,8 @@ $intentionCremant->declaration = $parcellaireAffectationCremant->declaration;
 $intentionCremant->save();
 
 $parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne+1, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
-$parcellaireAffectationCremant->initProduitsFromCVI();
-$parcellaireAffectationCremant->updateAffectationCremantFromLastAffectation();
+$parcellaireAffectationCremant->initOrUpdateProduitsFromCVI();
+$parcellaireAffectationCremant->updateCremantFromLastParcellaire();
 $parcellaireAffectationCremant->save();
 
 $t->is($parcellaireAffectationCremant->_id, "PARCELLAIREAFFECTATIONCREMANT-".$viti->identifiant."-".($campagne+1), "ID de l'affectation parcellaire : ".$parcellaireAffectationCremant->_id);
