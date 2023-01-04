@@ -115,7 +115,7 @@ class Configuration extends BaseConfiguration {
         $libelleSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($libelle)));
 
         foreach($this->declaration->getProduits() as $produit) {
-            $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
+            $libelleProduitSlugify = str_replace('AOC-', '', KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet()))));
             //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
             if($libelleSlugify == $libelleProduitSlugify) {
                 $this->identifyLibelleProduct[$libelle] = $produit;

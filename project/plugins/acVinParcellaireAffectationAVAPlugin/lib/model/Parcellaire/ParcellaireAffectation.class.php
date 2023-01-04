@@ -135,6 +135,51 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
+    public function initOrUpdateProduitsFromAire() {
+        $parcellesActives = array();
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if(!$parcelle->active) {
+                continue;
+            }
+            $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
+        }
+        
+        $genre = $this->get('declaration/certification/genre');
+        if ($genre && $genre->exist('appellation_GRDCRU')) {
+            $genre->remove('appellation_GRDCRU');
+            $genre->add('appellation_GRDCRU');
+        }
+
+        $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
+        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
+                //On active toutes les parcelles y  compris celles qui ne sont pas grands crus
+                if(true || strpos($CVIAppellation->getHash(), 'GRDCRU') !== false) {
+                    foreach ($CVIAppellation->detail as $CVIParcelle) {
+                        foreach($CVIParcelle->isInAires() as $nom => $statut) {
+                            if (strpos(strtoupper($nom), 'GRAND CRU') !== false) {
+                                $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
+                                $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N)$/', '', $libelle));
+                                $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
+                                if ($prod) {
+                                    print_r([$nom, $CVIAppellation->getHash(), $prod->getHash()]);
+                                    $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu(). ' ('.$nom.')');
+                                    $parcelle->superficie = $CVIParcelle->superficie * 100;
+                                    $parcelle->active = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+        foreach($parcellesActives as $parcelleHash) {
+            if(!$this->exist($parcelleHash)) {
+                continue;
+            }
+
+            $this->get($parcelleHash)->active = 1;
+        }
+    }
+
     public function initOrUpdateProduitsFromCVI() {
         $parcellesActives = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
@@ -188,6 +233,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             $this->get($parcelleHash)->active = 1;
         }
+    }
+
+    public function updateFromLastParcellaire()
+    {
+        //TODO: récupérer les aires cochées de l'année dernière
+        $this->initProduitFromLastParcellaire();
+        return $this->initOrUpdateProduitsFromAire();
     }
 
     public function updateCremantFromLastParcellaire()
