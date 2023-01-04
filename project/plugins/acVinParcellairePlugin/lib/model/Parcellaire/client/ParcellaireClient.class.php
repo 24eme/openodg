@@ -58,14 +58,14 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
-    public function getAires($communes) {
+    public function getAiresForInseeCommunes($communes) {
         $aires = array();
-        if (ParcellaireConfiguration::getInstance()->getAires()) {
-            foreach($this->getCommunes() as $denum_id) {
-                $aires[$denum_id] = $this->getAire($denum_id, $communes);
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
+            $a = $this->getAire($infos['denomination_id'], $communes);
+            if ($a) {
+                $aires[$infos['denomination_id']] = ["jsons" => $a, "infos" => $infos];
             }
         }
-
         return $aires;
     }
 
