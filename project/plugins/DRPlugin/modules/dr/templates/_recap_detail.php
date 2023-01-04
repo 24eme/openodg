@@ -33,7 +33,7 @@
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                         <span title="Rendement L5" style="cursor: help">
                             <?php if ($produit['lignes']['05']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round($produit['lignes']['05']['val'] / $produit['lignes']['04']['val'], 2) ?>
+                                <?= round(intval($produit['lignes']['05']['val']) / $produit['lignes']['04']['val'], 2) ?>
                             <?php else: echo 0 ?>
                             <?php endif ?>
                         </span> hl/ha
@@ -41,7 +41,7 @@
 <?php endif ?>
                         <span title="Rendement L15" style="cursor: help">
                             <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round($produit['lignes']['15']['val'] / $produit['lignes']['04']['val'], 2) ?>
+                                <?= round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ?>
                             <?php else: echo 0 ?>
                             <?php endif ?>
                         </span> hl/ha
@@ -62,7 +62,7 @@
         </tr>
     </tbody>
 </table>
-<?php $bailleurs = $dr->getBailleurs()->getRawValue(); ?>
+<?php $bailleurs = $dr->getBailleurs(true)->getRawValue(); ?>
 <?php if(count($bailleurs)): ?>
     <p style="margin-top: -10px; margin-bottom: 20px;">
     Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
