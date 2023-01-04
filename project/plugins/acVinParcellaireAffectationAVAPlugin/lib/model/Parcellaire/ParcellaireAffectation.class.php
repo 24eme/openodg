@@ -200,7 +200,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach ($prevParcellaireCremant->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
             foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
-                // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
                 if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
                     $parcelleAActiver->active = 1;
                 }
