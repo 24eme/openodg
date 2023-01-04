@@ -55,6 +55,9 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         }
         $uniqParcelles = array();
         foreach ($this->document->declaration->getProduitsCepageDetails() as $pid => $detail) {
+            if($this->document->isImportFromCVI()) {
+                continue;
+            }
             if(!$detail->isAffectee()) {
                 continue;
             }
