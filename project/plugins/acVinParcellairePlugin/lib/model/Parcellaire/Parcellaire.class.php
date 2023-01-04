@@ -13,6 +13,7 @@ class Parcellaire extends BaseParcellaire {
     protected $habilitation = false;
     private $cache_geophpdelimitation = null;
     private $cache_geojson = null;
+    private $cache_aire = null;
 
     public function __construct() {
         parent::__construct();
@@ -306,12 +307,23 @@ class Parcellaire extends BaseParcellaire {
         if (!$inao_denomination_id) {
             $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
         }
-        return ParcellaireClient::getInstance()->getAire($inao_denomination_id, $this->declaration->getCommunes());
+        $this->getCachedAires();
+        if (!isset($this->cache_aire[$inao_denomination_id])) {
+            return array();
+        }
+        return $this->cache_aire[$inao_denomination_id]['jsons'];
+    }
+
+    public function getCachedAires() {
+        if (!$this->cache_aire) {
+            $this->cache_aire = $this->getAires();
+        }
+        return $this->cache_aire;
     }
 
     public function getAires() {
 
-        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes());
+        return ParcellaireClient::getInstance()->getAiresForInseeCommunes($this->declaration->getCommunes());
     }
 
     public function getGeoPHPDelimitations($denom_id = null) {
