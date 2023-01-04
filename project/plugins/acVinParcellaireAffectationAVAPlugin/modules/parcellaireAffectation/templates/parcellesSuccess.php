@@ -134,6 +134,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
+			<?php else: ?>
+			<p>Si vous remarquez une incohérence, vous pouvez <a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>">récupérer la dernière version de votre casier viticole</a> et si toutefois des incohérences subsistent veuillez contacter les douanes ou l'AVA.</p>
 			<?php endif; ?>
         </div>
     </div>
