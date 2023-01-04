@@ -222,7 +222,7 @@ class parcellaireAffectationActions extends sfActions {
         $nbParcelles = count($this->parcellaire->declaration->getProduitsCepageDetails());
         $this->parcellaire->initOrUpdateProduitsFromCVI();
         if(!$nbParcelles) {
-            $this->parcellaire->updateAffectationCremantFromLastAffectation();
+            $this->parcellaire->updateCremantFromLastParcellaire();
         }
         $this->parcellaire->save();
 
