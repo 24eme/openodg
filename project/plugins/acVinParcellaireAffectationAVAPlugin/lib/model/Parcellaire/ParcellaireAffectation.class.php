@@ -161,8 +161,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                                 $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
                                 $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                                 if ($prod) {
-                                    print_r([$nom, $CVIAppellation->getHash(), $prod->getHash()]);
-                                    $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu(). ' ('.$nom.')');
+                                    $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                                     $parcelle->superficie = $CVIParcelle->superficie * 100;
                                     $parcelle->active = 0;
                                 }
