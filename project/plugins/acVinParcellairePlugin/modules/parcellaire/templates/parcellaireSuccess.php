@@ -1,11 +1,17 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php
+function echoSuperficie($s) {
+    if (ParcellaireConfiguration::getInstance()->isAres()) {
+        echo formatFloatFr($s * 100, 2, 2);
+        return ;
+    }
+    echo formatFloatFr($s, 4, 4);
+}
 $parcellaire_client = ParcellaireClient::getInstance();
 $last = null;
 $list_communes = [];
 $list_idu = [];
-$superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres()) ? 100 : 1;
 ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
@@ -175,18 +181,25 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                     <span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?><br/>
                                     <?php $aires = $detail->isInAires(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
-                                    <?php foreach($aires as $nom => $a): ?>
-                                    <span class="<?php if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT): ?>text-danger<?php else: ?>text-muted<?php endif; ?>">
-                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire" : '' ; ?>
-                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement" : '' ; ?>
-                                    <?php echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur" : '' ; ?>
-                                    <?php echo $nom; ?>
-                                    </span>
-                                    <?php endforeach; ?>
+                                    <?php
+                                    $separateur = '';
+                                    foreach($aires as $nom => $a) {
+                                        echo "$separateur ";
+                                        if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT){
+                                            echo '<span class="text-danger">';
+                                        }else{
+                                            echo '<span class="text-muted">';
+                                        }
+                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
+                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
+                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
+                                        echo "$nom</span>";
+                                        $separateur = ',';
+                                    }?>
                                     <?php endif; ?>
                                 </td>
                                 <td class="" style="text-align: center;"><?php echo $compagne; ?></td>
-                                <td class="" style="text-align: right;"><?php echoLongFloat($detail->superficie * $superficie_multiplicateur); ?>
+                                <td class="" style="text-align: right;"><?php echoSuperficie($detail->superficie); ?>
                                 </td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo $ecart_pieds; ?> / <?php echo $ecart_rang; ?></td>
 
@@ -198,11 +211,11 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                                 </td>
                                 <?php endif; ?>
                             </tr>
-                            <?php $superficie = $superficie + $detail->superficie * $superficie_multiplicateur; ?>
+                            <?php $superficie = $superficie + $detail->superficie; ?>
                             <?php $nb_parcelles++; ?>
                             <?php endforeach; ?>
                     </tbody>
-                    <tr><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoLongFloat($superficie); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
+                    <tr><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoSuperficie($superficie); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
                 </table>
     <?php endforeach; ?>
         </div>
@@ -222,7 +235,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
   <thead>
     <tr>
         <th class="col-xs-4">Cépage</th>
-        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small">(ha)</span></th>
+        <th class="col-xs-4 text-center" colspan="2">Superficie <span class="text-muted small"><?php echo (ParcellaireConfiguration::getInstance()->isAres()) ? "(a)" : "(ha)" ?></span></th>
     </tr>
   </thead>
   <tbody>
@@ -231,7 +244,7 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
     foreach($synthese as $cepage_libelle => $s): ?>
         <tr>
             <td><?php echo $cepage_libelle ; ?></td>
-            <td class="text-right"><?php echoLongFloat($s['superficie']); ?></td>
+            <td class="text-right"><?php echoSuperficie($s['superficie']); ?></td>
 <?php
     endforeach;
 ?>
@@ -277,17 +290,17 @@ $superficie_multiplicateur = (ParcellaireConfiguration::getInstance()->isAres())
                 <th><?php echo $produit_libelle ; ?></th>
                 <th><?php echo $cepage_libelle ; ?></th>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <th class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></th>
+                <th class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></th>
                 <?php else: ?>
-                <th class="text-right"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></th><th class="text-right"><?php echoLongFloat($s['superficie_max'] * $superficie_multiplicateur); ?></th>
+                <th class="text-right"><?php echoSuperficie($s['superficie_min']); ?></th><th class="text-right"><?php echoSuperficie($s['superficie_max']); ?></th>
                 <?php endif; ?>
             <?php else: ?>
                 <td><?php echo $produit_libelle ; ?></td>
                 <td><?php echo $cepage_libelle ; ?></td>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
-                <td class="text-right" colspan="2"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></td>
+                <td class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></td>
                 <?php else: ?>
-                <td class="text-right"><?php echoLongFloat($s['superficie_min'] * $superficie_multiplicateur); ?></td><td class="text-right"><?php echoLongFloat($s['superficie_max'] * $superficie_multiplicateur); ?></td>
+                <td class="text-right"><?php echoSuperficie($s['superficie_min']); ?></td><td class="text-right"><?php echoSuperficie($s['superficie_max']); ?></td>
                 <?php endif; ?>
             <?php endif; ?>
         </tr>

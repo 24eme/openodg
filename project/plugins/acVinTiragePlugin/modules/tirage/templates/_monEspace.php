@@ -1,4 +1,7 @@
 <?php use_helper('Date'); ?>
+<?php if (!$etablissement->hasFamille(EtablissementClient::FAMILLE_ELABORATEUR)): ?>
+    <?php return; ?>
+<?php endif; ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($tirage && $tirage->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">

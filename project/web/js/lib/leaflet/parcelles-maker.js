@@ -96,7 +96,13 @@ function styleDelimitation(color, opacity){
 }
 
 function zoomOnMap(){
-    map.fitBounds(layers[parcelles_name].getBounds());
+    if (layers[parcelles_name]) {
+        map.fitBounds(layers[parcelles_name].getBounds());
+    }else{
+        for(i in layers) {
+            map.fitBounds(layers[i].getBounds());
+        }
+    }
     clearParcelleSelected()
 }
 var sections = []
@@ -128,7 +134,10 @@ function onEachFeature(feature, layer) {
 }
 var layers = [];
 parcelles_name = '<span style="background-color: white; border: 2px solid red; width: 25px; display:inline-block;"> &nbsp; </span> Parcelles'
-layers[parcelles_name] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
+array_parcelles = [];
+if (parcelles) {
+    array_parcelles = parseString(parcelles);
+}
 for(i in sections) {
     map.addLayer( new L.Marker(
                     sections[i].getCenter(),
@@ -149,15 +158,19 @@ for(i in aires) {
   layers[name] = L.geoJSON(parseString(aires[i]['geojson']), { style: styleDelimitation(aires[i]['color'], 0.5) });
   layers[name].addTo(map);
 };
-layers[parcelles_name] = L.geoJSON(parseString(parcelles), { style: style, onEachFeature: onEachFeature });
-layers[parcelles_name].addTo(map);
+if (array_parcelles.length) {
+    layers[parcelles_name] = L.geoJSON(array_parcelles, { style: style, onEachFeature: onEachFeature });
+    layers[parcelles_name].addTo(map);
+}
 
 L.control.layers({}, layers, {position: 'bottomleft'}).addTo(map);
 map.addEventListener('overlayadd', function(e) {
     for(name in layers) {
         layers[name].bringToFront();
     }
-    layers[parcelles_name].bringToFront();
+    if (array_parcelles.length) {
+        layers[parcelles_name].bringToFront();
+    }
 });
 
 zoomOnMap();

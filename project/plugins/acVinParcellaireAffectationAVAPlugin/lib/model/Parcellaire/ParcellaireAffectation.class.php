@@ -135,6 +135,51 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
+    public function initOrUpdateProduitsFromAire() {
+        $parcellesActives = array();
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if(!$parcelle->active) {
+                continue;
+            }
+            $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
+        }
+        
+        $genre = $this->get('declaration/certification/genre');
+        if ($genre && $genre->exist('appellation_GRDCRU')) {
+            $genre->remove('appellation_GRDCRU');
+            $genre->add('appellation_GRDCRU');
+        }
+
+        $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
+        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
+                //On active toutes les parcelles y  compris celles qui ne sont pas grands crus
+                if(true || strpos($CVIAppellation->getHash(), 'GRDCRU') !== false) {
+                    foreach ($CVIAppellation->detail as $CVIParcelle) {
+                        foreach($CVIParcelle->isInAires() as $nom => $statut) {
+                            if (strpos(strtoupper($nom), 'GRAND CRU') !== false) {
+                                $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
+                                $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N)$/', '', $libelle));
+                                $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
+                                if ($prod) {
+                                    print_r([$nom, $CVIAppellation->getHash(), $prod->getHash()]);
+                                    $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu(). ' ('.$nom.')');
+                                    $parcelle->superficie = $CVIParcelle->superficie * 100;
+                                    $parcelle->active = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+        foreach($parcellesActives as $parcelleHash) {
+            if(!$this->exist($parcelleHash)) {
+                continue;
+            }
+
+            $this->get($parcelleHash)->active = 1;
+        }
+    }
+
     public function initOrUpdateProduitsFromCVI() {
         $parcellesActives = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
@@ -170,12 +215,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     }
                 }
 
-                if ($c) {
-                    $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie * 100; // hectare -> are
-                    $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
+                if (!$c) {
+                    continue;
                 }
+
+                $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
+                $parcelle = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                $parcelle->superficie = $CVIParcelle->superficie * 100; // hectare -> are
+                $parcelle->active = 0;
             }
         }
 
@@ -188,67 +235,44 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function updateAffectationCremantFromLastAffectation()
+    public function updateFromLastParcellaire()
     {
-        $affectationCremant = $this->getParcellaireLastCampagne(ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
+        //TODO: récupérer les aires cochées de l'année dernière
+        $this->initProduitFromLastParcellaire();
+        return $this->initOrUpdateProduitsFromAire();
+    }
 
-        if (! $affectationCremant) {
-            return;
+    public function updateCremantFromLastParcellaire()
+    {
+        if ($this->isIntentionCremant()) {
+            $affectation = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT));
         }
 
-        $cepages_autorises = [
-            'cepage_PB' => 'PINOT BLANC',
-            'cepage_CD' => 'CHARDONNAY',
-            'cepage_BN' => 'PINOT NOIR BLANC',
-            'cepage_RI' => 'RIESLING',
-            'cepage_PG' => 'PINOT GRIS',
-            'cepage_PN' => 'PINOT NOIR ROSé',
-            'cepage_BLRS' => 'BLANC + ROSé',
-            'cepage_RB' => 'REBêCHES',
-            'cepage_PNRaisin' => 'PINOT NOIR',
-            'cepage_AU' => 'AUXERROIS'
-        ];
-
-        foreach ($affectationCremant->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
-            if (array_key_exists($parcelleCremant->getCepage()->getKey(), $cepages_autorises)) {
+        if(isset($affectation) && $affectation) {
+            $hash2delete = array();
+            foreach ($affectation->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
                 foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
-                    // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
                     if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
+                        $hash2delete[$parcelleAActiver->getHash()] = $parcelleAActiver->getHash();
                         $parcelleAActiver->active = 1;
                     }
                 }
             }
+            foreach($hash2delete as $hash) {
+                $this->remove($hash);
+            }
         }
-    }
 
-    public function updateIntentionCremantFromLastTwoIntentions()
-    {
-        $intention = $this->getParcellaireLastCampagne("INTENTIONCREMANT");
+        $prevParcellaireCremant = $this->getParcellaireLastCampagne();
 
-        if (! $intention) {
+        if (! $prevParcellaireCremant) {
             return;
         }
 
-        $cepages_autorises = [
-            'cepage_PB' => 'PINOT BLANC',
-            'cepage_CD' => 'CHARDONNAY',
-            'cepage_BN' => 'PINOT NOIR BLANC',
-            'cepage_RI' => 'RIESLING',
-            'cepage_PG' => 'PINOT GRIS',
-            'cepage_PN' => 'PINOT NOIR ROSé',
-            'cepage_BLRS' => 'BLANC + ROSé',
-            'cepage_RB' => 'REBêCHES',
-            'cepage_PNRaisin' => 'PINOT NOIR',
-            'cepage_AU' => 'AUXERROIS'
-        ];
-
-        foreach ($intention->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleIntention) {
-            if (array_key_exists($parcelleIntention->getCepage()->getKey(), $cepages_autorises)) {
-                foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
-                    // TODO: Trouver un moyen de checker le numéro d'ordre de la parcelle
-                    if ($parcelleAActiver->section == $parcelleIntention->section && $parcelleAActiver->numero_parcelle == $parcelleIntention->numero_parcelle) {
-                        $parcelleAActiver->active = 1;
-                    }
+        foreach ($prevParcellaireCremant->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
+            foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
+                if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
+                    $parcelleAActiver->active = 1;
                 }
             }
         }
@@ -720,5 +744,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     /**** FIN DES PIECES ****/
+
+    public function isImportFromCVI() {
+
+        return strpos($this->_id, 'CREMANT') !== false;
+    }
 
 }
