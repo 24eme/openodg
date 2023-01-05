@@ -1570,7 +1570,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         unset($docs2save[$mother->_id]);
         foreach($docs2save as $id) {
-            DRevClient::getInstance()->find($id)->save(false);
+            $drev = DRevClient::getInstance()->find($id);
+            if (!$drev) {
+                throw new sfException("DREV $id not found");
+            }
+            $drev->save(false);
         }
 
         DeclarationClient::getInstance()->clearCache();
