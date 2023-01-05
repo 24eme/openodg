@@ -220,9 +220,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 }
 
                 $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
-                $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()] = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
-                $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->superficie = $CVIParcelle->superficie * 100; // hectare -> are
-                $parcellesFromCurrentAffectation[$hash.'/detail/'.$CVIParcelle->getKey()]->active = 0;
+                $parcelle = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                $parcelle->superficie = $CVIParcelle->superficie * 100; // hectare -> are
+                $parcelle->active = 0;
             }
         }
 
@@ -244,6 +244,25 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function updateCremantFromLastParcellaire()
     {
+        if ($this->isIntentionCremant()) {
+            $affectation = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT));
+        }
+
+        if(isset($affectation) && $affectation) {
+            $hash2delete = array();
+            foreach ($affectation->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
+                foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
+                    if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
+                        $hash2delete[$parcelleAActiver->getHash()] = $parcelleAActiver->getHash();
+                        $parcelleAActiver->active = 1;
+                    }
+                }
+            }
+            foreach($hash2delete as $hash) {
+                $this->remove($hash);
+            }
+        }
+
         $prevParcellaireCremant = $this->getParcellaireLastCampagne();
 
         if (! $prevParcellaireCremant) {
@@ -728,7 +747,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function isImportFromCVI() {
 
-        return strpos($this->_id, 'PARCELLAIREAFFECTATIONCREMANT') !== false;
+        return strpos($this->_id, 'CREMANT') !== false;
     }
 
 }
