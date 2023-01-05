@@ -55,8 +55,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 <th class="col-xs-2">Commune</th>
                                 <th class="col-xs-1">Section</th>
                                 <th class="col-xs-1">Numéro</th>
-                                <th class="col-xs-2"><?php if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN): ?>Appellation<?php else: ?>Lieu-dit<?php endif; ?></th>
-                                <th class="col-xs-3"><?php if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
+                                <th class="col-xs-2"><?php if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT): ?>Appellation<?php else: ?>Lieu-dit<?php endif; ?></th>
+                                <th class="col-xs-3"><?php if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT): ?>Lieu-dit / <?php endif; ?>Cépage</th>
                                 <th class="col-xs-2">Superficie</th>
                             </tr>
                         </thead>
@@ -87,8 +87,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 
                                     <td>
                                         <?php
-                                        if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN) {
-                                            echo ParcellaireAffectationClient::getAppellationLibelle($parcelle->getAppellation()->getKey());
+                                        if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT) {
+                                            echo $parcelle->getLibelleComplet();
                                         } else {
                                             echo $parcelle->getLieuLibelle();
                                         }
@@ -96,7 +96,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     </td>
                                     <td>
                                         <?php
-                                        if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN) {
+                                        if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT) {
                                             echo ($parcelle->getLieuLibelle()) ? $parcelle->getLieuLibelle() . " / " : "";
                                         }
                                         echo $parcelle->getCepageLibelle();
