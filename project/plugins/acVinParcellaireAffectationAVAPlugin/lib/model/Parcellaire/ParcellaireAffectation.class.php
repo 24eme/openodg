@@ -145,9 +145,15 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
         
         $genre = $this->get('declaration/certification/genre');
-        if ($genre && $genre->exist('appellation_GRDCRU')) {
-            $genre->remove('appellation_GRDCRU');
-            $genre->add('appellation_GRDCRU');
+        if ($genre) {
+            if ($genre->exist('appellation_GRDCRU')) {
+                $genre->remove('appellation_GRDCRU');
+                $genre->add('appellation_GRDCRU');
+            }
+            if ($genre->exist('appellation_COMMUNALE')) {
+                $genre->remove('appellation_COMMUNALE');
+                $genre->add('appellation_COMMUNALE');
+            }
         }
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
