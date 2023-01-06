@@ -10,7 +10,6 @@ class societeComponents extends sfComponents {
     }
 
     public function executeSidebar() {
-        $this->societe->getMasterCompte()->updateCoordonneesLongLat();
         $this->etablissements = $this->societe->getEtablissementsObject();
         $this->interlocuteurs = array();
         $this->modifiable = !isset($this->modifiable) || $this->modifiable;
