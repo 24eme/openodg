@@ -9,7 +9,8 @@ class DRevSendOITask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-            new sfCommandOption('drev', null, sfCommandOption::PARAMETER_OPTIONAL, 'Une drev', '')
+            new sfCommandOption('drev', null, sfCommandOption::PARAMETER_OPTIONAL, 'Une drev', ''),
+            new sfCommandOption('resendonly', null, sfCommandOption::PARAMETER_OPTIONAL, 'Ne transmet que si ca a déjà été fait (envoi_oi setté)', null)
         ));
 
         $this->namespace = 'drev';
@@ -34,6 +35,11 @@ EOF;
         }
         foreach ($items as $item) {
         	$drev = DRevClient::getInstance()->find($item->id);
+            if ($options['resendonly']) {
+                if (!$drev->exist('envoi_oi') || !$drev->envoi_oi) {
+                    continue;
+                }
+            }
             try {
               	 $drevOi = new DRevOI($drev, $contextInstance);
               	 $sended = $drevOi->send();
