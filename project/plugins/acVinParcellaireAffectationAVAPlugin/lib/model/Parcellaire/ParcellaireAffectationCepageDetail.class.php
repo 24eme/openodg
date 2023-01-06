@@ -82,7 +82,7 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
     }
 
     public function getLibelleComplet() {
-        return $this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle().' '.$this->getCepageLibelle();
+        return $this->getCepage()->getLibelleComplet();
     }
 
     public function getLieuLibelle() {
