@@ -149,12 +149,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $genre->remove('appellation_GRDCRU');
             $genre->add('appellation_GRDCRU');
         }
-
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
                 foreach($CVIParcelle->isInAires() as $nom => $statut) {
-                    print_r($nom);
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
                         $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
                         $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
