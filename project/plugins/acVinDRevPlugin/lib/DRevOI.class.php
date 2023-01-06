@@ -66,7 +66,7 @@ class DRevOI
 			throw new sfException($result);
 		} else {
 			$stderr = fopen("php://stderr", "w");
-			fwrite($stderr, "Retour envoi oi : ".$output);
+			fwrite($stderr, "Retour envoi oi : ".$output."\n");
 		}
 		curl_close($ch);
 	}

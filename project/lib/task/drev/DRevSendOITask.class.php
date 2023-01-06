@@ -28,8 +28,8 @@ EOF;
         $contextInstance = sfContext::createInstance($this->configuration);
 
 
-        if (isset($options['drev'])) {
-            $items = $options['drev'];
+        if (isset($options['drev']) && $options['drev']) {
+            $items = array((object)array( 'id' => $options['drev'] ));
         } else {
             $items = DrevAttenteOiView::getInstance()->getAll();
         }
