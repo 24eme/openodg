@@ -2610,11 +2610,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $volumes[$cvi];
     }
 
-    public function getContratsAPIURL() {
+
+    public function getContratsFromAPI(){
+
         $api_link = sfConfig::get('app_api_contrats_link');
         $secret = sfConfig::get('app_api_contrats_secret');
         if (!$api_link || !$secret) {
-            return null;
+            return array();
         }
 
         $cvi = $this->declarant->cvi;
@@ -2623,17 +2625,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $md5 = md5($secret."/".$cvi."/".$millesime."/".$epoch);
 
-        return $api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5;
-
-    }
-
-    public function getContratsFromAPI(){
-
-        $url = $this->getContratsAPIURL();
-        if (!$url) {
-            return array();
-        }
-        $content = file_get_contents($url);
+        $content = file_get_contents($api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5);
 
         $result = json_decode($content,true);
 

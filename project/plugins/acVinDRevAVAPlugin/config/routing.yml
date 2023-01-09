@@ -294,14 +294,6 @@ drev_validation:
   requirements:
     sf_method: [get, post]
 
-drev_declarvapi:
-  url: /drev/declarvapi/:id
-  param: { module: drev, action: declarvapi }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-
 drev_modificative:
   url: /drev/modificative/:id
   param: { module: drev, action: modificative }
