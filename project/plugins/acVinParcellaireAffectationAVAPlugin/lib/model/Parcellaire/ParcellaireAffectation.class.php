@@ -152,24 +152,21 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
-                //On active toutes les parcelles y  compris celles qui ne sont pas grands crus
-                if(true || strpos($CVIAppellation->getHash(), 'GRDCRU') !== false) {
-                    foreach ($CVIAppellation->detail as $CVIParcelle) {
-                        foreach($CVIParcelle->isInAires() as $nom => $statut) {
-                            if (strpos(strtoupper($nom), 'GRAND CRU') !== false) {
-                                $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
-                                $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N)$/', '', $libelle));
-                                $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
-                                if ($prod) {
-                                    print_r([$nom, $CVIAppellation->getHash(), $prod->getHash()]);
-                                    $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu(). ' ('.$nom.')');
-                                    $parcelle->superficie = $CVIParcelle->superficie * 100;
-                                    $parcelle->active = 0;
-                                }
-                            }
+            foreach ($CVIAppellation->detail as $CVIParcelle) {
+                foreach($CVIParcelle->isInAires() as $nom => $statut) {
+                    print_r($nom);
+                    if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
+                        $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
+                        $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
+                        $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
+                        if ($prod) {
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                            $parcelle->superficie = $CVIParcelle->superficie * 100;
+                            $parcelle->active = 0;
                         }
                     }
                 }
+            }
         }
         foreach($parcellesActives as $parcelleHash) {
             if(!$this->exist($parcelleHash)) {
