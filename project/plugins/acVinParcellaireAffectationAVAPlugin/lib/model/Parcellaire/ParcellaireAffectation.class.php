@@ -144,17 +144,21 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
         
-        $genre = $this->get('declaration/certification/genre');
-        if ($genre && $genre->exist('appellation_GRDCRU')) {
-            $genre->remove('appellation_GRDCRU');
-            $genre->add('appellation_GRDCRU');
+       if ($this->exist('declaration/certification/genre')) {
+           $genre = $this->get('declaration/certification/genre');
+            if ($genre->exist('appellation_GRDCRU')) {
+                $genre->remove('appellation_GRDCRU');
+                $genre->add('appellation_GRDCRU');
+            }
+            if ($genre->exist('appellation_COMMUNALE')) {
+                $genre->remove('appellation_COMMUNALE');
+                $genre->add('appellation_COMMUNALE');
+            }
         }
-
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
                 foreach($CVIParcelle->isInAires() as $nom => $statut) {
-                    print_r($nom);
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
                         $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
                         $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
