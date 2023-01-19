@@ -133,8 +133,8 @@ class degustationActions extends sfActions {
 
     public function executeSupprimerLotNonPreleve(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->lots->remove($request->getParameter('lot'));
-        $this->degustation->lots->reindex();
+        $lot = $this->degustation->lots->get($request->getParameter('lot'));
+        $this->degustation->removeLot($lot);
         $this->degustation->save();
         return $this->redirect('degustation_preleve', $this->degustation);
 

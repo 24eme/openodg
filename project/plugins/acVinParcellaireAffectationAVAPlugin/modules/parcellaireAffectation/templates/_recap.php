@@ -85,7 +85,7 @@ if ($last) {
                             <?php
                         endforeach;
 
-                        if ($lastParcellesKeysByAppellations && array_key_exists($appellation->gethash(), $lastParcellesKeysByAppellations)):
+                        if (isset($diff) && $diff && $lastParcellesKeysByAppellations && array_key_exists($appellation->gethash(), $lastParcellesKeysByAppellations)):
                             foreach ($lastParcellesKeysByAppellations[$appellation->gethash()] as $hashDetail => $detail):
                                 if (!array_key_exists($hashDetail, $detailsHashes)):
                                     ?>
