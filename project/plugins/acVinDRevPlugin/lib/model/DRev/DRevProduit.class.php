@@ -205,18 +205,21 @@ class DRevProduit extends BaseDRevProduit
             return false;
         }
 
-        if($this->recolte->volume_total == $this->recolte->volume_sur_place) {
+        if(round($this->recolte->volume_total, 2) == round($this->recolte->volume_sur_place, 2)) {
+			return true;
+		}
+
+		if(round($this->recolte->volume_sur_place, 2) == round($this->recolte->recolte_nette + $this->recolte->usages_industriels_total, 2)) {
 
 			return true;
 		}
 
-		if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_total)) {
+        if(round($this->recolte->volume_sur_place, 2) == round($this->recolte->recolte_nette + $this->recolte->usages_industriels_sur_place, 2)) {
 
 			return true;
 		}
 
-        if($this->recolte->volume_sur_place == ($this->recolte->recolte_nette + $this->recolte->usages_industriels_sur_place)) {
-
+        if(round($this->recolte->volume_sur_place, 2) == round($this->recolte->recolte_nette, 2)) {
 			return true;
 		}
 
@@ -225,11 +228,12 @@ class DRevProduit extends BaseDRevProduit
 
 	public function getTheoriticalVolumeRevendiqueIssuRecole() {
         if(!DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && !$this->getCepage()->hasProduitsSansDonneesRecolte()) {
-    		if($this->getSommeProduitsCepage('vci/rafraichi') + $this->getSommeProduitsCepage('vci/substitution'))
-    			return $this->getSommeProduitsCepage('recolte/recolte_nette') - $this->getSommeProduitsCepage('vci/rafraichi') - $this->getSommeProduitsCepage('vci/substitution');
-    		else
-    			return $this->getSommeProduitsCepage('recolte/recolte_nette');
-        }
+    		if($this->getSommeProduitsCepage('vci/rafraichi') + $this->getSommeProduitsCepage('vci/substitution')) {
+				return $this->getSommeProduitsCepage('recolte/recolte_nette') - $this->getSommeProduitsCepage('vci/rafraichi') - $this->getSommeProduitsCepage('vci/substitution');
+			} else {
+				return $this->getSommeProduitsCepage('recolte/recolte_nette');
+			}
+		}
 
         if($this->vci->rafraichi + $this->vci->substitution)
 			return $this->recolte->recolte_nette - $this->vci->rafraichi - $this->vci->substitution;
