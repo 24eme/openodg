@@ -2,14 +2,6 @@
 
 class DSDouaneCsvFile extends DouaneImportCsvFile {
 
-    const CSV_TYPE = 0;
-    const CSV_CAMPAGNE = 1;
-    const CSV_OPERATEUR_RAISON_SOCIALE = 2;
-    const CSV_SIRET = 3;
-    const CSV_CVI = 4;
-    const CSV_MILLESIME = 20;
-    const CSV_VOLUME = 21;
-
     const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Lieu de stockage;Code INAO;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Hash;Millesime;Conditionnement;Volume'."\n";
 
     public function convert($options = array()) {
@@ -35,11 +27,11 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
         $commune = $etablissement->getCommune();
 
         #Recupere les lieux
-        $array_slice = array_slice($csv,7);
+        $array_csv_all_from_lieux = array_slice($csv,7);
 
         $line_csv = 7;
-        foreach($array_slice as $lieux){
-            if(!$lieux[0]){ //ligne vide
+        foreach($array_csv_all_from_lieux as $lieux){
+            if(!$lieux[1]){
                 break;
             }
             $array_lieux[]= $lieux[0];
@@ -47,19 +39,22 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
         }
 
         #Recupere les produits par lieu
-        $array_slice = array_slice($csv, $line_csv+1);
+        $array_csv_all_from_produits = array_slice($csv, $line_csv+1);
 
         $i = 0;
-        foreach($array_slice as $pages_lieux){
-            if(!$pages_lieux[0]){ //ligne vide
+        foreach($array_csv_all_from_produits as $pages_lieux){
+            if(!$pages_lieux[1]){
                 $i++;
-                continue;
             }
             $array_produits[$array_lieux[$i]][] = $pages_lieux;
         }
 
-        //on supprime les 2 premiers élements pour chaque lieux :
+
         foreach($array_produits as $k => $v){
+            if($k == $array_lieux[0]){
+                $array_produits[$k] = array_slice($v,1);
+                continue;
+            }
             $array_produits[$k] = array_slice($v,2);
         }
 
