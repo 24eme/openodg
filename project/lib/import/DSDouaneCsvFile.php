@@ -20,8 +20,12 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
         $csvFile = new CsvFile($this->filePath);
         $csv = $csvFile->getCsv();
 
+
         $type = "DS";
-        $campagne = "2022";  #A RECUPERER DEPUIS LE NOM DU CSV ?
+
+        preg_match('/_(.+).csv/', $this->filePath, $campagne);
+        $campagne = substr_replace($campagne[1], '/', 2, 0);
+
         $cvi = $csv[1][1];
         $siret = $csv[3][1];
         $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
