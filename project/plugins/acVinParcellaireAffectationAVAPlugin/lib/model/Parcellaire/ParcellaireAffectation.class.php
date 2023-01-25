@@ -143,7 +143,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
-        
+
        if ($this->exist('declaration/certification/genre')) {
            $genre = $this->get('declaration/certification/genre');
             if ($genre->exist('appellation_GRDCRU')) {
@@ -179,6 +179,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             $this->get($parcelleHash)->active = 1;
         }
+        print_r($this->declaration);exit;
     }
 
     public function initOrUpdateProduitsFromCVI() {

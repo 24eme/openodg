@@ -408,18 +408,18 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
 
-    public function getTotalValeur($numLigne, $famille = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array()) {
+    public function getTotalValeur($numLigne, $familles = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array()) {
         $value = 0;
 
         foreach($this->getEnhancedDonnees() as $donnee) {
-            if ($famille && $donnee->colonne_famille != $famille) {
+            if (in_array($donnee->colonne_famille, $throw_familles)) {
+                throw new sfException("Famille $donnee->colonne_famille non permise");
+            }
+            if ($familles && !in_array($donnee->colonne_famille, $familles)) {
                 continue;
             }
             if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
                 continue;
-            }
-            if (in_array($donnee->colonne_famille, $throw_familles)) {
-                throw new sfException("Famille $donnee->colonne_famille non permise");
             }
             if($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
                 continue;

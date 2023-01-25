@@ -597,10 +597,10 @@ class FactureClient extends acCouchdbClient {
 
         if (FactureConfiguration::getInstance()->getExercice() == 'viticole') {
             $dateCampagne = $dateCampagne->modify('-7 months');
-        }
-
-        if (FactureConfiguration::getInstance()->getExercice() == 'recolte') {
+        }elseif (FactureConfiguration::getInstance()->getExercice() == 'recolte') {
             $dateCampagne = $dateCampagne->modify('-9 months');
+        }elseif (preg_match('/\d*\/(\d{2})/', FactureConfiguration::getInstance()->getExercice(), $m)) {
+            $dateCampagne = $dateCampagne->modify('-'.($m[1] * 1).' months');
         }
 
         return $dateCampagne->format('Y');
