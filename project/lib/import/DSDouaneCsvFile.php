@@ -68,7 +68,8 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
                 $code_inao = trim($ligne_produit[0]);
                 $produit = $this->configuration->findProductByCodeDouane($code_inao);
                 if (!$produit) {
-                    $infos_produit = ";;;;;;;;";
+                    $libelle = $ligne_produit[1];
+                    $infos_produit = ";;;;;;;$libelle;";
                 } else {
                     $infos_produit = $produit->getCertification()->getKey().';'.$produit->getGenre()->getKey().';'.$produit->getAppellation()->getKey().';'.$produit->getMention()->getKey().';'.$produit->getLieu()->getKey().';'.$produit->getCouleur()->getKey().';'.$produit->getCepage()->getKey().";".$produit->getLibelleComplet().';'.$produit->getHash();
                 }
