@@ -38,7 +38,7 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
             $line_csv++;
         }
 
-        if(!$array_lieux){
+        if(! isset($array_lieux)){
             throw new sfException("PAS DE DECLARATION DE STOCK POUR LE CVI : ".$cvi);
         }
 
