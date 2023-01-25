@@ -14,7 +14,7 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
 
         $type = "DS";
 
-        preg_match('/_(.+).csv/', $this->filePath, $campagne);
+        preg_match('/ds-.+_(.+).csv/', $this->filePath, $campagne);
         $campagne = substr_replace($campagne[1], '/', 2, 0);
 
         $cvi = $csv[1][1];
@@ -36,6 +36,10 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
             }
             $array_lieux[]= $lieux[0];
             $line_csv++;
+        }
+
+        if(!$array_lieux){
+            throw new sfException("PAS DE DECLARATION DE STOCK POUR LE CVI : ".$cvi);
         }
 
         #Recupere les produits par lieu
