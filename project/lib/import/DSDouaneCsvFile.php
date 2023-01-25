@@ -43,6 +43,9 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
 
         $i = 0;
         foreach($array_csv_all_from_produits as $pages_lieux){
+            if(!isset($pages_lieux[1])){
+                break;
+            }
             if(!$pages_lieux[1]){
                 $i++;
             }
