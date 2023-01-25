@@ -10,7 +10,7 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
     const CSV_MILLESIME = 20;
     const CSV_VOLUME = 21;
 
-    const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Lieu de stockage;hash_produit;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Hash;Millesime;Conditionnement;Volume'."\n";
+    const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Lieu de stockage;Code INAO;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;Produit;Hash;Millesime;Conditionnement;Volume'."\n";
 
     public function convert($options = array()) {
         if (!$this->filePath) {
@@ -19,7 +19,6 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
 
         $csvFile = new CsvFile($this->filePath);
         $csv = $csvFile->getCsv();
-
 
         $type = "DS";
 
@@ -35,26 +34,52 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
         $code_commune = $etablissement->getCodePostal();
         $commune = $etablissement->getCommune();
 
-        $lieu_de_stockage=$csv[7][0];
+        #Recupere les lieux
+        $array_slice = array_slice($csv,7);
 
-        $array_produits = array_slice($csv, 10);
-        foreach ($array_produits as $ligne_produit) {
-            if (!isset($ligne_produit[1])) {
-                return;
+        $line_csv = 7;
+        foreach($array_slice as $lieux){
+            if(!$lieux[0]){ //ligne vide
+                break;
             }
-            $code_inao = trim($ligne_produit[0]);
-            $produit = $this->configuration->findProductByCodeDouane($code_inao);
-            if (!$produit) {
-                $infos_produit = ";;;;;;;;;";
-            } else {
-                $infos_produit = $produit->getCertification()->getKey().';'.$produit->getGenre()->getKey().';'.$produit->getAppellation()->getKey().';'.$produit->getMention()->getKey().';'.$produit->getLieu()->getKey().';'.$produit->getCouleur()->getKey().';'.$produit->getCepage()->getKey().";".$produit->getLibelleComplet().';'.$code_inao.";".$produit->getHash();
-            }
-            $millesime = $ligne_produit[2];
-            $conditionnement = $ligne_produit[3];
-            $volume = $ligne_produit[4];
-
-            $line = "$type;$campagne;$identifiant;$cvi;$raison_sociale;$code_commune;$commune;$lieu_de_stockage;$code_inao;$infos_produit;$millesime;$conditionnement;$volume;\n";
-            echo($line);
+            $array_lieux[]= $lieux[0];
+            $line_csv++;
         }
+
+        #Recupere les produits par lieu
+        $array_slice = array_slice($csv, $line_csv+1);
+
+        $i = 0;
+        foreach($array_slice as $pages_lieux){
+            if(!$pages_lieux[0]){ //ligne vide
+                $i++;
+                continue;
+            }
+            $array_produits[$array_lieux[$i]][] = $pages_lieux;
+        }
+
+        //on supprime les 2 premiers élements pour chaque lieux :
+        foreach($array_produits as $k => $v){
+            $array_produits[$k] = array_slice($v,2);
+        }
+
+        foreach($array_produits as $lieu_de_stockage => $produits){
+            foreach($produits as $ligne_produit){
+                $code_inao = trim($ligne_produit[0]);
+                $produit = $this->configuration->findProductByCodeDouane($code_inao);
+                if (!$produit) {
+                    $infos_produit = ";;;;;;;;";
+                } else {
+                    $infos_produit = $produit->getCertification()->getKey().';'.$produit->getGenre()->getKey().';'.$produit->getAppellation()->getKey().';'.$produit->getMention()->getKey().';'.$produit->getLieu()->getKey().';'.$produit->getCouleur()->getKey().';'.$produit->getCepage()->getKey().";".$produit->getLibelleComplet().';'.$produit->getHash();
+                }
+                $millesime = $ligne_produit[2];
+                $conditionnement = $ligne_produit[3];
+                $volume = $ligne_produit[4];
+
+                $line = "$type;$campagne;$identifiant;$cvi;$raison_sociale;$code_commune;$commune;$lieu_de_stockage;$code_inao;$infos_produit;$millesime;$conditionnement;$volume;\n";
+                echo($line);
+            }
+        }
+
     }
 }
