@@ -178,7 +178,7 @@ $list_idu = [];
                                     <span class="text-muted"><?php echo $detail->idu; ?></span>
                                 </td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
-                                    <span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?><br/>
+                                    <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>
                                     <?php $aires = $detail->isInAires(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
                                     <?php
