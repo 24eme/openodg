@@ -51,13 +51,15 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col-xs-1">Affectée</th>
-                                <th class="col-xs-2">Commune</th>
-                                <th class="col-xs-1">Section</th>
-                                <th class="col-xs-1">Numéro</th>
-                                <th class="col-xs-2"><?php if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN): ?>Appellation<?php else: ?>Lieu-dit<?php endif; ?></th>
-                                <th class="col-xs-3"><?php if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
-                                <th class="col-xs-2">Superficie</th>
+                                <th class="col-xs-1 text-center">Affectée</th>
+								<?php if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT): ?>
+                                <th class="col-xs-3 text-center">Appellation</th>
+								<?php endif; ?>
+                                <th class="col-xs-2 text-center">Commune</th>
+                                <th class="col-xs-2 text-center">Section / Numéro</th>
+                                <th class="col-xs-1 text-center">Lieu-dit</th>
+								<th class="col-xs-1 text-center">Cépage</th>
+                                <th class="col-xs-2 text-center">Superficie</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,28 +82,13 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                         }
                                         ?>
                                     </td>
+									<?php if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT): ?>
+										<td><?php echo $parcelle->getLibelleComplet(); ?></td>
+	                                <?php endif; ?>
                                     <td><?php echo $parcelle->getCommune(); ?></td>
-                                    <td><?php echo $parcelle->getSection(); ?></td>
-                                    <td><?php echo $parcelle->getNumeroParcelle(); ?></td>
-
-
-                                    <td>
-                                        <?php
-                                        if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN) {
-                                            echo ParcellaireAffectationClient::getAppellationLibelle($parcelle->getAppellation()->getKey());
-                                        } else {
-                                            echo $parcelle->getLieuLibelle();
-                                        }
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        if ($appellation == ParcellaireAffectationClient::APPELLATION_VTSGN) {
-                                            echo ($parcelle->getLieuLibelle()) ? $parcelle->getLieuLibelle() . " / " : "";
-                                        }
-                                        echo $parcelle->getCepageLibelle();
-                                        ?>
-                                    </td>
+                                    <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
+                                    <td><?php echo $parcelle->lieu; ?></td>
+                                    <td><?php echo $parcelle->getCepageLibelle(); ?></td>
                                     <td class="edit">
                                         <div class="row">
                                             <div class="col-xs-6 text-right">
@@ -134,6 +121,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
+			<?php else: ?>
+			<p>Si vous remarquez une incohérence, vous pouvez <a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>">récupérer la dernière version de votre casier viticole</a> et si toutefois des incohérences subsistent veuillez contacter les douanes ou l'AVA.</p>
 			<?php endif; ?>
         </div>
     </div>

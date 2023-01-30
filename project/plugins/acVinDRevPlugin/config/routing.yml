@@ -390,3 +390,13 @@ drev_update_recolte:
     type:     object
   requirements:
     sf_method: [get, post]
+
+drev_declarvapi:
+  url: /drev/declarvapi/:id
+  param: { module: drev, action: declarvapi }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]

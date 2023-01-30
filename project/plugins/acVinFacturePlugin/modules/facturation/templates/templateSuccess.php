@@ -4,6 +4,12 @@
   <li class="active"><a href=""><?php echo $template->libelle ?></a></li>
 </ol>
 
+<h2>Configuration de la Facturation</h2>
+
+<div>
+    <p><b>Période de l'exercice :</b> <?php echo FactureConfiguration::getInstance()->getExercice(); ?></p>
+</div>
+
 <h2><?php echo $template->libelle ?></h2>
 
 <table class="table table-bordered">

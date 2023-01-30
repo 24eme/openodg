@@ -1570,7 +1570,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         unset($docs2save[$mother->_id]);
         foreach($docs2save as $id) {
-            DRevClient::getInstance()->find($id)->save(false);
+            $drev = DRevClient::getInstance()->find($id);
+            if (!$drev) {
+                throw new sfException("DREV $id not found");
+            }
+            $drev->save(false);
         }
 
         DeclarationClient::getInstance()->clearCache();
@@ -1802,7 +1806,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, null, $produitFilter, null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter, null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
             return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, null, $produitFilter);
@@ -2607,7 +2611,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
 
-    public function getContratsFromAPI(){
+    public function getContratsAPIURL(){
 
         $api_link = sfConfig::get('app_api_contrats_link');
         $secret = sfConfig::get('app_api_contrats_secret');
@@ -2620,8 +2624,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $epoch = (string)time();
 
         $md5 = md5($secret."/".$cvi."/".$millesime."/".$epoch);
+        return $api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5;
+    }
 
-        $content = file_get_contents($api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5);
+    public function getContratsFromAPI(){
+        $url = $this->getContratsAPIURL();
+        if (!$url) {
+            return array();
+        }
+        $content = file_get_contents($url);
 
         $result = json_decode($content,true);
 
