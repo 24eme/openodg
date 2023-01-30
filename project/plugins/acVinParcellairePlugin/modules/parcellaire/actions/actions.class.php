@@ -114,6 +114,34 @@ class parcellaireActions extends sfActions {
         exit;
     }
 
+    public function executeParcellaireExport(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+        
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: text/csv; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.csv"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+        $this->content = "Commune;N° cadastraux;Superficie parcelle;Superficie UC;Cépage;Année plantation;Ecartement rang;Ecartement pied;\n";
+        foreach ($parcellaire->declaration as $declaration) {
+            foreach ($declaration->detail as $detail) {
+                $superf      = $detail->getSuperficie();
+                $cepage = $detail->cepage;
+                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) {
+                    $cepage .= ' - jeunes vignes';
+                }
+                $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds') : '';
+                $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang') : '';
+                $this->content .= "$detail->commune;$detail->section $detail->numero_parcelle;$detail->superficie_cadastrale;$superf;$cepage;$detail->campagne_plantation;$ecart_rang;$ecart_pieds;\n";
+            }
+        }
+        echo $this->content;
+        exit;
+    }
+
     public function secureTeledeclarant() {
         if(!$this->getUser()->isAdmin() && !$this->getUser()->isStalker() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
             throw new sfError403Exception();
