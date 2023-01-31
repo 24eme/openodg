@@ -250,9 +250,9 @@ class LotsClient
 
         $nbDegustation = 0;
         foreach($ids as $id) {
-            if(preg_match('/(TRANSACTION|CONDITIONNEMENT|CHGTDENOM)/', $id)) {
+            if(preg_match('/(CHGTDENOM)/', $id)) {
 
-                throw new Exception("La modification de lot n'est pas encore implémentée pour les documents de TRANSACTION, CONDITIONNEMENT et CHGTDENOM");
+                throw new Exception("La modification de lot n'est pas encore implémentée pour les documents de CHGTDENOM");
             }
 
             if(strpos($id, "DEGUSTATION") !== false) {
@@ -274,6 +274,8 @@ class LotsClient
                 }
                 $ids2Save[$master->_id] = $master->_id;
                 continue;
+            } elseif($doc->isFactures()) {
+                throw new sfException("Le doc ".$id." est déjà facturé modification impossible");
             }
             $ids2Save[$id] = $id;
         }
