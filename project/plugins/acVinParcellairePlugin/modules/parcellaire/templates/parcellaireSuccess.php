@@ -322,7 +322,8 @@ $list_idu = [];
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
-<a href="<?php echo url_for('parcellaire_export_csv', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le tableur pour contrôle</a>
+<a href="<?php echo url_for('parcellaire_export_geo', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger les coordonées géographiques</a>
+<a href="<?php echo url_for('parcellaire_export_csv', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le tableur de contrôle</a>
 <a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
 </div>
 <?php endif; ?>
