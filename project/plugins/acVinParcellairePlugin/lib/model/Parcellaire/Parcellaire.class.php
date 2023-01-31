@@ -220,9 +220,9 @@ class Parcellaire extends BaseParcellaire {
                 if (!count($libelles)) {
                     $libelles[] = '';
                 }
-                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                    $libelles = array('jeunes vignes');
-                }
+            }
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+                $libelles = array('jeunes vignes');
             }
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {

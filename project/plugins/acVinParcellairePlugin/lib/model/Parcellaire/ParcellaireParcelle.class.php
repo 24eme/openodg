@@ -218,7 +218,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasTroisiemeFeuille() {
-        $year = date('Y', strtotime('1st november')) - 2;
+        $year = ConfigurationClient::getInstance()->getCurrentAnneeRecolte() - 2;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
     }

@@ -33,6 +33,11 @@ class CampagneManager {
         return preg_replace('/-.*/', '', $this->getCurrent());
     }
 
+    public function getCurrentAnneeRecolte() {
+
+        return $this->getCurrentYearPeriode();
+    }
+
     public function getCurrentPrevious() {
 
         return $this->getPrevious($this->getCurrent());
