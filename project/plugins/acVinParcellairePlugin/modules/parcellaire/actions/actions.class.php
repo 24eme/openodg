@@ -114,7 +114,7 @@ class parcellaireActions extends sfActions {
         exit;
     }
 
-    public function executeParcellaireExport(sfWebRequest $request) {
+    public function executeParcellaireExportCSV(sfWebRequest $request) {
         $this->secureTeledeclarant();
         
         $parcellaire = $this->getRoute()->getParcellaire();
@@ -139,6 +139,22 @@ class parcellaireActions extends sfActions {
             }
         }
         echo $this->content;
+        exit;
+    }
+
+    public function executeParcellaireExportGeo(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+        
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: application/vnd.geo+json");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.geojson"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+        echo json_encode($parcellaire->getDocument()->getGeoJson());
+        //echo $this->content;
         exit;
     }
 
