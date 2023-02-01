@@ -18,6 +18,8 @@ class FactureConfiguration {
 		}
 
         $this->configuration = sfConfig::get('facture_configuration_facture', array());
+        $this->app_coordonnees_bancaire = sfConfig::get('app_facture_coordonnees_bancaire', array());
+
     }
 
     public function isActive() {
@@ -91,4 +93,27 @@ class FactureConfiguration {
     public function hasPaiements(){
       return isset($this->configuration['paiements']) && $this->configuration['paiements'];
     }
+
+    public function getBanqueNom() {
+        if (!isset($this->app_coordonnees_bancaire['banquenom'])) {
+            throw sfException("app coordonnees_bancaire banquenom missing");
+        }
+        return $this->app_coordonnees_bancaire['banquenom'];
+    }
+
+    public function getBIC() {
+        if (!isset($this->app_coordonnees_bancaire['bic'])) {
+            throw sfException("app coordonnees_bancaire '])) missing");
+        }
+        return $this->app_coordonnees_bancaire['bic'];
+    }
+
+    public function getIBAN() {
+        if (!isset($this->app_coordonnees_bancaire['iban'])) {
+            throw sfException("app coordonnees_bancaire iban missing");
+        }
+        return $this->app_coordonnees_bancaire['iban'];
+    }
+
+
 }
