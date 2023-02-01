@@ -149,7 +149,7 @@ class DRevLot extends BaseDRevLot
     }
 
     public function getLotInDrevOrigine(){
-        $drevSource = DRevClient::getInstance()->find($this->id_document);
+        $drevSource = DRevClient::getInstance()->findViaCache($this->id_document);
         return $drevSource->getLotByNumArchive($this->numero_archive);
     }
 
