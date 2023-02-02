@@ -37,7 +37,12 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($sv):?>panel-success<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclaration de production  <?php echo $periode; ?></h3>
+            <h3 class="panel-title">
+                Déclaration de production  <?php echo $periode; ?>
+                <?php if ( $sf_user->isAdmin() && $sv && $sv->isValideeOdg() ): ?>
+                    <span class="pull-right"><span class="glyphicon glyphicon-ok-circle"></span></span>
+                <?php endif; ?>
+            </h3>
         </div>
             <div class="panel-body">
                 <p class="explications">Espace de récupération de la Déclaration de production pour le déclarant.</p>

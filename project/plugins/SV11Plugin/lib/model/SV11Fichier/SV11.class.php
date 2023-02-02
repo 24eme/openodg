@@ -45,4 +45,11 @@ class SV11 extends BaseSV11 {
 
         return $etablissements;
     }
+
+    public function isValideeOdg() {
+        if (DRConfiguration::getInstance()->hasValidationDR()) {
+            return $this->exist('validation_odg') && ($this->validation_odg);
+        }
+        return false;
+    }
 }
