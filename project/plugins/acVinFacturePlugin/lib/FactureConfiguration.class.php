@@ -103,7 +103,6 @@ class FactureConfiguration {
       return isset($this->configuration['paiements']) && $this->configuration['paiements'];
     }
 
-<<<<<<< HEAD
     public function getDelaisPaiement() {
         if(!isset($this->configuration['delais_paiement'])) {
 
