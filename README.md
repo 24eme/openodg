@@ -34,8 +34,10 @@ Le projet est actuellement en cours d'utilisation par  :
 * Syndicats du Val de Loire : https://teledeclaration.vinsvaldeloire.pro/
 * La Fédération des Vins de Nantes : https://declaration.vinsdenantes.com/
 
-Technologies utilisées
+Fonctionnement technique
 ----------------------
+
+### Technologies
 
 Ce projet utilise les technologies libres suivantes :
 
@@ -47,6 +49,14 @@ Ce projet utilise les technologies libres suivantes :
 * TcPDF
 * Elastic Search
 * Elastica
+
+### Architecture
+
+[Voir le schéma de l'architecture technique](doc/architecture-technique/architecture_technique_giildap_openodg.pdf)
+
+### Modèle de données
+
+[Voir le schéma du modèle de données](doc/architecture-technique/modele_de_donnees_couchdb_vins.pdf)
 
 Installation
 ------------
