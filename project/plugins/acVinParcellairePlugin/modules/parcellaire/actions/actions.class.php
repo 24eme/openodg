@@ -153,8 +153,22 @@ class parcellaireActions extends sfActions {
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
-        echo json_encode($parcellaire->getDocument()->getGeoJson());
-        //echo $this->content;
+
+        // Le json décodé des parcelles
+        $geojson = $parcellaire->getDocument()->getGeoJson();
+
+        // On y ajoute les json (décodés) des aires des appelations des communes associées
+        foreach ($parcellaire->getCachedAires() as $aire) {
+            foreach ($aire['jsons'] as $airejson) {
+                $aireobj = json_decode($airejson);
+                foreach ($aireobj->features as $feat) {
+                    $geojson->features[] = $feat;
+                }
+            }
+        }
+
+        // Met le json dans le fichier .geojson à télécharger
+        echo json_encode($geojson);
         exit;
     }
 
