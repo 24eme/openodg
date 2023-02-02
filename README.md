@@ -52,11 +52,11 @@ Ce projet utilise les technologies libres suivantes :
 
 ### Architecture
 
-[Voir le schéma de l'architecture technique](doc/architecture-technique/architecture_technique_giildap_openodg.pdf)
+[:page_facing_up: Voir le schéma de l'architecture technique](doc/architecture-technique/architecture_technique_giildap_openodg.pdf)
 
 ### Modèle de données
 
-[Voir le schéma du modèle de données](doc/architecture-technique/modele_de_donnees_couchdb_vins.pdf)
+[:page_facing_up: Voir le schéma du modèle de données](doc/architecture-technique/modele_de_donnees_couchdb_vins.pdf)
 
 Installation
 ------------
