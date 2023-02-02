@@ -157,18 +157,41 @@ class parcellaireActions extends sfActions {
         // Le json décodé des parcelles
         $geojson = $parcellaire->getDocument()->getGeoJson();
 
+        // Ajoute des couleurs et l'identification
+        foreach ($geojson->features as $feat) {
+            $feat->properties->stroke = '#FF0000';
+            $feat->properties->stroke_width = 4;
+            $feat->properties->stroke_opacity = 1;
+            $feat->properties->fill = '#fff';
+            $feat->properties->fill_opacity = 0;
+            $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
+        }
+
         // On y ajoute les json (décodés) des aires des appelations des communes associées
         foreach ($parcellaire->getCachedAires() as $aire) {
             foreach ($aire['jsons'] as $airejson) {
                 $aireobj = json_decode($airejson);
                 foreach ($aireobj->features as $feat) {
-                    $geojson->features[] = $feat;
+                    // Ajoute les couleurs et infos qui vont bien
+                    $feat->properties->name = $aire['infos']['name'];
+                    $feat->properties->fill = $aire['infos']['color'];
+                    $feat->properties->fill_opacity = 0.5;
+                    $feat->properties->stroke = '#000';
+                    $feat->properties->stroke_width = 2;
+                    $feat->properties->stroke_opacity = 0.1;
+                    // Ajoute l'aire au début du tableau, les parcelles doivent être audessus pour être plus facilement clickables. 
+                    array_unshift($geojson->features, $feat);
                 }
             }
         }
 
-        // Met le json dans le fichier .geojson à télécharger
-        echo json_encode($geojson);
+        // Met le json dans le fichier .geojson à télécharger et met des - à la place des _ parce que c'est comme ça en geojson
+        echo str_replace('fill_opacity', 'fill-opacity', 
+                str_replace('stroke_width', 'stroke-width', 
+                    str_replace('stroke_opacity', 'stroke-opacity', json_encode($geojson) 
+                    )
+                )
+            );
         exit;
     }
 
