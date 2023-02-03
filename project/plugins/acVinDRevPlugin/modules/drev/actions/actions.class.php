@@ -442,30 +442,27 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication', $this->drev);
     }
 
-    public function executeDeleteLots(sfWebRequest $request){
+    public function executeDeleteLotMaster(sfWebRequest $request){
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if(!$this->drev->isMaster()) {
+            throw new sfException("Ce lot ne peut pas être supprimé car il ne s'agit pas de la drev master");
+        }
 
         if($this->drev->getLotByNumArchive($request->getParameter('numArchive')) === null){
           throw new sfException("le lot d'index ".$request->getParameter('numArchive')." n'existe pas ");
         }
 
         $lot = $this->drev->getLotByNumArchive($request->getParameter('numArchive'));
-        // $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->drev->identifiant, $lot->numero_archive, $this->drev->periode);
-        // if($lotCheck){
-        //   throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
-        //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
-        // }
 
-        if($lot->id_document_affectation) {
+        if(!$lot || $lot->id_document_affectation) {
             throw new sfException("Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé.");
         }
 
-        if($lot){
-            $this->drev->remove($lot->getHash());
-        }
-
+        $this->drev->remove($lot->getHash());
         $this->drev->save();
+
         return $this->redirect('drev_lots', $this->drev);
 
     }
@@ -931,7 +928,7 @@ class drevActions extends sfActions {
             return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
         }
 
-        public function executeDeleteLot(sfWebRequest $request) {
+        public function executeDeleteLotModificative(sfWebRequest $request) {
             $docid = $request->getParameter('id');
             $doc = acCouchdbManager::getClient()->find($docid);
             $this->forward404Unless($doc);
