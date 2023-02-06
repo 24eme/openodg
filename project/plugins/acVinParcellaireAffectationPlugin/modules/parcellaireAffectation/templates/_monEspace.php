@@ -3,7 +3,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel  <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>panel-success<?php elseif (($parcellaireAffectation) || ($intentionParcellaireAffectation && ParcellaireAffectationClient::getInstance()->isOpen())): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclaration d'affectation parcellaire</h3>
+            <h3 class="panel-title">Déclaration d'affectation parcellaire <?php echo $periode ?></h3>
         </div>
         <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>
         <div class="panel-body">
@@ -55,4 +55,3 @@
             <?php endif; ?>
     </div>
 </div>
-

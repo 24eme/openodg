@@ -4,7 +4,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel  <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>panel-success<?php else : ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irrigables</h3>
+            <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irrigables&nbsp;<?php echo $periode ?></h3>
         </div>
         <?php if (!$parcellaire): ?>
         <div class="panel-body">
