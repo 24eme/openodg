@@ -1,7 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel panel-primary">
+    <div class="block_declaration panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irriguées&nbsp;<?php echo $periode ?></h3>
         </div>
@@ -37,7 +37,7 @@
 </div>
 <?php elseif ($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel panel-primary">
+    <div class="block_declaration panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irriguées</h3>
         </div>

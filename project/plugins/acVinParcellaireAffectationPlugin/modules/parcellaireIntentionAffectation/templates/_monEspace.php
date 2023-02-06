@@ -1,7 +1,7 @@
 <?php if($etablissement->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)): return; endif; ?>
 <?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel <?php if ($intentionParcellaireAffectation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
+    <div class="block_declaration panel <?php if ($intentionParcellaireAffectation): ?>panel-success<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Identification parcellaire <?php echo $periode ?></h3>
         </div>
