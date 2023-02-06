@@ -53,5 +53,8 @@
                     <div style="margin-top: 77px;">&nbsp;</div>
                 </div>
             <?php endif; ?>
+            <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireaffectation')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            </div>
     </div>
 </div>
