@@ -320,7 +320,6 @@ class LotsClient
         }
 
         if($doc instanceof InterfaceVersionDocument) {
-            $docOrigine = $doc;
             $doc = $doc->getMaster();
             $lot = $doc->getLot($uniqueId);
         }
@@ -347,7 +346,6 @@ class LotsClient
             $doc->validate();
             $doc->validateOdg();
             $doc->save();
-            $docOrigine->save();
         }
     }
 
