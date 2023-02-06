@@ -4,7 +4,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($parcellaireAffectationCoop): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Affectations parcellaires de vos apporteurs</h3>
+            <h3 class="panel-title">Affect. parcellaires de vos apporteurs <?php echo $periode ?></h3>
         </div>
         <div class="panel-body">
             <p class="explications">Vous pouvez déclarer les affectations parcellaires de vos apporteurs.</p>
