@@ -1,7 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel panel-default">
+    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irriguées&nbsp;<?php echo $periode ?></h3>
         </div>
@@ -14,7 +14,7 @@
               <?php endif; ?>
               <div class="actions">
                   <?php if ($sf_user->isAdmin()): ?>
-                          <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
+                          <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer la télédéclaration<?php else: ?>Visualiser et continuer à déclarer<?php endif; ?></a>
                           <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => true)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                   <?php endif; ?>
               </div>
