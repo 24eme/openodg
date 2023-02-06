@@ -9,22 +9,22 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
           return acCouchdbManager::getClient("parcellaireIntentionAffectation");
       }
 
-      public function createDoc($identifiant, $campagne, $papier = false, $date = null, $type = self::TYPE_COUCHDB) {
+      public function createDoc($identifiant, $periode, $papier = false, $date = null, $type = self::TYPE_COUCHDB) {
       	if (!$date) {
           $date = date('Y-m-d');
         }
-        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $campagne, $papier, $date, $type);
+        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier, $date, $type);
       }
 
-      public function createOrGetDocFromIdentifiantAndDate($identifiant, $campagne, $papier = false, $date = null, $type = self::TYPE_COUCHDB)
+      public function createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier = false, $date = null, $type = self::TYPE_COUCHDB)
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
           if ($doc_found && $doc_found->date === $date) {
               return $doc_found;
           }
-          if (!$doc_found || $doc_found->campagne != $campagne) {
+          if (!$doc_found || $doc_found->periode != $periode) {
 	          $parcellaireIntentionAffectation = new ParcellaireIntentionAffectation();
-	          $parcellaireIntentionAffectation->initDoc($identifiant, $campagne, $date, $type);
+	          $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date, $type);
 	          $parcellaireIntentionAffectation->add('papier', 1);
           } else {
               $doc_found->date = $date;
