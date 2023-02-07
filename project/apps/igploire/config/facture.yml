@@ -10,3 +10,4 @@ all:
       modalite_paiement: "- comptant  par virement \\ - virement en 3, 6, 8 ou 9 fois de mars à novembre \\ - prélèvement automatique en 9 fois de mars à novembre \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
+      liste_dernier_exercice: true

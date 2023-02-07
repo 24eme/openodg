@@ -10,3 +10,4 @@ all:
       paiements: false
       delais_paiement: null
       exercice: "civil"
+      liste_dernier_exercice: false

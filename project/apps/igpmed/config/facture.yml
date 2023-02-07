@@ -11,3 +11,4 @@ all:
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
       exercice: '31/08'
+      liste_dernier_exercice: true

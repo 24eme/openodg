@@ -11,3 +11,4 @@ all:
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
       exercice: 'recolte'
+      liste_dernier_exercice: true

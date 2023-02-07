@@ -99,6 +99,11 @@ class FactureConfiguration {
         return ($this->configuration['exercice']) ?: '';
     }
 
+    public function isListeDernierExercice() {
+
+        return boolval($this->configuration['liste_dernier_exercice']);
+    }
+
     public function hasPaiements(){
       return isset($this->configuration['paiements']) && $this->configuration['paiements'];
     }

@@ -112,7 +112,7 @@ class facturationActions extends sfActions
               $identifiant = $this->compte->getSociete()->identifiant;
             }
 
-            if(!$request->getParameter('campagne')) {
+            if(FactureConfiguration::getInstance()->isListeDernierExercice() && !$request->getParameter('campagne')) {
                 foreach(FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_JSON, null, 1) as $facture) {
 
                     return $this->redirect('facturation_declarant', array('id' => $this->compte->_id, 'campagne' => $facture->campagne));
