@@ -32,7 +32,7 @@
   <li><a href="#lignes" aria-controls="lignes" role="tab" data-toggle="tab">Lignes</a></li>
   <form method="GET" class="form-inline pull-right" style="display: inline-block;">
       Exercice comptable :
-      <select class="select2SubmitOnChange form-control" name="campagne">
+      <select class="select2SubmitOnChange form-control input-sm" name="campagne">
           <option value="tous">Tous</option>
           <?php foreach ($campagnes as $c): ?>
           <option <?php echo ($campagne == $c) ? "selected" : "" ?> value="<?php echo $c ?>">
@@ -40,7 +40,7 @@
           </option>
           <?php endforeach ?>
       </select>
-      <button type="submit" class="btn btn-default">Changer</button>
+      <button type="submit" class="btn btn-sm btn-default">Changer</button>
   </form>
 </ul>
 <div class="tab-content">
