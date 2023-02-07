@@ -106,7 +106,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getLignesForPdf() {
-        if(!FactureConfiguration::getInstance()->isAggregateLignes()){
+        if(!FactureConfiguration::getInstance()->isLigneUnique()){
           return $this->_get('lignes');
         }
         $libelles = array();
