@@ -33,7 +33,7 @@
   <form method="GET" class="form-inline pull-right" style="display: inline-block;">
       Exercice comptable :
       <select class="select2SubmitOnChange form-control" name="campagne">
-          <option value="tous">Toutes</option>
+          <option value="tous">Tous</option>
           <?php foreach ($campagnes as $c): ?>
           <option <?php echo ($campagne == $c) ? "selected" : "" ?> value="<?php echo $c ?>">
               <?php echo $c ?>

@@ -160,4 +160,12 @@ class Organisme
     public function getCreditorId(){
       return $this->getInfo('creditor_id');
     }
+
+    public function getBanqueNom(){
+      return $this->getInfo('banque_nom');
+    }
+
+    public function getBanqueAdresse(){
+      return $this->getInfo('banque_adresse');
+    }
 }
