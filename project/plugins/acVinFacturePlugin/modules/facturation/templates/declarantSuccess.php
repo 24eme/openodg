@@ -72,7 +72,8 @@
                     <?php endif; ?>
                 </td>
                 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <td class="text-center dropdown">
+                <td class="text-center">
+                  <span class="dropdown">
                   <button type="button" class="btn btn-default btn-default-step btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
                   <ul class="dropdown-menu dropdown-menu-right">
                       <?php if(!$facture->isAvoir()): ?>
@@ -90,6 +91,7 @@
                         <li class="disabled"><a href=""><span class="glyphicon glyphicon-repeat"></span> Créér un avoir</a></li>
                       <?php endif; ?>
                   </ul>
+                  </span>
                 </td>
                <?php endif; ?>
                 <td class="text-right">
