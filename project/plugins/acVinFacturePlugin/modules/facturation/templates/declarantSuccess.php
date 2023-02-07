@@ -57,6 +57,9 @@
                 <th style="witdth: 0;"></th>
                 <?php endif; ?>
                 <th style="witdth: 0;"></th>
+                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                <th style="witdth: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -95,8 +98,11 @@
                 </td>
                <?php endif; ?>
                 <td class="text-right">
-                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-xs btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class=""><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                 </td>
+                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                    <td><?php if($facture->isTelechargee()): ?><span style="opacity: 0.8;" data-toggle="tooltip" title="La facture a été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-open text-primary"></span><?php else: ?><span style="opacity: 0.2;" data-toggle="tooltip" title="La facture n'a pas encore été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-close text-primary"></span><?php endif; ?></td>
+                <?php endif; ?>
             </tr>
             <?php endforeach;
               if(!count($factures)):
@@ -137,9 +143,9 @@
                             <td class="text-right"><?php echoFloat($detail->prix_unitaire); ?> €</td>
                             <td class="text-right"><?php echo ($detail->taux_tva) ? echoFloat($detail->montant_tva)." €" : null; ?></td>
                             <td class="text-right"><?php echo echoFloat($detail->montant_ht); ?> €</td>
-                            <td>
+                            <td class="text-right">
                                 <?php if($first): ?>
-                                <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-xs btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+                                <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                                 <?php endif; ?>
                             </td>
                         </tr>
