@@ -11,5 +11,8 @@
               	<a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireintentionaffectation_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php if ($intentionParcellaireAffectation): ?>Mettre à jour<?php else: ?>Saisir<?php endif; ?> l'identification</a>
               </div>
           </div>
+          <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+              <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement)) ?>" class="btn btn-xs btn-link btn-block invisible">Voir tous les documents</a>
+          </div>
     </div>
 </div>

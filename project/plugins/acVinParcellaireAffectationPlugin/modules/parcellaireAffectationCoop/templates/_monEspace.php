@@ -12,5 +12,8 @@
                 <a id="btn_affection_parcellaire_coop" class="btn btn-block <?php if($parcellaireAffectationCoop): ?>btn-primary<?php else: ?>btn-default<?php endif; ?>" href="<?php echo url_for('parcellaireaffectationcoop_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if($parcellaireAffectationCoop): ?>Continuer à déclarer pour vos apporteurs<?php else: ?>Déclarer pour vos apporteurs<?php endif; ?></a>
             </div>
         </div>
+        <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+            <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement)) ?>" class="btn btn-xs btn-link btn-block invisible">Voir tous les documents</a>
+        </div>
     </div>
 </div>
