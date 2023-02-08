@@ -1,6 +1,7 @@
 Bonjour,
 
-Une nouvelle facture est disponible, vous pouvez la télécharger directement en cliquant sur le lien : <?php echo ProjectConfiguration::getAppRouting()->generate('facturation_pdf_auth', array('id' => $id, 'auth' => UrlSecurity::generateAuthKey($id)), true) ?>
+Une nouvelle facture est disponible, vous pouvez la télécharger directement en cliquant sur le lien : <?php echo ProjectConfiguration::getAppRouting()->generate('piece_public_view', array('doc_id' => $id, 'piece_id' => '0', 'auth' => UrlSecurity::generateAuthKey($id.'0')), true) ?>
+
 
 Bien cordialement,
 

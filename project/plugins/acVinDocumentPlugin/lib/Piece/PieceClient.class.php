@@ -17,17 +17,23 @@ class PieceClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findUrlByIdAndPiece($docId, $pieceId, $fileParam) {
+    public function getPiece($docId, $pieceId) {
         $doc = $this->find($docId);
-        return $this->getUrlForPieceId($doc, $pieceId, $fileParam);
-    }
-
-    public function getUrlForPieceId($doc, $pieceId, $fileParam) {
         if (!$doc->pieces->exist($pieceId)) {
             throw new sfException("Piece $pieceId in document $docId not found");
         }
-        $piece = $doc->pieces->get($pieceId);
-        $url = $piece->getUrl();
+
+        return $doc->pieces->get($pieceId);
+    }
+
+    public function findUrlByIdAndPiece($docId, $pieceId, $fileParam) {
+
+        return $this->getUrlForPieceId($docId, $pieceId, $fileParam);
+    }
+
+    public function getUrlForPieceId($docId, $pieceId, $fileParam) {
+        $url = $this->getPiece($docId, $pieceId)->getUrl();
+
         return ($fileParam) ? $url.'?file='.$fileParam : $url;
     }
 

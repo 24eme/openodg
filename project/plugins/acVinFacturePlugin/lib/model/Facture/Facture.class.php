@@ -638,6 +638,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     	return sfContext::getInstance()->getRouting()->generate('facturation_pdf', $this);
     }
 
+    public function hasUrlPublic() {
+        return true;
+    }
+
+    public function generateUrlPublicPiece($source = null, $absolute = false) {
+
+        return sfContext::getInstance()->getRouting()->generate('facturation_pdf_auth', array('id' => $this->_id, 'auth' => UrlSecurity::generateAuthKey($this->_id)), $absolute);
+    }
+
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return null;
     }
