@@ -21,12 +21,12 @@ class pieceActions extends sfActions
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
-        $this->piece = PieceClient::getInstance()->getPiece($docId, $pieceId);
         if(!Piece::hasUrlPublic($docId)) {
 
             throw new sfError404Exception();
         }
 
+        $this->piece = PieceClient::getInstance()->getPiece($docId, $pieceId);
         $this->getResponse()->addMeta('robots', 'noindex');
         $this->setLayout(false);
     }
