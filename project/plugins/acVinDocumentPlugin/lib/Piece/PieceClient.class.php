@@ -26,6 +26,22 @@ class PieceClient extends acCouchdbClient {
         return $doc->pieces->get($pieceId);
     }
 
+    public function getPieceBySource($docId, $source) {
+        $doc = $this->find($docId);
+
+        $pieceFound = null;
+        foreach($doc->pieces as $piece) {
+            if($piece->source != $source) {
+                continue;
+            }
+            $pieceFound = $piece;
+
+            break;
+        }
+
+        return $pieceFound;
+    }
+
     public function findUrlByIdAndPiece($docId, $pieceId, $fileParam) {
 
         return $this->getUrlForPieceId($docId, $pieceId, $fileParam);
