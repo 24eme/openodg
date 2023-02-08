@@ -252,6 +252,9 @@ EOF;
 
         // Check si le Volume est le même que celui d'un autre Lot
         foreach ($drev->getLots() as $lot) {
+            if (trim($numero_cuve) == trim($lot->numero_logement_operateur)) {
+                return true;
+            }
             if ($lot->volume == $volume && KeyInflector::slugify(trim($numero_cuve)) == KeyInflector::slugify(trim($lot->numero_logement_operateur))) {
                 return true;
             }

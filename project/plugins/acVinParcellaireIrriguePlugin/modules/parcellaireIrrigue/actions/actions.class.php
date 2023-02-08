@@ -7,9 +7,9 @@ class parcellaireIrrigueActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $this->etablissement);
 
 		$this->papier = $request->getParameter('papier', false);
-		$this->campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() + 1);
+		$this->periode = $request->getParameter('periode');
 
-        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, $this->papier);
+        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier);
 
         $this->form = new ParcellaireIrrigueProduitsForm($this->parcellaireIrrigue);
 
@@ -29,8 +29,7 @@ class parcellaireIrrigueActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "Vos parcelles irriguées ont bien été enregistrées");
 
-        return $this->redirect('parcellaireirrigue_edit', array('sf_subject' => $this->etablissement, 'campagne' => $this->campagne, 'papier' => $this->papier));
-
+        return $this->redirect('parcellaireirrigue_edit', array('sf_subject' => $this->etablissement, 'periode' => $this->periode, 'papier' => $this->papier));
     }
 
 

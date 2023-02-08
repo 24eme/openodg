@@ -32,15 +32,15 @@
   <li><a href="#lignes" aria-controls="lignes" role="tab" data-toggle="tab">Lignes</a></li>
   <form method="GET" class="form-inline pull-right" style="display: inline-block;">
       Exercice comptable :
-      <select class="select2SubmitOnChange form-control" name="campagne">
-          <option value="tous">Toutes</option>
+      <select class="select2SubmitOnChange form-control input-sm" name="campagne">
+          <option value="tous">Tous</option>
           <?php foreach ($campagnes as $c): ?>
           <option <?php echo ($campagne == $c) ? "selected" : "" ?> value="<?php echo $c ?>">
               <?php echo $c ?>
           </option>
           <?php endforeach ?>
       </select>
-      <button type="submit" class="btn btn-default">Changer</button>
+      <button type="submit" class="btn btn-sm btn-default">Changer</button>
   </form>
 </ul>
 <div class="tab-content">
@@ -57,6 +57,9 @@
                 <th style="witdth: 0;"></th>
                 <?php endif; ?>
                 <th style="witdth: 0;"></th>
+                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                <th style="witdth: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -72,7 +75,8 @@
                     <?php endif; ?>
                 </td>
                 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <td class="text-center dropdown">
+                <td class="text-center">
+                  <span class="dropdown">
                   <button type="button" class="btn btn-default btn-default-step btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
                   <ul class="dropdown-menu dropdown-menu-right">
                       <?php if(!$facture->isAvoir()): ?>
@@ -90,11 +94,15 @@
                         <li class="disabled"><a href=""><span class="glyphicon glyphicon-repeat"></span> Créér un avoir</a></li>
                       <?php endif; ?>
                   </ul>
+                  </span>
                 </td>
                <?php endif; ?>
                 <td class="text-right">
-                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-xs btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class=""><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                 </td>
+                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                    <td><?php if($facture->isTelechargee()): ?><span style="opacity: 0.8;" data-toggle="tooltip" title="La facture a été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-open text-primary"></span><?php else: ?><span style="opacity: 0.2;" data-toggle="tooltip" title="La facture n'a pas encore été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-close text-primary"></span><?php endif; ?></td>
+                <?php endif; ?>
             </tr>
             <?php endforeach;
               if(!count($factures)):
@@ -135,9 +143,9 @@
                             <td class="text-right"><?php echoFloat($detail->prix_unitaire); ?> €</td>
                             <td class="text-right"><?php echo ($detail->taux_tva) ? echoFloat($detail->montant_tva)." €" : null; ?></td>
                             <td class="text-right"><?php echo echoFloat($detail->montant_ht); ?> €</td>
-                            <td>
+                            <td class="text-right">
                                 <?php if($first): ?>
-                                <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-xs btn-default-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+                                <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                                 <?php endif; ?>
                             </td>
                         </tr>

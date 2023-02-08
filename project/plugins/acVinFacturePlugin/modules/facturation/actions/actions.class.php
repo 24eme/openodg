@@ -112,7 +112,7 @@ class facturationActions extends sfActions
               $identifiant = $this->compte->getSociete()->identifiant;
             }
 
-            if(!$request->getParameter('campagne')) {
+            if(FactureConfiguration::getInstance()->isListeDernierExercice() && !$request->getParameter('campagne')) {
                 foreach(FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_JSON, null, 1) as $facture) {
 
                     return $this->redirect('facturation_declarant', array('id' => $this->compte->_id, 'campagne' => $facture->campagne));
@@ -327,7 +327,12 @@ class facturationActions extends sfActions
 
         $this->getUser()->setFlash("notice", "Les paiements ont bien été enregistrés");
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant, "campagne" => $this->facture->campagne));
+        if(FactureConfiguration::getInstance()->isListeDernierExercice()) {
+
+            return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant, "campagne" => $this->facture->campagne));
+        }
+
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
     public function executeLatex(sfWebRequest $request) {

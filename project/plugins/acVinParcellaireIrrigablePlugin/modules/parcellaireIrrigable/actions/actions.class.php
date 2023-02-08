@@ -43,7 +43,7 @@ class parcellaireIrrigableActions extends sfActions {
     	$parcellaireIrrigable->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-    	return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireIrrigable->campagne));
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => ($parcellaireIrrigable->periode - 1).'-'.$parcellaireIrrigable->periode));
     }
 
     public function executeDevalidation(sfWebRequest $request) {

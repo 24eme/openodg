@@ -28,6 +28,14 @@
       <div class="col-xs-7"><?php echo $organisme->getNoTvaIntracommunautaire(); ?></div>
     </div>
     <div class="row">
+      <div class="col-xs-1">Nom&nbsp;banq.&nbsp;:</div>
+      <div class="col-xs-7"><?php echo $organisme->getBanqueNom(); ?></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-1">Adr.&nbsp;banq.&nbsp;:</div>
+      <div class="col-xs-7"><?php echo $organisme->getBanqueAdresse(); ?></div>
+    </div>
+    <div class="row">
       <div class="col-xs-1">IBAN :</div>
       <div class="col-xs-7"><?php echo $organisme->getIban(); ?></div>
     </div>
