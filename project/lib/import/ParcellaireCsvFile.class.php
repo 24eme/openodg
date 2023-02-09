@@ -149,9 +149,10 @@ class ParcellaireCsvFile
         foreach ($this->file->getLignes() as $parcelle) {
 
             if (!isset($is_old_format)) {
-                if ($parcelle[self::CSV_FORMAT_ORIGINE] != 'PRODOUANE' || $parcelle[self::CSV_FORMAT_ORIGINE] != 'INAO') {
+                if ($parcelle[self::CSV_FORMAT_ORIGINE] != 'Origine' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'PRODOUANE' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'INAO') {
                     $is_old_format = 1;
                 }else{
+                    $this->parcellaire->source = $parcelle[self::CSV_FORMAT_ORIGINE];
                     $is_old_format = 0;
                 }
             }
