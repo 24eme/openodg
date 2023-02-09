@@ -108,7 +108,7 @@
               if(!count($factures)):
             ?>
             <tr>
-                <td colspan="<?php echo intval($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))+6 ?>">Aucune facture éditée</td>
+                <td colspan="<?php echo intval($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))*2+6 ?>">Aucune facture éditée</td>
             </tr>
           <?php endif; ?>
         </tbody>
