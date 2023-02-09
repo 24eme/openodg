@@ -187,8 +187,8 @@ class ParcellaireCsvFile
             }
             $new_parcelle->ecart_rang = (float) $parcelle[self::CSV_FORMAT_ECART_RANG - $is_old_format];
             $new_parcelle->ecart_pieds = (float) $parcelle[self::CSV_FORMAT_ECART_PIED - $is_old_format];
-            $new_parcelle->superficie = (float) $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format];
-            $new_parcelle->superficie_cadastrale = (float) $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format];
+            $new_parcelle->superficie = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format]);
+            $new_parcelle->superficie_cadastrale = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format]);
             $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR - $is_old_format]);
 
             if (! $this->check($new_parcelle)) {
