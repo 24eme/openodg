@@ -12,7 +12,7 @@
 <?php if (isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('parcellaireAffectation/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
 <?php endif; ?>
-<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $parcellaire, 'diff' => 1)); ?>
+<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $parcellaire)); ?>
 
     <?php  if ($parcellaire->hasVtsgn()): ?>
     <div class="alert" role="alert" id="engagements">
