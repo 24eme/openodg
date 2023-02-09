@@ -184,6 +184,7 @@ class ParcellaireCsvFile
             );
             if ($parcelle[self::CSV_FORMAT_IDU - $is_old_format] && substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 2)) {
                 $new_parcelle->code_commune = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 5);
+                $new_parcelle->idu = $parcelle[self::CSV_FORMAT_IDU - $is_old_format];
             }
             $new_parcelle->ecart_rang = (float) $parcelle[self::CSV_FORMAT_ECART_RANG - $is_old_format];
             $new_parcelle->ecart_pieds = (float) $parcelle[self::CSV_FORMAT_ECART_PIED - $is_old_format];
