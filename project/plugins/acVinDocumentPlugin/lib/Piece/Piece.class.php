@@ -11,6 +11,11 @@ abstract class Piece extends acCouchdbDocumentTree
 		return $this->getDocument()->generateUrlPiece($this->source);
 	}
 
+    public function getUrlPublic($absolute = false)
+	{
+		return $this->getDocument()->generateUrlPublicPiece($this->source, $absolute);
+	}
+
 	public static function getUrlVisualisation($id, $isadmin = false)
 	{
 		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
@@ -35,7 +40,17 @@ abstract class Piece extends acCouchdbDocumentTree
 		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
 			$doc = $m[1];
 			return $doc::isVisualisationMasterUrl($isadmin);
-		
+
+		}
+		return false;
+	}
+
+    public static function hasUrlPublic($id)
+	{
+		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
+			$doc = $m[1];
+
+			return method_exists($doc, 'hasUrlPublic');
 		}
 		return false;
 	}

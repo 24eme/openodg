@@ -53,11 +53,11 @@
 \def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe); ?>}
 \def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc); ?>}
 
-\def\SIRET{<?php echo $coordonnees_bancaire['siret']; ?>}
-\def\BANQUENOM{<?php echo $coordonnees_bancaire['banquenom']; ?>}
-\def\BANQUEADRESSE{<?php echo $coordonnees_bancaire['banqueadresse']; ?>}
-\def\RIB{<?php echo $coordonnees_bancaire['rib']; ?>}
-\def\BIC{<?php echo $coordonnees_bancaire['bic']; ?>}
+\def\SIRET{<?php echo Organisme::getInstance($facture->region)->getSiret() ?>}
+\def\BANQUENOM{<?php echo Organisme::getInstance($facture->region)->getBanqueNom() ?>}
+\def\BANQUEADRESSE{<?php echo Organisme::getInstance($facture->region)->getBanqueAdresse() ?>}
+\def\RIB{<?php echo Organisme::getInstance($facture->region)->getIban() ?>}
+\def\BIC{<?php echo Organisme::getInstance($facture->region)->getBic() ?>}
 
 \definecolor{bg-carte-membre}{RGB}{220,220,220}
 

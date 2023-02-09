@@ -91,12 +91,17 @@ class FactureConfiguration {
 
     public function getModaliteDePaiement()
     {
-        return ($this->configuration['modalite_paiement']) ?: '';
+        return (isset($this->configuration['modalite_paiement']) && $this->configuration['modalite_paiement']) ?: '';
     }
 
     public function getExercice() {
 
         return ($this->configuration['exercice']) ?: '';
+    }
+
+    public function isListeDernierExercice() {
+
+        return boolval($this->configuration['liste_dernier_exercice']);
     }
 
     public function hasPaiements(){

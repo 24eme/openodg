@@ -19,6 +19,16 @@ if ($last) {
                 }
                 ?>
                 <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th class="col-xs-3 text-center">Appellation</th>
+                            <th class="col-xs-2 text-center">Commune</th>
+                            <th class="col-xs-2 text-center">Section / Numéro</th>
+                            <th class="col-xs-1 text-center">Lieu-dit</th>
+                            <th class="col-xs-1 text-center">Cépage</th>
+                            <th class="col-xs-2 text-center">Superficie</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <?php
                         $appellation_details = $appellation->getDetailsSortedByParcelle();
@@ -68,20 +78,25 @@ if ($last) {
                             }
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
-                                <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
+                                <td style="<?php echo $styleproduit; ?>">
+                                    <?php echo $detail->getAppellation()->getLibelle(); ?> <?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?>
+                                </td>
+                                <td style="<?php echo $styleproduit; ?>">
+                                    <?php echo $detail->getCommune(); ?>
+                                </td>
+                                <td style="text-align: right; <?php echo $styleparcelle; ?>">
+                                    <?php echo $detail->getSection(); ?> <?php echo $detail->getNumeroParcelle(); ?>
+                                </td>
+                                <td style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getLieuLibelle(); ?>
-                                </td>   
+                                </td>
                                 <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getCepageLibelle();  ?>
                                 </td>
-                                <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
-                                <td class="col-xs-3 <?php echo $classparcelle ?>" style="text-align: right; <?php echo $styleparcelle; ?>">
-                                    <?php echo $detail->getParcelleIdentifiant(); ?>
-                                </td>   
                                 <td class="col-xs-1 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
                                     <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
-                                </td>   
-                            </tr> 
+                                </td>
+                            </tr>
                             <?php
                         endforeach;
 
@@ -92,18 +107,18 @@ if ($last) {
                                     <tr class="" style="opacity: 0.4">
                                         <td class="col-xs-3" style="text-decoration: line-through;">
                                             <?php echo $detail->getLieuLibelle(); ?>
-                                        </td>   
+                                        </td>
                                         <td class="col-xs-3" style="text-decoration: line-through;">
                                             <?php echo $detail->getCepageLibelle(); ?>
-                                        </td>   
+                                        </td>
                                         <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
                                         <td class="col-xs-3" style="text-align: right; text-decoration: line-through;">
                                             <?php echo $detail->getParcelleIdentifiant(); ?>
-                                        </td>   
+                                        </td>
                                         <td class="col-xs-1" style="text-align: right; text-decoration: line-through;">
                                             <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
-                                        </td>   
-                                    </tr>    
+                                        </td>
+                                    </tr>
                                     <?php
                                 endif;
                             endforeach;

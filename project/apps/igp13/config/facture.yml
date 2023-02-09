@@ -12,3 +12,4 @@ all:
       paiements: true
       export_type: "isa"
       exercice: "viticole"
+      liste_dernier_exercice: true

@@ -1,8 +1,7 @@
 all:
   configuration:
     facture:
-      aggregateLignes: true
-      ligneDetailWithTitle: false
+      ligneUnique: true
       echeances:
         1ertiers:
           libelle_date: "A réception"

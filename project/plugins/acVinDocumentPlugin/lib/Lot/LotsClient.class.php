@@ -311,4 +311,42 @@ class LotsClient
         }
     }
 
+    public function deleteAndSave($declarantIdentifiant, $uniqueId) {
+        $lot = LotsClient::getInstance()->findByUniqueId($declarantIdentifiant, $uniqueId);
+        $doc = $lot->getDocument();
+
+        if ($lot->getLotAffectation()) {
+            throw new sfException("Le lot ".$uniqueId." est déjà dégusté ou changé");
+        }
+
+        if($doc instanceof InterfaceVersionDocument) {
+            $doc = $doc->getMaster();
+            $lot = $doc->getLot($uniqueId);
+        }
+
+        if($doc instanceof InterfaceVersionDocument && $doc->isVersionnable()) {
+            $doc = $doc->generateModificative();
+            $lot = $doc->getLot($uniqueId);
+            $doc->numero_archive = $lot->numero_dossier;
+            $generateModificative = true;
+        }
+
+        if(!$lot) {
+            throw new Exception("Le lot ".$uniqueId." n'existe pas dans le doc ".$doc->_id);
+        }
+
+        if($doc->isFactures()) {
+            throw new Exception("Le document ".$doc->_id." est déjà facturé");
+        }
+
+        $doc->remove($lot->getHash());
+        $doc->save();
+
+        if(isset($generateModificative)) {
+            $doc->validate();
+            $doc->validateOdg();
+            $doc->save();
+        }
+    }
+
 }

@@ -254,7 +254,7 @@ class DRevValidation extends DocumentValidation {
         if (
                 $produit->volume_revendique !== null &&
                 $produit->detail->volume_sur_place_revendique !== null &&
-                $produit->volume_revendique != $produit->detail->volume_sur_place_revendique
+                round($produit->volume_revendique, 2) != round($produit->detail->volume_sur_place_revendique, 2)
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_volumes', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
@@ -264,7 +264,7 @@ class DRevValidation extends DocumentValidation {
                 $produit->canHaveVtsgn() &&
                 $produit->volume_revendique_vtsgn !== null &&
                 $produit->detail_vtsgn->volume_sur_place_revendique !== null &&
-                $produit->volume_revendique_vtsgn != $produit->detail_vtsgn->volume_sur_place_revendique
+                round($produit->volume_revendique_vtsgn, 2) != round($produit->detail_vtsgn->volume_sur_place_revendique, 2)
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet()." VT/SGN", $this->generateUrl('drev_revendication_volumes', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
