@@ -186,14 +186,57 @@ class parcellaireActions extends sfActions {
         }
 
         // Met le json dans le fichier .geojson à télécharger et met des - à la place des _ parce que c'est comme ça en geojson
-        echo str_replace('fill_opacity', 'fill-opacity', 
+        $geojson_str = str_replace('fill_opacity', 'fill-opacity', 
                 str_replace('stroke_width', 'stroke-width', 
                     str_replace('stroke_opacity', 'stroke-opacity', json_encode($geojson) 
                     )
                 )
             );
+
+        echo $geojson_str;
+        /*
+        // A corriger. GeoPHP ne génère pas un kml valide.
+        $gj_obj = GeoPHP::load($geojson_str, 'geojson');
+        echo $gj_obj->out('kml');
+        */
+
         exit;
     }
+
+    public function executeParcellaireExportDoc(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+        
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: text/markdown; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.md"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        $this->content = "# Audit Vignoble";
+        $this->content .= "\n\nRéférence : / Révision : V0 / Date : ";
+        $this->content .= "\nType de contrôle: Standard";
+        $this->content .= "\nActivité: ";
+        $this->content .= "\n\n## " . $parcellaire->declarant['raison_sociale'] . "\n";
+        $this->content .= "\n**N° Siret : " . $parcellaire->declarant['siret'] . " N° EVV / PPM : ". $parcellaire->declarant['cvi'] . "**";
+        $this->content .= "\n\n## " . $parcellaire->pieces[0]['identifiant'];
+        $this->content .= "\n\n### Fiche contact";
+        $this->content .= "\n\n#### Adresse\n\n" . $parcellaire->declarant['nom'] . "\n" . $parcellaire->declarant['adresse'] . "\n" . $parcellaire->declarant['commune'];
+        $this->content .= "\n\n#### Tel\n\n" . ($parcellaire->declarant['telephone_bureau'] ? ("Bureau : " . $parcellaire->declarant['telephone_bureau'] . " ") : "") . ($parcellaire->declarant['telephone_mobile'] ? ("Mobile : " . $parcellaire->declarant['telephone_mobile']) : "");
+        $this->content .= "\n\n#### Mail\n\n" . $parcellaire->declarant['email'];
+        $this->content .= "\n\n#### Fax\n\n" . $parcellaire->declarant['fax'];
+        $this->content .= "\n\n#### Chai 1\n\n";
+        $this->content .= "\n\n#### Chai 2\n\n";
+        $this->content .= "\n\n### Contrôle Documentaire";
+        $this->content .= "\n\n#### Surface totale (avec JV)\n\n" . $parcellaire->getSuperficieTotale();
+        $this->content .= "\n\n#### Surface cadastrale totale\n\n" . $parcellaire->getSuperficieCadastraleTotale();
+        $this->content .= "\n\n### Synthèse terrain\n";
+        echo $this->content;
+        exit;
+    }
+
 
     public function secureTeledeclarant() {
         if(!$this->getUser()->isAdmin() && !$this->getUser()->isStalker() && (!class_exists("SocieteConfiguration") || !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration())) {
