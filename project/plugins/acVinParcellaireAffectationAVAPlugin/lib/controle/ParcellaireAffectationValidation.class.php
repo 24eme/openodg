@@ -19,7 +19,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'parcelle_doublon', 'Parcelle doublonnée');
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition', "La répartition des acheteurs n'est pas complète");
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition_parcelles', "La répartition des acheteurs par parcelles n'est pas complète");
-
+        $this->addControle(self::TYPE_ERROR, 'parcellaire_multiappellation', "Parcelle déclarée plusieurs fois");
         /*
          * Error
          */
@@ -27,23 +27,31 @@ class ParcellaireAffectationValidation extends DocumentValidation {
     }
 
     public function controle() {
-        $parcelles = array();
+        $coplant = array();
+        $uniq_appellation = array();
+
         foreach ($this->document->declaration->getProduitsCepageDetails() as $detailk => $detailv) {
             if(!$detailv->isAffectee()) {
                 continue;
             }
-            $pid = preg_replace('/.*\//', '', $detailk);
-            if (!isset($parcelles[$pid])) {
-                $parcelles[$pid] = array();
+            $pid = $detailv->getAppellation()->getHash().' '.$detailv->section . ' ' . $detailv->numero_parcelle;
+            if (!isset($coplant[$pid])) {
+                $coplant[$pid] = array();
             }
-            array_push($parcelles[$pid], $detailk);
+            array_push($coplant[$pid], $detailk);
+
+            if(!isset($uniq_appellation[$detailv->section . ' ' . $detailv->numero_parcelle])) {
+                $uniq_appellation[$detailv->section . ' ' . $detailv->numero_parcelle] = array();
+            }
+            $uniq_appellation[$detailv->section . ' ' . $detailv->numero_parcelle][$detailv->getAppellationLibelle()] = $detailk;
+
             if (!$detailv->superficie) {
                 $this->addPoint(self::TYPE_ERROR, 'surface_vide', 'parcelle n°' . $detailv->section . ' ' . $detailv->numero_parcelle . ' à ' . $detailv->commune . ' déclarée en ' . $detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
                             'erreur' => $detailv->getHashForKey())));
             }
         }
-        foreach ($parcelles as $pid => $phashes) {
+        foreach ($coplant as $pid => $phashes) {
             if (count($phashes) > 1) {
                 $detail = $this->document->get($phashes[0]);
                 $this->addPoint(self::TYPE_WARNING, 'parcellaire_complantation', '<a href="' . $this->generateUrl('parcellaire_parcelles', array(
@@ -51,6 +59,16 @@ class ParcellaireAffectationValidation extends DocumentValidation {
                             'appellation' => preg_replace('/appellation_/', '', $detail->getAppellation()->getKey()),
                             'attention' => $detail->getHashForKey())) . "\" class='alert-link' >La parcelle " . $detail->section . ' ' . $detail->numero_parcelle . ' à ' . $detail->commune . " a été déclarée avec plusieurs cépages. </a>"
                         . "&nbsp;S’il ne s’agit pas d’une erreur de saisie de votre part, ne tenez pas compte de ce point de vigilance.", '');
+            }
+        }
+        foreach ($uniq_appellation as $pid => $phashes) {
+            if (count(array_keys($phashes)) > 1) {
+                $detail = $this->document->get(array_shift($phashes));
+                $this->addPoint(self::TYPE_ERROR, 'parcellaire_multiappellation', '<a href="' . $this->generateUrl('parcellaire_parcelles', array(
+                            'id' => $this->document->_id,
+                            'appellation' => preg_replace('/appellation_/', '', $detail->getAppellation()->getKey()),
+                            'attention' => $detail->getHashForKey())) . "\" class='alert-link' >La parcelle " . $detail->section . ' ' . $detail->numero_parcelle . ' à ' . $detail->commune . " a été déclarée sur plusieurs appellations. </a>"
+                            , '');
             }
         }
         $uniqParcelles = array();

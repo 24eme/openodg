@@ -29,6 +29,7 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
 
     if (array_key_exists($line[2], $operateurs) === false) {
         $operateurs[$line[2]]['organisme'] = $line[44];
+        $operateurs[$line[2]]['identifiant'] = $line[2];
         $operateurs[$line[2]]['cvi'] = $line[4];
         $operateurs[$line[2]]['volume_revendique'] = 0;
         $operateurs[$line[2]]['volume_commercialise'] = 0;
@@ -61,7 +62,8 @@ while (($line = fgetcsv($lots, 1000, ';')) !== false) {
 
     if (array_key_exists($line[1], $operateurs) === false) {
         $operateurs[$line[1]]['organisme'] = $line[33];
-        $operateurs[$line[1]]['cvi'] = $line[1];
+        $operateurs[$line[1]]['identifiant'] = $line[1];
+        $operateurs[$line[1]]['cvi'] = null;
         $operateurs[$line[1]]['volume_revendique'] = 0;
         $operateurs[$line[1]]['volume_commercialise'] = 0;
         $operateurs[$line[1]]['vip2c'] = 0;
@@ -79,8 +81,26 @@ foreach ($operateurs as &$operateur) {
 fclose($drev_lots);
 fclose($lots);
 
+$operateurs = array_filter($operateurs, function ($item) {
+    return $item['vip2c'] > 0;
+});
+
+array_walk($operateurs, function (&$operateur, $key) {
+    $d = [];
+
+    if ($operateur['vip2c'] < $operateur['volume_revendique']) {
+        $d[] = 'DREV';
+    }
+
+    if ($operateur['vip2c'] < $operateur['volume_commercialise']) {
+        $d[] = 'COMM';
+    }
+
+    $operateur['depassement'] = implode('+', $d);
+});
+
 $f = fopen('php://output', "w");
-fputcsv($f, ['Organisme', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C'], ';');
+fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C', 'Dépassement'], ';');
 foreach ($operateurs as $operateur) {
     fputcsv($f, $operateur, ';');
 }
