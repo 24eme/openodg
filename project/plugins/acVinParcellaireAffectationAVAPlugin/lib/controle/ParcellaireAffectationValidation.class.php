@@ -29,6 +29,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
     public function controle() {
         $coplant = array();
         $uniq_appellation = array();
+        $uniqParcelles = array();
 
         foreach ($this->document->declaration->getProduitsCepageDetails() as $detailk => $detailv) {
             if(!$detailv->isAffectee()) {
@@ -40,20 +41,34 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             }
             array_push($coplant[$pid], $detailk);
 
-            if(!isset($uniq_appellation[$detailv->section . ' ' . $detailv->numero_parcelle])) {
-                $uniq_appellation[$detailv->section . ' ' . $detailv->numero_parcelle] = array();
+            $appellation_id = $detailv->section . ' ' . $detailv->numero_parcelle.' '.$detailv->superficie;
+            if(!isset($uniq_appellation[$appellation_id])) {
+                $uniq_appellation[$appellation_id] = array();
             }
-            $uniq_appellation[$detailv->section . ' ' . $detailv->numero_parcelle][$detailv->getAppellationLibelle()] = $detailk;
+            $uniq_appellation[$appellation_id][$detailv->getAppellationLibelle()] = $detailk;
 
             if (!$detailv->superficie) {
                 $this->addPoint(self::TYPE_ERROR, 'surface_vide', 'parcelle n°' . $detailv->section . ' ' . $detailv->numero_parcelle . ' à ' . $detailv->commune . ' déclarée en ' . $detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
                             'erreur' => $detailv->getHashForKey())));
             }
+
+            $keyParcelle = $detailv->getCepage()->getHash() . '/' . $detailv->getCommune() . '-' . $detailv->getSection() . '-' . $detailv->getNumeroParcelle();
+            if (array_key_exists($keyParcelle, $uniqParcelles)) {
+                $this->addPoint(self::TYPE_WARNING, 'parcelle_doublon', 'parcelle n°' . $detailv->getSection() . ' ' . $detailv->getNumeroParcelle() . ' à ' . $detailv->getCommune() . ' déclarée en ' . $detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
+                            'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
+                            'erreur' => $detailv->getHashForKey())));
+            } else {
+                $uniqParcelles[$keyParcelle] = $keyParcelle;
+            }
         }
         foreach ($coplant as $pid => $phashes) {
             if (count($phashes) > 1) {
                 $detail = $this->document->get($phashes[0]);
+                $keyParcelle = $detail->getCepage()->getHash() . '/' . $detail->getCommune() . '-' . $detail->getSection() . '-' . $detail->getNumeroParcelle();
+                if (array_key_exists($keyParcelle, $uniqParcelles)) {
+                    continue;
+                }
                 $this->addPoint(self::TYPE_WARNING, 'parcellaire_complantation', '<a href="' . $this->generateUrl('parcellaire_parcelles', array(
                             'id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detail->getAppellation()->getKey()),
@@ -69,23 +84,6 @@ class ParcellaireAffectationValidation extends DocumentValidation {
                             'appellation' => preg_replace('/appellation_/', '', $detail->getAppellation()->getKey()),
                             'attention' => $detail->getHashForKey())) . "\" class='alert-link' >La parcelle " . $detail->section . ' ' . $detail->numero_parcelle . ' à ' . $detail->commune . " a été déclarée sur plusieurs appellations. </a>"
                             , '');
-            }
-        }
-        $uniqParcelles = array();
-        foreach ($this->document->declaration->getProduitsCepageDetails() as $pid => $detail) {
-            if($this->document->isImportFromCVI()) {
-                continue;
-            }
-            if(!$detail->isAffectee()) {
-                continue;
-            }
-            $keyParcelle = $detail->getCepage()->getHash() . '/' . $detail->getCommune() . '-' . $detail->getSection() . '-' . $detail->getNumeroParcelle();
-            if (array_key_exists($keyParcelle, $uniqParcelles)) {
-                $this->addPoint(self::TYPE_WARNING, 'parcelle_doublon', 'parcelle n°' . $detail->getSection() . ' ' . $detail->getNumeroParcelle() . ' à ' . $detail->getCommune() . ' déclarée en ' . $detail->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
-                            'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
-                            'erreur' => $detail->getHashForKey())));
-            } else {
-                $uniqParcelles[$keyParcelle] = $keyParcelle;
             }
         }
 
