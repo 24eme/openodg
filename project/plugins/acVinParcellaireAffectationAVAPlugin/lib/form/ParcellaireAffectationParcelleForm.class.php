@@ -122,6 +122,7 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         $parcelle->active = 1;
         if ($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireAffectationClient::APPELLATION_ALSACEBLANC) {
         	$parcelle->vtsgn = 1;
+            $parcelle->active = 1;
         }
 
         if($this->getObject() instanceof ParcellaireCepageDetail && $this->getObject()->getHash() != $parcelle->getHash()) {
