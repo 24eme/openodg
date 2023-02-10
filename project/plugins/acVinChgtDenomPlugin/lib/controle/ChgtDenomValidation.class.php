@@ -17,11 +17,16 @@ class ChgtDenomValidation extends DocumentValidation
     {
         $this->addControle(self::TYPE_ERROR, 'lot_volume', "Le volume saisi est supérieur au volume initial.");
         $this->addControle(self::TYPE_ERROR, 'chgtdenom_produit', "Le changement de dénomination n'a pas de produit");
+        $this->addControle(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Vous ne pouvez pas changer ce produit car il dépasse le volume seuil');
     }
 
     public function controle()
     {
         $this->controleLots();
+
+        if (DRevConfiguration::getInstance()->hasVolumeSeuil() && $this->document->campagne === DRevConfiguration::getInstance()->getCampagneVolumeSeuil()) {
+            $this->controleVolumeSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
+        }
     }
 
     protected function controleLots(){
@@ -45,6 +50,18 @@ class ChgtDenomValidation extends DocumentValidation
 
     }
   }
+
+    public function controleVolumeSeuil($hash)
+    {
+        if (strpos($this->document->changement_produit_hash, $hash) === false) {
+            return false;
+        }
+
+        $seuil = $this->document->getVolumeSeuil();
+        if ($seuil > 0 && '' > $seuil) {
+            $this->addPoint(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Le produit '.$this->document->changement_produit_libelle.' dépasse le volume seuil de '.$seuil.' hl');
+        }
+    }
 
   protected function getLotDocById_unique(){
       if (! $this->document->changement_origine_id_document) {
