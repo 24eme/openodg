@@ -12,7 +12,7 @@
 
 <?php include_partial('global/flash'); ?>
 
-<form id="validation-form" action="<?php echo url_for("parcellaireirrigue_edit", array('sf_subject' => $etablissement, 'campagne' => $campagne, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
+<form id="validation-form" action="<?php echo url_for("parcellaireirrigue_edit", array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => $papier)) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 

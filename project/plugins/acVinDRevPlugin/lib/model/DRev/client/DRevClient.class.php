@@ -45,6 +45,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         DRevClient::LOT_DESTINATION_VRAC_FRANCE_VRAC_EXPORT_CONDITIONNEMENT => "Vrac Export, Vrac France et Conditionnement"
     );
 
+    public $cache_find_drev = null;
+
     public static function getInstance()
     {
 
@@ -60,6 +62,16 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         }
 
         return $doc;
+    }
+
+    public function findViaCache($id) {
+        if (!$this->cache_find_drev) {
+            $this->cache_find_drev = array();
+        }
+        if (!isset($this->cache_find_drev[$id])) {
+            $this->cache_find_drev[$id] = $this->find($id);
+        }
+        return $this->cache_find_drev[$id];
     }
 
     public function findMasterByIdentifiantAndPeriode($identifiant, $periode, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {

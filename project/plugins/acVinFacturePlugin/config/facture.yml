@@ -2,6 +2,7 @@ all:
   configuration:
     facture:
       aggregateMouvements: false
+      ligneUnique: false
       ligneMsg: false
       echeances: false
       all_etablissements: false
@@ -10,3 +11,4 @@ all:
       paiements: false
       delais_paiement: null
       exercice: "civil"
+      liste_dernier_exercice: false

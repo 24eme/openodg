@@ -35,15 +35,15 @@
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
-\def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
+\def\EMETTEURLIBELLE{FÉDÉRATION DES VINS NANTES}
 \def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
-\def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
+\def\EMETTEURTEL{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
+\def\EMETTEURCONTACT{<?php echo $facture->emetteur->service_facturation; ?>}
 \def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
-\def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
@@ -61,9 +61,9 @@
 }
 \cfoot{\small{
 	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURCONTACT~-~\EMETTEUREMAIL \\
-	N°TVA : FR96803741834
+	\EMETTEURADRESSE~\EMETTEURCP~\EMETTEURVILLE \\
+	\EMETTEURTEL~–~\EMETTEUREMAIL \\
+	N° TVA : FR96803741834 – SIRET : 80374183400011 – APE : 9412Z
 }}
 
 \begin{document}
@@ -73,6 +73,9 @@
 	\hspace{-1.2cm}
 	\includegraphics[width=4cm]{\LOGO}
 	\end{center}
+    Contact : \EMETTEURCONTACT \\
+    Email : \EMETTEUREMAIL \\
+    Tel : \EMETTEURTEL \\
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \lfbox[
@@ -98,10 +101,10 @@
 
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\raggedright}m{7.5cm}|}
-\hhline{|-|-|}
-\cellcolor{verttresclair} \textbf{CVI :} & \hspace{0.3cm} \FACTUREDECLARANTCVI \tabularnewline
-\hhline{|-|-|}
+\begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{2.0cm}|>{\centering}m{1.8cm}|}
+\hhline{|-|-|-|-|}
+\cellcolor{verttresclair} \textbf{CVI :} & <?php echo $facture->getCvi(); ?> & \cellcolor{verttresclair} \textbf{Campagne :} & <?php echo $facture->campagne; ?>  \tabularnewline
+\hhline{|-|-|-|-|}
 \end{tabular}
 
 \\\vspace{2mm}
@@ -171,6 +174,20 @@
   \hhline{|~|-|-}
 \end{tabular}
 \end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+  \\
+
+  \\
+\end{minipage}
+
+\begin{minipage}{0.5\textwidth}
+    Banque : <?php echo FactureConfiguration::getInstance()->getBanqueNom(); ?> \\
+    IBAN : <?php echo FactureConfiguration::getInstance()->getIBAN(); ?> \\
+    BIC : <?php echo FactureConfiguration::getInstance()->getBIC(); ?> \\
+\end{minipage}
+
+
 
 <?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
 \begin{center}

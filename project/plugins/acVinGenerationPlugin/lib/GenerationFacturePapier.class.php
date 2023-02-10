@@ -13,7 +13,7 @@ class GenerationFacturePapier extends GenerationPDF
                 throw new sfException("Facture $id n'existe pas");
             }
 
-            if ($facture->exist('telechargee') && $facture->telechargee) {
+            if ($facture->isTelechargee()) {
                 continue;
             }
 

@@ -245,9 +245,9 @@ drev_lots:
   requirements:
     sf_method: [get, post]
 
-drev_lots_delete:
-  url: /drev/lots/:id/:numArchive/supprimer
-  param: { module: drev, action: deleteLots, numArchive: 0 }
+drev_lot_delete:
+  url: /drev/lot/:id/:unique_id/supprimer
+  param: { module: drev, action: drevDeleteLot }
   class: DRevRoute
   options:
     model:    DRev
@@ -368,14 +368,6 @@ drev_send_oi:
 drev_switch_eleve:
   url: /drev/:id/:unique_id/eleve
   param: {module: drev, action: switchEleve}
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-
-drev_delete_lot:
-  url: /drev/:id/:unique_id/delete
-  param: {module: drev, action: deleteLot}
   class: DRevRoute
   options:
     model:    DRev

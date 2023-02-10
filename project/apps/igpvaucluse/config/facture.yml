@@ -17,3 +17,4 @@ all:
       comptetva_superreduit: ''
       numerocompte_banquepaiement: '51200001'
       exercice: '31/08'
+      liste_dernier_exercice: true

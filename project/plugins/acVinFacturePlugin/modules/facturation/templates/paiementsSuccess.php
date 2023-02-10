@@ -119,7 +119,11 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
+            <?php if(FactureConfiguration::getInstance()->isListeDernierExercice()): ?>
             <a tabindex="-1" href="<?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant, "campagne" => $facture->campagne)) ?>" class="btn btn-default">Annuler</a>
+            <?php else: ?>
+            <a tabindex="-1" href="<?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant)) ?>" class="btn btn-default">Annuler</a>
+            <?php endif; ?>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-primary">Valider</a>

@@ -1,9 +1,9 @@
 <?php if($etablissement->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)): return; endif; ?>
 <?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel  <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>panel-success<?php elseif (($parcellaireAffectation) || ($intentionParcellaireAffectation && ParcellaireAffectationClient::getInstance()->isOpen())): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>panel-success<?php elseif ($parcellaireAffectation): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclaration d'affectation parcellaire</h3>
+            <h3 class="panel-title">Déclaration d'affectation parcellaire <?php echo $periode ?></h3>
         </div>
         <?php if ($parcellaireAffectation && $parcellaireAffectation->validation): ?>
         <div class="panel-body">
@@ -53,6 +53,8 @@
                     <div style="margin-top: 77px;">&nbsp;</div>
                 </div>
             <?php endif; ?>
+            <div class="panel-footer" style="padding-top: 0; padding-bottom: 0;">
+                <a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireaffectation')) ?>" class="btn btn-xs btn-link btn-block">Voir tous les documents</a>
+            </div>
     </div>
 </div>
-

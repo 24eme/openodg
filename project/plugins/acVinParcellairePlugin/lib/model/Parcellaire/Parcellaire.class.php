@@ -220,9 +220,9 @@ class Parcellaire extends BaseParcellaire {
                 if (!count($libelles)) {
                     $libelles[] = '';
                 }
-                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                    $libelles = array('jeunes vignes');
-                }
+            }
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+                $libelles = array('jeunes vignes');
             }
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {
@@ -257,6 +257,27 @@ class Parcellaire extends BaseParcellaire {
             });
         }
         return $synthese;
+    }
+
+    public function getSuperficieTotale($avec_jv = true) {
+        $superficie = 0;
+        foreach ($this->getSyntheseCepages() as $nom => $cepage) {
+            // Ajoute les jeunes vignes seulement si $avec_jv
+            if ($avec_jv || ! strpos($nom, ' - jeunes vignes')) {
+                $superficie += $cepage['superficie'];
+            }
+        }
+        return $superficie;
+    }
+
+    public function getSuperficieCadastraleTotale() {
+        $superficie = 0;
+        foreach ($this->declaration as $declaration) {
+            foreach ($declaration->detail as $detail) {
+                $superficie += $detail->superficie_cadastrale;
+            }
+        }
+        return $superficie;
     }
 
     public function getParcellairePDFUri() {

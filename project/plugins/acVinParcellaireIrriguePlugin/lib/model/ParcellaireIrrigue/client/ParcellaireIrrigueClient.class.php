@@ -9,14 +9,14 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
           return acCouchdbManager::getClient("parcellaireIrrigue");
       }
 
-      public function createDoc($identifiant, $campagne, $papier = false, $date = null, $type = self::TYPE_COUCHDB) {
+      public function createDoc($identifiant, $periode, $papier = false, $date = null, $type = self::TYPE_COUCHDB) {
       	if (!$date) {
           $date = date('Y-m-d');
         }
-        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $campagne, $papier, $date, $type);
+        return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier, $date, $type);
       }
 
-      public function createOrGetDocFromIdentifiantAndDate($identifiant, $campagne, $papier = false, $date = null, $type = self::TYPE_COUCHDB)
+      public function createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier = false, $date = null, $type = self::TYPE_COUCHDB)
       {
           $doc_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
           if ($doc_found && $doc_found->date === $date) {
@@ -28,9 +28,9 @@ class ParcellaireIrrigueClient extends acCouchdbClient {
               }
               return $doc_found;
           }
-          if (!$doc_found || $doc_found->campagne != $campagne) {
+          if (!$doc_found || $doc_found->periode != $periode) {
 	          $parcellaireIrrigue = new parcellaireIrrigue();
-	          $parcellaireIrrigue->initDoc($identifiant, $campagne, $date, $type);
+	          $parcellaireIrrigue->initDoc($identifiant, $periode, $date, $type);
 	          if($papier) {
 	          	$parcellaireIrrigue->add('papier', 1);
 	          }

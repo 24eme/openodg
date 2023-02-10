@@ -76,7 +76,7 @@
             <?php endif; ?>
             <th style="witdth: 0;"></th>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-            <th style="witdth: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span</th>
+            <th style="witdth: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
             <?php endif; ?>
         </tr>
     </thead>

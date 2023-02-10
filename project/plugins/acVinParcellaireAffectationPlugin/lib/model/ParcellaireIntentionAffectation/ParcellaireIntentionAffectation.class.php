@@ -45,7 +45,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
         }
     }
     $this->addParcellesFromParcellaire($lieuxArr);
-  	if ($parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant, $this->campagne)) {
+    if ($parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant, $this->periode)) {
  		foreach ($this->getParcelles() as $hash => $parcelle) {
 			            $hashWithoutNumeroOrdre = preg_replace("/(-[0-9]+)-[0-9]{2}(-?)/", '\1\2', $hash);
 			                   $parcellesMatch = array();
