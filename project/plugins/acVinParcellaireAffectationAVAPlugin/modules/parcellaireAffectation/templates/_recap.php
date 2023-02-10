@@ -18,7 +18,7 @@ if ($last) {
             <?php
             foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation):
                 ?>
-                <?php if(!isset($notitle) && $notitle): ?>
+                <?php if(!isset($notitle) || !$notitle): ?>
                 <h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' ares'; ?></span></h3>
                 <?php endif; ?>
                 <?php
