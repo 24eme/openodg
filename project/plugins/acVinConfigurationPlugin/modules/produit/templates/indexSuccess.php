@@ -8,6 +8,10 @@
     <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" class="pull-right" />
     <h2><?php echo $organisme->getNom(); ?></h2>
     <div class="row">
+      <div class="col-xs-1">Nom Facturation : </div>
+      <div class="col-xs-7"><?php echo $organisme->getNomFacturation(); ?></div>
+    </div>
+    <div class="row">
       <div class="col-xs-1">Adresse : </div>
       <div class="col-xs-7"><?php echo $organisme->getAdresse(); ?><br /><?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?></div>
     </div>
@@ -18,6 +22,10 @@
     <div class="row">
       <div class="col-xs-1">Mail : </div>
       <div class="col-xs-7"><?php echo $organisme->getEmail(); ?></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-1">Mail Facturation : </div>
+      <div class="col-xs-7"><?php echo $organisme->getEmailFacturation(); ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">SIRET : </div>
