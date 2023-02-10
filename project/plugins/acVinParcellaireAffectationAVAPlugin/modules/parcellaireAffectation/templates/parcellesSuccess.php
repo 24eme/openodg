@@ -8,8 +8,25 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
     <h2>Saisie des <?php if ($parcellaire->isIntentionCremant()): ?>intentions de production<?php else: ?>parcelles<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
 </div>
 
+<?php if(strpos($parcellaire->_id, 'CREMANT') !== false && count($parcellaire->declaration->getProduitsCepageDetails())): ?>
+<a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>" class="btn btn-sm btn-warning pull-right" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les parcelles via Prodouane</a>
+<?php endif; ?>
+
+<ul style="margin-top: 0;" class="nav nav-tabs">
+    <?php
+    $selectedAppellationName = "";
+    foreach ($parcellaireAppellations as $appellationKey => $appellationName) :
+        $isSelectedAppellation = ($appellation == $appellationKey);
+        if (!$selectedAppellationName && $isSelectedAppellation) {
+            $selectedAppellationName = $appellationName;
+        }
+        ?>
+        <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
+    <?php endforeach; ?>
+</ul>
+
 <?php if ($recapParcellaire): ?>
-	<h3>Parcelles déjà déclarées dans l'affectation parcellaire Crémant <?php echo $recapParcellaire->campagne; ?></h3>
+	<h3>Parcelles déjà déclarées dans votre affectation parcellaire Crémant <small>(celles-ci ne sont pas à redéclarer)</small></h3>
 	<div id="bloc_recap" style="height: 160px; overflow: hidden; position: relative;">
 		<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $recapParcellaire, 'notitle' => true)); ?>
 		<div style="width: 100%; position: absolute; height: 70px; bottom: 0;  background: linear-gradient(to bottom, transparent, white);"></div>
@@ -33,23 +50,6 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 	</script>
 <?php endif; ?>
 
-<?php if(strpos($parcellaire->_id, 'CREMANT') !== false && count($parcellaire->declaration->getProduitsCepageDetails())): ?>
-<a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>" class="btn btn-sm btn-warning pull-right" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les parcelles via Prodouane</a>
-<?php endif; ?>
-
-<ul style="margin-top: 0;" class="nav nav-tabs">
-    <?php
-    $selectedAppellationName = "";
-    foreach ($parcellaireAppellations as $appellationKey => $appellationName) :
-        $isSelectedAppellation = ($appellation == $appellationKey);
-        if (!$selectedAppellationName && $isSelectedAppellation) {
-            $selectedAppellationName = $appellationName;
-        }
-        ?>
-        <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
-    <?php endforeach; ?>
-</ul>
-
 <?php if ($sf_user->hasFlash('warning')): ?>
     <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
 <?php endif; ?>
@@ -72,14 +72,12 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                         <thead>
                             <tr>
                                 <th class="col-xs-1 text-center">Affectée</th>
-								<?php if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT): ?>
                                 <th class="col-xs-3 text-center">Appellation</th>
-								<?php endif; ?>
                                 <th class="col-xs-2 text-center">Commune</th>
-                                <th class="col-xs-2 text-center">Section / Numéro</th>
-                                <th class="col-xs-1 text-center">Lieu-dit</th>
-								<th class="col-xs-1 text-center">Cépage</th>
-                                <th class="col-xs-2 text-center">Superficie</th>
+                                <th class="col-xs-1 text-center">Section / Numéro</th>
+                                <th class="col-xs-2 text-center">Lieu-dit</th>
+								<th class="col-xs-2 text-center">Cépage</th>
+                                <th class="col-xs-1 text-center">Superficie</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,27 +100,13 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                         }
                                         ?>
                                     </td>
-									<?php if ($appellation != ParcellaireAffectationClient::APPELLATION_LIEUDIT && $appellation != ParcellaireAffectationClient::APPELLATION_CREMANT): ?>
-										<td><?php echo $parcelle->getLibelleComplet(); ?></td>
-	                                <?php endif; ?>
+									<td><?php echo $parcelle->getAppellationLibelle(); ?></td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
                                     <td><?php echo $parcelle->lieu; ?></td>
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
-                                    <td class="edit">
-                                        <div class="row">
-                                            <div class="col-xs-6 text-right">
-                                                <?php echoFloat($parcelle->getSuperficie()) ?>
-                                            </div>
-                                            <div class="col-xs-6 text-left">
-                                                <?php if (!$parcellaire->isImportFromCVI() && (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC))): ?>
-                                                    &nbsp;<a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
-                                                <?php elseif(!$parcellaire->isImportFromCVI()): ?>
-                                                    <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-
+                                    <td class="text-right">
+                                        <?php echoFloat($parcelle->getSuperficie()) ?> <small class="text-muted">ares</small>
                                     </td>
                                 </tr>
                                 <?php
