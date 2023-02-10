@@ -46,6 +46,9 @@ class ParcellaireAffectationAppellationParcelleForm extends acCouchdbObjectForm 
     }
 
     public function doUpdateObject($values) {
+        if (isset($values['vtsgn'])) {
+            $values['active'] = $values['vtsgn'];
+        }
         parent::doUpdateObject($values);
     }
 
