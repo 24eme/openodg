@@ -85,8 +85,22 @@ $operateurs = array_filter($operateurs, function ($item) {
     return $item['vip2c'] > 0;
 });
 
+array_walk($operateurs, function (&$operateur, $key) {
+    $d = [];
+
+    if ($operateur['vip2c'] < $operateur['volume_revendique']) {
+        $d[] = 'DREV';
+    }
+
+    if ($operateur['vip2c'] < $operateur['volume_commercialise']) {
+        $d[] = 'COMM';
+    }
+
+    $operateur['depassement'] = implode('+', $d);
+});
+
 $f = fopen('php://output', "w");
-fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C'], ';');
+fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C', 'Dépassement'], ';');
 foreach ($operateurs as $operateur) {
     fputcsv($f, $operateur, ';');
 }
