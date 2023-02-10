@@ -143,11 +143,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
-        
+
        if ($this->exist('declaration/certification/genre')) {
            $certif = $this->get('declaration/certification');
-           $genre->remove('genre');
-           $genre->add('genre');
+           $certif->remove('genre');
+           $certif->add('genre');
         }
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
