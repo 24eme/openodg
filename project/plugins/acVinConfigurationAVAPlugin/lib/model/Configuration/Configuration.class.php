@@ -107,9 +107,10 @@ class Configuration extends BaseConfiguration {
     }
 
     public function identifyProductByLibelle($libelle) {
-        if(array_key_exists($libelle, $this->identifyLibelleProduct)) {
+        $origineLibelle = $libelle;
+        if(array_key_exists($origineLibelle, $this->identifyLibelleProduct)) {
 
-            return $this->identifyLibelleProduct[$libelle];
+            return $this->identifyLibelleProduct[$origineLibelle];
         }
         $libelles = explode(' - ', $libelle);
         $libelle = $libelles[0];
@@ -122,7 +123,7 @@ class Configuration extends BaseConfiguration {
             $libelleProduitSlugify = str_replace('AOC-', '', KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet()))));
             //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
             if($libelleSlugify == $libelleProduitSlugify || $libelleSlugify == preg_replace('/-(BLANC|ROUGE|ROSE)-/', '-', $libelleProduitSlugify)) {
-                $this->identifyLibelleProduct[$libelle] = $produit;
+                $this->identifyLibelleProduct[$origineLibelle] = $produit;
 
                 return $produit;
             }
@@ -132,7 +133,7 @@ class Configuration extends BaseConfiguration {
             $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
 
             if($libelleSlugify == $libelleProduitSlugify) {
-                $this->identifyLibelleProduct[$libelle] = $produit;
+                $this->identifyLibelleProduct[$origineLibelle] = $produit;
 
                 return $produit;
             }
