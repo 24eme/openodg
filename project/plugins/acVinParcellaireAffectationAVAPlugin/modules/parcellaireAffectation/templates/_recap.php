@@ -11,7 +11,10 @@ if ($last) {
         <div class="col-xs-12">
             <?php
             foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation):
-                ?><h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' ares'; ?></span></h3>
+                ?>
+                <?php if(!isset($notitle) && $notitle): ?>
+                <h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' ares'; ?></span></h3>
+                <?php endif; ?>
                 <?php
                 if (!$appellation->getSuperficieTotale()) {
                     echo "<i class='text-muted'>Vous n'avez pas affecté de parcelles pour cette appellation</i>";
