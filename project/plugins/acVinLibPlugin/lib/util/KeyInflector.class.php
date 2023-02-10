@@ -7,6 +7,8 @@
  */
 class KeyInflector
 {
+
+    public static $cache = [];
 	/**
      * Check if a string has utf7 characters in it
      *
@@ -183,6 +185,12 @@ class KeyInflector
      */
     public static function slugify($text)
     {
+        $originText = $text;
+        if(array_key_exists($originText, self::$cache)) {
+
+            return self::$cache[$originText];
+        }
+
         // Remove all non url friendly characters with the unaccent function
         $text = self::unaccent($text);
 
@@ -202,6 +210,10 @@ class KeyInflector
                            preg_replace('/([A-Z]+)([A-Z][a-z])/', '\1_\2',
                            preg_replace('/::/', '/', $text))))));
 
-        return trim($text, '-');
+        $text = trim($text, '-');
+
+        self::$cache[$originText] = $text;
+
+        return self::$cache[$originText];
     }
 }
