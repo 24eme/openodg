@@ -80,6 +80,7 @@ fclose($drev_lots);
 fclose($lots);
 
 $f = fopen('php://output', "w");
+fputcsv($f, ['Organisme', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C'], ';');
 foreach ($operateurs as $operateur) {
     fputcsv($f, $operateur, ';');
 }
