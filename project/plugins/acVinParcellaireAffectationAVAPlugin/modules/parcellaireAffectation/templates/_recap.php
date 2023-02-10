@@ -1,5 +1,6 @@
 <?php
 use_helper("Date");
+use_helper("Float");
 $last = $parcellaire->getParcellaireLastCampagne();
 $lastParcellesKeysByAppellations = null;
 if ($last) {
@@ -24,12 +25,12 @@ if ($last) {
                 <table class="table table-striped table-condensed">
                     <thead>
                         <tr>
-                            <th class="col-xs-3 text-center">Appellation</th>
+                            <th class="col-xs-4 text-center">Appellation</th>
                             <th class="col-xs-2 text-center">Commune</th>
-                            <th class="col-xs-2 text-center">Section / Numéro</th>
-                            <th class="col-xs-1 text-center">Lieu-dit</th>
-                            <th class="col-xs-1 text-center">Cépage</th>
-                            <th class="col-xs-2 text-center">Superficie</th>
+                            <th class="col-xs-1 text-center">Section / Numéro</th>
+                            <th class="col-xs-2 text-center">Lieu-dit</th>
+                            <th class="col-xs-2 text-center">Cépage</th>
+                            <th class="col-xs-1 text-center">Superficie</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -93,11 +94,11 @@ if ($last) {
                                 <td style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getLieuLibelle(); ?>
                                 </td>
-                                <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
+                                <td style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getCepageLibelle();  ?>
                                 </td>
-                                <td class="col-xs-1 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
-                                    <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
+                                <td class="<?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
+                                    <?php echoFloat($detail->getSuperficie()) ?> <small class="text-muted">ares</small>
                                 </td>
                             </tr>
                             <?php
