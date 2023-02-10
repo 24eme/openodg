@@ -176,12 +176,12 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return 'appellation_'.$appellation == $this->getAppellation()->getKey();
     }
 
-    public function getAppellationLibelle() {
+    public function getAppellationLibelle($force_vtsgn = false) {
         $l = $this->getAppellation()->getLibelle();
         if ($this->getLieuNode()->getLibelle()) {
             $l .= ' '.$this->getLieuNode()->getLibelle();
         }
-        if ($this->getVtsgn()) {
+        if ($force_vtsgn || $this->getVtsgn()) {
             $l .= ' VT/SGN';
         }
         return  $l;

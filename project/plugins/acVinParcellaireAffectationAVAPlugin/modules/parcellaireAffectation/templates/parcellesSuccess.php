@@ -100,7 +100,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                         }
                                         ?>
                                     </td>
-									<td><?php echo $parcelle->getAppellationLibelle(); ?></td>
+									<td><?php echo $parcelle->getAppellationLibelle((isset($form['produits'][$parcelle->getHashForKey()]['vtsgn']))); ?></td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
                                     <td><?php echo $parcelle->lieu; ?></td>
