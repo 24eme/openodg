@@ -28,6 +28,7 @@ class GenerationClient extends acCouchdbClient {
     const GENERATION_STATUT_ENERREUR = "EN ERREUR";
 
     const GENERATION_EXPORT_COMPTABLE_TYPE_ISA = 'isa';
+    const GENERATION_EXPORT_COMPTABLE_TYPE_CUSTOM = 'custom';
     const GENERATION_EXPORT_COMPTABLE_TYPE_SAGE = 'sage';
 
     public static function getInstance() {
@@ -150,6 +151,8 @@ class GenerationClient extends acCouchdbClient {
                 switch (FactureConfiguration::getInstance()->getExportType()) {
                     case self::GENERATION_EXPORT_COMPTABLE_TYPE_ISA:
                         return 'GenerationExportComptableIsa';
+                    case self::GENERATION_EXPORT_COMPTABLE_TYPE_CUSTOM:
+                        return 'GenerationExportComptableCustom';
                     case self::GENERATION_EXPORT_COMPTABLE_TYPE_SAGE:
                     default:
                         return 'GenerationExportComptableSage';

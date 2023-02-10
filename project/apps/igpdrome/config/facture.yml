@@ -4,9 +4,6 @@ all:
       ligneUnique: false
       ligneDetailWithTitle: false
       echeances: false
-      all_etablissements: false
-      export_sage_width_txt: true
-      all_etablissements: true
       modalite_paiement: "- Par virement à l'IBAN : %iban% (Code BIC/SWIFT : %bic%) \\ - Par chèque à l'ordre : « Fédération Drômoise des IGP Viticoles - ODG » \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
