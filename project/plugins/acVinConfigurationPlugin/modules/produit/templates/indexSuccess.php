@@ -8,7 +8,7 @@
     <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" class="pull-right" />
     <h2><?php echo $organisme->getNom(); ?></h2>
     <div class="row">
-      <div class="col-xs-1">Nom Factu.&nbsp;:</div>
+      <div class="col-xs-1">Nom&nbsp;Factu.&nbsp;:</div>
       <div class="col-xs-7"><?php echo $organisme->getNomFacturation(); ?></div>
     </div>
     <div class="row">
@@ -24,7 +24,7 @@
       <div class="col-xs-7"><?php echo $organisme->getEmail(); ?></div>
     </div>
     <div class="row">
-      <div class="col-xs-1">Mail Factu&nbsp;:</div>
+      <div class="col-xs-1">Mail&nbsp;Factu&nbsp;:</div>
       <div class="col-xs-7"><?php echo $organisme->getEmailFacturation(); ?></div>
     </div>
     <div class="row">
