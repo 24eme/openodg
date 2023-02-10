@@ -9,6 +9,12 @@ $file_lots      = $argv[2];
 
 $drev_lots = fopen($file_drev_lots, 'r');
 $lots = fopen($file_lots, 'r');
+$vip2c = file('data/configuration/VIP2C2022.csv');
+array_walk($vip2c, function (&$item, $key) {
+    $item = str_getcsv($item, ',');
+});
+$cvis = array_column($vip2c, 3);
+$vip2c = array_combine($cvis, $vip2c);
 
 $operateurs = [];
 
@@ -64,5 +70,17 @@ while (($line = fgetcsv($lots, 1000, ';')) !== false) {
     $operateurs[$line[1]]['volume_commercialise'] += round(str_replace(',', '.', $line[23]), 2);
 }
 
+foreach ($operateurs as &$operateur) {
+    if (array_key_exists($operateur['cvi'], $vip2c)) {
+        $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi']][11]));
+    }
+}
+
 fclose($drev_lots);
 fclose($lots);
+
+$f = fopen('php://output', "w");
+foreach ($operateurs as $operateur) {
+    fputcsv($f, $operateur, ';');
+}
+fclose($f);
