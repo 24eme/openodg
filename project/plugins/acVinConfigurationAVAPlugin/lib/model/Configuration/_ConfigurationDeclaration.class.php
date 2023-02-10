@@ -3,7 +3,7 @@
 /* AVA */
 
 abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
-
+    protected $libelleComplet = null;
     protected $produits = array();
     protected $drev_produits = null;
     protected $drev_lot_produits = null;
@@ -381,14 +381,21 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getLibelleComplet($libelle_long = false)
     {
+        if($libelle_long) {
+
+            return trim(trim($libelle).' '.$this->getLibelleLong());
+        }
+
+        if(!is_null($this->libelleComplet)) {
+
+            return $this->libelleComplet;
+        }
+
     	$libelle = $this->getParent()->getLibelleComplet();
 
-      if($libelle_long) {
+        $this->libelleComplet = trim(trim($libelle).' '.$this->libelle);
 
-          return trim(trim($libelle).' '.$this->getLibelleLong());
-      }
-
-    	return trim(trim($libelle).' '.$this->libelle);
+    	return $this->libelleComplet;
     }
 
     public function existRendementVci() {
