@@ -81,6 +81,10 @@ foreach ($operateurs as &$operateur) {
 fclose($drev_lots);
 fclose($lots);
 
+$operateurs = array_filter($operateurs, function ($item) {
+    return $item['vip2c'] > 0;
+});
+
 $f = fopen('php://output', "w");
 fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C'], ';');
 foreach ($operateurs as $operateur) {
