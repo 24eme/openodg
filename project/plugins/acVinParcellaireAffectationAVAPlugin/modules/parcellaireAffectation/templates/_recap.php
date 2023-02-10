@@ -79,7 +79,7 @@ if ($last) {
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
                                 <td style="<?php echo $styleproduit; ?>">
-                                    <?php echo $detail->getAppellation()->getLibelle(); ?> <?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?>
+                                    <?php echo $detail->getAppellationLibelle(); ?>
                                 </td>
                                 <td style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getCommune(); ?>
