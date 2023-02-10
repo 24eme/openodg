@@ -4,20 +4,40 @@
 $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffectationClient::APPELLATION_VTSGN);
 ?>
 
-<?php if ($recapParcellaire): ?>
-	<div class="page-header"><h2>Rappel de votre parcellaire crémant <?php echo $recapParcellaire->campagne; ?></h2></div>
-	<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $recapParcellaire)); ?>
-<?php endif; ?>
-
 <div class="page-header">
     <h2>Saisie des <?php if ($parcellaire->isIntentionCremant()): ?>intentions de production<?php else: ?>parcelles<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
 </div>
+
+<?php if ($recapParcellaire): ?>
+	<h3>Parcelles déjà déclarées dans l'affectation parcellaire Crémant <?php echo $recapParcellaire->campagne; ?></h3>
+	<div id="bloc_recap" style="height: 160px; overflow: hidden; position: relative;">
+		<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $recapParcellaire, 'notitle' => true)); ?>
+		<div style="width: 100%; position: absolute; height: 70px; bottom: 0;  background: linear-gradient(to bottom, transparent, white);"></div>
+	</div>
+	<div class="text-center">
+		<button id="btn_recap_voir_tout" class="btn btn-sm btn-link"><span class="glyphicon glyphicon-chevron-down"></span> Voir tout</button>
+		<button id="btn_recap_voir_moins" class="btn btn-sm btn-link hidden"><span class="glyphicon glyphicon-chevron-up"></span> Voir moins</button>
+	</div>
+	<script>
+		document.getElementById('btn_recap_voir_tout').addEventListener('click', function() {
+			this.classList.add('hidden');
+			document.getElementById('btn_recap_voir_moins').classList.remove('hidden')
+			document.getElementById('bloc_recap').style.height = 'auto';
+		});
+
+		document.getElementById('btn_recap_voir_moins').addEventListener('click', function() {
+			this.classList.add('hidden');
+			document.getElementById('btn_recap_voir_tout').classList.remove('hidden')
+			document.getElementById('bloc_recap').style.height = '160px';
+		});
+	</script>
+<?php endif; ?>
 
 <?php if(strpos($parcellaire->_id, 'CREMANT') !== false && count($parcellaire->declaration->getProduitsCepageDetails())): ?>
 <a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>" class="btn btn-sm btn-warning pull-right" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les parcelles via Prodouane</a>
 <?php endif; ?>
 
-<ul class="nav nav-tabs">
+<ul style="margin-top: 0;" class="nav nav-tabs">
     <?php
     $selectedAppellationName = "";
     foreach ($parcellaireAppellations as $appellationKey => $appellationName) :
