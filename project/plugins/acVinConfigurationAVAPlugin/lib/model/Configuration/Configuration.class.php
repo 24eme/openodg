@@ -111,7 +111,11 @@ class Configuration extends BaseConfiguration {
 
             return $this->identifyLibelleProduct[$libelle];
         }
-
+        $libelles = explode(' - ', $libelle);
+        $libelle = $libelles[0];
+        if (count($libelles) > 1) {
+            $inao = $libelles[1];
+        }
         $libelleSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($libelle)));
 
         foreach($this->declaration->getProduits() as $produit) {

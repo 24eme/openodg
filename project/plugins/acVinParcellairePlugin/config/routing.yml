@@ -67,7 +67,7 @@ parcellaire_export_csv:
   param: { module: parcellaire, action: parcellaireExportCSV}
   class: ParcellaireRoute
   options:
-    model: Etablissement
+    model: Parcellaire
     type: object
 
 parcellaire_export_geo:
@@ -75,5 +75,13 @@ parcellaire_export_geo:
   param: { module: parcellaire, action: parcellaireExportGeo}
   class: ParcellaireRoute
   options:
-    model: Etablissement
+    model: Parcellaire
+    type: object
+
+parcellaire_export_doc:
+  url: /parcellaire/doc/:id
+  param: { module: parcellaire, action: parcellaireExportDoc}
+  class: ParcellaireRoute
+  options:
+    model: Parcellaire
     type: object
