@@ -179,25 +179,4 @@ class FactureConfiguration {
         return $this->configuration['numerocompte_banquepaiement'];
     }
 
-    public function getBanqueNom() {
-        if (!isset($this->app_coordonnees_bancaire['banquenom'])) {
-            throw sfException("app coordonnees_bancaire banquenom missing");
-        }
-        return $this->app_coordonnees_bancaire['banquenom'];
-    }
-
-    public function getBIC() {
-        if (!isset($this->app_coordonnees_bancaire['bic'])) {
-            throw sfException("app coordonnees_bancaire '])) missing");
-        }
-        return $this->app_coordonnees_bancaire['bic'];
-    }
-
-    public function getIBAN() {
-        if (!isset($this->app_coordonnees_bancaire['iban'])) {
-            throw sfException("app coordonnees_bancaire iban missing");
-        }
-        return $this->app_coordonnees_bancaire['iban'];
-    }
-
 }
