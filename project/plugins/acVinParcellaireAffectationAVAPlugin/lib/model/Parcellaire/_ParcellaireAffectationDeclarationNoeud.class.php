@@ -76,10 +76,13 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
             }
             
             foreach($produit->getLieuxEditable() as $lieu_key => $lieu) {
-                $produits[str_replace("/lieu/", "/lieu".$lieu_key."/", $hash)] = $produit;
+                if ($produit->getConfig()->hasLieuEditable()) {
+                    $produits[str_replace("/lieu/", "/lieu".$lieu_key."/", $hash)] = $produit;
+                }else{
+                    $produits[str_replace("/lieu/", "/lieu/", $hash)] = $produit;
+                }
             }
         }
-
         return $produits;
     }
 
