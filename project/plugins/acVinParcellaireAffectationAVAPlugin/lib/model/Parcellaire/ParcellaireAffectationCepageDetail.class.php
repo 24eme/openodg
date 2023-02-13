@@ -142,6 +142,9 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         if(!$this->hasMultipleAcheteur()) {
             $this->remove('acheteurs');
         }
+        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+            $this->lieu = '';
+        }
         return false;
     }
 
