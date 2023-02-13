@@ -160,10 +160,10 @@ class parcellaireActions extends sfActions {
         // Ajoute des couleurs et l'identification
         foreach ($geojson->features as $feat) {
             $feat->properties->stroke = '#FF0000';
-            $feat->properties->stroke_width = 4;
-            $feat->properties->stroke_opacity = 1;
+            $feat->properties->{"stroke-width"} = 4;
+            $feat->properties->{"stroke-opacity"} = 1;
             $feat->properties->fill = '#fff';
-            $feat->properties->fill_opacity = 0;
+            $feat->properties->{"fill-opacity"} = 0;
             $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
         }
 
@@ -175,24 +175,18 @@ class parcellaireActions extends sfActions {
                     // Ajoute les couleurs et infos qui vont bien
                     $feat->properties->name = $aire['infos']['name'];
                     $feat->properties->fill = $aire['infos']['color'];
-                    $feat->properties->fill_opacity = 0.5;
+                    $feat->properties->{"fill-opacity"} = 0.5;
                     $feat->properties->stroke = '#000';
-                    $feat->properties->stroke_width = 2;
-                    $feat->properties->stroke_opacity = 0.1;
-                    // Ajoute l'aire au début du tableau, les parcelles doivent être audessus pour être plus facilement clickables. 
+                    $feat->properties->{"stroke-width"} = 2;
+                    $feat->properties->{"stroke-opacity"} = 0.1;
+                    // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables. 
                     array_unshift($geojson->features, $feat);
                 }
             }
         }
 
-        // Met le json dans le fichier .geojson à télécharger et met des - à la place des _ parce que c'est comme ça en geojson
-        $geojson_str = str_replace('fill_opacity', 'fill-opacity', 
-                str_replace('stroke_width', 'stroke-width', 
-                    str_replace('stroke_opacity', 'stroke-opacity', json_encode($geojson) 
-                    )
-                )
-            );
-
+        $geojson_str = json_encode($geojson);
+        
         echo $geojson_str;
         /*
         // A corriger. GeoPHP ne génère pas un kml valide.
