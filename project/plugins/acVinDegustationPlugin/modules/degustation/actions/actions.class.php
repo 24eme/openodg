@@ -679,30 +679,7 @@ class degustationActions extends sfActions {
 
         uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
 
-        $this->syntheseLots = [];
-        foreach ($this->mouvements as $mouvementLot) {
-            $libelle = trim(strstr($mouvementLot->value->libelle, '(', true));
-            if (array_key_exists($libelle, $this->syntheseLots) === false) {
-                $this->syntheseLots[$libelle] = [
-                    'volume_commercialise' => 0,
-                    'volume_revendique' => 0,
-                    'vip2c' => null
-                ];
-            }
-
-            if (in_array($mouvementLot->value->statut, ['08_CONFORME', '09_NON_AFFECTABLE', '12_CONFORME_APPEL']) === false) {
-                continue;
-            }
-
-            switch ($mouvementLot->value->initial_type) {
-                case 'DRev:Changé':
-                    $this->syntheseLots[$libelle]['volume_commercialise'] += $mouvementLot->value->volume;
-                    break;
-                case 'DRev':
-                    $this->syntheseLots[$libelle]['volume_revendique'] += $mouvementLot->value->volume;
-                    break;
-            }
-        };
+        $this->syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($this->mouvements);
     }
 
     public function executeManquements(sfWebRequest $request) {

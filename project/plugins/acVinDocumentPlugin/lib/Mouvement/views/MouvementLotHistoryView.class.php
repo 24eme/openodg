@@ -83,4 +83,33 @@ class MouvementLotHistoryView extends acCouchdbView
             ->getView($this->design, $this->view);
     }
 
+    public function buildSyntheseLots($mouvements)
+    {
+        $syntheseLots = [];
+        foreach ($mouvements as $mouvementLot) {
+            $libelle = trim(strstr($mouvementLot->value->libelle, '(', true));
+            if (array_key_exists($libelle, $syntheseLots) === false) {
+                $syntheseLots[$libelle] = [
+                    'volume_commercialise' => 0,
+                    'volume_revendique' => 0,
+                    'vip2c' => null
+                ];
+            }
+
+            if (in_array($mouvementLot->value->statut, ['08_CONFORME', '09_NON_AFFECTABLE', '12_CONFORME_APPEL']) === false) {
+                continue;
+            }
+
+            switch ($mouvementLot->value->initial_type) {
+                case 'DRev:Changé':
+                    $syntheseLots[$libelle]['volume_commercialise'] += $mouvementLot->value->volume;
+                    break;
+                case 'DRev':
+                    $syntheseLots[$libelle]['volume_revendique'] += $mouvementLot->value->volume;
+                    break;
+            }
+        };
+
+        return $syntheseLots;
+    }
 }
