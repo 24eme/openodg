@@ -138,9 +138,19 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getCouleur()->getLieu();
     }
 
+    public function getLieu() {
+        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+            return '';
+        }
+        return $this->_get('lieu');
+    }
+
     public function cleanNode() {
         if(!$this->hasMultipleAcheteur()) {
             $this->remove('acheteurs');
+        }
+        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+            $this->lieu = '';
         }
         return false;
     }

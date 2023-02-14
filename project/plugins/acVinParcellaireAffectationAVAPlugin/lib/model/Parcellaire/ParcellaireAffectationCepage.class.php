@@ -48,34 +48,18 @@ class ParcellaireAffectationCepage extends BaseParcellaireAffectationCepage {
         if($lieu) {
             $lieu = KeyInflector::slugify(trim($lieu));
         }
-        if($cviFilter) {
-            $cviFounded = false;
-            foreach($this->acheteurs as $acheteurs_lieu => $acheteurs_type) {
-                foreach($acheteurs_type as $type => $achs) {
-                    foreach($achs as $acheteur) {
-                        if($lieu && $acheteurs_lieu != $lieu) {
-                            continue;
-                        }
-                        if($acheteur->cvi == $cviFilter) {
-                            $cviFounded = true;
-                            break;
-                        }
-                    }
-                    if($cviFounded) {
-                        break;
-                    }
-                }
-            }
-            if(!$cviFounded) {
-                return array();
-            }
-        }
         foreach($this->acheteurs as $acheteurs_lieu => $acheteurs_type) {
 
             foreach($acheteurs_type as $type => $achs) {
                 foreach($achs as $acheteur) {
+                    if($cviFilter && $acheteur->cvi != $cviFilter) {
+                        continue;
+                    }
                     if($lieu && $acheteurs_lieu != $lieu) {
                         continue;
+                    }
+                    if (!isset($acheteurs[$type])) {
+                        $acheteurs[$type] = array();
                     }
                     $acheteurs[$type][$acheteur->getKey()] = $acheteur;
                 }
