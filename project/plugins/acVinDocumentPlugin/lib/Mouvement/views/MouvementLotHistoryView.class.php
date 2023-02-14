@@ -110,6 +110,8 @@ class MouvementLotHistoryView extends acCouchdbView
             }
         };
 
+        ksort($syntheseLots);
+
         return $syntheseLots;
     }
 }
