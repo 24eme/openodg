@@ -138,9 +138,19 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getCouleur()->getLieu();
     }
 
+    public function getLieu() {
+        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+            return '';
+        }
+        return $this->_get('lieu');
+    }
+
     public function cleanNode() {
         if(!$this->hasMultipleAcheteur()) {
             $this->remove('acheteurs');
+        }
+        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+            $this->lieu = '';
         }
         return false;
     }
@@ -174,5 +184,16 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
 
     public function isFromAppellation($appellation){
         return 'appellation_'.$appellation == $this->getAppellation()->getKey();
+    }
+
+    public function getAppellationLibelle($force_vtsgn = false) {
+        $l = $this->getAppellation()->getLibelle();
+        if ($this->getLieuNode()->getLibelle()) {
+            $l .= ' '.$this->getLieuNode()->getLibelle();
+        }
+        if ($force_vtsgn || $this->getVtsgn()) {
+            $l .= ' VT/SGN';
+        }
+        return  $l;
     }
 }

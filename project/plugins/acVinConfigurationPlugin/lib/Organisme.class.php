@@ -72,7 +72,12 @@ class Organisme
 
     public function getNom() {
 
-        return $this->getInfo('service_facturation');
+        return $this->getInfo('nom') ? $this->getInfo('nom') : $this->getInfo('service_facturation');
+    }
+
+    public function getNomFacturation() {
+
+        return $this->getInfo('service_facturation') ? $this->getInfo('service_facturation') : $this->getInfo('nom');
     }
 
     public function getAdresse() {
@@ -98,6 +103,11 @@ class Organisme
     public function getEmail() {
 
         return $this->getInfo('email');
+    }
+
+    public function getEmailFacturation() {
+
+        return ($this->getInfo('email_facturation')) ? $this->getInfo('email_facturation') : $this->getInfo('email');
     }
 
     public function getResponsable() {

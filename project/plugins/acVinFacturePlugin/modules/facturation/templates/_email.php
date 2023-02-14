@@ -5,4 +5,4 @@ Une nouvelle facture est disponible, vous pouvez la télécharger directement en
 
 Bien cordialement,
 
-<?php echo include_partial('Email/footerMail'); ?>
+<?php echo include_partial('Email/footerMail', array('email' => Organisme::getInstance()->getEmailFacturation())); ?>
