@@ -702,25 +702,6 @@ class degustationActions extends sfActions {
                     $this->syntheseLots[$libelle]['volume_revendique'] += $mouvementLot->value->volume;
                     break;
             }
-
-            if (DRevConfiguration::getInstance()->hasVolumeSeuil()
-                && $this->campagne === DRevConfiguration::getInstance()->getCampagneVolumeSeuil()
-                && strpos($libelle, 'Méditerranée Rosé') === 0
-            ) {
-                $seuil = 0;
-
-                $file = fopen(sfConfig::get('sf_root_dir').DIRECTORY_SEPARATOR.sfConfig::get('app_api_contrats_fichier_csv'), 'r');
-                while (($line = fgetcsv($file)) !== false) {
-                    if ($line[3] !== $this->etablissement->cvi) {
-                        continue;
-                    }
-
-                    $seuil = (int) str_replace(',', '', trim(end($line)));
-                    break;
-                }
-                fclose($file);
-                $this->syntheseLots[$libelle]['vip2c'] = $seuil;
-            }
         };
     }
 
