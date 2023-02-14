@@ -122,7 +122,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getProduitLibelle() {
-
+        if (!$this->isRealProduit()) {
+            return ' - PRODUIT NON REONNU - ';
+        }
         return $this->getProduit()->getLibelle();
     }
 
@@ -210,15 +212,23 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return false;
     }
 
+    public function isRealProduit() {
+        try {
+            return $this->getProduit()->isRealProduit();
+        }catch(sfException $e) {
+            return false;
+        }
+    }
+
     public function hasProblemCepageAutorise() {
-      if (!$this->getProduit()->isRealProduit()) {
+      if (!$this->isRealProduit()) {
           return false;
       }
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 
     public function hasTroisiemeFeuille() {
-        $year = date('Y', strtotime('1st november')) - 2;
+        $year = ConfigurationClient::getInstance()->getCurrentAnneeRecolte() - 2;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
     }

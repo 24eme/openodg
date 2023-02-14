@@ -1032,4 +1032,7 @@ abstract class Lot extends acCouchdbDocumentTree
         return Anonymization::hideIfNeeded($this->_get('declarant_nom'));
     }
 
+    public function getLotInDrevOrigine(){
+        return $this;
+    }
 }

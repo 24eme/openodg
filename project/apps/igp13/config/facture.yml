@@ -4,11 +4,9 @@ all:
       ligneUnique: false
       ligneDetailWithTitle: false
       echeances: false
-      all_etablissements: false
-      export_sage_width_txt: true
-      all_etablissements: true
       modalite_paiement: "Par chèque ou virement à réception de facture."
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
       export_type: "isa"
       exercice: "viticole"
+      liste_dernier_exercice: true

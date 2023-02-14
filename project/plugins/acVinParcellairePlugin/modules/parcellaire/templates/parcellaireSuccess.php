@@ -178,7 +178,7 @@ $list_idu = [];
                                     <span class="text-muted"><?php echo $detail->idu; ?></span>
                                 </td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
-                                    <span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $cepage; ?><br/>
+                                    <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>
                                     <?php $aires = $detail->isInAires(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
                                     <?php
@@ -322,6 +322,9 @@ $list_idu = [];
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
 <div class="text-center">
+<a href="<?php echo url_for('parcellaire_export_doc', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le doc de contrôle</a>
+<a href="<?php echo url_for('parcellaire_export_geo', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger les coordonées géographiques</a>
+<a href="<?php echo url_for('parcellaire_export_csv', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le tableur de contrôle</a>
 <a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
 </div>
 <?php endif; ?>

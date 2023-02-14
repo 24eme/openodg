@@ -4,15 +4,18 @@
     <h2>Validation de votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?> <?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?>AOC Crémant d'Alsace<?php else: ?>Crémant<?php endif; ?><?php endif; ?></h2>
 </div>
 
+<<<<<<< HEAD
 <div class="row col-xs-12">
     <h3>Merci de vérifier votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?> AOC Crémant d'Alsace<?php else: ?> Crémant<?php endif; ?><?php endif; ?>&nbsp;<?php echo $parcellaire->campagne; ?></h3>
-    <p class="text-muted">Une version PDF est téléchargeable en bas de cet écran.</p>
 </div>
+
+<h3>Merci de vérifier votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?> AOC Crémant d'Alsace<?php else: ?> Crémant<?php endif; ?><?php endif; ?>&nbsp;<?php echo $parcellaire->campagne; ?></h3>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('parcellaireAffectation/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
 <?php endif; ?>
-<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $parcellaire, 'diff' => 1)); ?>
+
+<?php include_partial('parcellaireAffectation/recap', array('parcellaire' => $parcellaire)); ?>
 
     <?php  if ($parcellaire->hasVtsgn()): ?>
     <div class="alert" role="alert" id="engagements">

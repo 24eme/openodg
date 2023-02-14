@@ -134,6 +134,11 @@ class ConfigurationClient extends acCouchdbClient {
         return $this->getCampagneVinicole()->getCurrent();
     }
 
+    public function getCurrentAnneeRecolte() {
+
+        return $this->getCampagneVinicole()->getCurrentAnneeRecolte();
+    }
+
     public function getPreviousCampagne($campagne) {
 
         return $this->getCampagneVinicole()->getPrevious($campagne);

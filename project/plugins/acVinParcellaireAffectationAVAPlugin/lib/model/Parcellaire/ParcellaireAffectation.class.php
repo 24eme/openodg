@@ -143,25 +143,34 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
-        
+
        if ($this->exist('declaration/certification/genre')) {
-           $genre = $this->get('declaration/certification/genre');
-            if ($genre->exist('appellation_GRDCRU')) {
-                $genre->remove('appellation_GRDCRU');
-                $genre->add('appellation_GRDCRU');
-            }
-            if ($genre->exist('appellation_COMMUNALE')) {
-                $genre->remove('appellation_COMMUNALE');
-                $genre->add('appellation_COMMUNALE');
-            }
+           $certif = $this->get('declaration/certification');
+           $certif->remove('genre');
+           $certif->add('genre');
         }
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
                 foreach($CVIParcelle->isInAires() as $nom => $statut) {
+                    $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
+                    $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
-                        $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
-                        $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
+                        $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
+                        if ($prod) {
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                            $parcelle->superficie = $CVIParcelle->superficie * 100;
+                            $parcelle->active = 0;
+                        }
+                    }elseif ($nom == 'Alsace') {
+                        $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
+                        if ($prod && $prod->hasVtsgn()) {
+                            $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
+                            $parcelle->superficie = $CVIParcelle->superficie * 100;
+                            $parcelle->active = 0;
+                            $parcelle->vtsgn = 0;
+                        }
+                        $libelle = str_replace('ALSACE', 'ALSACE LIEU-DIT', $libelle);
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
@@ -179,6 +188,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             $this->get($parcelleHash)->active = 1;
         }
+        print_r($this->declaration);exit;
     }
 
     public function initOrUpdateProduitsFromCVI() {

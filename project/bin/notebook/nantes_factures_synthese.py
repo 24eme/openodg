@@ -73,7 +73,7 @@ factures_meta[['Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Tel
                'Total valoriation TVA', 'Total valoriation HT', 'Total valoriation TTC',
                'Cotisation ODG TOTAL ou forfait', 'Remboursement ODG covid', 'ODG TOTAL + remise',
                'Droits I.N.A.O.',
-               'TOTAL ODG + INAO', 'Total facture TTC',]].to_csv('../../web/exports/factures_linemorgane.csv', encoding="iso8859_15", sep=";", decimal=",")
+               'TOTAL ODG + INAO', 'Total facture TTC',]].to_csv('../../web/exports/factures_synthese.csv', encoding="iso8859_15", sep=";", decimal=",")
 
 
 # In[ ]:

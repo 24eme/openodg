@@ -646,6 +646,19 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
     }
 
+    public function executeLotDelete(sfWebRequest $request) {
+        $lot = LotsClient::getInstance()->findByUniqueId($request->getParameter('identifiant'), $request->getParameter('unique_id'));
+
+        if(!$lot) {
+
+            throw new sfError404Exception("Lot non trouvé");
+        }
+
+        LotsClient::getInstance()->deleteAndSave($lot->declarant_identifiant, $lot->unique_id);
+
+        return $this->redirect('degustation_declarant_lots_liste',array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne));
+    }
+
     public function executeLotsListe(sfWebRequest $request) {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);

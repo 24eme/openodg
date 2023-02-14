@@ -1,6 +1,6 @@
 <?php
 
-class GenerationExportSage extends GenerationAbstract
+class GenerationExportComptableCustom extends GenerationAbstract
 {
     public function generate() {
         /*$this->generation->remove('documents');

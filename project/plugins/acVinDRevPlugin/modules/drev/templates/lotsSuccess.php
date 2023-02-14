@@ -30,7 +30,7 @@
               <div class="col-md-3"><?php echo $lot->millesime; ?></div>
               <div class="col-md-1 text-right">
                 <?php if($isAdmin && !$lot->id_document_affectation): ?>
-                    <a href="<?php echo url_for("drev_lots_delete", array('id' => $drev->_id, 'numArchive' => $lot->numero_archive)) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
+                    <a href="<?php echo url_for("drev_lot_delete", array('id' => $drev->_id, 'unique_id' => $lot->unique_id)) ?>" onclick='return confirm("Étes vous sûr de vouloir supprimer ce lot ?");' class="close" title="Supprimer ce lot" aria-hidden="true">×</a>
                 <?php elseif($isAdmin): ?>
                     <button type="button" style="opacity: 0.1; cursor: not-allowed;" onclick='return alert("Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé.");' class="close" title="Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé." aria-hidden="true">×</button>
                 <?php endif; ?>

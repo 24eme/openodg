@@ -4,11 +4,9 @@ all:
       ligneUnique: false
       ligneDetailWithTitle: false
       echeances: false
-      all_etablissements: false
-      export_sage_width_txt: true
-      all_etablissements: true
       modalite_paiement: "Par chèque à l'ordre de «ODG 13» et à adresser au Syndicat des Vignerons d'Arles"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
       export_type: "isa"
       exercice: "viticole"
+      liste_dernier_exercice: true

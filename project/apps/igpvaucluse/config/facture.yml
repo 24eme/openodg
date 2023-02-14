@@ -4,9 +4,6 @@ all:
       ligneUnique: false
       ligneDetailWithTitle: false
       echeances: false
-      all_etablissements: false
-      export_sage_width_txt: true
-      all_etablissements: true
       modalite_paiement: "- comptant par virement ou chèques"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
@@ -16,3 +13,5 @@ all:
       comptetva_normal: '44571001'
       comptetva_superreduit: ''
       numerocompte_banquepaiement: '51200001'
+      exercice: '31/08'
+      liste_dernier_exercice: true
