@@ -678,6 +678,50 @@ class degustationActions extends sfActions {
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
 
         uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
+
+        $this->syntheseLots = [];
+        foreach ($this->mouvements as $mouvementLot) {
+            $libelle = trim(strstr($mouvementLot->value->libelle, '(', true));
+            if (array_key_exists($libelle, $this->syntheseLots) === false) {
+                $this->syntheseLots[$libelle] = [
+                    'volume_commercialise' => 0,
+                    'volume_revendique' => 0,
+                    'vip2c' => null
+                ];
+            }
+
+            if (in_array($mouvementLot->value->statut, ['08_CONFORME', '09_NON_AFFECTABLE', '12_CONFORME_APPEL']) === false) {
+                continue;
+            }
+
+            switch ($mouvementLot->value->initial_type) {
+                case 'DRev:Changé':
+                    $this->syntheseLots[$libelle]['volume_commercialise'] += $mouvementLot->value->volume;
+                    break;
+                case 'DRev':
+                    $this->syntheseLots[$libelle]['volume_revendique'] += $mouvementLot->value->volume;
+                    break;
+            }
+
+            if (DRevConfiguration::getInstance()->hasVolumeSeuil()
+                && $this->campagne === DRevConfiguration::getInstance()->getCampagneVolumeSeuil()
+                && strpos($libelle, 'Méditerranée Rosé') === 0
+            ) {
+                $seuil = 0;
+
+                $file = fopen(sfConfig::get('sf_root_dir').DIRECTORY_SEPARATOR.sfConfig::get('app_api_contrats_fichier_csv'), 'r');
+                while (($line = fgetcsv($file)) !== false) {
+                    if ($line[3] !== $this->etablissement->cvi) {
+                        continue;
+                    }
+
+                    $seuil = (int) str_replace(',', '', trim(end($line)));
+                    break;
+                }
+                fclose($file);
+                $this->syntheseLots[$libelle]['vip2c'] = $seuil;
+            }
+        };
     }
 
     public function executeManquements(sfWebRequest $request) {
