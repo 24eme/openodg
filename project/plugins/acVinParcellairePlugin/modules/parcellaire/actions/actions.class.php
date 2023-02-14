@@ -196,53 +196,106 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
-        header("Content-Type: application/vnd.geo+json");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.geojson"', $parcellaire->identifiant, $parcellaire->date));
+        header("Content-Type: application/vnd.google-earth.kml+xml");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
+        echo '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
+        
+        // L'hexa de la couleur est inversé par rapport à la notation habituelle
+        // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
+        echo '<Style id="parcelle-style">
+        <LineStyle>
+          <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>7d0000ff</color>
+        </PolyStyle>
+      </Style>';
+
+        $styles = [];
+        foreach ($parcellaire->getCachedAires() as $aire) {
+            foreach ($aire['jsons'] as $airejson) {
+                $aireobj = json_decode($airejson);
+                foreach ($aireobj->features as $feat) {
+                    $color = '7d' . str_replace('#', '', $aire['infos']['color']);
+                    $styles[$color] = '<Style id="aire-style-'.$color.'">
+            <LineStyle>
+            <width>1</width>
+            </LineStyle>
+            <PolyStyle>
+            <color>'.$color.'</color>
+            </PolyStyle>
+        </Style>';
+                }
+            }
+        }
+
+        foreach ($styles as $style) {
+            echo $style;
+        }
+
+        // Pour mémoire la possibilité de mettre du texte directement dans la carte en mettant du texte en PNG
+        /*
+        echo '<Placemark>
+        <name>Test</name>
+        <Style>
+            <IconStyle>
+                <scale>0.03125</scale>
+                <Icon>
+                    <href>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII=</href>
+                    <gx:w>1</gx:w>
+                    <gx:h>1</gx:h>
+                </Icon>
+                <hotSpot x="0" y="1" xunits="pixels" yunits="pixels"/>
+            </IconStyle>
+            <LabelStyle>
+                <color>ff000000</color>
+                <LabelStyleSimpleExtensionGroup xmlns="" fontFamily="Sans" haloColor="ffffffff" haloRadius="3" haloOpacity="1"/>
+            </LabelStyle>
+        </Style>
+        <Point>
+            <coordinates>6.096128276094139,43.24822642695386</coordinates>
+        </Point>
+    </Placemark>';
+    */
+
         // Le json décodé des parcelles
         $geojson = $parcellaire->getDocument()->getGeoJson();
-
-        // Ajoute des couleurs et l'identification
-        foreach ($geojson->features as $feat) {
-            $feat->properties->stroke = '#FF0000';
-            $feat->properties->{"stroke-width"} = 4;
-            $feat->properties->{"stroke-opacity"} = 1;
-            $feat->properties->fill = '#fff';
-            $feat->properties->{"fill-opacity"} = 0;
-            $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
-        }
 
         // On y ajoute les json (décodés) des aires des appelations des communes associées
         foreach ($parcellaire->getCachedAires() as $aire) {
             foreach ($aire['jsons'] as $airejson) {
                 $aireobj = json_decode($airejson);
                 foreach ($aireobj->features as $feat) {
-                    // Ajoute les couleurs et infos qui vont bien
-                    $feat->properties->name = $aire['infos']['name'];
-                    $feat->properties->fill = $aire['infos']['color'];
-                    $feat->properties->{"fill-opacity"} = 0.5;
-                    $feat->properties->stroke = '#000';
-                    $feat->properties->{"stroke-width"} = 2;
-                    $feat->properties->{"stroke-opacity"} = 0.1;
-                    // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables. 
-                    array_unshift($geojson->features, $feat);
+                    $feat_str = json_encode($feat);
+                    $feat_obj = GeoPHP::load($feat_str, 'geojson');
+        
+                    echo '<Placemark>';
+                    echo '<name>'.$aire['infos']['name'].'</name>';
+                    echo '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire['infos']['color']) . '</styleUrl>';
+                    echo $feat_obj->out('kml');
+                    echo '</Placemark>';
                 }
             }
         }
 
-        $geojson_str = json_encode($geojson);
-        
-        echo $geojson_str;
-        /*
-        // A corriger. GeoPHP ne génère pas un kml valide.
-        $gj_obj = GeoPHP::load($geojson_str, 'geojson');
-        echo $gj_obj->out('kml');
-        */
+        // Ajoute des couleurs et l'identification
+        foreach ($geojson->features as $feat) {
+            $feat_str = json_encode($feat);
+            $feat_obj = GeoPHP::load($feat_str, 'geojson');
 
-        exit;
+            echo '<Placemark>';
+            echo '<name>'.$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
+            echo '<styleUrl>#parcelle-style</styleUrl>';
+            echo $feat_obj->out('kml');
+            echo '</Placemark>';
+        }
+
+        echo '</Document></kml>';
+        exit;        
     }
 
     public function executeParcellaireExportDoc(sfWebRequest $request) {
