@@ -584,8 +584,8 @@ class Email {
     }
 
     public function sendConfirmationDegustateurMail($degustation, $id_compte, $college_key) {
-      $from = Organisme::getInstance(null, 'degustation')->getEmail();
-      $reply_to = $from;
+      $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+      $reply_to = Organisme::getInstance(null, 'degustation')->getEmail();
 
       $compte = CompteClient::getInstance()->find($id_compte);
 
@@ -616,8 +616,8 @@ class Email {
     }
 
     public function sendActionDegustateurAuthMail($degustation, $degustateur, $action) {
-        $from = Organisme::getInstance(null, 'degustation')->getEmail();
-        $to = $from;
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = Organisme::getInstance(null, 'degustation')->getEmail();
 
         $degust_nom = explode(' —', $degustateur->libelle)[0];
         $action_libelle = ($action) ? "présence" : "absence";
