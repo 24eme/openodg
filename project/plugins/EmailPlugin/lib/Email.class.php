@@ -607,7 +607,7 @@ class Email {
               ->setFrom($from)
               ->setReplyTo($reply_to)
               ->setTo($to)
-              ->setCc($from)
+              ->setCc($reply_to)
               ->setSubject($subject)
               ->setBody($body)
               ->setContentType('text/plain');
