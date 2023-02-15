@@ -91,8 +91,7 @@ class MouvementLotHistoryView extends acCouchdbView
             if (array_key_exists($libelle, $syntheseLots) === false) {
                 $syntheseLots[$libelle] = [
                     'volume_commercialise' => 0,
-                    'volume_revendique' => 0,
-                    'vip2c' => null
+                    'volume_revendique' => 0
                 ];
             }
 
