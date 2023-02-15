@@ -17,7 +17,7 @@ class ChgtDenomValidation extends DocumentValidation
     {
         $this->addControle(self::TYPE_ERROR, 'lot_volume', "Le volume saisi est supérieur au volume initial.");
         $this->addControle(self::TYPE_ERROR, 'chgtdenom_produit', "Le changement de dénomination n'a pas de produit");
-        $this->addControle(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Vous ne pouvez pas changer ce produit car il dépasse le volume seuil');
+        $this->addControle(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Pour le millésime 2022, la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (<strong>VIP2C</strong>) sur le Méditerranée Rosé. Vous dépassez le seuil qui vous a été attribué, vous devrez avoir une preuve de commercialisation');
     }
 
     public function controle()
@@ -64,7 +64,7 @@ class ChgtDenomValidation extends DocumentValidation
         $volume_produit = $volumes_deja_commercialise[$this->document->changement_produit_libelle." ".$this->document->changement_millesime];
 
         if ($seuil > 0 && $volume_produit['volume_commercialise'] > $seuil) {
-            $this->addPoint(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Le produit '.$this->document->changement_produit_libelle.' dépasse le volume seuil de '.$seuil.' hl');
+            $this->addPoint(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Vous avez déjà commercialisé <strong>'.$volume_produit['volume_commercialise'].'</strong> hl sur votre seuil attribué de <strong>'.$seuil.'</strong> hl');
         }
     }
 
