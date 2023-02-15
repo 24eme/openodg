@@ -160,6 +160,7 @@ EOF;
                       $dateValidation = $dt->modify('+1 minute')->format('c');
                 }
                 $drev->validate($dateValidation);
+                $drev->save();
                 if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]){
                       $dt = new DateTime($data[ExportDRevCSV::CSV_DATE_VALIDATION_ODG]);
                       $dateValidationODG = $dt->modify('+1 minute')->format('c');
