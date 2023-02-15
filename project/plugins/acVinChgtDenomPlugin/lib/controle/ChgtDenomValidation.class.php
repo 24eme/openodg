@@ -63,8 +63,8 @@ class ChgtDenomValidation extends DocumentValidation
         $volumes_deja_commercialise = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
         $volume_produit = $volumes_deja_commercialise[$this->document->changement_produit_libelle." ".$this->document->changement_millesime];
 
-        if ($seuil > 0 && $volume_produit['volume_commercialise'] > $seuil) {
-            $this->addPoint(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Vous avez déjà commercialisé <strong>'.$volume_produit['volume_commercialise'].'</strong> hl sur votre seuil attribué de <strong>'.$seuil.'</strong> hl');
+        if ($seuil > 0 && ($volume_produit['volume_commercialise'] + $this->document->changement_volume) > $seuil) {
+            $this->addPoint(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Vous avez déjà commercialisé <strong>'.($volume_produit['volume_commercialise'] + $this->document->changement_volume).'</strong> hl sur votre seuil attribué de <strong>'.$seuil.'</strong> hl');
         }
     }
 
