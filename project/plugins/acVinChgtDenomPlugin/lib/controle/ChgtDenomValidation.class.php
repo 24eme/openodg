@@ -54,11 +54,16 @@ class ChgtDenomValidation extends DocumentValidation
     public function controleVolumeSeuil($hash)
     {
         if (strpos($this->document->changement_produit_hash, $hash) === false) {
-            return false;
+            return null;
         }
 
         $seuil = $this->document->getVolumeSeuil();
-        if ($seuil > 0 && '' > $seuil) {
+
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->document->identifiant, $this->document->campagne)->rows;
+        $volumes_deja_commercialise = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+        $volume_produit = $volumes_deja_commercialise[$this->document->changement_produit_libelle." ".$this->document->changement_millesime];
+
+        if ($seuil > 0 && $volume_produit['volume_commercialise'] > $seuil) {
             $this->addPoint(self::TYPE_ERROR, 'vip2c_volume_seuil', 'Le produit '.$this->document->changement_produit_libelle.' dépasse le volume seuil de '.$seuil.' hl');
         }
     }
