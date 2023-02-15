@@ -85,7 +85,6 @@ EOF;
                 }
 
                 $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($etablissement->identifiant, $campagne);
-                $hash = "/declaration/certifications/".$data[ExportDRevCSV::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[ExportDRevCSV::CSV_PRODUIT_GENRE]."/appellations/".$data[ExportDRevCSV::CSV_PRODUIT_APPELLATION]."/mentions/".$data[ExportDRevCSV::CSV_PRODUIT_MENTION]."/lieux/".$data[ExportDRevCSV::CSV_PRODUIT_LIEU]."/couleurs/".$data[ExportDRevCSV::CSV_PRODUIT_COULEUR]."/cepages/".$data[ExportDRevCSV::CSV_PRODUIT_CEPAGE];
 
                 if($this->byLots){
                     $this->importDRevByLots($drev,  $lignes, $etablissement->identifiant, $campagne);
@@ -95,18 +94,36 @@ EOF;
                 if($drev) {
                     continue;
                 }
+
                 $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, false, false);
                 if(!$drev->getDocumentDouanier()) {
                     echo "ERREUR;$etablissement->_id ($etablissement->cvi);pas de document douanier\n";
                     continue;
                 }
+
+                $drev->importFromDocumentDouanier();
+                foreach($drev->getProduits() as $produit) {
+                    $produit->superficie_revendique = null;
+                }
+
                 foreach($lignes as $ligne) {
                     $data = $this->csv[$ligne];
+                    $hash = "/declaration/certifications/".$data[ExportDRevCSV::CSV_PRODUIT_CERTIFICATION]."/genres/".$data[ExportDRevCSV::CSV_PRODUIT_GENRE]."/appellations/".$data[ExportDRevCSV::CSV_PRODUIT_APPELLATION]."/mentions/".$data[ExportDRevCSV::CSV_PRODUIT_MENTION]."/lieux/".$data[ExportDRevCSV::CSV_PRODUIT_LIEU]."/couleurs/".$data[ExportDRevCSV::CSV_PRODUIT_COULEUR]."/cepages/".$data[ExportDRevCSV::CSV_PRODUIT_CEPAGE];
 
+                    if(!$drev->getConfiguration()->exist($hash)) {
+                        $code_inao = trim($data[ExportDRevCSV::CSV_PRODUIT_INAO]);
+                        $produit_line = null;
+
+                        foreach ($this->configurationProduits as $key => $produit) {
+                            if($produit->getCodeDouane() == $code_inao){
+                                $hash = $produit->getHash();
+                                break;
+                            }
+                        }
+                    }
                     if(!$drev->getConfiguration()->exist($hash)) {
                         continue;
                     }
-
                     $produit = $drev->addProduit($hash, $data[ExportDRevCSV::CSV_PRODUIT_DENOMINATION_COMPLEMENTAIRE]);
                     $produit->superficie_revendique += $this->formatFloat($data[ExportDRevCSV::CSV_SUPERFICIE_REVENDIQUE]);
                     $produit->volume_revendique_issu_recolte += $this->formatFloat($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE_ISSU_RECOLTE]);
@@ -116,13 +133,25 @@ EOF;
                     if($this->formatFloat($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE_ISSU_MUTAGE]) > 0 && $produit->exist('volume_revendique_issu_mutage')) {
                         $produit->volume_revendique_issu_mutage = $this->formatFloat($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE_ISSU_MUTAGE]);
                     }
-                    $produit->vci->stock_precedent += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_PRECEDENT]);
-                    $produit->vci->destruction += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_DESTRUCTION]);
-                    $produit->vci->complement += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_COMPLEMENT]);
-                    $produit->vci->substitution += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_SUBSTITUTION]);
-                    $produit->vci->rafraichi += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_RAFRAICHI]);
-                    $produit->vci->constitue += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_CONSTITUE]);
-                }
+
+                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_PRECEDENT]) > 0)
+                        $produit->vci->stock_precedent += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_PRECEDENT]);
+                    }
+                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_DESTRUCTION]) > 0) {
+                        $produit->vci->destruction += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_DESTRUCTION]);
+                    }
+                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_COMPLEMENT]) > 0) {
+                        $produit->vci->complement += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_COMPLEMENT]);
+                    }
+                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_SUBSTITUTION]) > 0) {
+                        $produit->vci->substitution += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_SUBSTITUTION]);
+                    }
+                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_RAFRAICHI]) > 0) {
+                        $produit->vci->rafraichi += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_RAFRAICHI]);
+                    }
+                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_CONSTITUE]) > 0) {
+                        $produit->vci->constitue += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_CONSTITUE]);
+                    }
 
                 $drev->update();
                 $dateValidation = null;
