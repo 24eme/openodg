@@ -120,25 +120,73 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
-        header("Content-Type: text/csv; charset=UTF-8");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.csv"', $parcellaire->identifiant, $parcellaire->date));
+        // Les fichiers nécesssaires pour la transfo de l'ODS
+        $tmp_dir = '/tmp';
+        $ods_file = "$tmp_dir/feuille_controle.ods";
+        $content_filename = 'content.xml';
+        $content_file = "$tmp_dir/$content_filename";
+
+        copy(dirname(__FILE__) . '/../templates/feuille_controle.ods', $ods_file);
+
+        // Prend le content.xml en dézippant l'ODS
+        $zip = new ZipArchive();
+        $res = $zip->open($ods_file);
+        $zip->extractTo($tmp_dir, $content_filename);
+        $ods_content = file_get_contents($content_file);
+        preg_match('#<table:table-row[^>]*><table:table-cell[^>]*><text:p>%%BEGIN</text:p></table:table-cell>.*?</table:table-row>(.*?)<table:table-row[^>]*><table:table-cell[^>]*><text:p>%%END</text:p></table:table-cell>.*?</table:table-row>#', $ods_content, $matches);
+
+        // La ligne avec les %%* à remplacer
+        $pattern_line = $matches[1];
+
+        // Les lignes (ods) à mettre à la place
+        $data_lines = '';
+        
+        // Crée les lignes à mettre dans l'ODS partir de $pattern_line
+        $index = 0;
+        
+        foreach ($parcellaire->declaration as $declaration) {
+            foreach ($declaration->detail as $detail) {
+                $new_line = $pattern_line;
+                $ecart_rang = intval(($detail->exist('ecart_rang')) ? $detail->get('ecart_rang') : 0);
+                $ecart_pieds = intval(($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds') : 0);
+                $datas = [
+                    '%%NUMLIGNE' => ++$index,
+                    '%%COMMUNE' => $detail->commune,
+                    '%%NUMCADASTRE' => "$detail->section $detail->numero_parcelle",
+                    '%%SUP_CADASTRALE' => $detail->superficie_cadastrale,
+                    '%%SUP_UTILISEE' => $detail->getSuperficie(),
+                    '%%CEPAGE' => $detail->cepage,
+                    '%%ANNEE' => $detail->campagne_plantation,
+                    '%%ECART_RANG' => $ecart_rang,
+                    '%%ECART_PIED' => $ecart_pieds,
+                    '%%JEUNE_VIGNE' => (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) ? 'JV' : '',
+                    '%%MODE_FAIRE_VALOIR' => '', // TODO : voir de quoi il s'agit
+                    '%%NON_AOC' => '', // TODO : voir de quoi il s'agit
+                    '%%CONFORMITE' => ($ecart_rang > 250 || $ecart_pieds < 80 || $ecart_rang * $ecart_pieds / 10000 > 2.5) ? 'NC' : 'C',
+                ];
+                foreach ($datas as $key => $value) {
+                    $new_line = str_replace($key, $value, $new_line);
+                }
+                $data_lines .= $new_line;
+            }
+        }
+
+        // Remplace les données modèles par les données réelles
+        $ods_content = str_replace($matches[0], $data_lines,  $ods_content);
+
+        // Et remet dans le zip
+        file_put_contents($content_file, $ods_content);
+        $zip->addFile($content_file, $content_filename);
+        $zip->close();
+
+        header("Content-Type: application/vnd.oasis.opendocument.spreadsheet; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.ods"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
-        $this->content = "Commune;N° cadastraux;Superficie parcelle;Superficie UC;Cépage;Année plantation;Ecartement rang;Ecartement pied;\n";
-        foreach ($parcellaire->declaration as $declaration) {
-            foreach ($declaration->detail as $detail) {
-                $superf      = $detail->getSuperficie();
-                $cepage = $detail->cepage;
-                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) {
-                    $cepage .= ' - jeunes vignes';
-                }
-                $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds') : '';
-                $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang') : '';
-                $this->content .= "$detail->commune;$detail->section $detail->numero_parcelle;$detail->superficie_cadastrale;$superf;$cepage;$detail->campagne_plantation;$ecart_rang;$ecart_pieds;\n";
-            }
-        }
-        echo $this->content;
+
+        echo file_get_contents($ods_file);
+
         exit;
     }
 
@@ -148,59 +196,106 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
-        header("Content-Type: application/vnd.geo+json");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.geojson"', $parcellaire->identifiant, $parcellaire->date));
+        header("Content-Type: application/vnd.google-earth.kml+xml");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
+        echo '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
+        
+        // L'hexa de la couleur est inversé par rapport à la notation habituelle
+        // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
+        echo '<Style id="parcelle-style">
+        <LineStyle>
+          <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>7d0000ff</color>
+        </PolyStyle>
+      </Style>';
+
+        $styles = [];
+        foreach ($parcellaire->getCachedAires() as $aire) {
+            foreach ($aire['jsons'] as $airejson) {
+                $aireobj = json_decode($airejson);
+                foreach ($aireobj->features as $feat) {
+                    $color = '7d' . str_replace('#', '', $aire['infos']['color']);
+                    $styles[$color] = '<Style id="aire-style-'.$color.'">
+            <LineStyle>
+            <width>1</width>
+            </LineStyle>
+            <PolyStyle>
+            <color>'.$color.'</color>
+            </PolyStyle>
+        </Style>';
+                }
+            }
+        }
+
+        foreach ($styles as $style) {
+            echo $style;
+        }
+
+        // Pour mémoire la possibilité de mettre du texte directement dans la carte en mettant du texte en PNG
+        /*
+        echo '<Placemark>
+        <name>Test</name>
+        <Style>
+            <IconStyle>
+                <scale>0.03125</scale>
+                <Icon>
+                    <href>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII=</href>
+                    <gx:w>1</gx:w>
+                    <gx:h>1</gx:h>
+                </Icon>
+                <hotSpot x="0" y="1" xunits="pixels" yunits="pixels"/>
+            </IconStyle>
+            <LabelStyle>
+                <color>ff000000</color>
+                <LabelStyleSimpleExtensionGroup xmlns="" fontFamily="Sans" haloColor="ffffffff" haloRadius="3" haloOpacity="1"/>
+            </LabelStyle>
+        </Style>
+        <Point>
+            <coordinates>6.096128276094139,43.24822642695386</coordinates>
+        </Point>
+    </Placemark>';
+    */
+
         // Le json décodé des parcelles
         $geojson = $parcellaire->getDocument()->getGeoJson();
-
-        // Ajoute des couleurs et l'identification
-        foreach ($geojson->features as $feat) {
-            $feat->properties->stroke = '#FF0000';
-            $feat->properties->stroke_width = 4;
-            $feat->properties->stroke_opacity = 1;
-            $feat->properties->fill = '#fff';
-            $feat->properties->fill_opacity = 0;
-            $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
-        }
 
         // On y ajoute les json (décodés) des aires des appelations des communes associées
         foreach ($parcellaire->getCachedAires() as $aire) {
             foreach ($aire['jsons'] as $airejson) {
                 $aireobj = json_decode($airejson);
                 foreach ($aireobj->features as $feat) {
-                    // Ajoute les couleurs et infos qui vont bien
-                    $feat->properties->name = $aire['infos']['name'];
-                    $feat->properties->fill = $aire['infos']['color'];
-                    $feat->properties->fill_opacity = 0.5;
-                    $feat->properties->stroke = '#000';
-                    $feat->properties->stroke_width = 2;
-                    $feat->properties->stroke_opacity = 0.1;
-                    // Ajoute l'aire au début du tableau, les parcelles doivent être audessus pour être plus facilement clickables. 
-                    array_unshift($geojson->features, $feat);
+                    $feat_str = json_encode($feat);
+                    $feat_obj = GeoPHP::load($feat_str, 'geojson');
+        
+                    echo '<Placemark>';
+                    echo '<name>'.$aire['infos']['name'].'</name>';
+                    echo '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire['infos']['color']) . '</styleUrl>';
+                    echo $feat_obj->out('kml');
+                    echo '</Placemark>';
                 }
             }
         }
 
-        // Met le json dans le fichier .geojson à télécharger et met des - à la place des _ parce que c'est comme ça en geojson
-        $geojson_str = str_replace('fill_opacity', 'fill-opacity', 
-                str_replace('stroke_width', 'stroke-width', 
-                    str_replace('stroke_opacity', 'stroke-opacity', json_encode($geojson) 
-                    )
-                )
-            );
+        // Ajoute des couleurs et l'identification
+        foreach ($geojson->features as $feat) {
+            $feat_str = json_encode($feat);
+            $feat_obj = GeoPHP::load($feat_str, 'geojson');
 
-        echo $geojson_str;
-        /*
-        // A corriger. GeoPHP ne génère pas un kml valide.
-        $gj_obj = GeoPHP::load($geojson_str, 'geojson');
-        echo $gj_obj->out('kml');
-        */
+            echo '<Placemark>';
+            echo '<name>'.$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
+            echo '<styleUrl>#parcelle-style</styleUrl>';
+            echo $feat_obj->out('kml');
+            echo '</Placemark>';
+        }
 
-        exit;
+        echo '</Document></kml>';
+        exit;        
     }
 
     public function executeParcellaireExportDoc(sfWebRequest $request) {

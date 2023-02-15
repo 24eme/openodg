@@ -30,7 +30,7 @@ class ParcellaireAffectationAcheteursValidator extends sfValidatorSchema {
                 continue;
             }
 
-            if(count($value) == 0) {
+            if(!$value || count($value) == 0) {
 
                 throw new sfValidatorErrorSchema($this, array(new sfValidatorError($this, 'required')));
             }

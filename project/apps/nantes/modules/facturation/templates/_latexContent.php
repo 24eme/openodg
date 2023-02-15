@@ -182,9 +182,9 @@
 \end{minipage}
 
 \begin{minipage}{0.5\textwidth}
-    Banque : <?php echo FactureConfiguration::getInstance()->getBanqueNom(); ?> \\
-    IBAN : <?php echo FactureConfiguration::getInstance()->getIBAN(); ?> \\
-    BIC : <?php echo FactureConfiguration::getInstance()->getBIC(); ?> \\
+    Banque : <?php echo Organisme::getInstance($facture->region)->getBanqueNom(); ?> \\
+    IBAN : <?php echo Organisme::getInstance($facture->region)->getIban(); ?> \\
+    BIC : <?php echo Organisme::getInstance($facture->region)->getBic(); ?> \\
 \end{minipage}
 
 

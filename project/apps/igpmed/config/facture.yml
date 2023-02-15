@@ -4,9 +4,6 @@ all:
       ligneUnique: false
       ligneDetailWithTitle: false
       echeances: false
-      all_etablissements: false
-      export_sage_width_txt: true
-      all_etablissements: true
       modalite_paiement: "30 jours à reception, par virement \\"
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
