@@ -130,10 +130,14 @@ array_walk($operateurs, function (&$operateur, $key) {
     }
 
     $operateur['depassement'] = implode('+', $d);
+
+    $operateur['lot_plus_recent'] = (DateTimeImmutable::createFromFormat('Y-m-d', $operateur['date_last_revendique']) > DateTimeImmutable::createFromFormat('Y-m-d', $operateur['date_last_commercialise']))
+                                    ? 'Revendication'
+                                    : 'Commercialisation';
 });
 
 $f = fopen('php://output', "w");
-fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C', 'Dépassement'], ';');
+fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Date dernière revendication', 'Commercialisé', 'Date dernière commercialisation', 'VIP2C', 'Dépassement', 'Lot le plus récent'], ';');
 foreach ($operateurs as $operateur) {
     fputcsv($f, $operateur, ';');
 }
