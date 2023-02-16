@@ -91,7 +91,7 @@ class FactureConfiguration {
 
     public function getModaliteDePaiement()
     {
-        return (isset($this->configuration['modalite_paiement']) && $this->configuration['modalite_paiement']) ?: '';
+        return (isset($this->configuration['modalite_paiement']) && $this->configuration['modalite_paiement']) ? $this->configuration['modalite_paiement'] : '';
     }
 
     public function getExercice() {
