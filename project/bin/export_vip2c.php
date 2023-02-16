@@ -1,7 +1,7 @@
 <?php
 
 if ($argc !== 4) {
-    die('Missing parameters'.PHP_EOL);
+    die('Missing parameters. Usage: '.$argv[0].' drev_lots.csv lots.csv etablissements.csv'.PHP_EOL);
 }
 
 $file_drev_lots = $argv[1];
