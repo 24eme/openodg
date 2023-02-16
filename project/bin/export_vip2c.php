@@ -132,8 +132,8 @@ array_walk($operateurs, function (&$operateur, $key) {
     $operateur['depassement'] = implode('+', $d);
 
     $operateur['lot_plus_recent'] = (DateTimeImmutable::createFromFormat('Y-m-d', $operateur['date_last_revendique']) > DateTimeImmutable::createFromFormat('Y-m-d', $operateur['date_last_commercialise']))
-                                    ? 'Revendication'
-                                    : 'Commercialisation';
+                                    ? $operateur['date_last_revendique']
+                                    : $operateur['date_last_commercialise'];
 });
 
 $f = fopen('php://output', "w");
