@@ -43,7 +43,7 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
         $operateurs[$line[2]]['identifiant'] = $line[2];
         $operateurs[$line[2]]['cvi'] = $line[4];
         $operateurs[$line[2]]['volume_revendique'] = 0;
-        $operateurs[$line[2]]['date_last_revendique'] = $line[13]; DateTimeImmutable::createFromFormat('Y-m-d', $line[13]);
+        $operateurs[$line[2]]['date_last_revendique'] = $line[13];
         $operateurs[$line[2]]['volume_commercialise'] = 0;
         $operateurs[$line[2]]['vip2c'] = 0;
     }
@@ -53,7 +53,7 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
     $date_lot             = DateTimeImmutable::createFromFormat('Y-m-d', $line[13]);
     $date_last_revendique = DateTimeImmutable::createFromFormat('Y-m-d', $operateurs[$line[2]]['date_last_revendique']);
 
-    if ($date_lot > $operateurs[$line[2]]['date_last_revendique']) {
+    if ($date_lot > $date_last_revendique) {
         $operateurs[$line[2]]['date_last_revendique'] = $date_lot->format('Y-m-d');
     }
 }
