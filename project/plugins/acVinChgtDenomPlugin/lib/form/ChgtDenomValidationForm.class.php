@@ -27,6 +27,17 @@ class ChgtDenomValidationForm extends acCouchdbForm
             $this->widgetSchema->setLabel('validation', "Date de validation");
         }
 
+        foreach ($this->getOption('engagements') as $engagement) {
+            $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
+            if (strpos($engagement->getCode(), '_OUEX_') !== false) {
+                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
+            } elseif (strpos($engagement->getCode(), '_OU_') !== false) {
+                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => false)));
+            } else {
+                $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
+            }
+        }
+
         $this->widgetSchema->setNameFormat('chgt_denom_validation[%s]');
     }
 
