@@ -233,13 +233,15 @@ class compte_teledeclarantActions extends sfActions {
         return $this->renderText(file_get_contents($path));
     }
 
-    public function executeViticonnect(sfWebRequest $request)
-    {
-        $secret = sfConfig::get('app_viticonnect_secret');;
-
+    private function checkApiAccess(sfWebRequest $request) {
+        $secret = sfConfig::get('app_viticonnect_secret');
         $login = $request->getParameter('login');
 
         $epoch = $request->getParameter('epoch');
+        if(empty($secret)) {
+            http_response_code(403);
+            die('Forbidden');
+        }
         if(abs(time() - $epoch) > 30) {
             http_response_code(403);
             die('Forbidden');
@@ -251,7 +253,12 @@ class compte_teledeclarantActions extends sfActions {
             http_response_code(401);
             die("Unauthorized");
         }
+    }
 
+    public function executeViticonnectApi(sfWebRequest $request)
+    {
+        $this->checkApiAccess($request);
+        $login = $request->getParameter('login');
         $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin(strtolower($login));
         if (!$compte) {
             http_response_code(401);
@@ -268,10 +275,24 @@ class compte_teledeclarantActions extends sfActions {
             $this->entities['tva'][] = str_replace(' ', '', $compte->getSociete()->no_tva_intracommunautaire);
             $this->entities_number++;
         }
-    
+
         $this->setLayout(false);
         $this->getResponse()->setHttpHeader('Content-Type', 'text/plain');
-        
+
+    }
+
+    public function executeViticonnectCheck(sfWebRequest $request)
+    {
+        $this->checkApiAccess($request);
+        $login = $request->getParameter('login');
+        $comptes = EtablissementAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', EtablissementClient::STATUT_ACTIF, $login);
+        if(count($comptes) == 1) {
+            echo "Found";
+            exit;
+        }
+        http_response_code(404);
+        die('Not found');
+
     }
 
 }

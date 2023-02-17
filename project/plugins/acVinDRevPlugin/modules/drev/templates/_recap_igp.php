@@ -132,17 +132,19 @@
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
-                        <?php if ($sf_user->isAdmin()): ?>
-                          <td class="text-center">
-                            <?php if(isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
+                        <td class="text-center">
+                        <?php if($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id) && isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
                                 <div class="col-xs-12">
-                                  <?php if ($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id)): ?>
-                                  <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "drev bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
-                                  <?php else: ?>
-                                      <?php echo pictoDegustable($lot->getLotInDrevOrigine()); ?>
-                                  <?php endif; ?>
+                                  <?php echo $form['lots'][$lot->getKey()]['affectable']->render(array(
+                                                'class' => "drev bsswitch",
+                                                "data-preleve-adherent" => "$lot->declarant_identifiant",
+                                                "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small',
+                                                'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>",
+                                                'data-off-text' => "<span class='glyphicon'></span>",
+                                                'data-on-color' => "success")
+                                            ); ?>
                                 </div>
                             </div>
                           <?php else: ?>
@@ -151,9 +153,8 @@
                                   <?php echo pictoDegustable($lot); ?>
                               </div>
                             </div>
-                          <?php endif; ?>
-                        	</td>
                         <?php endif; ?>
+                        </td>
 
                       </tr>
                       <?php

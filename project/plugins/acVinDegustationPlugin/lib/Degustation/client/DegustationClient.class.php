@@ -57,6 +57,9 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function cleanLotForDegustation($lot) {
+        if (!$lot) {
+            throw new sfException("Le lot ne doit pas être vide");
+        }
         if (get_class($lot) != 'stdClass') {
             $lot = $lot->toJson();
         }
@@ -73,6 +76,9 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 	public function getLotsPrelevables() {
 	    $lots = array();
 	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $lot) {
+            if (!$lot->value) {
+                throw new sfException("Lot ne devrait pas être vide : ".print_r($lot, true));
+            }
 	        $lots[$lot->value->unique_id] = $this->cleanLotForDegustation($lot->value);
             $lots[$lot->value->unique_id]->type_document = substr($lot->id, 0, 4);
             $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;

@@ -8,6 +8,7 @@ require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
  */
 class ParcellaireParcelle extends BaseParcellaireParcelle {
     private static $_AIRES = [];
+    private $geoparcelle = null;
 
     public function getProduit() {
 
@@ -121,7 +122,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getProduitLibelle() {
-
+        if (!$this->isRealProduit()) {
+            return ' - PRODUIT NON REONNU - ';
+        }
         return $this->getProduit()->getLibelle();
     }
 
@@ -209,15 +212,23 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return false;
     }
 
+    public function isRealProduit() {
+        try {
+            return $this->getProduit()->isRealProduit();
+        }catch(sfException $e) {
+            return false;
+        }
+    }
+
     public function hasProblemCepageAutorise() {
-      if (!$this->getProduit()->isRealProduit()) {
+      if (!$this->isRealProduit()) {
           return false;
       }
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 
     public function hasTroisiemeFeuille() {
-        $year = date('Y', strtotime('1st november')) - 2;
+        $year = ConfigurationClient::getInstance()->getCurrentAnneeRecolte() - 2;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
     }
@@ -234,6 +245,16 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return null;
     }
     
+    public function getGeoParcelle() {
+        if (!$this->geoparcelle) {
+            if (!geophp::geosInstalled()) {
+                throw new sfException("php-geos needed");
+            }
+            $this->geoparcelle = geoPHP::load($this->getGeoJson());
+        }
+        return $this->geoparcelle;
+    }
+
     public function getSuperficieInAire($airename) {
         foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
             if ($infos["name"] != $airename) {
@@ -242,10 +263,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             if(!$this->getGeoJson()) {
                 continue;
             }
-            if (!geophp::geosInstalled()) {
-                throw new sfException("php-geos needed");
-            }
-            $geoparcelle = geoPHP::load($this->getGeoJson());
+            $geoparcelle = $this->getGeoParcelle();
             $global_pc = 0;
             foreach($this->document->getGeoPHPDelimitations($infos['denomination_id']) as $d) {
                 $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
@@ -278,17 +296,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function geojsonInGeojsonAire($inao_denomination_id = null) {
+
         if (!$inao_denomination_id) {
             $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
         }
-        if(!$this->getGeoJson()) {
-            return null;
-        }
-        if (!geophp::geosInstalled()) {
-            throw new sfException("php-geos needed");
-        }
-        $geoparcelle = geoPHP::load($this->getGeoJson());
-
         if (isset(self::$_AIRES[$inao_denomination_id]) === false) {
             self::$_AIRES[$inao_denomination_id] = $this->document->getGeoPHPDelimitations($inao_denomination_id);
         }
@@ -296,7 +307,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         if (!self::$_AIRES[$inao_denomination_id]) {
             return null;
         }
-
+        $geoparcelle = $this->getGeoParcelle();
+        if (!$geoparcelle) {
+            return null;
+        }
         foreach(self::$_AIRES[$inao_denomination_id] as $d) {
             $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
             if ($pc > 0.99) {

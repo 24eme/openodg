@@ -58,14 +58,14 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->find($id);
     }
 
-    public function getAires($communes) {
+    public function getAiresForInseeCommunes($communes) {
         $aires = array();
-        if (ParcellaireConfiguration::getInstance()->getAires()) {
-            foreach($this->getCommunes() as $denum_id) {
-                $aires[$denum_id] = $this->getAire($denum_id, $communes);
+        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
+            $a = $this->getAire($infos['denomination_id'], $communes);
+            if ($a) {
+                $aires[$infos['denomination_id']] = ["jsons" => $a, "infos" => $infos];
             }
         }
-
         return $aires;
     }
 
@@ -189,14 +189,16 @@ class ParcellaireClient extends acCouchdbClient {
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
-        $return = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
+        $returncsv = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
 
-        $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
-        if($scrapping) {
-            $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
+        if ($returncsv) {
+            $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
+            if($scrapping) {
+                $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
+            }
+            $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
         }
-        $this->saveParcellaireGeoJson($etablissement, $fileJson, $errors['json']);
-        return $return;
+        return $return || $returncsv;
     }
 
     public function saveParcellaireGeoJson($etablissement, $path, &$error, $contextInstance = null){
@@ -241,7 +243,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (!is_file($file) || empty($file)) {
             $message = "Le fichier PDF des parcelles ($file) n'existe pas ou est vide.";
             $contextInstance->getLogger()->info("saveParcellairePDF: error: ".$message);
-            throw new Exception($message);
+            return false;
         }
 
         $this->findOrCreateDocPDF($etablissement->identifiant, date('Y-m-d'), 'PRODOUANE', $file, $etablissement->cvi);

@@ -442,30 +442,13 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication', $this->drev);
     }
 
-    public function executeDeleteLots(sfWebRequest $request){
+    public function executeDrevDeleteLot(sfWebRequest $request){
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        if($this->drev->getLotByNumArchive($request->getParameter('numArchive')) === null){
-          throw new sfException("le lot d'index ".$request->getParameter('numArchive')." n'existe pas ");
-        }
+        $lot = $this->drev->getLot($request->getParameter('unique_id'));
+        LotsClient::getInstance()->deleteAndSave($lot->declarant_identifiant, $lot->unique_id);
 
-        $lot = $this->drev->getLotByNumArchive($request->getParameter('numArchive'));
-        // $lotCheck = MouvementLotView::getInstance()->getDegustationMouvementLot($this->drev->identifiant, $lot->numero_archive, $this->drev->periode);
-        // if($lotCheck){
-        //   throw new sfException("le lot de numero d'archive ".$request->getParameter('numArchive').
-        //   " ne peut pas être supprimé car associé à un document son id :\n".$lotCheck->id_document);
-        // }
-
-        if($lot->id_document_affectation) {
-            throw new sfException("Ce lot ne peut pas être supprimé car il est présent dans une dégustation ou car il a été changé ou déclassé.");
-        }
-
-        if($lot){
-            $this->drev->remove($lot->getHash());
-        }
-
-        $this->drev->save();
         return $this->redirect('drev_lots', $this->drev);
 
     }
@@ -931,27 +914,6 @@ class drevActions extends sfActions {
             return $this->redirect("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));
         }
 
-        public function executeDeleteLot(sfWebRequest $request) {
-            $docid = $request->getParameter('id');
-            $doc = acCouchdbManager::getClient()->find($docid);
-            $this->forward404Unless($doc);
-
-            $lot_unique_id = $request->getParameter('unique_id');
-            $lot = $doc->getLot($lot_unique_id);
-            if ( !($doc->type == "DRev") || ($lot->id_document_affectation) ) {
-                throw new sfException("Suppression possible que depuis une DRev qui n'a pas d'affectation");
-            }
-            $this->forward404Unless($lot);
-            if($lot->getDocOrigine()->isFactures()) {
-                throw new sfException("Le lot ne peut pas être supprimé car la DRev est facturée");
-            }
-            $lot_index = $lot->getKey();
-            $lot->getParent()->remove($lot_index);
-            $lot->getDocument()->save();
-
-            return $this->redirect('degustation_declarant_lots_liste',array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne));
-        }
-
     public function executeModificative(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
@@ -1092,6 +1054,12 @@ class drevActions extends sfActions {
         if (count($lotsAffectes) > 0) {
             throw new Exception('Les lots suivants de la DREV '.$drev->_id.' sont affectés : '.implode(', ', $lotsAffectes));
         }
+    }
+
+    public function executeDeclarvapi(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        print_r([$drev->getContratsAPIURL(), $drev->getContratsFromAPI()]);
+        exit;
     }
 
 }

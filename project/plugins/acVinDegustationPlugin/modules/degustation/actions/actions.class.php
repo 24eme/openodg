@@ -133,8 +133,8 @@ class degustationActions extends sfActions {
 
     public function executeSupprimerLotNonPreleve(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->lots->remove($request->getParameter('lot'));
-        $this->degustation->lots->reindex();
+        $lot = $this->degustation->lots->get($request->getParameter('lot'));
+        $this->degustation->removeLot($lot);
         $this->degustation->save();
         return $this->redirect('degustation_preleve', $this->degustation);
 
@@ -646,6 +646,19 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
     }
 
+    public function executeLotDelete(sfWebRequest $request) {
+        $lot = LotsClient::getInstance()->findByUniqueId($request->getParameter('identifiant'), $request->getParameter('unique_id'));
+
+        if(!$lot) {
+
+            throw new sfError404Exception("Lot non trouvé");
+        }
+
+        LotsClient::getInstance()->deleteAndSave($lot->declarant_identifiant, $lot->unique_id);
+
+        return $this->redirect('degustation_declarant_lots_liste',array('identifiant' => $lot->declarant_identifiant, 'campagne' => $lot->campagne));
+    }
+
     public function executeLotsListe(sfWebRequest $request) {
         $identifiant = $request->getParameter('identifiant');
         $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
@@ -665,6 +678,8 @@ class degustationActions extends sfActions {
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
 
         uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
+
+        $this->syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($this->mouvements);
     }
 
     public function executeManquements(sfWebRequest $request) {

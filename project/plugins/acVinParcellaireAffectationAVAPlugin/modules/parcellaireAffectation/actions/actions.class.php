@@ -32,7 +32,8 @@ class parcellaireAffectationActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
         $this->parcellaire = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
-        $this->parcellaire->initProduitFromLastParcellaire();
+        $this->parcellaire->updateFromLastParcellaire();
+
         $this->parcellaire->save();
 
         return $this->redirect('parcellaire_edit', $this->parcellaire);
@@ -174,7 +175,15 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->parcelles = array();
         if ($this->appellationNode == ParcellaireAffectationClient::APPELLATION_VTSGN) {
-           $this->parcelles =  $this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true);
+            $parc = array();
+            foreach($this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true) as $p) {
+                $parc[$p->commune.' '.$p->section.' '.$p->numero_parcelle.' '.$p->getHash()] = $p;
+            }
+            foreach($this->parcellaire->get('declaration/certification/genre/appellation_ALSACEBLANC')->getDetailsSortedByParcelle(false) as $p) {
+                $parc[$p->commune.' '.$p->section.' '.$p->numero_parcelle.' '.$p->getHash()] = $p;
+            }
+            ksort($parc);
+            $this->parcelles = array_values($parc);
         } else {
             $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
         }
@@ -222,7 +231,7 @@ class parcellaireAffectationActions extends sfActions {
         $nbParcelles = count($this->parcellaire->declaration->getProduitsCepageDetails());
         $this->parcellaire->initOrUpdateProduitsFromCVI();
         if(!$nbParcelles) {
-            $this->parcellaire->updateAffectationCremantFromLastAffectation();
+            $this->parcellaire->updateCremantFromLastParcellaire();
         }
         $this->parcellaire->save();
 

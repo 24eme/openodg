@@ -18,6 +18,8 @@ class FactureConfiguration {
 		}
 
         $this->configuration = sfConfig::get('facture_configuration_facture', array());
+        $this->app_coordonnees_bancaire = sfConfig::get('app_facture_coordonnees_bancaire', array());
+
     }
 
     public function isActive() {
@@ -89,12 +91,17 @@ class FactureConfiguration {
 
     public function getModaliteDePaiement()
     {
-        return ($this->configuration['modalite_paiement']) ?: '';
+        return (isset($this->configuration['modalite_paiement']) && $this->configuration['modalite_paiement']) ? $this->configuration['modalite_paiement'] : '';
     }
 
     public function getExercice() {
 
         return ($this->configuration['exercice']) ?: '';
+    }
+
+    public function isListeDernierExercice() {
+
+        return boolval($this->configuration['liste_dernier_exercice']);
     }
 
     public function hasPaiements(){

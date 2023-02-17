@@ -958,4 +958,22 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     {
         return false;
     }
+
+    public function getVolumeSeuil()
+    {
+        $seuil = 0;
+
+        $file = fopen(sfConfig::get('sf_root_dir').DIRECTORY_SEPARATOR.sfConfig::get('app_api_contrats_fichier_csv'), 'r');
+        while (($line = fgetcsv($file)) !== false) {
+            if ($line[3] !== $this->declarant->cvi) {
+                continue;
+            }
+
+            $seuil = (int) str_replace(',', '', trim(end($line)));
+            break;
+        }
+        fclose($file);
+
+        return $seuil;
+    }
 }

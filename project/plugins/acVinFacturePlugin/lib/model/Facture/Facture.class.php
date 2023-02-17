@@ -106,7 +106,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getLignesForPdf() {
-        if(!FactureConfiguration::getInstance()->isAggregateLignes()){
+        if(!FactureConfiguration::getInstance()->isLigneUnique()){
           return $this->_get('lignes');
         }
         $libelles = array();
@@ -636,6 +636,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('facturation_pdf', $this);
+    }
+
+    public function hasUrlPublic() {
+        return true;
+    }
+
+    public function generateUrlPublicPiece($source = null, $absolute = false) {
+
+        return sfContext::getInstance()->getRouting()->generate('facturation_pdf_auth', array('id' => $this->_id, 'auth' => UrlSecurity::generateAuthKey($this->_id)), $absolute);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {

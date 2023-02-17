@@ -13,254 +13,254 @@ all:
           color: "#ffeb62"
           denomination_id: "00001"
         Communale00002:  
-          name: "Alsace Klevener de Heiligenstein"
+          name: "Alsace Communale Klevener de Heiligenstein"
           color: "#f48e00"
           denomination_id: "00002"
         Communale02450:  
-          name: "Alsace Blienschwiller"
+          name: "Alsace Communale Blienschwiller"
           color: "#f48e00"
           denomination_id: "02450"
         Communale02454:  
-          name: "Alsace Côtes de Barr"
+          name: "Alsace Communale Côtes de Barr"
           color: "#f48e00"
           denomination_id: "02454"
         Communale02456:  
-          name: "Alsace Côte de Rouffach"
+          name: "Alsace Communale Côte de Rouffach"
           color: "#f48e00"
           denomination_id: "02456"
         Communale02459:  
-          name: "Alsace Ottrott"
+          name: "Alsace Communale Ottrott"
           color: "#f48e00"
           denomination_id: "02459"
         Communale02460:  
-          name: "Alsace Rodern"
+          name: "Alsace Communale Rodern"
           color: "#f48e00"
           denomination_id: "02460"
         Communale02461:  
-          name: "Alsace Saint-Hippolyte"
+          name: "Alsace Communale Saint-Hippolyte"
           color: "#f48e00"
           denomination_id: "02461"
         Communale02462:  
-          name: "Alsace Scherwiller"
+          name: "Alsace Communale Scherwiller"
           color: "#f48e00"
           denomination_id: "02462"
         Communale02482:  
-          name: "Alsace Vallée Noble"
+          name: "Alsace Communale Vallée Noble"
           color: "#f48e00"
           denomination_id: "02482"
         Communale02484:  
-          name: "Alsace Val Saint Grégoire"
+          name: "Alsace Communale Val Saint Grégoire"
           color: "#f48e00"
           denomination_id: "02484"
         Communale02485:  
-          name: "Alsace Wolxheim"
+          name: "Alsace Communale Wolxheim"
           color: "#f48e00"
           denomination_id: "02485"
         Communale02842:  
-          name: "Alsace Bergheim"
+          name: "Alsace Communale Bergheim"
           color: "#f48e00"
           denomination_id: "02842"
         Communale02843:  
-          name: "Alsace Coteaux du Haut Koenigsbourg"
+          name: "Alsace Communale Coteaux du Haut Koenigsbourg"
           color: "#f48e00"
           denomination_id: "02843"  
         GrandCru00004:
-          name: "Alsace grand cru Altenberg de Bergbieten"
+          name: "Alsace Grand Cru Altenberg de Bergbieten"
           color: "#d10500"
           denomination_id: "00004"
         GrandCru00005:
-          name: "Alsace grand cru Altenberg de Bergheim"
+          name: "Alsace Grand Cru Altenberg de Bergheim"
           color: "#d10500"
           denomination_id: "00005"
         GrandCru00006:
-          name: "Alsace grand cru Altenberg de Wolxheim"
+          name: "Alsace Grand Cru Altenberg de Wolxheim"
           color: "#d10500"
           denomination_id: "00006"
         GrandCru00007:
-          name: "Alsace grand cru Brand"
+          name: "Alsace Grand Cru Brand"
           color: "#d10500"
           denomination_id: "00007"
         GrandCru00008:
-          name: "Alsace grand cru Bruderthal"
+          name: "Alsace Grand Cru Bruderthal"
           color: "#d10500"
           denomination_id: "00008"
         GrandCru00009:
-          name: "Alsace grand cru Eichberg"
+          name: "Alsace Grand Cru Eichberg"
           color: "#d10500"
           denomination_id: "00009"
         GrandCru00010:
-          name: "Alsace grand cru Engelberg"
+          name: "Alsace Grand Cru Engelberg"
           color: "#d10500"
           denomination_id: "00010"
         GrandCru00011:
-          name: "Alsace grand cru Florimont"
+          name: "Alsace Grand Cru Florimont"
           color: "#d10500"
           denomination_id: "00011"
         GrandCru00012:
-          name: "Alsace grand cru Frankstein"
+          name: "Alsace Grand Cru Frankstein"
           color: "#d10500"
           denomination_id: "00012"
         GrandCru00013:
-          name: "Alsace grand cru Froehn"
+          name: "Alsace Grand Cru Froehn"
           color: "#d10500"
           denomination_id: "00013"
         GrandCru00014:
-          name: "Alsace grand cru Furstentum"
+          name: "Alsace Grand Cru Furstentum"
           color: "#d10500"
           denomination_id: "00014"
         GrandCru00015:
-          name: "Alsace grand cru Geisberg"
+          name: "Alsace Grand Cru Geisberg"
           color: "#d10500"
           denomination_id: "00015"
         GrandCru00016:
-          name: "Alsace grand cru Gloeckelberg"
+          name: "Alsace Grand Cru Gloeckelberg"
           color: "#d10500"
           denomination_id: "00016"
         GrandCru00017:
-          name: "Alsace grand cru Goldert"
+          name: "Alsace Grand Cru Goldert"
           color: "#d10500"
           denomination_id: "00017"
         GrandCru00018:
-          name: "Alsace grand cru Hatschbourg"
+          name: "Alsace Grand Cru Hatschbourg"
           color: "#d10500"
           denomination_id: "00018"
         GrandCru00019:
-          name: "Alsace grand cru Hengst"
+          name: "Alsace Grand Cru Hengst"
           color: "#d10500"
           denomination_id: "00019"
         GrandCru00020:
-          name: "Alsace grand cru Kanzlerberg"
+          name: "Alsace Grand Cru Kanzlerberg"
           color: "#d10500"
           denomination_id: "00020"
         GrandCru00022:
-          name: "Alsace grand cru Kessler"
+          name: "Alsace Grand Cru Kessler"
           color: "#d10500"
           denomination_id: "00022"
         GrandCru00023:
-          name: "Alsace grand cru Kirchberg de Barr"
+          name: "Alsace Grand Cru Kirchberg de Barr"
           color: "#d10500"
           denomination_id: "00023"
         GrandCru00024:
-          name: "Alsace grand cru Kirchberg de Ribeauvillé"
+          name: "Alsace Grand Cru Kirchberg de Ribeauvillé"
           color: "#d10500"
           denomination_id: "00024"
         GrandCru00025:
-          name: "Alsace grand cru Kitterlé"
+          name: "Alsace Grand Cru Kitterlé"
           color: "#d10500"
           denomination_id: "00025"
         GrandCru00026:
-          name: "Alsace grand cru Mambourg"
+          name: "Alsace Grand Cru Mambourg"
           color: "#d10500"
           denomination_id: "00026"
         GrandCru00027:
-          name: "Alsace grand cru Mandelberg"
+          name: "Alsace Grand Cru Mandelberg"
           color: "#d10500"
           denomination_id: "00027"
         GrandCru00028:
-          name: "Alsace grand cru Marckrain"
+          name: "Alsace Grand Cru Marckrain"
           color: "#d10500"
           denomination_id: "00028"
         GrandCru00029:
-          name: "Alsace grand cru Moenchberg"
+          name: "Alsace Grand Cru Moenchberg"
           color: "#d10500"
           denomination_id: "00029"
         GrandCru00030:
-          name: "Alsace grand cru Muenchberg"
+          name: "Alsace Grand Cru Muenchberg"
           color: "#d10500"
           denomination_id: "00030"
         GrandCru00031:
-          name: "Alsace grand cru Ollwiller"
+          name: "Alsace Grand Cru Ollwiller"
           color: "#d10500"
           denomination_id: "00031"
         GrandCru00032:
-          name: "Alsace grand cru Osterberg"
+          name: "Alsace Grand Cru Osterberg"
           color: "#d10500"
           denomination_id: "00032"
         GrandCru00033:
-          name: "Alsace grand cru Pfersigberg"
+          name: "Alsace Grand Cru Pfersigberg"
           color: "#d10500"
           denomination_id: "00033"
         GrandCru00034:
-          name: "Alsace grand cru Pfingstberg"
+          name: "Alsace Grand Cru Pfingstberg"
           color: "#d10500"
           denomination_id: "00034"
         GrandCru00035:
-          name: "Alsace grand cru Praelatenberg"
+          name: "Alsace Grand Cru Praelatenberg"
           color: "#d10500"
           denomination_id: "00035"
         GrandCru00036:
-          name: "Alsace grand cru Rangen"
+          name: "Alsace Grand Cru Rangen"
           color: "#d10500"
           denomination_id: "00036"
         GrandCru00037:
-          name: "Alsace grand cru Rosacker"
+          name: "Alsace Grand Cru Rosacker"
           color: "#d10500"
           denomination_id: "00037"
         GrandCru00038:
-          name: "Alsace grand cru Saering"
+          name: "Alsace Grand Cru Saering"
           color: "#d10500"
           denomination_id: "00038"
         GrandCru00039:
-          name: "Alsace grand cru Schlossberg"
+          name: "Alsace Grand Cru Schlossberg"
           color: "#d10500"
           denomination_id: "00039"
         GrandCru00040:
-          name: "Alsace grand cru Schoenenbourg"
+          name: "Alsace Grand Cru Schoenenbourg"
           color: "#d10500"
           denomination_id: "00040"
         GrandCru00041:
-          name: "Alsace grand cru Sommerberg"
+          name: "Alsace Grand Cru Sommerberg"
           color: "#d10500"
           denomination_id: "00041"
         GrandCru00042:
-          name: "Alsace grand cru Sonnenglanz"
+          name: "Alsace Grand Cru Sonnenglanz"
           color: "#d10500"
           denomination_id: "00042"
         GrandCru00043:
-          name: "Alsace grand cru Spiegel"
+          name: "Alsace Grand Cru Spiegel"
           color: "#d10500"
           denomination_id: "00043"
         GrandCru00044:
-          name: "Alsace grand cru Sporen"
+          name: "Alsace Grand Cru Sporen"
           color: "#d10500"
           denomination_id: "00044"
         GrandCru00045:
-          name: "Alsace grand cru Steinert"
+          name: "Alsace Grand Cru Steinert"
           color: "#d10500"
           denomination_id: "00045"
         GrandCru00046:
-          name: "Alsace grand cru Steingrubler"
+          name: "Alsace Grand Cru Steingrubler"
           color: "#d10500"
           denomination_id: "00046"
         GrandCru00047:
-          name: "Alsace grand cru Steinklotz"
+          name: "Alsace Grand Cru Steinklotz"
           color: "#d10500"
           denomination_id: "00047"
         GrandCru00048:
-          name: "Alsace grand cru Vorbourg"
+          name: "Alsace Grand Cru Vorbourg"
           color: "#d10500"
           denomination_id: "00048"
         GrandCru00049:
-          name: "Alsace grand cru Wiebelsberg"
+          name: "Alsace Grand Cru Wiebelsberg"
           color: "#d10500"
           denomination_id: "00049"
         GrandCru00050:
-          name: "Alsace grand cru Wineck-Schlossberg"
+          name: "Alsace Grand Cru Wineck-Schlossberg"
           color: "#d10500"
           denomination_id: "00050"
         GrandCru00051:
-          name: "Alsace grand cru Winzenberg"
+          name: "Alsace Grand Cru Winzenberg"
           color: "#d10500"
           denomination_id: "00051"
         GrandCru00052:
-          name: "Alsace grand cru Zinnkoepfle"
+          name: "Alsace Grand Cru Zinnkoepfle"
           color: "#d10500"
           denomination_id: "00052"
         GrandCru00053:
-          name: "Alsace grand cru Zotzenberg"
+          name: "Alsace Grand Cru Zotzenberg"
           color: "#d10500"
           denomination_id: "00053"
         GrandCru01765:
-          name: "Alsace grand cru Kaefferkopf"
+          name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
           denomination_id: "01765"

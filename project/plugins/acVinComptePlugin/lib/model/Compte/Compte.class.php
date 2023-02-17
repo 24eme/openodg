@@ -440,6 +440,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return $this->identifiant;
         }
 
+        if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR) {
+
+            return $this->identifiant;
+        }
+
         return preg_replace("/^(.*)([0-9][0-9])$/", '\1', $this->identifiant);
     }
 

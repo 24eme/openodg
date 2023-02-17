@@ -9,8 +9,11 @@ class Parcellaire extends BaseParcellaire {
 
     protected $declarant_document = null;
     protected $piece_document = null;
+    protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
+    protected $habilitation = false;
     private $cache_geophpdelimitation = null;
     private $cache_geojson = null;
+    private $cache_aire = null;
 
     public function __construct() {
         parent::__construct();
@@ -167,12 +170,24 @@ class Parcellaire extends BaseParcellaire {
         return false;
     }
 
+    public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
+            if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
+                $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
+            }
+            if(!isset($this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage])) {
+                $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage] = $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
+            }
+            return $this->cache_produitsbycepagefromhabilitationorconfiguration[$cepage];
+    }
+
     public function getProduitsByCepageFromHabilitationOrConfiguration($cepage) {
-        $hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
-        if (!$hab) {
+        if ($this->habilitation === false) {
+            $this->habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
+        }
+        if (!$this->habilitation) {
             return $this->getConfiguration()->getProduitsByCepage($cepage);
         }
-        return $hab->getProduitsByCepage($cepage);
+        return $this->habilitation->getProduitsByCepage($cepage);
     }
 
     public function getSyntheseCepages() {
@@ -199,15 +214,15 @@ class Parcellaire extends BaseParcellaire {
             $cepage = $p->getCepage();
             if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $libelles = array();
-                foreach($this->getProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
                     $libelles[] = $prod->getLibelleComplet();
                 }
                 if (!count($libelles)) {
                     $libelles[] = '';
                 }
-                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                    $libelles = array('jeunes vignes');
-                }
+            }
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+                $libelles = array('jeunes vignes');
             }
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {
@@ -242,6 +257,27 @@ class Parcellaire extends BaseParcellaire {
             });
         }
         return $synthese;
+    }
+
+    public function getSuperficieTotale($avec_jv = true) {
+        $superficie = 0;
+        foreach ($this->getSyntheseCepages() as $nom => $cepage) {
+            // Ajoute les jeunes vignes seulement si $avec_jv
+            if ($avec_jv || ! strpos($nom, ' - jeunes vignes')) {
+                $superficie += $cepage['superficie'];
+            }
+        }
+        return $superficie;
+    }
+
+    public function getSuperficieCadastraleTotale() {
+        $superficie = 0;
+        foreach ($this->declaration as $declaration) {
+            foreach ($declaration->detail as $detail) {
+                $superficie += $detail->superficie_cadastrale;
+            }
+        }
+        return $superficie;
     }
 
     public function getParcellairePDFUri() {
@@ -292,12 +328,23 @@ class Parcellaire extends BaseParcellaire {
         if (!$inao_denomination_id) {
             $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
         }
-        return ParcellaireClient::getInstance()->getAire($inao_denomination_id, $this->declaration->getCommunes());
+        $this->getCachedAires();
+        if (!isset($this->cache_aire[$inao_denomination_id])) {
+            return array();
+        }
+        return $this->cache_aire[$inao_denomination_id]['jsons'];
+    }
+
+    public function getCachedAires() {
+        if (!$this->cache_aire) {
+            $this->cache_aire = $this->getAires();
+        }
+        return $this->cache_aire;
     }
 
     public function getAires() {
 
-        return ParcellaireClient::getInstance()->getAires($this->declaration->getCommunes());
+        return ParcellaireClient::getInstance()->getAiresForInseeCommunes($this->declaration->getCommunes());
     }
 
     public function getGeoPHPDelimitations($denom_id = null) {

@@ -1,10 +1,10 @@
-<?php if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && !$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)): print_r($etablissement->famille); return; endif; ?>
+<?php if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && !$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)): return; endif; ?>
 
 <?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel  <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>panel-success<?php else : ?>panel-primary<?php endif; ?>">
+    <div class="block_declaration panel  <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>panel-success<?php elseif($parcellaireIrrigable) : ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irrigables</h3>
+            <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irrigables&nbsp;<?php echo $periode ?></h3>
         </div>
         <?php if (!$parcellaire): ?>
         <div class="panel-body">

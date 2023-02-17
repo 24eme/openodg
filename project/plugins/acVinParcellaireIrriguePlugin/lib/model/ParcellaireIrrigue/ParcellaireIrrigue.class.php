@@ -60,17 +60,21 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
     	throw new sfException("Impossible de determiner le type de parcellaire");
   }
 
-  public function initDoc($identifiant, $campagne, $date) {
+  public function initDoc($identifiant, $periode, $date) {
       $this->identifiant = $identifiant;
-      $this->campagne = $campagne;
+      $this->campagne = $periode.'-'.($periode + 1);
       $this->date = $date;
       $this->constructId();
       $this->storeDeclarant();
       $this->storeParcelles();
   }
 
+  public function getPeriode() {
+      return preg_replace('/-.*/', '', $this->campagne);
+  }
+
   public function storeParcelles() {
-  	if ($parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant, $this->campagne)) {
+  	if ($parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant, $this->periode)) {
   		foreach ($parcellaireIrrigable->declaration as $key => $parcelle) {
   			$item = $this->declaration->add($key);
   			$item->libelle = $parcelle->libelle;
@@ -124,7 +128,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
   public function getConfiguration() {
 
-      return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-03-01');
+      return ConfigurationClient::getInstance()->getConfiguration($this->periode.'-03-01');
   }
 
 

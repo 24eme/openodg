@@ -1,5 +1,5 @@
 parcellaireirrigue_edit:
-  url: /parcellaire-irrigue/edition/:identifiant
+  url: /parcellaire-irrigue/edition/:identifiant/:periode
   param: { module: parcellaireIrrigue, action: irrigation }
   class: EtablissementRoute
   options:

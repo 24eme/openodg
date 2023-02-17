@@ -13,3 +13,4 @@ all:
       uniq_template_prefix: "TEMPLATE-FACTURE"
       paiements: true
       export_type: "sage"
+      liste_dernier_exercice: true

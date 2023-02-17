@@ -79,7 +79,8 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $values[1]; //Libelle produit
                 $produit[] = $values[2]; //Mention valorisante
                 $produit[] = $index2L[$v]; //Code categorie
-                $produit[] = DouaneCsvFile::getCategorieLibelle('SV12', $index2L[$v])." - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
+                $lligne = isset($libellesLigne[$v]) ? " - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v])) : '';
+                $produit[] = DouaneCsvFile::getCategorieLibelle('SV12', $index2L[$v]).$lligne;
                 if ($index2L[$v] == "04") {
                     $produit[] = self::numerizeVal($values[$v], 4);
                 } else {
