@@ -39,6 +39,45 @@ class ChgtDenomValidationForm extends acCouchdbForm
         }
 
         $this->widgetSchema->setNameFormat('chgt_denom_validation[%s]');
+
+        $this->validatorSchema->setPostValidator(
+            new sfValidatorCallback(array('callback' => array($this, 'checkEngagements')))
+        );
+    }
+
+    public function checkEngagements($validator, $values)
+    {
+        $checked = [];
+
+        foreach ($values as $key => $value) {
+            if (strpos($key, 'engagement_') === false) {
+                continue;
+            }
+
+            if (strpos($key, '_OU_') !== false) {
+                if (array_key_exists('OU', $checked) === false) {
+                    $checked['OU'] = 0;
+                }
+
+                if($value === true) { $checked['OU']++; }
+            }
+
+            if (strpos($key, '_OUEX_') !== false) {
+                if (array_key_exists('OUEX', $checked) === false) {
+                    $checked['OUEX'] = 0;
+                }
+
+                if ($value === true) { $checked['OUEX']++; }
+            }
+        }
+
+        if (array_key_exists('OU', $checked) === true && $checked['OU'] < 1) {
+            throw new sfValidatorError($validator, 'Il faut sélectionner au moins un engagement');
+        }
+
+        if (array_key_exists('OUEX', $checked) === true && $checked['OUEX'] !== 1) {
+            throw new sfValidatorError($validator, 'Il ne faut sélectionner qu\'un engagement');
+        }
     }
 
     public function save()
