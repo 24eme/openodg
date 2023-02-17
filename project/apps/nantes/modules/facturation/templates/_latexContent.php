@@ -35,7 +35,7 @@
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
-\def\EMETTEURLIBELLE{FÉDÉRATION DES VINS NANTES}
+\def\EMETTEURLIBELLE{<?php echo Organisme::getInstance($facture->region)->getNom(); ?>}
 \def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
