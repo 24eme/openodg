@@ -33,6 +33,11 @@
       <?php else:?>
         <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
       <?php endif; ?>
+
+        <?php  if (count($validation->getEngagements()) > 0): ?>
+            <?php include_partial('drev/engagements', array('validation' => $validation, 'form' => $form)); ?>
+        <?php endif ?>
+
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
