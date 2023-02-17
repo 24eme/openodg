@@ -159,7 +159,7 @@ class chgtdenomActions extends sfActions
         if($this->isAdmin) {
             $this->chgtDenom->validateOdg();
             $this->chgtDenom->save();
-            $this->getUser()->setFlash("notice", "Le changement dénommination a été validé et approuvé");
+            $this->getUser()->setFlash("notice", "Le changement dénomination a été validé et approuvé");
 
             return $this->redirect('chgtdenom_visualisation', $this->chgtDenom);
         }
