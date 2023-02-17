@@ -48,7 +48,7 @@
             <div class="col-xs-4 text-center">
                 <a tabindex="-1" href="<?php echo url_for('chgtdenom_delete', $chgtDenom) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-remove"></span> Supprimer la déclaration</a>
             </div>
-            <?php if (! $validation->hasErreurs()): ?>
+            <?php if (! $validation->hasErreurs() || $sf_user->isAdmin()): ?>
             <div class="col-xs-4 text-right">
                 <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#chgtDenom-confirmation-validation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
             </div>
