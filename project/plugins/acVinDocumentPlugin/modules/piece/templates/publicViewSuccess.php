@@ -34,7 +34,7 @@
     </head>
     <body>
         <div style="padding-top: 40px;" class="container text-center">
-            <img src="/images/logo_<?php echo Organisme::getCurrentOrganisme() ?>.png" alt="<?php echo Organisme::getInstance()->getNom() ?>">
+            <img src="/<?php echo Organisme::getInstance()->getLogoPdfWebPath() ?>" alt="<?php echo Organisme::getInstance()->getNom() ?>">
 
             <p style="margin-top: 30px;" class="lead"><?php echo $piece->libelle ?></p>
             <a id="btn_loading" style="margin-top: 20px;" class="btn btn-primary btn-lg hidden" href="<?php echo $piece->getUrlPublic() ?>"><span class="loader" style="margin-right: 10px;"></span>Téléchargement cours ...</a>
