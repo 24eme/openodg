@@ -122,9 +122,6 @@ class ChgtDenomValidationForm extends acCouchdbForm
 
             $document = $documents->add($engagement->getCode());
             $document->libelle = $engagement->getMessage();
-            if($engagement->getInfo()) {
-                $document->libelle .= " : ".$engagement->getInfo();
-            }
             $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
           }
       }
