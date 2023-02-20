@@ -38,6 +38,14 @@ class ChgtDenomValidationForm extends acCouchdbForm
             }
         }
 
+        if ($this->getDocument()->exist('documents')) {
+            foreach($this->getDocument()->documents as $k => $v) {
+                if (isset($this->widgetSchema['engagement_'.$k])) {
+                    $this->setDefault('engagement_'.$k, 1);
+                }
+            }
+        }
+
         $this->widgetSchema->setNameFormat('chgt_denom_validation[%s]');
 
         $this->validatorSchema->setPostValidator(
@@ -98,6 +106,28 @@ class ChgtDenomValidationForm extends acCouchdbForm
               $this->getDocument()->set('changement_affectable', false);
           }
        }
+
+      if (count($this->getOption('engagements'))) {
+          $this->getDocument()->remove('documents');
+          $documents = $this->getDocument()->getOrAdd('documents');
+
+          foreach ($this->getOption('engagements') as $engagement) {
+            if (array_key_exists('engagement_'.$engagement->getCode(), $values) === false) {
+                continue;
+            }
+
+            if ($values['engagement_'.$engagement->getCode()] !== true) {
+                continue;
+            }
+
+            $document = $documents->add($engagement->getCode());
+            $document->libelle = $engagement->getMessage();
+            if($engagement->getInfo()) {
+                $document->libelle .= " : ".$engagement->getInfo();
+            }
+            $document->statut = DRevDocuments::getStatutInital($engagement->getCode());
+          }
+      }
 
        if($this->getDocument()->isValidee()){
          $this->getDocument()->validateOdg();
