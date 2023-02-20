@@ -78,6 +78,8 @@ class ChgtDenomValidationForm extends acCouchdbForm
         if (array_key_exists('OUEX', $checked) === true && $checked['OUEX'] !== 1) {
             throw new sfValidatorError($validator, 'Il ne faut sélectionner qu\'un engagement');
         }
+
+        return $values;
     }
 
     public function save()
