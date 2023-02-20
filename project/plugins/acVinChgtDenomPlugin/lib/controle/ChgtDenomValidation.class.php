@@ -78,6 +78,10 @@ class ChgtDenomValidation extends DocumentValidation
         $volume_produit = $synthese[$this->document->changement_produit_libelle." ".$this->document->changement_millesime];
 
         if ($seuil > 0 && ($volume_produit['volume_commercialise'] + $this->document->changement_volume) > $seuil) {
+            if(sfContext::getInstance()->getUser()->hasChgtDenomAdmin()) {
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION,"");
+            }
+
             if (! $this->contrats) {
                 $this->addPoint(self::TYPE_ERROR, 'vip2c_pas_de_contrats', null, $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id)) );
                 return false;
