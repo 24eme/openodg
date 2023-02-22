@@ -87,27 +87,18 @@ class MouvementLotHistoryView extends acCouchdbView
     {
         $syntheseLots = [];
         foreach ($mouvements as $mouvementLot) {
-            $libelle = trim(strstr($mouvementLot->value->libelle, '(', true));
+            # Démo: https://regex101.com/r/J9XQnv/3
+            preg_match('/([\w ]+) (Rouge|Rosé|Blanc) (\d{4})/u', $mouvementLot->value->libelle, $matches);
+            $libelle = $matches[0];
+            $produit = $matches[1];
+            $couleur = $matches[2];
+            $millesime = $matches[3];
+
             if (array_key_exists($libelle, $syntheseLots) === false) {
-                $syntheseLots[$libelle] = [
-                    'volume_commercialise' => 0,
-                    'volume_revendique' => 0
-                ];
+                $syntheseLots[$libelle] = 0;
             }
 
-            if (in_array($mouvementLot->value->statut, ['08_CONFORME', '09_NON_AFFECTABLE', '12_CONFORME_APPEL']) === false) {
-                continue;
-            }
-
-            switch ($mouvementLot->value->initial_type) {
-                case 'DRev:Changé':
-                    $syntheseLots[$libelle]['volume_commercialise'] += $mouvementLot->value->volume;
-                    break;
-                case 'DRev':
-                    $syntheseLots[$libelle]['volume_revendique'] += $mouvementLot->value->volume;
-                    $syntheseLots[$libelle]['volume_commercialise'] += $mouvementLot->value->volume;
-                    break;
-            }
+            $syntheseLots[$libelle] += $mouvementLot->value->volume;
         };
 
         ksort($syntheseLots);

@@ -4,16 +4,14 @@
     <thead>
         <tr>
             <th class="text-center col-xs-8">Produit</th>
-            <th class="text-center col-xs-2">Volume revendiqué</th>
-            <th class="text-center col-xs-2">Volume commercialisé</th>
+            <th class="text-center col-xs-2">Volume</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($syntheseLots as $libelle => $produit): ?>
+        <?php foreach ($syntheseLots as $libelle => $volume): ?>
             <tr>
                 <td><strong><?php echo $libelle ?></strong></td>
-                <td class="text-right"><?php echo echoFloat($produit['volume_revendique']) ?> <small class="text-muted">hl</small></td>
-                <td class="text-right"><?php echo echoFloat($produit['volume_commercialise']) ?> <small class="text-muted">hl</small></td>
+                <td class="text-right"><?php echo echoFloat($volume) ?> <small class="text-muted">hl</small></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
