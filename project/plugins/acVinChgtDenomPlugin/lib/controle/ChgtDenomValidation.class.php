@@ -91,7 +91,7 @@ class ChgtDenomValidation extends DocumentValidation
             $this->addPoint(self::TYPE_WARNING, 'vip2c_volume_seuil', 'Vous avez déjà commercialisé <strong>'.($volume_produit + $this->document->changement_volume).'</strong> hl sur votre seuil attribué de <strong>'.$seuil.'</strong> hl');
 
             foreach ($this->contrats as $contrat_id => $contrat_info) {
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$contrat_id, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$contrat_info['numero']."</strong> avec un volume proposé de <strong>".$contrat_info['volume']." hl</strong>.");
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$contrat_id, "");
             }
         }
     }
