@@ -50,11 +50,14 @@
             			<?php endif; ?>
                     </td>
                     <td class="text-right">
+                        <?php if (Piece::hasUrlPublic($document->id)): ?>
+                        <a style="opacity: 0.3" onclick="navigator.clipboard.writeText(this.href); alert('Le lien a été copié dans le presse papier !'); return false;" title="Lien public pour partage" class="pull-left" href="<?php echo url_for('piece_public_view', array('doc_id' => $document->id, 'source' => $document->key[PieceAllView::KEYS_SOURCE], 'auth' => UrlSecurity::generateAuthKey($document->id.$document->key[PieceAllView::KEYS_SOURCE]))) ?>"><span class="glyphicon glyphicon-link"></span></a>
+                        <?php endif; ?>
                         <?php if (Piece::isPieceEditable($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
                 			<a href="<?php echo url_for('edit_fichier', array('id' => $document->id)) ?>"><span class="glyphicon glyphicon-user"></span></a>
                 		<?php endif; ?>
                 		<?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) && $urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
-                			<a href="<?php echo $urlVisu ?>" style="margin: 0 10px;" data-toggle-second="tooltip" title="Modifier le document"><span class="glyphicon glyphicon-edit"></span></a>
+                            <a href="<?php echo $urlVisu ?>" style="margin: 0 5px;" data-toggle-second="tooltip" title="Modifier le document"><span class="glyphicon glyphicon-edit"></span></a>
                 		<?php endif; ?>
                         <?php if($document->value[PieceAllView::VALUES_FICHIERS] && count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
                             <span class="dropdown">

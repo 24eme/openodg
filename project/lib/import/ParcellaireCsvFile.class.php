@@ -4,28 +4,29 @@ class ParcellaireCsvFile
 {
     /** @var string CSV_TYPE_PARCELLAIRE Le nom du type de CSV */
     const CSV_TYPE_PARCELLAIRE = 'PARCELLAIRE';
-    const CSV_FORMAT_CVI = 0;
-    const CSV_FORMAT_SIRET = 1;
-    const CSV_FORMAT_NOM = 2;
-    const CSV_FORMAT_ADRESSE = 3;
-    const CSV_FORMAT_CP = 4;
-    const CSV_FORMAT_COMMUNE_OP = 5;
-    const CSV_FORMAT_EMAIL = 6;
-    const CSV_FORMAT_IDU = 7;
-    const CSV_FORMAT_COMMUNE = 8;
-    const CSV_FORMAT_LIEU_DIT = 9;
-    const CSV_FORMAT_SECTION = 10;
-    const CSV_FORMAT_NUMERO_PARCELLE = 11;
-    const CSV_FORMAT_PRODUIT = 12;
-    const CSV_FORMAT_CEPAGE = 13;
-    const CSV_FORMAT_SUPERFICIE = 14;
-    const CSV_FORMAT_SUPERFICIE_CADASTRALE = 15;
-    const CSV_FORMAT_CAMPAGNE = 16;
-    const CSV_FORMAT_ECART_PIED = 17;
-    const CSV_FORMAT_ECART_RANG = 18;
-    const CSV_FORMAT_FAIRE_VALOIR = 19;
-    const CSV_FORMAT_STATUT = 20;
-    const CSV_FORMAT_DATE_MAJ = 21;
+    const CSV_FORMAT_ORIGINE = 0;
+    const CSV_FORMAT_CVI = 1;
+    const CSV_FORMAT_SIRET = 2;
+    const CSV_FORMAT_NOM = 3;
+    const CSV_FORMAT_ADRESSE = 4;
+    const CSV_FORMAT_CP = 5;
+    const CSV_FORMAT_COMMUNE_OP = 6;
+    const CSV_FORMAT_EMAIL = 7;
+    const CSV_FORMAT_IDU = 8;
+    const CSV_FORMAT_COMMUNE = 9;
+    const CSV_FORMAT_LIEU_DIT = 10;
+    const CSV_FORMAT_SECTION = 11;
+    const CSV_FORMAT_NUMERO_PARCELLE = 12;
+    const CSV_FORMAT_PRODUIT = 13;
+    const CSV_FORMAT_CEPAGE = 14;
+    const CSV_FORMAT_SUPERFICIE = 15;
+    const CSV_FORMAT_SUPERFICIE_CADASTRALE = 16;
+    const CSV_FORMAT_CAMPAGNE = 17;
+    const CSV_FORMAT_ECART_PIED = 18;
+    const CSV_FORMAT_ECART_RANG = 19;
+    const CSV_FORMAT_FAIRE_VALOIR = 20;
+    const CSV_FORMAT_STATUT = 21;
+    const CSV_FORMAT_DATE_MAJ = 22;
 
     /** @var Csv $file Le fichier CSV */
     private $file;
@@ -147,39 +148,49 @@ class ParcellaireCsvFile
 
         foreach ($this->file->getLignes() as $parcelle) {
 
-            if (!is_numeric($parcelle[self::CSV_FORMAT_CVI]) && !is_numeric($parcelle[self::CSV_FORMAT_SIRET]) && !is_numeric($parcelle[self::CSV_FORMAT_CP]) && !is_numeric($parcelle[self::CSV_FORMAT_IDU]) && !is_numeric($parcelle[self::CSV_FORMAT_SUPERFICIE])) {
+            if (!isset($is_old_format)) {
+                if ($parcelle[self::CSV_FORMAT_ORIGINE] != 'Origine' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'PRODOUANE' && $parcelle[self::CSV_FORMAT_ORIGINE] != 'INAO') {
+                    $is_old_format = 1;
+                }else{
+                    $this->parcellaire->source = $parcelle[self::CSV_FORMAT_ORIGINE];
+                    $is_old_format = 0;
+                }
+            }
+
+            if (!is_numeric($parcelle[self::CSV_FORMAT_CVI - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_SIRET - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_CP - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_IDU - $is_old_format]) && !is_numeric($parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format])) {
                 continue;
             }
 
-            if ($parcelle[self::CSV_FORMAT_PRODUIT] === null) {
+            if ($parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format] === null) {
                 $this->contextInstance->getLogger()->info("Parcelle sans produit : ".implode(',', $parcelle));
                 continue;
             }
 
-            $produit = $configuration->identifyProductByLibelle($parcelle[self::CSV_FORMAT_PRODUIT]);
+            $produit = $configuration->identifyProductByLibelle($parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format]);
 
             if (!$produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
-                $this->contextInstance->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT] );
+                $this->contextInstance->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format] );
                 continue;
             }
             $hash = ($produit) ? $produit->getHash() : null ;
             $new_parcelle = $this->parcellaire->addParcelle(
                 $hash,
-                $parcelle[self::CSV_FORMAT_CEPAGE],
-                $parcelle[self::CSV_FORMAT_CAMPAGNE],
-                $parcelle[self::CSV_FORMAT_COMMUNE],
-                $parcelle[self::CSV_FORMAT_SECTION],
-                $parcelle[self::CSV_FORMAT_NUMERO_PARCELLE],
-                $parcelle[self::CSV_FORMAT_LIEU_DIT]
+                $parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format],
+                $parcelle[self::CSV_FORMAT_CAMPAGNE - $is_old_format],
+                $parcelle[self::CSV_FORMAT_COMMUNE - $is_old_format],
+                $parcelle[self::CSV_FORMAT_SECTION - $is_old_format],
+                $parcelle[self::CSV_FORMAT_NUMERO_PARCELLE - $is_old_format],
+                $parcelle[self::CSV_FORMAT_LIEU_DIT - $is_old_format]
             );
-            if ($parcelle[self::CSV_FORMAT_IDU] && substr($parcelle[self::CSV_FORMAT_IDU], 0, 2)) {
-                $new_parcelle->code_commune = substr($parcelle[self::CSV_FORMAT_IDU], 0, 5);
+            if ($parcelle[self::CSV_FORMAT_IDU - $is_old_format] && substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 2)) {
+                $new_parcelle->code_commune = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 5);
+                $new_parcelle->idu = $parcelle[self::CSV_FORMAT_IDU - $is_old_format];
             }
-            $new_parcelle->ecart_rang = (float) $parcelle[self::CSV_FORMAT_ECART_RANG];
-            $new_parcelle->ecart_pieds = (float) $parcelle[self::CSV_FORMAT_ECART_PIED];
-            $new_parcelle->superficie = (float) $parcelle[self::CSV_FORMAT_SUPERFICIE];
-            $new_parcelle->superficie_cadastrale = (float) $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE];
-            $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR]);
+            $new_parcelle->ecart_rang = (float) $parcelle[self::CSV_FORMAT_ECART_RANG - $is_old_format];
+            $new_parcelle->ecart_pieds = (float) $parcelle[self::CSV_FORMAT_ECART_PIED - $is_old_format];
+            $new_parcelle->superficie = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format]);
+            $new_parcelle->superficie_cadastrale = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format]);
+            $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR - $is_old_format]);
 
             if (! $this->check($new_parcelle)) {
                 $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");

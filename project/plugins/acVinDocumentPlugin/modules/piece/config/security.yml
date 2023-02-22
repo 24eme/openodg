@@ -1,0 +1,3 @@
+publicView:
+  is_secure: false
+  credentials: []

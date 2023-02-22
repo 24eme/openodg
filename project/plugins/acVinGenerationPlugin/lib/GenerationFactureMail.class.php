@@ -16,6 +16,10 @@ class GenerationFactureMail extends GenerationAbstract {
          ->setSubject(self::getSujet($facture->getNumeroOdg()))
          ->setBody($this->getPartial("facturation/email", array('id' => $id)));
 
+         if(Organisme::getInstance()->getEmailFacturation()) {
+            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
+         }
+
         return $message;
     }
 

@@ -175,7 +175,15 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->parcelles = array();
         if ($this->appellationNode == ParcellaireAffectationClient::APPELLATION_VTSGN) {
-           $this->parcelles =  $this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true);
+            $parc = array();
+            foreach($this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true) as $p) {
+                $parc[$p->commune.' '.$p->section.' '.$p->numero_parcelle.' '.$p->getHash()] = $p;
+            }
+            foreach($this->parcellaire->get('declaration/certification/genre/appellation_ALSACEBLANC')->getDetailsSortedByParcelle(false) as $p) {
+                $parc[$p->commune.' '.$p->section.' '.$p->numero_parcelle.' '.$p->getHash()] = $p;
+            }
+            ksort($parc);
+            $this->parcelles = array_values($parc);
         } else {
             $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
         }

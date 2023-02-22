@@ -35,8 +35,9 @@
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
-\def\EMETTEURLIBELLE{FÉDÉRATION DES VINS NANTES}
-\def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
+\def\EMETTEURLIBELLE{<?php echo Organisme::getInstance($facture->region)->getNom(); ?>}
+\def\EMETTEURADRESSE{<?php echo strstr($facture->emetteur->adresse, ',', true); ?>}
+\def\EMETTEURADRESSE2{<?php echo str_replace(', ', '', strstr($facture->emetteur->adresse, ', ')); ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURTEL{<?php echo $facture->emetteur->telephone; ?>}
@@ -61,8 +62,8 @@
 }
 \cfoot{\small{
 	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURTEL~–~\EMETTEUREMAIL \\
+    \EMETTEURADRESSE \\
+    \EMETTEURADRESSE2~\EMETTEURCP~\EMETTEURVILLE~-~\EMETTEURTEL~–~\EMETTEUREMAIL \\
 	N° TVA : FR96803741834 – SIRET : 80374183400011 – APE : 9412Z
 }}
 
@@ -182,9 +183,9 @@
 \end{minipage}
 
 \begin{minipage}{0.5\textwidth}
-    Banque : <?php echo FactureConfiguration::getInstance()->getBanqueNom(); ?> \\
-    IBAN : <?php echo FactureConfiguration::getInstance()->getIBAN(); ?> \\
-    BIC : <?php echo FactureConfiguration::getInstance()->getBIC(); ?> \\
+    Banque : <?php echo Organisme::getInstance($facture->region)->getBanqueNom(); ?> \\
+    IBAN : <?php echo Organisme::getInstance($facture->region)->getIban(); ?> \\
+    BIC : <?php echo Organisme::getInstance($facture->region)->getBic(); ?> \\
 \end{minipage}
 
 
