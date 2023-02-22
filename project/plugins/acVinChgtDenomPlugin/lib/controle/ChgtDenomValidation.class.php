@@ -75,7 +75,8 @@ class ChgtDenomValidation extends DocumentValidation
         $seuil = $this->document->getVolumeSeuil();
 
         $synthese = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagne);
-        $volume_produit = $synthese[$this->document->changement_produit_libelle." ".$this->document->changement_millesime];
+        preg_match('/([\w ]+) (Rouge|Rosé|Blanc)/u', $this->document->changement_produit_libelle, $matches);
+        $volume_produit = $synthese[$matches[1]][$this->document->changement_millesime][$matches[2]];
 
         if ($seuil > 0 && ($volume_produit + $this->document->changement_volume) > $seuil) {
             if(sfContext::getInstance()->getUser()->hasChgtDenomAdmin()) {
