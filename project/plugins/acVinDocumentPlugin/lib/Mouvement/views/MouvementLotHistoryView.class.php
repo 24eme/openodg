@@ -105,6 +105,7 @@ class MouvementLotHistoryView extends acCouchdbView
                     break;
                 case 'DRev':
                     $syntheseLots[$libelle]['volume_revendique'] += $mouvementLot->value->volume;
+                    $syntheseLots[$libelle]['volume_commercialise'] += $mouvementLot->value->volume;
                     break;
             }
         };
