@@ -114,11 +114,13 @@ class parcellaireActions extends sfActions {
         exit;
     }
 
-    public function executeParcellaireExportCSV(sfWebRequest $request) {
+    public function executeParcellaireExportODS(sfWebRequest $request) {
         $this->secureTeledeclarant();
         
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
+
+        sfConfig::get("sf_cache_dir");
 
         // Les fichiers nécesssaires pour la transfo de l'ODS
         $tmp_dir = '/tmp';
@@ -296,40 +298,6 @@ class parcellaireActions extends sfActions {
 
         echo '</Document></kml>';
         exit;        
-    }
-
-    public function executeParcellaireExportDoc(sfWebRequest $request) {
-        $this->secureTeledeclarant();
-        
-        $parcellaire = $this->getRoute()->getParcellaire();
-        $this->forward404Unless($parcellaire);
-
-        header("Content-Type: text/markdown; charset=UTF-8");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.md"', $parcellaire->identifiant, $parcellaire->date));
-        header("Pragma: ");
-        header("Cache-Control: public");
-        header("Expires: 0");
-
-        $this->content = "# Audit Vignoble";
-        $this->content .= "\n\nRéférence : / Révision : V0 / Date : ";
-        $this->content .= "\nType de contrôle: Standard";
-        $this->content .= "\nActivité: ";
-        $this->content .= "\n\n## " . $parcellaire->declarant['raison_sociale'] . "\n";
-        $this->content .= "\n**N° Siret : " . $parcellaire->declarant['siret'] . " N° EVV / PPM : ". $parcellaire->declarant['cvi'] . "**";
-        $this->content .= "\n\n## " . $parcellaire->pieces[0]['identifiant'];
-        $this->content .= "\n\n### Fiche contact";
-        $this->content .= "\n\n#### Adresse\n\n" . $parcellaire->declarant['nom'] . "\n" . $parcellaire->declarant['adresse'] . "\n" . $parcellaire->declarant['commune'];
-        $this->content .= "\n\n#### Tel\n\n" . ($parcellaire->declarant['telephone_bureau'] ? ("Bureau : " . $parcellaire->declarant['telephone_bureau'] . " ") : "") . ($parcellaire->declarant['telephone_mobile'] ? ("Mobile : " . $parcellaire->declarant['telephone_mobile']) : "");
-        $this->content .= "\n\n#### Mail\n\n" . $parcellaire->declarant['email'];
-        $this->content .= "\n\n#### Fax\n\n" . $parcellaire->declarant['fax'];
-        $this->content .= "\n\n#### Chai 1\n\n";
-        $this->content .= "\n\n#### Chai 2\n\n";
-        $this->content .= "\n\n### Contrôle Documentaire";
-        $this->content .= "\n\n#### Surface totale (avec JV)\n\n" . $parcellaire->getSuperficieTotale();
-        $this->content .= "\n\n#### Surface cadastrale totale\n\n" . $parcellaire->getSuperficieCadastraleTotale();
-        $this->content .= "\n\n### Synthèse terrain\n";
-        echo $this->content;
-        exit;
     }
 
 

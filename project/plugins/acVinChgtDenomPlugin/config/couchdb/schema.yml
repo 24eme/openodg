@@ -171,6 +171,18 @@ ChgtDenom:
                         declarant_identifiant: {  }
                         declarant_nom: {  }
                         statut: {}
+      documents:
+        required: false
+        class: DRevDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }
+                  libelle: { }
       pieces:
         type: array_collection
         definition:
