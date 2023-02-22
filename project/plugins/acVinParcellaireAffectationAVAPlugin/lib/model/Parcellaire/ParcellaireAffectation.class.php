@@ -154,7 +154,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             foreach ($CVIAppellation->detail as $CVIParcelle) {
                 foreach($CVIParcelle->isInAires() as $nom => $statut) {
                     $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
-                    $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
+                    $libelle = str_replace(' A PETITS GRAINS', '', str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle)));
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
