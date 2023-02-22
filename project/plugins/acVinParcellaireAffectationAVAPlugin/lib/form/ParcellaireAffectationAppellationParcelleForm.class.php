@@ -46,7 +46,7 @@ class ParcellaireAffectationAppellationParcelleForm extends acCouchdbObjectForm 
     }
 
     public function doUpdateObject($values) {
-        if (isset($values['vtsgn'])) {
+        if (isset($values['vtsgn']) && strpos($this->getObject()->getAppellation()->libelle, 'Alsace blanc') !== false) {
             $values['active'] = $values['vtsgn'];
         }
         parent::doUpdateObject($values);
