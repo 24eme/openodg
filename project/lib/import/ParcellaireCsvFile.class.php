@@ -166,7 +166,18 @@ class ParcellaireCsvFile
                 continue;
             }
 
-            $produit = $configuration->identifyProductByLibelle($parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format]);
+            $libelles = explode('-', strtoupper($parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format]));
+            $libelle = $libelles[0];
+            $libelle = str_replace('EDELZWICKER', 'ASSEMBLAGE EDELZWICKER', $libelle);
+            $libelle = str_replace('ROSé (PINOT NOIR)', 'PINOT NOIR ROSE PINOT NOIR', $libelle);
+
+            $produit = $configuration->identifyProductByLibelle($libelle);
+
+            if (!$produit) {
+                $libelle .= " ".$parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format];
+                $libelle = preg_replace('/ (B|RS|R|N)$/', '', $libelle);
+                $produit = $configuration->identifyProductByLibelle($libelle);
+            }
 
             if (!$produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $this->contextInstance->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format] );
