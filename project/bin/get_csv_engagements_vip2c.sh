@@ -15,3 +15,10 @@ then
     fi
 fi
 mv $EXPORTIVSEDIR/engagements_vip2c.new.csv $EXPORTIVSEDIR/engagements_vip2c.csv
+
+# Génération tableau suivi vip2c
+VIP2C_LOTS=$EXPORTGLOBALDIR/lots.csv
+VIP2C_DREV_LOTS=$EXPORTGLOBALDIR/drev_lots.csv
+VIP2C_ETABLISSEMENTS=$EXPORTGLOBALDIR/etablissements.csv
+
+php bin/export_vip2c.php $VIP2C_DREV_LOTS $VIP2C_LOTS $VIP2C_ETABLISSEMENTS > $EXPORTIVSEDIR/liste_vip2c.csv
