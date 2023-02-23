@@ -123,7 +123,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduitLibelle() {
         if (!$this->isRealProduit()) {
-            return ' - PRODUIT NON REONNU - ';
+            return ' - PRODUIT NON RECONNU - ';
         }
         return $this->getProduit()->getLibelle();
     }
