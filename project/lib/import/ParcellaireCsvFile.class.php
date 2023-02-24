@@ -166,17 +166,102 @@ class ParcellaireCsvFile
                 continue;
             }
 
-            $libelles = explode('-', strtoupper($parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format]));
-            $libelle = $libelles[0];
+            $libelles = explode(' - ', strtoupper($parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format]));
+            $libelle = trim(str_replace('*', '', $libelles[0]));
+            $libelle_orig = $libelle;
             $libelle = str_replace('EDELZWICKER', 'ASSEMBLAGE EDELZWICKER', $libelle);
+            $libelle = str_replace(array('AGC', 'AL G C', 'ALS G C', 'ALS GD CR', 'ALS GD C'), 'AOC ALSACE GRAND CRU', $libelle);
             $libelle = str_replace('ROSé (PINOT NOIR)', 'PINOT NOIR ROSE PINOT NOIR', $libelle);
+            $libelle = str_replace(array('VDB CRéM ALSACE BLANC', 'CRéMANT ALSACE BLANC', 'VDB CRéM ALSACE BL', 'CRéMANT ALSACE BL', 'CRéMANT AOC ALSACE BLANC'), 'AOC CREMANT D\'ALSACE', $libelle);
+            $libelle = str_replace('ALSACE CôTE ROUFFACH', 'ALSACE COMMUNALE COTE DE ROUFFACH', $libelle);
+            $libelle = str_replace([' A-BERGBIETEN', ' ALTENBERG BERGBIETEN', ' ALT BERGBIETEN'], ' ALTENBERG DE BERGBIETEN', $libelle);
+            $libelle = str_replace([' A-WOLXHEIM', ' ALTENBERG WOLXHEIM', ' ALT WOLXHEIM'], ' ALTENBERG DE WOLXHEIM', $libelle);
+            $libelle = str_replace([' A-BERGHEIM', ' ALTENBERG BERGHEIM', ' ALT BERGHEIM'], ' ALTENBERG DE BERGHEIM', $libelle);
+            $libelle = str_replace('ALSACE ALTENBERG', 'ALSACE GRAND CRU ALTENBERG', $libelle);
+            $libelle = str_replace('KIRCH BARR', 'KIRCHBERG DE BARR', $libelle);
+            $libelle = str_replace(['WINECK-SCHLOSS ', 'WINECK SCHLOSS '], 'WINECK-SCHLOSSBERG ', $libelle);
+            $libelle = str_replace(['RG (PN)', 'ROUGE (PN)', 'ROUGE (PINOT NOIR)'], 'ROUGE PINOT NOIR', $libelle);
+            $libelle = str_replace('ALSACE LDT', 'ALSACE LIEU DIT', $libelle);
+            $libelle = str_replace('ALSACE OTTROTT', 'ALSACE COMMUNALE OTTROTT', $libelle);
+            $libelle = str_replace('GRAND CRU FURSTENT ', 'GRAND CRU FURSTENTUM ', $libelle);
+            $libelle = str_replace([' SGN ', ' VT ', ' GN '], ' ', $libelle);
+            $libelle = str_replace(['VDB ', 'VCI '], '', $libelle);
+            $libelle = str_replace(' PG', ' PINOT GRIS', $libelle);
+            $libelle = str_replace('ALSACE ST-HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            switch ($libelle) {
+                case "CREMANT D'ALS ROSE":
+                case "CRéM ALSACE ROSé":
+                    $libelle = "AOC CREMANT D'ALSACE ROSE";
+                    break;
+                case 'ALSACE BERGHEIM GN GEW':
+                    $libelle = 'AOC ALSACE GRAND CRU';
+                    break;
+                case 'ALSACE CHASSELAS OU GUTEDEL':
+                    $libelle = 'ALSACE BLANC CHASSELAS';
+                    break;
+                case 'ALSACE GEWURZTRAMINER':
+                    $libelle = 'ALSACE BLANC GEWURZT';
+                    break;
+                case 'ALSACE BLANC':
+                    $libelle = 'AOC ALSACE BLANC';
+                    break;
+                case 'ALSACE KLEVENER HEILIGENSTEIN':
+                    $libelle = 'ALSACE COMMUNALE KLEVENER DE HEILIGENSTEIN';
+                    break;
+                case 'ALSACE LIEU DIT GEWURZTRAMINER':
+                    $libelle = 'ALSACE LIEU DIT BLANC GEWURZT';
+                    break;
+                case 'ALSACE ROSé PINOT NOIR':
+                    $libelle = 'ALSACE PINOT NOIR ROSE';
+                    break;
+                case 'ALSACE ROUGE PINOT NOIR':
+                    $libelle = 'AOC ALSACE PINOT NOIR ROUGE';
+                    break;
+                case 'ALSACE VAL ST GRéGOIRE PB':
+                case 'ALSACE VAL GRéGOIRE PB':
+                    $libelle = 'ALSACE COMMUNALE VAL SAINT GREGOIRE BLANC PINOT BLANC';
+                    break;
+                case 'AOC ALSACE GRAND CRU ALT BERGHEIM':
+                case 'AOC ALSACE GRAND CRU ALTENBERG BERGHEIM':
+                    $libelle = 'ALSACE GRAND CRU ALTENBERG DE BERGHEIM';
+                    break;
+                case 'AOC ALSACE GRAND CRU HATSCHBOU GEW':
+                    $libelle = 'AOC ALSACE GRAND CRU HATSCHBOURG GEWURZT';
+                    break;
+                case 'ALSACE BLIENSCHWILLER BLANC (SYL)':
+                case 'ALSACE BLIENSCHWILLER BL (SYL)':
+                    $libelle = 'ALSACE COMMUNALE BLIENSCHWILLER BLANC SYLVANER';
+                    break;
+                case 'ALSACE PINOT OU KLEVNER':
+                    $libelle = 'ALSACE COMMUNALE KLEVENER DE HEILIGENSTEIN';
+                    break;
+                case 'ALSACE BERGHEIM GEW':
+                    $libelle = 'ALSACE-COMMUNALE-BERGHEIM-BLANC-GEWURZT';
+                    break;
+            }
+            $libelle = preg_replace('/.*GRAND CRU/', 'AOC ALSACE GRAND CRU', $libelle);
+            $libelle = preg_replace('/ GEWU?$/', ' GEWURZT', $libelle);
+            $libelle = preg_replace('/ RIE$/', ' RIESLING', $libelle);
+            $libelle = preg_replace('/ MUS$/', ' MUSCAT', $libelle);
+            $libelle = preg_replace('/ MO$/', ' MUSCAT OTTONEL', $libelle);
+            $libelle = preg_replace('/ SYL$/', ' SYLVANER', $libelle);
 
             $produit = $configuration->identifyProductByLibelle($libelle);
-
+            $nb_reconnaissance = 1;
             if (!$produit) {
-                $libelle .= " ".$parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format];
-                $libelle = preg_replace('/ (B|RS|R|N)$/', '', $libelle);
+                $cepage = strtoupper($parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format]);
+                $cepage = str_replace(array('CEPAGE INCONNU', 'CEPAGE NON RENSEIGNE'), '', $cepage);
+                $cepage = str_replace(array('MUSCAT A PETITS GRAINS', 'MUSCATS A PETITS GRAINS'), 'MUSCAT', $cepage);
+                $libelle .= " ".$cepage;
+                $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', $libelle);
+                switch ($libelle) {
+                    case 'ALSACE BLANC SAVAGNIN ROSE':
+                        $libelle = 'ALSACE SAVAGNIN ROSE';
+                        break;
+                }
+                $libelle = preg_replace('/ ?\.?(B|RS|R|N|G)$/', '', $libelle);
                 $produit = $configuration->identifyProductByLibelle($libelle);
+                $nb_reconnaissance++;
             }
 
             if (!$produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
