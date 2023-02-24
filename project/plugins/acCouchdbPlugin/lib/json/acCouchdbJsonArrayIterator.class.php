@@ -72,7 +72,7 @@ class acCouchdbJsonArrayIterator extends ArrayIterator {
         }
     }
     
-    public function next(): void {
+    public function next() {
     	if($this->valid()){
 	    	$this->_previous = $this->key(); 
 		    parent::next();
@@ -94,27 +94,27 @@ class acCouchdbJsonArrayIterator extends ArrayIterator {
 		return ($this->_previous)? $this->_json->get($this->_previous) : null;
     }
     
-    public function current(): mixed {
+    public function current() {
         return $this->_json->get($this->key());
     }
 
-    public function key(): string|int|null {
+    public function key() {
         return $this->_json->getFieldName(parent::key());
     }
  
-    public function offsetGet(mixed $index): mixed {
+    public function offsetGet($index) {
         return $this->_json->offsetGet($index);
     }
 
-    public function offsetSet(mixed $index, mixed $newval): void {
-        $this->_json->offsetSet($index, $newval);
+    public function offsetSet($index, $newval) {
+        return $this->_json->offsetSet($index, $newval);
     }
 
-    public function  offsetExists(mixed $index): bool {
+    public function  offsetExists($index) {
         return $this->_json->offsetExists($index);
     }
 
-    public function offsetUnset(mixed $index): void {
-        $this->_json->offsetUnset($index);
+    public function offsetUnset($index) {
+        return $this->_json->offsetUnset($index);
     }
 }
