@@ -118,13 +118,16 @@ class Configuration extends BaseConfiguration {
             $inao = $libelles[1];
         }
         $libelleSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($libelle)));
+        if (strpos($libelleSlugify, 'VCI') === false) {
+            $libelleSlugify = str_replace('AOC-', '', $libelleSlugify);
+        }
 
         foreach($this->declaration->getProduits() as $produit) {
             $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
             if (strpos($libelleProduitSlugify, 'VCI') === false) {
                 $libelleProduitSlugify = str_replace('AOC-', '', $libelleProduitSlugify);
             }
-            //echo $libelleSlugify."/".$libelleProduitSlugify."\n";
+            //echo $libelleSlugify."/".$libelleProduitSlugify."/1\n";
             if($libelleSlugify == $libelleProduitSlugify || $libelleSlugify == preg_replace('/-(BLANC|ROUGE|ROSE)-/', '-', $libelleProduitSlugify)) {
                 $this->identifyLibelleProduct[$origineLibelle] = $produit;
 
@@ -134,7 +137,10 @@ class Configuration extends BaseConfiguration {
 
         foreach($this->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationAppellation") as $produit) {
             $libelleProduitSlugify = KeyInflector::slugify(preg_replace("/[ ]+/", " ", trim($produit->getLibelleComplet())));
-
+            if (strpos($libelleProduitSlugify, 'VCI') === false) {
+                $libelleProduitSlugify = str_replace('AOC-', '', $libelleProduitSlugify);
+            }
+            //echo $libelleSlugify."/".$libelleProduitSlugify."/2\n";
             if($libelleSlugify == $libelleProduitSlugify) {
                 $this->identifyLibelleProduct[$origineLibelle] = $produit;
 
