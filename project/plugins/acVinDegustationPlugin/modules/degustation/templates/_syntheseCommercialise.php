@@ -4,17 +4,25 @@
     <thead>
         <tr>
             <th class="text-center col-xs-8">Produit</th>
-            <th class="text-center col-xs-2">Volume revendiqué</th>
-            <th class="text-center col-xs-2">Volume commercialisé</th>
+            <th class="text-center col-xs-2">Volume</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($syntheseLots as $libelle => $produit): ?>
-            <tr>
-                <td><strong><?php echo $libelle ?></strong></td>
-                <td class="text-right"><?php echo echoFloat($produit['volume_revendique']) ?> <small class="text-muted">hl</small></td>
-                <td class="text-right"><?php echo echoFloat($produit['volume_commercialise']) ?> <small class="text-muted">hl</small></td>
-            </tr>
+        <?php foreach ($syntheseLots as $produit => $millesimes): ?>
+            <?php foreach ($millesimes as $millesime => $couleurs): ?>
+                <?php foreach ($couleurs as $couleur => $volume): ?>
+                    <tr>
+                        <td><?php echo implode(' ', [$produit, $couleur, $millesime]) ?></td>
+                        <td class="text-right"><?php echo echoFloat($volume) ?> <small class="text-muted">hl</small></td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php if (count($couleurs) > 1): ?>
+                    <tr>
+                        <td><strong>Total <?php echo implode(' ', [$produit, $millesime]) ?></strong></td>
+                        <td class="text-right"><strong><?php echo echoFloat(array_sum($syntheseLots->getRawValue()[$produit][$millesime])) ?> <small class="text-muted">hl</small></strong></td>
+                    </tr>
+                <?php endif ?>
+            <?php endforeach; ?>
         <?php endforeach; ?>
     </tbody>
 </table>

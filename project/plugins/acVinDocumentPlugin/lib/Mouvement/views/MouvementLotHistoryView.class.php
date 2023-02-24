@@ -87,29 +87,30 @@ class MouvementLotHistoryView extends acCouchdbView
     {
         $syntheseLots = [];
         foreach ($mouvements as $mouvementLot) {
-            $libelle = trim(strstr($mouvementLot->value->libelle, '(', true));
-            if (array_key_exists($libelle, $syntheseLots) === false) {
-                $syntheseLots[$libelle] = [
-                    'volume_commercialise' => 0,
-                    'volume_revendique' => 0
-                ];
+            # Démo: https://regex101.com/r/J9XQnv/3
+            preg_match('/([\w ]+) (Rouge|Rosé|Blanc) (\d{4})/u', $mouvementLot->value->libelle, $matches);
+            $libelle = $matches[0];
+            $produit = $matches[1];
+            $couleur = $matches[2];
+            $millesime = $matches[3];
+
+            if (array_key_exists($produit, $syntheseLots) === false) {
+                $syntheseLots[$produit] = [];
+                ksort($syntheseLots);
             }
 
-            if (in_array($mouvementLot->value->statut, ['08_CONFORME', '09_NON_AFFECTABLE', '12_CONFORME_APPEL']) === false) {
-                continue;
+            if (array_key_exists($millesime, $syntheseLots[$produit]) === false) {
+                $syntheseLots[$produit][$millesime] = [];
+                ksort($syntheseLots[$produit]);
             }
 
-            switch ($mouvementLot->value->initial_type) {
-                case 'DRev:Changé':
-                    $syntheseLots[$libelle]['volume_commercialise'] += $mouvementLot->value->volume;
-                    break;
-                case 'DRev':
-                    $syntheseLots[$libelle]['volume_revendique'] += $mouvementLot->value->volume;
-                    break;
+            if (array_key_exists($couleur, $syntheseLots[$produit][$millesime]) === false) {
+                $syntheseLots[$produit][$millesime][$couleur] = 0;
+                ksort($syntheseLots[$produit][$millesime]);
             }
+
+            $syntheseLots[$produit][$millesime][$couleur] += $mouvementLot->value->volume;
         };
-
-        ksort($syntheseLots);
 
         return $syntheseLots;
     }
