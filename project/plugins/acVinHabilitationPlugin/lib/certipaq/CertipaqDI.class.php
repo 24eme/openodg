@@ -19,7 +19,7 @@ class CertipaqDI extends CertipaqDeroulant
         $obj['complement_adresse'] = $compte->getAdresseComplementaire();
         $obj['code_postal'] = $compte->getCodePostal();
         $obj['ville'] = $compte->getCommune();
-        $obj['pays'] = $compte->getPays();
+        $obj['pays'] = $compte->getPaysISO();
     }
 
     private function fillAdresseAndContact(&$obj, $compte) {
