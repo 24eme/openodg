@@ -1,20 +1,31 @@
 <?php
 
-if ($argc !== 3) {
-    die('Missing parameters'.PHP_EOL);
+if ($argc !== 4) {
+    die('Missing parameters. Usage: '.$argv[0].' drev_lots.csv lots.csv etablissements.csv'.PHP_EOL);
 }
 
 $file_drev_lots = $argv[1];
 $file_lots      = $argv[2];
+$file_etablissement = $argv[3];
 
 $drev_lots = fopen($file_drev_lots, 'r');
 $lots = fopen($file_lots, 'r');
+$etablissements = file($file_etablissement);
 $vip2c = file('data/configuration/VIP2C2022.csv');
+
+// Récup VIP2C
 array_walk($vip2c, function (&$item, $key) {
     $item = str_getcsv($item, ',');
 });
 $cvis = array_column($vip2c, 3);
 $vip2c = array_combine($cvis, $vip2c);
+
+// Récup CVI
+array_walk($etablissements, function (&$item, $key) {
+    $item = str_getcsv($item, ';');
+});
+$ids = array_column($etablissements, 32);
+$etablissements = array_combine($ids, $etablissements);
 
 $operateurs = [];
 
@@ -32,11 +43,20 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
         $operateurs[$line[2]]['identifiant'] = $line[2];
         $operateurs[$line[2]]['cvi'] = $line[4];
         $operateurs[$line[2]]['volume_revendique'] = 0;
+        $operateurs[$line[2]]['date_last_revendique'] = $line[13];
         $operateurs[$line[2]]['volume_commercialise'] = 0;
+        $operateurs[$line[2]]['date_last_commercialise'] = null;
         $operateurs[$line[2]]['vip2c'] = 0;
     }
 
     $operateurs[$line[2]]['volume_revendique'] += round(str_replace(',', '.', $line[27]), 2);
+
+    $date_lot             = DateTimeImmutable::createFromFormat('Y-m-d', $line[13]);
+    $date_last_revendique = DateTimeImmutable::createFromFormat('Y-m-d', $operateurs[$line[2]]['date_last_revendique']);
+
+    if ($date_lot > $date_last_revendique) {
+        $operateurs[$line[2]]['date_last_revendique'] = $date_lot->format('Y-m-d');
+    }
 }
 
 while (($line = fgetcsv($lots, 1000, ';')) !== false) {
@@ -65,14 +85,27 @@ while (($line = fgetcsv($lots, 1000, ';')) !== false) {
         $operateurs[$line[1]]['identifiant'] = $line[1];
         $operateurs[$line[1]]['cvi'] = null;
         $operateurs[$line[1]]['volume_revendique'] = 0;
+        $operateurs[$line[1]]['date_last_revendique'] = null;
         $operateurs[$line[1]]['volume_commercialise'] = 0;
+        $operateurs[$line[1]]['date_last_commercialise'] = $line[8];
         $operateurs[$line[1]]['vip2c'] = 0;
     }
 
     $operateurs[$line[1]]['volume_commercialise'] += round(str_replace(',', '.', $line[23]), 2);
+
+    $date_lot                = DateTimeImmutable::createFromFormat('Y-m-d', $line[8]);
+    $date_last_commercialise = DateTimeImmutable::createFromFormat('Y-m-d', $operateurs[$line[1]]['date_last_commercialise']);
+
+    if ($operateurs[$line[1]]['date_last_commercialise'] === null || $date_lot > $date_last_commercialise) {
+        $operateurs[$line[1]]['date_last_commercialise'] = $date_lot->format('Y-m-d');
+    }
 }
 
-foreach ($operateurs as &$operateur) {
+foreach ($operateurs as $id => &$operateur) {
+    if (! $operateur['cvi']) {
+        $operateur['cvi'] = $etablissements[$id][8];
+    }
+
     if (array_key_exists($operateur['cvi'], $vip2c)) {
         $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi']][11]));
     }
@@ -97,10 +130,14 @@ array_walk($operateurs, function (&$operateur, $key) {
     }
 
     $operateur['depassement'] = implode('+', $d);
+
+    $operateur['lot_plus_recent'] = (DateTimeImmutable::createFromFormat('Y-m-d', $operateur['date_last_revendique']) > DateTimeImmutable::createFromFormat('Y-m-d', $operateur['date_last_commercialise']))
+                                    ? $operateur['date_last_revendique']
+                                    : $operateur['date_last_commercialise'];
 });
 
 $f = fopen('php://output', "w");
-fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Commercialisé', 'VIP2C', 'Dépassement'], ';');
+fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Revendiqué', 'Date dernière revendication', 'Commercialisé', 'Date dernière commercialisation', 'VIP2C', 'Dépassement', 'Lot le plus récent'], ';');
 foreach ($operateurs as $operateur) {
     fputcsv($f, $operateur, ';');
 }

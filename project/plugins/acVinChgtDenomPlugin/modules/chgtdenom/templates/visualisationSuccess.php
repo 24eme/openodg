@@ -26,6 +26,24 @@
       <?php include_partial('chgtdenom/recap', array('chgtDenom' => $chgtDenom)); ?>
     <?php endif; ?>
 
+<?php if($chgtDenom->exist('documents') && count($chgtDenom->documents->toArray(true, false)) ): ?>
+    <hr />
+    <h3>&nbsp;Engagement(s)&nbsp;</h3>
+    <?php foreach($chgtDenom->documents as $docKey => $doc): ?>
+        <p>&nbsp;<span style="font-family: Dejavusans">☑</span>
+            <?php
+            if($doc->exist('libelle') && $doc->libelle):
+                $libelle = preg_replace("#&gt;#",">",$doc->libelle);
+                $libelle = preg_replace("#&lt;#","<",$libelle);
+                echo($libelle);
+            else:
+                echo($chgtDenom->documents->getEngagementLibelle($docKey));
+            endif;
+            ?>
+        </p>
+    <?php endforeach; ?>
+<?php endif; ?>
+
     <?php if (isset($form)): ?>
     <form role="form" action="<?php echo url_for("chgtdenom_visualisation", $chgtDenom) ?>" method="post" class="form-horizontal" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>

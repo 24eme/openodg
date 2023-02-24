@@ -678,6 +678,8 @@ class degustationActions extends sfActions {
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
 
         uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
+
+        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, $this->campagne);
     }
 
     public function executeManquements(sfWebRequest $request) {
