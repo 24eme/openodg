@@ -370,7 +370,7 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
         $this->_filter_persisent = false;
     }
 
-    public function getIterator() {
+    public function getIterator(): ArrayIterator {
         $this->loadData();
         $iterator = new acCouchdbJsonArrayIterator($this, $this->_filter);
         if (!$this->_filter_persisent) {
@@ -379,23 +379,23 @@ class acCouchdbJson extends acCouchdbJsonFields implements IteratorAggregate, Ar
         return $iterator;
     }
 
-    public function offsetGet($index) {
+    public function offsetGet($index): mixed {
         return $this->get($index);
     }
 
-    public function offsetSet($index, $newval) {
-        return $this->set($index, $newval);
+    public function offsetSet(mixed $index, mixed $newval): void {
+        $this->set($index, $newval);
     }
 
-    public function offsetExists($index) {
+    public function offsetExists($index): bool {
         return $this->exist($index);
     }
 
-    public function offsetUnset($offset) {
-        return $this->remove($offset);
+    public function offsetUnset(mixed $offset): void {
+        $this->remove($offset);
     }
 
-    public function count() {
+    public function count(): int {
         return $this->getIterator()->count();
     }
 
