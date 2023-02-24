@@ -12,7 +12,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduit() {
 
-        return $this->getParent()->getParent();
+        return $this->document->get(preg_replace('/\/detail\/.*/', '', $this->getHash()));
     }
 
     public function getConfig() {
