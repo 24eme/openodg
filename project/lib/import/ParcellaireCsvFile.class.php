@@ -67,7 +67,7 @@ class ParcellaireCsvFile
 
 
         if ($etablissement->cvi !== $this->cvi) {
-            $m = sprintf("Les cvi de l'établissement et du fichier ne correspondent pas : %s ≠ %s",
+            $m = sprintf("Les cvi de l'établissement et du nom du fichier ne correspondent pas : %s ≠ %s",
                 $etablissement->cvi,
                 $this->cvi
             );
