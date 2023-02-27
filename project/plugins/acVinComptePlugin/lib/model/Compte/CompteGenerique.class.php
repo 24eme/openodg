@@ -52,6 +52,10 @@ abstract class CompteGenerique extends acCouchdbDocument {
         return $this->_get('pays');
     }
 
+    public function getPaysISO() {
+        return strtoupper(substr($this->getPays(), 0, 2));
+    }
+
     public function setPays($s) {
         if($this instanceof Societe){
             return $this->siege->_set('pays',$s);

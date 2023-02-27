@@ -138,8 +138,8 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getCouleur()->getLieu();
     }
 
-    public function getLieu() {
-        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+    public function getLieu($editable_only = true) {
+        if ($editable_only && !$this->getAppellation()->getConfig()->hasLieuEditable()) {
             return '';
         }
         return $this->_get('lieu');
