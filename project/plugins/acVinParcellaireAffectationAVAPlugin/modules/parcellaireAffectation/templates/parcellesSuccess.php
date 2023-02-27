@@ -75,7 +75,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 <th class="col-xs-3 text-center">Appellation</th>
                                 <th class="col-xs-2 text-center">Commune</th>
                                 <th class="col-xs-1 text-center">Section / Numéro</th>
-                                <th class="col-xs-2 text-center">Lieu-dit</th>
+                                <th class="col-xs-2 text-center">Lieu-dit parcelle</th>
 								<th class="col-xs-2 text-center">Cépage</th>
                                 <th class="col-xs-1 text-center">Superficie</th>
                             </tr>
@@ -103,7 +103,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 									<td><?php echo $parcelle->getAppellationLibelle((isset($form['produits'][$parcelle->getHashForKey()]['vtsgn']))); ?></td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
-                                    <td><?php echo $parcelle->lieu; ?></td>
+                                    <td><?php echo $parcelle->getLieu(false); ?></td>
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
                                     <td class="text-right">
                                         <?php echoFloat($parcelle->getSuperficie()) ?> <small class="text-muted">ares</small>
