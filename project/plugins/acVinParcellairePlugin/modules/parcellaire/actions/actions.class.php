@@ -175,6 +175,14 @@ class parcellaireActions extends sfActions {
             $pattern_line = str_replace($match_form[1], $replace, $pattern_line);
         }
 
+        // Supprime le contenu p:text quand c'est une formule. Sinon il affiche p:text plutôt que le résultat de la formule.
+        preg_match_all( '#table:formula=".*?</table:table-cell>#', $pattern_line, $matches_form, PREG_SET_ORDER);
+        foreach ($matches_form as $match_form) {
+            $replace = preg_replace ('#<text:p>[^<]*</text:p>#', '<text:p></text:p>', $match_form[0] );
+            $replace = preg_replace ('#office:value="[^"]*"#', 'office:value=""', $replace );
+            $pattern_line = str_replace($match_form[0], $replace, $pattern_line);
+        }
+
         // Les lignes (ods) à mettre à la place
         $data_lines = '';
         
