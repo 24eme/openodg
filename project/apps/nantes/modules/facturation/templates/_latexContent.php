@@ -36,7 +36,8 @@
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
 \def\EMETTEURLIBELLE{<?php echo Organisme::getInstance($facture->region)->getNom(); ?>}
-\def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
+\def\EMETTEURADRESSE{<?php echo strstr($facture->emetteur->adresse, ',', true); ?>}
+\def\EMETTEURADRESSEDEUX{<?php echo str_replace(', ', '', strstr($facture->emetteur->adresse, ', ')); ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURTEL{<?php echo $facture->emetteur->telephone; ?>}
@@ -61,8 +62,8 @@
 }
 \cfoot{\small{
 	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURTEL~–~\EMETTEUREMAIL \\
+    \EMETTEURADRESSE \\
+    \EMETTEURADRESSEDEUX~\EMETTEURCP~\EMETTEURVILLE~-~\EMETTEURTEL~–~\EMETTEUREMAIL \\
 	N° TVA : FR96803741834 – SIRET : 80374183400011 – APE : 9412Z
 }}
 

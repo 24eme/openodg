@@ -355,6 +355,8 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
                 $last->add('lecture_seule', true);
                 $last->save();
             }
+        } elseif ($last && $last->_id == $this->_id) {
+            $this->remove('lecture_seule');
         }
 
         parent::save();

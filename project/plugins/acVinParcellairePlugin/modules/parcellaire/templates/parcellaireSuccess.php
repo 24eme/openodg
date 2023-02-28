@@ -321,10 +321,13 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
-<div class="text-center">
-<a href="<?php echo url_for('parcellaire_export_ods', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le doc de contrôle</a>
-<a href="<?php echo url_for('parcellaire_export_geo', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger les coordonées géographiques</a>
-<a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="btn btn-warning">Télécharger le PDF Douanier</a>
+<div class="dropdown dropup center-block" style="width: 150px;">
+    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Télécharger...&nbsp;<span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        <li><a href="<?php echo url_for('parcellaire_export_ods', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le doc de contrôle</a></li>
+        <li><a href="<?php echo url_for('parcellaire_export_geo', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger les coordonées géographiques</a></li>
+        <li><a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le PDF Douanier</a></li>
+    </ul>
 </div>
 <?php endif; ?>
 
