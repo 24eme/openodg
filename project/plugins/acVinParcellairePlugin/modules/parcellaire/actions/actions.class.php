@@ -229,7 +229,7 @@ class parcellaireActions extends sfActions {
                 preg_match_all( '/table:formula="(.*?)"/', $pattern_line, $matches_form, PREG_SET_ORDER);
                 foreach ($matches_form as $match_form) {
                     $replace = preg_replace_callback (
-                        '/(\[\.\w+)(\d+)(\])/',
+                        '/(\[\.[A-Z]+)([0-9]+)(\])/',
                         function($matches_matr) { return $matches_matr[1] . ((int)$matches_matr[2] + 1) . $matches_matr[3]; }, 
                         $match_form[1]
                     );
