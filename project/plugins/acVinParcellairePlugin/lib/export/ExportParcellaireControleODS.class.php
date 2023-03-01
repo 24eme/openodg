@@ -1,16 +1,26 @@
 <?php
 
 /**
- * Description of ExportParcellaireControleODS
+ * Crée le fichier ODS de contrôle des parcelles 
+ * en remplaçant dans le fichier ODS /modules/parcellaire/templates/feuille_controle.ods 
+ * les clés (%%UNECLE) par les valeurs qui vont bien.
  */
 class ExportParcellaireControleODS {
 
-    protected $parcellaire = null;
+    private $parcellaire = null;
+
+    // le contenu du xml content.xml du fichier ODS à modifier.
+    private string $ods_content = "";
 
     public function __construct($parcellaire) {
         $this->parcellaire = $parcellaire;
     }
 
+    /**
+     * Crée le fichier ODS avec les valeurs à la place des clés en récupérant l'ODS modèle et le mets dans le cache.
+     * 
+     * @return string le contenu du fichier ODS
+     */
     public function create() {
         // Les fichiers nécesssaires pour la transfo de l'ODS
         $tmp_dir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'doc_controle';
@@ -25,24 +35,29 @@ class ExportParcellaireControleODS {
 
         // Prend le content.xml en dézippant l'ODS
         $zip = new ZipArchive();
-        $res = $zip->open($ods_file);
+        $zip->open($ods_file);
         $zip->extractTo($tmp_dir, $content_filename);
 
-        $ods_content = file_get_contents($content_file);
+        $this->ods_content = file_get_contents($content_file);
 
-        $ods_content = $this->getParcellesLines($ods_content);
-        $ods_content = $this->getPochette($ods_content);
+        $this->parseParcellesLines();
+        $this->parsePochette();
 
         // Et remet dans le zip
-        file_put_contents($content_file, $ods_content);
+        file_put_contents($content_file, $this->ods_content);
         $zip->addFile($content_file, $content_filename);
         $zip->close();
 
         return file_get_contents($ods_file);
     }
 
-    private function getParcellesLines($ods_content) {
-        preg_match('#<table:table-row[^>]*><table:table-cell[^>]*><text:p>%%BEGIN</text:p></table:table-cell>.*?</table:table-row>(.*?)<table:table-row[^>]*><table:table-cell[^>]*><text:p>%%END</text:p></table:table-cell>.*?</table:table-row>#', $ods_content, $matches);
+    /**
+     * Remplie l'onglet "Contrôle terrain" en remplacant les clés par les valeurs,
+     * en retravaillant les formules et en mettant les bons types sur les cellules 
+     * numériques.
+     */
+    private function parseParcellesLines() {
+        preg_match('#<table:table-row[^>]*><table:table-cell[^>]*><text:p>%%BEGIN</text:p></table:table-cell>.*?</table:table-row>(.*?)<table:table-row[^>]*><table:table-cell[^>]*><text:p>%%END</text:p></table:table-cell>.*?</table:table-row>#', $this->ods_content, $matches);
         
         // La ligne avec les %%* à remplacer
         $pattern_line = $matches[1];
@@ -131,10 +146,13 @@ class ExportParcellaireControleODS {
         }
 
         // Remplace les données modèles par les données réelles
-        return str_replace($matches[0], $data_lines,  $ods_content);
+        $this->ods_content = str_replace($matches[0], $data_lines, $this->ods_content);
     }
 
-    private function getPochette($ods_content) {
+    /**
+     * Rempli l'onglet "Pochette vignoble" avec les bonnes valeurs.
+     */
+    private function parsePochette() {
         $datas = [
             '%%RAISON_SOCIALE' => $this->parcellaire->declarant['raison_sociale'],
             '%%SIRET' => $this->parcellaire->declarant['siret'],
@@ -153,11 +171,8 @@ class ExportParcellaireControleODS {
         ];
 
         foreach ($datas as $key => $value) {
-            $ods_content = str_replace($key, $value, $ods_content);
+            $this->ods_content = str_replace($key, $value, $this->ods_content);
         }
-
-        return $ods_content;
     }
-
 
 }
