@@ -114,6 +114,24 @@ class parcellaireActions extends sfActions {
         exit;
     }
 
+    public function executeParcellaireExportCSV(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: application/csv; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.csv"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        $csv = new ExportParcellaireCSV($parcellaire);
+        echo $csv->export();
+
+        exit;
+    }
+
     public function executeParcellaireExportODS(sfWebRequest $request) {
         $this->secureTeledeclarant();
         
