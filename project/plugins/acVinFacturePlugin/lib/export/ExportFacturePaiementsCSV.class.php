@@ -64,7 +64,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
               $csv .= $paiement->date.";";
               $csv .= $this->floatHelper->formatFr($paiement->montant,2,2).";";
               $csv .= $paiement->type_reglement.";";
-              $csv .= $paiement->commentaire.";";
+              $csv .= str_replace(["\r", "\n", ";"], ' ', $paiement->commentaire).";";
               $csv .= $this->floatHelper->formatFr($facture->total_ttc - $facture->montant_paiement,2,2).';';
               $csv .= $paiement->exist('execute') ? $paiement->execute.";" : ";";
               $csv .= $paiement->versement_comptable.";";
