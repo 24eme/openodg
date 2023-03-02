@@ -62,6 +62,14 @@ parcellaire_pdf:
     model: Etablissement
     type: object
 
+parcellaire_export_csv:
+  url: /parcellaire/csv/:id
+  param: { module: parcellaire, action: parcellaireExportCSV}
+  class: ParcellaireRoute
+  options:
+    model: Parcellaire
+    type: object
+
 parcellaire_export_ods:
   url: /parcellaire/ods/:id
   param: { module: parcellaire, action: parcellaireExportODS}
