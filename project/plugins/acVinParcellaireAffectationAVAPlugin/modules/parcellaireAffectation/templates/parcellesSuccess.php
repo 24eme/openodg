@@ -105,8 +105,15 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
                                     <td><?php echo $parcelle->getLieu(false); ?></td>
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
-                                    <td class="text-right">
+                                    <td class="edit text-right" style="position: relative;">
                                         <?php echoFloat($parcelle->getSuperficie()) ?> <small class="text-muted">ares</small>
+                                        <span style="position: absolute; right: -20px;">
+                                        <?php if (!$parcellaire->isImportFromCVI() && (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC))): ?>
+                                           <a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <?php elseif(!$parcellaire->isImportFromCVI()): ?>
+                                           <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
+                                       <?php endif; ?>
+                                       </span>
                                     </td>
                                 </tr>
                                 <?php
