@@ -75,7 +75,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                 <th class="col-xs-3 text-center">Appellation</th>
                                 <th class="col-xs-2 text-center">Commune</th>
                                 <th class="col-xs-1 text-center">Section / Numéro</th>
-                                <?php if($appellationNode->getConfig()->hasLieuEditable()):  ?>
+                                <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
                                 <th class="col-xs-2 text-center">Lieu-dit</th>
                                 <?php endif; ?>
 								<th class="col-xs-2 text-center">Cépage</th>
@@ -105,7 +105,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
 									<td><?php echo $parcelle->getAppellationLibelle((isset($form['produits'][$parcelle->getHashForKey()]['vtsgn']))); ?></td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td class="text-right"><?php echo $parcelle->getSection(); ?> <?php echo $parcelle->getNumeroParcelle(); ?></td>
-                                    <?php if($appellationNode->getConfig()->hasLieuEditable()):  ?>
+                                    <?php if(!is_object($appellationNode) || $appellationNode->getConfig()->hasLieuEditable()):  ?>
                                     <td><?php echo $parcelle->getLieuLibelle(); ?></td>
                                     <?php endif; ?>
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
