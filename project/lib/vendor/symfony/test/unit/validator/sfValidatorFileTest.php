@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-require_once(dirname(__FILE__).'/../../bootstrap/unit.php');
+require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(69);
+$t = new lime_test(70);
 
 $tmpDir = sys_get_temp_dir();
 $content = 'This is an ASCII file.';
@@ -88,7 +88,15 @@ if (!function_exists('mime_content_type'))
 else
 {
   $v = new testValidatorFile();
-  $t->is($v->guessFromMimeContentType($tmpDir.'/test.txt'), 'text/plain', '->guessFromMimeContentType() guesses the type of a given file');
+  $mimeType = $v->guessFromMimeContentType($tmpDir.'/test.txt');
+  if ((version_compare(PHP_VERSION, '5.3', '<')) && false === $mimeType)
+  {
+    $t->skip('mime_content_type has some issue with php 5.2', 1);
+  }
+  else
+  {
+    $t->is($mimeType, 'text/plain', '->guessFromMimeContentType() guesses the type of a given file');
+  }
   $t->is($v->guessFromMimeContentType($tmpDir.'/foo.txt'), null, '->guessFromMimeContentType() returns null if the file type is not guessable');
 }
 
@@ -98,6 +106,7 @@ $v = new testValidatorFile();
 $t->is($v->guessFromFileBinary($tmpDir.'/test.txt'), 'text/plain', '->guessFromFileBinary() guesses the type of a given file');
 $t->is($v->guessFromFileBinary($tmpDir.'/foo.txt'), null, '->guessFromFileBinary() returns null if the file type is not guessable');
 $t->is($v->guessFromFileBinary('/bin/ls'), (PHP_OS != 'Darwin') ? 'application/x-executable' : 'application/octet-stream', '->guessFromFileBinary() returns correct type if file is guessable');
+$t->is($v->guessFromFileBinary('-test'), null, '->guessFromFileBinary() returns null if file path has leading dash');
 
 // ->getMimeType()
 $t->diag('->getMimeType()');
