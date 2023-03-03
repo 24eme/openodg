@@ -112,7 +112,10 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         $section = preg_replace('/^0*/','',$values['section']);
         $numero_parcelle = preg_replace('/^0*/','',$values['numero_parcelle']);
         $lieu = null;
-        $dpt = $this->getObject()->departement;
+        $dpt = null;
+        if($this->getObject()->exist('departement')) {
+            $dpt = $this->getObject()->departement;
+        }
         if($config->communes->exist($commune)) {
             $dpt = $config->communes[$commune];
         }
