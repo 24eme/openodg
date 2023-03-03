@@ -18,7 +18,7 @@
  * @package    symfony
  * @subpackage view
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id$
+ * @version    SVN: $Id: sfViewCacheManager.class.php 32699 2011-07-01 06:58:02Z fabien $
  */
 class sfViewCacheManager
 {
@@ -236,7 +236,7 @@ class sfViewCacheManager
       {
         $varys[] = $header . '-' . preg_replace('/\W+/', '_', $request->getHttpHeader($header));
       }
-      $vary = implode('-', $varys);
+      $vary = implode($varys, '-');
     }
 
     return $vary;
@@ -307,7 +307,7 @@ class sfViewCacheManager
     {
       foreach ($options['vary'] as $key => $name)
       {
-        $options['vary'][$key] = str_replace('_', '-', strtolower($name));
+        $options['vary'][$key] = strtr(strtolower($name), '_', '-');
       }
     }
 
@@ -818,10 +818,7 @@ class sfViewCacheManager
 
     $cache = unserialize($cache);
     $content = $cache['content'];
-    if (!isset($cache['response']) || !$cache['response']) {
-	    return null;
-    }
-   $this->context->getResponse()->merge($cache['response']);
+    $this->context->getResponse()->merge($cache['response']);
 
     if (sfConfig::get('sf_web_debug'))
     {
@@ -895,9 +892,6 @@ class sfViewCacheManager
 
     $cache = unserialize($cache);
     $content = $cache['content'];
-    if (!isset($cache['response']) || !$cache['response']) {
-	    return null;
-    }
     $cache['response']->setEventDispatcher($this->dispatcher);
     $this->context->getResponse()->copyProperties($cache['response']);
 
