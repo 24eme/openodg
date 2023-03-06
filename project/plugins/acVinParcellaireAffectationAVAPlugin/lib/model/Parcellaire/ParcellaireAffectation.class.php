@@ -756,9 +756,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     /**** FIN DES PIECES ****/
 
-    public function isImportFromCVI() {
+    public function isParcelleEditable() {
 
-        return strpos($this->_id, 'CREMANT') !== false;
+        return false;
     }
 
 }
