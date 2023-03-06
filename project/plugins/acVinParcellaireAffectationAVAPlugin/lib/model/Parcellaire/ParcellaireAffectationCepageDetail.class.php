@@ -91,7 +91,7 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
             return $this->lieu;
         }
 
-        return $this->getLieuNode()->getLibelle();
+        return null;
     }
 
     public function getParcelleIdentifiant() {
@@ -138,9 +138,9 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getCouleur()->getLieu();
     }
 
-    public function getLieu($editable_only = true) {
-        if ($editable_only && !$this->getAppellation()->getConfig()->hasLieuEditable()) {
-            return '';
+    public function getLieu() {
+        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+            return null;
         }
         return $this->_get('lieu');
     }
