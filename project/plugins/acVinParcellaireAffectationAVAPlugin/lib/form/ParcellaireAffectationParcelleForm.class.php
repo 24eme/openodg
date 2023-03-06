@@ -86,9 +86,15 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
     public function getCommunes() {
        $config = $this->getObject()->getDocument()->getConfiguration();
        $communes = array();
+
        foreach($config->communes as $communeName => $dpt) {
        $communes[strtoupper($communeName)] = $communeName;
        }
+
+       if($this->getObject()->exist('commune') && $this->getObject()->commune)  {
+           $communes[$this->getObject()->commune] = $this->getObject()->commune;
+       }
+
        return array_merge(array('' => ''), $communes);
     }
 
@@ -106,7 +112,13 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         $section = preg_replace('/^0*/','',$values['section']);
         $numero_parcelle = preg_replace('/^0*/','',$values['numero_parcelle']);
         $lieu = null;
-        $dpt = $config->communes[$commune];
+        $dpt = null;
+        if($this->getObject()->exist('departement')) {
+            $dpt = $this->getObject()->departement;
+        }
+        if($config->communes->exist($commune)) {
+            $dpt = $config->communes[$commune];
+        }
 
         if (!$this->getAppellationNode()->getConfig()->hasLieuEditable()) {
             $cepage = $values['lieuCepage'];
