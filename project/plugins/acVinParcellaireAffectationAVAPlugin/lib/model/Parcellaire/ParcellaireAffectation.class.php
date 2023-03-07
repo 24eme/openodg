@@ -184,10 +184,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         }
                     }
 
-                    if(isset($parcellesLieux[$parcelle->getSectionNumero()])) {
+                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getSectionNumero()])) {
                         $parcelle->lieu = $parcellesLieux[$parcelle->getSectionNumero()];
                     }
-                    if(isset($parcellesLieux[$parcelle->getHash()])) {
+                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getHash()])) {
                         $parcelle->lieu = $parcellesLieux[$parcelle->getHash()];
                     }
                 }
