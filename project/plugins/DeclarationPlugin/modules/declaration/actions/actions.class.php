@@ -226,6 +226,9 @@ class declarationActions extends sfActions {
          }
         $rows_campagne = $campagne_view->getView('declaration', 'tous')->rows;
         foreach($rows_campagne as $row) {
+            if(!DRConfiguration::getInstance()->hasValidationDR() && $row->key[DeclarationTousView::KEY_TYPE] == DRClient::TYPE_MODEL) {
+                continue;
+            }
             if (!isset($this->facets["Campagne"][$row->key[DeclarationTousView::KEY_CAMPAGNE]])) {
                 $this->facets["Campagne"][$row->key[DeclarationTousView::KEY_CAMPAGNE]] = 0;
             }

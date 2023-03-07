@@ -349,4 +349,9 @@ class LotsClient
         }
     }
 
+    public function getSyntheseLots($identifiant, $campagne)
+    {
+        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
+        return MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+    }
 }

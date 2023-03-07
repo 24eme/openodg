@@ -34,9 +34,9 @@
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Relevé de Cotisations<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
-\def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
-\def\EMETTEURLIBELLE{FÉDÉRATION DES VINS NANTES}
-\def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
+\def\EMETTEURLIBELLE{<?php echo Organisme::getInstance($facture->region)->getNom(); ?>}
+\def\EMETTEURADRESSE{<?php echo strstr($facture->emetteur->adresse, ',', true); ?>}
+\def\EMETTEURADRESSEDEUX{<?php echo str_replace(', ', '', strstr($facture->emetteur->adresse, ', ')); ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURTEL{<?php echo $facture->emetteur->telephone; ?>}
@@ -61,8 +61,8 @@
 }
 \cfoot{\small{
 	\EMETTEURLIBELLE \\
-	\EMETTEURADRESSE~\EMETTEURCP~\EMETTEURVILLE \\
-	\EMETTEURTEL~–~\EMETTEUREMAIL \\
+    \EMETTEURADRESSE \\
+    \EMETTEURADRESSEDEUX~\EMETTEURCP~\EMETTEURVILLE~-~\EMETTEURTEL~–~\EMETTEUREMAIL \\
 	N° TVA : FR96803741834 – SIRET : 80374183400011 – APE : 9412Z
 }}
 
@@ -103,7 +103,7 @@
 \arrayrulecolor{vertclair}
 \begin{tabular}{|>{\raggedleft}m{1.0cm}|>{\centering}m{2.8cm}|>{\raggedleft}m{2.0cm}|>{\centering}m{1.8cm}|}
 \hhline{|-|-|-|-|}
-\cellcolor{verttresclair} \textbf{CVI :} & <?php echo $facture->getCvi(); ?> & \cellcolor{verttresclair} \textbf{Campagne :} & <?php echo $facture->campagne; ?>  \tabularnewline
+\cellcolor{verttresclair} \textbf{CVI :} & <?php echo $facture->getCvi(); ?> & \cellcolor{verttresclair} \textbf{Campagne :} & <?php echo $facture->campagne.'-'.($facture->campagne + 1); ?>  \tabularnewline
 \hhline{|-|-|-|-|}
 \end{tabular}
 
@@ -182,9 +182,9 @@
 \end{minipage}
 
 \begin{minipage}{0.5\textwidth}
-    Banque : <?php echo FactureConfiguration::getInstance()->getBanqueNom(); ?> \\
-    IBAN : <?php echo FactureConfiguration::getInstance()->getIBAN(); ?> \\
-    BIC : <?php echo FactureConfiguration::getInstance()->getBIC(); ?> \\
+    Banque : <?php echo Organisme::getInstance($facture->region)->getBanqueNom(); ?> \\
+    IBAN : <?php echo Organisme::getInstance($facture->region)->getIban(); ?> \\
+    BIC : <?php echo Organisme::getInstance($facture->region)->getBic(); ?> \\
 \end{minipage}
 
 

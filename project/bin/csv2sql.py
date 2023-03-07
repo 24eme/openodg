@@ -143,7 +143,7 @@ if os.path.exists(sys.argv[2]+"/comptes.csv") and os.path.getsize(sys.argv[2]+"/
 
 if os.path.exists(sys.argv[2]+"/lots.csv") and os.path.getsize(sys.argv[2]+"/lots.csv"):
     sys.stderr.write(sys.argv[2]+"/lots.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str', 'Millésime': 'str'})
     #CVI Opérateur
     csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Millésime
@@ -152,7 +152,7 @@ if os.path.exists(sys.argv[2]+"/lots.csv") and os.path.getsize(sys.argv[2]+"/lot
 
 if os.path.exists(sys.argv[2]+"/lots-historique.csv") and os.path.getsize(sys.argv[2]+"/lots-historique.csv"):
     sys.stderr.write(sys.argv[2]+"/lots-historique.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/lots-historique.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Lot Num dossier': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/lots-historique.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Lot Num dossier': 'str', 'Millésime': 'str'})
     #Lot Code postal Opérateur
     csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Lot Millésime

@@ -12,7 +12,7 @@ import dateutil.relativedelta
 
 pd.set_option('display.max_columns', None)
 millesime = None
-
+datefrom = None
 
 # In[42]:
 
@@ -26,6 +26,9 @@ if sys.argv[0].find('launcher') == -1 :
 
     if(len(sys.argv)>2):
         millesime = sys.argv[2]
+
+    if len(sys.argv)>3:
+        datefrom = datetime.fromisoformat(sys.argv[3])
 else:
     igp = 'gascogne'
     campagne ="2021-2022"
@@ -36,8 +39,11 @@ else:
 
 
 dossier_igp = "exports_igp"+igp
+if not datefrom:
+    datefrom = datetime.now()
+
 if not millesime:
-    millesime = str((datetime.now() - dateutil.relativedelta.relativedelta(months=10)).year)
+    millesime = str((datefrom - dateutil.relativedelta.relativedelta(months=10)).year)
 
 exportdir = '../../web/'+dossier_igp
 outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
@@ -45,16 +51,16 @@ outputdir = exportdir.replace('/GLOBAL', '')+'/stats/'+millesime
 if(not os.path.isdir(outputdir)):
     os.mkdir(outputdir)
 
-datelimite = str(datetime.now().year)+'-08-01'
-datelimite_exact = str(datetime.now().year)+'-07-31'
+datelimite = str(datefrom.year)+'-08-01'
+datelimite_exact = str(datefrom.year)+'-07-31'
 
-if(datetime.now().month >= 10):
-    datelimite = str(datetime.now().year + 1)+'-01-01'
-    datelimite_exact = str(datetime.now().year)+'-12-31'
+if(datefrom.month >= 10):
+    datelimite = str(datefrom.year + 1)+'-01-01'
+    datelimite_exact = str(datefrom.year)+'-12-31'
 
-if(datetime.now().month <= 3):
-    datelimite = str(datetime.now().year )+'-01-01'
-    datelimite_exact = str(datetime.now().year - 1)+'-12-31'
+if(datefrom.month <= 3):
+    datelimite = str(datefrom.year )+'-01-01'
+    datelimite_exact = str(datefrom.year - 1)+'-12-31'
 
 drev_lots = pd.read_csv("../../web/"+dossier_igp+"/drev_lots.csv", encoding="iso8859_15", delimiter=";", decimal=",", dtype={'Identifiant': 'str', 'Campagne': 'str', 'Siret Opérateur': 'str', 'Code postal Opérateur': 'str', 'Millésime': 'str'}, low_memory=False)
 drev_lots = drev_lots[drev_lots["Date de commission"] < datelimite]

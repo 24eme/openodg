@@ -70,17 +70,17 @@ parcellaire_export_csv:
     model: Parcellaire
     type: object
 
-parcellaire_export_geo:
-  url: /parcellaire/geo/:id
-  param: { module: parcellaire, action: parcellaireExportGeo}
+parcellaire_export_ods:
+  url: /parcellaire/ods/:id
+  param: { module: parcellaire, action: parcellaireExportODS}
   class: ParcellaireRoute
   options:
     model: Parcellaire
     type: object
 
-parcellaire_export_doc:
-  url: /parcellaire/doc/:id
-  param: { module: parcellaire, action: parcellaireExportDoc}
+parcellaire_export_geo:
+  url: /parcellaire/geo/:id
+  param: { module: parcellaire, action: parcellaireExportGeo}
   class: ParcellaireRoute
   options:
     model: Parcellaire

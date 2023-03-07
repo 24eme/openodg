@@ -10,7 +10,7 @@
         "DRev"
     ],
     "cotisations": {
-        "odg_forfait": {
+        "00_odg_forfait": {
             "fallback": true,
             "modele": "CotisationsCollection",
             "callback": "",
@@ -31,14 +31,14 @@
                 }
             }
         },
-        "odg": {
+        "10_odg": {
             "minimum": 175,
             "minimum_fallback": "odg_forfait",
             "modele": "CotisationsCollection",
             "libelle": "Cotisation ODG",
             "code_comptable": "706000",
             "details": {
-                "superficie": {
+                "10_superficie": {
                     "modele": "CotisationVariable",
                     "prix": 25,
                     "tva": 0,
@@ -53,7 +53,7 @@
                         "L4"
                     ]
                 },
-                "volume": {
+                "00_volume": {
                     "modele": "CotisationVariable",
                     "prix": 1.8,
                     "tva": 0,
@@ -68,7 +68,7 @@
                         "L5 - (L12 + L14 + L16)"
                     ]
                 },
-                "vci": {
+                "90_vci": {
                     "modele": "CotisationVariable",
                     "prix": 1.8,
                     "tva": 0,
@@ -82,13 +82,13 @@
                 }
             }
         },
-        "valorisation": {
+        "20_valorisation": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Cotisation valorisation",
             "code_comptable": "706000",
             "details": {
-                "superficie": {
+                "10_superficie": {
                     "modele": "CotisationVariable",
                     "prix": 25,
                     "tva": 0.2,
@@ -103,7 +103,7 @@
                         "L4"
                     ]
                 },
-                "volume": {
+                "00_volume": {
                     "modele": "CotisationVariable",
                     "prix": 2.1,
                     "tva": 0.2,
@@ -119,7 +119,7 @@
                         "lieux/DEFAUT"
                     ]
                 },
-                "volume_crus": {
+                "05_volume_crus": {
                     "modele": "CotisationVariable",
                     "prix": 5,
                     "tva": 0.2,
@@ -135,7 +135,7 @@
                         "NOT lieux/DEFAUT"
                     ]
                 },
-                "vci": {
+                "90_vci": {
                     "modele": "CotisationVariable",
                     "prix": 2.1,
                     "tva": 0.2,
@@ -149,7 +149,7 @@
                 }
             }
         },
-        "inao": {
+        "30_inao": {
             "modele": "CotisationsCollection",
             "callback": "",
             "libelle": "Droits I.N.A.O. (Art. 34, Loi 88/11/93 du 29/12/1988)",

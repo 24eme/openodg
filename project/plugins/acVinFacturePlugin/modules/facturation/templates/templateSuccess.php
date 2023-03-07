@@ -24,8 +24,8 @@
             <th>Unité</th>
         </tr>
     </thead>
-<?php foreach($template->cotisations as $cotisation): ?>
-    <?php foreach($cotisation->details as $detail): ?>
+<?php foreach($lignes as $detail): ?>
+    <?php $cotisation = $detail->getParent()->getParent(); ?>
     <tr>
         <td><?php echo $cotisation->libelle ?> <?php echo $detail->libelle ?>
         <?php if($detail->exist('date')): ?><br /><small class="text-muted">Date : <?php echo $detail->date ?></small><?php endif; ?></td>
@@ -36,6 +36,5 @@
         <td><?php echo $detail->callback ?><?php if($detail->exist('callback_parameters')): ?> <small class="text-muted"><?php echo implode(", ", $detail->callback_parameters->getRawValue()->toArray()) ?></small><?php endif; ?></td>
         <td class="text-left"><?php if($detail->exist('unite')): ?><?php echo $detail->unite ?><?php endif; ?></td>
     </tr>
-    <?php endforeach; ?>
 <?php endforeach; ?>
 </table>

@@ -137,11 +137,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function initOrUpdateProduitsFromAire() {
         $parcellesActives = array();
+        $parcellesLieux = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if(!$parcelle->active) {
                 continue;
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
+            if($parcelle->getLieu()) {
+                $parcellesLieux[$parcelle->getHash()] = $parcelle->getLieu();
+                $parcellesLieux[$parcelle->getSectionNumero()] = $parcelle->getLieu();
+            }
         }
 
        if ($this->exist('declaration/certification/genre')) {
@@ -154,7 +159,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             foreach ($CVIAppellation->detail as $CVIParcelle) {
                 foreach($CVIParcelle->isInAires() as $nom => $statut) {
                     $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
-                    $libelle = str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle));
+                    $libelle = str_replace(' A PETITS GRAINS', '', str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle)));
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod) {
@@ -178,9 +183,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                             $parcelle->active = 0;
                         }
                     }
+
+                    if(isset($parcellesLieux[$parcelle->getSectionNumero()])) {
+                        $parcelle->lieu = $parcellesLieux[$parcelle->getSectionNumero()];
+                    }
+                    if(isset($parcellesLieux[$parcelle->getHash()])) {
+                        $parcelle->lieu = $parcellesLieux[$parcelle->getHash()];
+                    }
                 }
             }
         }
+
         foreach($parcellesActives as $parcelleHash) {
             if(!$this->exist($parcelleHash)) {
                 continue;
@@ -756,9 +769,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     /**** FIN DES PIECES ****/
 
-    public function isImportFromCVI() {
+    public function isParcelleEditable() {
 
-        return strpos($this->_id, 'CREMANT') !== false;
+        return false;
     }
 
 }
