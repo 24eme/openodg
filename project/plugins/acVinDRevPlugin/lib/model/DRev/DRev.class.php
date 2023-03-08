@@ -642,6 +642,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getFictiveFromDocumentDouanier() {
     	$drev = clone $this;
+      $drev->validation = null;
+      $drev->validation_odg = null;
         $drev->remove('declaration');
     	$drev->add('declaration');
         $drev->resetAndImportFromDocumentDouanier();
@@ -680,6 +682,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
           return false;
+      }
+
+      if(count($this->getProduitsWithoutLots()) > 0 && $this->isValidee()) {
+        return false;
       }
 
       $this->remove('declaration');
