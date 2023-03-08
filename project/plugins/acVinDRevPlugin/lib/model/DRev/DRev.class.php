@@ -110,7 +110,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function summerizeProduitsLotsByCouleur($with_total = 'appellation') {
         $couleurs = array();
         if (!count($this->declaration)  && $this->hasDocumentDouanier()) {
-            $this->importFromDocumentDouanier();
+            $this->resetAndImportFromDocumentDouanier();
         }
 
         // Parcours dans le noeud declaration
@@ -644,13 +644,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$drev = clone $this;
         $drev->remove('declaration');
     	$drev->add('declaration');
-        $drev->updateDeclarationFromDocumentDouanier();
+        $drev->resetAndImportFromDocumentDouanier();
         $drev->_rev = "FICTIVE";
     	return $drev;
     }
 
     public function updateDeclaration() {
-        $this->updateDeclarationFromDocumentDouanier();
+        $this->resetAndImportFromDocumentDouanier();
         foreach($this->getProduitsLots() as $produit) {
             $produit->superficie_revendique = 0;
             $produit->volume_revendique_total = 0;
@@ -662,10 +662,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
-    public function updateDeclarationFromDocumentDouanier() {
-    	$this->importFromDocumentDouanier();
-    }
-
     public function getBailleurs($cave_particuliere_only = false) {
     	$csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
@@ -675,39 +671,43 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return DouaneProduction::getBailleursFromCsv($this->getEtablissementObject(), $csv, $this->getConfiguration(), $cave_particuliere_only);
     }
 
-    public function importFromDocumentDouanier($force = false) {
+    public function resetAndImportFromDocumentDouanier() {
       $this->declarant->famille = $this->getEtablissementObject()->famille;
-      if (!$force && count($this->declaration) && $this->declaration->getTotalTotalSuperficie()) {
-        return false;
+
+      if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
+          return false;
       }
+
+      if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
+          return false;
+      }
+
+      $this->remove('declaration');
+      $this->add('declaration');
+
       $csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
       	return false;
       }
-	  try {
-          //pour les DRev IGP, le fonctionne est un peu étrange
-          //du coup, on force la mise à jour via la suppression du noeud
-          //refacto souhaitable ?
-          if ($force && count($this->getProduitsWithoutLots()) == 0) {
-              $this->remove('declaration');
-              $this->add('declaration');
-          }
+	    try {
           $this->importCSVDouane($csv);
           return true;
       } catch (Exception $e) { }
+
       return false;
     }
 
     public function importCSVDouane($csv) {
+      if(count($this->declaration) > 0) {
+          return;
+      }
+
     	$todelete = array();
         $bailleurs = array();
 
         $preserve = false;
-        if(count($this->declaration) > true) {
-            $preserve = true;
-        }
 
-        $produitsImporte = array();
+
         $has_bio_in_dr = false;
         $has_hve_in_dr = false;
 
@@ -825,12 +825,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             if (!$is_bailleur && $has_bailleurs_or_multiple && (!$cvi || $cvi != trim($line[DRCsvFile::CSV_RECOLTANT_CVI]))) {
                 continue;
-            }
-
-            if(!array_key_exists($produit->getHash(), $produitsImporte)) {
-                $produit->remove('recolte');
-                $produit->add('recolte');
-                $produitsImporte[$produit->getHash()] = $produit;
             }
 
             $produitRecolte = $produit->recolte;
@@ -951,16 +945,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitRecolte->vsi += $p->recolte->vsi;
             }
 
-            if (! $p->vci->stock_precedent) {
-                $todelete[$hash] = $hash;
-            }
-        }
-        foreach ($todelete as $del) {
-            $this->remove($del);
+            $todelete[$hash] = $hash;
         }
 
-        if($preserve) {
-            return;
+        foreach ($todelete as $del) {
+            $this->remove($del);
         }
 
         foreach ($this->declaration->getProduits() as $hash => $p) {
@@ -984,10 +973,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
 
-        $this->updateFromPrecedente();
+        $this->updateVCIFromPrecedente();
     }
 
-    public function updateFromPrecedente()
+    public function updateVCIFromPrecedente()
     {
     	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->identifiant, $this->periode - 1)) {
         foreach($precedente->getProduitsVci() as $produit) {
@@ -2360,7 +2349,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function generateModificative() {
 
         $drev = $this->version_document->generateModificative();
-        $drev->importFromDocumentDouanier(true);
+        $drev->resetAndImportFromDocumentDouanier();
         return $drev;
     }
 

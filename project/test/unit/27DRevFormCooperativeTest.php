@@ -65,7 +65,7 @@ $drev->save();
 
 $t->is($drev->getDocumentDouanierType(), "SV11", "Le document douanier de la DRev est de type SV11");
 
-$drev->importFromDocumentDouanier();
+$drev->resetAndImportFromDocumentDouanier();
 $drev->save();
 $t->is(count($drev->getProduits()), 2 + DRevConfiguration::getInstance()->hasDenominationAuto(), "La DRev a repris 2 produits du csv de la SV11 (+1 si on prend la mention complémentaire)");
 
