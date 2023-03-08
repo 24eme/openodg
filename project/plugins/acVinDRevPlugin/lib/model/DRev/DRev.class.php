@@ -1032,26 +1032,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $lot;
     }
 
-    public function lotsImpactRevendication() {
-        foreach($this->getProduitsLots() as $produit) {
-            $produit->volume_revendique_issu_recolte = 0;
-        }
-        foreach($this->lots as $lot) {
-            if(!$lot->produit_hash) {
-                continue;
-            }
-
-            $produit = $lot->getProduitRevendique();
-
-            if(!$produit) {
-
-                continue;
-            }
-
-            $produit->volume_revendique_issu_recolte += $lot->volume;
-        }
-    }
-
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
 
