@@ -182,10 +182,6 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                     ->execute($hydrate);
     }
 
-    public function getOrdrePrelevements() {
-        return array("cuve" => array("cuve_ALSACE", "cuve_GRDCRU", "cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
-    }
-
     public function getNonHabilitationINAO($drev) {
         $non_habilite = array();
         $identifiant = $drev->declarant->cvi;
