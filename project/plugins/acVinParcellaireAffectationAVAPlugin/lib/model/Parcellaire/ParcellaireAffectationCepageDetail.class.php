@@ -91,7 +91,7 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
             return $this->lieu;
         }
 
-        return $this->getLieuNode()->getLibelle();
+        return null;
     }
 
     public function getParcelleIdentifiant() {
@@ -138,9 +138,9 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getCouleur()->getLieu();
     }
 
-    public function getLieu($editable_only = true) {
-        if ($editable_only && !$this->getAppellation()->getConfig()->hasLieuEditable()) {
-            return '';
+    public function getLieu() {
+        if (!$this->getAppellation()->getConfig()->hasLieuEditable()) {
+            return null;
         }
         return $this->_get('lieu');
     }
@@ -195,5 +195,10 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
             $l .= ' VT/SGN';
         }
         return  $l;
+    }
+
+    public function getSectionNumero() {
+
+        return preg_replace('/^0+/', '', $this->section).preg_replace('/^0+/', '', $this->numero_parcelle);
     }
 }

@@ -11,3 +11,4 @@ all:
       modalite_paiement: "Modalités de paiements : \\ - Comptant, virement ou chèque libellé à l'ordre de FVN \\ - Prélèvement automatique ou virement maximum en 9 fois (mars à novembre)"
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
       paiements: true
+      exercice: "viticole"
