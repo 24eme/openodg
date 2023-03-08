@@ -29,7 +29,6 @@ class DRevLotsForm extends acCouchdbForm
 			$embedForm->doUpdateObject($values['lots'][$key]);
         }
         $this->getDocument()->cleanLots();
-		$this->getDocument()->lotsImpactRevendication();
 		$this->getDocument()->save();
 	}
 
