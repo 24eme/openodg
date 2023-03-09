@@ -196,4 +196,9 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         }
         return  $l;
     }
+
+    public function getSectionNumero() {
+
+        return preg_replace('/^0+/', '', $this->section).preg_replace('/^0+/', '', $this->numero_parcelle);
+    }
 }

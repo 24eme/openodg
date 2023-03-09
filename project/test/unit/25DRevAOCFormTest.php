@@ -89,7 +89,7 @@ $dr->save();
 $dr->storeFichier($csvTmpFile);
 $dr->save();
 
-$drev->importFromDocumentDouanier();
+$drev->resetAndImportFromDocumentDouanier();
 $drev->save();
 $t->comment($drev->_id);
 $t->is(count($drev->getProduits()), 2 * (1 + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire()), "La DRev a repris les produits du csv de la DR");
