@@ -93,7 +93,7 @@ $dr->save();
 $dr->storeFichier($csvTmpFile);
 $dr->save();
 
-$drev->importFromDocumentDouanier();
+$drev->resetAndImportFromDocumentDouanier();
 $drev->save();
 
 $t->is(count(array_keys($drev->getProduits())), 2 + (!DRevConfiguration::getInstance()->hasDenominationAuto()) * 2, "La DRev a repris le bon nombre (". (2 + (!DRevConfiguration::getInstance()->hasDenominationAuto()) * 2).") de produits du csv de la DR");

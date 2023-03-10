@@ -128,7 +128,7 @@ class drevActions extends sfActions {
     	$this->secure(DRevSecurity::EDITION, $this->drev);
 
         try {
-            $imported = $this->drev->importFromDocumentDouanier();
+            $imported = $this->drev->resetAndImportFromDocumentDouanier();
         } catch (Exception $e) {
             $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
@@ -158,7 +158,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_dr_upload', $this->drev);
         }
 
-        $this->drev->importFromDocumentDouanier(true);
+        $this->drev->resetAndImportFromDocumentDouanier();
         $this->drev->save();
 
         return $this->redirect('drev_revendication_superficie', $this->drev);
@@ -199,7 +199,7 @@ class drevActions extends sfActions {
         $this->form->save();
 
         try {
-            if (!$this->drev->importFromDocumentDouanier(true)) {
+            if (!$this->drev->resetAndImportFromDocumentDouanier()) {
                 throw new sfException("Mauvais format");
             }
         } catch(Exception $e) {
@@ -835,9 +835,11 @@ class drevActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+
+        $this->drev->resetAndImportFromDocumentDouanier();
+
         $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
-
         if (!$this->drev->validation) {
             $this->drev->cleanDoc();
         }
@@ -1006,7 +1008,7 @@ class drevActions extends sfActions {
 
     public function executeUpdateFromDocumentDouanier(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $drev->importFromDocumentDouanier(true);
+        $drev->resetAndImportFromDocumentDouanier();
         $drev->save();
         return $this->redirect('drev_visualisation', $drev);
     }
