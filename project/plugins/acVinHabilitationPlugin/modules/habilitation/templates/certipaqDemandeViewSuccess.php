@@ -27,5 +27,8 @@
 <h2>Raw</h2>
 <pre>
 <?php print_r($param); ?>
+
+Décisions :
+<?php print_r($decisions); ?>
 </pre>
 </div>
