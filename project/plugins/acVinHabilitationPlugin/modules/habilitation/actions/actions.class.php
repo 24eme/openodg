@@ -796,5 +796,7 @@ class habilitationActions extends sfActions {
         }
         $this->param_printable = array();
         $this->params2printable($this->param);
+
+        $this->decisions = CertipaqDI::getInstance()->getDemandeIdentificationDecisions($this->id);
     }
 }

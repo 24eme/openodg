@@ -12,7 +12,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_HVE = "HVE";
     const DENOMINATION_DEMETER = "DEMETER";
     const DENOMINATION_CONVENTIONNEL = "CONVENTIONNEL";
-    const DENOMINATION_BIO_LIBELLE_AUTO = "AB";
+    const DENOMINATION_BIO_LIBELLE_AUTO = "AB hors conversion";
     const DENOMINATION_HVE_LIBELLE_AUTO = "HVE";
     const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_CONDITIONNEMENT';
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
@@ -31,7 +31,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public static $denominationsAuto = array(
         self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
         self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
-        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO." hors conversion",
+        self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
     );
 
     public static $lotDestinationsType = array(
@@ -129,12 +129,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $previous_drev = self::findMasterByIdentifiantAndPeriode($identifiant, $periode - 1 );
             if ($previous_drev) {
                 $drev->set('chais', $previous_drev->chais->toArray(true, false));
-              foreach($previous_drev->getProduitsVci() as $produit) {
-                if ($produit->vci->stock_final) {
-                  $drev->cloneProduit($produit);
-                }
-              }
             }
+            $drev->updateVCIFromPrecedente();
         }
 
         return $drev;
@@ -184,10 +180,6 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $this->startkey(sprintf("DREV-%s-%s", $identifiant, $periode_from))
                     ->endkey(sprintf("DREV-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $periode_to))
                     ->execute($hydrate);
-    }
-
-    public function getOrdrePrelevements() {
-        return array("cuve" => array("cuve_ALSACE", "cuve_GRDCRU", "cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
     }
 
     public function getNonHabilitationINAO($drev) {

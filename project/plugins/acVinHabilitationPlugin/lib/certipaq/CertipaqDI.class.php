@@ -328,6 +328,11 @@ class CertipaqDI extends CertipaqDeroulant
         return $this->queryAndRes2hashid('declaration/identification/'.$id.'/req_docs');
     }
 
+    public function getDemandeIdentificationDecisions($id)
+    {
+        return $this->queryAndRes2hashid('declaration/identification/'.$id.'/decisions');
+    }
+
     public function sendFichierForDemandeIdentification($demande, $fichier, $type_document = 0, $cdc_famille_id = null) {
         $param = array();
         $param['dr_type_documents_id'] = $type_document;
