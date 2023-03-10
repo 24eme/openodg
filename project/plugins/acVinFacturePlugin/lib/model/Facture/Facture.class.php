@@ -90,6 +90,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
+        if(FactureConfiguration::getInstance()->getNumeroFormat()) { // Pour nantes obsolète
+            return $this->getNumeroFacture();
+        }
+
         if($this->exist('numero_odg') && $this->_get('numero_odg')) {
             return $this->_get('numero_odg');
         }
