@@ -49,14 +49,9 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
         $ligne_base = sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->formatSiret($this->doc->declarant->siret), $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $email);
         foreach ($this->doc->declaration->getParcellesByCommune() as $commune => $parcelles) {
         	foreach ($parcelles as $parcelle) {
-            	$configProduit = $parcelle->getProduit()->getConfig();
-
-            	$inao = $configProduit->getCodeDouane();
-
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-            	$csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
-                DeclarationExportCsv::getProduitKeysCsv($configProduit),
-                $inao,$libelle_complet,
+            	$csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+                $libelle_complet,
             	$this->protectStr($parcelle->idu),
             	$parcelle->code_commune,
             	$this->protectStr($parcelle->commune),

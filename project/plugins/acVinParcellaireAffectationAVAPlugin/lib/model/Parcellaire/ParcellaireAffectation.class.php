@@ -137,11 +137,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function initOrUpdateProduitsFromAire() {
         $parcellesActives = array();
+        $parcellesLieux = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if(!$parcelle->active) {
                 continue;
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
+            if($parcelle->getLieu()) {
+                $parcellesLieux[$parcelle->getHash()] = $parcelle->getLieu();
+                $parcellesLieux[$parcelle->getSectionNumero()] = $parcelle->getLieu();
+            }
         }
 
        if ($this->exist('declaration/certification/genre')) {
@@ -178,9 +183,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                             $parcelle->active = 0;
                         }
                     }
+
+                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getSectionNumero()])) {
+                        $parcelle->lieu = $parcellesLieux[$parcelle->getSectionNumero()];
+                    }
+                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getHash()])) {
+                        $parcelle->lieu = $parcellesLieux[$parcelle->getHash()];
+                    }
                 }
             }
         }
+
         foreach($parcellesActives as $parcelleHash) {
             if(!$this->exist($parcelleHash)) {
                 continue;
@@ -755,9 +768,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     /**** FIN DES PIECES ****/
 
-    public function isImportFromCVI() {
+    public function isParcelleEditable() {
 
-        return strpos($this->_id, 'CREMANT') !== false;
+        return false;
     }
 
 }
