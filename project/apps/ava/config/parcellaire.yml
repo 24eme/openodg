@@ -260,6 +260,10 @@ all:
           name: "Alsace Grand Cru Zotzenberg"
           color: "#d10500"
           denomination_id: "00053"
+        GrandCru02481:
+          name: "Alsace Grand Cru Kastelberg"
+          color: "#d10500"
+          denomination_id: "2481"
         GrandCru01765:
           name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
