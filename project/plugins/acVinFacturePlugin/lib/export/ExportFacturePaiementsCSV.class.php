@@ -48,7 +48,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
         $date_facturation = DateTime::createFromFormat("Y-m-d",$this->facture->date_facturation)->format("d/m/Y");
         $facture = $this->facture;
         $csv = '';
-        $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->numero_archive.";";
+        $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->getNumeroOdg().";";
         if($facture->exist('paiements')) {
           foreach ($facture->paiements as $paiement) {
               if ($this->que_les_non_verses_comptablement && $paiement->versement_comptable) {
