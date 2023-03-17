@@ -63,7 +63,7 @@ all:
         Communale02843:  
           name: "Alsace Communale Coteaux du Haut Koenigsbourg"
           color: "#f48e00"
-          denomination_id: "02843"  
+          denomination_id: "02843"
         GrandCru00004:
           name: "Alsace Grand Cru Altenberg de Bergbieten"
           color: "#d10500"
@@ -263,7 +263,7 @@ all:
         GrandCru02481:
           name: "Alsace Grand Cru Kastelberg"
           color: "#d10500"
-          denomination_id: "2481"
+          denomination_id: "02481"
         GrandCru01765:
           name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
