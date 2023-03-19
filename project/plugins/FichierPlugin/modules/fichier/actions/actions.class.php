@@ -182,13 +182,21 @@ class fichierActions extends sfActions
 		$this->categories = array();
 		$this->decreases = 0;
 		foreach ($allHistory as $doc) {
-            $date = DateTime::createFromFormat('Y-m-d', preg_replace('/ .*/', '', $doc->key[PieceAllView::KEYS_DATE_DEPOT]));
 
-            if ($date < DateTime::createFromFormat('Y-m-d', $date->format('Y').'-08-01')) {
+            if(is_bool($doc->key[PieceAllView::KEYS_DATE_DEPOT])) {
+                $doc->key[PieceAllView::KEYS_DATE_DEPOT] = null;
+                $date = null;
+            }
+
+            if($doc->key[PieceAllView::KEYS_DATE_DEPOT]) {
+                $date = DateTime::createFromFormat('Y-m-d', preg_replace('/ .*/', '', $doc->key[PieceAllView::KEYS_DATE_DEPOT]));
+            }
+
+            if ($date && $date < DateTime::createFromFormat('Y-m-d', $date->format('Y').'-08-01')) {
                 $end_campagne = $date->format('Y');
                 $start_campagne = $date->modify('-1 year')->format('Y');
                 $this->campagnes[$start_campagne.'-'.$end_campagne] = $start_campagne.'-'.$end_campagne;
-            } else {
+            } elseif($date) {
                 $start_campagne = $date->format('Y');
                 $end_campagne = $date->modify('+1 year')->format('Y');
                 $this->campagnes[$start_campagne.'-'.$end_campagne] = $start_campagne.'-'.$end_campagne;
