@@ -789,14 +789,13 @@ class habilitationActions extends sfActions {
 
     public function executeCertipaqDemandeView(sfWebRequest $request) {
         $this->id = $request->getParameter('request_id');
-        $this->param = CertipaqDI::getInstance()->getDemandeIdentification($this->id);
-        if (preg_match('/\[(\d+\-\d+)(\d\d)\]/', $this->param['commentaires_odg'], $m)) {
-            $this->habilitation = HabilitationClient::getInstance()->find('HABILITATION-'.$m[1]);
-            $this->demande = $this->habilitation->demandes->get($m[1].$m[2]);
-        }
+        $this->param = array();
+        $this->param['demande'] = CertipaqDI::getInstance()->getDemandeIdentification($this->id);
+        $new = CertipaqDI::getInstance()->applyCertipaqDecision($this->param['demande']);
+        $this->demande = CertipaqDI::getInstance()->getHabilitationDemandeFromCertipaqDemande($this->param['demande']);
+        $this->param['decision'] = CertipaqDI::getInstance()->getDemandeIdentificationDecisions($this->id);
         $this->param_printable = array();
         $this->params2printable($this->param);
-
-        $this->decisions = CertipaqDI::getInstance()->getDemandeIdentificationDecisions($this->id);
     }
+
 }
