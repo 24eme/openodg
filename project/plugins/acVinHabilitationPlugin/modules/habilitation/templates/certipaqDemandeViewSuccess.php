@@ -19,9 +19,9 @@
 <h2>Demande OpenODG</h2>
 <?php if (isset($demande)): ?>
 <?php if($param['demande']['dr_etat_demande_id'] == 4): ?>
-<a href="<?php echo url_for('certipaq_demande_identification_documents', array('request_id' => $id, 'identifiant' => $habilitation->identifiant, 'demande' => $demande->getKey())); ?>" class="btn btn-success pull-right">Reprendre la transmission</a>
+<a href="<?php echo url_for('certipaq_demande_identification_documents', array('request_id' => $id, 'identifiant' => $demande->getDocument()->identifiant, 'demande' => $demande->getKey())); ?>" class="btn btn-success pull-right">Reprendre la transmission</a>
 <?php endif; ?>
-<a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $habilitation->identifiant, 'demande'=> $demande->getKey())); ?>" class="btn btn-default">Voir la demande</a>
+<a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $demande->getDocument()->identifiant, 'demande'=> $demande->getKey())); ?>" class="btn btn-default">Voir la demande</a>
 <?php else: ?>
 <p>Pas de référence à une demande OpenODG trouvée</p>
 <?php endif; ?>
@@ -29,5 +29,5 @@
 <div class="row">
 <h2>Raw</h2>
 <pre>
-<?php print_r($param); ?>
+<?php print_r($param->getRawValue()); ?>
 </div>
