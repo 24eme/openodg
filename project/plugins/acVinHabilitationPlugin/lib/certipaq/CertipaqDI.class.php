@@ -355,4 +355,35 @@ class CertipaqDI extends CertipaqDeroulant
         return $ret;
     }
 
+    public function getHabilitationDemandeFromCertipaqDemande($demande) {
+        if (preg_match('/\[(\d+\-\d+)(\d\d)\]/', $demande['commentaires_odg'], $m)) {
+            $habilitation = HabilitationClient::getInstance()->find('HABILITATION-'.$m[1]);
+            return $habilitation->demandes->get($m[1].$m[2]);
+        }
+        return null;
+    }
+
+    public function applyCertipaqDecision($demande) {
+        $habdemande = $this->getHabilitationDemandeFromCertipaqDemande($demande);
+        $decisions = CertipaqDI::getInstance()->getDemandeIdentificationDecisions($demande['id']);
+        if (!$habdemande || !count($decisions) ) {
+            return null;
+        }
+        if (!$habdemande->isLatest()) {
+            return null;
+        }
+        $decision = (array) array_pop($decisions);
+        //Vérifie que la décision est bien un statut VALIDÉ
+        if ($decision['dr_statut_habilitation_id'] != 1) {
+            return null;
+        }
+        $date = preg_replace('/ .*/', '', $decision['date_decision']);
+        $statut = 'VALIDE_CERTIPAQ';
+        $commentaire = "Décision Certipaq #CERTIPAQ:".$decision['id'];
+        $auteur = "Certipaq";
+
+        $newdemande = HabilitationClient::getInstance()->updateDemandeAndSave($habdemande->getDocument()->identifiant, $habdemande->getKey(), $date, $statut, $commentaire, $auteur);
+        return $newdemande;
+    }
+
 }
