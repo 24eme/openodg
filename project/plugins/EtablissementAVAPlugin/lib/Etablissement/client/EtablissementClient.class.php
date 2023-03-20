@@ -4,6 +4,8 @@
 
 class EtablissementClient extends acCouchdbClient {
 
+    const REGION_HORS_CVO = 'REGION_HORS_CVO';
+    const REGION_CVO = 'REGION_CVO';
     const TYPE_MODEL = "Etablissement";
     const TYPE_COUCHDB = "ETABLISSEMENT";
 
