@@ -364,23 +364,35 @@ class CertipaqDI extends CertipaqDeroulant
     }
 
     public function applyCertipaqDecision($demande) {
+        //Pas de MaJ si la demande  n'est pas Validée Certipaq
+        if ($demande['dr_etat_demande_id'] != 2) {
+            return null;
+        }
         $habdemande = $this->getHabilitationDemandeFromCertipaqDemande($demande);
-        $decisions = CertipaqDI::getInstance()->getDemandeIdentificationDecisions($demande['id']);
-        if (!$habdemande || !count($decisions) ) {
-            return null;
+
+        if ($demande['presence_decision_future'] != 1)  {
+            $date = preg_replace('/ .*/', '', $demande['date_finalisation']);
+            $statut = 'VALIDE_CERTIPAQ';
+            $commentaire = "Validé par Certipaq automatiquement (sans décision)";
+            $auteur = "Certipaq";
+        }else{
+            $decisions = CertipaqDI::getInstance()->getDemandeIdentificationDecisions($demande['id']);
+            if (!$habdemande || !count($decisions) ) {
+                return null;
+            }
+            if (!$habdemande->isLatest()) {
+                return null;
+            }
+            $decision = (array) array_pop($decisions);
+            //Vérifie que la décision est bien un statut VALIDÉ
+            if ($decision['dr_statut_habilitation_id'] != 1) {
+                return null;
+            }
+            $date = preg_replace('/ .*/', '', $decision['date_decision']);
+            $statut = 'VALIDE_CERTIPAQ';
+            $commentaire = "Décision Certipaq #CERTIPAQ:".$decision['id'];
+            $auteur = "Certipaq";
         }
-        if (!$habdemande->isLatest()) {
-            return null;
-        }
-        $decision = (array) array_pop($decisions);
-        //Vérifie que la décision est bien un statut VALIDÉ
-        if ($decision['dr_statut_habilitation_id'] != 1) {
-            return null;
-        }
-        $date = preg_replace('/ .*/', '', $decision['date_decision']);
-        $statut = 'VALIDE_CERTIPAQ';
-        $commentaire = "Décision Certipaq #CERTIPAQ:".$decision['id'];
-        $auteur = "Certipaq";
 
         $newdemande = HabilitationClient::getInstance()->updateDemandeAndSave($habdemande->getDocument()->identifiant, $habdemande->getKey(), $date, $statut, $commentaire, $auteur);
         return $newdemande;
