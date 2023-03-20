@@ -124,4 +124,8 @@ class EtablissementClient extends acCouchdbClient {
     public static function cleanCivilite($nom) {
         return preg_replace("/^(M|MME|EARL|SCEA|SARL|SDF|GAEC|MLLE|SA|SAS|Mme|M\.|STEF|MEMR|MM|IND|EURL|SCA|EI|SCI|MMES|SASU|SC|SCV|Melle|ASSO|GFA)[,]? /", "", $nom);
     }
+
+    public static function getRegionsWithoutHorsInterLoire() {
+        return array(self::REGION_CVO => self::REGION_CVO);
+    }
 }

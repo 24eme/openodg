@@ -119,11 +119,13 @@ class facturationActions extends sfActions
                 }
             }
 
-            $this->societe = $this->compte->getSociete();
             $this->form = new FactureGenerationForm();
 
-            if(class_exists("SocieteChoiceForm")) {
-                $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => $this->compte->getSociete()->identifiant), true);
+            if(class_exists("Societe")) {
+                $this->societe = $this->compte->getSociete();
+                $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => $this->societe->identifiant), true);
+            } else {
+                $this->societe = $this->compte;
             }
 
             $this->identifiant = $request->getParameter('identifiant');

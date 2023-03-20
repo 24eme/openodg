@@ -228,7 +228,7 @@ class FactureClient extends acCouchdbClient {
         $facture->orderLignesByCotisationsKeys();
         $facture->updateTotaux();
 
-        if($facture->getSociete()->hasMandatSepaActif()){    // si il a un mandat sepa j'ajoute directement le noeud
+        if(class_exists("Societe") && $facture->getSociete()->hasMandatSepaActif()){    // si il a un mandat sepa j'ajoute directement le noeud
             $facture->addPrelevementAutomatique();
         }
 
@@ -371,9 +371,13 @@ class FactureClient extends acCouchdbClient {
       $cpt = 0;
 
       foreach ($mouvements as $societeID => $mouvementsSoc) {
-          $societe = SocieteClient::getInstance()->find($societeID);
+          if(class_exists("Societe")) {
+              $compte = SocieteClient::getInstance()->find($societeID)->getMasterCompte();
+          } else {
+              $compte = CompteClient::getInstance()->findByIdentifiant($societeID);
+          }
 
-          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template);
+          $f = $this->createDocFromView($mouvementsSoc, $compte, $date_facturation, $message_communication, $region, $template);
           if(!$f) {
                continue;
           }

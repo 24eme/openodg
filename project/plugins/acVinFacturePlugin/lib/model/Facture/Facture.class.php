@@ -493,7 +493,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $declarant->nom = $doc->nom_a_afficher;
         //$declarant->num_tva_intracomm = $this->societe->no_tva_intracommunautaire;
         $declarant->adresse = $doc->adresse;
-        if($doc->adresse_complementaire) {
+        if($doc->exist('adresse_complementaire') && $doc->adresse_complementaire) {
             $declarant->adresse .= ", ".$doc->adresse_complementaire;
         }
         $declarant->commune = $doc->commune;
