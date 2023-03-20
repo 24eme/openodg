@@ -100,7 +100,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         if(FactureConfiguration::getInstance()->getNumeroFormat()) {
 
-            return sprintf(FactureConfiguration::getInstance()->getNumeroFormat(), substr($this->campagne, preg_replace('/^%([0-9]+d).+$/', '\1', FactureConfiguration::getInstance()->getNumeroFormat())*-1), $this->numero_archive);
+            return sprintf(FactureConfiguration::getInstance()->getNumeroFormat(), substr($this->campagne, (int)preg_replace('/^%([0-9]+d).+$/', '\1', FactureConfiguration::getInstance()->getNumeroFormat())*-1), $this->numero_archive);
         }
 
         return $this->campagne . $this->numero_archive;
