@@ -190,6 +190,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_attachments->exist('DR.csv');
     }
 
+    public function getCurrentRegistreVCI() {
+      return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
+    }
+
     public function getLastRegistreVCI() {
       return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne -1));
     }
@@ -950,6 +954,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 		return $this->declaration->getTotalSuperficieVinifiee();
 	}
+
+    public function getRegistreVCISurfaceFacturable() {
+        $registreVCI = $this->getCurrentRegistreVCI();
+
+        if(!$registreVCI) {
+
+            return 0;
+        }
+
+        return $registreVCI->getSurfaceFacturable();
+    }
 
     public function isAdherentSyndicat() {
 
