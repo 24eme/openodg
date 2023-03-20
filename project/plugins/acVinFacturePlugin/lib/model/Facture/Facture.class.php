@@ -72,8 +72,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
         $this->identifiant = $doc->identifiant;
-        if($format = FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()){ // Pour nantes obsolète
-          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
+        if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()){ // Pour nantes obsolète
+          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,FactureConfiguration::getInstance()->getNumeroFormat());
         }else{
           $date_emission_object = new DateTime($this->date_emission);
           $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, $date_emission_object->format('Ymd'));
