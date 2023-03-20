@@ -370,6 +370,10 @@ class CertipaqDI extends CertipaqDeroulant
         }
         $habdemande = $this->getHabilitationDemandeFromCertipaqDemande($demande);
 
+        if (!$habdemande || !$habdemande->isLatest()) {
+            return null;
+        }
+
         if ($demande['presence_decision_future'] != 1)  {
             $date = preg_replace('/ .*/', '', $demande['date_finalisation']);
             $statut = 'VALIDE_CERTIPAQ';
@@ -377,10 +381,7 @@ class CertipaqDI extends CertipaqDeroulant
             $auteur = "Certipaq";
         }else{
             $decisions = CertipaqDI::getInstance()->getDemandeIdentificationDecisions($demande['id']);
-            if (!$habdemande || !count($decisions) ) {
-                return null;
-            }
-            if (!$habdemande->isLatest()) {
+            if (!count($decisions) ) {
                 return null;
             }
             $decision = (array) array_pop($decisions);
