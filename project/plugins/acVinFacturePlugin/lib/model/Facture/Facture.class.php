@@ -72,7 +72,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
         $this->identifiant = $doc->identifiant;
-        if($format = FactureConfiguration::getInstance()->getNumeroFormat()){ // Pour nantes obsolète
+        if($format = FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()){ // Pour nantes obsolète
           $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
         }else{
           $date_emission_object = new DateTime($this->date_emission);
@@ -90,12 +90,17 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
-        if(FactureConfiguration::getInstance()->getNumeroFormat()) { // Pour nantes obsolète
+        if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()) { // Pour nantes obsolète
             return $this->getNumeroFacture();
         }
 
         if($this->exist('numero_odg') && $this->_get('numero_odg')) {
             return $this->_get('numero_odg');
+        }
+
+        if(FactureConfiguration::getInstance()->getNumeroFormat()) {
+
+            return sprintf(FactureConfiguration::getInstance()->getNumeroFormat(), substr($this->campagne, preg_replace('/^%([0-9]+d).+$/', '\1', FactureConfiguration::getInstance()->getNumeroFormat())*-1), $this->numero_archive);
         }
 
         return $this->campagne . $this->numero_archive;
