@@ -358,6 +358,9 @@ class CertipaqDI extends CertipaqDeroulant
     public function getHabilitationDemandeFromCertipaqDemande($demande) {
         if (preg_match('/\[(\d+\-\d+)(\d\d)\]/', $demande['commentaires_odg'], $m)) {
             $habilitation = HabilitationClient::getInstance()->find('HABILITATION-'.$m[1]);
+            if (!$habilitation) {
+                return null;
+            }
             return $habilitation->demandes->get($m[1].$m[2]);
         }
         return null;
