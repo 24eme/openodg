@@ -53,8 +53,13 @@ class GenerationFacturePDF extends GenerationPDF {
             if(!$compte) {
                 continue;
             }
+
+            if(class_exists('Societe')) {
              $societe = $compte->getSociete();
              $societe_a_facturer[$societe->_id] = $societe;
+            } else {
+             $societe_a_facturer[$compte->_id] = $compte;
+            }
          }
 
          $mouvementsBySoc = array();
