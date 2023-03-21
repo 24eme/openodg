@@ -1,0 +1,20 @@
+all:
+  configuration:
+    points_aides:
+      drev:
+        superficie_totale: "Il s'agit de la superficie de récolte en ha indiquée dans votre déclaration douanière (Ligne 4)"
+        superficie_revendique: "Par défaut il s’agit de la superficie déclarée en ha de votre déclaration douanière. Veuillez la modifier en cas de production partielle en cave particulière et indiquer la surface proportionnelle au volume."
+        possede_vci: "Cette case est obligatoirement cochée si vous avez du VCI en stock car elle permet d'activer le soufflet intitulé 'Répartition du VCI'"
+        plafond_vci: "C'est le plafond de volume maximum autorisé de  VCI en hl cette année. Il correspond au résultat de la surface de cette année* volume autorisé de VCI (hl) fixé par décret."
+        stock_vci_precedent: "Il s'agit du nombre d'hl total de VCI en stock de l'année précédente. Vous devez répartir l'intégralité de ce volume parmi : "Rafraîchi", "Complément", "Destruction" et "Substitution". Plusieurs possibilités sont possibles."
+        destruction_vci: "Ce volume est calculé automatiquement en cas de dépassement de votre stock de VCI par rapport au plafond de l'année en cours. Vous pouvez choisir de détruire ce volume de VCI. Le VCI est à détruire avant le 15 décembre de l'année qui suit l'année de sa production (conservez le justificatif de destruction).  "
+        complement_vci: " Vous utilisez ce volume de VCI en complément de votre récolte. Attention cette utilisation vous permet d'atteindre le rendement de base de l'appellation mais pas de le dépasser."
+        substitution_vci: " Vous utilisez ce volume pour remplacer de la récolte du nouveau millésime pour cause de déficit qualitatif du nouveau millésime. En contre partie vous devez détruire le même volume du nouveau millésime non qualitatif (conservez le justificatif de destruction)."
+        rafraichi_vci: " Vous allez revendiquer en millésime de l'année précédente ce volume et vous mettez en VCI le même volume de l'année en cours. Vous utilisez votre VCI en le rafraîchissant avec le nouveau millésime."
+        volume_recolte_total: "Il s'agit du volume récolté en hl indiqué dans la déclaration douanière (Ligne 5)"
+        recolte_nette_totale: "Il s'agit du volume de récolte net totale en hl indiqué dans la déclaration douanière (Ligne 15)"
+        volume_cave_particuliere: "Il s'agit du volume apporté en cave particulière en hl indiqué dans la déclaration douanière (Ligne 9)"
+        vci_constitue: "Il s'agit du volume VCI consitué. Il est indiqué dans la déclaration douanière (Ligne 19)."
+        volume_revendique_net_issu_recolte: "Le volume revendiqué net issu de la récolte correspond au volume total revendiqué pour le millésime en cours, auquel le volume de VCI rafraichi et substitué le cas échéant a été soustrait."
+        volume_revendique_issu_vci: "Il s'agit du volume revendiqué du millésime précédent, issu du VCI. Il est généré automatiquement à partir du volet 'répartition du VCI'."
+        volume_revendique_net_total: "Le volume revendiqué net total correspond à la somme du volume revendiqué net issu de la récolte et du volume du millésime précédent, issu du VCI."
