@@ -11,3 +11,4 @@ all:
       delais_paiement: "+30 days"
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
       display_types_document_on_massive: true
+      types_document_facturant: ["DRev", "Abonnement"]

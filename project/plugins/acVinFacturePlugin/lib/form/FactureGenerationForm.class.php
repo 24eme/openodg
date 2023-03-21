@@ -4,7 +4,6 @@ class FactureGenerationForm extends BaseForm {
 
     public function __construct($defaults = array(), $options = array(), $CSRFSecret = null) {
         $defaults['date_facturation'] = date('d/m/Y');
-        $defaults['type_document'] = FactureClient::TYPE_DOCUMENT_TOUS;
         parent::__construct($defaults, $options, $CSRFSecret);
     }
 
@@ -16,7 +15,7 @@ class FactureGenerationForm extends BaseForm {
         $this->setWidget('date_facturation', new sfWidgetFormInput(array('default' => date('d/m/Y')), array('autocomplete' => 'off')));
         $this->setWidget('message_communication', new sfWidgetFormTextarea());
 
-        $this->setValidator('type_document', new sfValidatorChoice(array('choices' => array_keys($this->getTypesDocument()), 'required' => true)));
+        $this->setValidator('type_document', new sfValidatorChoice(array('choices' => array_keys($this->getTypesDocumentFacturant()), 'required' => true)));
         $this->setValidator('date_mouvement', new sfValidatorString());
         $this->setValidator('date_facturation', new sfValidatorString());
         $this->setValidator('message_communication', new sfValidatorString(array('required' => false)));
@@ -30,9 +29,9 @@ class FactureGenerationForm extends BaseForm {
         $this->widgetSchema->setNameFormat('facture_generation[%s]');
     }
 
-    public function getTypesDocument() {
+    public function getTypesDocumentFacturant() {
 
-        return array_merge(array(FactureClient::TYPE_DOCUMENT_TOUS => 'Tous'), FactureClient::$origines);
+        return array_combine(FactureConfiguration::getInstance()->getTypesDocumentFacturant(), FactureConfiguration::getInstance()->getTypesDocumentFacturant());
     }
     public function save() {
         $values = $this->getValues();

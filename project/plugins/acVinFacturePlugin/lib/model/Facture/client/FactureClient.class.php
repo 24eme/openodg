@@ -13,20 +13,6 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_REJET_PRELEVEMENT = "REJET_PRELEVEMENT";
     const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
 
-
-    const TYPE_DOCUMENT_TOUS = "TOUS";
-
-
-    public static $origines = array( self::TYPE_DOCUMENT_TOUS => self::TYPE_DOCUMENT_TOUS,
-                                     DRevClient::TYPE_MODEL => DRevClient::TYPE_MODEL,
-                                    'DR' => 'DR',
-                                    'SV11' => 'SV11',
-                                    'SV12' => 'SV12',
-                                    'Degustation' => 'Degustation',
-                                    'ChgtDenom' => 'ChgtDenom',
-                                    'Conditionnement' => 'Conditionnement'
-                                    );
-
     public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
 
     private $documents_origine = array();
@@ -330,7 +316,7 @@ class FactureClient extends acCouchdbClient {
                           continue;
                       }
 
-                      if(isset($parameters['type_document']) && !in_array($parameters['type_document'], self::$origines)) {
+                      if(isset($parameters['type_document']) && !in_array($parameters['type_document'], FactureConfiguration::getInstance()->getTypesDocumentFacturant())) {
                           unset($mouvements[$key]);
                           $mouvementsBySoc[$identifiant] = $mouvements;
                           continue;

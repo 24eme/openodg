@@ -179,12 +179,13 @@ class FactureConfiguration {
         return $this->configuration['display_types_document_on_massive'];
     }
 
-    public function getTypesDocumentFacturable() {
-        if(!isset($this->configuration['types_document_facturable'])) {
-            return FactureClient::$origines;
+    public function getTypesDocumentFacturant() {
+        if(!isset($this->configuration['types_document_facturant'])) {
+
+            return ["TOUS", "DRev", "DR", "SV11", "SV12", "Degustation", "ChgtDenom", "Conditionnement"];
         }
 
-        return $this->configuration['types_document_facturable'];
+        return $this->configuration['types_document_facturant'];
     }
 
 }
