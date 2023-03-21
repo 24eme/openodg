@@ -10,3 +10,4 @@ all:
       numero_format: "%02d%05d"
       delais_paiement: "+30 days"
       uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
+      display_types_document_on_massive: true

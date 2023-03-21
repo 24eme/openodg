@@ -31,6 +31,11 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
             "modele" => 'Type de génération :',
             "type_document" => 'Type de document :',
         ));
+
+        if(!FactureConfiguration::getInstance()->displayTypesDocumentOnMassive()) {
+            unset($this['type_document']);
+        }
+
         $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
         $this->widgetSchema->setNameFormat('facture_generation[%s]');
     }

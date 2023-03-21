@@ -170,4 +170,21 @@ class FactureConfiguration {
         return $this->configuration['numerocompte_banquepaiement'];
     }
 
+    public function displayTypesDocumentOnMassive() {
+        if(!isset($this->configuration['display_types_document_on_massive'])) {
+
+            return false;
+        }
+
+        return $this->configuration['display_types_document_on_massive'];
+    }
+
+    public function getTypesDocumentFacturable() {
+        if(!isset($this->configuration['types_document_facturable'])) {
+            return FactureClient::$origines;
+        }
+
+        return $this->configuration['types_document_facturable'];
+    }
+
 }
