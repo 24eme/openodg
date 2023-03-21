@@ -50,9 +50,14 @@ class EtablissementClient extends acCouchdbClient {
         return $this->findByIdentifiant($identifiant);
     }
 
-    public function findByIdentifiant($identifiant) {
+    public function retrieveById($identifiant, $hydrate = self::HYDRATE_DOCUMENT) {
 
-        return $this->find('ETABLISSEMENT-'.$identifiant);
+        return $this->findByIdentifiant($identifiant, $hydrate);
+    }
+
+    public function findByIdentifiant($identifiant, $hydrate) {
+
+        return $this->find('ETABLISSEMENT-'.$identifiant, $hydrate);
     }
 
     /**
