@@ -49,11 +49,31 @@ EOF;
             $societe = new Societe();
             $societe->identifiant = sprintf(sfConfig::get('app_societe_format_identifiant'), $line[self::CSV_IDENTIFIANT]);
             $societe->constructId();
+
             $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
             $societe->raison_sociale = implode(" ", [$line[self::CSV_INTITULE], $line[self::CSV_RAISON_SOCIALE]]);
+            $societe->siret = $line[self::CSV_SIRET];
+
             $societe->interpro = 'INTERPRO-declaration';
             $societe->statut = SocieteClient::STATUT_ACTIF;
+
+            $societe->adresse = $line[self::CSV_ADRESSE];
+            $societe->code_postal = $line[self::CSV_CODE_POSTAL];
+            $societe->commune = $line[self::CSV_COMMUNE];
             $societe->setPays('FR');
+
+            $societe->telephone_bureau = $line[self::CSV_TEL];
+            $societe->telephone_mobile = $line[self::CSV_PORTABLE_1];
+            $societe->telephone_perso = $line[self::CSV_PORTABLE_2];
+
+            $societe->save();
+
+            $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
+            $etablissement->cvi = $line[self::CSV_CVI];
+            $etablissement->siret = $line[self::CSV_SIRET];
+            $etablissement->commentaire = $line[self::CSV_OBSERVATION];
+
+            $etablissement->save();
         }
     }
 
