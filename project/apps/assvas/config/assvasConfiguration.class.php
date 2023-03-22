@@ -1,6 +1,6 @@
 <?php
 
-class loireConfiguration extends sfApplicationConfiguration
+class assvasConfiguration extends sfApplicationConfiguration
 {
 
     public function configure()
