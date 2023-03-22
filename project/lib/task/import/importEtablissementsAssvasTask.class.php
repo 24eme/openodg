@@ -57,26 +57,31 @@ EOF;
                 echo "Erreur identifiant non valide : ".$line[self::CSV_IDENTIFIANT].PHP_EOL;
                 continue;
             }
+            $line[self::CSV_SIRET] = trim(str_replace(" ", "", $line[self::CSV_SIRET]));
+            $line[self::CSV_CVI] = trim(str_replace(" ", "", $line[self::CSV_CVI]));
 
             $societe = new Societe();
             $societe->identifiant = sprintf(sfConfig::get('app_societe_format_identifiant'), $line[self::CSV_IDENTIFIANT]);
             $societe->constructId();
 
             $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
-            $societe->raison_sociale = implode(" ", [$line[self::CSV_INTITULE], $line[self::CSV_RAISON_SOCIALE]]);
+            if(!$line[self::CSV_INTITULE]) {
+                $line[self::CSV_INTITULE] = null;
+            }
+            $societe->raison_sociale = trim(implode(" ", [$line[self::CSV_INTITULE], $line[self::CSV_RAISON_SOCIALE]]));
             $societe->siret = $line[self::CSV_SIRET];
 
             $societe->interpro = 'INTERPRO-declaration';
             $societe->statut = SocieteClient::STATUT_ACTIF;
 
-            $societe->adresse = $line[self::CSV_ADRESSE];
+            $societe->adresse = trim($line[self::CSV_ADRESSE]);
             $societe->code_postal = $line[self::CSV_CODE_POSTAL];
-            $societe->commune = $line[self::CSV_COMMUNE];
+            $societe->commune = trim($line[self::CSV_COMMUNE]);
             $societe->setPays('FR');
 
-            $societe->telephone_bureau = $line[self::CSV_TEL];
-            $societe->telephone_mobile = $line[self::CSV_PORTABLE_1];
-            $societe->telephone_perso = $line[self::CSV_PORTABLE_2];
+            $societe->telephone_bureau = Phone::clean($line[self::CSV_TEL]);
+            $societe->telephone_mobile = Phone::clean($line[self::CSV_PORTABLE_1]);
+            $societe->telephone_perso = Phone::clean($line[self::CSV_PORTABLE_2]);
 
             $societe->save();
 
@@ -85,8 +90,16 @@ EOF;
             $etablissement->cvi = $line[self::CSV_CVI];
             $etablissement->siret = $line[self::CSV_SIRET];
             $etablissement->commentaire = $line[self::CSV_OBSERVATION];
-
             $etablissement->save();
+
+            if(!preg_match("/^[0-9]{10}$/", $etablissement->cvi)) {
+                echo "Warning cvi non valide : $etablissement->cvi ($etablissement->_id)".PHP_EOL;
+            }
+
+            if($etablissement->siret && !preg_match("/^[0-9]{9,14}$/", $etablissement->siret)) {
+                echo "Warning siret non valide : ".$etablissement->_get('siret')." ($etablissement->_id)".PHP_EOL;
+            }
+
         }
     }
 
