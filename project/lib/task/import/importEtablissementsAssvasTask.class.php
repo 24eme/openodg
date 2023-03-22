@@ -2,27 +2,22 @@
 
 class importEtablissementsAssvasTask extends sfBaseTask
 {
-    const CSV_CVI                   = 0;
-    const CSV_TYPE_LIGNE            = 1;
-    const CSV_RAISON_SOCIALE        = 2;
-    const CSV_ADRESSE_1             = 3;
-    const CSV_ADRESSE_2             = 4;
-    const CSV_ADRESSE_3             = 5;
-    const CSV_COMMUNE               = 6;
-    const CSV_CODE_INSEE            = 7;
-    const CSV_CODE_POSTAL           = 8;
-    const CSV_CANTON                = 9;
-    const CSV_ACTIF                 = 10;
-    const CSV_ATTRIBUTS             = 11;
-    const CSV_TYPE                  = 12;
+    const CSV_IDENTIFIANT           = 0;
+    const CSV_SIRET                 = 3;
+    const CSV_CVI                   = 4;
+    const CSV_OBSERVATION           = 5;
+    const CSV_INTITULE              = 6;
+    const CSV_RAISON_SOCIALE        = 7;
+    const CSV_NOM_INTERLOCUTEUR     = 8;
+    const CSV_ADRESSE               = 9;
+    const CSV_CODE_POSTAL           = 10;
+    const CSV_COMMUNE               = 11;
     const CSV_TEL                   = 13;
-    const CSV_FAX                   = 14;
-    const CSV_PORTABLE              = 15;
-    const CSV_EMAIL                 = 16;
-    const CSV_WEB                   = 17;
-    const CSV_DATE_ARCHIVAGE        = 18;
-    const CSV_SIREN                 = 19;
-    const CSV_SIRET                 = 20;
+    const CSV_PORTABLE_1            = 14;
+    const CSV_PORTABLE_2            = 15;
+    const CSV_EMAIL_1               = 16;
+    const CSV_EMAIL_2               = 17;
+    const CSV_ZONE_AGENT            = 18;
 
     protected function configure()
     {
@@ -51,7 +46,14 @@ EOF;
 
         $csv = fopen($arguments['file'], 'r');
         while(($line = fgetcsv($csv, 0, ';')) !== false) {
-            print_r($line);
+            $societe = new Societe();
+            $societe->identifiant = sprintf(sfConfig::get('app_societe_format_identifiant'), $line[self::CSV_IDENTIFIANT]);
+            $societe->constructId();
+            $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
+            $societe->raison_sociale = implode(" ", [$line[self::CSV_INTITULE], $line[self::CSV_RAISON_SOCIALE]]);
+            $societe->interpro = 'INTERPRO-declaration';
+            $societe->statut = SocieteClient::STATUT_ACTIF;
+            $societe->setPays('FR');
         }
     }
 
