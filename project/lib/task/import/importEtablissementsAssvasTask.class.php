@@ -81,6 +81,7 @@ EOF;
             $societe->save();
 
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
+            $etablissement->save();
             $etablissement->cvi = $line[self::CSV_CVI];
             $etablissement->siret = $line[self::CSV_SIRET];
             $etablissement->commentaire = $line[self::CSV_OBSERVATION];
