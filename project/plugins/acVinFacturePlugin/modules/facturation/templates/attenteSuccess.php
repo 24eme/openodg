@@ -19,10 +19,13 @@
       <tbody>
         <?php foreach ($mouvements->getRawValue() as $id => $mouvements): ?>
             <?php $etablissement = EtablissementClient::getInstance()->retrieveById($id, acCouchdbClient::HYDRATE_JSON); ?>
+            <?php if(!$etablissement): ?>
+                <?php $compte = CompteClient::getInstance()->findByIdentifiant($id, acCouchdbClient::HYDRATE_JSON); ?>
+            <?php endif; ?>
             <tr>
-                <td colspan="4" title="<?php echo $id ?>"><?php echo $etablissement->raison_sociale ?> <small class="text-muted"><?php echo $etablissement->famille; ?></small></td>
+                <td colspan="4" title="<?php echo $id ?>"><?php if($etablissement): ?><?php echo $etablissement->raison_sociale ?> <small class="text-muted"><?php echo $etablissement->famille; ?></small><?php endif ?><?php if(isset($compte)): ?><?php echo $compte->nom_a_afficher ?> (<?php echo $id ?>)<?php endif; ?></td>
                 <td colspan="3">
-                    <a href="<?php echo url_for('facturation_declarant', ['id' => $id]) ?>#mouvements" class="btn btn-xs btn-default pull-right">
+                    <a href="<?php echo url_for('facturation_declarant', ['id' =>  isset($compte) ? $compte->_id : $id]) ?>#mouvements" class="btn btn-xs btn-default pull-right">
                         <?php if($withDetails): ?>
                         Voir l'espace facture
                         <?php else: ?>

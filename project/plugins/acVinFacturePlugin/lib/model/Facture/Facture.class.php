@@ -72,8 +72,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
         $this->identifiant = $doc->identifiant;
-        if($format = FactureConfiguration::getInstance()->getNumeroFormat()){ // Pour nantes obsolète
-          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
+        if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()){ // Pour nantes obsolète
+          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,FactureConfiguration::getInstance()->getNumeroFormat());
         }else{
           $date_emission_object = new DateTime($this->date_emission);
           $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, $date_emission_object->format('Ymd'));
@@ -90,12 +90,17 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
-        if(FactureConfiguration::getInstance()->getNumeroFormat()) { // Pour nantes obsolète
+        if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()) { // Pour nantes obsolète
             return $this->getNumeroFacture();
         }
 
         if($this->exist('numero_odg') && $this->_get('numero_odg')) {
             return $this->_get('numero_odg');
+        }
+
+        if(FactureConfiguration::getInstance()->getNumeroFormat()) {
+
+            return sprintf(FactureConfiguration::getInstance()->getNumeroFormat(), substr($this->campagne, (int)preg_replace('/^%([0-9]+d).+$/', '\1', FactureConfiguration::getInstance()->getNumeroFormat())*-1), $this->numero_archive);
         }
 
         return $this->campagne . $this->numero_archive;
@@ -493,7 +498,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $declarant->nom = $doc->nom_a_afficher;
         //$declarant->num_tva_intracomm = $this->societe->no_tva_intracommunautaire;
         $declarant->adresse = $doc->adresse;
-        if($doc->adresse_complementaire) {
+        if($doc->exist('adresse_complementaire') && $doc->adresse_complementaire) {
             $declarant->adresse .= ", ".$doc->adresse_complementaire;
         }
         $declarant->commune = $doc->commune;

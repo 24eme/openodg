@@ -68,11 +68,9 @@ class FactureConfiguration {
       return $this->configuration['export_sage_width_txt'];
     }
 
-    public function getNumeroCampagne(){
-      if(!isset($this->configuration['numero_campagne']) || !$this->configuration['numero_campagne']){
-        return false;
-      }
-      return $this->configuration['numero_campagne'];
+    public function deprecatedNumeroFactureIsId(){
+
+        return sfConfig::get('sf_app') == 'nantes';
     }
 
     public function getNumeroFormat(){
@@ -80,13 +78,6 @@ class FactureConfiguration {
         return "";
       }
       return $this->configuration['numero_format'];
-    }
-
-    public function getNumeroFormatDocuments(){
-      if(!isset($this->configuration['numero_format_documents']) || !$this->configuration['numero_format_documents']){
-        return "";
-      }
-      return $this->configuration['numero_format_documents'];
     }
 
     public function getModaliteDePaiement()
@@ -177,6 +168,24 @@ class FactureConfiguration {
             return '511150';
         }
         return $this->configuration['numerocompte_banquepaiement'];
+    }
+
+    public function displayTypesDocumentOnMassive() {
+        if(!isset($this->configuration['display_types_document_on_massive'])) {
+
+            return false;
+        }
+
+        return $this->configuration['display_types_document_on_massive'];
+    }
+
+    public function getTypesDocumentFacturant() {
+        if(!isset($this->configuration['types_document_facturant'])) {
+
+            return ["TOUS", "DRev", "DR", "SV11", "SV12", "Degustation", "ChgtDenom", "Conditionnement"];
+        }
+
+        return $this->configuration['types_document_facturant'];
     }
 
 }

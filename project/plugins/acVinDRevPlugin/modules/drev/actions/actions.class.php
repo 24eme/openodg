@@ -836,8 +836,6 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
-        $this->drev->resetAndImportFromDocumentDouanier();
-
         $this->isAdmin = $this->getUser()->isAdmin();
         $this->service = $request->getParameter('service');
         if (!$this->drev->validation) {

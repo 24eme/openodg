@@ -27,12 +27,17 @@ class facturationActions extends sfActions
 
             return sfView::SUCCESS;
         }
-         $this->formSociete->bind($request->getParameter($this->formSociete->getName()));
-         $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
-         if($this->formSociete->isValid()) {
-              $soc = SocieteClient::getInstance()->find($this->formSociete->getValue('identifiant'));
-              return $this->redirect('facturation_declarant', array('id' => $soc->getMasterCompte()->_id));
-          }
+
+        if(isset($this->formSociete)) {
+            $this->formSociete->bind($request->getParameter($this->formSociete->getName()));
+            if($this->formSociete->isValid()) {
+                $soc = SocieteClient::getInstance()->find($this->formSociete->getValue('identifiant'));
+                return $this->redirect('facturation_declarant', array('id' => $soc->getMasterCompte()->_id));
+            }
+        }
+
+        $this->formFacturationMassive->bind($request->getParameter($this->formFacturationMassive->getName()));
+
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
@@ -119,11 +124,13 @@ class facturationActions extends sfActions
                 }
             }
 
-            $this->societe = $this->compte->getSociete();
             $this->form = new FactureGenerationForm();
 
-            if(class_exists("SocieteChoiceForm")) {
-                $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => $this->compte->getSociete()->identifiant), true);
+            if(class_exists("Societe")) {
+                $this->societe = $this->compte->getSociete();
+                $this->formSociete = new SocieteChoiceForm('INTERPRO-declaration', array('identifiant' => $this->societe->identifiant), true);
+            } else {
+                $this->societe = $this->compte;
             }
 
             $this->identifiant = $request->getParameter('identifiant');

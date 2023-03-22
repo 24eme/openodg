@@ -13,20 +13,6 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_REJET_PRELEVEMENT = "REJET_PRELEVEMENT";
     const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
 
-
-    const TYPE_DOCUMENT_TOUS = "TOUS";
-
-
-    public static $origines = array( self::TYPE_DOCUMENT_TOUS => self::TYPE_DOCUMENT_TOUS,
-                                     DRevClient::TYPE_MODEL => DRevClient::TYPE_MODEL,
-                                    'DR' => 'DR',
-                                    'SV11' => 'SV11',
-                                    'SV12' => 'SV12',
-                                    'Degustation' => 'Degustation',
-                                    'ChgtDenom' => 'ChgtDenom',
-                                    'Conditionnement' => 'Conditionnement'
-                                    );
-
     public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
 
     private $documents_origine = array();
@@ -228,7 +214,7 @@ class FactureClient extends acCouchdbClient {
         $facture->orderLignesByCotisationsKeys();
         $facture->updateTotaux();
 
-        if($facture->getSociete()->hasMandatSepaActif()){    // si il a un mandat sepa j'ajoute directement le noeud
+        if(class_exists("Societe") && $facture->getSociete()->hasMandatSepaActif()){    // si il a un mandat sepa j'ajoute directement le noeud
             $facture->addPrelevementAutomatique();
         }
 
@@ -330,7 +316,7 @@ class FactureClient extends acCouchdbClient {
                           continue;
                       }
 
-                      if(isset($parameters['type_document']) && !in_array($parameters['type_document'], self::$origines)) {
+                      if(isset($parameters['type_document']) && !in_array($parameters['type_document'], FactureConfiguration::getInstance()->getTypesDocumentFacturant())) {
                           unset($mouvements[$key]);
                           $mouvementsBySoc[$identifiant] = $mouvements;
                           continue;
@@ -371,9 +357,13 @@ class FactureClient extends acCouchdbClient {
       $cpt = 0;
 
       foreach ($mouvements as $societeID => $mouvementsSoc) {
-          $societe = SocieteClient::getInstance()->find($societeID);
+          if(class_exists("Societe")) {
+              $compte = SocieteClient::getInstance()->find($societeID)->getMasterCompte();
+          } else {
+              $compte = CompteClient::getInstance()->findByIdentifiant($societeID);
+          }
 
-          $f = $this->createDocFromView($mouvementsSoc, $societe->getMasterCompte(), $date_facturation, $message_communication, $region, $template);
+          $f = $this->createDocFromView($mouvementsSoc, $compte, $date_facturation, $message_communication, $region, $template);
           if(!$f) {
                continue;
           }

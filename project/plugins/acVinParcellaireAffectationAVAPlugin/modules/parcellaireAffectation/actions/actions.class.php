@@ -312,6 +312,7 @@ class parcellaireAffectationActions extends sfActions {
     }
 
     public function executeAcheteurs(sfWebRequest $request) {
+        set_time_limit(60);
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->secure(ParcellaireAffectationSecurity::EDITION, $this->parcellaire);
