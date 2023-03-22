@@ -83,6 +83,14 @@ EOF;
             $societe->telephone_mobile = Phone::clean($line[self::CSV_PORTABLE_1]);
             $societe->telephone_perso = Phone::clean($line[self::CSV_PORTABLE_2]);
 
+            foreach (['telephone_bureau', 'telephone_mobile', 'telephone_perso'] as $tel) {
+                if (strlen($societe->$tel) === 9) {
+                    $societe->$tel = "0".$societe->$tel;
+                }
+            }
+
+            $societe->email = (trim($line[self::CSV_EMAIL_1])) ?: null;
+
             $societe->save();
 
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
@@ -98,6 +106,10 @@ EOF;
 
             if($etablissement->siret && !preg_match("/^[0-9]{9,14}$/", $etablissement->siret)) {
                 echo "Warning siret non valide : ".$etablissement->_get('siret')." ($etablissement->_id)".PHP_EOL;
+            }
+
+            if ($societe->email && filter_var($societe->email, FILTER_VALIDATE_EMAIL) === false) {
+                echo "Warning email non valide : $societe->email ($societe->_id)".PHP_EOL;
             }
 
         }
