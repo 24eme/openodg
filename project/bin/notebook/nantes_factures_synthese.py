@@ -17,7 +17,7 @@ factures_lignes = factures[['identifiant_ligne', 'Identifiant Analytique','Nom C
 # In[ ]:
 
 
-factures_pivot = factures_lignes.pivot(columns=['Nom Cotisation'], values=['Cotisation Prix unitaire', 'Quantite Cotisation', 'Prix HT', 'TVA', 'Prix TTC']).fillna(0)
+factures_pivot = factures_lignes.pivot_table(index=['identifiant_ligne'], columns=['Nom Cotisation'], values=['Cotisation Prix unitaire', 'Quantite Cotisation', 'Prix HT', 'TVA', 'Prix TTC']).fillna(0)
 factures_pivot = factures_id.join(factures_pivot, on=['identifiant_ligne']).groupby('id facture').sum()
 
 
