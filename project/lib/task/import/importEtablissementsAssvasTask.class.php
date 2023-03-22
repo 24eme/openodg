@@ -3,6 +3,7 @@
 class importEtablissementsAssvasTask extends sfBaseTask
 {
     const CSV_IDENTIFIANT           = 0;
+    const CSV_NOUVEL_IDENTIFIANT    = 1;
     const CSV_SIRET                 = 3;
     const CSV_CVI                   = 4;
     const CSV_OBSERVATION           = 5;
@@ -46,6 +47,17 @@ EOF;
 
         $csv = fopen($arguments['file'], 'r');
         while(($line = fgetcsv($csv, 0, ';')) !== false) {
+            if(!$line[self::CSV_IDENTIFIANT]) {
+                continue;
+            }
+            if(!preg_match('/^[0-9]+$/', $line[self::CSV_IDENTIFIANT]) && preg_match('/^[0-9]+$/', $line[self::CSV_NOUVEL_IDENTIFIANT])) {
+                $line[self::CSV_IDENTIFIANT] = $line[self::CSV_NOUVEL_IDENTIFIANT];
+            }
+            if(!preg_match('/^[0-9]+$/', $line[self::CSV_IDENTIFIANT])) {
+                echo "Erreur identifiant non valide : ".$line[self::CSV_IDENTIFIANT].PHP_EOL;
+                continue;
+            }
+
             $societe = new Societe();
             $societe->identifiant = sprintf(sfConfig::get('app_societe_format_identifiant'), $line[self::CSV_IDENTIFIANT]);
             $societe->constructId();
