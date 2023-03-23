@@ -5,9 +5,9 @@ mon_compte:
   url: /mon-compte
   param: { module: compte_teledeclarant, action: modification }
 
-redirect_to_mon_compte_civa:
-  url: /mon-compte-civa
-  param: { module: compte_teledeclarant, action: redirectToMonCompteCiva }
+accueil:
+  url: /
+  param: { module: common, action: accueil }
 
 #Défaut
 
@@ -17,3 +17,4 @@ default_index:
 
 default:
   url:   /:module/:action/*
+

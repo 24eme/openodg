@@ -75,4 +75,9 @@ class ConfigurationClient extends acCouchdbClient {
 		return self::getInstance()->getConfiguration();
 	}
 
+    public function getCurrentAnneeRecolte() {
+
+        return $this->getCampagneVinicole()->getCurrentAnneeRecolte();
+    }
+
 }
