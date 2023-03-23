@@ -5,6 +5,10 @@ mon_compte:
   url: /mon-compte
   param: { module: compte_teledeclarant, action: modification }
 
+accueil:
+  url: /
+  param: { module: common, action: accueil }
+
 #Défaut
 
 default_index:
@@ -13,3 +17,4 @@ default_index:
 
 default:
   url:   /:module/:action/*
+
