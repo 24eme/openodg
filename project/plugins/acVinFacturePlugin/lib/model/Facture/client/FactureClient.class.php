@@ -166,35 +166,18 @@ class FactureClient extends acCouchdbClient {
         return $facture;
     }
 
-    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null, $arguments = array() ) {
-        $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
-        $facture->argument = $arguments;
-        $facture->storeLignesByMouvements($mouvements, $template);
-        $facture->updateTotaux();
-        $facture->storeOrigines();
-        if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
-            $facture->set('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
-        }
-        if(trim($message_communication)) {
-          $facture->addOneMessageCommunication($message_communication);
-        }
-        if(FactureConfiguration::getInstance()->hasPaiements()){
-          $facture->add("paiements",array());
-        }
-
-        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
-          return null;
-        }
-
-        return $facture;
-    }
-
-    /** facturation par mvts **/
     public function createDocFromView($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
         if(!$region){
             $region = Organisme::getCurrentRegion();
         }
         $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
+
+        foreach($template->cotisations as $configCollection) {
+            if(!$configCollection->isRequired()) {
+                continue;
+            }
+            $facture->addLigne($configCollection)->updateTotaux();
+        }
 
         $lignes = array();
         $lignes_originaux = array();
