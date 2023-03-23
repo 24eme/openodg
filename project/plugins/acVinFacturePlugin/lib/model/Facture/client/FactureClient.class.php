@@ -213,46 +213,6 @@ class FactureClient extends acCouchdbClient {
         return $facture;
     }
 
-    public function regenerate($facture_or_id) {
-        $facture = $facture_or_id;
-
-        if(is_string($facture)) {
-            $facture = $this->find($facture_or_id);
-        }
-
-        if($facture->isPayee()) {
-
-            throw new sfException(sprintf("La factures %s a déjà été payée", $facture->_id));
-        }
-
-        $docs = array();
-
-        foreach($facture->origines as $id) {
-            $docs[$id] = $this->getDocumentOrigine($id);
-        }
-
-        $mouvements = $this->getMouvementsFacturesByDocs($facture->identifiant, $docs, true);
-        $mouvements = $this->aggregateMouvementsFactures($mouvements);
-
-        $template = $facture->getTemplate();
-        $message_communication = null;
-        if($facture->exist('message_communication')) {
-            $message_communication = $facture->message_communication;
-        }
-
-        $f = FactureClient::getInstance()->createDoc($mouvements, $facture->getCompte(), date('Y-m-d'), $message_communication, $template->arguments->toArray(true, false), $template);
-
-        $f->_id = $facture->_id;
-        $f->_rev = $facture->_rev;
-        $f->numero_facture = $facture->numero_facture;
-        $f->numero_odg = $facture->numero_odg;
-        $f->numero_archive = $facture->numero_archive;
-
-        $f->forceFactureMouvements();
-
-        return $f;
-    }
-
     public function getDocumentOrigine($id) {
         if (!array_key_exists($id, $this->documents_origine)) {
             $this->documents_origine[$id] = acCouchdbManager::getClient()->find($id);
