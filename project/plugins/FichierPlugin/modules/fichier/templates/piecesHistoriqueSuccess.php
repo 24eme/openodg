@@ -20,7 +20,7 @@
             <?php foreach ($history as $document): ?>
         		<?php if ($category && strtolower($document->key[PieceAllView::KEYS_CATEGORIE]) != $category) { continue; } ?>
                 <tr>
-                    <td><?php echo format_date(preg_replace('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/', '$1', $document->key[PieceAllView::KEYS_DATE_DEPOT]), "dd/MM/yyyy", "fr_FR"); ?></td>
+                    <td><?php if($document->key[PieceAllView::KEYS_DATE_DEPOT]): ?><?php echo format_date(preg_replace('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/', '$1', $document->key[PieceAllView::KEYS_DATE_DEPOT]), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></td>
                     <td><?php echo ($document->key[PieceAllView::KEYS_CATEGORIE] == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtoupper($document->key[PieceAllView::KEYS_CATEGORIE]))); ?></td>
                     <td>
                         <?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) &&  Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>

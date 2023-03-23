@@ -52,15 +52,18 @@ class Abonnement extends BaseAbonnement {
             $mouvement = AbonnementMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
-            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->type_libelle = $cotisation->getConfigCollection()->getLibelle();
+            $mouvement->detail_libelle = $cotisation->getLibelle();
             $mouvement->quantite = $cotisation->getQuantite();
             $mouvement->taux = $cotisation->getPrix();
+            $mouvement->tva = $cotisation->getTva();
             $mouvement->facture = 0;
             $mouvement->facturable = 1;
             $mouvement->date = $this->date_debut;
             $mouvement->date_version = $this->date_debut;
             $mouvement->version = null;
             $mouvement->template = $templateFacture->_id;
+            $mouvement->type = "Abonnement";
 
             if($mouvement->quantite) {
                 $rienAFacturer = false;

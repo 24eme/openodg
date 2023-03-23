@@ -8,7 +8,7 @@ cd bin/notebook/ ;
 if test -d pyenv ; then
     source pyenv/bin/activate
 fi
-python nantes_factures_synthese.py ;
+python3 nantes_factures_synthese.py ;
 cd -
 
 php symfony export:facture-paiements $SYMFONYTASKOPTIONS >  $EXPORTDIR/factures_paiements.csv.part

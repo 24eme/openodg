@@ -7,5 +7,8 @@ all:
       all_etablissements: false
       uniq_template_prefix: false
       export_sage_width_txt: true
+      numero_format: "%02d%05d"
       delais_paiement: "+30 days"
-      uniq_template_prefix: "TEMPLATE-FACTURE-AOC-%s"
+      uniq_template_prefix: "TEMPLATE-FACTURE-AOC"
+      display_types_document_on_massive: true
+      types_document_facturant: ["DRev", "Abonnement"]

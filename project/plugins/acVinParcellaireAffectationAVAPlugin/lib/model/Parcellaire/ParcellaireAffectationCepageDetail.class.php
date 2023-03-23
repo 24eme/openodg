@@ -91,7 +91,7 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
             return $this->lieu;
         }
 
-        return null;
+        return ($this->getLieuNode()->getLibelle()) ? $this->getLieuNode()->getLibelle() : null;
     }
 
     public function getParcelleIdentifiant() {
