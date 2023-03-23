@@ -2,3 +2,116 @@ all:
   configuration:
     parcellaire:
       limit_produits_configuration: false
+      aires:
+        ANJOU:
+            denomination_id: "00173"
+            color: "#E53935"
+            name: "Anjou"
+        ANJOUCOTEAUXDELALOIRE:
+            denomination_id: "00174"
+            color: "#FDD835"
+            name: "Anjou-Coteaux de la Loire"
+        ANJOUVILLAGES:
+            denomination_id: "00176"
+            color: "#D81B60"
+            name: "Anjou Villages"
+        CABERNETD'ANJOU:
+            denomination_id: "00179"
+            color: "#8E24AA"
+            name: "Cabernet d'Anjou"
+        COTEAUXDELAUBANCE:
+            denomination_id: "00183"
+            color: "#43A047"
+            name: "Coteaux de l'Aubance"
+        COTEAUXDESAUMUR:
+            denomination_id: "00184"
+            color: "#6D4C41"
+            name: "Coteaux de Saumur"
+        COTEAUXDULAYON:
+            denomination_id: "00185"
+            color: "#1E88E5"
+            name: "Coteaux du Layon"
+        COTEAUXDULAYONBEAULIEUSURLAYONOUBEAULIEU:
+            denomination_id: "00186"
+            color: "#00ACC1"
+            name: "Coteaux du Layon Beaulieu-sur-Layon ou Beaulieu"
+        COTEAUXDULAYONPREMIERCRUCHAUME:
+            denomination_id: "00187"
+            color: "#7CB342"
+            name: "Coteaux du Layon premier cru Chaume"
+        COTEAUXDULAYONFAYEDANJOUOUFAYE:
+            denomination_id: "00188"
+            color: "#C0CA33"
+            name: "Coteaux du Layon Faye-d'Anjou ou Faye"
+        COTEAUXDULAYONRABLAYSURLAYONOURABLAY:
+            denomination_id: "00189"
+            color: "#FFB300"
+            name: "Coteaux du Layon Rablay-sur-Layon ou Rablay"
+        COTEAUXDULAYONROCHEFORTSURLOIREOUROCHEFORT:
+            denomination_id: "00190"
+            color: "#FB8C00"
+            name: "Coteaux du Layon Rochefort-sur-Loire ou Rochefort"
+        COTEAUXDULAYONSAINTLAMBERTDULATTAYOUSAINTLAMBERT:
+            denomination_id: "00192"
+            color: "#5E35B1"
+            name: "Coteaux du Layon Saint-Lambert-du-Lattay ou Saint-Lambert"
+        CREMANTDELOIRE:
+            denomination_id: "00195"
+            color: "#00897B"
+            name: "Crémant de Loire"
+        QUARTSDECHAUME:
+            denomination_id: "00217"
+            color: "#F4511E"
+            name: "Quarts de Chaume"
+        ROSEDANJOU:
+            denomination_id: "00220"
+            color: "#3949AB"
+            name: "Rosé d'Anjou"
+        ROSEDELOIRE:
+            denomination_id: "00221"
+            color: "#039BE5"
+            name: "Rosé de Loire"
+        SAUMUR:
+            denomination_id: "00224"
+            color: "#757575"
+            name: "Saumur"
+        SAVENNIERES:
+            denomination_id: "00226"
+            color: "#546E7A"
+            name: "Savennières"
+        SAUMURCHAMPIGNY:
+            denomination_id: "00238"
+            color: "#C62828"
+            name: "Saumur-Champigny"
+        ANJOUBRISSAC:
+            denomination_id: "00240"
+            color: "#F9A825"
+            name: "Anjou Brissac"
+        FIEFSVENDEENSBREM:
+            denomination_id: "02341"
+            color: "#AD1457"
+            name: "Fiefs Vendéens Brem"
+        FIEFSVENDEENSMAREUIL:
+            denomination_id: "02342"
+            color: "#6A1B9A"
+            name: "Fiefs Vendéens Mareuil"
+        FIEFSVENDEENSPISSOTTE:
+            denomination_id: "02343"
+            color: "#2E7D32"
+            name: "Fiefs Vendéens Pissotte"
+        FIEFSVENDEENSVIX:
+            denomination_id: "02344"
+            color: "#4E342E"
+            name: "Fiefs Vendéens Vix"
+        FIEFSVENDEENSCHANTONNAY:
+            denomination_id: "02346"
+            color: "#1565C0"
+            name: "Fiefs Vendéens Chantonnay"
+        SAVENNIERESROCHEAUXMOINES:
+            denomination_id: "02520"
+            color: "#00838F"
+            name: "Savennières Roche aux Moines"
+        COULEEDESERRANT:
+            denomination_id: "02814"
+            color: "#558B2F"
+            name: "Coulée de Serrant"
