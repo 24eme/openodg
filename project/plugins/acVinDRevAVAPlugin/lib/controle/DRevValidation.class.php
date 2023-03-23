@@ -241,7 +241,7 @@ class DRevValidation extends DocumentValidation {
 
     protected function controleWarningDrVolume($produit) {
         $alreadyWarned = false;
-        $vigi = array_keys($this->getVigilances());
+        $vigi = array_values($this->getVigilances());
         if (count($vigi)>0) {
           if ($vigi[0]->getCode() == 'volume_revendique_superieur_sur_place'){ $alreadyWarned = true; }
         }
