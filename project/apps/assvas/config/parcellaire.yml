@@ -15,7 +15,7 @@ all:
             denomination_id: "00176"
             color: "#D81B60"
             name: "Anjou Villages"
-        CABERNETD'ANJOU:
+        CABERNETDANJOU:
             denomination_id: "00179"
             color: "#8E24AA"
             name: "Cabernet d'Anjou"
