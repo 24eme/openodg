@@ -989,6 +989,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
+        if($this->getEtablissementObject()->getCompte()->statut == CompteClient::STATUT_INACTIF) {
+            return array();
+        }
+
         $templateFacture = $this->getTemplateFacture();
 
         if(!$templateFacture) {

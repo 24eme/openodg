@@ -553,6 +553,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
           $etablissement->famille = $famille;
       }
       $etablissement->constructId();
+      $etablissement->nom = $this->getRaisonSociale();
       return $etablissement;
     }
 

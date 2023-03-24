@@ -5,31 +5,31 @@
 	<div class="col-xs-12">
 		<h3>Raison sociale</h3>
 		<p>
-			<strong>VinsValDeLoire.pro</strong><br />
-			BLA BLA BLA<br />
-			37000 Tours<br />
+			<strong>ASSVAS</strong>
+			73 rue Plantagenêt<br/>
+			BP 55223<br />
+			49052 Angers CEDEX 2<br/>
 			France
 		</p>
 		<p>
-			<strong>Tél.</strong> : (33) 02 00 00 00 00<br />
-			<strong>E-mail</strong> : contact@vinsvaldeloire.pro
+			<strong>Tél.</strong> : 02 41 20 09 10<br />
+			<strong>E-mail</strong> : secretariat@assvas.com
 		</p>
 		<p>
-			<strong>Directeur de la publication :</strong><br />
-
+			<strong>Directeur de la publication :</strong>Audrey ALONSO
 		</p>
 	</div>
 	<div class="col-xs-12">
 		<h3>Conseil de modération</h3>
-		<p>Nous vous rappelons que l'abus d'alcool est dangereux pour la santé et que les Vins des Côtes du Rhône sont à consommer avec modération.</p>
+		<p>Nous vous rappelons que l'abus d'alcool est dangereux pour la santé et que les vins de l’Anjou et de Saumur sont à consommer avec modération.</p>
 		<p><em>Pour plus d'informations sur une consommation modérée, consultez le site de vin et société.</em></p>
 	</div>
 	<div class="col-xs-12">
-		<h3>Conception / Hébergement</h3>
+		<h3>Conception / hébergement</h3>
 		<p>
 			<strong><a href="http://24eme.fr/">24ème</a></strong><br />
-			102 rue des poissonniers<br />
-			75018 Paris<br />
+			2 place Sainte Opportune<br />
+			75001 Paris<br />
 			France
 		</p>
 		<p>

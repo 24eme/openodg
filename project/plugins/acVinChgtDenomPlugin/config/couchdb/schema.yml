@@ -87,6 +87,7 @@ ChgtDenom:
                   numero_logement_operateur: { }
                   millesime: { }
                   elevage: { }
+                  eleve: { }
                   volume: { type: float }
                   destination_type: { }
                   destination_date: { }

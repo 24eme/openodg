@@ -382,22 +382,6 @@ class facturationActions extends sfActions
         exit;
     }
 
-    public function executeRegenerate(sfWebRequest $request) {
-        $facture = FactureClient::getInstance()->find($request->getParameter('id'));
-
-        if(!$facture) {
-
-            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
-        }
-
-        $f = FactureClient::getInstance()->regenerate($facture);
-        $f->save();
-
-        $this->getUser()->setFlash("notice", "La facture a été regénérée.");
-
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$f->identifiant));
-    }
-
     public function executeGenerer(sfWebRequest $request) {
         $this->redirect403IfIsTeledeclaration();
         $parameters = $request->getParameter('facture_generation');

@@ -53,6 +53,11 @@ all:
     param:
       timeout:         3600
 
+  storage:
+    class: sfSessionStorage
+    param:
+      session_name: openodg
+
   mailer:
     class: AppMailer
     param:
