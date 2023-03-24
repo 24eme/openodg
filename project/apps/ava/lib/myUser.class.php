@@ -11,6 +11,7 @@ class myUser extends sfBasicSecurityUser
     const CREDENTIAL_ADMIN = CompteClient::DROIT_ADMIN;
     const CREDENTIAL_TOURNEE = CompteClient::DROIT_TOURNEE;
     const CREDENTIAL_CONTACT = CompteClient::DROIT_CONTACT;
+    const CREDENTIAL_HABILITATION = 'habilitation';
 
     protected $etablissement = null;
     protected $compte = null;

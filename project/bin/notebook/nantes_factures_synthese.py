@@ -9,7 +9,7 @@ factures = pd.read_csv("../../web/exports/factures.csv", encoding="iso8859_15", 
 factures = factures.fillna('')
 factures['identifiant_ligne'] = factures.index
 
-factures_meta = factures[['identifiant_ligne', 'Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Telephone fixe', 'Telephone Portable', 'eMail', 'Piece', 'id facture']]
+factures_meta = factures[['identifiant_ligne', 'Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Telephone fixe', 'Telephone Portable', 'eMail', 'Numero', 'id facture']]
 factures_id = factures[['identifiant_ligne', 'id facture']]
 factures_lignes = factures[['identifiant_ligne', 'Identifiant Analytique','Nom Cotisation', 'Cotisation Prix unitaire', 'Quantite Cotisation', 'Prix HT', 'TVA', 'Prix TTC']]
 
@@ -17,7 +17,7 @@ factures_lignes = factures[['identifiant_ligne', 'Identifiant Analytique','Nom C
 # In[ ]:
 
 
-factures_pivot = factures_lignes.pivot(columns=['Nom Cotisation'], values=['Cotisation Prix unitaire', 'Quantite Cotisation', 'Prix HT', 'TVA', 'Prix TTC']).fillna(0)
+factures_pivot = factures_lignes.pivot_table(index=['identifiant_ligne'], columns=['Nom Cotisation'], values=['Cotisation Prix unitaire', 'Quantite Cotisation', 'Prix HT', 'TVA', 'Prix TTC']).fillna(0)
 factures_pivot = factures_id.join(factures_pivot, on=['identifiant_ligne']).groupby('id facture').sum()
 
 
@@ -66,9 +66,9 @@ factures_meta['Total facture TTC'] = factures_pivot[('Prix TTC', 'Total facture'
 # In[ ]:
 
 
-factures_meta[['Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Telephone fixe', 'Telephone Portable', 'eMail', 'Piece',
+factures_meta[['Date', 'Raison sociale', 'Adresse', 'Code Postal', 'Ville', 'Telephone fixe', 'Telephone Portable', 'eMail', 'Numero',
                'Cotisation valorisation HT', 'Cotisation valorisation TVA',
-               'Remboursement valorisation covid HT', 'Remboursement valorisation covid TVA', 
+               'Remboursement valorisation covid HT', 'Remboursement valorisation covid TVA',
                'Total valoriation TVA', 'Total valoriation HT', 'Total valoriation TTC',
                'Cotisation ODG TOTAL ou forfait', 'Remboursement ODG covid', 'ODG TOTAL + remise',
                'Droits I.N.A.O.',

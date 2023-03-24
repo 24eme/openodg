@@ -117,4 +117,9 @@ class HabilitationDemande extends BaseHabilitationDemande {
         return null;
     }
 
+    public function isLatest() {
+        $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($this->getDocument()->identifiant);
+        return ($this->getHistoriqueSuivant($this->statut, $this->date) == null);
+    }
+
 }
