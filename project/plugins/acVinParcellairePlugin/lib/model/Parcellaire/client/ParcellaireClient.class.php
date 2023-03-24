@@ -134,6 +134,7 @@ class ParcellaireClient extends acCouchdbClient {
         }
         if ($status != 0) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique : $status");
+            throw new sfException(end($output));
         }
 
         return $file;
