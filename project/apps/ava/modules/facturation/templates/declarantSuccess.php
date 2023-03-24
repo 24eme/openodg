@@ -86,11 +86,6 @@
                     <?php else: ?>
                         <li class="disabled"><a href="">Créer un avoir <small>(à partir de cette facture)</small></a></li>
                     <?php endif; ?>
-                    <?php if(!$facture->isAvoir() && !$facture->isPayee() && !$facture->versement_comptable): ?>
-                        <li><a onclick='return confirm("Étes vous sûr de vouloir regénérer la facture ?");' href="<?php echo url_for("facturation_regenerate", array("id" => $facture->_id)) ?>">Regénerer</a></li>
-                    <?php else: ?>
-                        <li class="disabled"><a href="">Regénerer</a></li>
-                    <?php endif; ?>
                     <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement): ?>
                     <li><a href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>">Saisir / modifier le paiement</a></li>
                     <?php else: ?>

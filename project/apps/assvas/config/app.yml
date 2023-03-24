@@ -5,6 +5,8 @@
 all:
   organisme:
     nom: ""
+  societe:
+    format_identifiant: "%06d"
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4

@@ -65,11 +65,15 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function setSection($section) {
-        $this->_set('section', $section);
+        $this->_set('section', preg_replace('/^0*/', '', $section));
 
         $this->updateIDU();
 
         return $this;
+    }
+
+    public function getSection() {
+        return preg_replace('/^0*/', '', $this->_get('section'));
     }
 
     public function setNumeroParcelle($numero_parcelle) {
