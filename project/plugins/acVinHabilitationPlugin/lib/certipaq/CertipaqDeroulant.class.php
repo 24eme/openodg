@@ -255,16 +255,19 @@ class CertipaqDeroulant extends CertipaqService
             if ($p->libelle == $conf->getLibelleComplet()) {
                 return $p;
             }
-            if (strpos($p->libelle, $conf->getLibelleComplet()) === 0) {
+            if (strpos($p->libelle, $conf->getLibelleComplet()) === 0 || strpos($conf->getLibelleComplet(), $p->libelle) === 0) {
                 $certipaq_produits[] = $p;
             }
+        }
+        if (count($certipaq_produits)) {
+            return array_pop($certipaq_produits);
         }
         foreach($produits as $p) {
             $c = $this->getConfigurationProduitFromProduitId($p->id);
             if ($c->getLibelleComplet() == $conf->getLibelleComplet()) {
                 return $p;
             }
-            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) === 0) {
+            if (strpos($c->getLibelleComplet(), $conf->getLibelleComplet()) === 0 || strpos($conf->getLibelleComplet(), $c->getLibelleComplet()) === 0) {
                 $certipaq_produits[] = $p;
             }
         }
