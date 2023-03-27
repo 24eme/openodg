@@ -33,29 +33,31 @@ L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
     id: 'mapbox.light'
 }).addTo(map);
 
-/***** Location position ****/
+// GPS
+var gps = new L.Control.Gps({
+	//autoActive:true,
+	autoCenter:true
+});//inizialize control
 
-$('#locate-position').on('click', function(){
-    map.locate({setView: true});
+gps
+.on('gps:located', function(e) {
+	//	e.marker.bindPopup(e.latlng.toString()).openPopup()
+	console.log(e.latlng, map.getCenter())
+})
+.on('gps:disabled', function(e) {
+	e.marker.closePopup()
 });
 
-var icon = L.divIcon({className: 'glyphicon glyphicon-record'});
+gps.addTo(map);
 
-function onLocationFound(e) {
-    var radius = e.accuracy / 100;
-    L.marker(e.latlng,{icon: icon}).addTo(map);
-    L.circle(e.latlng, radius).addTo(map);
-    map.setView(e.latlng, minZoom);
-}
-function onLocationError(e) {
-    alert("Vous n'êtes actuellement pas localisable. Veuillez activer la localisation.");
-}
+// Fin GPS
 
-map.on('locationfound', onLocationFound);
-
-map.on('locationerror', onLocationError);
-
-/****** End location position *****/
+// Test
+// var container = L.DomUtil.create('div', 'leaflet-control-refresh');
+// refbutton = L.DomUtil.create('a', 'refresh-button', container);
+// refbutton.href = '#';
+// refbutton.title = "Rafraichir";
+// L.DomEvent.on(refbutton, 'click', zoomOnMap());
 
 function getColor(d) {
 

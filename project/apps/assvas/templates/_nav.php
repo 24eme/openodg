@@ -28,9 +28,16 @@
 
 <nav id="menu_navigation" class="navbar navbar-default container">
         <div class="navbar-header">
-          <a class="navbar-brand" style="padding: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">ASSVAS</h1></a>
+            <button type="button" class="navbar-toggle collapsed hidden-lg hidden-md" data-toggle="collapse" data-target="#menu_items_collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" style="padding-top: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">ASSVAS</h1></a>
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
+
+        <div class="collapse navbar-collapse" id="menu_items_collapse" style="">
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
                 <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
                     <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
