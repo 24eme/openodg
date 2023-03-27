@@ -141,7 +141,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
             return;
         }
 
-        if($this->facture->isPayee()) {
+        if($this->facture->isPayee() && $this->facture->exist('paiements')) {
             foreach($this->facture->paiements as $p) if (!$p->versement_comptable) {
                 $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
                 $csv .= $p->date . ';';
