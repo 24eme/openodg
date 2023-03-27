@@ -170,6 +170,14 @@ class FactureConfiguration {
         return $this->configuration['numerocompte_banquepaiement'];
     }
 
+    public function getNumeroCompteMaxLength() {
+        if (!isset($this->configuration['numerocompte_maxlength'])) {
+            return 8;
+        }
+
+        return $this->configuration['numerocompte_maxlength'];
+    }
+
     public function displayTypesDocumentOnMassive() {
         if(!isset($this->configuration['display_types_document_on_massive'])) {
 
