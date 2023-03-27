@@ -147,7 +147,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
                 $csv .= $p->date . ';';
                 $csv .= $p->date . ';';
                 $csv .= $this->facture->getNumeroOdg() . ';';
-                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->commentaire.';';
+                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->getCommentaireCsv().';';
                 $csv .= self::formatNumeroCompte('411000').';';
                 $csv .= $this->facture->code_comptable_client . ';;';
                 $csv .= $this->facture->date_echeance . ';CREDIT;';
@@ -156,13 +156,13 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
                 $csv .= self::TYPE_LIGNE_PAIEMENT . ';';
                 $csv .= $this->facture->declarant->nom . ';';
                 $csv .= $this->facture->code_comptable_client . ';;;;';
-                $csv .= $this->facture->reglement_paiement;
+                $csv .= $p->getCommentaireCsv();
                 $csv .= "\n";
                 $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
                 $csv .= $p->date . ';';
                 $csv .= $p->date . ';';
                 $csv .= $this->facture->getNumeroOdg() . ';';
-                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->commentaire.';';
+                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->getCommentaireCsv().';';
                 $csv .= self::formatNumeroCompte(FactureConfiguration::getInstance()->getNumeroCompteBanquePaiement()).';;;';
                 $csv .= $this->facture->date_echeance . ';DEBIT;';
                 $csv .= $this->facture->montant_paiement . ';;;';

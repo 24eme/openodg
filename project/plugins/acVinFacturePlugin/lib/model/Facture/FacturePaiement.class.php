@@ -16,4 +16,9 @@ class FacturePaiement extends BaseFacturePaiement {
         return $ret;
     }
 
+    public function getCommentaireCsv() {
+
+        return str_replace(array("\n", "\r"), " ", $p->commentaire);
+    }
+
 }
