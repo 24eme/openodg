@@ -20,6 +20,8 @@
         <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
 
+        <?php include_stylesheets() ?>
+
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
         <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
 
