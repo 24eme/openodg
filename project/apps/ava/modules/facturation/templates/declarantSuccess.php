@@ -56,11 +56,11 @@
                         <?php if($facture->reglement_paiement): ?>(<?php echo $facture->reglement_paiement ?>)<?php endif; ?>"><span class="glyphicon glyphicon-ok-sign"></span> Reçu
                     </a>
                 <?php elseif($facture->isPayee() && !$facture->isAvoir()): ?>
-                    <a style="cursor: help;" href="#" class="btn btn-sm btn-default" data-toggle="tooltip" title="Paiement&nbsp;de&nbsp;<?php echo Anonymization::hideIfNeeded(echoFloat($facture->montant_paiement)); ?> €&nbsp;reçu&nbsp;le&nbsp;<?php echo format_date($facture->date_paiement, "dd/MM/yyyy", "fr_FR"); ?>
+                    <a style="cursor: help;" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default" data-toggle="tooltip" title="Paiement&nbsp;de&nbsp;<?php echo Anonymization::hideIfNeeded(echoFloat($facture->montant_paiement)); ?> €&nbsp;reçu&nbsp;le&nbsp;<?php echo format_date($facture->date_paiement, "dd/MM/yyyy", "fr_FR"); ?>
                         <?php if($facture->reglement_paiement): ?>(<?php echo $facture->reglement_paiement ?>)<?php endif; ?>"><span class="glyphicon glyphicon-ok-sign"></span> Reçu
                     </a>
                 <?php elseif(!$facture->isAvoir() && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                    <a class="btn btn-sm btn-default-step" href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>"><span class="glyphicon glyphicon-pencil"></span> Saisir</a>
+                    <a class="btn btn-sm btn-default-step" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><span class="glyphicon glyphicon-pencil"></span> Saisir</a>
                 <?php elseif($facture->isAvoir()): ?>
                     <span style="opacity: 0.4;" class="text-muted"><span class="glyphicon glyphicon-ban-circle"></span></span>
                 <?php else : ?>
@@ -86,8 +86,8 @@
                     <?php else: ?>
                         <li class="disabled"><a href="">Créer un avoir <small>(à partir de cette facture)</small></a></li>
                     <?php endif; ?>
-                    <?php if(!$facture->isAvoir() && !$facture->versement_comptable_paiement): ?>
-                    <li><a href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>">Saisir / modifier le paiement</a></li>
+                    <?php if(!$facture->isAvoir() && !$facture->isVersementComptable()): ?>
+                    <li><a href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>">Saisir / modifier le paiement</a></li>
                     <?php else: ?>
                         <li class="disabled"><a href="">Saisir / modifier le paiement</a></li>
                     <?php endif; ?>

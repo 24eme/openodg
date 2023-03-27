@@ -16,7 +16,7 @@ Facture:
       date_paiement: {}
       date_echeance: {}
       date_telechargement: { required: false }
-      reglement_paiement: {}
+      reglement_paiement: { required: false } #Déprécié
       montant_paiement: {}
       campagne: {}
       numero_archive: {  }
