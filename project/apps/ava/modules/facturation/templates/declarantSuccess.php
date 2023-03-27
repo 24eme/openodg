@@ -67,7 +67,7 @@
                 <?php if($facture->versement_comptable): ?><span style="cursor: help;" data-toggle="tooltip" title="Facture versée en comptabilité" class="glyphicon glyphicon-check"></span><?php else: ?><span class="glyphicon glyphicon-unchecked text-muted" style="opacity: 0.4;"></span><?php endif; ?>
             </td>
             <td class="text-center">
-                <?php if($facture->versement_comptable_paiement && !$facture->isAvoir()): ?><span style="cursor: help;" data-toggle="tooltip" title="Paiement versé en comptabilité" class="glyphicon glyphicon-check"></span><?php elseif(!$facture->isAvoir()): ?><span style="opacity: 0.4;" class="glyphicon glyphicon-unchecked text-muted"></span><?php else: ?><span style="opacity: 0.4;" class="text-muted"><span class="glyphicon glyphicon-ban-circle"></span></span><?php endif; ?>
+                <?php if($facture->isVersementComptablePaiement() && !$facture->isAvoir()): ?><span style="cursor: help;" data-toggle="tooltip" title="Paiement versé en comptabilité" class="glyphicon glyphicon-check"></span><?php elseif(!$facture->isAvoir()): ?><span style="opacity: 0.4;" class="glyphicon glyphicon-unchecked text-muted"></span><?php else: ?><span style="opacity: 0.4;" class="text-muted"><span class="glyphicon glyphicon-ban-circle"></span></span><?php endif; ?>
             </td>
             <td>
                 <button type="button" class="btn btn-default btn-default-step btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
@@ -82,7 +82,7 @@
                     <?php else: ?>
                         <li class="disabled"><a href="">Créer un avoir <small>(à partir de cette facture)</small></a></li>
                     <?php endif; ?>
-                    <?php if(!$facture->isAvoir() && !$facture->isVersementComptable()): ?>
+                    <?php if(!$facture->isAvoir() && !$facture->isVersementComptablePaiement()): ?>
                     <li><a href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>">Saisir / modifier le paiement</a></li>
                     <?php else: ?>
                         <li class="disabled"><a href="">Saisir / modifier le paiement</a></li>
