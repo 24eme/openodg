@@ -5,7 +5,7 @@
  *
  * @author mathurin
  */
-class ExportCompteCSV_ava implements InterfaceDeclarationExportCsv {
+class ExportCompteCSV implements InterfaceDeclarationExportCsv {
 
     protected $compte = null;
     protected $header = false;
