@@ -96,3 +96,19 @@ Parcellaire:
                     definition:
                       fields:
                         '*': { }
+
+
+Aire:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      date_import: { }
+      commune_identifiant: { }
+      commune_libelle: { }
+      denomination_identifiant: { }
+      denomination_libelle: { }
+      geojson: {}
+      md5: {}
+

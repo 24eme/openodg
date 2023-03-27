@@ -137,7 +137,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       $subitem->add('vtsgn', (int)$parcelle->vtsgn);
                   }
                   $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
-                  $superficie_auto = $parcelle->getSuperficieInAire("AOC Sainte-Victoire");
+                  $superficie_auto = $parcelle->isInDenominationLibelle("AOC Sainte-Victoire");
                   if ($superficie_auto) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = "2004-05-29";
