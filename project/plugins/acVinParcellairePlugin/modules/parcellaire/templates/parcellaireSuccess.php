@@ -179,20 +179,20 @@ $list_idu = [];
                                 </td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
                                     <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>
-                                    <?php $aires = $detail->isInAires(); if ($aires): ?>
+                                    <?php $aires = $detail->getIsInAires(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
                                     <?php
                                     $separateur = '';
                                     foreach($aires as $nom => $a) {
                                         echo "$separateur ";
-                                        if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT){
+                                        if ($a != AireClient::PARCELLAIRE_AIRE_TOTALEMENT){
                                             echo '<span class="text-danger">';
                                         }else{
                                             echo '<span class="text-muted">';
                                         }
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
+                                        echo ($a == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
+                                        echo ($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
+                                        echo ($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
                                         echo "$nom</span>";
                                         $separateur = ',';
                                     }?>
