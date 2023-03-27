@@ -479,7 +479,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function isVersementComptablePaiement() {
 
-        $this->versement_comptable_paiement && $this->exist('paiements') && count($this->paiements) > 0;
+        return $this->versement_comptable_paiement && $this->exist('paiements') && count($this->paiements) > 0;
     }
 
     public function updateMontantPaiement() {
