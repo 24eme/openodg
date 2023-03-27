@@ -1,10 +1,12 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
+<?php use_javascript('lib/leaflet-gps/dist/leaflet-gps.min.js'); ?>
+
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
+<?php use_stylesheet('/js/lib/leaflet-gps/dist/leaflet-gps.min.css'); ?>
 
 <div id="map" class="col-12" style="height: 350px; margin-bottom: 20px;">
 	<div class="leaflet-touch leaflet-bar"><a id="refreshButton" onclick="zoomOnMap(); return false;" href="#"><span class="glyphicon glyphicon-fullscreen"></span></a></div>
-	<div class="leaflet-touch leaflet-bar"><a id="locate-position" href="#"><span class="glyphicon glyphicon-screenshot"></span></a></div>
 </div>
 <style>
 .sectionlabel, .parcellelabel {
