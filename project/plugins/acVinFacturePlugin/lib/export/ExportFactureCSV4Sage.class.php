@@ -10,6 +10,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
     const TYPE_LIGNE_PAIEMENT = 'PAIEMENT';
     const TYPE_LIGNE_ECHEANCE = 'ECHEANCE';
     const TYPE_LIGNE_TVA = 'TVA';
+    const MAX_LENGTH_NUMERO_COMPTE = 8;
 
     public function __construct($doc_or_id, $header = true, $region = null) {
         if ($doc_or_id instanceof Facture) {
@@ -197,7 +198,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
     }
 
     protected static function formatNumeroCompte($c) {
-        $minlength = 8;
+        $minlength = self::MAX_LENGTH_NUMERO_COMPTE;
         $diff = $minlength - strlen($c);
         if (!$minlength || $diff < 1) {
             return $c;
