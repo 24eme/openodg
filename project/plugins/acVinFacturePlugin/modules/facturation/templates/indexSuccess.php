@@ -3,16 +3,7 @@
 </ol>
 
 <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
-<form method="post" action="" role="form" class="form-horizontal">
-    <?php echo $form->renderHiddenFields(); ?>
-    <?php echo $form->renderGlobalErrors(); ?>
-    <div class="form-group">
-        <?php echo $form["login"]->renderError(); ?>
-        <div class="col-xs-12">
-            <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
-        </div>
-    </div>
-</form>
+    <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
 <?php else: ?>
 <div class="row row-margin">
     <div class="col-xs-12">
