@@ -11,9 +11,7 @@ class Parcellaire extends BaseParcellaire {
     protected $piece_document = null;
     protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
     protected $habilitation = false;
-    private $cache_geophpdelimitation = null;
     private $cache_geojson = null;
-    private $cache_aire = null;
 
     public function __construct() {
         parent::__construct();
@@ -324,48 +322,9 @@ class Parcellaire extends BaseParcellaire {
 
     }
 
-    public function getAire($inao_denomination_id = null) {
-        if (!$inao_denomination_id) {
-            $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
-        }
-        $this->getCachedAires();
-        if (!isset($this->cache_aire[$inao_denomination_id])) {
-            return array();
-        }
-        return $this->cache_aire[$inao_denomination_id]['jsons'];
-    }
+    public function getMergedAires() {
 
-    public function getCachedAires() {
-        if (!$this->cache_aire) {
-            $this->cache_aire = $this->getAires();
-        }
-        return $this->cache_aire;
-    }
-
-    public function getAires() {
-
-        return ParcellaireClient::getInstance()->getAiresForInseeCommunes($this->declaration->getCommunes());
-    }
-
-    public function getGeoPHPDelimitations($denom_id = null) {
-        if (!$denom_id) {
-            $denom_id = ParcellaireClient::getInstance()->getDefaultDenomination();
-        }
-        if (!geophp::geosInstalled()) {
-            throw new sfException("php-geos needed");
-        }
-        if (!$this->cache_geophpdelimitation) {
-            $this->cache_geophpdelimitation = [];
-            foreach(ParcellaireClient::getInstance()->getDenominations() as $did) {
-                foreach($this->getAire($did) as $d) {
-                    $this->cache_geophpdelimitation[$did][] = geoPHP::load($d);
-                }
-            }
-        }
-        if (!isset($this->cache_geophpdelimitation[$denom_id])) {
-            return array();
-        }
-        return $this->cache_geophpdelimitation[$denom_id];
+        return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->declaration->getCommunes());
     }
 
 }
