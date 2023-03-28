@@ -511,7 +511,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $donnees = [];
 
         // Produits :
-        $donnees['lignes'] = ['04', '04b', '05', '06', '07', '08', '15', '16', '18', '19'];
+        $donnees['lignes'] = ['04', '04b', '05', '06', '07', '08', '09', '15', '16', '18', '19'];
         $donnees['produits'] = [];
         foreach ($this->getEnhancedDonnees() as $entry) {
             if($entry->bailleur_ppm) {
