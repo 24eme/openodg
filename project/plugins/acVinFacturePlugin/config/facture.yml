@@ -13,3 +13,4 @@ all:
       exercice: "civil"
       liste_dernier_exercice: false
       display_types_document_on_massive: false
+      numerocompte_maxlength: 6
