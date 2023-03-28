@@ -188,7 +188,7 @@ class ParcellaireCsvFile
             $libelle = str_replace(['VDB ', 'VCI '], '', $libelle);
             $libelle = str_replace(' PG', ' PINOT GRIS', $libelle);
             $libelle = str_replace('ALSACE ST-HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
-            $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE'], 'Val de Loire', $libelle);
+            $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE', 'VINS DE PAYS DU JARDIN DE LA FRANCE'], 'Val de Loire', $libelle);
             $libelle = str_replace('Cx ', 'Coteaux ', $libelle);
             $libelle = str_replace('Coteaux Layon', 'Coteaux du Layon', $libelle);
             $libelle = str_replace('LOIRELOIRE', 'LOIRE LOIRE', $libelle);
