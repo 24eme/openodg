@@ -86,3 +86,24 @@
     <?php endforeach; ?>
     </tbody>
 </table>
+<?php if(class_exists("Parcellaire") && in_array('parcellaire', sfConfig::get('sf_enabled_modules'))): ?>
+<h2>Les Aires</h2>
+<table class="table table-condensed table-striped table-bordered">
+    <thead>
+    <tr>
+        <th class="col-xs-10">Dénomination libellé</th>
+        <th class="col-xs-1 text-center">Identifiant INAO</th>
+        <th class="col-xs-1 text-center">Couleur</th>
+    </tr>
+    </thead>
+    <tbody>
+<?php foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $aire): ?>
+    <tr>
+        <td><?php echo $aire['name'];  ?></td>
+        <td class="text-center"><a href="https://www.opendatawine.fr/denominations/<?php echo $aire['denomination_id']; ?>.html"><?php echo $aire['denomination_id']; ?></a></td>
+        <td class="text-center"><span style="background-color: <?php echo $aire['color']; ?>"> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; </span></td>
+    </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>
