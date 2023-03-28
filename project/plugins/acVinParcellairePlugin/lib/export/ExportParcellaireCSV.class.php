@@ -53,9 +53,9 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                 $inao = ($configProduit) ? $configProduit->getCodeDouane() : null;
 
                 $libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-                $csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", 
+                $csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $ligne_base,
-                    ($configProduit) ? DeclarationExportCsv::getProduitKeysCsv($configProduit) : null,
+                    DeclarationExportCsv::getProduitKeysCsv($configProduit),
                     $inao,
                     $libelle_complet,
                     $this->protectStr($parcelle->idu),
