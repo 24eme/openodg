@@ -87,6 +87,10 @@ all:
             denomination_id: "00240"
             color: "#F9A825"
             name: "Anjou Brissac"
+        HAUTPOITOU:
+           denomination_id: "02305"
+            name: "Haut-Poutou"
+            color: "#558B00"
         FIEFSVENDEENSBREM:
             denomination_id: "02341"
             color: "#AD1457"
