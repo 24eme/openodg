@@ -188,6 +188,9 @@ class ParcellaireCsvFile
             $libelle = str_replace(['VDB ', 'VCI '], '', $libelle);
             $libelle = str_replace(' PG', ' PINOT GRIS', $libelle);
             $libelle = str_replace('ALSACE ST-HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE'], 'Val de Loire', $libelle);
+            $libelle = str_replace('Cx ', 'Coteaux ', $libelle);
+            $libelle = str_replace('LOIRELOIRE', 'LOIRE LOIRE', $libelle);
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":
                 case "CRéM ALSACE ROSé":
