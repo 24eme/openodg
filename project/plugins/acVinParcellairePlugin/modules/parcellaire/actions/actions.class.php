@@ -40,6 +40,9 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
+        }
         $this->setTemplate('parcellaire');
     }
 
