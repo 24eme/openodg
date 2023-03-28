@@ -272,11 +272,15 @@ class ParcellaireCsvFile
                 continue;
             }
             $hash = ($produit) ? $produit->getHash() : null ;
+
+            $prefix = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 5, 3);
+
             $new_parcelle = $this->parcellaire->addParcelle(
                 $hash,
                 $parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_CAMPAGNE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_COMMUNE - $is_old_format],
+                $prefix,
                 $parcelle[self::CSV_FORMAT_SECTION - $is_old_format],
                 $parcelle[self::CSV_FORMAT_NUMERO_PARCELLE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_LIEU_DIT - $is_old_format]

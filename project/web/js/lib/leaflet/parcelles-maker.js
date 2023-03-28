@@ -52,12 +52,6 @@ gps.addTo(map);
 
 // Fin GPS
 
-// Test
-// var container = L.DomUtil.create('div', 'leaflet-control-refresh');
-// refbutton = L.DomUtil.create('a', 'refresh-button', container);
-// refbutton.href = '#';
-// refbutton.title = "Rafraichir";
-// L.DomEvent.on(refbutton, 'click', zoomOnMap());
 
 function getColor(d) {
 
@@ -192,7 +186,7 @@ $('.sectionlabel').show();
 
 function zoomToFeature(e) {
   zoomToParcelle(e.target);
-  e.preventDefault();
+  return false;
 }
 
 function zoomToParcelle(layer) {
@@ -237,6 +231,7 @@ info.update = function (layer) {
   let props = layer.feature.properties;
 
   this._div.style.display = 'block';
+  var Commune = "<th>Commune</th>";
   var Cepages = "<th>Produits et cepages</th>";
   var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
   var Superficies = "<th>Superficies  <span>(ha)</span></th>";
@@ -244,6 +239,7 @@ info.update = function (layer) {
   var ecartRang = "<th>Écart Rang</th>";
   var compagnes = "<th>Année plantat°</th>";
   props.parcellaires.forEach(function(parcelle){
+      Commune += '<td>'+parcelle['Commune']+'</td>';
       numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
       Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
       compagnes += '<td>'+parcelle.Campagne+'</td>';
@@ -253,6 +249,7 @@ info.update = function (layer) {
   });
 
   var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
+                  '<tr>'+Commune+'</tr>'+
                   '<tr>'+numParcelles+'</tr>'+
                   '<tr>'+Cepages+'</tr>'+
                   '<tr>'+compagnes+'</tr>'+

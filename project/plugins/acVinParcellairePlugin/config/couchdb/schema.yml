@@ -75,6 +75,7 @@ Parcellaire:
                               ecart_pieds: { type: float }
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
+                              prefix: { }
       pieces:
         type: array_collection
         definition:
