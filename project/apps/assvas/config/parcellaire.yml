@@ -15,6 +15,10 @@ all:
             denomination_id: "00176"
             color: "#D81B60"
             name: "Anjou Villages"
+        BONNEZEAUX:
+            denomination_id: "00177"
+            color: "#FF8F00"
+            name: "Bonnezeaux"
         CABERNETDANJOU:
             denomination_id: "00179"
             color: "#8E24AA"
@@ -90,7 +94,7 @@ all:
         HAUTPOITOU:
             denomination_id: "02305"
             name: "Haut-Poutou"
-            color: "#558B00"
+            color: "#9E9D24"
         FIEFSVENDEENSBREM:
             denomination_id: "02341"
             color: "#AD1457"

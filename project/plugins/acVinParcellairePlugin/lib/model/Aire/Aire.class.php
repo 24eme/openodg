@@ -50,7 +50,7 @@ class Aire extends BaseAire {
     }
 
     public function save() {
-        if ($this->need_tobe_saved == -1) {
+        if ($this->need_tobe_saved < 0) {
             throw new sfException('Pseudo Aire cannont be saved');
         }
         if (!$this->need_tobe_saved && $this->_id) {
