@@ -7,8 +7,10 @@
 class ParcellaireProduit extends BaseParcellaireProduit {
 
     public function getConfig() {
-
-        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+        if ($this->getCouchdbDocument()->getConfiguration()->exist($this->getHash())) {
+            return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+        }
+        return null;
     }
 
     public function getLibelle() {
