@@ -120,14 +120,14 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
-        header("Content-Type: application/csv; charset=UTF-8");
+        header("Content-Type: application/csv; charset=iso-8859-1");
         header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.csv"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
         $csv = new ExportParcellaireCSV($parcellaire);
-        echo $csv->export();
+        echo iconv("UTF-8", "ISO-8859-1", $csv->export());
 
         exit;
     }
