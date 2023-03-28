@@ -99,7 +99,7 @@ class ConfigurationClient extends acCouchdbClient {
     public function getCampagneVinicole() {
         if(is_null($this->campagne_vinicole_manager)) {
 
-            $this->campagne_vinicole_manager = new CampagneManager('08-01');
+            $this->campagne_vinicole_manager = new CampagneManager('03-01');
         }
 
         return $this->campagne_vinicole_manager;
