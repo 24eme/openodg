@@ -9,25 +9,25 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-Ua-Compatible" content="IE=edge" />
-        <meta name="title" content="Plateforme de télédéclaration du syndicat Côtes-du-Rhône" />
+        <meta name="title" content="DR - SARL CLOS DES BAUX" />
 <meta name="charset" content="utf-8" />
-<meta name="description" content="Plateforme de télédéclaration du syndicat Côtes-du-Rhône" />
+<meta name="description" content="Plateforme de télédéclaration de l&#039;ASSVAS" />
 <meta name="robots" content="index,follow" />
 <meta name="content-language" content="fr-FR" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Plateforme de télédéclaration du syndicat Côtes-du-Rhône</title>
+        <title>DR - SARL CLOS DES BAUX</title>
 
-        <link rel="shortcut icon" type="image/x-icon" href="/favico.ico" />
-        <link rel="icon" type="image/x-icon" href="/favico.ico" />
-        <link rel="icon" type="image/png" href="/favico.png" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favico_assvas.ico" />
+        <link rel="icon" type="image/x-icon" href="/favico_assvas.ico" />
+        <link rel="icon" type="image/png" href="/favico_assvas.png" />
 
-        <link rel="stylesheet" type="text/css" media="all" href="/css/compile_loire.css?201706281900" />
-<link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/css/../components/vins/vins.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />
+        <link href="/components/vins/vins.css?2062923ffb82fb96f7b7009d19da8213da1f0f6a" rel="stylesheet">
+        <link href="/css/compile_default.css?2062923ffb82fb96f7b7009d19da8213da1f0f6a" rel="stylesheet">
+        <link href="/js/lib/leaflet/leaflet.css?2062923ffb82fb96f7b7009d19da8213da1f0f6a" rel="stylesheet">
+
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_rhone.css" rel="stylesheet" type="text/css">
+        <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
@@ -47,134 +47,73 @@
         </div>
         <![endif]-->
         <!-- ####### PLEASE KEEP ####### -->
-
-        <header id="header">
-            <div class="contenu">
-                <h1 id="logo">
-                    <a title="Vins de Loire - Retour à l'accueil" href="/">
-                        <img src="https://teledeclaration.vinsvaldeloire.pro/images/visuels/logo_vinsdeloire_new2.png" alt="">
-                    </a>
-                </h1>
-                <div class="conteneur_nav">
-                    <span class="baseline">Espace des professionnels du Vignoble du Val de Loire</span>
-                    <nav id="navigation">
-            <ul>
-
-                        <li class="actif">
-                <a href="/drm" target="_self">
-                    DRM        </a>
-            </li>
-
-                        <li class="">
-                <a href="/vrac/recherche/80103301" target="_self">
-                    Contrats        </a>
-            </li>
-
-                        <li class="">
-                <a href="/facture/etablissement/80103301" target="_self">
-                    Facture        </a>
-            </li>
-
-
-
-
-                                  <li><a href="/odg/declarations/80103301">DRev</a></li>
-
-                        <li class="">
-                <a href="/sv12/80103301" target="_self">
-                    SV12        </a>
-            </li>
-
-                        <li class="">
-                <a href="/ds/80103301" target="_self">
-                    DS        </a>
-            </li>
-
-                        <li class="">
-                <a href="/stocks/80103301" target="_self">
-                    Stocks        </a>
-            </li>
-
-                        <li class="">
-                <a href="/alerte/80103301/recherche" target="_self">
-                    Alertes        </a>
-            </li>
-
-                        <li class="">
-                <a href="/relance/80103301" target="_self">
-                    Relance        </a>
-            </li>
-
-                                <li class="">
-                <a href="/etablissement/80103301/visualisation" target="_self">
-                    Contacts        </a>
-            </li>
-
-
-
-
-
-
-                <!-- Actions utilisateur pour tablette et mobile -->
-
-                            <li class="hidden_desk visible_tab"><a class="admin" href="/produits">Admin</a></li>
-
-
-                                            <li class="hidden_desk visible_tab"><a class="deconnexion" href="/logout">Déconnexion</a></li>
-                                </ul>
-        </nav>
+        <nav id="menu_navigation" class="navbar navbar-default container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed hidden-lg hidden-md" data-toggle="collapse" data-target="#menu_items_collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" style="padding-top: 0;padding-right: 15px;" href="/index.php/"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">ASSVAS</h1></a>
                 </div>
 
-                            <button class="btn_menu" type="button">Menu</button>
-
-                <h1 class="logo_civdl">
-                    <a title="CIVDL - Retour à l'accueil" href="/">
-                        <img src="https://teledeclaration.vinsvaldeloire.pro/data/logo_vrac_pdf.jpg" alt="">
-                    </a>
-                </h1>
-            </div>
-        </header>
-
+                <div class="collapse navbar-collapse" id="menu_items_collapse" style="">
+                                    <ul class="nav navbar-nav mode-operateur" style="border: 0;">
+                            <li class=""><a href="/parcellaire">Parcellaire</a></li>
+                            <li class="active  "><a href="/declaration">DR / SV</a></li>
+                            <li class=""><a href="/documents">Documents</a></li>
+                            <li class=""><a href="/habilitation">Habilitations</a></li>
+                            <li class=""><a href="/compte">Contacts</a></li>
+                        </ul>
+                                    <ul class="nav navbar-nav navbar-right">
+                                                                <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-stats"></span><span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                                         <li>
+                                                                      <a href="/exports/">
+                                                                                                       <strong>Exports</strong>                             </a>
+                                </li>
+                                                         <li>
+                                                                      <a href="/export">
+                                                                                                       Générations                             </a>
+                                </li>
+                                                         <li>
+                                                                      <a href="/exports/">
+                                                                                                       Données brutes                             </a>
+                                </li>
+                                                      </ul>
+                            </li>
+                                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li><a href="/index.php/produits">Catalogue produit</a></li>
+                          </ul>
+                        </li>
+                                                             <li><a tabindex="-1" href="/index.php/usurpation/00114401" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
+                                                            <li><a tabindex="-1" href="/index.php/logout" title="Déconnexion"><span class="glyphicon glyphicon-log-out"></span></a></li>
+                                    </ul>
+                </div>
+        </nav>
+                    </div>
 
  <section id="content" class="container">
 
 
        <center>
-           <p>
-               <img height="381" width="680" src="/images/500.jpg"/>
-           </p>
+            <h1>Une erreur est survenue</h1>
        </center>
 
  </section>
 
 
 
-            <footer id="footer" class="container hidden-xs hidden-sm text-center" role="contentinfo" style="margin-top: 40px;">
-                <nav role="navigation">
-                    <ul class="list-inline" style="font-size: 13px;">
-                        <li><a href="/contact">Contact</a></li>
-                        <li><a href="/mentions-legales">Mentions légales</a></li>
-                    </ul>
-                </nav>
-            </footer>
-            <!-- end #footer -->
+ <footer id="footer" class="container hidden-xs hidden-sm text-center mt-5 mb-5" role="contentinfo">
+     <nav role="navigation">
+         <ul class="list-inline" style="font-size: 13px;">
+         </ul>
+     </nav>
+ </footer>
 
-        <!-- end #page -->
-
-        <div class="alert hidden alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
-        <div class="alert hidden alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
-        <script type="text/javascript" src="/js/lib/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="/js/lib/jquery.plugins.min.js?201709221633"></script>
-<script type="text/javascript" src="/js/lib/bootstrap/bootstrap.min.js"></script>
-<script type="text/javascript" src="/js/lib/bootstrap3-typeahead.min.js"></script>
-<script type="text/javascript" src="/js/lib/bootstrap-switch.min.js"></script>
-<script type="text/javascript" src="/js/lib/leaflet/leaflet.js"></script>
-<script type="text/javascript" src="/js/global.js?201711052339"></script>
-<script type="text/javascript" src="/js/compte.js"></script>
-<script type="text/javascript" src="/js/drev.js?202105041230"></script>
-<script type="text/javascript" src="/js/drevmarc.js"></script>
-<script type="text/javascript" src="/js/form.js"></script>
-<script type="text/javascript" src="/js/parcellaire.js"></script>
-<script type="text/javascript" src="/js/ava.js"></script>
     </body>
 </html>
