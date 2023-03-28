@@ -191,6 +191,7 @@ class ParcellaireCsvFile
             $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE', 'VINS DE PAYS DU JARDIN DE LA FRANCE'], 'Val de Loire', $libelle);
             $libelle = str_replace('Cx ', 'Coteaux ', $libelle);
             $libelle = str_replace('Coteaux Layon', 'Coteaux du Layon', $libelle);
+            $libelle = str_replace("Coteaux du Layon Faye-d'Anjou ou Faye", 'Coteaux du Layon Faye', $libelle);
             $libelle = str_replace('LOIRELOIRE', 'LOIRE LOIRE', $libelle);
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":
