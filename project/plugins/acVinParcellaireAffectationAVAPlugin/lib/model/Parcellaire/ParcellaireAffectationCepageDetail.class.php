@@ -91,7 +91,7 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
             return $this->lieu;
         }
 
-        return null;
+        return ($this->getLieuNode()->getLibelle()) ? $this->getLieuNode()->getLibelle() : null;
     }
 
     public function getParcelleIdentifiant() {
@@ -199,6 +199,17 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
 
     public function getSectionNumero() {
 
-        return preg_replace('/^0+/', '', $this->section).preg_replace('/^0+/', '', $this->numero_parcelle);
+        return $this->section.preg_replace('/^0+/', '', $this->numero_parcelle);
     }
+
+    public function setSection($section) {
+
+        return $this->_set('section', preg_replace('/^0*/', '', $section));
+    }
+
+    public function getSection() {
+
+        return preg_replace('/^0*/', '', $this->_get('section'));
+    }
+
 }

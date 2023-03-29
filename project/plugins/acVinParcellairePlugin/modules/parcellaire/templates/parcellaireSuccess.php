@@ -1,3 +1,4 @@
+<?php use_javascript('hamza_style.js?20230328'); ?>
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php
@@ -25,6 +26,11 @@ $list_idu = [];
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
 </ol>
 <?php endif; ?>
+
+<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
+    <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
+<?php endif; ?>
+
 <div class="page-header no-border">
     <?php if($parcellaire): ?>
     <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
@@ -41,15 +47,12 @@ $list_idu = [];
 
 <?php include_partial('global/flash'); ?>
 
-<div class="row">
-    <div class="col-xs-12">
-        <?php if($parcellaire): ?>
-            <div class="well">
-                <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>
-        <?php endif; ?>
+<?php if($parcellaire): ?>
+    <div class="well">
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
     </div>
-</div>
+<?php endif; ?>
+
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
     $import = $parcellaire->getGeoJson(); ?>
@@ -179,20 +182,20 @@ $list_idu = [];
                                 </td>
                                 <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
                                     <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>
-                                    <?php $aires = $detail->isInAires(); if ($aires): ?>
+                                    <?php $aires = $detail->getIsInAires(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
                                     <?php
                                     $separateur = '';
                                     foreach($aires as $nom => $a) {
                                         echo "$separateur ";
-                                        if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT){
+                                        if ($a != AireClient::PARCELLAIRE_AIRE_TOTALEMENT){
                                             echo '<span class="text-danger">';
                                         }else{
                                             echo '<span class="text-muted">';
                                         }
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
+                                        echo ($a == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
+                                        echo ($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
+                                        echo ($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
                                         echo "$nom</span>";
                                         $separateur = ',';
                                     }?>
@@ -344,7 +347,6 @@ $list_idu = [];
     </div>
 </div>
 <?php endif;?>
-<?php use_javascript('hamza_style.js'); ?>
 <script type="text/javascript">
     var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
 </script>

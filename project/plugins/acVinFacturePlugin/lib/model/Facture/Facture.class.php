@@ -72,8 +72,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             throw new sfException('Pas de document attribué');
         $this->region = $doc->getRegionViticole();
         $this->identifiant = $doc->identifiant;
-        if($format = FactureConfiguration::getInstance()->getNumeroFormat()){ // Pour nantes obsolète
-          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,$format);
+        if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()){ // Pour nantes obsolète
+          $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,FactureConfiguration::getInstance()->getNumeroFormat());
         }else{
           $date_emission_object = new DateTime($this->date_emission);
           $this->numero_facture = FactureClient::getInstance()->getNextNoFacture($this->identifiant, $date_emission_object->format('Ymd'));
@@ -90,8 +90,17 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getNumeroOdg(){
+        if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()) { // Pour nantes obsolète
+            return $this->getNumeroFacture();
+        }
+
         if($this->exist('numero_odg') && $this->_get('numero_odg')) {
             return $this->_get('numero_odg');
+        }
+
+        if(FactureConfiguration::getInstance()->getNumeroFormat()) {
+
+            return sprintf(FactureConfiguration::getInstance()->getNumeroFormat(), substr($this->campagne, (int)preg_replace('/^%([0-9]+d).+$/', '\1', FactureConfiguration::getInstance()->getNumeroFormat())*-1), $this->numero_archive);
         }
 
         return $this->campagne . $this->numero_archive;
@@ -195,46 +204,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         return $ligne;
     }
-
-    public function storeLignesByMouvements($mouvements, $template) {
-        foreach($template->cotisations as $configCollection) {
-            $ligne = $this->addLigne($configCollection);
-            $ligne->updateTotaux();
-
-        }
-        foreach ($mouvements as $key => $mouvement) {
-            $configCollection = $template->cotisations->get($mouvement["categorie"]);
-            $config = $configCollection->details->get($mouvement["type_hash"]);
-
-            $ligne = $this->addLigne($configCollection);
-            foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
-                foreach($mouvKeys as $mouvKey) {
-                    $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
-                }
-            }
-            $d = $ligne->details->add();
-            $d->libelle = $mouvement["type_libelle"];
-            $d->quantite = $mouvement["quantite"];
-            $d->prix_unitaire = $mouvement["taux"];
-            $d->taux_tva = array_key_exists("tva", $mouvement) ? $mouvement["tva"] : $config->tva;
-            if(array_key_exists("unite", $mouvement)) {
-                $d->add('unite', $mouvement["unite"]);
-            }
-            $ligne->updateTotaux();
-      }
-
-      $lignes_to_remove = array();
-      foreach ($this->lignes as $cotisation_key => $ligne) {
-        if(!count($ligne->details) && !$template->cotisations->get($cotisation_key)->isRequired()){
-            $lignes_to_remove[] = $cotisation_key;
-          }
-      }
-
-      foreach ($lignes_to_remove as $ligne_key) {
-        $this->lignes->remove($ligne_key);
-      }
-    }
-
 
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement_agreges, $mouvements_originaux = null) {
@@ -489,7 +458,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         $declarant->nom = $doc->nom_a_afficher;
         //$declarant->num_tva_intracomm = $this->societe->no_tva_intracommunautaire;
         $declarant->adresse = $doc->adresse;
-        if($doc->adresse_complementaire) {
+        if($doc->exist('adresse_complementaire') && $doc->adresse_complementaire) {
             $declarant->adresse .= ", ".$doc->adresse_complementaire;
         }
         $declarant->commune = $doc->commune;
@@ -506,6 +475,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public function isPayee() {
 
         return $this->date_paiement;
+    }
+
+    public function isVersementComptablePaiement() {
+
+        return $this->versement_comptable_paiement && $this->exist('paiements') && count($this->paiements) > 0;
     }
 
     public function updateMontantPaiement() {
@@ -719,6 +693,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateVersementComptablePaiement() {
+        if(!$this->exist('paiements') && $this->_get('montant_paiement') && $this->_get('date_paiement')) {
+            $paiement = $this->add('paiements')->add();
+            $paiement->montant = $this->_get('montant_paiement');
+            $paiement->commentaire = $this->_get('reglement_paiement');
+            $paiement->date = $this->_get('date_paiement');
+            $paiement->versement_comptable = $this->versement_comptable_paiement;
+            $this->remove('reglement_paiement');
+            $this->updateMontantPaiement();
+        }
+
         $versement = true;
         $date = null;
         if ($this->exist('paiements')) {

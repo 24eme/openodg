@@ -119,6 +119,11 @@ class DRevProduit extends BaseDRevProduit
 
             return true;
         }
+
+        if ($this->exist('volume_revendique_seuil') && $this->volume_revendique_seuil > 0) {
+            return false;
+        }
+
 		if ($this->recolte->superficie_total === null && $this->recolte->volume_total === null && !$this->superficie_revendique && !$this->volume_revendique_total && !$this->vci->stock_precedent && !$this->vci->stock_final ) {
 
 			return true;

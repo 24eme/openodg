@@ -188,6 +188,11 @@ class ParcellaireCsvFile
             $libelle = str_replace(['VDB ', 'VCI '], '', $libelle);
             $libelle = str_replace(' PG', ' PINOT GRIS', $libelle);
             $libelle = str_replace('ALSACE ST-HIPPOLYTE', 'ALSACE COMMUNALE SAINT HIPPOLYTE', $libelle);
+            $libelle = str_replace(['VAL LOIRE', 'VDP JARDIN DE FRANCE', 'VINS DE PAYS DU JARDIN DE LA FRANCE'], 'IGP Val de Loire', $libelle);
+            $libelle = str_replace('CX ', 'COTEAUX ', $libelle);
+            $libelle = str_replace('COTEAUX LAYON', 'COTEAUX DU LAYON', $libelle);
+            $libelle = str_replace("FAYE-D'ANJOU", 'FAYE', $libelle);
+            $libelle = str_replace('LOIRELOIRE', 'LOIRE LOIRE', $libelle);
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":
                 case "CRéM ALSACE ROSé":
@@ -269,11 +274,15 @@ class ParcellaireCsvFile
                 continue;
             }
             $hash = ($produit) ? $produit->getHash() : null ;
+
+            $prefix = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 5, 3);
+
             $new_parcelle = $this->parcellaire->addParcelle(
                 $hash,
                 $parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_CAMPAGNE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_COMMUNE - $is_old_format],
+                $prefix,
                 $parcelle[self::CSV_FORMAT_SECTION - $is_old_format],
                 $parcelle[self::CSV_FORMAT_NUMERO_PARCELLE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_LIEU_DIT - $is_old_format]

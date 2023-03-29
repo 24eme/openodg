@@ -5,7 +5,7 @@
 </ol>
 
 <div class="row">
-    <section class="col-xs-9" id="contenu_etape">
+    <section class="col-xs-12 col-sm-8 col-md-9" id="contenu_etape">
 		<form id="recherche_contact_form">
 			<div id="recherche_contact" class="section_label_maj">
         <div class="input-group">
@@ -64,12 +64,12 @@
                </div><div class="col-xs-3 text-right">
 <?php if(isset($societe_informations['type']) && $societe_informations['type']): ?><small class="text-muted label label-primary"><?php echo $societe_informations['type'] ?></small><?php endif; if ($data['doc']['statut'] != 'ACTIF') echo ' &nbsp; <small class="text-muted label label-default">'.CompteClient::$statutsLibelles[$data['doc']['statut']].'</small>'; ?>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-12 col-sm-6">
                     <?php echo Anonymization::hideIfNeeded($data['doc']['adresse']); ?> <?php if ($data['doc']['adresse_complementaire']): ?><small>(<?php echo Anonymization::hideIfNeeded($data['doc']['adresse_complementaire']); ?>)</small><?php endif; ?><br />
                     <?php echo $data['doc']['code_postal']; ?> <?php echo $data['doc']['commune']; ?><br />
 
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-12 col-sm-6">
                     <ul class="list-unstyled" style="margin-bottom: 0;">
                         <?php if($data['doc']['telephone_bureau']): ?>
                         <li>Bureau : <a href="callto:<?php echo Anonymization::hideIfNeeded($data['doc']['telephone_bureau']); ?>"><?php echo Anonymization::hideIfNeeded($data['doc']['telephone_bureau']); ?></a></li>
@@ -117,16 +117,14 @@
 	<?php endif; ?>
 
 </section>
-<section class="col-xs-3">
-    <div class="col-xs-12">
+<section class="col-xs-12 col-sm-4 col-md-3" style="padding-bottom: 20px;">
     	<a class="btn btn-default btn-default-step btn-block" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherche avancée</a>
         <a href="<?php echo url_for('societe_creation', array()); ?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Créer une société</a>
         <a class="btn btn-default btn-block" href="<?php echo url_for('compte_search_csv', array('q' => $q, 'tags' => $args['tags'], 'contacts_all' => ($contacts_all)? 1 : 0)); ?>"<?php if($nb_results > 50000): ?> disabled="disabled"<?php endif;?>> <span class="glyphicon glyphicon-export"></span> Exporter en CSV</a>
       <a class="btn btn-default btn-block" href="<?php echo url_for('compte_groupes') ?>" > <span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Gérer les groupes</a>
       <p style="margin-top: 10px;"><strong><?php echo $nb_results; ?></strong> résultat(s) trouvé(s)</p>
-    </div>
 
-	<div class="col-xs-12">
+	<div style="margin-top: 15px;">
     <?php
     foreach($facets as $type => $ftype):
       if (count($ftype['buckets'])): ?>
@@ -189,7 +187,7 @@
 	</div>
 
     <?php if(isset($args_copy)): ?>
-	<div class="col-xs-12">
+	<div style="margin-top: 15px;">
 		<h4>Créer un tag</h4>
 		<form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', $args_copy->getRawValue()); ?>" method="GET">
         <div class="input-group">
@@ -204,7 +202,7 @@
 		</form>
 	</div>
 	<?php if ($tagsManuels): ?>
-	<div class="col-xs-12">
+	<div style="margin-top: 15px;">
 		<h4>Supprimer un tag</h4>
 		<form class="form_ajout_tag" action="<?php echo url_for('compte_removetag', $args_copy->getRawValue()); ?>" method="GET">
         <div class="input-group">

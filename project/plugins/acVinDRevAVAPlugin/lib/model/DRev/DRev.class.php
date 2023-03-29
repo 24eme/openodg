@@ -190,6 +190,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_attachments->exist('DR.csv');
     }
 
+    public function getCurrentRegistreVCI() {
+      return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
+    }
+
     public function getLastRegistreVCI() {
       return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne -1));
     }
@@ -951,6 +955,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalSuperficieVinifiee();
 	}
 
+    public function getRegistreVCISurfaceFacturable() {
+        $registreVCI = $this->getCurrentRegistreVCI();
+
+        if(!$registreVCI) {
+
+            return 0;
+        }
+
+        return $registreVCI->getSurfaceFacturable();
+    }
+
     public function isAdherentSyndicat() {
 
         return $this->getEtablissementObject()->getCompte()->isAdherentSyndicat();
@@ -974,6 +989,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
+        if($this->getEtablissementObject()->getCompte()->statut == CompteClient::STATUT_INACTIF) {
+            return array();
+        }
+
         $templateFacture = $this->getTemplateFacture();
 
         if(!$templateFacture) {
@@ -996,15 +1015,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $mouvement = DRevMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
-            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->type_libelle = $cotisation->getConfigCollection()->getLibelle();
+            $mouvement->detail_libelle = $cotisation->getLibelle();
             $mouvement->quantite = $cotisation->getQuantite();
             $mouvement->taux = $cotisation->getPrix();
+            $mouvement->tva = $cotisation->getTva();
             $mouvement->facture = 0;
             $mouvement->facturable = 1;
             $mouvement->date = $this->getCampagne().'-12-10';
             $mouvement->date_version = $this->validation;
             $mouvement->version = $this->version;
             $mouvement->template = $templateFacture->_id;
+            $mouvement->type = "DRev";
 
             if(isset($cotisationsPrec[$cotisation->getHash()])) {
                 $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();

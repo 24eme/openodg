@@ -3,7 +3,13 @@
 class DeclarationExportCsv
 {
     public static function getProduitKeysCsv($produitconfig, $withLibelle = false){
-
+        if (!$produitconfig) {
+            $res = ';;;;;;';
+            if ($withLibelle) {
+                $res .= ';;;;;;;';
+            }
+            return $res;
+        }
         $res  = $produitconfig->getCertification()->getKey().";";
         if ($withLibelle) {
             $res .= $produitconfig->getCertification()->getLibelle().";";
@@ -30,7 +36,7 @@ class DeclarationExportCsv
         }
         $res .= $produitconfig->getCepage()->getKey();
         if ($withLibelle) {
-            $res .= $produitconfig->getCepage()->getLibelle().";";
+            $res .= ";".$produitconfig->getCepage()->getLibelle();
         }
 
         return str_replace("DEFAUT", "", $res);

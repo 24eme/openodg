@@ -201,7 +201,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             $this->get($parcelleHash)->active = 1;
         }
-        print_r($this->declaration);exit;
     }
 
     public function initOrUpdateProduitsFromCVI() {

@@ -18,9 +18,23 @@ class MouvementFactureView extends acCouchdbView
     }
 
     public function getMouvementsFacturesBySociete($societe, $facturee = 0, $facturable = 1) {
+
+        if($societe instanceof Compte) {
+
+            return $this->getMouvementsFacturesByCompte($societe, $facturee, $facturable);
+        }
+
 	return $this->client
 	  ->startkey(array($facturee,$facturable,$societe->identifiant.'00'))
 	  ->endkey(array($facturee,$facturable,$societe->identifiant.'99', array()))
+	  ->reduce(false)
+	  ->getView($this->design, $this->view)->rows;
+    }
+
+    public function getMouvementsFacturesByCompte($compte, $facturee = 0, $facturable = 1) {
+	return $this->client
+	  ->startkey(array($facturee,$facturable,$compte->identifiant))
+	  ->endkey(array($facturee,$facturable,$compte->identifiant, array()))
 	  ->reduce(false)
 	  ->getView($this->design, $this->view)->rows;
     }

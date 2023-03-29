@@ -4,6 +4,8 @@
 
 class EtablissementClient extends acCouchdbClient {
 
+    const REGION_HORS_CVO = 'REGION_HORS_CVO';
+    const REGION_CVO = 'REGION_CVO';
     const TYPE_MODEL = "Etablissement";
     const TYPE_COUCHDB = "ETABLISSEMENT";
 
@@ -48,9 +50,14 @@ class EtablissementClient extends acCouchdbClient {
         return $this->findByIdentifiant($identifiant);
     }
 
-    public function findByIdentifiant($identifiant) {
+    public function retrieveById($identifiant, $hydrate = self::HYDRATE_DOCUMENT) {
 
-        return $this->find('ETABLISSEMENT-'.$identifiant);
+        return $this->findByIdentifiant($identifiant, $hydrate);
+    }
+
+    public function findByIdentifiant($identifiant, $hydrate = self::HYDRATE_DOCUMENT) {
+
+        return $this->find('ETABLISSEMENT-'.$identifiant, $hydrate);
     }
 
     /**
@@ -123,5 +130,9 @@ class EtablissementClient extends acCouchdbClient {
 
     public static function cleanCivilite($nom) {
         return preg_replace("/^(M|MME|EARL|SCEA|SARL|SDF|GAEC|MLLE|SA|SAS|Mme|M\.|STEF|MEMR|MM|IND|EURL|SCA|EI|SCI|MMES|SASU|SC|SCV|Melle|ASSO|GFA)[,]? /", "", $nom);
+    }
+
+    public static function getRegionsWithoutHorsInterLoire() {
+        return array(self::REGION_CVO => self::REGION_CVO);
     }
 }

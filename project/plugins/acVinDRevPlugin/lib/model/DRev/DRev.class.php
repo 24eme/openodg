@@ -2386,8 +2386,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $configFile = fopen(sfConfig::get('sf_root_dir')."/".sfConfig::get('app_api_contrats_fichier_csv'),"r");
 
         $volumes = array();
-        while (!feof($configFile) ) {
-            $line = fgetcsv($configFile);
+        while (($line = fgetcsv($configFile)) !== false) {
             $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_NOM]);
         }
         fclose($configFile);
