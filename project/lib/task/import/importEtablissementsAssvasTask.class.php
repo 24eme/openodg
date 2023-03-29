@@ -60,11 +60,19 @@ EOF;
             $line[self::CSV_SIRET] = trim(str_replace(" ", "", $line[self::CSV_SIRET]));
             $line[self::CSV_CVI] = trim(str_replace(" ", "", $line[self::CSV_CVI]));
 
+            $initialRevisionSociete = null;
+            $initialRevisionEtablissement = null;
+
             $societe = new Societe();
             $societe->identifiant = sprintf(sfConfig::get('app_societe_format_identifiant'), $line[self::CSV_IDENTIFIANT]);
+            $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
             $societe->constructId();
 
-            $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
+            if(SocieteClient::getInstance()->find($societe->_id, acCouchdbClient::HYDRATE_JSON)) {
+                $societe = SocieteClient::getInstance()->find($societe->_id);
+                $initialRevisionSociete = $societe->_rev;
+            }
+
             if(!$line[self::CSV_INTITULE]) {
                 $line[self::CSV_INTITULE] = null;
             }
@@ -90,15 +98,25 @@ EOF;
             }
 
             $societe->email = (trim($line[self::CSV_EMAIL_1])) ?: null;
-
             $societe->save();
 
-            $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
-            $etablissement->save();
+            if(EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant.'01', acCouchdbClient::HYDRATE_JSON)) {
+                $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant.'01');
+                $initialRevisionEtablissement = $etablissement->_rev;
+            } else {
+                $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
+                $etablissement->save();
+            }
+
+            $etablissement->nom = $societe->getRaisonSociale();
+            $societe->pushAdresseTo($etablissement);
+            $societe->pushContactTo($etablissement);
             $etablissement->cvi = $line[self::CSV_CVI];
             $etablissement->siret = $line[self::CSV_SIRET];
             $etablissement->commentaire = $line[self::CSV_OBSERVATION];
             $etablissement->save();
+
+            $societe = SocieteClient::getInstance()->find($societe->_id);
 
             if(!preg_match("/^[0-9]{10}$/", $etablissement->cvi)) {
                 echo "Warning cvi non valide : $etablissement->cvi ($etablissement->_id)".PHP_EOL;
@@ -112,6 +130,13 @@ EOF;
                 echo "Warning email non valide : $societe->email ($societe->_id)".PHP_EOL;
             }
 
+            if($societe->_rev != $initialRevisionSociete) {
+                echo "Success société enregistrée : $societe->_id ($initialRevisionSociete => $societe->_rev)".PHP_EOL;
+            }
+
+            if($etablissement->_rev != $initialRevisionEtablissement) {
+                echo "Success société enregistrée : $societe->_id ($initialRevisionEtablissement => $etablissement->_rev)".PHP_EOL;
+            }
         }
     }
 
