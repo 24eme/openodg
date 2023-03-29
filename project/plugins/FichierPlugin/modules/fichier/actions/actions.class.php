@@ -273,7 +273,7 @@ class fichierActions extends sfActions
 				$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->periode);
 			    $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($this->etablissement->identifiant, $this->periode);
 				if ($fichiers && $drev) {
-					$drev->importFromDocumentDouanier(true);
+					$drev->resetAndImportFromDocumentDouanier();
                 	$drev->save();
 				}
 			}catch(sfException $e ) {

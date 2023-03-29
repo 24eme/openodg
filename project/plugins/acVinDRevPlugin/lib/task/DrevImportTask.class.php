@@ -101,7 +101,7 @@ EOF;
                     continue;
                 }
 
-                $drev->importFromDocumentDouanier();
+                $drev->resetAndImportFromDocumentDouanier();
                 foreach($drev->getProduits() as $produit) {
                     $produit->superficie_revendique = null;
                 }
