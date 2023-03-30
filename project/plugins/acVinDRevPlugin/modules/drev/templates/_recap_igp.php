@@ -72,7 +72,7 @@
 
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle col-xs-12">
+              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
           </div>
           <br/>
           <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
