@@ -6,7 +6,7 @@
     <thead>
         <tr>
             <th class="col-xs-5" style="border-top: hidden; border-left: hidden"></th>
-            <th colspan="10" class="text-center">Lignes</th>
+            <th colspan="11" class="text-center">Lignes</th>
         </tr>
     </thead>
     <thead>
@@ -29,6 +29,7 @@
             <tr>
                 <td>
                     <?= $produit['libelle'] ?>
+                    <br />
                     <small class="pull-right text-muted">
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                         <span title="Rendement L5" style="cursor: help">

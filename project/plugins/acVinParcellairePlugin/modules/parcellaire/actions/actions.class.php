@@ -40,6 +40,9 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
+        }
         $this->setTemplate('parcellaire');
     }
 
@@ -120,14 +123,14 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
-        header("Content-Type: application/csv; charset=UTF-8");
+        header("Content-Type: application/csv; charset=iso-8859-1");
         header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.csv"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
         $csv = new ExportParcellaireCSV($parcellaire);
-        echo $csv->export();
+        echo iconv("UTF-8", "ISO-8859-1", $csv->export());
 
         exit;
     }

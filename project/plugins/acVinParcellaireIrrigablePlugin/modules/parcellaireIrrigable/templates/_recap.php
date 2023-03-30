@@ -22,7 +22,7 @@
 				<td><?php echo $parcelle->lieu; ?></td>
 				<td style="text-align: right;"><?php echo $parcelle->section; ?></td>
 				<td><?php echo $parcelle->numero_parcelle; ?></td>
-				<td><?php echo $parcelle->cepage; ?></td>
+				<td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
 				<td><?php echo $parcelle->campagne_plantation; ?></td>
 				<td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
             	<td><?php echo $parcelle->materiel; ?></td>

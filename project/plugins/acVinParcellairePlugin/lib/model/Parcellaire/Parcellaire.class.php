@@ -85,12 +85,12 @@ class Parcellaire extends BaseParcellaire {
         return $this->declaration->getParcelles($onlyVtSgn, $active);
     }
 
-    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
+    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
         $produit = $this->addProduit($hashProduit);
-        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
+        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
     }
 
-    public function countSameParcelle($commune, $section, $numero_parcelle, $lieu, $hashProduit = null, $cepage = null, $campagne_plantation = null){
+    public function countSameParcelle($commune, $prefix, $section, $numero_parcelle, $lieu, $hashProduit = null, $cepage = null, $campagne_plantation = null){
         $sameParcelle = 0;
 
         foreach ($this->getParcelles() as $parcelleExistante) {

@@ -20,14 +20,14 @@
 
     $(document).ready(function ()
     {
-        $(document).initAdvancedElements();
-        $.initQueryHash();
-        $.initTableSelection();
+        $(document).initAdvancedElementsHamza();
+        $.initQueryHashHamza();
+        $.initTableSelectionHamza();
 
         $(options.selectors.ajaxModal).on("show.bs.modal", function (e) {
             var link = $(e.relatedTarget);
             $(this).load(link.attr("href"), function () {
-                $(this).initAdvancedElements();
+                $(this).initAdvancedElementsHamza();
             });
         });
         $(options.selectors.ajaxModal).on("hidden.bs.modal", function (e) {
@@ -41,7 +41,7 @@
      * Sélection de lignes de tableau
      * $.initTableSelection();
      ******************************************/
-    $.initTableSelection = function()
+    $.initTableSelectionHamza = function()
     {
         var tables = $('.table_selection');
 
@@ -77,7 +77,7 @@
         });
     };
 
-    $.fn.initAdvancedElements = function () {
+    $.fn.initAdvancedElementsHamza = function () {
 
         var element = $(this);
 
@@ -427,7 +427,7 @@
     }
 
 
-    $.initQueryHash = function () {
+    $.initQueryHashHamza = function () {
         $(window).on('hashchange', function () {
             if ($(document).find('.hamzastyle').length) {
                 var params = jQuery.parseParams(location.hash.replace("#", ""));

@@ -5,7 +5,7 @@ class commonActions extends sfActions {
     public function executeAccueil(sfWebRequest $request) {
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
 
-            return $this->redirect('compte_search');
+            return $this->redirect('parcellaire');
         }
 
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
@@ -23,7 +23,7 @@ class commonActions extends sfActions {
             return $this->redirect('compte_teledeclarant_premiere_connexion');
         }
 
-        return $this->redirect('compte_search', $this->getUser()->getEtablissement());
+        return $this->redirect('parcellaire', $this->getUser()->getEtablissement());
     }
 
     public function executeContact(sfWebRequest $request) {

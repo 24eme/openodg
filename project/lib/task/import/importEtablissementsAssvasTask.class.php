@@ -18,7 +18,13 @@ class importEtablissementsAssvasTask extends sfBaseTask
     const CSV_PORTABLE_2            = 15;
     const CSV_EMAIL_1               = 16;
     const CSV_EMAIL_2               = 17;
-    const CSV_ZONE_AGENT            = 18;
+    const CSV_HABILITATION_ANJOU_SAUMUR = 20;
+    const CSV_HABILITATION_IGP = 24;
+    const CSV_HABILITATION_HAUT_POITOU = 28;
+    const CSV_HABILITATION_FIEFS_VENDEENS = 32;
+    public static $tags = [self::CSV_HABILITATION_ANJOU_SAUMUR => 'Habilitation Anjou Saumur',
+             self::CSV_HABILITATION_IGP => 'Habilitation IGP',
+             self::CSV_HABILITATION_HAUT_POITOU => 'Habilitation Haut-Poitou', self::CSV_HABILITATION_FIEFS_VENDEENS => 'Habilitation Fiefs Vendeens'];
 
     protected function configure()
     {
@@ -60,11 +66,27 @@ EOF;
             $line[self::CSV_SIRET] = trim(str_replace(" ", "", $line[self::CSV_SIRET]));
             $line[self::CSV_CVI] = trim(str_replace(" ", "", $line[self::CSV_CVI]));
 
+            $statut = SocieteClient::STATUT_SUSPENDU;
+            foreach(self::$tags as $tagKey => $tagValue) {
+                if($line[$tagKey] == "OUI") {
+                    $statut = SocieteClient::STATUT_ACTIF;
+                }
+            }
+
+            $initialRevisionSociete = null;
+            $initialRevisionEtablissement = null;
+            $initialRevisionCompteEtablissement = null;
+
             $societe = new Societe();
             $societe->identifiant = sprintf(sfConfig::get('app_societe_format_identifiant'), $line[self::CSV_IDENTIFIANT]);
+            $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
             $societe->constructId();
 
-            $societe->type_societe = SocieteClient::TYPE_OPERATEUR;
+            if(SocieteClient::getInstance()->find($societe->_id, acCouchdbClient::HYDRATE_JSON)) {
+                $societe = SocieteClient::getInstance()->find($societe->_id);
+                $initialRevisionSociete = $societe->_rev;
+            }
+
             if(!$line[self::CSV_INTITULE]) {
                 $line[self::CSV_INTITULE] = null;
             }
@@ -72,9 +94,9 @@ EOF;
             $societe->siret = $line[self::CSV_SIRET];
 
             $societe->interpro = 'INTERPRO-declaration';
-            $societe->statut = SocieteClient::STATUT_ACTIF;
+            $societe->statut = $statut;
 
-            $societe->adresse = trim($line[self::CSV_ADRESSE]);
+            $societe->adresse = trim(preg_replace('/(^-|-$)/', '', trim($line[self::CSV_ADRESSE])));
             $societe->code_postal = $line[self::CSV_CODE_POSTAL];
             $societe->commune = trim($line[self::CSV_COMMUNE]);
             $societe->setPays('FR');
@@ -90,15 +112,43 @@ EOF;
             }
 
             $societe->email = (trim($line[self::CSV_EMAIL_1])) ?: null;
-
             $societe->save();
 
-            $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
-            $etablissement->save();
+            if(EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant.'01', acCouchdbClient::HYDRATE_JSON)) {
+                $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant.'01');
+                $initialRevisionEtablissement = $etablissement->_rev;
+            } else {
+                $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR);
+                $etablissement->save();
+            }
+
+            $etablissement->statut = $societe->getStatut();
+            $etablissement->nom = $societe->getRaisonSociale();
+            $societe->pushAdresseTo($etablissement);
+            $societe->pushContactTo($etablissement);
             $etablissement->cvi = $line[self::CSV_CVI];
             $etablissement->siret = $line[self::CSV_SIRET];
             $etablissement->commentaire = $line[self::CSV_OBSERVATION];
             $etablissement->save();
+
+            $compte = $etablissement->getMasterCompte();
+            $initialRevisionCompteEtablissement = $compte->_rev;
+            $actif = false;
+            $compte->removeTags('manuel', self::$tags);
+            foreach(self::$tags as $tagKey => $tagValue) {
+                if($line[$tagKey] == "OUI") {
+                    $compte->addTag('manuel', $tagValue);
+                    $actif = true;
+                }
+            }
+            $compte->save();
+
+            if(!$actif) {
+
+            }
+
+            $societe = SocieteClient::getInstance()->find($societe->_id);
+            $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
 
             if(!preg_match("/^[0-9]{10}$/", $etablissement->cvi)) {
                 echo "Warning cvi non valide : $etablissement->cvi ($etablissement->_id)".PHP_EOL;
@@ -111,6 +161,19 @@ EOF;
             if ($societe->email && filter_var($societe->email, FILTER_VALIDATE_EMAIL) === false) {
                 echo "Warning email non valide : $societe->email ($societe->_id)".PHP_EOL;
             }
+
+            if($societe->_rev != $initialRevisionSociete) {
+                echo "Success société enregistrée : $societe->_id ($initialRevisionSociete => $societe->_rev)".PHP_EOL;
+            }
+
+            if($etablissement->_rev != $initialRevisionEtablissement) {
+                echo "Success etablissement enregistrée : $etablissement->_id ($initialRevisionEtablissement => $etablissement->_rev)".PHP_EOL;
+            }
+
+            if($initialRevisionCompteEtablissement != $compte->_rev) {
+                echo "Success compte enregistrée : $compte->_id ($initialRevisionCompteEtablissement => $compte->_rev)".PHP_EOL;
+            }
+
 
         }
     }

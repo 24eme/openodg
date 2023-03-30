@@ -53,7 +53,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function updateIDU() {
-        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, "", $this->section, $this->numero_parcelle);
+        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
     }
 
     public function setCodeCommune($code_commune) {

@@ -50,10 +50,10 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
             foreach ($parcelles as $parcelle) {
                 $configProduit = $parcelle->getProduit()->getConfig();
 
-                $inao = $configProduit->getCodeDouane();
+                $inao = ($configProduit) ? $configProduit->getCodeDouane() : null;
 
                 $libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-                $csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", 
+                $csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $ligne_base,
                     DeclarationExportCsv::getProduitKeysCsv($configProduit),
                     $inao,
@@ -69,7 +69,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                     $this->formatFloat($parcelle->superficie),
                     $this->protectStr($parcelle->ecart_pieds),
                     $this->protectStr($parcelle->ecart_rang),
-                    $this->protectStr(implode(',', array_keys($parcelle->isInAires()))),
+                    $this->protectStr(implode(',', array_keys($parcelle->getIsInAires()))),
                     $this->protectStr($this->doc->date),
                 );
             }

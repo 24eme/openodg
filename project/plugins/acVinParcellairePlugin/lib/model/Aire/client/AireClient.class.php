@@ -7,6 +7,8 @@ class AireClient extends acCouchdbClient {
     const PARCELLAIRE_AIRE_EN_ERREUR = 'ERREUR';
     const PARCELLAIRE_AIRE_HORSDELAIRE = false;
 
+    private $cache_find = array();
+    private $cache_all_aires = array();
 
     public static function getInstance()
     {
@@ -70,7 +72,10 @@ class AireClient extends acCouchdbClient {
     }
 
     protected function findByCommuneAndINAO($commune_insee, $inao_denomination_id) {
-        return $this->find($this->constructionId($commune_insee, $inao_denomination_id));
+        if (!isset($this->cache_find[$commune_insee.$inao_denomination_id])) {
+            $this->cache_find[$commune_insee.$inao_denomination_id] = $this->find($this->constructionId($commune_insee, $inao_denomination_id));
+        }
+        return $this->cache_find[$commune_insee.$inao_denomination_id];
     }
 
     public function constructionId($commune_insee, $inao_denomination_id) {
@@ -78,12 +83,14 @@ class AireClient extends acCouchdbClient {
     }
 
     public function getAireIdsFromCommune($commune_insee) {
-        $res = $this->getAllDocsByType(self::TYPE_COUCHDB.'-'.$commune_insee, 10000);
-        $ids = array();
-        foreach($res->rows as $r) {
-            $ids[] = $r->id;
+        if (!isset($this->cache_all_aires[$commune_insee])) {
+            $res = $this->getAllDocsByType(self::TYPE_COUCHDB.'-'.$commune_insee, 10000);
+            $this->cache_all_aires[$commune_insee] = array();
+            foreach($res->rows as $r) {
+                $this->cache_all_aires[$commune_insee][] = $r->id;
+            }
         }
-        return $ids;
+        return $this->cache_all_aires[$commune_insee];
     }
 
     public function getAiresForInseeCommunes($communes) {
