@@ -31,6 +31,7 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $denominations = array();
         $communes = array();
+        $empty_args = (!$arguments['commune_insee'] && !$arguments['identifiant_inao']);
         if ($arguments['commune_insee']) {
             $communes[] = $arguments['commune_insee'];
         }
@@ -38,22 +39,21 @@ EOF;
             $denominations[] = $arguments['identifiant_inao'];
         }else {
             if (count($communes) == 1)  {
-                $denominations[] = AireClient::getInstance()->getDelimitationsArrayFromCommune($arguments['commune_insee']);
+                $denominations[] = AireClient::getInstance()->getDelimitationsArrayFromCommune($communes[0]);
             }else{
                 foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $a) {
                     $denominations[] = $a['denomination_id'];
                 }
             }
         }
-        if (!count($communes)) {
-            foreach($denominations as $did) {
-                foreach(AireClient::getInstance()->getCommunesArrayFromDenominationId($did) as $c) {
+        foreach($denominations as $d) {
+            if ($empty_args) {
+                $communes = [];
+                foreach(AireClient::getInstance()->getCommunesArrayFromDenominationId($d) as $c) {
                     $communes[$c] = $c;
                 }
             }
-        }
-        foreach($communes as $c) {
-            foreach($denominations as $d) {
+            foreach($communes as $c) {
                 try {
                     $aire = AireClient::getInstance()->createOrUpdateAireFromHttp($c, $d);
                     $aire->save();
