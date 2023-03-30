@@ -446,4 +446,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return false;
     }
 
+    public function getCodeDouane() {
+        return '';
+    }
+
 }
