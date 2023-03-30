@@ -26,19 +26,39 @@ class DeclarationExportCsv
         if ($withLibelle) {
             $res .= $produitconfig->getMention()->getLibelle().";";
         }
-        $res .= $produitconfig->getLieu()->getKey().";";
-        if ($withLibelle) {
-            $res .= $produitconfig->getLieu()->getLibelle().";";
+        if ($produitconfig->hasLieu()) {
+            $res .= $produitconfig->getLieu()->getKey().";";
+            if ($withLibelle) {
+                $res .= $produitconfig->getLieu()->getLibelle().";";
+            }
+        }else{
+            $res .= ';';
+            if ($withLibelle) {
+                $res .= ';';
+            }
         }
-        $res .= $produitconfig->getCouleur()->getKey().";";
-        if ($withLibelle) {
-            $res .= $produitconfig->getCouleur()->getLibelle().";";
+        if ($produitconfig->hasLieu()) {
+            $res .= $produitconfig->getCouleur()->getKey().";";
+            if ($withLibelle) {
+                $res .= $produitconfig->getCouleur()->getLibelle().";";
+            }
+        }else{
+            $res .= ';';
+            if ($withLibelle) {
+                $res .= ';';
+            }
         }
-        $res .= $produitconfig->getCepage()->getKey();
-        if ($withLibelle) {
-            $res .= ";".$produitconfig->getCepage()->getLibelle();
+        if ($produitconfig->hasCepage()) {
+            $res .= $produitconfig->getCepage()->getKey();
+            if ($withLibelle) {
+                $res .= ";".$produitconfig->getCepage()->getLibelle();
+            }
+        }else{
+            $res .= ';';
+            if ($withLibelle) {
+                $res .= ';';
+            }
         }
-
         return str_replace("DEFAUT", "", $res);
     }
 }

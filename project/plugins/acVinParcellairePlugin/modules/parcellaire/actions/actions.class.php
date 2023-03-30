@@ -130,14 +130,14 @@ class parcellaireActions extends sfActions {
         header("Expires: 0");
 
         $csv = new ExportParcellaireCSV($parcellaire);
-        echo iconv("UTF-8", "ISO-8859-1", $csv->export());
+        echo iconv("UTF-8", "ISO-8859-1//TRANSLIT", $csv->export());
 
         exit;
     }
 
     public function executeParcellaireExportODS(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
