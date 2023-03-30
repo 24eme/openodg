@@ -270,5 +270,5 @@ all:
           denomination_id: "01765"
         LieuDit:
           name: "Alsace Lieu-Dit"
-          color: "#d955b16"
+          color: "#d95b16"
           denomination_id: "02486"
