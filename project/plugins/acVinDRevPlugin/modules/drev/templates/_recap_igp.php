@@ -49,9 +49,11 @@
                       <td class="text-right">
                               <?php  if ($synthese['nb_lots'] > 0): ?>
                                   <?php if ($isTotal): ?>
-                                  <span class="text-muted"><?php printf("%0.0f", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100.0); ?>%</span> &nbsp;&nbsp;
+                                  <span class="text-muted" data-toggle="tooltip" title="<?= $synthese['nb_lots_degustables'] ?> lot(s) dégusté(s) sur <?= $synthese['nb_lots'] ?> lot(s)">
+                                      <?php printf("%0.0f", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100.0); ?>%
+                                  </span> &nbsp;&nbsp;
                                   <?php endif;?>
-                                  <?php echo $synthese['nb_lots']; ?>
+                                  <small data-toggle='tooltip' title="<?= $synthese['nb_lots_degustables'] ?> lot(s) dégusté(s) sur <?= $synthese['nb_lots'] ?> lot(s)"><small class="text-right text-muted"><?= $synthese['nb_lots_degustables'] ?> / </small></small><?php echo $synthese['nb_lots']; ?>
                               <?php else: ?>
                                    aucun lots
                                <?php endif; ?>
