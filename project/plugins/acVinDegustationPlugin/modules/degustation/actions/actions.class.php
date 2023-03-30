@@ -1162,6 +1162,37 @@ class degustationActions extends sfActions {
         throw new sfError404Exception();
     }
 
+    public function executeConvocationReponse(sfWebRequest $request)
+    {
+        $this->degustation = $request->getParameter('id');
+        $this->college = $request->getParameter('college');
+        $this->identifiant = $request->getParameter('identifiant');
+        $authkey = $request->getParameter('auth');
+
+        if (! UrlSecurity::verifyAuthKey($authkey, $this->degustation, $this->identifiant)) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+        }
+
+        $this->degustation = DegustationClient::getInstance()->find($this->degustation);
+
+        if (! $this->degustation->degustateurs->exist($this->college) || ! $this->degustation->degustateurs->get($this->college)->exist($this->identifiant)) {
+            throw new sfException("Vous n'êtes pas convoqué dans cette dégustation");
+        }
+
+        if ($this->degustation->degustateurs->get($this->college)->get($this->identifiant)->exist('confirmation')) {
+            $presence = $this->degustation->degustateurs->get($this->college)->get($this->identifiant)->confirmation;
+            return $this->redirect('degustation_convocation_auth', [
+                'id' => $this->degustation->_id,
+                'college' => $this->college,
+                'identifiant' => $this->identifiant,
+                'auth' => $authkey,
+                'presence' => ($presence) ? 1 : 0
+            ]);
+        }
+
+        $this->setLayout(false);
+    }
+
     public function executeConvocationWithAuth(sfWebRequest $request) {
         $authKey = $request->getParameter('auth');
         $this->id = $request->getParameter('id');
