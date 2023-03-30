@@ -39,25 +39,21 @@ EOF;
             $denominations[] = $arguments['identifiant_inao'];
         }else {
             if (count($communes) == 1)  {
-                $denominations[] = AireClient::getInstance()->getDelimitationsArrayFromCommune($arguments['commune_insee']);
+                $denominations[] = AireClient::getInstance()->getDelimitationsArrayFromCommune($communes[0]);
             }else{
                 foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $a) {
                     $denominations[] = $a['denomination_id'];
                 }
             }
         }
-        if (!count($communes)) {
-            foreach($denominations as $did) {
-                foreach(AireClient::getInstance()->getCommunesArrayFromDenominationId($did) as $c) {
+        foreach($denominations as $d) {
+            if ($empty_args) {
+                $communes = [];
+                foreach(AireClient::getInstance()->getCommunesArrayFromDenominationId($d) as $c) {
                     $communes[$c] = $c;
                 }
             }
-        }
-        foreach($communes as $c) {
-            if ($empty_args) {
-                $denominations = AireClient::getInstance()->getDelimitationsArrayFromCommune($c);
-            }
-            foreach($denominations as $d) {
+            foreach($communes as $c) {
                 try {
                     $aire = AireClient::getInstance()->createOrUpdateAireFromHttp($c, $d);
                     $aire->save();
