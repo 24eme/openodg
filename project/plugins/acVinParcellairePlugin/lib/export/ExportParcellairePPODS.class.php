@@ -17,7 +17,7 @@ class ExportParcellairePPODS extends BaseExportParcellaireODS {
             $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
         }
         if(isset($this->identificationParcellaire)) {
-            $this->dgc = $this->identificationParcellaire->getDgc();
+            $this->dgc = array_keys($this->identificationParcellaire->getDgc())[0];
         }
         else {
             $this->dgc = 'PAS DE DGC';
