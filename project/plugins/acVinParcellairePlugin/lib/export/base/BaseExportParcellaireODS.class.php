@@ -12,12 +12,23 @@ abstract class BaseExportParcellaireODS {
 
     private $ods_filename = null;
 
+    private $ods_tmp_file = null;
+
+    private $tmp_dir = null;
+
     // le contenu du xml content.xml du fichier ODS à modifier.
     private string $ods_content = "";
 
     public function __construct($parcellaire, $ods_filename) {
         $this->parcellaire = $parcellaire;
         $this->ods_filename = $ods_filename;
+
+        // Les chemins des fichiers
+        $this->tmp_dir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'ods';
+        if (!file_exists($this->tmp_dir)) {
+            mkdir($this->tmp_dir);
+        }
+        $this->ods_tmp_file = $this->tmp_dir . '/' . $this->ods_filename;
     }
 
     protected function getParcellaire() {
@@ -30,21 +41,15 @@ abstract class BaseExportParcellaireODS {
      * @return string le contenu du fichier ODS
      */
     public function create() {
-        // Les fichiers nécesssaires pour la transfo de l'ODS
-        $tmp_dir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'ods';
-        if (!file_exists($tmp_dir)) {
-            mkdir($tmp_dir);
-        }
-        $ods_tmp_file = $tmp_dir . '/' . $this->ods_filename;
         $content_filename = 'content.xml';
-        $content_file = "$tmp_dir/$content_filename";
+        $content_file = $this->tmp_dir . '/' . $content_filename;
 
-        copy(dirname(__FILE__) . '/../../../modules/parcellaire/templates/' . $this->ods_filename, $ods_tmp_file);
+        copy(dirname(__FILE__) . '/../../../modules/parcellaire/templates/' . $this->ods_filename, $this->ods_tmp_file);
 
         // Prend le content.xml en dézippant l'ODS
         $zip = new ZipArchive();
-        $zip->open($ods_tmp_file);
-        $zip->extractTo($tmp_dir, $content_filename);
+        $zip->open($this->ods_tmp_file);
+        $zip->extractTo($this->tmp_dir, $content_filename);
 
         $this->ods_content = file_get_contents($content_file);
 
@@ -55,7 +60,20 @@ abstract class BaseExportParcellaireODS {
         $zip->addFile($content_file, $content_filename);
         $zip->close();
 
-        return file_get_contents($ods_tmp_file);
+        return file_get_contents($this->ods_tmp_file);
+    }
+
+    /**
+     * Génère une PDF à partir de l'ods en cache.
+     * 
+     * @return string le contenu du PDF
+     */
+    public function createPDF() {
+        $this->create();
+        
+        exec("libreoffice --headless --convert-to pdf {$this->ods_tmp_file} --outdir {$this->tmp_dir}");
+
+        return file_get_contents(str_replace('.ods', '.pdf', $this->ods_tmp_file));
     }
 
     /**
