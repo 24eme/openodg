@@ -55,7 +55,7 @@ class exportActions extends sfActions {
         $generation = $this->form->getGeneration();
         $generation->save();
 
-        return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
+        return $this->redirect('generation_view', ['id' => $generation->_id]);
     }
 
 }

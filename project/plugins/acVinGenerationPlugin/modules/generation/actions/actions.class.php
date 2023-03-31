@@ -54,21 +54,7 @@ class generationActions extends sfActions {
       $generation->reload();
       $generation->save();
 
-      return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
-  }
-
-  public function executeDelete(sfWebRequest $request) {
-      $this->generation = $this->getGenerationFromRequest($request);
-      if($this->generation->statut != GenerationClient::GENERATION_STATUT_GENERE) {
-
-      throw new sfException("La génération n'est pas supprimable car elle n'est pas finie");
-      }
-      if ($request->isMethod(sfWebRequest::POST)) {
-          if ($request->getParameter('delete')) {
-              $this->generation->delete();
-          }
-          return $this->redirect('generation_list', array('type_document' => $this->type));
-      }
+      return $this->redirect('generation_view', ['id' => $generation->_id]);
   }
 
 }
