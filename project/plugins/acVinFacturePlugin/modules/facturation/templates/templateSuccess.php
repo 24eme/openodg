@@ -6,10 +6,7 @@
 
 <h2>Configuration de la Facturation</h2>
 
-<div>
-    <h3><?php echo $organisme->getNom(); ?></h3>
-    <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" class="pull-right" />
-    
+<div> 
     <div class="row"><div class="col-xs-12 mb-5"><b>Période de l'exercice :</b> <?php echo FactureConfiguration::getInstance()->getExercice(); ?></div></div>
     <div class="row">
       <div class="col-xs-1">Nom&nbsp;Factu.&nbsp;:</div>
@@ -47,20 +44,6 @@
       <div class="col-xs-1">Paiement&nbsp;:</div>
       <div class="col-xs-11"><?php echo FactureConfiguration::getInstance()->getModaliteDePaiement(); ?></div>
     </div>
-    <div class="row">
-      <div class="col-xs-1">OI :</div>
-      <div class="col-xs-7"><?php echo $organisme->getOi(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">Responsable&nbsp;:</div>
-      <div class="col-xs-7"><?php echo $organisme->getResponsable(); ?></div>
-    </div>
-    <?php if (file_exists($organisme->getImageSignaturePath())): ?>
-    <div class="row">
-      <div class="col-xs-1">Signature&nbsp;:</div>
-      <div class="col-xs-7"><img src="/<?php echo $organisme->getImageSignatureWebPath() ?>" /></div>
-    </div>
-    <?php endif; ?>
 </div>
 
 <h2><?php echo $template->libelle ?></h2>
