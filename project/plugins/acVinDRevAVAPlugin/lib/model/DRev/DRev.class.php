@@ -615,6 +615,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+
+        $this->generateMouvementsFactures();
     }
 
     public function getEtablissementObject() {
