@@ -53,10 +53,7 @@
         <?php foreach ($sous_generation->fichiers as $chemin => $titre): ?>
             <p style="position: relative;">
                 <a class="list-group-item text-center" download="<?php echo basename(urldecode($chemin)) ?>" href="<?php echo urldecode($chemin); ?>"  target="_blank"><span class="glyphicon glyphicon-download-alt"></span>&nbsp;&nbsp;<?php echo $titre; ?></a>
-                <a class="btn btn-link" style="position: absolute; top: 5px; right: -40px" href="<?= url_for('generation_view', [
-                  'type_document' => $generation->type_document,
-                  'date_emission' => $generation->date_emission.'-'.$sous_generation->type_document
-                ]) ?>"><span class="glyphicon glyphicon-eye-open"></span></a>
+                <a class="btn btn-link" style="position: absolute; top: 5px; right: -40px" href="<?= url_for('generation_view',['id' => $sous_generation->_id]) ?>"><span class="glyphicon glyphicon-eye-open"></span></a>
             </p>
         <?php endforeach; ?>
     <?php endforeach; ?>
@@ -92,10 +89,7 @@
 </div>
 
 <?php if ($generation->getMasterGeneration()): ?>
-<a href="<?= url_for('generation_view', [
-  'type_document' => $generation->getMasterGeneration()->type_document,
-  'date_emission' => $generation->getMasterGeneration()->date_emission
-]) ?>" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> Retour</a>
+<a href="<?= url_for('generation_view', ['id' => $generation->getMasterGeneration()->_id]) ?>" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i> Retour</a>
 <?php endif ?>
 
 
