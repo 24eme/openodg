@@ -2,11 +2,7 @@
 class generationActions extends sfActions {
 
   private function getGenerationFromRequest(sfWebRequest $request) {
-      $this->type = $request['type_document'];
-      $this->identifiant = isset($request['identifiant'])? $request['identifiant'] : null;
-      $this->nom = ($this->identifiant)? EtablissementClient::getInstance()->retrieveById($this->identifiant)->nom : null;
-      $this->date_emission = $request['date_emission'];
-      $this->generation = GenerationClient::getInstance()->find(GenerationClient::getInstance()->getId($this->type, $this->date_emission));
+      $this->generation = GenerationClient::getInstance()->find($request['id']);
       $this->forward404Unless($this->generation);
 
       return $this->generation;
