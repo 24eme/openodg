@@ -37,7 +37,7 @@ class Email {
             return array();
         }
 
-        if(!$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        if(class_exists("DrevConfiguration") && !$drev->validation_odg && DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
 
             return Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev);
         }
@@ -51,7 +51,7 @@ class Email {
     }
 
     public function getMessageDRevValidationDeclarant($drev) {
-        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+        if(class_exists("DrevConfiguration") && !DrevConfiguration::getInstance()->isSendMailToOperateur()) {
 
             return array();
         }
@@ -107,7 +107,7 @@ class Email {
     }
 
     public function getMessageDRevConfirmee($drev) {
-        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+        if(class_exists("DrevConfiguration") && !DrevConfiguration::getInstance()->isSendMailToOperateur()) {
 
             return array();
         }
@@ -138,7 +138,7 @@ class Email {
     }
 
     public function getMessageDrevPapierConfirmee($drev) {
-        if(!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+        if(class_exists("DrevConfiguration") && !DrevConfiguration::getInstance()->isSendMailToOperateur()) {
 
             return array();
         }
