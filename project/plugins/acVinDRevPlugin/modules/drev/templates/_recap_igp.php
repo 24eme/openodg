@@ -134,7 +134,11 @@
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
-                        <td class="text-center">
+                        <td class="text-center
+                        <?php if (in_array($mouvements[$lot->numero_dossier.$lot->numero_archive]->statut, [Lot::STATUT_MANQUEMENT_EN_ATTENTE, Lot::STATUT_NONCONFORME])): ?>
+                            alert-danger
+                        <?php endif ?>
+                        ">
                         <?php if($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id) && isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>

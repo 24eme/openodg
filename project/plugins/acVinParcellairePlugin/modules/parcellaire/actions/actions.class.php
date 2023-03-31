@@ -153,6 +153,24 @@ class parcellaireActions extends sfActions {
         exit;
     }
 
+    public function executeParcellaireExportPPODS(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: application/pdf; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s-%s.pdf"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        $ods = new ExportParcellairePPODS($parcellaire);
+        echo $ods->createPDF();
+
+        exit;
+    }
+
     public function executeParcellaireExportGeo(sfWebRequest $request) {
         $this->secureTeledeclarant();
         
