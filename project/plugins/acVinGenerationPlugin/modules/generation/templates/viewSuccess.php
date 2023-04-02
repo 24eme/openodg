@@ -83,7 +83,7 @@
     </div>
     <?php if(($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR) || ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && $generation->message)): ?>
     <div class="col-xs-4 text-center">
-        <a class="btn btn-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?> btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
+        <a class="btn btn-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?> btn-upper" href="<?php echo url_for('generation_reload', ['id' => $generation->_id]); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
     </div>
     <?php endif; ?>
 </div>
