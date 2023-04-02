@@ -64,7 +64,7 @@
         <?php $sousGenerationClass = GenerationClient::getClassForGeneration($generation->getOrCreateSubGeneration($sous_generation_type)); ?>
         <p>
         <?php if (count($generation->getOrCreateSubGeneration($sous_generation_type)->fichiers)): continue; endif; ?>
-          <a title="<?php echo $sousGenerationClass::getActionDescription() ?>" class="btn btn-link" href="<?= url_for('facturation_sous_generation', [
+          <a onclick="return confirm('Étes vous sûr de vouloir <?php echo lcfirst(str_replace("'", '\\\'', $sousGenerationClass::getActionLibelle())) ?> ?')" title="<?php echo str_replace('"', '', $sousGenerationClass::getActionDescription()) ?>" class="btn btn-link" href="<?= url_for('facturation_sous_generation', [
             'generation' => $generation->_id,
             'type' => $sous_generation_type
           ]) ?>"><?php if($generation->getOrCreateSubGeneration($sous_generation_type)->isNew()): ?><span class="glyphicon glyphicon-play-circle"></span><?php else: ?><span class="glyphicon glyphicon-eye-open"></span><?php endif; ?>&nbsp;<?php echo $sousGenerationClass::getActionLibelle() ?></a>
