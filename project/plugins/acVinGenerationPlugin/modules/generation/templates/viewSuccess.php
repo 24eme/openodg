@@ -64,7 +64,7 @@
         <?php $sousGenerationClass = GenerationClient::getClassForGeneration($generation->getOrCreateSubGeneration($sous_generation_type)); ?>
         <p>
         <?php if (count($generation->getOrCreateSubGeneration($sous_generation_type)->fichiers)): continue; endif; ?>
-          <a title="<?php echo $sousGenerationClass::getActionDescription() ?>" class="btn btn-link" href="<?= url_for('facturation_sous_generation', [
+          <a onclick="return confirm('Étes vous sûr de vouloir <?php echo lcfirst(str_replace("'", '\\\'', $sousGenerationClass::getActionLibelle())) ?> ?')" title="<?php echo str_replace('"', '', $sousGenerationClass::getActionDescription()) ?>" class="btn btn-link" href="<?= url_for('facturation_sous_generation', [
             'generation' => $generation->_id,
             'type' => $sous_generation_type
           ]) ?>"><?php if($generation->getOrCreateSubGeneration($sous_generation_type)->isNew()): ?><span class="glyphicon glyphicon-play-circle"></span><?php else: ?><span class="glyphicon glyphicon-eye-open"></span><?php endif; ?>&nbsp;<?php echo $sousGenerationClass::getActionLibelle() ?></a>
@@ -83,7 +83,7 @@
     </div>
     <?php if(($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR) || ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && $generation->message)): ?>
     <div class="col-xs-4 text-center">
-        <a class="btn btn-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?> btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
+        <a class="btn btn-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?> btn-upper" href="<?php echo url_for('generation_reload', ['id' => $generation->_id]); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
     </div>
     <?php endif; ?>
 </div>
