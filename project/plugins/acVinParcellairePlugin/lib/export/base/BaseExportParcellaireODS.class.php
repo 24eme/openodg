@@ -39,7 +39,7 @@ abstract class BaseExportParcellaireODS {
      */
     public function create() {
         // Si on l'a déjà créé on prend l'existant.
-        if (file_exists($this->ods_tmp_file)) {
+        if (file_exists($this->ods_tmp_file) && ! sfContext::getInstance()->getConfiguration()->isDebug()) {
             return file_get_contents($this->ods_tmp_file);
         }
 
