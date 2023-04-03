@@ -6,6 +6,26 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
         return $this;
     }
 
+    public function getGenre() {
+        return $this->getParentNode();
+    }
+
+    public function getCertification() {
+        return $this->getGenre()->getParentNode();
+    }
+
+    public function hasLieu() {
+        return false;
+    }
+    public function hasMention() {
+        return false;
+    }
+    public function hasCouleur() {
+        return false;
+    }
+    public function hasCepage() {
+        return false;
+    }
     public function getMentions() {
         return $this->filter('^mention');
     }

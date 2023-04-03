@@ -229,7 +229,7 @@ parcellaireaffectation_visualisation:
   requirements:
     sf_method: [get]
 
-parcellaire_export_csv:
+parcellaire_affectation_export_csv:
   url: /parcellaire-affectation/csv/:id
   param: { module: parcellaireAffectation, action: CSV }
   class: ParcellaireAffectationRoute

@@ -5,7 +5,6 @@ all:
       ligneUnique: false
       ligneMsg: false
       echeances: false
-      all_etablissements: true
       uniq_template_prefix: false
       export_sage_width_txt: false
       paiements: false
