@@ -110,7 +110,7 @@ abstract class BaseExportParcellaireODS {
         preg_match_all( '#table:formula=".*?</table:table-cell>#', $this->ods_content, $matches_form, PREG_SET_ORDER);
         foreach ($matches_form as $match_form) {
             $replace = preg_replace ('#<text:p>[^<]*</text:p>#', '<text:p></text:p>', $match_form[0] );
-            $replace = preg_replace ('#office:value="[^"]*"#', 'office:value=""', $replace );
+            $replace = preg_replace ('#office:((?:string-)?)value="[^"]*"#', 'office:$1value=""', $replace );
             $this->ods_content = str_replace($match_form[0], $replace, $this->ods_content);
         }
 
