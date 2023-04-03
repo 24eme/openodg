@@ -24,11 +24,8 @@ abstract class BaseExportParcellaireODS {
         $this->ods_filename = $ods_filename;
 
         // Les chemins des fichiers
-        $this->tmp_dir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'ods';
-        if (!file_exists($this->tmp_dir)) {
-            mkdir($this->tmp_dir);
-        }
-        $this->ods_tmp_file = $this->tmp_dir . '/' . $this->ods_filename;
+        $this->tmp_dir = sfConfig::get('sf_cache_dir');
+        $this->ods_tmp_file = $this->tmp_dir . '/' . str_replace('.ods', '', $this->ods_filename) . $this->parcellaire->get('_id') . $this->parcellaire->get('_rev') . '.ods';
     }
 
     protected function getParcellaire() {
@@ -41,6 +38,11 @@ abstract class BaseExportParcellaireODS {
      * @return string le contenu du fichier ODS
      */
     public function create() {
+        // Si on l'a déjà créé on prend l'existant.
+        if (file_exists($this->ods_tmp_file)) {
+            return file_get_contents($this->ods_tmp_file);
+        }
+
         $content_filename = 'content.xml';
         $content_file = $this->tmp_dir . '/' . $content_filename;
 
