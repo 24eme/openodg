@@ -1567,6 +1567,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return true;
     }
 
+    public function getNumerosDossier()
+    {
+        return array_unique(array_column($this->lots->toArray(true, false), 'numero_dossier'));
+    }
+
     public function hasVolumeRevendiqueLots($produitFilter = null) {
 
         return $this->getVolumeRevendiqueLots($produitFilter) > 0;
@@ -2433,5 +2438,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         return false;
+    }
+
+    public function cloneDRevForOneDossier($numero_dossier)
+    {
+        $drev = clone $this;
+        $drev->_rev = null;
+
+        $lots = array_filter($drev->lots->toArray(), function ($lot) use ($numero_dossier) {
+            return $numero_dossier === $lot->numero_dossier;
+        });
+
+        $drev->remove('lots');
+        $drev->add('lots', array_values($lots));
+
+        return $drev;
     }
 }
