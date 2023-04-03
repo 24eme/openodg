@@ -1,3 +1,4 @@
+<?php use_javascript('hamza_style.js?20230328'); ?>
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php
@@ -25,6 +26,11 @@ $list_idu = [];
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
 </ol>
 <?php endif; ?>
+
+<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
+    <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
+<?php endif; ?>
+
 <div class="page-header no-border">
     <?php if($parcellaire): ?>
     <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
@@ -41,15 +47,12 @@ $list_idu = [];
 
 <?php include_partial('global/flash'); ?>
 
-<div class="row">
-    <div class="col-xs-12">
-        <?php if($parcellaire): ?>
-            <div class="well">
-                <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>
-        <?php endif; ?>
+<?php if($parcellaire): ?>
+    <div class="well">
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
     </div>
-</div>
+<?php endif; ?>
+
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
     $import = $parcellaire->getGeoJson(); ?>
@@ -321,20 +324,7 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
-<div class="dropdown dropup center-block" style="width: 150px;">
-    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Télécharger...&nbsp;<span class="caret"></span></button>
-    <ul class="dropdown-menu">
-<?php if($sf_user->isAdmin()): ?>
-        <li class="dropdown-header">Documents internes</li>
-        <li><a href="<?php echo url_for('parcellaire_export_ods', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le doc de contrôle</a></li>
-        <li><a href="<?php echo url_for('parcellaire_export_geo', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger les coordonnées géographiques</a></li>
-        <li class="divider"></li>
-        <li class="dropdown-header">Documents partagés avec les opérateurs</li>
-<?php endif; ?>
-        <li><a href="<?php echo url_for('parcellaire_export_csv', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le CSV du parcellaire</a></li>
-        <li><a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le PDF Douanier</a></li>
-    </ul>
-</div>
+<?php include_partial('downloadLinks', array('parcellaire' => $parcellaire)); ?>
 <?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
@@ -344,7 +334,6 @@ $list_idu = [];
     </div>
 </div>
 <?php endif;?>
-<?php use_javascript('hamza_style.js'); ?>
 <script type="text/javascript">
     var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
 </script>

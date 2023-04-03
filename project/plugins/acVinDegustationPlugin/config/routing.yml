@@ -655,6 +655,16 @@ degustation_convocation_auth:
   requirements:
     sf_method: [get, post]
 
+degustation_convocation_presence:
+  url: /degustation/convocation/:id/:college/:identifiant/:auth
+  param: { module: degustation, action: convocationReponse }
+  class: DegustationRoute
+  options:
+    model: Degustation
+    type: object
+  requirements:
+    sf_method: [get]
+
 degustation_affectation_lot:
   url: /historique/:id/:unique_id/affectation
   param: {module: degustation, action: lotAffectation}

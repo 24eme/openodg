@@ -61,6 +61,9 @@ class Aire extends BaseAire {
 
     public function getColor() {
         $conf = ParcellaireConfiguration::getInstance()->getAireInfoFromDenominationId($this->denomination_identifiant);
+        if (!isset($conf['color'])) {
+            return '#000000';
+        }
         return $conf['color'];
     }
 

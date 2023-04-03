@@ -207,7 +207,7 @@ class FactureClient extends acCouchdbClient {
         if(FactureConfiguration::getInstance()->hasPaiements()){
           $facture->add("paiements",array());
         }
-        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+        if(!$facture->total_ttc){
           return null;
         }
         return $facture;
@@ -327,17 +327,27 @@ class FactureClient extends acCouchdbClient {
             $ids[] = $arguments['compte'];
             return $ids;
         }
-        if(!$arguments['requete'] && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
-          $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
-          foreach($comptes as $compte) {
-             $ids[] = $compte->id;
-          }
-        }else{
+
+        if ($argument['requete']) {  //Pour l'AVA déprécié
           $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
           foreach($comptes as $compte) {
             $ids[] = $compte->doc['_id'];
           }
+
+          return $ids;
         }
+
+        if(!class_exists("CompteAllView")) { //Pour l'AVA
+
+            return CompteClient::getInstance()->getAll(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+        }
+
+
+        $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
+        foreach($comptes as $compte) {
+            $ids[] = $compte->id;
+        }
+
 
         return $ids;
     }

@@ -58,7 +58,7 @@
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
 
-<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr, 'mouvements' => $mouvements)); ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
     <hr />
@@ -131,7 +131,7 @@
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", array('identifiant' => $drev->identifiant, 'campagne' => $drev->campagne)); ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
     <div class="col-xs-4 text-center">
-        <div class="btn-group">
+        <div class="btn-group dropup">
             <?php if ($sf_user->hasDrevAdmin() && $drev->getDocumentDouanier()): ?>
             <a href="<?php echo url_for('drev_document_douanier', $drev); ?>" class="btn btn-default" >
               <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php echo $drev->getDocumentDouanierType() ?>
@@ -140,6 +140,19 @@
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default" id="lien-telechargement-pdf-drev">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;PDF de la DRev
             </a>
+            <?php if (count($drev->getNumerosDossier()) > 1): ?>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="caret"></span>
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <?php foreach ($drev->getNumerosDossier() as $dossier): ?>
+                      <li><a href="<?php echo url_for('drev_export_pdf', ['id' => $drev->_id, 'numero_dossier' => $dossier]); ?>">
+                        <i class="glyphicon glyphicon-file"></i> PDF du dossier <?php echo $dossier ?>
+                      </a></li>
+                  <?php endforeach ?>
+                </ul>
+            <?php endif ?>
         </div>
     </div>
 
