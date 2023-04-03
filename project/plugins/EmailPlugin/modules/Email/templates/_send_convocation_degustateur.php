@@ -7,20 +7,11 @@ Nous vous invitons à participer à la prochaine commission de dégustation des 
 
 Pour le bon déroulé de cette dégustation nous vous remercions de bien vouloir nous confirmer votre présence en cliquant sur le lien :
 
-<?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
+<?php echo url_for('degustation_convocation_presence', [
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'college' => $college,
     'identifiant' => $identifiant
-], true); ?>
-
-
-Si vous ne pouvez pas venir : <?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
-    'id' => $degustation->_id,
-    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
-    'college' => $college,
-    'identifiant' => $identifiant,
-    'presence' => '0'
 ], true); ?>
 
 

@@ -19,6 +19,20 @@
       <div class="col-xs-1">Mail : </div>
       <div class="col-xs-7"><?php echo $organisme->getEmail(); ?></div>
     </div>
+    <div class="row">
+      <div class="col-xs-1">OI :</div>
+      <div class="col-xs-7"><?php echo $organisme->getOi(); ?></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-1">Responsable&nbsp;:</div>
+      <div class="col-xs-7"><?php echo $organisme->getResponsable(); ?></div>
+    </div>
+    <?php if (file_exists($organisme->getImageSignaturePath())): ?>
+    <div class="row">
+      <div class="col-xs-1">Signature&nbsp;:</div>
+      <div class="col-xs-7"><img src="/<?php echo $organisme->getImageSignatureWebPath() ?>" /></div>
+    </div>
+    <?php endif; ?>
 </div>
 
 <h2>Facturation</h2>

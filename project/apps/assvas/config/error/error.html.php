@@ -61,10 +61,10 @@
                 <div class="collapse navbar-collapse" id="menu_items_collapse" style="">
                                     <ul class="nav navbar-nav mode-operateur" style="border: 0;">
                             <li class=""><a href="/parcellaire">Parcellaire</a></li>
-                            <li class="active  "><a href="/declaration">DR / SV</a></li>
+                            <li class=""><a href="/declaration">DR / SV</a></li>
                             <li class=""><a href="/documents">Documents</a></li>
                             <li class=""><a href="/habilitation">Habilitations</a></li>
-                            <li class=""><a href="/compte">Contacts</a></li>
+                            <li class=""><a href="/compte/search">Contacts</a></li>
                         </ul>
                                     <ul class="nav navbar-nav navbar-right">
                                                                 <li class="dropdown">

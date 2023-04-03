@@ -268,3 +268,7 @@ all:
           name: "Alsace Grand Cru Kaefferkopf"
           color: "#d10500"
           denomination_id: "01765"
+        LieuDit:
+          name: "Alsace Lieu-Dit"
+          color: "#d95b16"
+          denomination_id: "02486"
