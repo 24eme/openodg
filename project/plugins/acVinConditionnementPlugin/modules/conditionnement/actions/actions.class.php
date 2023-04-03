@@ -10,7 +10,7 @@ class conditionnementActions extends sfActions {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_CONDITIONNEMENT, $etablissement);
         }
         $date = $request->getParameter("date", date('Y-m-d'));
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
         $conditionnement = ConditionnementClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
         try {
             $conditionnement->save();
