@@ -88,7 +88,6 @@ class ExportParcellairePPODS extends BaseExportParcellaireODS {
         $this->parse($synthese_dgc);
 
         $this->parse(['%%DGC' => $this->dgc]);
-        
     }
 
     /**
