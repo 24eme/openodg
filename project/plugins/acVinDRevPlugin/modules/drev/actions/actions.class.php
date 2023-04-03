@@ -939,6 +939,10 @@ class drevActions extends sfActions {
             $drev->cleanDoc();
         }
 
+        if ($numero_dossier = $request->getParameter('numero_dossier', null)) {
+            $drev = $drev->cloneDRevForOneDossier($numero_dossier);
+        }
+
         $this->document = new ExportDRevPDF($drev, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 

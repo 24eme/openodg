@@ -159,6 +159,24 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
+        header("Content-Type: application/vnd.oasis.opendocument.spreadsheet; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s-%s.ods"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        $ods = new ExportParcellairePPODS($parcellaire);
+        echo $ods->create();
+
+        exit;
+    }
+
+    public function executeParcellaireExportPPPDF(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
         header("Content-Type: application/pdf; charset=UTF-8");
         header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s-%s.pdf"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
@@ -170,7 +188,6 @@ class parcellaireActions extends sfActions {
 
         exit;
     }
-
     public function executeParcellaireExportGeo(sfWebRequest $request) {
         $this->secureTeledeclarant();
         
@@ -197,8 +214,8 @@ class parcellaireActions extends sfActions {
       </Style>';
 
         $styles = [];
-        foreach ($parcellaire->getCachedAires() as $aire) {
-            foreach ($aire['jsons'] as $airejson) {
+        foreach ($parcellaire->getMergedAires() as $aire) {
+            foreach ($aire->getGeojson() as $airejson) {
                 $aireobj = json_decode($airejson);
                 foreach ($aireobj->features as $feat) {
                     $color = '7d' . str_replace('#', '', $aire['infos']['color']);
@@ -247,13 +264,13 @@ class parcellaireActions extends sfActions {
         $geojson = $parcellaire->getDocument()->getGeoJson();
 
         // On y ajoute les json (décodés) des aires des appelations des communes associées
-        foreach ($parcellaire->getCachedAires() as $aire) {
-            foreach ($aire['jsons'] as $airejson) {
+        foreach ($parcellaire->getMergedAires() as $aire) {
+            foreach ($aire->getGeojson() as $airejson) {
                 $aireobj = json_decode($airejson);
                 foreach ($aireobj->features as $feat) {
                     $feat_str = json_encode($feat);
                     $feat_obj = GeoPHP::load($feat_str, 'geojson');
-        
+
                     echo '<Placemark>';
                     echo '<name>'.$aire['infos']['name'].'</name>';
                     echo '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire['infos']['color']) . '</styleUrl>';
