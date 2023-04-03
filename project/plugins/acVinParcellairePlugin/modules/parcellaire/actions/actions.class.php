@@ -214,8 +214,8 @@ class parcellaireActions extends sfActions {
       </Style>';
 
         $styles = [];
-        foreach ($parcellaire->getCachedAires() as $aire) {
-            foreach ($aire['jsons'] as $airejson) {
+        foreach ($parcellaire->getMergedAires() as $aire) {
+            foreach ($aire->getGeojson() as $airejson) {
                 $aireobj = json_decode($airejson);
                 foreach ($aireobj->features as $feat) {
                     $color = '7d' . str_replace('#', '', $aire['infos']['color']);
@@ -264,13 +264,13 @@ class parcellaireActions extends sfActions {
         $geojson = $parcellaire->getDocument()->getGeoJson();
 
         // On y ajoute les json (décodés) des aires des appelations des communes associées
-        foreach ($parcellaire->getCachedAires() as $aire) {
-            foreach ($aire['jsons'] as $airejson) {
+        foreach ($parcellaire->getMergedAires() as $aire) {
+            foreach ($aire->getGeojson() as $airejson) {
                 $aireobj = json_decode($airejson);
                 foreach ($aireobj->features as $feat) {
                     $feat_str = json_encode($feat);
                     $feat_obj = GeoPHP::load($feat_str, 'geojson');
-        
+
                     echo '<Placemark>';
                     echo '<name>'.$aire['infos']['name'].'</name>';
                     echo '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire['infos']['color']) . '</styleUrl>';
