@@ -188,7 +188,7 @@ class parcellaireActions extends sfActions {
 
         exit;
     }
-    public function executeParcellaireExportGeo(sfWebRequest $request) {
+    public function executeParcellaireExportKML(sfWebRequest $request) {
         $this->secureTeledeclarant();
         
         $parcellaire = $this->getRoute()->getParcellaire();
@@ -201,6 +201,23 @@ class parcellaireActions extends sfActions {
         header("Expires: 0");
 
         echo $parcellaire->getKML();
+
+        exit;        
+    }
+
+    public function executeParcellaireExportGeoJson(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+        
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: application/vnd.geo+json");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.geojson"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        echo json_encode($parcellaire->getGeoJsonWithAires());
 
         exit;        
     }
