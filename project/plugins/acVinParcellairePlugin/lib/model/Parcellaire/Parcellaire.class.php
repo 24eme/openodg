@@ -385,6 +385,20 @@ class Parcellaire extends BaseParcellaire {
 
             $kml .= '<Placemark>';
             $kml .= '<name>'.$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
+            $kml .= '<description><![CDATA[';
+            foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
+                foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
+                    if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                        continue;
+                    }  
+                    $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                }
+
+                if ($key !== array_key_last($feat->properties->parcellaires)) {
+                    $kml .= "<p>-----------------</p>";
+                }
+            }
+            $kml .= ']]></description>';
             $kml .= '<styleUrl>#parcelle-style</styleUrl>';
             $kml .= $feat_obj->out('kml');
             $kml .= '</Placemark>';
