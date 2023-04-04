@@ -322,6 +322,37 @@ class Parcellaire extends BaseParcellaire {
 
     }
 
+    public function getGeoJsonWithAires(){
+        $geojson = $this->getGeoJson();
+
+        // Ajoute des couleurs et l'identification
+        foreach ($geojson->features as $feat) {
+            $feat->properties->stroke = '#FF0000';
+            $feat->properties->{'stroke-width'} = 4;
+            $feat->properties->{'stroke-opacity'} = 1;
+            $feat->properties->fill = '#fff';
+            $feat->properties->{'fill-opacity'} = 0;
+            $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
+        }
+        
+        // On ajoute les aires des appelations des communes associées avec la bonne couleur
+        foreach ($this->getMergedAires() as $aire) {
+            $aireobj = json_decode($aire->getGeojson());
+            foreach ($aireobj->features as $feat) {
+                // Ajoute les couleurs et infos qui vont bien
+                $feat->properties->name = $aire->getName();
+                $feat->properties->fill = $aire->getColor();
+                $feat->properties->{'fill-opacity'} = 0.5;
+                $feat->properties->stroke = '#000';
+                $feat->properties->{'stroke-width'} = 2;
+                $feat->properties->{'stroke-opacity'} = 0.1;
+                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables. 
+                array_unshift($geojson->features, $feat);
+            }
+        }
+        return $geojson;
+    }
+
     /**
      * Reprend le geojson et le transforme en KML
      */
@@ -369,7 +400,7 @@ class Parcellaire extends BaseParcellaire {
                 $feat_obj = GeoPHP::load($feat_str, 'geojson');
 
                 $kml .= '<Placemark>';
-                $kml .= '<name>'. addslashes($aire->denomination_libelle.' '.$aire->commune_libelle) .'</name>';
+                $kml .= '<name>'. $aire->getName() .'</name>';
                 $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
                 $kml .= $feat_obj->out('kml');
                 $kml .= '</Placemark>';
