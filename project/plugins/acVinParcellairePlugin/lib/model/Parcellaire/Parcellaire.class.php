@@ -322,6 +322,78 @@ class Parcellaire extends BaseParcellaire {
 
     }
 
+    /**
+     * Reprend le geojson et le transforme en KML
+     */
+    public function getKML() {
+        // La transfo de geojson -> kml de geophp ne se faisant que partiellement on reparcours le geojson et on reconstruit le xml
+        $kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
+        
+        // Le style pour les parcelles (les couleurs)
+        // Info : L'hexa de la couleur est inversé par rapport à la notation habituelle
+        // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
+        $kml .= '<Style id="parcelle-style">
+        <LineStyle>
+          <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>7d0000ff</color>
+        </PolyStyle>
+      </Style>';
+
+        // Définit un style par couleur à utiliser dans les aires plus bas
+        $styles = [];
+        foreach ($this->getMergedAires() as $aire) {
+            $aireobj = json_decode($aire->getGeojson());
+            foreach ($aireobj->features as $feat) {
+                $color = '7d' . str_replace('#', '', $aire->getColor());
+                $styles[$color] = '<Style id="aire-style-'.$color.'">
+            <LineStyle>
+            <width>1</width>
+            </LineStyle>
+            <PolyStyle>
+            <color>'.$color.'</color>
+            </PolyStyle>
+        </Style>';
+            }
+        }
+
+        // Met les styles en haut du KML
+        $kml .= implode("", $styles);
+
+        // On met en premier les aires des appelations des communes associées avec la bonne couleur
+        foreach ($this->getMergedAires() as $aire) {
+            $aireobj = json_decode($aire->getGeojson());
+            foreach ($aireobj->features as $feat) {
+                $feat_str = json_encode($feat);
+                $feat_obj = GeoPHP::load($feat_str, 'geojson');
+
+                $kml .= '<Placemark>';
+                $kml .= '<name>'. addslashes($aire->denomination_libelle.' '.$aire->commune_libelle) .'</name>';
+                $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
+                $kml .= $feat_obj->out('kml');
+                $kml .= '</Placemark>';
+            }
+        }
+        
+        $geojson = $this->getGeoJson();
+
+        // Met ensuite les parcelles par dessus les éventuelles aires.
+        foreach ($geojson->features as $feat) {
+            $feat_str = json_encode($feat);
+            $feat_obj = GeoPHP::load($feat_str, 'geojson');
+
+            $kml .= '<Placemark>';
+            $kml .= '<name>'.$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
+            $kml .= '<styleUrl>#parcelle-style</styleUrl>';
+            $kml .= $feat_obj->out('kml');
+            $kml .= '</Placemark>';
+        }
+
+        $kml .= '</Document></kml>';
+        return $kml;
+    }
+
     public function getMergedAires() {
 
         return AireClient::getInstance()->getMergedAiresForInseeCommunes($this->declaration->getCommunes());
