@@ -333,6 +333,15 @@ class Parcellaire extends BaseParcellaire {
             $feat->properties->fill = '#fff';
             $feat->properties->{'fill-opacity'} = 0;
             $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
+            foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
+                $feat->properties->{'parcellaire'.$key} = '';
+                foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
+                    if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                        continue;
+                    }
+                    $feat->properties->{'parcellaire'.$key} .= $prop . ' : ' . $parcellaire_detail->{$prop} . " / \n";
+                }
+            }
         }
         
         // On ajoute les aires des appelations des communes associées avec la bonne couleur
