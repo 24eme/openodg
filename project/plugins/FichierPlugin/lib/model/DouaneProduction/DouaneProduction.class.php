@@ -408,9 +408,8 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
 
-    public function getTotalValeur($numLigne, $familles = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array()) {
+    public function getTotalValeur($numLigne, $familles = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array(), $metayer_only = true) {
         $value = 0;
-
         foreach($this->getEnhancedDonnees() as $donnee) {
             if (in_array($donnee->colonne_famille, $throw_familles)) {
                 throw new sfException("Famille $donnee->colonne_famille non permise");
@@ -424,15 +423,18 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
                 continue;
             }
-            if($donnee->categorie != str_replace("L", "", $numLigne)) {
+            if($donnee->categorie !== str_replace("L", "", $numLigne)) {
                 continue;
             }
-
-            $value += VarManipulator::floatize($donnee->valeur);
+            if ($metayer_only && $donnee->bailleur_raison_sociale) {
+                continue;
+            }
+            $value = $value + VarManipulator::floatize($donnee->valeur);
         }
 
         return $value;
     }
+
     public function getNbApporteurs($produitFilter = null) {
         $apporteurs = array();
         foreach($this->donnees as $donnee) {

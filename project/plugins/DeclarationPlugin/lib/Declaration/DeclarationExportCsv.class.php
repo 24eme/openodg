@@ -37,7 +37,7 @@ class DeclarationExportCsv
                 $res .= ';';
             }
         }
-        if ($produitconfig->hasLieu()) {
+        if ($produitconfig->hasCouleur()) {
             $res .= $produitconfig->getCouleur()->getKey().";";
             if ($withLibelle) {
                 $res .= $produitconfig->getCouleur()->getLibelle().";";

@@ -55,4 +55,16 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
         return $this->attributs->get('detail_lieu_editable');
     }
 
+    public function hasLieu() {
+        return false;
+    }
+    public function hasMention() {
+        return false;
+    }
+    public function hasCouleur() {
+        return false;
+    }
+    public function hasCepage() {
+        return false;
+    }
 }

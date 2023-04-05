@@ -12,9 +12,9 @@
         <?php include_metas() ?>
         <?php include_title() ?>
 
-        <link rel="shortcut icon" type="image/x-icon" href="/favico_igp13.ico" />
-        <link rel="icon" type="image/x-icon" href="/favico_igp13.ico" />
-        <link rel="icon" type="image/png" href="/favico_igp13.png" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favico_assvas.ico" />
+        <link rel="icon" type="image/x-icon" href="/favico_assvas.ico" />
+        <link rel="icon" type="image/png" href="/favico_assvas.png" />
 
         <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
