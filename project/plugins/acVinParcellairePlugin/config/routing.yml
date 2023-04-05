@@ -86,9 +86,25 @@ parcellaire_export_pp_ods:
     model: Parcellaire
     type: object
 
-parcellaire_export_geo:
-  url: /parcellaire/geo/:id
-  param: { module: parcellaire, action: parcellaireExportGeo}
+parcellaire_export_pp_pdf:
+  url: /parcellaire/pppdf/:id
+  param: { module: parcellaire, action: parcellaireExportPPPDF}
+  class: ParcellaireRoute
+  options:
+    model: Parcellaire
+    type: object
+
+parcellaire_export_kml:
+  url: /parcellaire/kml/:id
+  param: { module: parcellaire, action: parcellaireExportKML}
+  class: ParcellaireRoute
+  options:
+    model: Parcellaire
+    type: object
+
+parcellaire_export_geojson:
+  url: /parcellaire/geojson/:id
+  param: { module: parcellaire, action: parcellaireExportGeoJson}
   class: ParcellaireRoute
   options:
     model: Parcellaire

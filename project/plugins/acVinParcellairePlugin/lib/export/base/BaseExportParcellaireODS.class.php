@@ -24,11 +24,8 @@ abstract class BaseExportParcellaireODS {
         $this->ods_filename = $ods_filename;
 
         // Les chemins des fichiers
-        $this->tmp_dir = sfConfig::get('sf_cache_dir').DIRECTORY_SEPARATOR.'ods';
-        if (!file_exists($this->tmp_dir)) {
-            mkdir($this->tmp_dir);
-        }
-        $this->ods_tmp_file = $this->tmp_dir . '/' . $this->ods_filename;
+        $this->tmp_dir = sfConfig::get('sf_cache_dir');
+        $this->ods_tmp_file = $this->tmp_dir . '/' . str_replace('.ods', '', $this->ods_filename) . $this->parcellaire->get('_id') . $this->parcellaire->get('_rev') . '.ods';
     }
 
     protected function getParcellaire() {
@@ -41,6 +38,11 @@ abstract class BaseExportParcellaireODS {
      * @return string le contenu du fichier ODS
      */
     public function create() {
+        // Si on l'a déjà créé on prend l'existant.
+        if (file_exists($this->ods_tmp_file) && ! sfContext::getInstance()->getConfiguration()->isDebug()) {
+            return file_get_contents($this->ods_tmp_file);
+        }
+
         $content_filename = 'content.xml';
         $content_file = $this->tmp_dir . '/' . $content_filename;
 
@@ -110,7 +112,7 @@ abstract class BaseExportParcellaireODS {
         preg_match_all( '#table:formula=".*?</table:table-cell>#', $this->ods_content, $matches_form, PREG_SET_ORDER);
         foreach ($matches_form as $match_form) {
             $replace = preg_replace ('#<text:p>[^<]*</text:p>#', '<text:p></text:p>', $match_form[0] );
-            $replace = preg_replace ('#office:value="[^"]*"#', 'office:value=""', $replace );
+            $replace = preg_replace ('#office:((?:string-)?)value="[^"]*"#', 'office:$1value=""', $replace );
             $this->ods_content = str_replace($match_form[0], $replace, $this->ods_content);
         }
 
