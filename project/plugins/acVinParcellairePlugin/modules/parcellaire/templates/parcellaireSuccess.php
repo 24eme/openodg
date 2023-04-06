@@ -200,7 +200,7 @@ $list_idu = [];
                                         } elseif($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) {
                                             echo "En erreur";
                                         } else {
-                                            $nom;
+                                            echo $nom;
                                         }
                                         echo "</span>";
                                         $separateur = ',';
