@@ -19,14 +19,14 @@ class NavConfiguration {
     public function load() {
         $this->nav_configuration = array();
         $this->nav_configuration['stats'] = array();
-        $regions = array();
         if (sfContext::getInstance()->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
-            $regions = RegionConfiguration::getInstance()->getOdgRegions();
             $this->nav_configuration['stats'] = sfConfig::get($this->getAppPath(), array());
-        }else{
-            if (sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion()) {
-                $regions = array(sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion());
-            }
+        }
+        $regions = array();
+        if (sfContext::getInstance()->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && class_exists("RegionConfiguration")) {
+            $regions = RegionConfiguration::getInstance()->getOdgRegions();
+        }elseif (sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion()) {
+            $regions = array(sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion());
         }
         if (count($regions)) {
             $this->nav_configuration['stats'][] = array('name' => 'Export Crus', 'url' => '#', 'title' => 1);
