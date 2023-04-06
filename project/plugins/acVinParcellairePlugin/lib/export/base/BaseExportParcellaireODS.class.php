@@ -100,7 +100,7 @@ abstract class BaseExportParcellaireODS {
         // Remplace les clés par les valeurs
         foreach ($keys_values as $key => $value) {
             // Si c'est un float on doit spécifier à libreoffice que le format est float (notamment pour être utilisé dans les formules)
-            if (gettype($value) == 'double') {
+            if (gettype($value) == 'double' || gettype($value) === 'integer') {
                 $content = preg_replace(
                     '#(<table:table-cell *table:style-name="[^"]+".*?office:value-type=")string"( *calcext:value-type=")string("[^>]*><text:p>)'.$key.'(</text:p></table:table-cell>)#',
                     '${1}float" office:value="'.$value.'" ${2}float${3}'.str_replace('.', ',', $value).'${4}',
