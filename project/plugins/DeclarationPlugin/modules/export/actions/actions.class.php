@@ -23,13 +23,6 @@ class exportActions extends sfActions {
         }
 
         $generation = new Generation();
-        $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE;
-        $generation->libelle = sprintf("Export SAGE");
-        $generation->arguments = array();
-
-        $generations[GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE] = $generation;
-
-        $generation = new Generation();
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE;
         $generation->libelle = sprintf("Export Parcellaire");
         $generation->arguments = array();
