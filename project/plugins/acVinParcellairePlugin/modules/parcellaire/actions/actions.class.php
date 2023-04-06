@@ -165,7 +165,7 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellairePPODS($parcellaire);
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
         echo $ods->create();
 
         exit;
@@ -183,7 +183,7 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellairePPODS($parcellaire);
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
         echo $ods->createPDF();
 
         exit;
