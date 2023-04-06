@@ -40,7 +40,6 @@ class ExportParcellaireControleODS extends BaseExportParcellaireODS {
                     '%%ECART_PIEDS' => $ecart_pieds,
                     '%%INAO' => ConfigurationClient::getInstance()->getCurrent()->get(preg_replace('#(^.*)/detail/.*$#', '$1', $hash_produit))->getCodeDouane(),
                     '%%ABBR_PRODUIT' => str_replace(['rouge', 'rose', 'blanc', 'DEFAUT', 'SVI', 'LLO', 'PIE', 'FRE'], ['RG', 'RS', 'BL', 'CDP', 'SV', 'LL', 'PF', 'FR'], preg_replace('#^.*/lieux/([^/]+)/couleurs/([^/]+)/.*$#', '$1 $2', $hash_produit)),
-                    '%%VIDE' =>  $hash_produit,
                     '%%MODE_FAIRE_VALOIR' => $detail->mode_savoirfaire,
                     '%%CDP' => substr($parcellaire->identifiant, 0, 8),
                     '%%ANNEE_CAMPAGNE' => substr($detail->campagne_plantation, -4),
