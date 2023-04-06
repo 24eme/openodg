@@ -67,6 +67,10 @@ class Aire extends BaseAire {
         return $conf['color'];
     }
 
+    public function getName() {
+        return addslashes($this->denomination_libelle.' '.$this->commune_libelle);
+    }
+
     public function getGeoParcelle(): Geometry {
         if (!$this->geoparcelle) {
             if (!geophp::geosInstalled()) {
