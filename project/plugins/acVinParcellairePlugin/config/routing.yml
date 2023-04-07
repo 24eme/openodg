@@ -96,11 +96,28 @@ parcellaire_export_pp_pdf:
 
 parcellaire_export_kml:
   url: /parcellaire/kml/:id
-  param: { module: parcellaire, action: parcellaireExportKML}
+  param: { module: parcellaire, action: parcellaireExportKML, with_aires: 1, with_parcelles: 1}
   class: ParcellaireRoute
   options:
     model: Parcellaire
     type: object
+
+parcellaire_export_kml_aires:
+  url: /parcellaire/kml/:id/aires
+  param: { module: parcellaire, action: parcellaireExportKML, with_aires: 1, with_parcelles: 0}
+  class: ParcellaireRoute
+  options:
+    model: Parcellaire
+    type: object
+
+parcellaire_export_kml_parcelles:
+  url: /parcellaire/kml/:id/parcelles
+  param: { module: parcellaire, action: parcellaireExportKML, with_aires: 0, with_parcelles: 1}
+  class: ParcellaireRoute
+  options:
+    model: Parcellaire
+    type: object
+
 
 parcellaire_export_geojson:
   url: /parcellaire/geojson/:id
