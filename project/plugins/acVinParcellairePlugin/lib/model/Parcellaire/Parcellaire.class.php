@@ -400,21 +400,23 @@ class Parcellaire extends BaseParcellaire {
             }
 
             // Met les styles en haut du KML
-            $kml .= implode("", $styles);
+            $kml .= implode("\n", $styles);
 
 
             // On met en premier les aires des appelations des communes associées avec la bonne couleur
             foreach ($this->getMergedAires() as $aire) {
-                $aireobj = json_decode($aire->getGeojson());
-                if (isset($aireobj->features)) foreach ($aireobj->features as $feat) {
-                    $feat_str = json_encode($feat);
-                    $feat_obj = GeoPHP::load($feat_str, 'geojson');
+                foreach ($aire->getPseudoGeojsons() as $geojson) {
+                    $aireobj = json_decode($geojson);
+                    foreach ($aireobj->features as $feat) {
+                        $feat_str = json_encode($feat);
+                        $feat_obj = GeoPHP::load($feat_str, 'geojson');
 
-                    $kml .= '<Placemark>';
-                    $kml .= '<name>'. $aire->getName() .'</name>';
-                    $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
-                    $kml .= $feat_obj->out('kml');
-                    $kml .= '</Placemark>';
+                        $kml .= '<Placemark>';
+                        $kml .= '<name>'. $aire->getName() .'</name>';
+                        $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
+                        $kml .= $feat_obj->out('kml');
+                        $kml .= '</Placemark>'."\n";
+                    }
                 }
             }
         }
