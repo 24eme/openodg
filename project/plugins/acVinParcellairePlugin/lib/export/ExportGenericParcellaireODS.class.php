@@ -6,7 +6,7 @@
  * Le fichier est ensuite enregistré dans le cache dans le dossier ods.
  * La fonction create() renvoie le contenu de l'ods transformé.
  */
-abstract class BaseExportParcellaireODS {
+abstract class ExportGenericParcellaireODS {
 
     private $parcellaire = null;
 
@@ -34,7 +34,7 @@ abstract class BaseExportParcellaireODS {
 
     /**
      * Crée le fichier ODS en récupérant l'ODS modèle, en le transformant avec parseDocument(), le mets dans le cache et renvoie son contenu.
-     * 
+     *
      * @return string le contenu du fichier ODS
      */
     public function create() {
@@ -67,13 +67,13 @@ abstract class BaseExportParcellaireODS {
 
     /**
      * Génère une PDF à partir de l'ods en cache.
-     * 
+     *
      * @return string le contenu du PDF
      */
     public function createPDF() {
         $this->create();
-        
-        exec("libreoffice --headless --convert-to pdf {$this->ods_tmp_file} --outdir {$this->tmp_dir}");
+
+        exec("HOME=/tmp/www-data ; mkdir -p $HOME ; libreoffice --headless --convert-to pdf {$this->ods_tmp_file} --outdir {$this->tmp_dir}");
 
         return file_get_contents(str_replace('.ods', '.pdf', $this->ods_tmp_file));
     }
@@ -87,9 +87,9 @@ abstract class BaseExportParcellaireODS {
     }
 
     /**
-     * Prend un tableau clé/valeur en paramètre. 
+     * Prend un tableau clé/valeur en paramètre.
      * Remplace dans le contenu de l'ods les clés par les valeurs.
-     * 
+     *
      * @param mixed $keys_values : un tableau de type ['%%CLE_1' => 'VAL_1', ...]
      */
     protected function parse($keys_values, $content=null) {
@@ -124,7 +124,7 @@ abstract class BaseExportParcellaireODS {
 
     /**
      * Prend la ou les lignes entre %%BEGIN et %%END. Ces lignes ont des clés. Duplique la ligne autant de fois qu'il y en a besoin en y mettant les bonnes valeurs.
-     * 
+     *
      * @param mixed $keys_vals: tableau de tableaux de clés valeurs. [[%%CLE1 => val1, ...], ...]
      */
     protected function create_rows($keys_vals) {
@@ -139,7 +139,7 @@ abstract class BaseExportParcellaireODS {
         foreach ($matches_form as $match_form) {
             $replace = preg_replace_callback (
                 '/(\[\.\w+)(\d+)(\])/',
-                function($matches_matr) { return $matches_matr[1] . ((int)$matches_matr[2] - 1) . $matches_matr[3]; }, 
+                function($matches_matr) { return $matches_matr[1] . ((int)$matches_matr[2] - 1) . $matches_matr[3]; },
                 $match_form[1]
                 );
             $pattern_line = str_replace($match_form[1], $replace, $pattern_line);
@@ -158,7 +158,7 @@ abstract class BaseExportParcellaireODS {
             foreach ($matches_form as $match_form) {
                 $replace = preg_replace_callback (
                     '/(\[\.[A-Z]+)([0-9]+)(\])/',
-                    function($matches_matr) { return $matches_matr[1] . ((int)$matches_matr[2] + 1) . $matches_matr[3]; }, 
+                    function($matches_matr) { return $matches_matr[1] . ((int)$matches_matr[2] + 1) . $matches_matr[3]; },
                     $match_form[1]
                 );
                 $pattern_line = str_replace($match_form[1], $replace, $pattern_line);
