@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="form-group col-xs-12">
-      <input id="hamzastyle" type="hidden" data-placeholder="Rechercher dans la liste par nom, cvi ou statut" data-hamzastyle-container=".table_affectations" data-hamzastyle-mininput="0" class="select2autocomplete hamzastyle form-control">
+      <input id="hamzastyle" type="hidden" data-placeholder="Rechercher dans la liste par nom, cvi ou statut" data-hamzastyle-container=".table_affectations" data-hamzastyle-mininput="0" class="hamzastyle form-control">
     </div>
 </div>
 

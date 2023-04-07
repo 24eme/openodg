@@ -15,7 +15,7 @@
 <p>Sélectionner les lots qui ont été prélevés</p>
 <div class="row">
   <div class="form-group col-xs-10">
-    <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
+    <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="hamzastyle form-control">
   </div>
 
   <div class="col-xs-2">
