@@ -5,7 +5,7 @@
  * en remplaçant dans le fichier ODS /modules/parcellaire/templates/extraction.ods 
  * les clés (%%UNECLE) par les valeurs qui vont bien.
  */
-class ExportParcellaireControleODS extends BaseExportParcellaireODS {
+class ExportParcellaireControleODS extends ExportGenericParcellaireODS {
 
     public function __construct($parcellaire) {
         parent::__construct($parcellaire, 'extraction.ods');
