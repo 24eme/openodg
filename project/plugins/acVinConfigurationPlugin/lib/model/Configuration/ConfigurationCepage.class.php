@@ -259,4 +259,17 @@ class ConfigurationCepage extends BaseConfigurationCepage {
         return $this;
     }
 
+    public function hasLieu() {
+        return true;
+    }
+    public function hasMention() {
+        return true;
+    }
+    public function hasCouleur() {
+        return true;
+    }
+    public function hasCepage() {
+        return true;
+    }
+
 }

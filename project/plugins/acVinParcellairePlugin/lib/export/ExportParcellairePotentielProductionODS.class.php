@@ -3,7 +3,7 @@
 /**
  * Crée le fichier ODS de qui calcule les potentiels de production
  */
-class ExportParcellairePPODS extends BaseExportParcellaireODS {
+class ExportParcellairePotentielProductionODS extends BaseExportParcellaireODS {
 
     private $identificationParcellaire;
     private $etablissement;
