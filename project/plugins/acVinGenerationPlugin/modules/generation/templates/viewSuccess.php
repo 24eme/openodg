@@ -61,7 +61,7 @@
 
     <?php if($generation->exist('sous_generation_types')): ?>
     <?php foreach ($generation->sous_generation_types as $sous_generation_type): ?>
-        <?php $sousGenerationClass = GenerationClient::getClassForGeneration($generation->getOrCreateSubGeneration($sous_generation_type)); ?>
+        <?php $sousGenerationClass = GenerationClient::getInstance()->getClassForGeneration($generation->getOrCreateSubGeneration($sous_generation_type)); ?>
         <p>
         <?php if (count($generation->getOrCreateSubGeneration($sous_generation_type)->fichiers)): continue; endif; ?>
           <a onclick="return confirm('Étes vous sûr de vouloir <?php echo lcfirst(str_replace("'", '\\\'', $sousGenerationClass::getActionLibelle())) ?> ?')" title="<?php echo str_replace('"', '', $sousGenerationClass::getActionDescription()) ?>" class="btn btn-link" href="<?= url_for('facturation_sous_generation', [
