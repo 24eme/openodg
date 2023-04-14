@@ -81,7 +81,11 @@
         <a class="btn btn-default" href="<?php echo $backUrl ?>"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;Retour</a>
         <?php endif; ?>
     </div>
-    <?php if(($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR) || ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && $generation->message)): ?>
+    <?php if(
+                ($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR) ||
+                ($generation->statut == GenerationClient::GENERATION_STATUT_RELANCABLE) || 
+                ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && $generation->message)
+             ): ?>
     <div class="col-xs-4 text-center">
         <a class="btn btn-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?> btn-upper" href="<?php echo url_for('generation_reload', ['id' => $generation->_id]); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
     </div>
