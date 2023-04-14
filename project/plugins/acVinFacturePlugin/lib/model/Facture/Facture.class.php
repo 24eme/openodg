@@ -205,46 +205,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $ligne;
     }
 
-    public function storeLignesByMouvements($mouvements, $template) {
-        foreach($template->cotisations as $configCollection) {
-            $ligne = $this->addLigne($configCollection);
-            $ligne->updateTotaux();
-
-        }
-        foreach ($mouvements as $key => $mouvement) {
-            $configCollection = $template->cotisations->get($mouvement["categorie"]);
-            $config = $configCollection->details->get($mouvement["type_hash"]);
-
-            $ligne = $this->addLigne($configCollection);
-            foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
-                foreach($mouvKeys as $mouvKey) {
-                    $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
-                }
-            }
-            $d = $ligne->details->add();
-            $d->libelle = $mouvement["type_libelle"];
-            $d->quantite = $mouvement["quantite"];
-            $d->prix_unitaire = $mouvement["taux"];
-            $d->taux_tva = array_key_exists("tva", $mouvement) ? $mouvement["tva"] : $config->tva;
-            if(array_key_exists("unite", $mouvement)) {
-                $d->add('unite', $mouvement["unite"]);
-            }
-            $ligne->updateTotaux();
-      }
-
-      $lignes_to_remove = array();
-      foreach ($this->lignes as $cotisation_key => $ligne) {
-        if(!count($ligne->details) && !$template->cotisations->get($cotisation_key)->isRequired()){
-            $lignes_to_remove[] = $cotisation_key;
-          }
-      }
-
-      foreach ($lignes_to_remove as $ligne_key) {
-        $this->lignes->remove($ligne_key);
-      }
-    }
-
-
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement_agreges, $mouvements_originaux = null) {
             $keyLigne = str_replace("%detail_identifiant%",$mouvement_agreges->value->detail_identifiant,$mouvement_agreges->value->categorie);
@@ -517,6 +477,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->date_paiement;
     }
 
+    public function isVersementComptablePaiement() {
+
+        return $this->versement_comptable_paiement && $this->exist('paiements') && count($this->paiements) > 0;
+    }
+
     public function updateMontantPaiement() {
         $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
     }
@@ -728,6 +693,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateVersementComptablePaiement() {
+        if(!$this->exist('paiements') && $this->_get('montant_paiement') && $this->_get('date_paiement')) {
+            $paiement = $this->add('paiements')->add();
+            $paiement->montant = $this->_get('montant_paiement');
+            $paiement->commentaire = $this->_get('reglement_paiement');
+            $paiement->date = $this->_get('date_paiement');
+            $paiement->versement_comptable = $this->versement_comptable_paiement;
+            $this->remove('reglement_paiement');
+            $this->updateMontantPaiement();
+        }
+
         $versement = true;
         $date = null;
         if ($this->exist('paiements')) {

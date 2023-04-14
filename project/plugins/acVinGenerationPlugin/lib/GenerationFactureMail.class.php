@@ -2,6 +2,8 @@
 
 class GenerationFactureMail extends GenerationAbstract {
 
+    const private $date_envoi = null;
+
     public function generateMailForADocumentId($id) {
         $facture = FactureClient::getInstance()->find($id);
 
@@ -63,7 +65,11 @@ class GenerationFactureMail extends GenerationAbstract {
 
     public function getLogFilname() {
 
-        return $this->generation->date_emission."-facture-envoi-mails.csv";
+        if (!$this->date_envoi) {
+            $this->date_envoi = date('YmdHis');
+        }
+
+        return $this->generation->date_emission."-facture-envoi-mails-".$this->date_envoi.".csv";
     }
 
     public function getLogs() {

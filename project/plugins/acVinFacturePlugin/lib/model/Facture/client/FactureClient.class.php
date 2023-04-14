@@ -166,35 +166,18 @@ class FactureClient extends acCouchdbClient {
         return $facture;
     }
 
-    public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null, $arguments = array() ) {
-        $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
-        $facture->argument = $arguments;
-        $facture->storeLignesByMouvements($mouvements, $template);
-        $facture->updateTotaux();
-        $facture->storeOrigines();
-        if(FactureConfiguration::getInstance()->getModaliteDePaiement()) {
-            $facture->set('modalite_paiement',FactureConfiguration::getInstance()->getModaliteDePaiement());
-        }
-        if(trim($message_communication)) {
-          $facture->addOneMessageCommunication($message_communication);
-        }
-        if(FactureConfiguration::getInstance()->hasPaiements()){
-          $facture->add("paiements",array());
-        }
-
-        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
-          return null;
-        }
-
-        return $facture;
-    }
-
-    /** facturation par mvts **/
     public function createDocFromView($mouvements, $compte, $date_facturation = null, $message_communication = null, $region = null, $template = null) {
         if(!$region){
             $region = Organisme::getCurrentRegion();
         }
         $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
+
+        foreach($template->cotisations as $configCollection) {
+            if(!$configCollection->isRequired()) {
+                continue;
+            }
+            $facture->addLigne($configCollection)->updateTotaux();
+        }
 
         $lignes = array();
         $lignes_originaux = array();
@@ -224,50 +207,10 @@ class FactureClient extends acCouchdbClient {
         if(FactureConfiguration::getInstance()->hasPaiements()){
           $facture->add("paiements",array());
         }
-        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+        if(!$facture->total_ttc){
           return null;
         }
         return $facture;
-    }
-
-    public function regenerate($facture_or_id) {
-        $facture = $facture_or_id;
-
-        if(is_string($facture)) {
-            $facture = $this->find($facture_or_id);
-        }
-
-        if($facture->isPayee()) {
-
-            throw new sfException(sprintf("La factures %s a déjà été payée", $facture->_id));
-        }
-
-        $docs = array();
-
-        foreach($facture->origines as $id) {
-            $docs[$id] = $this->getDocumentOrigine($id);
-        }
-
-        $mouvements = $this->getMouvementsFacturesByDocs($facture->identifiant, $docs, true);
-        $mouvements = $this->aggregateMouvementsFactures($mouvements);
-
-        $template = $facture->getTemplate();
-        $message_communication = null;
-        if($facture->exist('message_communication')) {
-            $message_communication = $facture->message_communication;
-        }
-
-        $f = FactureClient::getInstance()->createDoc($mouvements, $facture->getCompte(), date('Y-m-d'), $message_communication, $template->arguments->toArray(true, false), $template);
-
-        $f->_id = $facture->_id;
-        $f->_rev = $facture->_rev;
-        $f->numero_facture = $facture->numero_facture;
-        $f->numero_odg = $facture->numero_odg;
-        $f->numero_archive = $facture->numero_archive;
-
-        $f->forceFactureMouvements();
-
-        return $f;
     }
 
     public function getDocumentOrigine($id) {
@@ -384,17 +327,27 @@ class FactureClient extends acCouchdbClient {
             $ids[] = $arguments['compte'];
             return $ids;
         }
-        if(!$arguments['requete'] && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
-          $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
-          foreach($comptes as $compte) {
-             $ids[] = $compte->id;
-          }
-        }else{
+
+        if ($argument['requete']) {  //Pour l'AVA déprécié
           $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
           foreach($comptes as $compte) {
             $ids[] = $compte->doc['_id'];
           }
+
+          return $ids;
         }
+
+        if(!class_exists("CompteAllView")) { //Pour l'AVA
+
+            return CompteClient::getInstance()->getAll(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+        }
+
+
+        $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
+        foreach($comptes as $compte) {
+            $ids[] = $compte->id;
+        }
+
 
         return $ids;
     }

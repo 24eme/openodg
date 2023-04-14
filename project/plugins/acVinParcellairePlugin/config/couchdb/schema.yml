@@ -75,6 +75,7 @@ Parcellaire:
                               ecart_pieds: { type: float }
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
+                              prefix: { }
       pieces:
         type: array_collection
         definition:
@@ -96,3 +97,19 @@ Parcellaire:
                     definition:
                       fields:
                         '*': { }
+
+
+Aire:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      date_import: { }
+      commune_identifiant: { }
+      commune_libelle: { }
+      denomination_identifiant: { }
+      denomination_libelle: { }
+      geojson: {}
+      md5: {}
+

@@ -53,7 +53,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function updateIDU() {
-        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, "", $this->section, $this->numero_parcelle);
+        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
     }
 
     public function setCodeCommune($code_commune) {
@@ -65,11 +65,15 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function setSection($section) {
-        $this->_set('section', $section);
+        $this->_set('section', preg_replace('/^0*/', '', $section));
 
         $this->updateIDU();
 
         return $this;
+    }
+
+    public function getSection() {
+        return preg_replace('/^0*/', '', $this->_get('section'));
     }
 
     public function setNumeroParcelle($numero_parcelle) {
@@ -228,7 +232,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasTroisiemeFeuille() {
-        $year = ConfigurationClient::getInstance()->getCurrentAnneeRecolte() - 2;
+        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - 2;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
     }
@@ -242,10 +246,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
                 }
             }
         }
-        return null;
+        throw new sfException('parcelle not found in geojeson');
     }
-    
-    public function getGeoParcelle() {
+
+    public function getGeoParcelle(): Geometry {
         if (!$this->geoparcelle) {
             if (!geophp::geosInstalled()) {
                 throw new sfException("php-geos needed");
@@ -255,71 +259,15 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->geoparcelle;
     }
 
-    public function getSuperficieInAire($airename) {
-        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
-            if ($infos["name"] != $airename) {
-                continue ;
-            }
-            if(!$this->getGeoJson()) {
-                continue;
-            }
-            $geoparcelle = $this->getGeoParcelle();
-            $global_pc = 0;
-            foreach($this->document->getGeoPHPDelimitations($infos['denomination_id']) as $d) {
-                $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
-                if ($pc > 0.99) {
-                    $global_pc = 1;
-                }else if ($pc > 0.01) {
-                    $global_pc += $pc;
-                }
-            }
-            return $this->superficie * $global_pc;
-        }
-        return 0;
+    public function getIsInAires() {
+        return AireClient::getInstance()->getIsInAiresFromCommuneAndGeoParcelle($this->code_commune, $this);
     }
 
-    public function isInAires() {
-        $aires = [];
-        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
-            $res = null;
-            try {
-                $res = $this->geojsonInGeojsonAire($infos['denomination_id']);
-            } catch (\Exception $e) {
-                $res = ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR;
-            }
-
-            if ($res) {
-                $aires[$infos["name"]] = $res;
-            }
-        }
-        return $aires;
-    }
-
-    public function geojsonInGeojsonAire($inao_denomination_id = null) {
-
-        if (!$inao_denomination_id) {
-            $inao_denomination_id = ParcellaireClient::getInstance()->getDefaultDenomination();
-        }
-        if (isset(self::$_AIRES[$inao_denomination_id]) === false) {
-            self::$_AIRES[$inao_denomination_id] = $this->document->getGeoPHPDelimitations($inao_denomination_id);
-        }
-
-        if (!self::$_AIRES[$inao_denomination_id]) {
+    public function isInDenominationLibelle($l) {
+        $ii = $this->getIsInAires();
+        if (!isset($iia[$l])) {
             return null;
         }
-        $geoparcelle = $this->getGeoParcelle();
-        if (!$geoparcelle) {
-            return null;
-        }
-        foreach(self::$_AIRES[$inao_denomination_id] as $d) {
-            $pc = $d->intersection($geoparcelle)->area() / $geoparcelle->area();
-            if ($pc > 0.99) {
-                return ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT;
-            }
-            if ($pc > 0.01) {
-                return ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT;
-            }
-        }
-        return ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE;
+        return $iia[$l];
     }
 }

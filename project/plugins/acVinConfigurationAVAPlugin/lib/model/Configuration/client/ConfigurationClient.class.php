@@ -6,6 +6,7 @@ class ConfigurationClient extends acCouchdbClient {
 
     private static $configuration = array();
     private static $current = null;
+    protected $campagne_parcellaire_manager = null;
 
     public static function getInstance() {
 
@@ -56,6 +57,13 @@ class ConfigurationClient extends acCouchdbClient {
         return new CampagneManager('08-01');
     }
 
+    public function getCampagneParcellaire() {
+        if(is_null($this->campagne_parcellaire_manager)) {
+            $this->campagne_parcellaire_manager = new CampagneManager('03-01');
+        }
+        return $this->campagne_parcellaire_manager;
+    }
+
     public function getCampagneManager() {
 
         return new CampagneManager('10-15', CampagneManager::FORMAT_PREMIERE_ANNEE);
@@ -74,5 +82,10 @@ class ConfigurationClient extends acCouchdbClient {
 
 		return self::getInstance()->getConfiguration();
 	}
+
+    public function getCurrentAnneeRecolte() {
+
+        return $this->getCampagneVinicole()->getCurrentAnneeRecolte();
+    }
 
 }

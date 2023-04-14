@@ -6,7 +6,7 @@
     <thead>
         <tr>
             <th class="col-xs-5" style="border-top: hidden; border-left: hidden"></th>
-            <th colspan="10" class="text-center">Lignes</th>
+            <th colspan="11" class="text-center">Lignes</th>
         </tr>
     </thead>
     <thead>
@@ -29,6 +29,7 @@
             <tr>
                 <td>
                     <?= $produit['libelle'] ?>
+                    <br />
                     <small class="pull-right text-muted">
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                         <span title="Rendement L5" style="cursor: help">
@@ -62,7 +63,7 @@
         </tr>
     </tbody>
 </table>
-<?php $bailleurs = $dr->getBailleurs(true)->getRawValue(); ?>
+<?php $bailleurs = $dr->getBailleurs()->getRawValue(); ?>
 <?php if(count($bailleurs)): ?>
     <p style="margin-top: -10px; margin-bottom: 20px;">
     Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>

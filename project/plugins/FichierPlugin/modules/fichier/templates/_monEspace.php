@@ -3,7 +3,7 @@
 <?php if (!$sf_user->hasDrevAdmin()): ?>
     <?php return; ?>
 <?php endif; ?>
-<?php if (class_exists("DRClient") && ($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR  || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>
+<?php if (class_exists("DRClient") && ($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR  || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && in_array('dr', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($dr):?>panel-success<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">

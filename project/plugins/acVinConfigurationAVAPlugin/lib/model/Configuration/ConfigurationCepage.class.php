@@ -4,6 +4,10 @@
 
 class ConfigurationCepage extends BaseConfigurationCepage {
 
+    public function getCertification() {
+        return $this->getAppellation()->getCertification();
+    }
+
     public function getAppellation() {
 
       return $this->getLieu()->getAppellation();
@@ -24,6 +28,26 @@ class ConfigurationCepage extends BaseConfigurationCepage {
         return $this->getParentNode();
     }
 
+    public function getCepage() {
+        return $this;
+    }
+
+    public function getGenre() {
+        return $this->getAppellation()->getGenre();
+    }
+
+    public function hasLieu() {
+        return true;
+    }
+    public function hasMention() {
+        return true;
+    }
+    public function hasCouleur() {
+        return true;
+    }
+    public function hasCepage() {
+        return true;
+    }
     public function getLibelleFormat($labels = array(), $format = "%g% %a% %m% %l% %co% %ce%", $label_separator = ", ") {
 
         return $this->getLibelle();

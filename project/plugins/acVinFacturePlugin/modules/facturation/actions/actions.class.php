@@ -44,7 +44,7 @@ class facturationActions extends sfActions
               $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
               $generation->save();
 
-              return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
+              return $this->redirect('generation_view', ['id' => $generation->_id]);
           }
 
         $this->form->bind($request->getParameter($this->form->getName()));
@@ -104,7 +104,7 @@ class facturationActions extends sfActions
         $this->form->updateDocument();
         $this->generation->save();
 
-        return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $this->generation->date_emission));
+        return $this->redirect('generation_view', ['id' => $this->generation->_id]);
     }
 
 
@@ -382,22 +382,6 @@ class facturationActions extends sfActions
         exit;
     }
 
-    public function executeRegenerate(sfWebRequest $request) {
-        $facture = FactureClient::getInstance()->find($request->getParameter('id'));
-
-        if(!$facture) {
-
-            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
-        }
-
-        $f = FactureClient::getInstance()->regenerate($facture);
-        $f->save();
-
-        $this->getUser()->setFlash("notice", "La facture a été regénérée.");
-
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$f->identifiant));
-    }
-
     public function executeGenerer(sfWebRequest $request) {
         $this->redirect403IfIsTeledeclaration();
         $parameters = $request->getParameter('facture_generation');
@@ -436,14 +420,14 @@ class facturationActions extends sfActions
         $generationMaitre->save();
         $generation->save();
 
-        return $this->redirect('generation_view', [
-          'type_document' => $generationMaitre->type_document,
-          'date_emission' => $generationMaitre->date_emission.'-'.$generation->type_document
-        ]);
+        return $this->redirect('generation_view', ['id' => $generation->_id]);
     }
 
     public function executeTemplate(sfWebRequest $request) {
         $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
+
+        $this->organisme = Organisme::getInstance();
+
         $this->lignes = array();
 
         foreach($this->template->cotisations as $cotisation) {

@@ -5,7 +5,11 @@
 all:
   organisme:
     nom: ""
+  societe:
+    format_identifiant: "%06d"
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
-  interpro: 'INTERPRO-inter-loire'
+  parcellaire_irrigable:
+    ressources: ["Contrôle"]
+    materiels: ["Contrôle"]

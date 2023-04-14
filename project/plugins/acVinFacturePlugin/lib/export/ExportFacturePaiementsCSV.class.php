@@ -42,9 +42,6 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
 
 
     public function exportFacturePaiements($date_max = null, $set_verse = false) {
-
-        $societe = $this->facture->getSociete();
-
         $date_facturation = DateTime::createFromFormat("Y-m-d",$this->facture->date_facturation)->format("d/m/Y");
         $facture = $this->facture;
         $csv = '';

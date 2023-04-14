@@ -615,6 +615,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+
+        $this->generateMouvementsFactures();
     }
 
     public function getEtablissementObject() {
@@ -989,6 +991,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsFacturesCalcule() {
+        if($this->getEtablissementObject()->getCompte()->statut == CompteClient::STATUT_INACTIF) {
+            return array();
+        }
+
         $templateFacture = $this->getTemplateFacture();
 
         if(!$templateFacture) {

@@ -3,96 +3,10 @@ all:
     drev:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
-      validation_odg: 'region'
+      validation_odg: 'auto'
       habilitation_inao: true
-      cgu: true
-      odg:
-        ANJOU_SAUMUR:
-          nom: "Anjou Saumur"
-          adresse: "73 rue du Plantagenêt, 49024 Angers"
-          telephone: "%app_drev_ANJOU_SAUMUR_telephone%"
-          email: "%app_drev_ANJOU_SAUMUR_email%"
-          produits:
-            - "TRANQ/appellations/ANJ"
-            - "TRANQ/appellations/ANJCDL"
-            - "TRANQ/appellations/AJV"
-            - "EFF/appellations/ANJ"
-            - "appellations/AJVBRI/"
-            - "appellations/BON/"
-            - "TRANQ/appellations/CAJ/"
-            - "EFF/appellations/CLO/"
-            - "appellations/COL/mentions/DEFAUT"
-            - "appellations/COL/mentions/SGN"
-            - "appellations/COS/"
-            - "appellations/COB/"
-            - "appellations/RAJ/"
-            - "EFF/appellations/SAU/"
-            - "TRANQ/appellations/SAU/"
-            - "TRANQ/appellations/SAUCHA/"
-            - "appellations/RLO/"
-            - "appellations/QDC/"
-            - "appellations/SAV/"
-            - "appellations/SAVRAM/"
-            - "appellations/SAVCDS/"
-        TOURAINE:
-          nom: "Touraine"
-          adresse: "ZI 4 rue Gutenberg, 41140 NOYERS SUR CHER"
-          telephone: "%app_drev_TOURAINE_telephone%"
-          email: "%app_drev_TOURAINE_email%"
-          produits:
-            - "TRANQ/appellations/TOU/"
-            - "EFF/appellations/TOU"
-        CHINON:
-          nom: "Syndicat des Vins de Chinon"
-          adresse: 'Siège social "impasse des caves Painctes", Accueil "Place Hofheim"'
-          telephone: "%app_drev_CHINON_telephone%"
-          email: "%app_drev_CHINON_email%"
-          produits:
-            - "TRANQ/appellations/CHI/"
-        NANTES:
-          nom: "La Fédération des vins de Nantes"
-          adresse: "Château de la Frémoire, 44120 Vertou"
-          telephone: "%app_drev_NANTES_telephone%"
-          email: "%app_drev_NANTES_email%"
-          produits:
-            - TRANQ/appellations/MUSAC
-            - TRANQ/appellations/MUSCDL
-            - TRANQ/appellations/MUSCGL
-            - TRANQ/appellations/MUSSM
-            - TRANQ/appellations/GPL
-            - TRANQ/appellations/COA
-          inao: "data/drev/NANTES.csv"
-        COTEAUX_VENDOMOIS:
-          nom: "Côteaux du vendomois"
-          produits:
-            - appellations/CTXV
-        IGP_VALDELOIRE:
-          nom: "Syndicat des Vins IGP du Val de Loire"
-          adresse: "37 avenue jean Joxé, 49100 Angers"
-          telephone: "%app_drev_IGP_VALDELOIRE_telephone%"
-          email: "%app_drev_IGP_VALDELOIRE_email%"
-          email_notification: "%app_drev_IGP_VALDELOIRE_email_notification%"
-          produits:
-            - certifications/IGP_VALDELOIRE/genres/TRANQ/appellations/VAL
-        SAINT_NICOLAS:
-          nom: "Syndicat des Vins de Saint Nicolas de Bourgueil"
-          adresse: "33 avenue Saint-Vincent 37140 Saint Nicolas de Bourgueil"
-          produits:
-            - TRANQ/appellations/STN
-          email_notification: "%app_drev_SAINT_NICOLAS_email_notification%"
-        HAUT_POITOU:
-          nom: "Syndicat des Vins du Haut Poitou"
-          adresse: "1 bis Place de l'Eglise, BLASLAY, 86170 SAINT MARTIN LA PALLU"
-          telephone: "%app_drev_HAUT_POITOU_telephone%"
-          email: "%app_drev_HAUT_POITOU_email%"
-          email_notification: "%app_drev_HAUT_POITOU_email_notification%"
-          produits:
-            - TRANQ/appellations/HPT
-        VOUVRAY:
-          nom: "ODG de l’Aire d’Appellation Vouvray"
-          adresse: "Espace du vin - 20 Rue Victor Hugo 37210 Vouvray"
-          telephone: "%app_drev_VOUVRAY_telephone%"
-          email: "%app_drev_VOUVRAY_email%"
-          produits:
-            - "TRANQ/appellations/VOU/"
-            - "EFF/appellations/VOU"
+      etape_superficie: false
+      dr_douane_required: false
+      degustation: true
+      specificite_lot: true
+      engagement_pdf: true

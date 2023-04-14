@@ -6,11 +6,7 @@
 </ol>
 
 <?php if(isset($form)): ?>
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
-    </div>
-</div>
+    <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
 <?php endif; ?>
 
 <h3>Liste des habilitations</h3>
