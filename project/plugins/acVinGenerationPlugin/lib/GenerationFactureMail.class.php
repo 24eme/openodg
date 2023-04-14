@@ -151,7 +151,6 @@ class GenerationFactureMail extends GenerationAbstract {
 
         if(!$this->generation->exist('fichiers/'.$this->getPublishFile())) {
             $this->generation->add('fichiers')->add($this->getPublishFile(), "Logs d'envoi de mails");
-            $this->generation->save();
         }
 
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
