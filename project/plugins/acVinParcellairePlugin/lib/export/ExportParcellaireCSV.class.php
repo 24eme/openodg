@@ -34,7 +34,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function protectStr($str) {
-        return str_replace('"', '', $str);
+        return str_replace(';', '', str_replace('"', '', $str));
     }
 
     public function export() {
