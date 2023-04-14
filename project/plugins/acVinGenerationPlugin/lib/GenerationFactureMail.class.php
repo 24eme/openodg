@@ -138,7 +138,9 @@ class GenerationFactureMail extends GenerationAbstract {
 
             $this->addLog($factureId, "ENVOYÉ", "mail envoyé avec succes");
 
-            $this->generation->documents->add(null, $factureId);
+            if(!in_array($factureId, $factureDejaEnvoye)) {
+                $this->generation->documents->add(null, $factureId);
+            }
             $this->generation->save();
             $i++;
             if($i > $sleepMaxBatch) {
@@ -149,7 +151,6 @@ class GenerationFactureMail extends GenerationAbstract {
 
         if(!$this->generation->exist('fichiers/'.$this->getPublishFile())) {
             $this->generation->add('fichiers')->add($this->getPublishFile(), "Logs d'envoi de mails");
-            $this->generation->save();
         }
 
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
