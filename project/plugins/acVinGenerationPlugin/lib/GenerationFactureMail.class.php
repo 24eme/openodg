@@ -2,7 +2,7 @@
 
 class GenerationFactureMail extends GenerationAbstract {
 
-    const private $date_envoi = null;
+    private $date_envoi = null;
 
     public function generateMailForADocumentId($id) {
         $facture = FactureClient::getInstance()->find($id);
