@@ -34,7 +34,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function protectStr($str) {
-        return str_replace('"', '', $str);
+        return str_replace(';', '', str_replace('"', '', $str));
     }
 
     public function export() {
@@ -75,7 +75,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                     $this->formatFloat($parcelle->superficie),
                     $this->protectStr($parcelle->ecart_pieds),
                     $this->protectStr($parcelle->ecart_rang),
-                    $this->protectStr(implode(',', array_keys($parcelle->getIsInAires()))),
+                    $this->protectStr(implode('|', array_keys($parcelle->getIsInAires()))),
                     $this->protectStr($this->doc->date),
                 );
             }
