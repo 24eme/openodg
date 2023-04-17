@@ -121,7 +121,8 @@ class AireClient extends acCouchdbClient {
             $pseudo_aires[$id]->commune_libelle = null;
             $pseudo_aires[$id]->_id = null;
             $pseudo_aires[$id]->_rev = 'yyyy';
-            $pseudo_aires[$id]->setPseudoGeojson(implode('|', $o['json']));
+            $pseudo_aires[$id]->denomination_identifiant = $id;
+            $pseudo_aires[$id]->setPseudoGeojsons($o['json']);
         }
         return $pseudo_aires;
     }

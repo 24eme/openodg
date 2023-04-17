@@ -165,7 +165,7 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellairePPODS($parcellaire);
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
         echo $ods->create();
 
         exit;
@@ -183,116 +183,56 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellairePPODS($parcellaire);
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
         echo $ods->createPDF();
 
         exit;
     }
-    public function executeParcellaireExportGeo(sfWebRequest $request) {
+    public function executeParcellaireExportKML(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
+        $has_parcelles = $request->getParameter('with_parcelles', true);
+        $has_aires = $request->getParameter('with_aires', true);
+
+        $type = '';
+        if ($has_parcelles) {
+            $type = 'parcelles';
+        }
+        if ($has_aires) {
+            if ($type) {
+                $type .= '-et-';
+            }
+            $type .= 'aires';
+        }
+
         header("Content-Type: application/vnd.google-earth.kml+xml");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date));
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date, $type));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
-        echo '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
-        
-        // L'hexa de la couleur est inversé par rapport à la notation habituelle
-        // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
-        echo '<Style id="parcelle-style">
-        <LineStyle>
-          <width>2</width>
-        </LineStyle>
-        <PolyStyle>
-          <color>7d0000ff</color>
-        </PolyStyle>
-      </Style>';
+        echo $parcellaire->getKML($has_aires, $has_parcelles);
 
-        $styles = [];
-        foreach ($parcellaire->getMergedAires() as $aire) {
-            foreach ($aire->getGeojson() as $airejson) {
-                $aireobj = json_decode($airejson);
-                foreach ($aireobj->features as $feat) {
-                    $color = '7d' . str_replace('#', '', $aire['infos']['color']);
-                    $styles[$color] = '<Style id="aire-style-'.$color.'">
-            <LineStyle>
-            <width>1</width>
-            </LineStyle>
-            <PolyStyle>
-            <color>'.$color.'</color>
-            </PolyStyle>
-        </Style>';
-                }
-            }
-        }
+        exit;
+    }
 
-        foreach ($styles as $style) {
-            echo $style;
-        }
+    public function executeParcellaireExportGeoJson(sfWebRequest $request) {
+        $this->secureTeledeclarant();
 
-        // Pour mémoire la possibilité de mettre du texte directement dans la carte en mettant du texte en PNG
-        /*
-        echo '<Placemark>
-        <name>Test</name>
-        <Style>
-            <IconStyle>
-                <scale>0.03125</scale>
-                <Icon>
-                    <href>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII=</href>
-                    <gx:w>1</gx:w>
-                    <gx:h>1</gx:h>
-                </Icon>
-                <hotSpot x="0" y="1" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <LabelStyle>
-                <color>ff000000</color>
-                <LabelStyleSimpleExtensionGroup xmlns="" fontFamily="Sans" haloColor="ffffffff" haloRadius="3" haloOpacity="1"/>
-            </LabelStyle>
-        </Style>
-        <Point>
-            <coordinates>6.096128276094139,43.24822642695386</coordinates>
-        </Point>
-    </Placemark>';
-    */
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
 
-        // Le json décodé des parcelles
-        $geojson = $parcellaire->getDocument()->getGeoJson();
+        header("Content-Type: application/vnd.geo+json");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.geojson"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
 
-        // On y ajoute les json (décodés) des aires des appelations des communes associées
-        foreach ($parcellaire->getMergedAires() as $aire) {
-            foreach ($aire->getGeojson() as $airejson) {
-                $aireobj = json_decode($airejson);
-                foreach ($aireobj->features as $feat) {
-                    $feat_str = json_encode($feat);
-                    $feat_obj = GeoPHP::load($feat_str, 'geojson');
+        echo json_encode($parcellaire->getGeoJsonWithAires());
 
-                    echo '<Placemark>';
-                    echo '<name>'.$aire['infos']['name'].'</name>';
-                    echo '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire['infos']['color']) . '</styleUrl>';
-                    echo $feat_obj->out('kml');
-                    echo '</Placemark>';
-                }
-            }
-        }
-
-        // Ajoute des couleurs et l'identification
-        foreach ($geojson->features as $feat) {
-            $feat_str = json_encode($feat);
-            $feat_obj = GeoPHP::load($feat_str, 'geojson');
-
-            echo '<Placemark>';
-            echo '<name>'.$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
-            echo '<styleUrl>#parcelle-style</styleUrl>';
-            echo $feat_obj->out('kml');
-            echo '</Placemark>';
-        }
-
-        echo '</Document></kml>';
         exit;        
     }
 

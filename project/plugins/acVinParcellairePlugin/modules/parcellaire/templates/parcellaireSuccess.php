@@ -193,10 +193,16 @@ $list_idu = [];
                                         }else{
                                             echo '<span class="text-muted">';
                                         }
-                                        echo ($a == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
-                                        echo ($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
-                                        echo ($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
-                                        echo "$nom</span>";
+                                        if($a == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) {
+                                            echo "Hors de l'aire ".$nom;
+                                        } elseif($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) {
+                                            echo "Partiellement ".$nom;
+                                        } elseif($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) {
+                                            echo "En erreur";
+                                        } else {
+                                            echo $nom;
+                                        }
+                                        echo "</span>";
                                         $separateur = ',';
                                     }?>
                                     <?php endif; ?>

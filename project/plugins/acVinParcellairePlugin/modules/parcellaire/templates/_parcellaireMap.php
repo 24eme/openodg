@@ -22,7 +22,7 @@
 <?php endif; ?>
     var aires = [];
     <?php foreach($parcellaire->getMergedAires() as $aire): ?>
-    aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo addslashes($aire->denomination_libelle.' '.$aire->commune_libelle) ?>', 'geojson': '<?php echo addslashes($aire->getRawValue()->geojson); ?>'});
+    aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo $aire->getName() ?>', 'geojson': '<?php echo addslashes($aire->getRawValue()->geojson); ?>'});
     <?php endforeach; ?>
 </script>
 <?php use_javascript('lib/leaflet/parcelles-maker.js?202303281559'); ?>
