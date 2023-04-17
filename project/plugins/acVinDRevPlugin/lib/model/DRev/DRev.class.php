@@ -1569,6 +1569,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getNumerosDossier()
     {
+        if (!$this->exist('lots')) {
+            return array();
+        }
         return array_unique(array_column($this->lots->toArray(true, false), 'numero_dossier'));
     }
 

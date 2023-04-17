@@ -140,7 +140,7 @@
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default" id="lien-telechargement-pdf-drev">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;PDF de la DRev
             </a>
-            <?php if (count($drev->getNumerosDossier()) > 1): ?>
+            <?php if ($drev->exist('lots') && count($drev->getNumerosDossier()) > 1): ?>
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="caret"></span>
                   <span class="sr-only">Toggle Dropdown</span>
