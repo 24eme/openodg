@@ -46,7 +46,7 @@ abstract class ExportGenericParcellaireODS {
         $content_filename = 'content.xml';
         $content_file = $this->tmp_dir . '/' . $content_filename;
 
-        copy(dirname(__FILE__) . '/../../../modules/parcellaire/templates/' . $this->ods_filename, $this->ods_tmp_file);
+        copy(dirname(__FILE__) . '/../../modules/parcellaire/templates/' . $this->ods_filename, $this->ods_tmp_file);
 
         // Prend le content.xml en dézippant l'ODS
         $zip = new ZipArchive();
