@@ -1,0 +1,18 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+all:
+  organisme:
+    nom: "Sancerre"
+  elasticversion: '2.4.6'
+  document_validation_signataire: 1
+  float:
+    default_decimal_format: 2
+    max_decimal_authorized: 4
+  societe:
+    format_identifiant: "SAN%05d"
+  donnees_viticoles:
+    regions:
+  communes:
+    denominations:
