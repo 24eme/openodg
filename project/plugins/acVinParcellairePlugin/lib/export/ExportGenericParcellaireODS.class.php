@@ -73,7 +73,7 @@ abstract class ExportGenericParcellaireODS {
     public function createPDF() {
         $this->create();
 
-        exec("HOME=/tmp/www-data ; mkdir -p $HOME ; libreoffice --headless --convert-to pdf {$this->ods_tmp_file} --outdir {$this->tmp_dir}");
+        exec("export HOME=/tmp/www-data ; mkdir -p \$HOME ; libreoffice --headless --convert-to pdf {$this->ods_tmp_file} --outdir {$this->tmp_dir}");
 
         return file_get_contents(str_replace('.ods', '.pdf', $this->ods_tmp_file));
     }
