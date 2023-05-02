@@ -4,11 +4,11 @@
 <div class="row">
 	<div class="col-xs-12">
 		<h3>Raison sociale</h3>
-		
+
 	</div>
 	<div class="col-xs-12">
 		<h3>Conseil de modération</h3>
-		<p>Nous vous rappelons que l'abus d'alcool est dangereux pour la santé et que les Vins Sancerre sont à consommer avec modération.</p>
+		<p>Nous vous rappelons que l'abus d'alcool est dangereux pour la santé et que les Vins Centre sont à consommer avec modération.</p>
 		<p><em>Pour plus d'informations sur une consommation modérée, consultez le site de vin et société.</em></p>
 	</div>
 	<div class="col-xs-12">

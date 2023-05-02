@@ -43,7 +43,7 @@ if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" style="padding-top: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">Sancerre</h1></a>
+            <a class="navbar-brand" style="padding-top: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">Centre</h1></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>

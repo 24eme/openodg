@@ -7,9 +7,9 @@ default:
     X-UA-Compatible: IE=edge
 
   metas:
-    title:            "Plateforme de télédéclaration du Sancerre"
+    title:            "Plateforme de télédéclaration de l'OI ODG Centre"
     charset:          "utf-8"
-    description:      "Plateforme de télédéclaration du Sancerre"
+    description:      "Plateforme de télédéclaration du OI ODG Centre"
     robots:           "index,follow"
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"

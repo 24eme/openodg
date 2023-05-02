@@ -1,10 +1,10 @@
 <?php
-class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
+class PotentielProductionCentreGenerator extends PotentielProductionGenerator
 {
     protected $identificationParcellaire;
     public static $categories = ['principaux', 'secondairesNoirs', 'secondairesBlancsVermentino', 'secondairesBlancsAutres'];
     protected $isPetiteSurface;
-    
+
     public function __construct($identifiant_or_etablissement)
     {
         if ($identifiant_or_etablissement) {
@@ -19,7 +19,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
             }
         }
     }
-    
+
     public function getCepages($lieu = null, $couleur = null)
     {
         if ($lieu && !in_array($lieu, ['SVI', 'FRE', 'LLO', 'PIE', 'NDA'])) {
@@ -101,7 +101,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
             ];
         }
     }
-    
+
     public function getDonnees($superficies = null)
     {
         $superficies = ($superficies)? $superficies : $this->getSuperficies();
@@ -119,7 +119,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return $revendicables;
     }
-    
+
     public function getSuperficies()
     {
         $superficies = [];
@@ -162,7 +162,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         $superficies['CDP'] = $cdp;
         return $superficies;
     }
-    
+
     protected function aggSuperficesByCepages($parcelles, $cepages)
     {
         $agg = ['TOTAL' => 0];
@@ -195,7 +195,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return $agg;
     }
-    
+
     public function calculateRevendicableCDP($superficies)
     {
         $revendicables = [];
@@ -306,7 +306,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         $revendicables['secondairesBlancsAutres'] = $this->regleRevendicableAvecMax_GetRevendicable($revendicableSecondairesBlancsMax, $revendicableSecondairesBlancsAutresMax, $superficies['secondairesBlancsAutres']['TOTAL']);
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
-    
+
     public function calculateRevendicableFRERouge($superficies)
     {
         $revendicables = [];
@@ -314,7 +314,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         $revendicables['principaux'] = $this->reglePourcentageCepageMax_GetRevendicable($superficies['principaux'], $superficies['TOTAL'], 60);
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
-    
+
     public function calculateRevendicableFRERose($superficies)
     {
         $revendicables = [];
@@ -338,7 +338,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
-    
+
     public function calculateRevendicableLLOBlanc($superficies)
     {
         $revendicables = [];
@@ -353,7 +353,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
-    
+
     public function calculateRevendicableLLORouge($superficies)
     {
         $revendicables = [];
@@ -383,7 +383,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
-    
+
     public function calculateRevendicableLLORose($superficies)
     {
         $revendicables = [];
@@ -411,7 +411,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         $revendicables['secondairesBlancsAutres'] = $this->regleRevendicableAvecMax_GetRevendicable($revendicableSecondairesBlancsMax, $revendicableSecondairesBlancsAutresMax, $superficies['secondairesBlancsAutres']['TOTAL']);
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
-    
+
     public function calculateRevendicablePIERouge($superficies)
     {
         $revendicables = [];
@@ -525,7 +525,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         $revendicables['secondairesBlancsAutres'] = $this->regleRevendicableAvecMax_GetRevendicable($revendicableSecondairesBlancsMax, $revendicableSecondairesBlancsAutresMax, $superficies['secondairesBlancsAutres']['TOTAL']);
         return $this->generateResultRevendicabe($revendicables, $superficies);
     }
-    
+
     public function calculateRevendicablePetiteSurface($superficies)
     {
         $revendicables = [];
@@ -541,7 +541,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return ['revendicables' => $revendicables, 'declassements' => ['principaux' => 0, 'secondaires' => round($secondaires - $revendicables['secondaires'], 4)]];
     }
-    
+
     protected function generateResultRevendicabe($revendicables, $superficies)
     {
         $declassements = [];
@@ -594,13 +594,13 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return true;
     }
-    
+
     //******* REGLES CALCULS
     public function regleNbCepageMin_GetRevendicable($cepages, $min)
     {
         return (count($cepages) - 1 < $min)? 0 : $cepages['TOTAL'];
     }
-    
+
     public function reglePourcentageCepageMax_GetRevendicable($cepages, $encepagement, $pourcentage)
     {
         $max = round(($encepagement*($pourcentage/100)), 4);
@@ -618,7 +618,7 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         }
         return ($revendicable)? round($revendicable + $total, 4) : $cepages['TOTAL'];
     }
-    
+
     public function reglePourcentageCepageMin_GetEncepagementMax($cepagesKeys, $superficies, $pourcentage)
     {
         $max = 0;
@@ -632,13 +632,13 @@ class PotentielProductionSancerreGenerator extends PotentielProductionGenerator
         $max = round($max * 1 / ($pourcentage / 100), 4);
         return ($max < $superficies['TOTAL'])? $max : $superficies['TOTAL'];
     }
-    
+
     public function regleRatioMax_GetRevendicable($encepagementCepagesPrincipaux, $ratioSecondairePrincipal)
     {
         return round($encepagementCepagesPrincipaux*$ratioSecondairePrincipal, 4);
     }
 
-    public function regleRevendicableAvecMax_GetRevendicable($revendicableGlobalMax, $revendicableExtraitMax, $superficie) 
+    public function regleRevendicableAvecMax_GetRevendicable($revendicableGlobalMax, $revendicableExtraitMax, $superficie)
     {
         $revendicable = 0;
         if ($revendicableExtraitMax > $revendicableGlobalMax) {

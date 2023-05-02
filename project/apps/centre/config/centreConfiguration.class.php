@@ -1,6 +1,6 @@
 <?php
 
-class sancerreConfiguration extends sfApplicationConfiguration
+class centreConfiguration extends sfApplicationConfiguration
 {
 
     public function configure()

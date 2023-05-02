@@ -9,9 +9,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-Ua-Compatible" content="IE=edge" />
-        <meta name="title" content="Plateforme de télédéclaration du Sancerre" />
+        <meta name="title" content="Plateforme de télédéclaration de l'OI ODG Centre" />
 <meta name="charset" content="utf-8" />
-<meta name="description" content="Plateforme de télédéclaration du Sancerre" />
+<meta name="description" content="Plateforme de télédéclaration de l'OI ODG Centre" />
 <meta name="robots" content="index,follow" />
 <meta name="content-language" content="fr-FR" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -51,18 +51,11 @@
             <div id="header">
                 <header class="container" role="banner">
       <div id="logo">
-          <a href="/" title="Sancerre | Retour à la page d'accueil">
-              <img src="/images/logo_provence.png" alt="Sancerre">
+          <a href="/" title="Centre | Retour à la page d'accueil">
+              <img src="/images/logo_centre.png" alt="Centre">
           </a>
       </div>
-      <div id="titre"><h1>
-        <img height="35" width="207" src="/images/provence_espace_personnel.png" alt="Espace personnel"/>
-      </h1></div>
 </header>
-
-
-
-
 
 <nav id="menu_navigation" class="navbar navbar-default container">
         <div class="navbar-header hidden-lg hidden-md">
