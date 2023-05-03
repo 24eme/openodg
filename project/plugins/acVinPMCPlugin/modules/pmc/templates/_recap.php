@@ -31,10 +31,9 @@
                 <?php else: ?>
                   <th class="col-xs-1"> Numéro Lot Opérateur</th>
                 <?php endif; ?>
-                <th class="text-center col-xs-3">Produit (millesime)</th>
-                <th class="text-center col-xs-2">Centilisation</th>
+                <th class="text-center col-xs-4">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
-                <th class="text-center col-xs-3">Destination (date)</th>
+                <th class="text-center col-xs-3">Destination</th>
                 <?php if ($sf_user->isAdmin()): ?>
                   <th class="text-center col-xs-3">Dégustable</th>
                 <?php endif;?>
@@ -64,7 +63,6 @@
                             <small class="text-muted"> en élevage </small>
                           <?php endif; ?>
                         </td>
-                        <td class="text-right"><?php echo $lot->centilisation; ?></td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
@@ -99,7 +97,6 @@
                 <?php if($pmc->isValidee()): ?>
                   <td></td>
                 <?php endif; ?>
-                  <td></td>
                   <td></td>
                   <td class="text-right">Total : </td>
                   <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
