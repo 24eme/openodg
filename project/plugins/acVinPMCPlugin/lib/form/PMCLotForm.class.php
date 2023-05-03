@@ -1,6 +1,6 @@
 <?php
 
-class PMCLotForm extends acCouchdbObjectForm
+class PMCLotForm extends TransactionLotForm
 {
     const NBCEPAGES = 5;
 
@@ -23,59 +23,9 @@ class PMCLotForm extends acCouchdbObjectForm
         }
     }
 
-    protected function getContenances(){
-      $contenances = PMCConfiguration::getInstance()->getContenances();
-      $contenances_merged = array_keys(array_merge(array("" => ""), $contenances["bouteille"], $contenances["bib"]));
-      $contnenance_displaying = array_combine($contenances_merged, $contenances_merged);
-      return $contnenance_displaying;
-    }
-
     public function configure() {
-        $produits = $this->getProduits();
-        $cepages = $this->getCepages();
+        parent::configure();
 
-        $this->setWidget('volume', new bsWidgetFormInputFloat());
-        $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
-
-        $this->setWidget('millesime', new bsWidgetFormInput());
-        $this->setValidator('millesime', new sfValidatorChoice(array('required' => false, 'choices' => $this->getMillesimes())));
-
-        $this->setWidget('destination_date', new bsWidgetFormInput());
-        $this->setValidator('destination_date', new sfValidatorDate(
-            array('date_output' => 'Y-m-d',
-            'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
-            'required' => false)));
-
-        $this->setWidget('produit_hash', new bsWidgetFormChoice(array('choices' => $produits)));
-        $this->setValidator('produit_hash', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($produits))));
-
-        $this->setWidget('numero_logement_operateur', new bsWidgetFormInput());
-        $this->setValidator('numero_logement_operateur', new sfValidatorString(array('required' => false)));
-
-        $this->setWidget('affectable', new sfWidgetFormInputCheckbox());
-        $this->setValidator('affectable', new sfValidatorBoolean(['required' => false]));
-
-
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
-          $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
-          $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
-        }
-
-        if(PMCConfiguration::getInstance()->hasContenances()){
-          $this->setWidget('centilisation', new bsWidgetFormChoice(array('choices' => $this->getContenances())));
-          $this->setValidator('centilisation', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getContenances()))));
-        }
-        for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if ($cepages && count($cepages)) {
-                $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
-                $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
-            }else{
-                $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
-                $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
-            }
-            $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
-            $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
-        }
         $this->setWidget('elevage', new sfWidgetFormInputCheckbox());
         $this->setValidator('elevage', new sfValidatorBoolean(['required' => false]));
 

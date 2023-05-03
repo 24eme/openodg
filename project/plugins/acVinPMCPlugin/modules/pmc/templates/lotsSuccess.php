@@ -105,18 +105,7 @@
                     </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-6">
-                      <div class="form-group">
-                          <?php echo $lot['centilisation']->renderLabel("Centilisation", array('class' => "col-sm-3 control-label")); ?>
-                          <div class="col-sm-9">
-                                <?php echo $lot['centilisation']->render(array("data-placeholder" => "Sélectionnez une centilisation", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
-                          </div>
-                          <div class="col-sm-6 text-danger">
-                                <?php echo $lot['centilisation']->renderError(); ?>
-                          </div>
-                      </div>
-                  </div>
-                    <div class="col-md-6">
+                    <div class="col-md-offset-6 col-md-6">
                         <div class="form-group">
                             <?php echo $lot['volume']->renderLabel("Volume global", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
