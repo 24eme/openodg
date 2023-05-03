@@ -135,20 +135,6 @@
                           </div>
                       </div>
                     <?php endif ?>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <?php echo $lot['destination_date']->renderLabel("Date de condtnmt", array('class' => "col-sm-4 control-label")); ?>
-                            <div class="col-sm-5">
-                                <div class="input-group date-picker">
-                                    <?php echo $lot['destination_date']->render(array('placeholder' => "Date")); ?>
-                                    <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 text-danger">
-                            <?php echo $lot['destination_date']->renderError(); ?>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row mb-3">
                         <div class="col-md-offset-8 col-md-3 ">
                             <?php echo $lot['elevage']->render() ?>
