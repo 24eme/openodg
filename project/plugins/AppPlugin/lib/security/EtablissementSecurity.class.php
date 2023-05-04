@@ -6,6 +6,7 @@ class EtablissementSecurity implements SecurityInterface {
     const DECLARANT_CONDITIONNEMENT = 'DECLARANT_CONDITIONNEMENT';
     const DECLARANT_TRANSACTION = 'DECLARANT_TRANSACTION';
     const DECLARANT_PARCELLAIRE = 'DECLARANT_PARCELLAIRE';
+    const DECLARANT_PMC = 'DECLARANT_PMC';
 
     protected $user;
     protected $etablissement;
