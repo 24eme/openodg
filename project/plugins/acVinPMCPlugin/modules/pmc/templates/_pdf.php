@@ -72,7 +72,7 @@ cas, faire une demande de mise en circulation pour chaque lot.
         <th class="th" style="text-align: left; width: 10%">&nbsp;N° Lot Opérat.</th>
         <th class="th" style="text-align: left; width: 50%">&nbsp;Produit (millésime)</th>
         <th class="th" style="text-align: center; width: 15%">Volume</th>
-        <th class="th" style="text-align: center; width: 15%">Date de dégust°</th>
+        <th class="th" style="text-align: center; width: 15%">Date de dégust° souhaitée</th>
     </tr>
     <?php foreach($lots as $lotsByCouleur): ?>
       <?php foreach ($lotsByCouleur as $lot) : ?>
