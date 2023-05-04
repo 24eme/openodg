@@ -4,7 +4,7 @@
 <?php include_partial('pmc/breadcrumb', array('pmc' => $pmc )); ?>
 <?php include_partial('pmc/step', array('step' => ConditionnementEtapes::ETAPE_LOTS, 'pmc' => $pmc, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Mise en circulation des Lots IGP</h2></div>
+    <div class="page-header"><h2>Mise en circulation des Lots</h2></div>
 
     <?php echo include_partial('global/flash'); ?>
     <form role="form" action="<?php echo url_for("pmc_lots", $pmc) ?>" method="post" id="form_pmc_lots" class="form-horizontal">
