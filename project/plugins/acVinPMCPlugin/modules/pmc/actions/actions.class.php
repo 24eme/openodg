@@ -344,7 +344,7 @@ class pmcActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
         $pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::PDF, $pmc);
-        $this->document = new ExportPMCPdf($pmc, $request->getParameter('output', 'pdf'), false);
+        $this->document = new ExportPMCPDF($pmc, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
         if ($request->getParameter('force')) {
             $this->document->removeCache();

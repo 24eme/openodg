@@ -53,7 +53,7 @@ class ExportPMCPDF extends ExportPDF
     }
 
     protected function getHeaderTitle() {
-        $date = new DateTime($this->declaration->date);
+        $date = new DateTimeImmutable($this->declaration->date);
         $titre = sprintf("Déclaration de Mise en Circulation du %s", $date->format('d/m/Y'));
         return $titre;
     }
@@ -64,24 +64,27 @@ class ExportPMCPDF extends ExportPDF
 
     protected function getHeaderSubtitle() {
         $header_subtitle = sprintf("%s\n\n", $this->declaration->declarant->nom);
-        if (!$this->declaration->isPapier() && $this->declaration->validation && $this->declaration->validation !== true) {
-            $date = new DateTime($this->declaration->validation);
-            $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-            if($this->declaration->validation_odg) {
-                $dateOdg = new DateTime($this->declaration->validation_odg);
-                $header_subtitle .= ", validée par l'ODG le ".$dateOdg->format('d/m/Y');
+        $date_validation = DateTimeImmutable::createFromFormat('Y-m-d', $this->declaration->validation);
+        $date_validation_odg = DateTimeImmutable::createFromFormat('Y-m-d', $this->declaration->validation_odg);
+
+        if (! $this->declaration->isPapier()) {
+            if ($date_validation === false) {
+                $header_subtitle .= sprintf("Exemplaire brouillon");
             } else {
-                $header_subtitle .= ", en attente de l'approbation par l'ODG";
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date_validation->format('d/m/Y'));
+
+                if($date_validation_odg !== false) {
+                    $header_subtitle .= ", validée par l'ODG le ".$date_validation_odg->format('d/m/Y');
+                } else {
+                    $header_subtitle .= ", en attente de l'approbation par l'ODG";
+                }
             }
-
-        } elseif(!$this->declaration->isPapier()) {
-            $header_subtitle .= sprintf("Exemplaire brouillon");
         }
 
-        if ($this->declaration->isPapier() && $this->declaration->validation && $this->declaration->validation !== true) {
-            $date = new DateTime($this->declaration->validation);
-            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
+        if ($this->declaration->isPapier() && $date_validation !== false) {
+            $header_subtitle .= sprintf("Reçue le %s", $date_validation->format('d/m/Y'));
         }
+
         return $header_subtitle;
     }
 
