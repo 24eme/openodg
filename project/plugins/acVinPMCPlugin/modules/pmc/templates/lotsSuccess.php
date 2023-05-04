@@ -105,7 +105,23 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-offset-6 col-md-6">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?php echo $lot['date_degustation_voulue']->renderLabel("Date ctrl souhaitée", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-5">
+                                <div class="input-group date-picker">
+                                    <?php echo $lot['date_degustation_voulue']->render(array("class" => "form-control", 'placeholder' => "Date")); ?>
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon-calendar glyphicon"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 text-danger">
+                            <?php echo $lot['date_degustation_voulue']->renderError(); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
                         <div class="form-group">
                             <?php echo $lot['volume']->renderLabel("Volume global", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
@@ -135,13 +151,6 @@
                           </div>
                       </div>
                     <?php endif ?>
-                    <div class="row mb-3">
-                        <div class="col-md-offset-8 col-md-3 ">
-                            <?php echo $lot['elevage']->render() ?>
-                            <?php echo $lot['elevage']->renderLabel('Lot prévu en élevage') ?>
-                            <?php echo $lot['elevage']->renderError() ?>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -166,7 +175,7 @@
                                   </div>
                                 </div>
                               </div>
-                        <?php for($i=0; $i < PMCLotForm::NBCEPAGES; $i++): ?>
+                                <?php for($i=0; $i < PMCLotForm::NBCEPAGES; $i++): ?>
                                     <div class="form-group ligne_lot_cepage ">
                                         <div class="col-sm-8">
                                             <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>

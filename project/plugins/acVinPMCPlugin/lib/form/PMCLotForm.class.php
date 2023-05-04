@@ -8,7 +8,10 @@ class PMCLotForm extends TransactionLotForm
         $this->setWidget('elevage', new sfWidgetFormInputCheckbox());
         $this->setValidator('elevage', new sfValidatorBoolean(['required' => false]));
 
-        unset($this['destination_date']);
+        $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
+        $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)));
+
+        //unset($this['destination_date']);
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
@@ -18,6 +21,10 @@ class PMCLotForm extends TransactionLotForm
 
         if (!empty($values['elevage'])) {
           $this->getObject()->statut = Lot::STATUT_ELEVAGE;
+        }
+
+        if (!empty($values['date_degustation_voulue'])) {
+          $this->getObject()->date_degustation_voulue = $values['date_degustation_voulue'];
         }
     }
 }
