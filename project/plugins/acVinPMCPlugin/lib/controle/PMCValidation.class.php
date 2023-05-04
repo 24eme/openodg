@@ -1,5 +1,5 @@
 <?php
-class PMCValidation extends DeclarationLotsValidation
+class PMCValidation extends DocumentValidation
 {
 
     protected $etablissement = null;
@@ -14,7 +14,10 @@ class PMCValidation extends DeclarationLotsValidation
 
     public function configure()
     {
-        $this->configureLots();
+        $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
+        $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
+        $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
+        $this->addControle(self::TYPE_FATAL, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
     }
 
     public function controle()
@@ -75,19 +78,6 @@ class PMCValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_FATAL, 'lot_cepage_volume_different', $lot->getProduitLibelle(). " ( ".round($lot->volume, 2)." hl vs cépage ".round($somme, 2)." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               }
             }
-
-            if ($lot->statut == Lot::STATUT_ELEVAGE) {
-                $this->lotselevage[$lot->produit_hash][] = [$lot->getProduitLibelle(), $lot->volume];
-            }
-        }
-
-        if (count($this->lotselevage) > 0) {
-            $msg = [];
-            foreach ($this->lotselevage as $hash => $lots) {
-                $msg[] = count($lots) . " lot(s) de ".$lots[0][0]." (".array_sum(array_column($lots, 1))." hl)";
-            }
-
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, implode(', ', $msg));
         }
     }
 

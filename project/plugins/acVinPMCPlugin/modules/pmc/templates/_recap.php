@@ -58,10 +58,6 @@
                       <?php endif; ?>
                         <td>
                           <?php echo showProduitCepagesLot($lot) ?>
-                          <?php if($lot->isInElevage()):?>
-                            <br>
-                            <small class="text-muted"> en élevage </small>
-                          <?php endif; ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
