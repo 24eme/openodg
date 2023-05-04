@@ -6,7 +6,7 @@ require('./nightmare-inline-download.js')(Nightmare);
 var fs = require('fs');
 var mkdirp = require("mkdirp");
 const path = require('path');
-var timeout = 180000;
+var timeout = 15000;
 var nightmare = Nightmare({ show: true, typeInterval: 1, waitTimeout: timeout, gotoTimeout: timeout, executionTimeout: timeout, timeoutDownloadBeforeStart: timeout, maxDownloadRequestWait: timeout, webPreferences: { preload: path.resolve("pre.js") }});
 var config = require('./'+configFile);
 var destination_file='imports/'+config.file_name+'/';
@@ -36,17 +36,18 @@ nightmare
   .type('#TextBox1',config.user_name)
   .type('#TextBox2',config.user_password)
   .click('#Button2')
+  .wait(2000)
   .wait('.menu')
   .viewport(1400, 1800)
   //fin authentification
  .then(function() {
-      var uri = baseUri+"/operateur/ListeOperateur.aspx";
+      var uri = baseUri+"/operateur/ListeOperateurR.aspx";
       var exportFilename = destination_file+'01_operateurs/operateurs.xlsx';
       console.log("export " + uri + ": " + exportFilename);
 
       return nightmare
       .goto(uri)
-      .click('#Button1')
+      .click('#btnRech')
       .wait(10000)
       .click('#Button2')
       .download(exportFilename)
@@ -55,36 +56,6 @@ nightmare
         console.error('Search failed:', error)
       })
   })
-  .then(function() {
-       var uri = baseUri+"/operateur/ListeOperateur.aspx?type=etiquettes";
-       var exportFilename = destination_file+'01_operateurs/operateurs_etiquettes.pdf';
-       console.log("export " + uri + ": " + exportFilename);
-
-       return nightmare
-       .goto(uri)
-       .click('#Button1')
-       .wait(10000)
-       .click('#btnEtiquette')
-       .download(exportFilename)
-       .catch(error => {
-         console.error('Search failed:', error)
-       })
-   })
-   .then(function() {
-        var uri = baseUri+"/operateur/ListeOperateur.aspx?type=inao";
-        var exportFilename = destination_file+'01_operateurs/operateurs_inao.xlsx';
-        console.log("export " + uri + ": " + exportFilename);
-
-        return nightmare
-        .goto(uri)
-        .click('#Button1')
-        .wait(10000)
-        .click('#btnExportINAO')
-        .download(exportFilename)
-        .catch(error => {
-          console.error('Search failed:', error)
-        })
-    })
   .then(function() {
     if(regroupement) {
       return;
@@ -103,100 +74,6 @@ nightmare
       .catch(error => {
         console.error('Search failed:', error)
       })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/operateur/AppRaisin.aspx?type=etiquettes";
-      var exportFilename = destination_file+'01_operateurs/apporteurs_de_raisins_etiquettes.pdf';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .click('#Button1')
-      .wait(10000)
-      .click('#btnEtiquette')
-      .download(exportFilename)
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/operateur/AppRaisin.aspx?type=inao";
-      var exportFilename = destination_file+'01_operateurs/apporteurs_de_raisins_inao.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-      .goto(uri)
-      .click('#Button1')
-      .wait(10000)
-      .click('#btnExportINAO')
-      .download(exportFilename)
-      .catch(error => {
-        console.error('Search failed:', error)
-      })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/operateur/Adresses.aspx?type=courrier";
-      var exportFilename = destination_file+'01_operateurs/addresses_operateurs_courrier.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-        .goto(uri)
-        .wait('#Button2')
-        .click('#Button2')
-        .download(exportFilename)
-        .screenshot(exportFilename+".png")
-        .catch(error => {
-          console.error('Search failed:', error)
-        })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/operateur/Adresses.aspx?type=facturation";
-      var exportFilename = destination_file+'01_operateurs/addresses_operateurs_facturation.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-        .goto(uri)
-        .wait('#Button2')
-        .click('#rblA_1')
-        .wait(5000)
-        .click('#Button2')
-        .download(exportFilename)
-        .screenshot(exportFilename+".png")
-        .catch(error => {
-          console.error('Search failed:', error)
-        })
-  })
-  .then(function() {
-    if(regroupement) {
-      return;
-    }
-      var uri = baseUri+"/operateur/Adresses.aspx?type=exploitation";
-      var exportFilename = destination_file+'01_operateurs/addresses_operateurs_exploitation.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-        .goto(uri)
-        .wait('#Button2')
-        .click('#rblA_2')
-        .wait(5000)
-        .click('#Button2')
-        .download(exportFilename)
-        .screenshot(exportFilename+".png")
-        .catch(error => {
-          console.error('Search failed:', error)
-        })
   })
   .then(function() {
     if(regroupement) {
@@ -222,20 +99,6 @@ nightmare
           .catch(error => {
             console.error('Search failed:', error)
           })
-  })
-  .then(function() {
-      var uri = baseUri+"/operateur/SynOperateurR.aspx";
-      var exportFilename = destination_file+'01_operateurs/synthese_operateurs.html';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-        .goto(uri)
-        .wait(1000)
-        .html(exportFilename)
-        .screenshot(exportFilename+".png")
-        .catch(error => {
-          console.error('Search failed:', error)
-        })
   })
   .then(function() {
       var uri = baseUri+"/Administration/FicheContact.aspx";
@@ -275,21 +138,6 @@ nightmare
         .goto(uri)
         .wait(1000)
         .html(exportFilename, 'HTMLOnly')
-        .screenshot(exportFilename+".png")
-        .catch(error => {
-          console.error('Search failed:', error)
-        })
-  })
-  .then(function() {
-      var uri = baseUri+"/Habilitation/HistHab.aspx";
-      var exportFilename = destination_file+'01_operateurs/historique_DI.xlsx';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-        .goto(uri)
-        .wait('#btnExcel')
-        .click('#btnExcel')
-        .download(exportFilename)
         .screenshot(exportFilename+".png")
         .catch(error => {
           console.error('Search failed:', error)
@@ -436,44 +284,6 @@ nightmare
       .wait(1000)
       .html(exportFilename, 'HTMLOnly')
       .screenshot(exportFilename+".png")
-  })
-  .then(async function() {
-      if(regroupement) {
-        return;
-      }
-      var uri = baseUri+"/Declaration/LstLotRecolte.aspx";
-
-      for(var i = 2016; i <= 2020; i++) {
-          var exportFilename = destination_file+'02_recoltes/recoltes_details_'+i+'.xlsx';
-          console.log("export " + uri + ": " + exportFilename);
-          await nightmare
-          .goto(uri+"?annee="+i)
-          .wait(2000)
-          .select('#ddlAnnee',i+"")
-          .wait(3000)
-          .click('#Button1')
-          .wait(2000)
-          .click('#btnExport')
-          .download(exportFilename)
-          .screenshot(exportFilename+".png")
-          .refresh()
-          .wait(2000)
-      }
-
-      return nightmare;
-  })
-  .then(function() {
-      var uri = baseUri+"/Declaration/LstLotRecolteNC.aspx";
-      var exportFilename = destination_file+'02_recoltes/recoltes_non_conforme.html';
-      console.log("export " + uri + ": " + exportFilename);
-
-      return nightmare
-       .goto(uri)
-       .click('#Button1')
-       .wait(2000)
-       .html(exportFilename, 'HTMLOnly')
-       .screenshot(exportFilename+".png")
-       .refresh()
   })
   .then(async function() {
     if(regroupement) {
