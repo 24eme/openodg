@@ -13,6 +13,12 @@ class PMCLotForm extends TransactionLotForm
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+
+        $this->setDefault('date_degustation_voulue', $this->getObject()->getDateDegustationVoulueFr());
+    }
+
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
 
