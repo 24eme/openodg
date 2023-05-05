@@ -65,6 +65,9 @@
     <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
     <?php endif; ?>
+    <?php if(class_exists("PMC") && in_array('pmc', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('pmc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
     <?php if(class_exists("Transaction") && in_array('transaction', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
     <?php endif; ?>

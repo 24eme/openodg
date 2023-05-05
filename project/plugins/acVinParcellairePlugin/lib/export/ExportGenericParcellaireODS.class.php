@@ -46,7 +46,7 @@ abstract class ExportGenericParcellaireODS {
         $content_filename = 'content.xml';
         $content_file = $this->tmp_dir . '/' . $content_filename;
 
-        copy(dirname(__FILE__) . '/../../../modules/parcellaire/templates/' . $this->ods_filename, $this->ods_tmp_file);
+        copy(dirname(__FILE__) . '/../../modules/parcellaire/templates/' . $this->ods_filename, $this->ods_tmp_file);
 
         // Prend le content.xml en dézippant l'ODS
         $zip = new ZipArchive();
@@ -73,7 +73,7 @@ abstract class ExportGenericParcellaireODS {
     public function createPDF() {
         $this->create();
 
-        exec("HOME=/tmp/www-data ; mkdir -p $HOME ; libreoffice --headless --convert-to pdf {$this->ods_tmp_file} --outdir {$this->tmp_dir}");
+        exec("export HOME=/tmp/www-data ; mkdir -p \$HOME ; libreoffice --headless --convert-to pdf {$this->ods_tmp_file} --outdir {$this->tmp_dir}");
 
         return file_get_contents(str_replace('.ods', '.pdf', $this->ods_tmp_file));
     }

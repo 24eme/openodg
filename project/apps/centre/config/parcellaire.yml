@@ -1,0 +1,9 @@
+all:
+  configuration:
+    parcellaire:
+      ecart_pieds_max: 25000
+      aires:
+        communes-aoc:
+          name: "AOC Centre"
+          color: "#e58ebc"
+          denomination_id: "01382"
