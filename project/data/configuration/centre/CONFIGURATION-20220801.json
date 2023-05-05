@@ -6,7 +6,7 @@
     "certifications": {
       "AOC": {
         "libelle": "AOP",
-        "format_libelle": "%g% %a% %l% %m%",
+        "format_libelle": "%g% %a% %l% %m% %co%",
         "code": "AOC",
         "genres": {
           "TRANQ": {
