@@ -4,12 +4,12 @@
 <?php use_javascript('hamza_style.js'); ?>
 
         <?php if($pmc->exist('lots')): ?>
-          <h3 id="table_igp_title">Déclaration des lots IGP</h3>
+          <h3 id="table_lot_title">Déclaration des lots</h3>
           <?php
           $lots = $pmc->getLotsByCouleur();
           ?>
           <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
+              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_lot" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
           </div>
           <br/>
           <?php if(!$pmc->validation_odg && $sf_user->isAdmin()): ?>
@@ -22,7 +22,7 @@
           </div>
           <br/>
           <?php endif; ?>
-          <table class="table table-bordered table-striped table_igp">
+          <table class="table table-bordered table-striped table_lot">
             <thead>
               <tr>
                 <?php if($pmc->isValidee()): ?>
