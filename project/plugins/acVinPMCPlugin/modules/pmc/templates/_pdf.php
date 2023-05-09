@@ -68,16 +68,14 @@ cas, faire une demande de mise en circulation pour chaque lot.
 <?php if (count($lots)): ?>
   <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; width: 10%">&nbsp;N° Lot ODG</th>
-        <th class="th" style="text-align: left; width: 10%">&nbsp;N° Lot Opérat.</th>
-        <th class="th" style="text-align: left; width: 50%">&nbsp;Produit (millésime)</th>
+        <th class="th" style="text-align: left; width: 25%">&nbsp;N° Lot Opérat.</th>
+        <th class="th" style="text-align: left; width: 45%">&nbsp;Produit (millésime)</th>
         <th class="th" style="text-align: center; width: 15%">Volume</th>
         <th class="th" style="text-align: center; width: 15%">Date de dégust° souhaitée</th>
     </tr>
     <?php foreach($lots as $lotsByCouleur): ?>
       <?php foreach ($lotsByCouleur as $lot) : ?>
       <tr>
-        <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_archive; ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->numero_logement_operateur; ?></td>
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?>
             (<?php echo $lot->millesime ?>)
