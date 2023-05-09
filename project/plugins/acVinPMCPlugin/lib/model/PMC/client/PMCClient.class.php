@@ -57,14 +57,6 @@ class PMCClient extends acCouchdbClient
 
         $etablissement = $doc->getEtablissementObject();
 
-        if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)) {
-            $doc->add('non_recoltant', 1);
-        }
-
-        if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_CONDITIONNEUR)) {
-            $doc->add('non_conditionneur', 1);
-        }
-
         if($papier) {
             $doc->add('papier', 1);
         }

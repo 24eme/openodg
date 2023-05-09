@@ -9,7 +9,7 @@
           $lots = $pmc->getLotsByCouleur();
           ?>
           <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_lots" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
+              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_lot" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
           </div>
           <br/>
           <?php if(!$pmc->validation_odg && $sf_user->isAdmin()): ?>
@@ -22,7 +22,7 @@
           </div>
           <br/>
           <?php endif; ?>
-          <table class="table table-bordered table-striped table_lots">
+          <table class="table table-bordered table-striped table_lot">
             <thead>
               <tr>
                 <?php if($pmc->isValidee()): ?>
@@ -33,9 +33,9 @@
                 <?php endif; ?>
                 <th class="text-center col-xs-4">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
-                <th class="text-center col-xs-3">Destination</th>
+                <th class="text-center col-xs-2">Date de ctrl souhaitée</th>
                 <?php if ($sf_user->isAdmin()): ?>
-                  <th class="text-center col-xs-3">Dégustable</th>
+                  <th class="text-center col-xs-1">Dégustable</th>
                 <?php endif;?>
               </tr>
             </thead>
@@ -58,13 +58,9 @@
                       <?php endif; ?>
                         <td>
                           <?php echo showProduitCepagesLot($lot) ?>
-                          <?php if($lot->isInElevage()):?>
-                            <br>
-                            <small class="text-muted"> en élevage </small>
-                          <?php endif; ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
+                        <td class="text-center"><?php echo ($lot->date_degustation_voulue)? $lot->getDateDegustationVoulueFr() : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
                             <?php if(isset($form['lots'])): ?>
