@@ -21,8 +21,12 @@ class ConditionnementClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findBrouillon($identifiant)
+    public function findBrouillon($identifiant, $campagne = null)
     {
+        if (!$campagne) {
+            $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent();
+        }
+
         $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent(), $identifiant);
 
         foreach ($docs->rows as $doc) {
