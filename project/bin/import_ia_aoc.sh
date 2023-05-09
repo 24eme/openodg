@@ -61,11 +61,11 @@ echo "Import des Opérateurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs.csv
-php symfony import:operateur-ia $DATA_DIR/operateurs.csv --application="$ODG" --trace
+php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
-php symfony import:operateur-ia $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
+php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
 echo "Import des Interlocuteurs"
 
