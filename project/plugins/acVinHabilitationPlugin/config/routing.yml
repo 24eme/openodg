@@ -26,6 +26,10 @@ habilitation_declarant:
   requirements:
     sf_method: [get, post]
 
+habilitation_declarant_public:
+  url: /habilitation/declarant/public/:numero
+  param: { module: habilitation, action: declarantPublic }
+
 habilitation_visualisation:
   url: /habilitation/visualisation/:id
   param: { module: habilitation, action: visualisation }

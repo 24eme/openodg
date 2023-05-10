@@ -10,6 +10,7 @@
     <?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - SIRET : '.formatSIRET($etablissement->getSiret()); } ?>
     </span>
 </h4>
+<?php if(!isset($public) || !$public): ?>
 <div class="row">
     <div class="col-xs-12">
         <div class="row">
@@ -37,3 +38,4 @@
         </div>
     </div>
 </div>
+<?php endif; ?>

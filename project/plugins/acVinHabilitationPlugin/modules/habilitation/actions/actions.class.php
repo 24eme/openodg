@@ -162,6 +162,22 @@ class habilitationActions extends sfActions {
         $this->setTemplate('habilitation');
     }
 
+
+    public function executeDeclarantPublic(sfWebRequest $request) {
+        $this->etablissement = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSiren(preg_replace('/[^0-9A-Za-z]+/', '', $request->getParameter('numero')));
+
+        if(!$this->etablissement) {
+
+            throw new sfError404Exception("Aucun établissement trouvé");
+        }
+
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->filtre = null;
+        $this->public = true;
+
+        $this->setTemplate('habilitation');
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
 
