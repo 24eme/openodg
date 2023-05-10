@@ -105,9 +105,9 @@
             </table>
           <?php endif; ?>
 
-<h3>Contrôle</h3>
 
 <?php if(isset($form["date_commission"])): ?>
+    <h3>Contrôle</h3>
     <?php echo $form["date_commission"]->renderError(); ?>
     <?php if(isset($form["degustation"])): ?>
     <?php echo $form['degustation']->renderError(); ?>
@@ -135,5 +135,6 @@
         </script>
     </div>
 <?php elseif($pmc->date_commission): ?>
+    <h3>Contrôle</h3>
     <p>Date de la commission : <?php echo ($pmc->exist('date_commission')) ? date_format(date_create($pmc->get('date_commission')), 'd/m/Y') : null; ?></p>
 <?php endif ?>
