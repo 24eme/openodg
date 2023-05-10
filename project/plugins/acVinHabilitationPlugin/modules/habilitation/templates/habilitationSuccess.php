@@ -6,16 +6,14 @@
 </style>
 
 <?php use_helper('Date'); ?>
-<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
+
+<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation));
   $etablissement = $habilitation->getEtablissementObject();
  ?>
+
 <div class="page-header no-border">
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
-
-<?php if(isset($public) && $public && $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
-  <p class="alert alert-warning" role="alert">C'est la version publique de l'habilitation de cet opérateur, mais vous ête autorisé à <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">voir la version complète</a></p>
-<?php endif; ?>
 
 <?php if(isset($form)): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'),  'noautofocus' => true)); ?>
@@ -26,67 +24,19 @@
 <a style="margin-bottom: 30px;" class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_globale', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification globale</a>
 
 <?php endif; ?>
-<?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject(), 'public' => isset($public))); ?>
-<?php if (CertipaqService::getInstance()->hasConfiguration() && !isset($public)): ?>
+<?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject())); ?>
+<?php if (CertipaqService::getInstance()->hasConfiguration()): ?>
 <a style="margin-bottom: 30px;" class="pull-right" href="<?php echo url_for('certipaq_diff', array('sf_subject' => $etablissement)) ?>"><span class="glyphicon glyphicon-transfer"></span>&nbsp;Certipaq</a>
 <?php endif; ?>
 </div>
 
 <?php include_partial('global/flash'); ?>
 
-<?php if(!$habilitation->isLastOne() && !isset($public)): ?>
+<?php if(!$habilitation->isLastOne()): ?>
   <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
 <?php endif; ?>
 
-    <table style="margin-top: 30px;" class="table table-condensed table-bordered" id="table-habilitation">
-        <thead>
-            <tr>
-                <th class="col-xs-3">Produits</th>
-                <th class="col-xs-2">Activités</th>
-                <th class="text-center col-xs-2">Statut</th>
-                <th class="text-center col-xs-1">Date</th>
-                <?php if(!isset($public)): ?>
-                <th class="text-center col-xs-3">Commentaire</th>
-                <th class="text-center"><span id="ouvert" class="open-button glyphicon glyphicon-eye-open" style="cursor: pointer;" ></span></th>
-                <?php endif; ?>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($habilitation->getProduits() as $key => $produitAppellation):
-              $first = true;
-              $hasHabilitations = $produitAppellation->hasHabilitations();
-              $nbActivites = $produitAppellation->getNbActivitesSaisies();
-                foreach ($produitAppellation->activites as $keyActivite => $habilitationsNode):
-                  $tdDisplayed = (!$habilitationsNode->hasStatut())? '1' :'';
-                  $tdHide = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
-                  $color = ($habilitationsNode->isHabilite())?  'bg-success' :'';
-                  $color = (!$color && $habilitationsNode->isWrongHabilitation())? 'bg-danger' : $color;
-                ?>
-                <tr data-hide="<?php echo ($nbActivites)? '' : '1'; ?>" <?php echo ($nbActivites)? '' : 'style="display:none;"'; ?> >
-                  <?php if($first): ?>
-                    <td data-hide="<?php echo (!$first)? $tdDisplayed : ''; ?>" "<?php echo (!$first)? 'style="display:none;"' : ''; ?>" rowspan="<?php echo $produitAppellation->getNbActivites(); ?>" data-number="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
-                  <?php endif; $first = false; ?>
-                      <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="<?php echo $color; ?>" >
-                        <strong><?php echo HabilitationClient::getInstance()->getLibelleActivite($keyActivite); ?></strong>
-                        <?php if($habilitationsNode->hasSite()): ?>
-                        <span class="text-muted"><?php echo $habilitationsNode->site; ?></span>
-                        <?php endif;?>
-                      </td>
-                      <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" <?php $rowDisplayed ?> ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
-                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
-                      <?php if(!isset($public)): ?>
-                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
-                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" >
-                        <?php if(isset($editForm)): ?>
-                        <a class="btn btn-xs btn-default <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>invisible<?php endif; ?>" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <?php endif; ?>
-                      </td>
-                      <?php endif; ?>
-                </tr>
-              <?php endforeach; ?>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null)); ?>
 
     <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
@@ -102,7 +52,7 @@
         </div>
     <?php endif; ?>
 
-    <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande() && !isset($public)): ?>
+    <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
     <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
         <thead>
@@ -135,7 +85,6 @@
     </table>
     <?php endif; ?>
 
-    <?php if(!isset($public)): ?>
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
       <thead>
@@ -165,7 +114,6 @@
         <?php endforeach; ?>
       </tbody>
     </table>
-    <?php endif; ?>
 
 <?php if(isset($editForm)): ?>
 <form role="form" class="ajaxForm" action="<?php echo url_for("habilitation_edition", $habilitation) ?>" method="post">

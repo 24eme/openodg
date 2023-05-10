@@ -162,20 +162,23 @@ class habilitationActions extends sfActions {
         $this->setTemplate('habilitation');
     }
 
+    public function executeConsultation(sfWebRequest $request)
+    {
+        if(!$request->getParameter('numero')) {
 
-    public function executeDeclarantPublic(sfWebRequest $request) {
-        $this->etablissement = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSiren(preg_replace('/[^0-9A-Za-z]+/', '', $request->getParameter('numero')));
+            return sfView::SUCCESS;
+        }
+
+        $this->numero = preg_replace('/[^0-9A-Za-z]+/', '', $request->getParameter('numero'));
+
+        $this->etablissement = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSiren($this->numero);
 
         if(!$this->etablissement) {
 
-            throw new sfError404Exception("Aucun établissement trouvé");
+            return sfView::SUCCESS;
         }
 
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
-        $this->filtre = null;
-        $this->public = true;
-
-        $this->setTemplate('habilitation');
     }
 
     public function executeVisualisation(sfWebRequest $request) {

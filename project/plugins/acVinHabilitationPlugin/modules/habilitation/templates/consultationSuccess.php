@@ -1,0 +1,33 @@
+<?php include_partial('habilitation/breadcrumb', ['consultation' => true]); ?>
+
+<h3>Consulter l'habilitation d'un opérateur</h3>
+
+<form method="get" action="" role="form" class="form-horizontal" style="margin-top: 30px;">
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-3 col-xs-12">
+            <input name="numero" type="text" class="form-control" placeholder="Numéro CVI ou SIRET" autofocus="autofocus" <?php if(isset($numero)): ?>value="<?php echo $numero ?>"<?php endif ?>/>
+        </div>
+        <div class="col-xs-2 hidden-xs">
+            <button class="btn btn-default" type="submit">Voir l'habilitation</button>
+        </div>
+    </div>
+</form>
+
+<?php if(!isset($numero) && !isset($habilitation)): return; endif; ?>
+
+<hr style="margin-top: 20px; margin-bottom: 20px;" />
+
+<?php if(isset($numero) && !isset($habilitation)): ?>
+<p class="text-center"><em>Aucune habilitation trouvée</em></p>
+<?php return; ?>
+<?php endif; ?>
+
+<div class="well">
+    <a class="btn btn-link pull-right btn-sm" onclick="navigator.clipboard.writeText(this.href); alert('Le lien a été copié dans le presse papier !'); return false;" title="Copier le lien vers cette page" href="<?php echo url_for('habilitation_consultation', ['numero' => $numero]) ?>"><small class="glyphicon glyphicon-link"></small></a>
+    <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
+    <a class="btn-link btn-sm pull-right" href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Voir la version complète</a>
+    <?php endif; ?>
+    <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject(), 'public' => true)); ?>
+</div>
+
+<?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'public' => true)); ?>
