@@ -16,6 +16,9 @@ exportHistorique:
 declarant:
   credentials: []
 
+declarantPublic:
+  credentials: []
+
 visualisation:
   credentials: []
 

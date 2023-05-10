@@ -13,6 +13,10 @@
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
 
+<?php if(isset($public) && $public && $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
+  <p class="alert alert-warning" role="alert">C'est la version publique de l'habilitation de cet opérateur, mais vous ête autorisé à <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">voir la version complète</a></p>
+<?php endif; ?>
+
 <?php if(isset($form)): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'),  'noautofocus' => true)); ?>
 <?php endif; ?>
