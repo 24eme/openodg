@@ -1,3 +1,4 @@
+<?php use_helper('Compte'); ?>
 <?php include_partial('habilitation/breadcrumb', ['consultation' => true]); ?>
 
 <h3>Consulter l'habilitation d'un opérateur</h3>
@@ -27,7 +28,8 @@
     <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
     <a class="btn-link btn-sm pull-right" href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Voir la version complète</a>
     <?php endif; ?>
-    <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject(), 'public' => true)); ?>
+    <h4><span class="glyphicon glyphicon-home"></span> CVI : <?php echo $etablissement->getCvi(); ?>
+    <?php if($etablissement->getSiret()): ?> - SIREN : <?php echo formatSIRET($etablissement->getSiret(), true); ?><?php endif; ?></h4>
 </div>
 
 <?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'public' => true)); ?>
