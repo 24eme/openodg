@@ -173,6 +173,11 @@ class habilitationActions extends sfActions {
 
         $this->etablissement = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSiren($this->numero);
 
+        if($this->etablissement && $this->etablissement->cvi != $this->numero) {
+
+            $this->etablissement = null;
+        }
+
         if(!$this->etablissement) {
 
             return sfView::SUCCESS;
