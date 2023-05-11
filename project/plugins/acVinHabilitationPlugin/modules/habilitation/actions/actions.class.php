@@ -184,6 +184,13 @@ class habilitationActions extends sfActions {
         }
 
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+
+        if($request->getParameter('format') == 'json') {
+
+            $this->getResponse()->setContentType('application/json');
+
+            return $this->renderText(json_encode($this->habilitation->getPublicData()));
+        }
     }
 
     public function executeVisualisation(sfWebRequest $request) {

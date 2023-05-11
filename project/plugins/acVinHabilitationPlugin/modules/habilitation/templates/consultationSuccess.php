@@ -27,9 +27,10 @@
 <?php endif; ?>
 
 <div class="well">
-    <a class="btn btn-link pull-right btn-sm" onclick="navigator.clipboard.writeText(this.href); alert('Le lien a été copié dans le presse papier !'); return false;" title="Copier le lien vers cette page" href="<?php echo url_for('habilitation_consultation', ['numero' => $numero]) ?>"><small class="glyphicon glyphicon-link"></small></a>
+    <a class="btn btn-link pull-right btn-sm" onclick="navigator.clipboard.writeText(this.href); alert('Le lien a été copié dans le presse papier !'); return false;" title="Copier le lien vers cette page" href="<?php echo url_for('habilitation_consultation', ['numero' => $numero]) ?>"><small class="glyphicon glyphicon-link"></small> Lien vers cette page</a>
+    <a class="btn btn-link pull-right btn-sm" title="Export JSON" href="<?php echo url_for('habilitation_consultation', ['numero' => $numero, 'format' => 'json']) ?>"><small class="glyphicon glyphicon-transfer"></small> JSON</a>
     <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
-    <a class="btn-link btn-sm pull-right" href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Voir la version complète</a>
+    <a class="btn-link btn-sm pull-right" href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>"><small class="glyphicon glyphicon-eye-open"></small> Voir la version complète</a>
     <?php endif; ?>
     <h4><span class="glyphicon glyphicon-home"></span> CVI : <?php echo $etablissement->getCvi(); ?>
     <?php if($etablissement->getSiret()): ?> - SIREN : <?php echo formatSIRET($etablissement->getSiret(), true); ?><?php endif; ?></h4>
