@@ -54,8 +54,8 @@
               <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-3 control-label")); ?>
-                            <div class="col-sm-9">
+                            <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-5 control-label")); ?>
+                            <div class="col-sm-7">
                                   <?php echo $lot['produit_hash']->render(array("data-placeholder" => "Sélectionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
                             </div>
                             <div class="col-sm-12 text-danger">
@@ -81,7 +81,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-3 control-label")); ?>
+                      <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-5 control-label")); ?>
                       <div class="col-sm-3">
                             <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>
@@ -107,7 +107,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['date_degustation_voulue']->renderLabel("Date ctrl souhaitée", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['date_degustation_voulue']->renderLabel("Date dégustation souhaitée", array('class' => "col-sm-5 control-label")); ?>
                             <div class="col-sm-5">
                                 <div class="input-group date-picker">
                                     <?php echo $lot['date_degustation_voulue']->render(array("class" => "form-control", 'placeholder' => "Date")); ?>

@@ -33,7 +33,7 @@
                 <?php endif; ?>
                 <th class="text-center col-xs-4">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
-                <th class="text-center col-xs-2">Date de ctrl souhaitée</th>
+                <th class="text-center col-xs-2">Date de dégustation souhaitée</th>
                 <?php if ($sf_user->isAdmin()): ?>
                   <th class="text-center col-xs-1">Dégustable</th>
                 <?php endif;?>
