@@ -5,7 +5,7 @@
         <tr>
             <th class="col-xs-3">Produits</th>
             <th class="col-xs-2">Activités</th>
-            <th class="text-center col-xs-2">Statut</th>
+            <th class="text-center col-xs-2">Statut de l'habilitation</th>
             <th class="text-center col-xs-1">Date</th>
             <?php if(!isset($public)): ?>
             <th class="text-center col-xs-3">Commentaire</th>
