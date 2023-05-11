@@ -52,10 +52,9 @@ class PMCValidation extends DocumentValidation
             $volume = sprintf("%01.02f",$lot->getVolume());
 
             if(!$lot->numero_logement_operateur){
-              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Numéro de logement", $this->generateUrl($routeName, array("id" => $this->document->_id)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Numéro de lot", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
             }
-
             if(in_array('destination_type', $lot->getFieldsToFill()) && !$lot->destination_type){
                 $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Type de destination", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
@@ -65,10 +64,13 @@ class PMCValidation extends DocumentValidation
                 continue;
             }
             if(!$lot->millesime){
-              $this->addPoint(self::TYPE_WARNING, 'lot_a_completer', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Millésime", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Millésime", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
-
+            if(!$lot->date_degustation_voulue){
+              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+              continue;
+            }
             if(count($lot->cepages)){
               $somme = 0.0;
               foreach ($lot->cepages as $cepage => $v) {
