@@ -18,6 +18,7 @@ declarant:
 
 consultation:
   credentials: []
+  is_secure: false
 
 visualisation:
   credentials: []
