@@ -408,6 +408,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
                     continue;
                 }
 
+                if(!$detail->activite) {
+                    $detail->activite = $activite;
+                }
                 foreach($detail as $key => $value) {
                     if(!in_array($key, ['date', 'statut', 'activite'])) {
                         unset($detail->{$key});
