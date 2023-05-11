@@ -1,5 +1,8 @@
 <?php use_helper('Compte'); ?>
-<?php include_partial('habilitation/breadcrumb', ['consultation' => true]); ?>
+
+<ol class="breadcrumb">
+    <li class="active"><a href=""><span class="glyphicon glyphicon-search"></span> Consultation des habilitations</a></li>
+</ol>
 
 <h3>Consulter l'habilitation d'un opérateur</h3>
 

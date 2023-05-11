@@ -15,9 +15,5 @@
   <?php if (isset($last)): ?>
     <li class="active"><?php echo $last; ?></li>
   <?php endif; ?>
-  <?php if(isset($consultation)): ?>
-      <li class="active"><a href=""><span class="glyphicon glyphicon-search" style="opacity: 0.25"></span> Consultation des habilitations</a></li>
-  <?php else: ?>
-  <li class="pull-right" ><a title="Consultation des habilitations" style="opacity: 0.25" href="<?php if(isset($habilitation)): ?><?php echo url_for('habilitation_consultation', array('numero' => $habilitation->declarant->cvi)) ?><?php else: ?><?php echo url_for('habilitation_consultation') ?><?php endif; ?>"><span class="glyphicon glyphicon-search"></span></a></li>
-  <?php endif; ?>
+  <li class="pull-right"><a title="Consultation des habilitations" style="opacity: 0.25" href="<?php echo url_for('habilitation_consultation') ?>"><span class="glyphicon glyphicon-search"></span> Consultation des habilitations</a></li>
 </ol>
