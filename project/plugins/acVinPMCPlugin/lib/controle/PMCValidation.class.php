@@ -17,6 +17,7 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
+        $this->addControle(self::TYPE_WARNING, 'date_degust_proche', "La date est dans moins de 5 semaines et risque de ne pas être validée");
         $this->addControle(self::TYPE_FATAL, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
     }
 
@@ -68,7 +69,13 @@ class PMCValidation extends DocumentValidation
               continue;
             }
             if(!$lot->date_degustation_voulue){
-              $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+                $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+                continue;
+            }
+            $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
+            $nb_days_from_degust = (int) $date_degust->diff(new DateTimeImmutable($this->document->date))->format('%a');
+            if($nb_days_from_degust <= 45){
+              $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation souhaitée (" . $date_degust->format('d/m/Y') . ")", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
             if(count($lot->cepages)){
