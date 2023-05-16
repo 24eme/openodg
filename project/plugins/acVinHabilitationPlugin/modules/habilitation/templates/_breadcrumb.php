@@ -15,5 +15,7 @@
   <?php if (isset($last)): ?>
     <li class="active"><?php echo $last; ?></li>
   <?php endif; ?>
+  <?php if(sfConfig::get('sf_app') == 'ava'): ?>
   <li class="pull-right"><a title="Consultation des habilitations" style="opacity: 0.25" href="<?php echo url_for('habilitation_consultation') ?>"><span class="glyphicon glyphicon-search"></span> Consultation des habilitations</a></li>
+  <?php endif; ?>
 </ol>

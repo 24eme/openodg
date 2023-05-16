@@ -164,6 +164,11 @@ class habilitationActions extends sfActions {
 
     public function executeConsultation(sfWebRequest $request)
     {
+        if(sfConfig::get('sf_app') != 'ava') { // Pour le moment cette fonctionnalité est activé que pour l'AVA
+
+            throw new sfError404Exception();
+        }
+
         if(!$request->getParameter('numero')) {
 
             return sfView::SUCCESS;
