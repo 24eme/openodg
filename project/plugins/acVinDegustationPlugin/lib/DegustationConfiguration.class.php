@@ -61,4 +61,8 @@ class DegustationConfiguration {
         return $lieux;
     }
 
+    public function isAnonymisationManuelle()
+    {
+        return $this->configuration['anonymisation_manuelle'] === true;
+    }
 }
