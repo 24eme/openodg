@@ -65,17 +65,6 @@
                     </div>
                     <div class="col-md-6">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
-                        <div class="form-group">
-                          <div>
-                            <div class="checkbox checkboxlots">
-                              <label>
-                                <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
-                                       id="lien_<?php echo $lot->renderId() ?>_cepages" data-toggle="modal"
-                                       data-target="#<?php echo $lot->renderId() ?>_cepages" />
-                                <span class="checkboxtext_<?php echo $lot->renderId() ?>_cepages"><?php echo (count($lotItem->cepages->toArray(true, false))) ? "Mention : " :  "Sans mention de cépage <a>(Changer)</a>" ?></span></label>
-                              </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -151,64 +140,6 @@
                           </div>
                       </div>
                     <?php endif ?>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $lot['volume']->renderId() ?>" id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">Mention de cépages</h4>
-                        <h5>Déclarer seulement les cépages qui figureront sur l'étiquette.</h5>
-                    </div>
-                    <div class="modal-body">
-                              <div class="form-group">
-                                <div class="col-sm-2 col-sm-offset-10">
-                                  <div class="form-group">
-                                      <label class="checkbox-inline checbox-switch">
-                                          hl
-                                          <input class="form-check-input switch_hl_to_pc" type="checkbox" name="" />
-                                          <span></span>
-                                          %
-                                      </label>
-                                  </div>
-                                </div>
-                              </div>
-                                <?php for($i=0; $i < PMCLotForm::NBCEPAGES; $i++): ?>
-                                    <div class="form-group ligne_lot_cepage ">
-                                        <div class="col-sm-8">
-                                            <?php echo $lot['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="input-group input-group-pc" style='display:none;'>
-                                                <input class='form-control text-right input-pc'></input>
-                                                <div class="input-group-addon">%</div>
-                                            </div>
-                                            <div class="input-group input-group-hl" >
-                                                <?php echo $lot['repartition_'.$i]->render(); ?>
-                                                <div class="input-group-addon">hl</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endfor; ?>
-                                <div class="form-group ligne_volume_total">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-4 text-right">
-                                      <label class='control-label'> Volume total</label>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="input-group volume-total">
-                                          <input class='form-control text-right input-total'></input>
-                                          <div class="input-group-addon">hl</div>
-                                        </div>
-                                    </div>
-                                </div>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-default btn pull-left" data-dismiss="modal">Fermer</a>
-                        <a class="btn btn-success btn pull-right" data-dismiss="modal">Valider</a>
-                    </div>
                 </div>
             </div>
         </div>
