@@ -2,7 +2,7 @@
 
 <ol class="breadcrumb">
     <li class="active"><a href=""><span class="glyphicon glyphicon-search"></span> Consultation des habilitations</a></li>
-    <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
+    <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && isset($habilitation)): ?>
     <li class="pull-right">
         <a title="Consultation des habilitations" style="opacity: 0.25" href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Voir la version complète</a></li>
     <?php endif; ?>
