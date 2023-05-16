@@ -71,18 +71,27 @@ class DegustationEtapes extends Etapes {
     }
 
     public function getEtapesHash() {
-        return self::$etapes;
+        return $this->filter(self::$etapes);
     }
     public function getRouteLinksHash() {
-        return self::$links;
+        return $this->filter(self::$links);
     }
 
     public function getLibellesHash() {
-        return self::$libelles;
+        return $this->filter(self::$libelles);
     }
 
-    public function isEtapeDisabled($etape, $doc) {
+    protected function filter($items)
+    {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            unset($items[self::ETAPE_ANONYMATS]);
+        }
 
+        return $items;
+    }
+
+    public function isEtapeDisabled($etape, $doc)
+    {
         $etapeAnonymat = self::$etapes[self::ETAPE_ANONYMATS];
 
         if($doc->isAnonymized() &&  self::$etapes[$doc->etape] >= $etapeAnonymat){
