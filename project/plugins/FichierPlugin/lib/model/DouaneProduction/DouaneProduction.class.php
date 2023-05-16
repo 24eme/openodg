@@ -423,7 +423,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
                 continue;
             }
-            if($donnee->categorie !== str_replace("L", "", $numLigne)) {
+            if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
                 continue;
             }
             if ($metayer_only && $donnee->bailleur_raison_sociale) {

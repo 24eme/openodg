@@ -16,6 +16,10 @@ exportHistorique:
 declarant:
   credentials: []
 
+consultation:
+  credentials: []
+  is_secure: false
+
 visualisation:
   credentials: []
 

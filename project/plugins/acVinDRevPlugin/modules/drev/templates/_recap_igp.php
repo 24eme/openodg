@@ -153,7 +153,7 @@
                                             ); ?>
                                 </div>
                             </div>
-                          <?php else: ?>
+                          <?php elseif ($sf_user->isAdmin() || ($drev->exist('date_commission') && new DateTime($drev->date_commission) < new DateTime())): ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
                                   <?php echo pictoDegustable($lot); ?>

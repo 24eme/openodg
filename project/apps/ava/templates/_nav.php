@@ -10,6 +10,10 @@
     <?php $compte = $route->getCompte(); ?>
     <?php $etablissement = $compte->getEtablissementObj(); ?>
 <?php endif; ?>
+<?php if(!$etablissement && $sf_user->getEtablissement()): ?>
+    <?php $etablissement = $sf_user->getEtablissement(); ?>
+    <?php $compte = $etablissement->getCompte(); ?>
+<?php endif; ?>
 
 <nav id="menu_navigation" class="navbar navbar-default">
     <div class="navbar-header hidden-lg hidden-md">
@@ -50,6 +54,7 @@
                 <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>">Déclarations</a></li>
                 <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('pieces_historique', $etablissement); ?>">Documents</a></li>
                 <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('facturation_declarant', $compte); ?>">Facturation</a></li>
+                <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('habilitation_declarant', $etablissement); ?>">Habilitations</a></li>
             </ul>
         <?php endif; ?>
     </div>

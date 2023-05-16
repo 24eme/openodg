@@ -365,10 +365,10 @@ class Parcellaire extends BaseParcellaire {
     /**
      * Reprend le geojson et le transforme en KML
      */
-    public function getKML() {
+    public function getKML($with_aire = true, $with_parcelles = true) {
         // La transfo de geojson -> kml de geophp ne se faisant que partiellement on reparcours le geojson et on reconstruit le xml
         $kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
-        
+
         // Le style pour les parcelles (les couleurs)
         // Info : L'hexa de la couleur est inversé par rapport à la notation habituelle
         // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
@@ -383,11 +383,12 @@ class Parcellaire extends BaseParcellaire {
 
         // Définit un style par couleur à utiliser dans les aires plus bas
         $styles = [];
-        foreach ($this->getMergedAires() as $aire) {
-            $aireobj = json_decode($aire->getGeojson());
-            foreach ($aireobj->features as $feat) {
-                $color = '7d' . str_replace('#', '', $aire->getColor());
-                $styles[$color] = '<Style id="aire-style-'.$color.'">
+        if ($with_aire) {
+            foreach ($this->getMergedAires() as $aire) {
+                $aireobj = json_decode($aire->getGeojson());
+                if (isset($aireobj->features)) foreach ($aireobj->features as $feat) {
+                    $color = '7d' . str_replace('#', '', $aire->getColor());
+                    $styles[$color] = '<Style id="aire-style-'.$color.'">
             <LineStyle>
             <width>1</width>
             </LineStyle>
@@ -395,53 +396,60 @@ class Parcellaire extends BaseParcellaire {
             <color>'.$color.'</color>
             </PolyStyle>
         </Style>';
+                }
+            }
+
+            // Met les styles en haut du KML
+            $kml .= implode("\n", $styles);
+
+
+            // On met en premier les aires des appelations des communes associées avec la bonne couleur
+            foreach ($this->getMergedAires() as $aire) {
+                foreach ($aire->getPseudoGeojsons() as $geojson) {
+                    $aireobj = json_decode($geojson);
+                    foreach ($aireobj->features as $feat) {
+                        $feat_str = json_encode($feat);
+                        $feat_obj = GeoPHP::load($feat_str, 'geojson');
+
+                        $kml .= '<Placemark>';
+                        $kml .= '<name>'. $aire->getName() .'</name>';
+                        $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
+                        $kml .= $feat_obj->out('kml');
+                        $kml .= '</Placemark>'."\n";
+                    }
+                }
             }
         }
 
-        // Met les styles en haut du KML
-        $kml .= implode("", $styles);
+        if ($with_parcelles) {
 
-        // On met en premier les aires des appelations des communes associées avec la bonne couleur
-        foreach ($this->getMergedAires() as $aire) {
-            $aireobj = json_decode($aire->getGeojson());
-            foreach ($aireobj->features as $feat) {
+            $geojson = $this->getGeoJson();
+
+            // Met ensuite les parcelles par dessus les éventuelles aires.
+            foreach ($geojson->features as $feat) {
                 $feat_str = json_encode($feat);
                 $feat_obj = GeoPHP::load($feat_str, 'geojson');
 
                 $kml .= '<Placemark>';
-                $kml .= '<name>'. $aire->getName() .'</name>';
-                $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
+                $kml .= '<name>'.$feat->properties->commune. ' - ' .$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
+                $kml .= '<description><![CDATA[';
+                foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
+                    foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
+                        if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                            continue;
+                        }
+                        $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                    }
+
+                    if ($key !== array_key_last($feat->properties->parcellaires)) {
+                        $kml .= "<p>-----------------</p>";
+                    }
+                }
+                $kml .= ']]></description>';
+                $kml .= '<styleUrl>#parcelle-style</styleUrl>';
                 $kml .= $feat_obj->out('kml');
                 $kml .= '</Placemark>';
             }
-        }
-        
-        $geojson = $this->getGeoJson();
-
-        // Met ensuite les parcelles par dessus les éventuelles aires.
-        foreach ($geojson->features as $feat) {
-            $feat_str = json_encode($feat);
-            $feat_obj = GeoPHP::load($feat_str, 'geojson');
-
-            $kml .= '<Placemark>';
-            $kml .= '<name>'.$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
-            $kml .= '<description><![CDATA[';
-            foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
-                foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
-                    if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
-                        continue;
-                    }  
-                    $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
-                }
-
-                if ($key !== array_key_last($feat->properties->parcellaires)) {
-                    $kml .= "<p>-----------------</p>";
-                }
-            }
-            $kml .= ']]></description>';
-            $kml .= '<styleUrl>#parcelle-style</styleUrl>';
-            $kml .= $feat_obj->out('kml');
-            $kml .= '</Placemark>';
         }
 
         $kml .= '</Document></kml>';

@@ -165,7 +165,7 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellairePPODS($parcellaire);
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
         echo $ods->create();
 
         exit;
@@ -183,31 +183,45 @@ class parcellaireActions extends sfActions {
         header("Cache-Control: public");
         header("Expires: 0");
 
-        $ods = new ExportParcellairePPODS($parcellaire);
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
         echo $ods->createPDF();
 
         exit;
     }
     public function executeParcellaireExportKML(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
+        $has_parcelles = $request->getParameter('with_parcelles', true);
+        $has_aires = $request->getParameter('with_aires', true);
+
+        $type = '';
+        if ($has_parcelles) {
+            $type = 'parcelles';
+        }
+        if ($has_aires) {
+            if ($type) {
+                $type .= '-et-';
+            }
+            $type .= 'aires';
+        }
+
         header("Content-Type: application/vnd.google-earth.kml+xml");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date));
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date, $type));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
-        echo $parcellaire->getKML();
+        echo $parcellaire->getKML($has_aires, $has_parcelles);
 
-        exit;        
+        exit;
     }
 
     public function executeParcellaireExportGeoJson(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 

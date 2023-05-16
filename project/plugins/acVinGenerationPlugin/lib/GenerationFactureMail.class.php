@@ -2,8 +2,14 @@
 
 class GenerationFactureMail extends GenerationAbstract {
 
+    private $date_envoi = null;
+
     public function generateMailForADocumentId($id) {
         $facture = FactureClient::getInstance()->find($id);
+
+        if ($facture->isTelechargee()) {
+            return;
+        }
 
         if(!$facture->getSociete()->getEmailCompta()) {
             echo $facture->getSociete()->_id."\n";
@@ -63,7 +69,11 @@ class GenerationFactureMail extends GenerationAbstract {
 
     public function getLogFilname() {
 
-        return $this->generation->date_emission."-facture-envoi-mails.csv";
+        if (!$this->date_envoi) {
+            $this->date_envoi = date('YmdHis');
+        }
+
+        return $this->generation->date_emission."-facture-envoi-mails-".$this->date_envoi.".csv";
     }
 
     public function getLogs() {
@@ -108,10 +118,11 @@ class GenerationFactureMail extends GenerationAbstract {
         $sleepSecond = 2;
         $i = 0;
         foreach($this->generation->getMasterGeneration()->documents as $factureId) {
-            if(in_array($factureId, $factureDejaEnvoye)) {
+            $mail = $this->generateMailForADocumentId($factureId);
+
+            if(!$mail && in_array($factureId, $factureDejaEnvoye)) {
                 continue;
             }
-            $mail = $this->generateMailForADocumentId($factureId);
 
             if(!$mail) {
                 $this->addLog($factureId, "PAS_DE_MAIL", "generateMailForADocumentId n'a pas retourné de mail");
@@ -127,7 +138,9 @@ class GenerationFactureMail extends GenerationAbstract {
 
             $this->addLog($factureId, "ENVOYÉ", "mail envoyé avec succes");
 
-            $this->generation->documents->add(null, $factureId);
+            if(!in_array($factureId, $factureDejaEnvoye)) {
+                $this->generation->documents->add(null, $factureId);
+            }
             $this->generation->save();
             $i++;
             if($i > $sleepMaxBatch) {
@@ -138,7 +151,6 @@ class GenerationFactureMail extends GenerationAbstract {
 
         if(!$this->generation->exist('fichiers/'.$this->getPublishFile())) {
             $this->generation->add('fichiers')->add($this->getPublishFile(), "Logs d'envoi de mails");
-            $this->generation->save();
         }
 
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);

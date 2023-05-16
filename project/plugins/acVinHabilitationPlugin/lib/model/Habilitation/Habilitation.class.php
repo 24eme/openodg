@@ -397,4 +397,29 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $chais;
     }
 
+    public function getPublicData() {
+        $data = new stdClass();
+        $data->cvi = $this->getDeclarant()->cvi;
+        $data->declaration = $this->declaration->getData();
+        foreach($data->declaration as $hash => $produits) {
+            foreach($produits->activites as $activite => $detail) {
+                if(!$detail->statut && !$detail->date) {
+                    unset($data->declaration->{ $hash }->activites->{$activite});
+                    continue;
+                }
+
+                if(!$detail->activite) {
+                    $detail->activite = $activite;
+                }
+                foreach($detail as $key => $value) {
+                    if(!in_array($key, ['date', 'statut', 'activite'])) {
+                        unset($detail->{$key});
+                    }
+                }
+            }
+        }
+
+        return $data;
+    }
+
 }
