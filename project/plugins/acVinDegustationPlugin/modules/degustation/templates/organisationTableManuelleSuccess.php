@@ -33,7 +33,21 @@
                     <td><?php echo $lot->numero_logement_operateur ?></td>
                     <td><?php echo $lot->numero_dossier . ' / ' . $lot->numero_archive ?></td>
                     <td><?php echo DegustationClient::getNumeroTableStr($lot->numero_table) ?></td>
-                    <td><?php echo $lot->numero_anonymat ?></td>
+                    <td>
+                        <?php if (! $lot->numero_anonymat) : ?>
+                            <button>Ajouter à la table</button>
+                        <?php else: ?>
+                            <div class="form-group">
+                                <label class="sr-only" for="">Numéro anonymat</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="" value="<?php echo $lot->numero_anonymat ?>">
+                                    <div class="input-group-addon">
+                                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif ?>
+                    </td>
                 </tr>
             <?php endforeach ?>
           </tbody>
