@@ -21,8 +21,12 @@ class PMCClient extends acCouchdbClient
         return $doc;
     }
 
-    public function findBrouillon($identifiant)
+    public function findBrouillon($identifiant, $campagne = null)
     {
+        if (!$campagne) {
+            $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent();
+        }
+
         $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent(), $identifiant);
 
         foreach ($docs->rows as $doc) {
@@ -56,14 +60,6 @@ class PMCClient extends acCouchdbClient
         $doc->storeDeclarant();
 
         $etablissement = $doc->getEtablissementObject();
-
-        if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)) {
-            $doc->add('non_recoltant', 1);
-        }
-
-        if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_CONDITIONNEUR)) {
-            $doc->add('non_conditionneur', 1);
-        }
 
         if($papier) {
             $doc->add('papier', 1);

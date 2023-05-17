@@ -4,7 +4,7 @@
 <?php use_javascript('hamza_style.js'); ?>
 
         <?php if($pmc->exist('lots')): ?>
-          <h3 id="table_lot_title">Déclaration des lots</h3>
+          <h3 id="table_title">Déclaration des lots</h3>
           <?php
           $lots = $pmc->getLotsByCouleur();
           ?>
@@ -33,7 +33,6 @@
                 <?php endif; ?>
                 <th class="text-center col-xs-4">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
-                <th class="text-center col-xs-3">Destination</th>
                 <th class="text-center col-xs-2">Date de ctrl souhaitée</th>
                 <?php if ($sf_user->isAdmin()): ?>
                   <th class="text-center col-xs-1">Dégustable</th>
@@ -61,7 +60,6 @@
                           <?php echo showProduitCepagesLot($lot) ?>
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
-                        <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; ?></td>
                         <td class="text-center"><?php echo ($lot->date_degustation_voulue)? $lot->getDateDegustationVoulueFr() : ''; ?></td>
                         <?php if ($sf_user->isAdmin()): ?>
                           <td class="text-center">
@@ -108,10 +106,8 @@
           <?php endif; ?>
 
 
-<?php if (DRevConfiguration::getInstance()->hasDegustation()): ?>
-<h3>Contrôle</h3>
-
 <?php if(isset($form["date_commission"])): ?>
+    <h3>Contrôle</h3>
     <?php echo $form["date_commission"]->renderError(); ?>
     <?php if(isset($form["degustation"])): ?>
     <?php echo $form['degustation']->renderError(); ?>
@@ -139,6 +135,6 @@
         </script>
     </div>
 <?php elseif($pmc->date_commission): ?>
+    <h3>Contrôle</h3>
     <p>Date de la commission : <?php echo ($pmc->exist('date_commission')) ? date_format(date_create($pmc->get('date_commission')), 'd/m/Y') : null; ?></p>
-    <?php endif ?>
-<?php endif; ?>
+<?php endif ?>

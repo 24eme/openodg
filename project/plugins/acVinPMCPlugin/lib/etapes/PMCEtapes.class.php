@@ -20,7 +20,7 @@ class PMCEtapes extends Etapes
 
 	public static $libelles = array(
             self::ETAPE_EXPLOITATION => "Entreprise",
-			self::ETAPE_LOTS => "Lots",
+            self::ETAPE_LOTS => "Lots",
             self::ETAPE_VALIDATION => "Validation"
     );
 

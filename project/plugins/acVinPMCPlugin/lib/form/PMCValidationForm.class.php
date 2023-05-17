@@ -37,7 +37,7 @@ class PMCValidationForm extends acCouchdbForm
 
         $this->embedForm('lots', $formDegustable);
 
-        if (DRevConfiguration::getInstance()->hasDegustation() && !$this->getDocument()->validation_odg && $this->isAdmin()) {
+        if (!$this->getDocument()->validation_odg && $this->isAdmin()) {
             $this->setWidget('date_commission', new bsWidgetFormInput(array(), array('required' => true)));
             $this->setValidator('date_commission', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
@@ -68,7 +68,7 @@ class PMCValidationForm extends acCouchdbForm
     public function save() {
        $values = $this->getValues();
 
-       if (DRevConfiguration::getInstance()->hasDegustation() && $this->isAdmin()) {
+       if ($this->isAdmin()) {
            $this->getDocument()->add('date_commission', $values['date_commission']);
        }
 

@@ -2,12 +2,32 @@
   "_id": "CONFIGURATION-20220801",
   "type": "Configuration",
   "campagne": null,
+  "labels": {},
+  "contenances": {},
+  "droits": {},
+  "mvts_favoris": {},
+  "correspondances": {},
+  "libelle_detail_ligne": {},
+  "alias": {},
   "declaration": {
     "certifications": {
       "AOC": {
         "libelle": "AOP",
-        "format_libelle": "%g% %a% %l% %m%",
+        "format_libelle": "%g% %a% %l% %m% %co%",
         "code": "AOC",
+        "code_produit": null,
+        "code_comptable": null,
+        "code_douane": null,
+        "departements": [],
+        "interpro": {
+          "INTERPRO-declaration": {
+            "labels": [],
+            "droits": {
+              "douane": [],
+              "cvo": []
+            }
+          }
+        },
         "genres": {
           "TRANQ": {
             "libelle": null,
@@ -16,15 +36,35 @@
             "code_produit": null,
             "code_comptable": null,
             "code_douane": null,
+            "interpro": {
+              "INTERPRO-declaration": {
+                "labels": [],
+                "droits": {
+                  "douane": [],
+                  "cvo": []
+                }
+              }
+            },
+            "departements": [],
             "appellations": {
               "CHM": {
                 "libelle": "Châteaumeillant",
-                "format_libelle": null,
+                "format_libelle": "",
                 "code": "CHM",
                 "code_produit": null,
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
                 "mentions": {
                   "DEFAUT": {
                     "libelle": null,
@@ -33,6 +73,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -41,33 +91,33 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "rouge": {
                             "libelle": "Rouge",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rouge",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": "1R700",
-                            "cepages": {
-                              "DEFAUT": {
-                                "libelle": null,
-                                "format_libelle": null,
-                                "code": null,
-                                "code_produit": null,
-                                "code_comptable": null,
-                                "code_douane": null,
-                                "cepages_autorises": []
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
                               }
-                            }
-                          },
-                          "rose": {
-                            "libelle": "Rosé",
-                            "format_libelle": null,
-                            "code": "rose",
-                            "code_produit": null,
-                            "code_comptable": null,
-                            "code_douane": "1S700",
+                            },
                             "departements": [],
                             "cepages": {
                               "DEFAUT": {
@@ -77,14 +127,86 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": null,
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 55,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
+                            }
+                          },
+                          "rose": {
+                            "libelle": "Rosé",
+                            "format_libelle": "",
+                            "code": "rose",
+                            "code_produit": null,
+                            "code_comptable": null,
+                            "code_douane": "1S700",
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
+                            "cepages": {
+                              "DEFAUT": {
+                                "libelle": null,
+                                "format_libelle": null,
+                                "code": null,
+                                "code_produit": null,
+                                "code_comptable": null,
+                                "code_douane": null,
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "attributs": {
+                              "rendement": 55,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
                       }
                     }
                   }
+                },
+                "attributs": {
+                  "rendement": null,
+                  "rendement_dr_l5": null,
+                  "rendement_dr_l15": null,
+                  "rendement_conseille": null,
+                  "rendement_dr": null,
+                  "rendement_vci": null,
+                  "rendement_vci_total": null
                 }
               },
               "SCR": {
@@ -95,6 +217,15 @@
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
                 "departements": [],
                 "mentions": {
                   "DEFAUT": {
@@ -104,6 +235,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -112,14 +253,34 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "blanc",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -128,17 +289,44 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1B195S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rouge": {
                             "libelle": "Rouge",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rouge",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -147,17 +335,44 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1R196S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 59,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
                             "libelle": "Rosé",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rose",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -166,8 +381,25 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1S196S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 63,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
@@ -184,6 +416,15 @@
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
                 "departements": [],
                 "mentions": {
                   "DEFAUT": {
@@ -193,6 +434,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -201,14 +452,34 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "blanc",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -217,8 +488,25 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1B192S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
@@ -235,6 +523,16 @@
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
                 "mentions": {
                   "DEFAUT": {
                     "libelle": null,
@@ -243,6 +541,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -251,14 +559,34 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "blanc",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -267,8 +595,25 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1B191S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
@@ -285,6 +630,16 @@
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
                 "mentions": {
                   "DEFAUT": {
                     "libelle": null,
@@ -293,6 +648,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -301,14 +666,34 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "blanc",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -317,17 +702,44 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1B190S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rouge": {
                             "libelle": "Rouge",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rouge",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": "1R190S",
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -336,17 +748,44 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": null,
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 59,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
                             "libelle": "Rosé",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rose",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": "1S190S",
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -355,8 +794,25 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": null,
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 63,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
@@ -373,6 +829,16 @@
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
                 "mentions": {
                   "DEFAUT": {
                     "libelle": null,
@@ -381,6 +847,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -389,14 +865,34 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "blanc",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -405,8 +901,25 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1B193S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
@@ -423,6 +936,16 @@
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
                 "mentions": {
                   "DEFAUT": {
                     "libelle": null,
@@ -431,6 +954,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -439,14 +972,34 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "blanc",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -455,6 +1008,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1B194S",
+                                "cepages_autorises": [],
                                 "interpro": {
                                   "INTERPRO-inter-loire": {
                                     "droits": {
@@ -468,18 +1022,36 @@
                                       "cvo": []
                                     }
                                   }
-                                },
-                                "cepages_autorises": []
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rouge": {
                             "libelle": "Rouge",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rouge",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -488,17 +1060,44 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1R194S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 59,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
                             "libelle": "Rosé",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rose",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": null,
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -507,8 +1106,25 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1S194S",
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 63,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
@@ -525,6 +1141,16 @@
                 "code_comptable": null,
                 "code_douane": null,
                 "densite": "1.3",
+                "interpro": {
+                  "INTERPRO-declaration": {
+                    "labels": [],
+                    "droits": {
+                      "douane": [],
+                      "cvo": []
+                    }
+                  }
+                },
+                "departements": [],
                 "mentions": {
                   "DEFAUT": {
                     "libelle": null,
@@ -533,6 +1159,16 @@
                     "code_produit": null,
                     "code_comptable": null,
                     "code_douane": null,
+                    "interpro": {
+                      "INTERPRO-declaration": {
+                        "labels": [],
+                        "droits": {
+                          "douane": [],
+                          "cvo": []
+                        }
+                      }
+                    },
+                    "departements": [],
                     "lieux": {
                       "DEFAUT": {
                         "libelle": null,
@@ -541,14 +1177,34 @@
                         "code_produit": null,
                         "code_comptable": null,
                         "code_douane": null,
+                        "interpro": {
+                          "INTERPRO-declaration": {
+                            "labels": [],
+                            "droits": {
+                              "douane": [],
+                              "cvo": []
+                            }
+                          }
+                        },
+                        "departements": [],
                         "couleurs": {
                           "blanc": {
                             "libelle": "Blanc",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "blanc",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": "1B197S",
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -557,17 +1213,44 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": null,
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 65,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rouge": {
                             "libelle": "Rouge",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rouge",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": "1R197S",
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -576,17 +1259,44 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": null,
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 59,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           },
                           "rose": {
                             "libelle": "Rosé",
-                            "format_libelle": null,
+                            "format_libelle": "",
                             "code": "rose",
                             "code_produit": null,
                             "code_comptable": null,
                             "code_douane": "1S197S",
+                            "interpro": {
+                              "INTERPRO-declaration": {
+                                "labels": [],
+                                "droits": {
+                                  "douane": [],
+                                  "cvo": []
+                                }
+                              }
+                            },
+                            "departements": [],
                             "cepages": {
                               "DEFAUT": {
                                 "libelle": null,
@@ -595,8 +1305,25 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": null,
-                                "cepages_autorises": []
+                                "cepages_autorises": [],
+                                "interpro": {
+                                  "INTERPRO-declaration": {
+                                    "droits": {
+                                      "douane": [],
+                                      "cvo": []
+                                    }
+                                  }
+                                }
                               }
+                            },
+                            "attributs": {
+                              "rendement": 63,
+                              "rendement_dr_l5": null,
+                              "rendement_dr_l15": null,
+                              "rendement_conseille": null,
+                              "rendement_dr": null,
+                              "rendement_vci": null,
+                              "rendement_vci_total": null
                             }
                           }
                         }
