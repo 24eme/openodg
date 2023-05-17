@@ -27,7 +27,7 @@
           </thead>
           <tbody>
             <?php foreach ($form->getTableLots() as $lot): ?>
-                <tr>
+                <tr class="hamzastyle-item" data-words='<?php echo json_encode([$lot->produit_libelle, $lot->numero_dossier, $lot->numero_logement_operateur, $lot->declarant_nom], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'>
                     <td><?php echo $lot->declarant_nom ?></td>
                     <td><?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)</td>
                     <td><?php echo $lot->numero_logement_operateur ?></td>
