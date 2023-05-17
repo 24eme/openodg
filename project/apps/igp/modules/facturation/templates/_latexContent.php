@@ -144,12 +144,18 @@
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
-  \hline
-  \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
-  \hline
-  <?php foreach ($facture->lignes as $ligne): ?>
+  <?php $i=0; foreach ($facture->lignes as $ligne): ?>
     <?php foreach ($ligne->details as $detail): ?>
+        <?php if ($i % 40  == 0) : ?>
+          <?php if ($i): ?>
+              \end{tabular}
+              \newpage
+          <?php endif; ?>
+          \begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
+          \hline
+          \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
+          \hline
+        <?php endif; ?>
         <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
         <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
@@ -157,7 +163,7 @@
         <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
 		\hline
-    <?php endforeach; ?>
+    <?php if ($i) $i++ ; else $i = 12; endforeach; ?>
   <?php endforeach; ?>
   \end{tabular}
 
