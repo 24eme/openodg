@@ -31,7 +31,7 @@
                     <td><?php echo $lot->declarant_nom ?></td>
                     <td><?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)</td>
                     <td><?php echo $lot->numero_logement_operateur ?></td>
-                    <td><?php echo $lot->numero_dossier . '-' . $lot->numero_archive ?></td>
+                    <td><?php echo $lot->numero_dossier . ' / ' . $lot->numero_archive ?></td>
                     <td><?php echo DegustationClient::getNumeroTableStr($lot->numero_table) ?></td>
                     <td><?php echo $lot->numero_anonymat ?></td>
                 </tr>
