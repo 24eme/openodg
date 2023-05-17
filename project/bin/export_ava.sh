@@ -61,6 +61,10 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/constats.csv.part > $EXPORTDIR/co
 split_export_by_annee "constats"
 rm $EXPORTDIR/constats.csv.part
 
+bash bin/export_docs.sh Habilitation > $EXPORTDIR/habilitation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
+rm $EXPORTDIR/habilitation.csv.part
+
 echo "campagne;categorie;nombre opérateurs;superficie totale" > $EXPORTDIR/facture_stats.csv.part;
 cat $EXPORTDIR/facture.csv | iconv -f ISO88591//TRANSLIT -t UTF-8 | cut -d ";" -f 18,19 | sed -r 's/_.+;/;/' | grep "TEMPLATE" | sort | uniq | while read ligne; do
     TEMPLATE=$(echo $ligne | cut -d ";" -f 1);
