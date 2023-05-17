@@ -209,16 +209,6 @@ parcellaire_export_pdf:
   requirements:
     sf_method: [get]
 
-parcellaire_visualisation:
-  url: /parcellaire-affectation/visualisation/:id
-  param: { module: parcellaireAffectation, action: visualisation }
-  class: ParcellaireAffectationRoute
-  options:
-    model:    Parcellaire
-    type:     object
-  requirements:
-    sf_method: [get]
-
 parcellaireaffectation_visualisation:
   url: /parcellaire-affectation/visualisation/:id
   param: { module: parcellaireAffectation, action: visualisation }
