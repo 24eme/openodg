@@ -135,4 +135,26 @@
     if(document.getElementById('degustation_creation_time'))
       document.getElementById('degustation_creation_time').style.paddingTop = '0';
 
+    // Anonymisation manuelle
+    document.getElementById("table_anonymisation_manuelle")?.addEventListener('click', function (e) {
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+      if (button = e.target.closest('button.add-to-table')) {
+        const numero_table = button.dataset.table;
+        const tr = button.closest('tr')
+        const td_table = tr.querySelector('.lot-table')
+        const td_anonymat = tr.querySelector('.lot-anonymat')
+        const inputdiv = td_anonymat.querySelector('.form-group')
+        const input = inputdiv.querySelector('input')
+
+        td_table.textContent = alphabet[numero_table - 1]
+        document.querySelector("#liste-tables > a[data-table='"+numero_table+"'] > span.badge").textContent++
+
+        inputdiv.style.display = 'block'
+        input.value = document.querySelector("#liste-tables > a[data-table='"+numero_table+"'] > span.badge").textContent
+        input.focus()
+        input.select()
+        button.remove()
+      }
+    });
   });
