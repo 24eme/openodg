@@ -274,6 +274,12 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
+        $this->secteurs = [];
+        for ($i = 0; $i < 4; $i++) {
+            $sect_name = 'Secteur ' . $i;
+            $sect_key = urlencode(str_replace(' ', '-', $sect_name));
+            $this->secteurs[$sect_key] = $sect_name;
+        }
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
             $this->degustation->save(false);
         }
