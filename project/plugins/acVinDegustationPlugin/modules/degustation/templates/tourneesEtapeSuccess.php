@@ -1,4 +1,5 @@
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES)); ?>
@@ -39,15 +40,16 @@
         </tr>
       </thead>
       <tbody>
-        <?php for ($i = 0; $i < 4; $i++): ?>
+        <?php foreach ($degustation->getLotsByOperateurs() as $lots):?>
+          <?php $operateur_infos = splitLogementAdresse($lots[0]->getAdresseLogement()); ?>
           <tr class="vertical-center">
-            <td class="text-left">Nom</td>
-            <td class="text-left">Adresse</td>
-            <td class="text-left">Commmune</td>
-            <td class="text-left">lots</td>
-            <td class="text-left">secteur <?php echo $i; ?></td>
+            <td class="text-left"><?php echo $operateur_infos['nom']; ?></td>
+            <td class="text-left"><?php echo $operateur_infos['adresse']; ?></td>
+            <td class="text-left"><?php echo $operateur_infos['commune']; ?> (<?php echo $operateur_infos['code_postal']; ?>)</td>
+            <td class="text-left"><?php echo count($lots); ?></td>
+            <td class="text-left">secteur x</td>
           </tr>
-        <?php endfor; ?>
+        <?php endforeach; ?>
       </tbody>
     </table>
   </div>
