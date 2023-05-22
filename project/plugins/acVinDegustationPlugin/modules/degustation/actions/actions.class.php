@@ -264,6 +264,21 @@ class degustationActions extends sfActions {
         }
     }
 
+
+    /**
+     * Les tournées par opérateur
+     * @param sfWebRequest $request
+     * @return void
+     */
+    public function executeTourneesEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsAnonymized();
+        $this->infosDegustation = $this->degustation->getInfosDegustation();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
+            $this->degustation->save(false);
+        }
+    }
+
     public function executeTablesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
