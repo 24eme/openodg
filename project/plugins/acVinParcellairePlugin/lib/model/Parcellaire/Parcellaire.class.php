@@ -298,15 +298,13 @@ class Parcellaire extends BaseParcellaire {
         return $this->getAttachmentUri($key);
     }
 
-    public function getParcellairePDFMd5Digest() {
-        $key = $this->getParcellairePDFKey();
-
-        if(!$key) {
+    public function getParcellairePDFMd5() {
+        if (!$this->hasParcellairePDF()) {
 
             return null;
         }
 
-        return str_replace("md5-", "", $this->_attachments->get($key)->digest);
+        return md5($this->getParcellairePDF());
     }
 
     public function hasParcellairePDF() {
