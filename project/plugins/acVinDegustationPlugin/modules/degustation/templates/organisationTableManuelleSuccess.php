@@ -40,13 +40,12 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" name="" value="<?php echo $lot->numero_anonymat ?>">
                                 <div class="input-group-addon">
-                                    <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <button type="button" class="close" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
                                 </div>
                             </div>
                         </div>
                         <?php if (! $lot->numero_anonymat) : ?>
                             <button class="add-to-table" data-table="<?php echo $numero_table ?>">Ajouter à la table</button>
-                        <?php else: ?>
                         <?php endif ?>
                     </td>
                 </tr>

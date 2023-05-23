@@ -156,5 +156,24 @@
         input.select()
         button.remove()
       }
+
+      if (del = e.target.closest('.lot-anonymat button.close')) {
+        const tr = del.closest('tr')
+        const td_table = tr.querySelector('.lot-table')
+        const table = td_table.textContent
+        const numero_table = alphabet.indexOf(table) + 1
+        const td_anonymat = tr.querySelector('.lot-anonymat')
+        const inputdiv = td_anonymat.querySelector('.form-group')
+        const input = td_anonymat.querySelector('input')
+
+        td_table.textContent = ''
+        input.value = ''
+        inputdiv.style.display = 'none'
+        document.querySelector("#liste-tables > a[data-table='"+numero_table+"'] > span.badge").textContent--
+
+        const b = document.createElement('div')
+        b.innerHTML = '<button class="add-to-table" data-table="'+numero_table+'">Ajouter à la table</button>'.trim()
+        td_anonymat.append(b)
+      }
     });
   });
