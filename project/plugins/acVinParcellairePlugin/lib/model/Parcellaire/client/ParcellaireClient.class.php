@@ -133,7 +133,7 @@ class ParcellaireClient extends acCouchdbClient {
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
         $lastParcellaire = $this->getLast($etablissement->identifiant);
-        if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5Digest()) {
+        if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5()) {
 
             return null;
         }
