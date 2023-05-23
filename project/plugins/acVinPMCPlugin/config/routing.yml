@@ -1,0 +1,139 @@
+pmc_create:
+  url: /pmc/creation/:identifiant
+  param: { module: pmc, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmc_create_papier:
+  url: /pmc/creation-papier/:identifiant
+  param: { module: pmc, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmc_edit:
+  url: /pmc/edition/:id
+  param: { module: pmc, action: edit }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmc_delete:
+  url: /pmc/suppression/:id
+  param: { module: pmc, action: delete }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmc_devalidation:
+  url: /pmc/devalidation/:id
+  param: { module: pmc, action: devalidation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmc_exploitation:
+  url: /pmc/exploitation/:id
+  param: { module: pmc, action: exploitation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+pmc_lots:
+  url: /pmc/lots/:id/:appellation
+  param: { module: pmc, action: lots, appellation: 0 }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+pmc_lots_delete:
+  url: /pmc/lots/:id/:numArchive/supprimer
+  param: { module: pmc, action: deleteLots, numArchive: 0 }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+pmc_validation:
+  url: /pmc/validation/:id
+  param: { module: pmc, action: validation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+pmc_modificative:
+  url: /pmc/modificative/:id
+  param: { module: pmc, action: modificative }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmc_validation_admin:
+  url: /pmc/validation_admin/:id
+  param: { module: pmc, action: validationAdmin }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmc_confirmation:
+  url: /pmc/confirmation/:id
+  param: { module: pmc, action: confirmation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+pmc_visualisation:
+  url: /pmc/visualisation/:id
+  param: { module: pmc, action: visualisation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+pmc_export_pdf:
+  url: /pmc/pdf/:id
+  param: { module: pmc, action: PDF }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get]
