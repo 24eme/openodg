@@ -825,19 +825,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
 		public function getLotsTableOrFreeLots($numero_table, $free_table = true){
-			$lots = array();
-			foreach ($this->getLotsDegustables() as $lot) {
-				if(($lot->numero_table == $numero_table)){
-					$lots[] = $lot;
-					continue;
-				}
-
-				if($free_table && !$lot->numero_table)  {
-					$lots[] = $lot;
-					continue;
-				}
-			}
-			return $lots;
+            return array_filter($this->getLotsDegustables(), function ($lot) use ($numero_table, $free_table) {
+                if ($lot->numero_table == $numero_table) {
+                    return true;
+                }
+                if ($free_table && ! $lot->numero_table) {
+                    return true;
+                }
+                return false;
+            });
 		}
 
         public function getLotsTableOrFreeLotsCustomSort($numero_table, $free_table = true, $with_tri_manual = true){

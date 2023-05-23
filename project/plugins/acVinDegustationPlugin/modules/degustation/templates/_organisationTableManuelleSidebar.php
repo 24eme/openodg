@@ -4,7 +4,7 @@
   </div>
   <ul class="list-group" id="liste-tables">
     <?php foreach ($degustation->getTables()->getRawValue() + [count($degustation->getTables()->getRawValue()) + 1 => []] as $table => $lots): ?>
-        <a href="<?php echo url_for('degustation_organisation_table', ['id' => $degustation->_id, 'numero_table' => $table, 'tri' => $tri]) ?>"
+        <a href="<?php echo url_for('degustation_organisation_table', ['id' => $degustation->_id, 'numero_table' => $table]) ?>"
             data-table="<?php echo $table ?>"
             class="list-group-item<?php if ($numero_table == $table): echo " active" ; endif ?>">
             <span class="badge"><?php echo count($lots) ?></span>

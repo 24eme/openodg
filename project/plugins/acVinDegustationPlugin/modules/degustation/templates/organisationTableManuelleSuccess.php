@@ -11,7 +11,7 @@
 
 <div class="row">
     <div class="col-xs-3">
-        <?php include_partial('degustation/organisationTableManuelleSidebar', compact('degustation', 'numero_table', 'tri')); ?>
+        <?php include_partial('degustation/organisationTableManuelleSidebar', compact('degustation', 'numero_table')); ?>
     </div>
     <div class="col-xs-9 row row-no-gutters">
         <input type="hidden" data-placeholder="Sélectionner un opérateur, un produit ou un numéro de logement" data-hamzastyle-container=".table_lots" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">

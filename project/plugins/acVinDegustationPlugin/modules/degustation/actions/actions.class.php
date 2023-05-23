@@ -407,6 +407,11 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            $this->forward('degustation', 'organisationTableManuelle');
+        }
+
         $this->redirectIfIsAnonymized();
 
         if(!$request->getParameter('numero_table')) {
@@ -422,10 +427,6 @@ class degustationActions extends sfActions {
         $this->form = new DegustationOrganisationTableForm($this->degustation, $this->numero_table);
         $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
         $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), false);
-
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            $this->setTemplate('organisationTableManuelle');
-        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -486,6 +487,34 @@ class degustationActions extends sfActions {
         }
 
         return $this->redirect('degustation_tables_etape', $this->degustation);
+    }
+
+    public function executeOrganisationTableManuelle(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+
+        if(!$request->getParameter('numero_table')) {
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
+        }
+
+        $this->numero_table = $request->getParameter('numero_table');
+        $this->form = new DegustationOrganisationManuelleForm($this->degustation, $this->numero_table);
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
+
+
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (! $this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('degustation_organisation_table', ['id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1]);
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
