@@ -278,13 +278,35 @@ class Parcellaire extends BaseParcellaire {
         return $superficie;
     }
 
-    public function getParcellairePDFUri() {
+    public function getParcellairePDFKey() {
         foreach ($this->_attachments as $key => $attachement) {
             if ($attachement->content_type == 'application/pdf') {
-                return $this->getAttachmentUri($key);
+                return $key;
             }
         }
-        return '';
+        return null;
+    }
+
+    public function getParcellairePDFUri() {
+        $key = $this->getParcellairePDFKey();
+
+        if(!$key) {
+
+            return null;
+        }
+
+        return $this->getAttachmentUri($key);
+    }
+
+    public function getParcellairePDFMd5Digest() {
+        $key = $this->getParcellairePDFKey();
+
+        if(!$key) {
+
+            return null;
+        }
+
+        return str_replace("md5-", "", $this->_attachments->get($key)->digest);
     }
 
     public function hasParcellairePDF() {
