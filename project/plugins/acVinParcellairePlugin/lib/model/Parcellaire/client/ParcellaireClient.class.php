@@ -135,7 +135,7 @@ class ParcellaireClient extends acCouchdbClient {
         $lastParcellaire = $this->getLast($etablissement->identifiant);
         if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5()) {
 
-            return null;
+            throw new Exception("Aucune nouvelle vesion du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
         }
 
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
