@@ -475,7 +475,9 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->redirectIfIsAnonymized();
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() === false) {
+            $this->redirectIfIsAnonymized();
+        }
         $this->tri = $this->degustation->tri;
         $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), true);
 
@@ -513,7 +515,11 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('degustation_organisation_table', ['id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1]);
+        if ($this->degustation->hasFreeLots()) {
+            return $this->redirect('degustation_organisation_table', ['id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1]);
+        }
+
+        return $this->redirect('degustation_organisation_table_recap', ['id' => $this->degustation->_id]);
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
