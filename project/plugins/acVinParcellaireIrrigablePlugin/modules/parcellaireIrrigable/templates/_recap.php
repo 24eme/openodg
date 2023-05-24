@@ -30,13 +30,13 @@ foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune
             	<td><?php echo $parcelle->ressource; ?></td>
             </tr>
         <?php  endforeach; ?>
-        </tbody>
-        <tfooter>
-            <tr>
-                <th colspan="5">Total superficie</th>
-                <th class="text-right"><?php echoFloat($somme_superficie); ?></th>
-                <th colspan="2">&nbsp;</th>
-            <tr>
-        <tfooter>
-	</table>
 <?php  endforeach; ?>
+</tbody>
+<tfooter>
+    <tr>
+        <th colspan="5">Total superficie</th>
+        <th class="text-right"><?php echoFloat($somme_superficie); ?></th>
+        <th colspan="2">&nbsp;</th>
+    <tr>
+<tfooter>
+</table>
