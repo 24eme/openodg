@@ -501,7 +501,7 @@ class degustationActions extends sfActions {
 
         $this->numero_table = $request->getParameter('numero_table');
         $this->form = new DegustationOrganisationManuelleForm($this->degustation, $this->numero_table);
-        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, array('table' => $this->numero_table));
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, ['table' => $this->numero_table]);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;

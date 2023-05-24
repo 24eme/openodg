@@ -50,14 +50,17 @@
                         </div>
                         <?php echo $form[$name]->renderError() ?>
                         <?php if (! $lot->numero_anonymat) : ?>
-                            <button class="add-to-table" data-table="<?php echo $numero_table ?>">Ajouter à la table</button>
+                            <button type="button" class="add-to-table" data-table="<?php echo $numero_table ?>">Ajouter à la table</button>
                         <?php endif ?>
                     </td>
                 </tr>
             <?php endforeach ?>
           </tbody>
         </table>
-        <div class="col-xs-6 col-xs-offset-6 text-right">
+        <div class="col-xs-4 col-xs-offset-4 text-center">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#popupLeurreForm"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un leurre</button>
+        </div>
+        <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-primary">
                 Confirmer la table <i class="glyphicon glyphicon-chevron-right"></i>
             </button>
@@ -66,3 +69,5 @@
         </form>
     </div>
 </div>
+
+<?php include_partial('degustation/popupAjoutLeurreForm', ['url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm, 'table' => $numero_table]); ?>
