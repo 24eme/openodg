@@ -15,6 +15,9 @@
     </div>
     <div class="col-xs-9 row row-no-gutters">
         <input type="hidden" data-placeholder="Sélectionner un opérateur, un produit ou un numéro de logement" data-hamzastyle-container=".table_lots" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
+        <form method="POST" action="<?php echo url_for('degustation_organisation_table', ['id' => $degustation->_id, 'numero_table' => $numero_table]) ?>">
+        <?php echo $form->renderHiddenFields(); ?>
+        <?php echo $form->renderGlobalErrors(); ?>
         <table id="table_anonymisation_manuelle" class="table table-bordered table-striped table_lots text-center">
           <thead>
             <tr>
@@ -28,6 +31,7 @@
           </thead>
           <tbody>
             <?php foreach ($form->getTableLots() as $lot): ?>
+                <?php $name = $form->getWidgetNameFromLot($lot); ?>
                 <tr class="lot hamzastyle-item<?= ($lot->leurre) ? ' warning' : '' ?>" data-words='<?php echo json_encode([$lot->produit_libelle, $lot->numero_dossier, $lot->numero_logement_operateur, $lot->declarant_nom], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'>
                     <td class="lot-declarant"><?php echo $lot->declarant_nom ?></td>
                     <td class="lot-produit"><?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)</td>
@@ -38,12 +42,13 @@
                         <div class="form-group"<?php if (! $lot->numero_anonymat): ?> style="display:none"<?php endif ?>>
                             <label class="sr-only" for="">Numéro anonymat</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="" value="<?php echo $lot->numero_anonymat ?>">
+                                <?php echo $form[$name]->render(['class' => 'form-control']); ?>
                                 <div class="input-group-addon">
                                     <button type="button" class="close" aria-label="Close" tabindex="-1"><span aria-hidden="true">&times;</span></button>
                                 </div>
                             </div>
                         </div>
+                        <?php echo $form[$name]->renderError() ?>
                         <?php if (! $lot->numero_anonymat) : ?>
                             <button class="add-to-table" data-table="<?php echo $numero_table ?>">Ajouter à la table</button>
                         <?php endif ?>
@@ -52,5 +57,12 @@
             <?php endforeach ?>
           </tbody>
         </table>
+        <div class="col-xs-6 col-xs-offset-6 text-right">
+            <button type="submit" class="btn btn-primary">
+                Confirmer la table <i class="glyphicon glyphicon-chevron-right"></i>
+            </button>
+        </div>
+        </div>
+        </form>
     </div>
 </div>

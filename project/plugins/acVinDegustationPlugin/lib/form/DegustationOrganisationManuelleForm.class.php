@@ -16,8 +16,8 @@ class DegustationOrganisationManuelleForm extends acCouchdbObjectForm
     {
         foreach ($this->tableLots as $lot) {
             $name = $this->getWidgetNameFromLot($lot);
-            $this->setWidget($name , new sfWidgetFormInput());
-            $this->setValidator($name, new sfValidatorString());
+            $this->setWidget($name , new sfWidgetFormInput([], ['required' => false]));
+            $this->setValidator($name, new sfValidatorString(['required' => false]));
         }
 
         $this->widgetSchema->setNameFormat('tables[%s]');
@@ -41,8 +41,10 @@ class DegustationOrganisationManuelleForm extends acCouchdbObjectForm
         parent::doUpdateObject($values);
         foreach ($this->tableLots as $lot) {
             $name = $this->getWidgetNameFromLot($lot);
-            $lot->numero_table = $this->numero_table;
-            $lot->numero_anonymat = $values['tables'][$name];
+            if ($values[$name]) {
+                $lot->numero_table = $this->numero_table;
+                $lot->numero_anonymat = $values[$name];
+            }
         }
     }
 
