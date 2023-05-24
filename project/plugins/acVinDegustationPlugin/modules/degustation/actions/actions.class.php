@@ -475,9 +475,7 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTableRecap(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() === false) {
-            $this->redirectIfIsAnonymized();
-        }
+        $this->redirectIfIsAnonymized();
         $this->tri = $this->degustation->tri;
         $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray(), true);
 
@@ -1147,26 +1145,38 @@ class degustationActions extends sfActions {
     }
 
 
-    private function redirectIfIsAnonymized(){
-      if ($this->degustation->isAnonymized()) {
-          $etape = $this->getRouteEtape($this->degustation->etape);
-          if (DegustationEtapes::$etapes[$this->degustation->etape] < DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
-              return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS),$this->degustation);
-          } else {
-              return $this->redirect($etape, $this->degustation);
-          }
-      }
+    private function redirectIfIsAnonymized()
+    {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return false;
+        }
+
+        if ($this->degustation->isAnonymized()) {
+            $etape = $this->getRouteEtape($this->degustation->etape);
+
+            if (DegustationEtapes::$etapes[$this->degustation->etape] < DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
+                return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS), $this->degustation);
+            } else {
+                return $this->redirect($etape, $this->degustation);
+            }
+        }
     }
 
-    private function redirectIfIsNotAnonymized(){
-      if (!$this->degustation->isAnonymized()) {
-          $etape = $this->getRouteEtape($this->degustation->etape);
-          if (DegustationEtapes::$etapes[$this->degustation->etape] > DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
-              return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS),$this->degustation);
-          } else {
-              return $this->redirect($etape, $this->degustation);
-          }
-      }
+    private function redirectIfIsNotAnonymized()
+    {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return false;
+        }
+
+        if (! $this->degustation->isAnonymized()) {
+            $etape = $this->getRouteEtape($this->degustation->etape);
+
+            if (DegustationEtapes::$etapes[$this->degustation->etape] > DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
+                return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS), $this->degustation);
+            } else {
+                return $this->redirect($etape, $this->degustation);
+            }
+        }
     }
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
