@@ -5,22 +5,13 @@ $infos = FactureConfiguration::getInstance()->getInfos();
 Nous vous invitons à participer à la prochaine commission de dégustation des vins IGP qui aura lieu le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "HH").'h'.format_date($degustation->date, "mm"); ?> <?php echo $degustation->getLieuNom()." - ".preg_replace("/.+—[ ]*/", "", $degustation->lieu); ?>
 
 
-Pour le bon déroulé de cette dégustation nous vous remercions de bien vouloir nous confirmer votre présence en cliquant sur le lien :
+Pour le bon déroulé de cette dégustation nous vous remercions de bien vouloir nous confirmer votre présence ou votre absence en cliquant sur le lien :
 
-<?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
+<?php echo url_for('degustation_convocation_presence', [
     'id' => $degustation->_id,
     'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
     'college' => $college,
     'identifiant' => $identifiant
-], true); ?>
-
-
-Si vous ne pouvez pas venir : <?php echo sfContext::getInstance()->getRouting()->generate('degustation_convocation_auth', [
-    'id' => $degustation->_id,
-    'auth' => UrlSecurity::generateAuthKey($degustation->_id, $identifiant),
-    'college' => $college,
-    'identifiant' => $identifiant,
-    'presence' => '0'
 ], true); ?>
 
 

@@ -8,11 +8,8 @@
   <?php endif; ?>
 </ol>
 
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'))); ?>
-    </div>
-</div>
+<?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'))); ?>
+
 <h3>Liste des déclarations</h3>
 <div class="row">
     <div class="col-sm-9 col-xs-12">

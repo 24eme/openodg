@@ -115,4 +115,10 @@ class Abonnement extends BaseAbonnement {
     }
 
     /**** FIN DES MOUVEMENTS ****/
+
+    public function save() {
+        if(!$this->exist('mouvements') || !count($this->mouvements)) {
+            $this->generateMouvementsFactures();
+        }
+    }
 }

@@ -97,10 +97,10 @@ class CompteClient extends acCouchdbClient {
 
     public function getAll($hydrate = self::HYDRATE_DOCUMENT) {
 
-        $query = $this->startkey(sprintf("COMPTE-%s", "aaaaaaaaaaaa"))
+        $query = $this->startkey("COMPTE-")
                 ->endkey(sprintf("COMPTE-%s", "zzzzzzzzzzzz"));
 
-        return $query->execute(acCouchdbClient::HYDRATE_ARRAY);
+        return $query->execute($hydrate);
     }
 
     public function getAllComptesPrefixedIds($prefix, $hydrate = self::HYDRATE_DOCUMENT) {

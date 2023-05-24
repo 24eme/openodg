@@ -33,29 +33,25 @@ L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
     id: 'mapbox.light'
 }).addTo(map);
 
-/***** Location position ****/
+// GPS
+var gps = new L.Control.Gps({
+	//autoActive:true,
+	autoCenter:true
+});//inizialize control
 
-$('#locate-position').on('click', function(){
-    map.locate({setView: true});
+gps
+.on('gps:located', function(e) {
+	//	e.marker.bindPopup(e.latlng.toString()).openPopup()
+	console.log(e.latlng, map.getCenter())
+})
+.on('gps:disabled', function(e) {
+	e.marker.closePopup()
 });
 
-var icon = L.divIcon({className: 'glyphicon glyphicon-record'});
+gps.addTo(map);
 
-function onLocationFound(e) {
-    var radius = e.accuracy / 100;
-    L.marker(e.latlng,{icon: icon}).addTo(map);
-    L.circle(e.latlng, radius).addTo(map);
-    map.setView(e.latlng, minZoom);
-}
-function onLocationError(e) {
-    alert("Vous n'êtes actuellement pas localisable. Veuillez activer la localisation.");
-}
+// Fin GPS
 
-map.on('locationfound', onLocationFound);
-
-map.on('locationerror', onLocationError);
-
-/****** End location position *****/
 
 function getColor(d) {
 
@@ -190,7 +186,7 @@ $('.sectionlabel').show();
 
 function zoomToFeature(e) {
   zoomToParcelle(e.target);
-  e.preventDefault();
+  return false;
 }
 
 function zoomToParcelle(layer) {
@@ -235,6 +231,7 @@ info.update = function (layer) {
   let props = layer.feature.properties;
 
   this._div.style.display = 'block';
+  var Commune = "<th>Commune</th>";
   var Cepages = "<th>Produits et cepages</th>";
   var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
   var Superficies = "<th>Superficies  <span>(ha)</span></th>";
@@ -242,6 +239,7 @@ info.update = function (layer) {
   var ecartRang = "<th>Écart Rang</th>";
   var compagnes = "<th>Année plantat°</th>";
   props.parcellaires.forEach(function(parcelle){
+      Commune += '<td>'+parcelle['Commune']+'</td>';
       numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
       Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
       compagnes += '<td>'+parcelle.Campagne+'</td>';
@@ -251,6 +249,7 @@ info.update = function (layer) {
   });
 
   var popupContent ='<button id="btn-close-info" type="button" style="position: absolute; right: 10px; top: 5px;" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button> <table class="table table-bordered table-condensed table-striped"><tbody>'+
+                  '<tr>'+Commune+'</tr>'+
                   '<tr>'+numParcelles+'</tr>'+
                   '<tr>'+Cepages+'</tr>'+
                   '<tr>'+compagnes+'</tr>'+

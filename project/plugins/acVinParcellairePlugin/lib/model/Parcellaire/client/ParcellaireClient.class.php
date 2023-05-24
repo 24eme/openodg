@@ -18,11 +18,6 @@ class ParcellaireClient extends acCouchdbClient {
         self::MODE_SAVOIRFAIRE_METAYER => "Métayer",
     );
 
-    const PARCELLAIRE_AIRE_TOTALEMENT = 'OUI';
-    const PARCELLAIRE_AIRE_PARTIELLEMENT = 'PARTIEL';
-    const PARCELLAIRE_AIRE_EN_ERREUR = 'ERREUR';
-    const PARCELLAIRE_AIRE_HORSDELAIRE = false;
-
     public static function getInstance() {
         return acCouchdbManager::getClient("Parcellaire");
     }
@@ -56,58 +51,6 @@ class ParcellaireClient extends acCouchdbClient {
     {
         $id = self::TYPE_COUCHDB . '-' . $identifiant . '-' . $date;
         return $this->find($id);
-    }
-
-    public function getAiresForInseeCommunes($communes) {
-        $aires = array();
-        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $key => $infos) {
-            $a = $this->getAire($infos['denomination_id'], $communes);
-            if ($a) {
-                $aires[$infos['denomination_id']] = ["jsons" => $a, "infos" => $infos];
-            }
-        }
-        return $aires;
-    }
-
-    public function getDefaultDenomination() {
-        return $this->getDenominations()[0];
-    }
-    
-    public function getDenominations() {
-        $res = array();
-        foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $a) {
-            if ($a["denomination_id"]) {
-                $res[$a["denomination_id"]] = $a["denomination_id"];
-            }
-        }
-        return array_keys($res);
-    }
-
-    public function getAire($inao_denomination_id, $communes) {
-        if (! intval($inao_denomination_id)) {
-            throw new sfException("not inao_denomination_id: $inao_denomination_id");
-        }
-        $geojson = [];
-        $files = '';
-        foreach ($communes as $id => $commune) {
-            $contents = $this->getDelimitationCommuneDelimitationCache($commune, $inao_denomination_id);
-            if ($contents) {
-                $contents = str_replace("\n", '', $contents);
-                array_push($geojson, $contents);
-            }
-        }
-        return $geojson;
-    }
-
-    public function getDelimitationCommuneDelimitationCache($commune_insee, $denom_id) {
-        return CacheFunction::cache('model', "ParcellaireClient::getDelimitationCommuneDelimitation", array($commune_insee, $denom_id));
-    }
-
-    public static function getDelimitationCommuneDelimitation($commune_insee, $inao_denomination_id) {
-        $dep = substr($commune_insee,0,2);
-        $url_aire = "https://raw.githubusercontent.com/24eme/opendatawine/master/delimitation_aoc/".$dep."/".$commune_insee."/".$inao_denomination_id.".geojson";
-        $contents = @file_get_contents($url_aire);
-        return $contents;
     }
 
     /**
@@ -188,6 +131,12 @@ class ParcellaireClient extends acCouchdbClient {
 
         $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $scrapping, $contextInstance);
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
+
+        $lastParcellaire = $this->getLast($etablissement->identifiant);
+        if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5()) {
+
+            throw new Exception("Aucune nouvelle vesion du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
+        }
 
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $returncsv = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);

@@ -32,7 +32,7 @@
 
         <div class="row">
         <div class="col-xs-12">
-          <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle form-control">
+          <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container=".table_college" data-hamzastyle-mininput="3" class="hamzastyle form-control">
         </div>
         </div>
         <br/>

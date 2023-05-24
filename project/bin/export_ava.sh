@@ -34,7 +34,12 @@ rm $EXPORTDIR/facture.csv.part
 
 bash bin/export_docs.sh ParcellaireAffectation > $EXPORTDIR/parcellaire_affectation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire_affectation.csv.part > $EXPORTDIR/parcellaire_affectation.csv
+split_export_by_annee "parcellaire_affectation"
 rm $EXPORTDIR/parcellaire_affectation.csv.part
+
+curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_all_docs?startkey=\"PARCELLAIRE-\"&endkey=\"PARCELLAIRE-Z\"" | cut -d '"' -f 4 | grep "PARCELLAIRE" | sort -r | awk -F '-' 'BEGIN { } { if(!identifiant[$2]) { print $0 } identifiant[$2] = $0; }' | while read id;do php symfony declaration:export-csv --header=$(if ! test $header;then echo -n "1"; fi) $SYMFONYTASKOPTIONS $id; header=0; done > $EXPORTDIR/parcellaire.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR/parcellaire.csv
+rm $EXPORTDIR/parcellaire.csv.part
 
 bash bin/export_docs.sh TravauxMarc > $EXPORTDIR/travaux_marc.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/travaux_marc.csv.part > $EXPORTDIR/travaux_marc.csv
@@ -55,6 +60,10 @@ bash bin/export_docs.sh Constats 5 > $EXPORTDIR/constats.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/constats.csv.part > $EXPORTDIR/constats.csv
 split_export_by_annee "constats"
 rm $EXPORTDIR/constats.csv.part
+
+bash bin/export_docs.sh Habilitation > $EXPORTDIR/habilitation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
+rm $EXPORTDIR/habilitation.csv.part
 
 echo "campagne;categorie;nombre opérateurs;superficie totale" > $EXPORTDIR/facture_stats.csv.part;
 cat $EXPORTDIR/facture.csv | iconv -f ISO88591//TRANSLIT -t UTF-8 | cut -d ";" -f 18,19 | sed -r 's/_.+;/;/' | grep "TEMPLATE" | sort | uniq | while read ligne; do

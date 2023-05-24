@@ -751,7 +751,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return sfContext::getInstance()->getRouting()->generate('parcellaire_visualisation', array('id' => $id));
+    	return sfContext::getInstance()->getRouting()->generate('parcellaireaffectation_visualisation', array('id' => $id));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {

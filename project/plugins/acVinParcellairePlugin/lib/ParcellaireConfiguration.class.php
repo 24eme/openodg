@@ -53,6 +53,15 @@ class ParcellaireConfiguration {
         return $this->configuration['aires'];
     }
 
+    public function getAireInfoFromDenominationId($id) {
+        foreach($this->getAiresInfos() as $k => $aire) {
+            if ($aire['denomination_id'] == $id) {
+                return $aire;
+            }
+        }
+        return null;
+    }
+
     public function getAireInfo($key) {
         if(!isset($this->configuration['aires'][$key])) {
 

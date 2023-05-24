@@ -44,7 +44,7 @@ class facturationActions extends sfActions
               $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
               $generation->save();
 
-              return $this->redirect('generation_view', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission));
+              return $this->redirect('generation_view', ['id' => $generation->_id]);
           }
 
         $this->form->bind($request->getParameter($this->form->getName()));
@@ -104,7 +104,7 @@ class facturationActions extends sfActions
         $this->form->updateDocument();
         $this->generation->save();
 
-        return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $this->generation->date_emission));
+        return $this->redirect('generation_view', ['id' => $this->generation->_id]);
     }
 
 
@@ -420,14 +420,14 @@ class facturationActions extends sfActions
         $generationMaitre->save();
         $generation->save();
 
-        return $this->redirect('generation_view', [
-          'type_document' => $generationMaitre->type_document,
-          'date_emission' => $generationMaitre->date_emission.'-'.$generation->type_document
-        ]);
+        return $this->redirect('generation_view', ['id' => $generation->_id]);
     }
 
     public function executeTemplate(sfWebRequest $request) {
         $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
+
+        $this->organisme = Organisme::getInstance();
+
         $this->lignes = array();
 
         foreach($this->template->cotisations as $cotisation) {

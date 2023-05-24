@@ -10,6 +10,7 @@ class AppUser extends sfBasicSecurityUser {
     const CREDENTIAL_ADMIN = "ADMIN";
     const CREDENTIAL_DREV_ADMIN = 'teledeclaration_drev_admin';
     const CREDENTIAL_CONDITIONNEMENT_ADMIN = 'teledeclaration_conditionnement_admin';
+    const CREDENTIAL_PMC_ADMIN = 'teledeclaration_pmc_admin';
     const CREDENTIAL_CHGTDENOM_ADMIN = 'teledeclaration_chgtDenom_admin';
     const CREDENTIAL_TRANSACTION_ADMIN = 'teledeclaration_transaction_admin';
     const CREDENTIAL_STALKER = 'stalker';
@@ -174,6 +175,9 @@ class AppUser extends sfBasicSecurityUser {
         return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->isAdmin();
     }
 
+    public function hasPMCAdmin() {
+        return $this->hasCredential(self::CREDENTIAL_PMC_ADMIN) || $this->isAdmin();
+    }
 
     public function hasTransactionAdmin() {
         return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->isAdmin();
@@ -195,6 +199,16 @@ class AppUser extends sfBasicSecurityUser {
     public function getTeledeclarationConditionnementRegion() {
       $condConf = ConditionnementConfiguration::getInstance();
       if($this->hasConditionnementAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
+        if(in_array($region, $condConf->getOdgRegions())){
+                    return $region;
+        }
+      }
+      return null;
+    }
+
+    public function getTeledeclarationPMCRegion() {
+      $condConf = PMCConfiguration::getInstance();
+      if($this->hasPMCAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && $condConf->getOdgRegions()){
         if(in_array($region, $condConf->getOdgRegions())){
                     return $region;
         }

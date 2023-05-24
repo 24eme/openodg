@@ -141,13 +141,13 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
             return;
         }
 
-        if($this->facture->isPayee()) {
+        if($this->facture->isPayee() && $this->facture->exist('paiements')) {
             foreach($this->facture->paiements as $p) if (!$p->versement_comptable) {
                 $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
                 $csv .= $p->date . ';';
                 $csv .= $p->date . ';';
                 $csv .= $this->facture->getNumeroOdg() . ';';
-                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->commentaire.';';
+                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->getCommentaireCsv().';';
                 $csv .= self::formatNumeroCompte('411000').';';
                 $csv .= $this->facture->code_comptable_client . ';;';
                 $csv .= $this->facture->date_echeance . ';CREDIT;';
@@ -156,13 +156,13 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
                 $csv .= self::TYPE_LIGNE_PAIEMENT . ';';
                 $csv .= $this->facture->declarant->nom . ';';
                 $csv .= $this->facture->code_comptable_client . ';;;;';
-                $csv .= $this->facture->reglement_paiement;
+                $csv .= $p->getCommentaireCsv();
                 $csv .= "\n";
                 $csv .= FactureConfiguration::getInstance()->getCodeJournalPaiement().';';
                 $csv .= $p->date . ';';
                 $csv .= $p->date . ';';
                 $csv .= $this->facture->getNumeroOdg() . ';';
-                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->commentaire.';';
+                $csv .= $this->getLibelleFacture().' - '.$p->type_reglement.' '.$p->getCommentaireCsv().';';
                 $csv .= self::formatNumeroCompte(FactureConfiguration::getInstance()->getNumeroCompteBanquePaiement()).';;;';
                 $csv .= $this->facture->date_echeance . ';DEBIT;';
                 $csv .= $this->facture->montant_paiement . ';;;';
@@ -197,7 +197,7 @@ class ExportFactureCSV4Sage implements InterfaceDeclarationExportCsv {
     }
 
     protected static function formatNumeroCompte($c) {
-        $minlength = 8;
+        $minlength = (int) FactureConfiguration::getInstance()->getNumeroCompteMaxLength();
         $diff = $minlength - strlen($c);
         if (!$minlength || $diff < 1) {
             return $c;

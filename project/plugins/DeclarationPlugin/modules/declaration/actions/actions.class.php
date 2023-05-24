@@ -87,12 +87,12 @@ class declarationActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIRE"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIREAFFECTATIONCREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIREAFFECTATIONCREMANT", "INTENTIONCREMANT"))) {
 
             return $this->redirect("parcellaireaffectation_visualisation", array("id" => $doc_id));
         }
@@ -123,6 +123,10 @@ class declarationActions extends sfActions {
 
         if ($doc_type == "TRANSACTION" ) {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "PMC" ) {
+            return $this->redirect("pmc_visualisation", array("id" => $doc_id));
         }
 
         if ($doc_type == "SV12") {

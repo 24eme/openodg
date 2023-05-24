@@ -16,13 +16,8 @@
     <h2>Espace Facture</h2>
 </div>
 
-<?php if ($sf_user->isAdmin()): ?>
-<div class="row row-margin">
-    <?php if (isset($formSociete)): ?>
-    <div class="col-xs-12">
-          <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
-    </div>
-    <?php endif; ?>
+<?php if ($sf_user->isAdmin() && isset($formSociete)): ?>
+    <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
 </div>
 <?php endif; ?>
 

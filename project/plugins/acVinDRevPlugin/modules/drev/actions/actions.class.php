@@ -858,6 +858,11 @@ class drevActions extends sfActions {
         }
 
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
+        $this->mouvements = [];
+        foreach (MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->drev->identifiant, $this->drev->campagne)->rows as $mouvement) {
+            $this->mouvements[$mouvement->key[2].$mouvement->key[3]] = $mouvement->value;
+        }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
         }
@@ -932,6 +937,10 @@ class drevActions extends sfActions {
 
         if (!$drev->validation) {
             $drev->cleanDoc();
+        }
+
+        if ($numero_dossier = $request->getParameter('numero_dossier', null)) {
+            $drev = $drev->cloneDRevForOneDossier($numero_dossier);
         }
 
         $this->document = new ExportDRevPDF($drev, $this->getRequestParameter('region', null), $this->getRequestParameter('output', 'pdf'), false);

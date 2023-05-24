@@ -7,8 +7,10 @@
 class ParcellaireProduit extends BaseParcellaireProduit {
 
     public function getConfig() {
-
-        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+        if ($this->getCouchdbDocument()->getConfiguration()->exist($this->getHash())) {
+            return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+        }
+        return null;
     }
 
     public function getLibelle() {
@@ -116,22 +118,23 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
+    public function addParcelle($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
 
-        $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
+        $key = $this->calculkey($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre);
 
         if($this->detail->exist($key) && $strictNumOrdre) {
           return null;
         }
-        $nbSameParcelle = $this->getDocument()->countSameParcelle($commune,$section,$numero_parcelle,$lieu, $this->getHash(), $cepage, $campagne_plantation);
+        $nbSameParcelle = $this->getDocument()->countSameParcelle($commune,$prefix,$section,$numero_parcelle,$lieu, $this->getHash(), $cepage, $campagne_plantation);
         if(is_null($numero_ordre) && !$strictNumOrdre && $nbSameParcelle) {
            $numero_ordre = $nbSameParcelle;
-           $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
+           $key = $this->calculkey($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre);
         }
 
 
         $detail = $this->detail->add($key);
         $detail->cepage = $cepage;
+        $detail->prefix = $prefix;
         $detail->campagne_plantation = $campagne_plantation;
         $detail->commune = $commune;
         $detail->code_commune = CommunesConfiguration::getInstance()->findCodeCommune($detail->commune);
@@ -178,7 +181,10 @@ class ParcellaireProduit extends BaseParcellaireProduit {
       return $total;
     }
 
-    public function calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre){
+    public function calculkey($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre){
+        if($prefix) {
+            $section = $prefix.$section;
+        }
         $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle.'-'.sprintf('%02d',$numero_ordre);
         if ($lieu) {
             $key.= '-' . $lieu;
