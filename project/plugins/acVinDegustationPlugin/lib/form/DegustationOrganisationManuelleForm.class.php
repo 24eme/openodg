@@ -44,6 +44,9 @@ class DegustationOrganisationManuelleForm extends acCouchdbObjectForm
             if ($values[$name]) {
                 $lot->numero_table = $this->numero_table;
                 $lot->numero_anonymat = $values[$name];
+            } else {
+                $lot->numero_table = null;
+                $lot->numero_anonymat = $values[$name];
             }
         }
     }
