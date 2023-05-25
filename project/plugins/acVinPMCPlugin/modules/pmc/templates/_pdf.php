@@ -57,13 +57,6 @@ $lots = $document->getLotsByCouleur();
 <br/>
 <br/>
 
-<u><strong>Option choisie</strong></u>
-
-<p>
-Présentation des vins lot par lot. Un lot est un volume de vin présentant les mêmes caractéristiques analytiques. Dans ce
-cas, faire une demande de mise en circulation pour chaque lot.
-</p>
-
 <div><span class="h3"> Déclaration des lots </span></div>
 <?php if (count($lots)): ?>
   <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
