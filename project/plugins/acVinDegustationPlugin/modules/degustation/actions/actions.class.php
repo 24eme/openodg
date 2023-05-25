@@ -473,7 +473,12 @@ class degustationActions extends sfActions {
         return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
     }
 
-    public function executeOrganisationTableRecap(sfWebRequest $request) {
+    public function executeOrganisationTableRecap(sfWebRequest $request)
+    {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            $this->forward('degustation', 'organisationTableManuelleRecap');
+        }
+
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->tri = $this->degustation->tri;
@@ -518,6 +523,13 @@ class degustationActions extends sfActions {
         }
 
         return $this->redirect('degustation_organisation_table_recap', ['id' => $this->degustation->_id]);
+    }
+
+    public function executeOrganisationTableManuelleRecap(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
+        $this->numero_table = null;
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
