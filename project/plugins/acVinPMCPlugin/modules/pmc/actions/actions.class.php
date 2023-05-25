@@ -211,11 +211,11 @@ class pmcActions extends sfActions {
             return sfView::SUCCESS;
         }
         $this->form->save();
-        $dateValidation = date('c');
+        $dateValidation = date('Y-m-d');
 
         if($this->form->getValue("date")) {
             $dt = new DateTime($this->form->getValue("date"));
-            $dateValidation = $dt->modify('+1 minute')->format('c');
+            $dateValidation = $dt->modify('+1 minute')->format('Y-m-d');
         }
 
         $this->pmc->validate($dateValidation);
