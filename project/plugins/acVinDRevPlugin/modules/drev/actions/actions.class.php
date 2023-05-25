@@ -859,7 +859,7 @@ class drevActions extends sfActions {
 
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
         $this->mouvements = [];
-        if($drev->exist('lots')) {
+        if($this->drev->exist('lots')) {
             foreach (MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->drev->identifiant, $this->drev->campagne)->rows as $mouvement) {
                 $this->mouvements[$mouvement->key[2].$mouvement->key[3]] = $mouvement->value;
             }
