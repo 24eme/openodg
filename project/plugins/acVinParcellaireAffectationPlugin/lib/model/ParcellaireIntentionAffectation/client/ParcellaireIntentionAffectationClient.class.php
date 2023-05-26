@@ -25,8 +25,8 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
           if (!$doc_found) {
 	          $parcellaireIntentionAffectation = new ParcellaireIntentionAffectation();
 	          $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date, $type);
-              $this->storeDeclarant();
-              $this->storeParcelles();
+              $parcellaireIntentionAffectation->storeDeclarant();
+              $parcellaireIntentionAffectation->storeParcelles();
 	          $parcellaireIntentionAffectation->add('papier', 1);
           } else {
               $doc_found->date = $date;
