@@ -146,8 +146,8 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       $subitem->superficie_affectation  = $superficie_auto;
                   } else if (isset($affectees[$parcelle->getComparaisonKey()]) && $affectees[$parcelle->getComparaisonKey()]) {
                       $subitem->affectation = 1;
-                      $subitem->date_affectation = $affectees[$parcelle->getKey()]['date'];
-                      $subitem->superficie_affectation  = $affectees[$parcelle->getKey()]['superficie'];
+                      $subitem->date_affectation = $affectees[$parcelle->getComparaisonKey()]['date'];
+                      $subitem->superficie_affectation  = $affectees[$parcelle->getComparaisonKey()]['superficie'];
                   } else {
                     $subitem->affectation = 0;
                     $subitem->superficie_affectation = $parcelle->superficie;
