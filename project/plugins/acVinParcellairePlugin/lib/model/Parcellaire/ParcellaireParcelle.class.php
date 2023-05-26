@@ -274,7 +274,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function isInDenominationLibelle($l) {
-        $ii = $this->getIsInAires();
+        $iia = $this->getIsInAires();
         if (!isset($iia[$l])) {
             return null;
         }
