@@ -43,6 +43,7 @@ class parcellaireAffectationCoopActions extends sfActions {
     }
 
     public function executeApporteurs(sfWebRequest $request) {
+        set_time_limit(180);
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
 
