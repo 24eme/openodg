@@ -10,6 +10,16 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     private static $_AIRES = [];
     private $geoparcelle = null;
 
+    public function getComparaisonKey() {
+
+        return preg_replace("/-([A-Z]{2})(-[0-9]+-[0-9]{2}-)/", '-000\1\2', parent::getKey());
+    }
+
+    public function getComparaisonHash() {
+
+        return preg_replace("/-([A-Z]{2})(-[0-9]+-[0-9]{2}-)/", '-000\1\2', parent::getHash());
+    }
+
     public function getProduit() {
 
         return $this->document->get(preg_replace('/\/detail\/.*/', '', $this->getHash()));
