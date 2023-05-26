@@ -112,7 +112,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['volume']->renderLabel("Volume global", array('class' => "col-sm-4 control-label")); ?>
+                            <?php echo $lot['volume']->renderLabel("Volume", array('class' => "col-sm-4 control-label")); ?>
                             <div class="col-sm-5">
                                 <div class="input-group">
                                     <?php echo $lot['volume']->render(); ?>
