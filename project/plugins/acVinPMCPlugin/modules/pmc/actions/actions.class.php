@@ -9,15 +9,16 @@ class pmcActions extends sfActions {
         if (!$isAdmin) {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_PMC, $etablissement);
         }
-        $date = $request->getParameter("date", date('Y-m-d'));
+        $date = $request->getParameter("date", date('YmdHis'));
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
-        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
-        try {
-            $pmc->save();
-        }catch(couchException $e) {
-            $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation aujourd'hui");
+
+        if (PMCClient::getInstance()->findBrouillon($this->etablissement->identifiant, $campagne)) {
+            $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation non terminée");
             return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
         }
+
+        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
+        $pmc->save();
 
         return $this->redirect('pmc_edit', $pmc);
     }
