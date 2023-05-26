@@ -97,7 +97,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         unset($parcelle['origine_hash']);
         $detail = $item->detail->add($parcelle->getKey(), $parcelle);
         $detail->origine_doc = $intention->_id;
-        if($previous && $previous->exist($detail->getHash()) && $previous->get($detail->getHash())->affectee) {
+        if($previous && $previous->exist($detail->getComparaisonHash()) && $previous->get($detail->getComparaisonHash())->affectee) {
             $detail->affectee = 1;
         }
 	}

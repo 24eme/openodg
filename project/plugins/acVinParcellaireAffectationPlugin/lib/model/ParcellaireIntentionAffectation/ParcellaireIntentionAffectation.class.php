@@ -23,8 +23,6 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $this->campagne = $periode.'-'.($periode + 1);
       $this->constructId();
-      $this->storeDeclarant();
-      $this->storeParcelles();
   }
 
   public function getPeriode() {
@@ -96,7 +94,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       if (count($parcelles) > 0) {
           foreach ($parcelles as $parcelle) {
               if ($parcelle->affectation) {
-                  $affectees[$parcelle->getKey()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
+                  $affectees[$parcelle->getComparaisonKey()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
               }
           }
       }
@@ -126,6 +124,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                   $subitem->superficie = $parcelle->superficie;
                   $subitem->commune = $parcelle->commune;
                   $subitem->code_commune = $parcelle->code_commune;
+                  $subitem->prefix = $parcelle->prefix;
                   $subitem->section = $parcelle->section;
                   $subitem->numero_parcelle = $parcelle->numero_parcelle;
                   $subitem->idu = $parcelle->idu;
@@ -145,7 +144,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                           $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
                       }
                       $subitem->superficie_affectation  = $superficie_auto;
-                  } else if (isset($affectees[$parcelle->getKey()]) && $affectees[$parcelle->getKey()]) {
+                  } else if (isset($affectees[$parcelle->getComparaisonKey()]) && $affectees[$parcelle->getComparaisonKey()]) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = $affectees[$parcelle->getKey()]['date'];
                       $subitem->superficie_affectation  = $affectees[$parcelle->getKey()]['superficie'];

@@ -22,15 +22,16 @@ class ParcellaireIntentionAffectationClient extends acCouchdbClient {
           if ($doc_found && $doc_found->date === $date) {
               return $doc_found;
           }
-          if (!$doc_found || $doc_found->periode != $periode) {
+          if (!$doc_found) {
 	          $parcellaireIntentionAffectation = new ParcellaireIntentionAffectation();
 	          $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date, $type);
+              $this->storeDeclarant();
+              $this->storeParcelles();
 	          $parcellaireIntentionAffectation->add('papier', 1);
           } else {
               $doc_found->date = $date;
               $parcellaireIntentionAffectation = clone $doc_found;
-              $parcellaireIntentionAffectation->constructId();
-              $parcellaireIntentionAffectation->updateValidationDoc();
+              $parcellaireIntentionAffectation->initDoc($identifiant, $periode, $date, $type);
               $parcellaireIntentionAffectation->updateParcelles();
           }
           //$parcellaireIntentionAffectation->save();

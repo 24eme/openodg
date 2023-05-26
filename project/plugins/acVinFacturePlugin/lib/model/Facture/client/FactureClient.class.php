@@ -12,8 +12,10 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_PAIEMENT_PRELEVEMENT_AUTO = "PRELEVEMENT_AUTO";
     const FACTURE_REJET_PRELEVEMENT = "REJET_PRELEVEMENT";
     const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
+    const FACTURE_PAIEMENT_ESPECES = "ESPECES";
+    const FACTURE_PAIEMENT_CARTE_BANCAIRE = "CARTE_BANCAIRE";
 
-    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
+    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement", self::FACTURE_PAIEMENT_ESPECES => "Espèces", self::FACTURE_PAIEMENT_CARTE_BANCAIRE => "Carte Bancaire");
 
     private $documents_origine = array();
 
