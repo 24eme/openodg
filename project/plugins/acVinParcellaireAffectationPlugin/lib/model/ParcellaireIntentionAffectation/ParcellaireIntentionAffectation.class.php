@@ -91,12 +91,18 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $affectees = array();
       $parcelles = $this->getParcelles();
-      if (count($parcelles) > 0) {
-          foreach ($parcelles as $parcelle) {
-              if ($parcelle->affectation) {
-                  $affectees[$parcelle->getComparaisonKey()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
-              }
+      foreach ($parcelles as $parcelle) {
+          if (!$parcelle->affectation) {
+              continue;
           }
+
+          $pMatch = $parcellaire->getDocument()->findParcelle($parcelle);
+
+          if(!$pMatch) {
+              continue;
+          }
+
+          $affectees[$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
       }
       $this->remove('declaration');
       $this->add('declaration');
@@ -144,10 +150,10 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                           $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
                       }
                       $subitem->superficie_affectation  = $superficie_auto;
-                  } else if (isset($affectees[$parcelle->getComparaisonKey()]) && $affectees[$parcelle->getComparaisonKey()]) {
+                  } else if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()]) {
                       $subitem->affectation = 1;
-                      $subitem->date_affectation = $affectees[$parcelle->getComparaisonKey()]['date'];
-                      $subitem->superficie_affectation  = $affectees[$parcelle->getComparaisonKey()]['superficie'];
+                      $subitem->date_affectation = $affectees[$parcelle->getHash()]['date'];
+                      $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie'];
                   } else {
                     $subitem->affectation = 0;
                     $subitem->superficie_affectation = $parcelle->superficie;
