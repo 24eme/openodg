@@ -8,12 +8,12 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
 
     public function getComparaisonKey() {
 
-        return preg_replace("/-([A-Z]{2})(-[0-9]+-[0-9]{2}-)/", '-000\1\2', parent::getKey());
+        return preg_replace("/-([A-Z]{1,2})(-[0-9]+-[0-9]{2}(-|$))/", '-000\1\2', parent::getKey());
     }
 
     public function getComparaisonHash() {
 
-        return preg_replace("/-([A-Z]{2})(-[0-9]+-[0-9]{2}-)/", '-000\1\2', parent::getHash());
+        return preg_replace("/-([A-Z]{1,2})(-[0-9]+-[0-9]{2}(-|$))/", '-000\1\2', parent::getHash());
     }
 
     public function getProduit() {
