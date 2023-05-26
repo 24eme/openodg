@@ -1143,12 +1143,15 @@ class degustationActions extends sfActions {
 
         if(isset($this->isEtiquette) && sfConfig::get('sf_debug')) {
             $temp = tmpfile();
+            $metadata = stream_get_meta_data($temp);
+
             fwrite($temp, $this->document->output());
-            shell_exec(sprintf("pdftk %s background %s output %s", stream_get_meta_data($temp)['uri'], sfConfig::get('sf_web_dir')."/images/pdf/etiquettes_70x36.pdf", stream_get_meta_data($temp)['uri'].".pdf"));
-            $pdfContent = file_get_contents(stream_get_meta_data($temp)['uri'].".pdf");
-            $this->getResponse()->setHttpHeader('Content-Length', filesize(stream_get_meta_data($temp)['uri'].".pdf"));
-            unlink(stream_get_meta_data($temp)['uri'].".pdf");
+            shell_exec(sprintf("pdftk %s background %s output %s", escapeshellarg($metadata['uri']), escapeshellarg(sfConfig::get('sf_web_dir')."/images/pdf/etiquettes_70x36.pdf"), escapeshellarg($metadata['uri'].".pdf")));
+            $pdfContent = file_get_contents($metadata['uri'].".pdf");
+            $this->getResponse()->setHttpHeader('Content-Length', filesize($metadata['uri'].".pdf"));
+            unlink($metadata['uri'].".pdf");
             fclose($temp);
+
             return $this->renderText($pdfContent);
         }
 
