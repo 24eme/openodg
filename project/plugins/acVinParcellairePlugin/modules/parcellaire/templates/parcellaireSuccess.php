@@ -27,7 +27,7 @@ $list_idu = [];
 </ol>
 <?php endif; ?>
 
-<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
+<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm") && isset($form)): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
 <?php endif; ?>
 
