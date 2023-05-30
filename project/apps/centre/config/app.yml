@@ -14,5 +14,9 @@ all:
     format_identifiant: "%06d"
   donnees_viticoles:
     regions:
+      SECTEUR_1: "Secteur 1"
+      SECTEUR_2: "Secteur 2"
+      SECTEUR_3: "Secteur 3"
+      SECTEUR_4: "Secteur 4"
   communes:
     denominations:
