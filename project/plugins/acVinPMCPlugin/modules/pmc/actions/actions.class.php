@@ -185,6 +185,10 @@ class pmcActions extends sfActions {
         $this->secure(PMCSecurity::EDITION, $this->pmc);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        if ($this->pmc->validation) {
+            return $this->redirect('pmc_visualisation', $this->pmc);
+        }
+
         if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_VALIDATION))) {
             $this->pmc->save();
         }
