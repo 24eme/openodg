@@ -36,6 +36,7 @@ class ExportComptesCsv
             "Site",
             "Compte Type",
             "En alerte",
+            "Date de dernière modification",
             "Tags",
             "N° Compte Type"
         ];
@@ -91,6 +92,7 @@ class ExportComptesCsv
                 "https://$domaine/$type/$compte->identifiant/visualisation",
                 $compte->compte_type,
                 $compte->isEnAlerte(),
+                $compte->date_modification,
                 implode(',',$tagsArray),
                 $compte->_id
             ];
