@@ -59,7 +59,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->campagne = $periode.'-'.($periode + 1);
       $this->constructId();
       $this->storeDeclarant();
-      $this->storeParcellesAffectation();
+      $this->updateParcellesAffectation();
   }
 
   public function getPeriode() {
@@ -67,10 +67,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function updateParcellesAffectation() {
-    $this->storeParcellesAffectation(true);
-  }
-
-  public function storeParcellesAffectation($isUpDate=false) {
     if($this->validation){
         return;
     }
@@ -90,6 +86,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 	    $produit = $parcelle->getProduit();
         $hash = str_replace('/declaration/', '', $produit->getHash());
         if (!$parcelle->affectation) {
+            continue;
+        }
+        if($this->findParcelle($parcelle)) {
             continue;
         }
         $item = $this->declaration->add($hash);
