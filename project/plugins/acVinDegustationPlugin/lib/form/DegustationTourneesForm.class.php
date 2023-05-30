@@ -4,13 +4,12 @@ class DegustationTourneesForm extends acCouchdbObjectForm
     private $degustation;
     private $lots_par_logements;
 
-    private $regions = [];
+    private $regions = null;
 
     public function __construct(Degustation $degustation, $options = array(), $CSRFSecret = null)
     {
         $this->degustation = $degustation;
         $this->lots_par_logements = $this->degustation->getLotsByLogements();
-        $this->regions = sfConfig::get('app_donnees_viticoles_regions', ['' => '']);
         parent::__construct($this->degustation, $options, $CSRFSecret);
     }
 
@@ -18,8 +17,8 @@ class DegustationTourneesForm extends acCouchdbObjectForm
     {
         foreach ($this->lots_par_logements as $logement_key => $lots) {
             $name = $this->getWidgetNameFromLogt($logement_key);
-            $this->setWidget($name , new sfWidgetFormSelect(['choices' => ['' => ''] + $this->regions], ['required' => false]));
-            $this->setValidator($name, new sfValidatorString(['required' => false]));
+            $this->setWidget($name , new sfWidgetFormSelect(['choices' => ['' => ''] + $this->getRegions()], ['required' => false]));
+            $this->setValidator($name, new sfValidatorString(['required' => true]));
         }
 
         $this->widgetSchema->setNameFormat('degustation_modification[%s]');
@@ -27,6 +26,16 @@ class DegustationTourneesForm extends acCouchdbObjectForm
 
     public function getRegions()
     {
+        if (! isset($this->regions)) {
+            $this->regions = [];
+            foreach ($this->degustation->getEtablissementsDegustables() as $etablissement) {
+                $region_key = hash('md5', $etablissement->region);
+                if (! isset($this->regions[$region_key])) {
+                    $this->regions[$region_key] = $etablissement->region;
+                }
+            }
+        }
+
         return $this->regions;
     }
 

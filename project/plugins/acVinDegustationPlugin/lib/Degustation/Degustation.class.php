@@ -13,6 +13,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     protected $mouvement_document = null;
     public $generateMouvementsFacturesOnNextSave = false;
 
+    private $etablissementsDegustables = null;
+
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
@@ -1373,6 +1375,29 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $etablissements;
+		}
+
+
+        /**
+         * Les différents etablissements liés aux lots degustables  de la degustation
+         * @return array le tableau des Etablissement
+         */
+		public function getEtablissementsDegustables() {
+
+            if (! isset($this->etablissementsDegustables)) {
+                $this->etablissementsDegustables = [];
+
+                foreach ($this->getLotsDegustables() as $lot) {
+                    if (!isset($this->etablissementsDegustables[$lot->declarant_identifiant])) {
+                        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+                        if (isset($etablissement)) {
+                            $this->etablissementsDegustables[$lot->declarant_identifiant] = $etablissement;
+                        }
+                    }
+                }
+            }
+
+            return $this->etablissementsDegustables;
 		}
 
         public function isMailEnvoyeEtablissement($identifiant)
