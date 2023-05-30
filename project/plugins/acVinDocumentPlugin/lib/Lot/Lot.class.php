@@ -324,8 +324,8 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDateCommission() {
-        if(!$this->isCurrent()) {
-            $this->date_commission = $this->getLotOrigine()?->date_commission;
+        if(!$this->isCurrent() && $this->getLotOrigine() !== null) {
+            $this->date_commission = $this->getLotOrigine()->date_commission;
         }
 
         return $this->_get('date_commission');

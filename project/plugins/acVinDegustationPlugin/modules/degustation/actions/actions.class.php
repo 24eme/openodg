@@ -268,21 +268,42 @@ class degustationActions extends sfActions {
     /**
      * Les tournées par opérateur
      * @param sfWebRequest $request
-     * @return void
+     * @return string
      */
     public function executeTourneesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
+
+        sfContext::getInstance()->getConfiguration()->loadHelpers(array('Lot'));
+
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        $this->secteurs = [];
-        for ($i = 0; $i < 4; $i++) {
-            $sect_name = 'Secteur ' . $i;
-            $sect_key = urlencode(str_replace(' ', '-', $sect_name));
-            $this->secteurs[$sect_key] = $sect_name;
+
+        $this->form = new DegustationTourneesForm($this->degustation);
+
+        $this->operators = [];
+        foreach ($this->form->getLotsByLogements() as $lots) {
+            $operateur_infos = splitLogementAdresse($lots[0]->getAdresseLogement());
+            $operateur_infos['nbLots'] = count($lots);
+            $operateur_infos['select'] = $this->form->getFromLogt($lots[0]->getAdresseLogement());
+            $this->operators[] = $operateur_infos;
         }
+
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (! $this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
             $this->degustation->save(false);
         }
+        return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_TABLES), $this->degustation);
     }
 
     public function executeTablesEtape(sfWebRequest $request) {
