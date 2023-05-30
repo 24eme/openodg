@@ -59,7 +59,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->campagne = $periode.'-'.($periode + 1);
       $this->constructId();
       $this->storeDeclarant();
-      $this->updateParcellesAffectation();
+      $this->storeParcellesAffectation();
   }
 
   public function getPeriode() {
@@ -67,6 +67,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function updateParcellesAffectation() {
+    $this->storeParcellesAffectation(true);
+  }
+
+  public function storeParcellesAffectation($isUpDate=false) {
     if($this->validation){
         return;
     }
