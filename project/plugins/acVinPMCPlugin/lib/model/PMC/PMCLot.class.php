@@ -47,11 +47,13 @@ class PMCLot extends BasePMCLot
         return PMCMouvementLots::freeInstance($this->getDocument());
     }
 
-
     public function getDateDegustationVoulueFr()
     {
         return Date::francizeDate($this->_get('date_degustation_voulue'));
     }
 
-
+    public function getDateCommissionFr($format = 'd/m/Y')
+    {
+        return DateTimeImmutable::createFromFormat('Y-m-d', $this->_get('date_commission'))->format($format);
+    }
 }
