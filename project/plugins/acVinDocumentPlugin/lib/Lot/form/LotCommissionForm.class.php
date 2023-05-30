@@ -7,16 +7,26 @@ class LotCommissionForm extends acCouchdbObjectForm
         $this->setWidget('date_commission', new sfWidgetFormChoice([
             'choices' => $this->getDatesCommissionPossible()
         ]));
-        $this->setValidator('date_commission', new sfValidatorChoice(['choices' => $this->getDatesCommissionPossible()]));
+        $this->setValidator('date_commission', new sfValidatorDate(['date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true]));
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
     private function getDatesCommissionPossible()
     {
         $now = new DateTimeImmutable();
+        $dates = [];
 
-        return array_map(function ($v) use ($now) {
-            return $now->modify('+'.$v.' week')->format(DATE_RSS);
-        }, range(1, 5));
+        foreach (range(1, 5) as $week) {
+            $dates[$now->modify('+'.$week.' week')->format('d/m/Y')] = $now->modify('+'.$week.' week')->format(DATE_RSS);
+        }
+
+        return $dates;
+    }
+
+    public function updateDefaultsFromObject()
+    {
+        parent::updateDefaultsFromObject();
+
+        $this->setDefault('date_commission', DateTimeImmutable::createFromFormat('Y-m-d', $this->getObject()->date_commission)->format('d/m/Y'));
     }
 }

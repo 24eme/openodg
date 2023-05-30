@@ -25,14 +25,16 @@ class PMCValidationForm extends acCouchdbForm
             }
         }
 
-        $formDegustable = new BaseForm();
-        foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
-            foreach ($lots as $lot) {
-                $formDegustable->embedForm($lot->getKey(), new LotCommissionForm($lot));
+        if($this->isAdmin()){
+            $formDegustable = new BaseForm();
+            foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
+                foreach ($lots as $lot) {
+                    $formDegustable->embedForm($lot->getKey(), new LotCommissionForm($lot));
+                }
             }
-        }
 
-        $this->embedForm('lots', $formDegustable);
+            $this->embedForm('lots', $formDegustable);
+        }
 
         if(!$this->getDocument()->validation && $this->getDocument()->isPapier()) {
             $this->setWidget('date', new sfWidgetFormInput());

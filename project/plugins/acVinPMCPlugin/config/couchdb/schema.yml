@@ -29,7 +29,6 @@ PMC:
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
       denomination_auto: { required: false }
-      date_commission: { required: false }
       type_archive: { required: false }
       version: { required: false }
       numero_archive: {  }
@@ -91,6 +90,7 @@ PMC:
                   document_fils: { required: false }
                   document_ordre: { }
                   date_degustation_voulue: {  }
+                  date_commission: { }
                   cepages:
                     type: collection
                     definition:

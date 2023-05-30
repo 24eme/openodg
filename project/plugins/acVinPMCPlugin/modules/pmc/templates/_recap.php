@@ -60,14 +60,14 @@
                                   <?php if ($sf_user->isAdmin() && !$pmc->validation_odg): ?>
                                     <?php echo $form['lots'][$lot->getKey()]['date_commission']->render(array('class' => "pmc")); ?>
                                   <?php else: ?>
-                                      <?php echo pictoDegustable($lot); ?>
+                                      <?php echo $lot->getDateCommissionFr() ?>
                                   <?php endif; ?>
                                 </div>
                             </div>
                           <?php else: ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
-                                  <?php echo pictoDegustable($lot); ?>
+                                <?php echo $lot->getDateCommissionFr() ?>
                               </div>
                             </div>
                           <?php endif; ?>
