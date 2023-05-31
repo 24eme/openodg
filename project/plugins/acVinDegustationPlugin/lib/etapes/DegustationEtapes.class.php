@@ -90,9 +90,7 @@ class DegustationEtapes extends Etapes {
     {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             unset($items[self::ETAPE_ANONYMATS]);
-            unset($items[self::ETAPE_COMMISSION]);
-
-            self::$libelles[self::ETAPE_TABLES] = self::$libelles_short[self::ETAPE_TABLES] = 'Commission';
+            unset($items[self::ETAPE_PRELEVEMENTS]);
         }
 
         return $items;

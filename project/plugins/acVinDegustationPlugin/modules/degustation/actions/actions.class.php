@@ -256,7 +256,12 @@ class degustationActions extends sfActions {
 
 
     public function executePrelevementsEtape(sfWebRequest $request) {
+
         $this->degustation = $this->getRoute()->getDegustation();
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return $this->redirect('degustation_tournees_etape', ['sf_subject' => $this->degustation, ]);
+        }
+
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
@@ -273,6 +278,10 @@ class degustationActions extends sfActions {
     public function executeTourneesEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
+            $this->degustation->save(false);
+        }
 
         $this->secteur = $request->getParameter('secteur');
         if(!$this->secteur) {
