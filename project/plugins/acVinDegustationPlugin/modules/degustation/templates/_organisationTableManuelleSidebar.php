@@ -3,7 +3,7 @@
     <h3 class="panel-title">Tables</h3>
   </div>
   <ul class="list-group" id="liste-tables">
-    <?php $lastli = ($numero_table) ? [count($degustation->getTables()->getRawValue()) + 1 => []] : []; ?>
+    <?php $lastli = ($numero_table && $degustation->hasFreeLots()) ? [count($degustation->getTables()->getRawValue()) + 1 => []] : []; ?>
     <?php foreach ($degustation->getTables()->getRawValue() + $lastli as $table => $lots): ?>
         <a href="<?php echo url_for('degustation_organisation_table', ['id' => $degustation->_id, 'numero_table' => $table]) ?>"
             data-table="<?php echo $table ?>"
