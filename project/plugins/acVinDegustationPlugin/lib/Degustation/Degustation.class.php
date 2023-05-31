@@ -708,17 +708,21 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	   		return $lots;
    	 	}
 
-		public function getTables(){
-			$tables = array();
-			foreach ($this->lots as $lot) {
-				if(!$lot->exist('numero_table') || !$lot->numero_table){
-				    continue;
+        public function getTables()
+        {
+            $last_table = max(array_column($this->lots->toArray(true, false), 'numero_table'));
+            $tables = array_fill_keys(range(1, $last_table), []);
+
+            foreach ($this->lots as $lot) {
+                if(!$lot->exist('numero_table') || !$lot->numero_table){
+                    continue;
                 }
                 $tables[$lot->numero_table][] = $lot;
-			}
+            }
+
             ksort($tables);
-			return $tables;
-		}
+            return $tables;
+        }
 
 		public function getLotsWithoutLeurre(){
 			$lots = array();
