@@ -12,6 +12,7 @@
         <h2 class="panel-title">Documents nécessaires à l'organisation d'une commission</h2>
     </div>
     <div class="panel-body">
+      <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() === false): ?>
         <h4>Organisation des tables</h4>
         <ul class="list-group">
             <li class="list-group-item">
@@ -29,6 +30,7 @@
                 )
             </li>
         </ul>
+      <?php endif ?>
 
         <h4>Présences et notations de la commissions</h4>
         <ul class="list-group">
