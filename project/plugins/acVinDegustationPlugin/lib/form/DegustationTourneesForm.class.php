@@ -1,90 +1,65 @@
 <?php
-class DegustationTourneesForm extends acCouchdbObjectForm
+class DegustationTourneesForm extends acCouchdbForm
 {
-    private $degustation;
     private $lots_par_logements;
-
     private $regions = null;
+    private $secteur = null;
 
-    public function __construct(Degustation $degustation, $options = array(), $CSRFSecret = null)
+    public function __construct(Degustation $degustation, $secteur, $options = array(), $CSRFSecret = null)
     {
-        $this->degustation = $degustation;
-        $this->lots_par_logements = $this->degustation->getLotsByLogements();
-        parent::__construct($this->degustation, $options, $CSRFSecret);
+        $this->secteur = $secteur;
+        $this->lots_par_logements = $degustation->getLotsBySecteur();
+        $defaults = [];
+        foreach($this->lots_par_logements[$this->secteur] as $key => $lots) {
+            $defaults[$key] = true;
+        }
+
+        parent::__construct($degustation, $defaults, $options, $CSRFSecret);
     }
 
     public function configure()
     {
-        foreach ($this->lots_par_logements as $logement_key => $lots) {
-            $name = $this->getWidgetNameFromLogt($logement_key);
-            $this->setWidget($name , new WidgetFormInputCheckbox());
-            $this->setValidator($name, new ValidatorBoolean());
+        $logements = [];
+
+        foreach ($this->lots_par_logements[$this->secteur] as $logementKey => $lots) {
+            $logements[$logementKey] = $logementKey;
         }
 
-        $this->widgetSchema->setNameFormat('degustation_modification[%s]');
+        foreach ($this->lots_par_logements['SANS_SECTEUR'] as $logementKey => $lots) {
+            $logements[$logementKey] = $logementKey;
+        }
+
+        ksort($logements);
+
+        foreach($logements as $logementKey) {
+            $this->setWidget($logementKey, new WidgetFormInputCheckbox());
+            $this->setValidator($logementKey, new ValidatorBoolean());
+        }
+
+        $this->widgetSchema->setNameFormat('degustation_tournees[%s]');
     }
 
-    public function getRegions()
+    public function save()
     {
-        if (! isset($this->regions)) {
-            $this->regions = [];
-            foreach(array_keys($this->getObject()->getLotsBySecteur()) as $secteur) {
-                $this->regions[$secteur] = $secteur;
+        foreach($this->getValues() as $key => $value) {
+            if($key == '_revision') {
+                continue;
+            }
+
+            $lots = [];
+            if(isset($this->lots_par_logements['SANS_SECTEUR'][$key])) {
+                $lots = $this->lots_par_logements['SANS_SECTEUR'][$key];
+            }
+
+            if(isset($this->lots_par_logements[$this->secteur][$key])) {
+                $lots = $this->lots_par_logements[$this->secteur][$key];
+            }
+            foreach($lots as $lot) {
+                $lot->secteur = ($value) ? $this->secteur : null;
             }
         }
 
-        return $this->regions;
+        $this->doc->save(false);
     }
 
-    public function getLotsByLogements()
-    {
-        return $this->lots_par_logements;
-    }
-
-    public function getFromLogt($logement_key) {
-        $name = $this->getWidgetNameFromLogt($logement_key);
-        return $this->offsetGet($name);
-    }
-
-    protected function doUpdateObject($values)
-    {
-        parent::doUpdateObject($values);
-        foreach ($this->lots_par_logements as $logement_key => $lots) {
-            $name = $this->getWidgetNameFromLogt($logement_key);
-            foreach ($lots as $lot) {
-                if ($values[$name]) {
-                    $lot->secteur = $values[$name];
-                }
-            }
-        }
-    }
-
-    protected function updateDefaultsFromObject()
-    {
-        $defaults = $this->getDefaults();
-        foreach ($this->lots_par_logements as $logement_key => $lots) {
-            $name = $this->getWidgetNameFromLogt($logement_key);
-            $secteur = $lots[0]->getEtablissement();
-            if ($lots[0]->exist('secteur')) {
-                $defaults[$name] = $lots[0]->secteur;
-            }
-            else {
-                $defaults[$name] = $secteur->getRegion();
-            }
-        }
-
-        $this->setDefaults($defaults);
-    }
-
-
-    protected function doSave($con = null)
-    {
-        $this->updateObject();
-        $this->object->getCouchdbDocument()->save(false);
-    }
-
-    private function getWidgetNameFromLogt($logement_key)
-    {
-        return 'logement_'.hash('md5', $logement_key);
-    }
 }

@@ -1,11 +1,12 @@
 <?php use_helper('Float') ?>
+<?php use_helper('Lot') ?>
 <?php use_javascript('hamza_style.js'); ?>
 <?php use_javascript('degustation.js'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES)); ?>
 
-<form action="<?php echo url_for("degustation_tournees_etape", $degustation) ?>" method="post" class="ajaxForm form-horizontal degustation tournees">
+<form action="<?php echo url_for("degustation_tournees_etape", array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>" method="post" class="ajaxForm form-horizontal degustation tournees">
 <?php
 echo $form->renderHiddenFields();
 echo $form->renderGlobalErrors();
@@ -19,21 +20,19 @@ echo $form->renderGlobalErrors();
             </h2>
         </div>
         <div class="list-group">
-            <?php foreach ($form->getRegions() as $region): ?>
-            <a href="#" class="list-group-item <?php if($secteur == $region): ?>active<?php endif; ?>">
-                <?php echo $region; ?>
+            <?php foreach (array_keys($lots->getRawValue()) as $region): ?>
+                <?php if($region == 'SANS_SECTEUR'): continue; endif; ?>
+            <a href="<?php echo url_for('degustation_tournees_etape', array('sf_subject' => $degustation, 'secteur' => $region)); ?>" class="list-group-item <?php if($secteur == $region): ?>active<?php endif; ?>">
+                <span class="glyphicon glyphicon-map-marker"></span> <?php echo $region; ?> <span class="badge"><?php echo count($lots[$region]) ?></span>
             </a>
             <?php endforeach; ?>
-            <a href="#" class="list-group-item">
-                Récapitulatif
-            </a>
         </div>
         </div>
     </div>
     <div class="col-xs-9">
         <div class="btn-group pull-right">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                Export PDF <span class="caret"></span>
+                Télécharger les PDF <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
                 <li><a href="#tournees">Tournées</a></li>
@@ -48,17 +47,19 @@ echo $form->renderGlobalErrors();
             <th class="col-xs-4 text-left">Adresse du logement</th>
             <th class="col-xs-2 text-left">Commune du logement</th>
             <th class="col-xs-1 text-left">Nombre de lots</th>
-            <th class="col-xs-2 text-left">Secteur</th>
+            <th class="col-xs-2 text-center">Secteur</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($operators as $key => $operator):?>
+            <?php foreach ($form as $key => $item):?>
+            <?php if($key == '_revision'): continue; endif; ?>
+            <?php $logement = splitLogementAdresse($key); ?>
             <tr class="vertical-center">
-                <td class="text-left"><?php echo $operator['nom']; ?></td>
-                <td class="text-left"><?php echo $operator['adresse']; ?></td>
-                <td class="text-left"><?php echo $operator['commune']; ?> (<?php echo $operator['code_postal']; ?>)</td>
-                <td class="text-center"><?php echo $operator['nbLots']; ?></td>
-                <td class="text-center"><?php echo $operator['select']->render(['class' => "degustation bsswitch",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success"]); ?></td>
+                <td class="text-left"><?php echo $logement['nom']; ?></td>
+                <td class="text-left"><?php echo $logement['adresse'] ?></td>
+                <td class="text-left"><?php echo $logement['commune']; ?> (<?php echo $logement['code_postal']; ?>)</td>
+                <td class="text-center"><?php echo isset($lots[$secteur][$key]) ? count($lots[$secteur][$key]) : count($lots['SANS_SECTEUR'][$key]); ?></td>
+                <td class="text-center"><?php echo $item->render(['class' => "degustation bsswitch",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success"]); ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
@@ -70,13 +71,6 @@ echo $form->renderGlobalErrors();
         <div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape",$degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
     <div class="col-xs-4 text-center"></div>
     <div class="col-xs-4 text-right">
-        <!-- <a id="btn_suivant"
-        class="btn btn-primary btn-upper"
-        href="<?php echo ($infosDegustation["nbLotsPrelevesSansLeurre"]) ? url_for('degustation_tables_etape', $degustation) : "#"; ?>"
-        <?php if (!$infosDegustation["nbLotsPrelevesSansLeurre"]): echo 'disabled="disabled"'; endif; ?>
-        >
-        Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
-        </a> -->
         <button type="submit" class="btn btn-primary btn-upper">Valider</button>
     </div>
     </div>
