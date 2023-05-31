@@ -35,7 +35,7 @@
           <tbody>
             <?php foreach ($form->getTableLots() as $lot): ?>
                 <?php $name = $form->getWidgetNameFromLot($lot); ?>
-                <tr class="lot hamzastyle-item<?= ($lot->leurre) ? ' warning' : '' ?>" data-words='<?php echo json_encode([$lot->produit_libelle, $lot->numero_dossier, $lot->numero_logement_operateur, $lot->declarant_nom], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>'>
+                <tr class="lot <?= ($lot->leurre) ? ' warning' : '' ?>">
                     <td class="lot-declarant"><?php echo $lot->declarant_nom ?></td>
                     <td class="lot-produit"><?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)</td>
                     <td class="lot-logement"><?php echo $lot->numero_logement_operateur ?></td>
