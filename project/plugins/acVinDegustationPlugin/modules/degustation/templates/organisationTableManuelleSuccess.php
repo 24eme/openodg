@@ -5,22 +5,23 @@
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, "options" => array("nom" => "Tables des échantillons"))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TABLES)); ?>
 
-<div class="page-header no-border">
-  <h2>Attribution des échantillons aux tables</h2>
-</div>
-
 <div class="row">
-    <div class="col-xs-3">
+    <div class="col-xs-2">
         <?php include_partial('degustation/organisationTableManuelleSidebar', compact('degustation', 'numero_table')); ?>
     </div>
-    <div class="col-xs-9 row row-no-gutters">
-        <h3>Lots de la table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></h3>
+    <div class="col-xs-10 row row-no-gutters">
+        <h2 style="margin-top: 0; margin-bottom: 10px;">Table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?> <small> - Attribution des échantillons</small></h2>
 
-        <input type="hidden" data-placeholder="Sélectionner un opérateur, un produit ou un numéro de logement" data-hamzastyle-container=".table_lots" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
         <form method="POST" action="<?php echo url_for('degustation_organisation_table', ['id' => $degustation->_id, 'numero_table' => $numero_table]) ?>">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
-        <table id="table_anonymisation_manuelle" class="table table-bordered table-striped table_lots text-center">
+
+        <div class="input-group" style="margin-bottom: 0; position: relative;">
+            <span class="input-group-addon">Filtrer le tableau</span>
+            <input id="table_filtre" type="text" class="form-control" placeholder="Rechercher par opérateur, produit ou numéro de logement" autofocus="autofocus" />
+            <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute;">Annuler la recherche</a>
+        </div>
+        <table id="table_anonymisation_manuelle"  style="border-top: 0;" class="table table-bordered table-striped table_lots text-center">
           <thead>
             <tr>
               <th class="col-xs-3 text-center">Opérateur</th>
@@ -58,6 +59,9 @@
                 </tr>
             <?php endforeach ?>
           </tbody>
+          <tfoot class="hidden">
+            <tr><td colspan="7">Aucun lot trouvé <a id="btn_annuler_filtre_table" href=""><small>(annuler la recherche)</small></a></td></tr>
+          </tfoot>
         </table>
         <div class="col-xs-4 col-xs-offset-4 text-center">
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#popupLeurreForm"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un leurre</button>
@@ -71,5 +75,48 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.querySelector('#table_filtre').onkeyup = function() {
+        var lines = document.querySelectorAll('#table_anonymisation_manuelle tbody tr');
+        var terms = this.value.split(' ');
+        lines.forEach(function(line, index) {
+            var words = line.innerText;
+
+            for(keyTerm in terms) {
+                var termRegexp = new RegExp(terms[keyTerm], 'i');
+                if(words.search(termRegexp) < 0) {
+                    line.classList.add("hidden");
+                    return;
+                }
+            }
+
+            line.classList.remove("hidden");
+        });
+
+        if(document.querySelectorAll("#table_anonymisation_manuelle tbody tr.hidden").length == document.querySelectorAll("#table_anonymisation_manuelle tbody tr").length) {
+            document.querySelector('#table_anonymisation_manuelle tfoot').classList.remove('hidden');
+        } else {
+            document.querySelector('#table_anonymisation_manuelle tfoot').classList.add('hidden');
+        }
+
+        if(this.value) {
+            document.getElementById('btn_annuler_filtre').classList.remove('hidden');
+        } else {
+            document.getElementById('btn_annuler_filtre').classList.add('hidden');
+        }
+    }
+
+    document.getElementById('btn_annuler_filtre_table').onclick = function(e) {
+        document.getElementById('btn_annuler_filtre').click();
+        return false;
+    };
+
+    document.getElementById('btn_annuler_filtre').onclick = function(e) {
+        document.querySelector('#table_filtre').value = "";
+        document.querySelector('#table_filtre').dispatchEvent(new Event("keyup"))
+        return false;
+    };
+</script>
 
 <?php include_partial('degustation/popupAjoutLeurreForm', ['url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm, 'table' => $numero_table]); ?>

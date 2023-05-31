@@ -36,7 +36,7 @@
       <h2>Synthèse de toutes les tables</h2>
       <?php foreach ($degustation->getTables() as $table => $lots): ?>
       <h3>Table <?php echo DegustationClient::getNumeroTableStr($table); ?></h3>
-      <table class="table table-condensed">
+      <table style="margin-bottom: 0px;" class="table table-condensed">
         <thead>
             <tr>
                 <th class="col-xs-2">Table</th>

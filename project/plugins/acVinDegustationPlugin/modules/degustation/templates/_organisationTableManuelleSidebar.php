@@ -14,7 +14,7 @@
     <?php endforeach ?>
     <a href="<?php echo url_for('degustation_organisation_table_recap', ['id' => $degustation->_id]) ?>"
         class="list-group-item<?php if ($numero_table == null): echo " active" ; endif ?>">
-        Récapitulatif
+        <span class="glyphicon glyphicon-th-list"></span> Récapitulatif
     </a>
   </ul>
 </div>
