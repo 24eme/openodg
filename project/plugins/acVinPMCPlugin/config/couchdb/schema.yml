@@ -90,7 +90,6 @@ PMC:
                   document_fils: { required: false }
                   document_ordre: { }
                   date_degustation_voulue: {  }
-                  date_commission: { }
                   cepages:
                     type: collection
                     definition:
