@@ -52,7 +52,7 @@
                         </div>
                         <?php echo $form[$name]->renderError() ?>
                         <?php if (! $lot->numero_anonymat) : ?>
-                            <button type="button" class="add-to-table" data-table="<?php echo $numero_table ?>">Ajouter à la table</button>
+                            <button type="button" class="add-to-table" data-table="<?php echo $numero_table ?>">Ajouter à la table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></button>
                         <?php endif ?>
                     </td>
                 </tr>

@@ -172,7 +172,7 @@
         document.querySelector("#liste-tables > a[data-table='"+numero_table+"'] > span.badge").textContent--
 
         const b = document.createElement('div')
-        b.innerHTML = '<button class="add-to-table" data-table="'+numero_table+'">Ajouter à la table</button>'.trim()
+        b.innerHTML = '<button class="add-to-table" data-table="'+numero_table+'">Ajouter à la table '+alphabet[numero_table - 1]+'</button>'.trim()
         td_anonymat.append(b)
       }
     });
