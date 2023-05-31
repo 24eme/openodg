@@ -304,10 +304,8 @@ class degustationActions extends sfActions {
         if (count($this->degustation->getLotsDegustables()) < 1) {
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
         }
-        $this->infosDegustation = $this->degustation->getInfosDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
-            $this->degustation->save(false);
-        }
+
+        return $this->redirect('degustation_organisation_table', $this->degustation);
     }
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
