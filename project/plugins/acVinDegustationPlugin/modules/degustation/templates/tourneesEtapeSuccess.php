@@ -10,31 +10,12 @@
 echo $form->renderHiddenFields();
 echo $form->renderGlobalErrors();
 ?>
-<div class="page-header no-border">
-    <h2>Tournées</h2>
-    </div>
-    <div class="row">
-    <div class="col-xs-offset-3 col-xs-6">
-        <h3>Tournée secteur 0</h3>
-    </div>
-    <div class="col-xs-3 text-right">
-        <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                Export PDF <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a href="#tournees">Tournées</a></li>
-                <li><a href="#etiquettes">Etiquettes</a></li>
-            </ul>
-        </div>
-    </div>
-    </div>
     <div class="row">
     <div class="col-xs-3">
         <div class="panel panel-default" style="min-height: 160px">
         <div class="panel-heading">
             <h2 class="panel-title">
-            Secteurs des tournées
+            Liste des tournées
             </h2>
         </div>
         <div class="list-group">
@@ -43,11 +24,24 @@ echo $form->renderGlobalErrors();
                 <?php echo $secteur; ?>
             </a>
             <?php endforeach; ?>
+            <a href="#" class="list-group-item">
+                Récapitulatif
+            </a>
         </div>
         </div>
     </div>
     <div class="col-xs-9">
-        <table class="table table-bordered table-condensed">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                Export PDF <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="#tournees">Tournées</a></li>
+                <li><a href="#etiquettes">Etiquettes</a></li>
+            </ul>
+        </div>
+        <h2 style="margin-top: 0; margin-bottom: 20px;">Tournée Région 1</h2>
+        <table class="table table-bordered table-striped table-condensed">
         <thead>
             <tr>
             <th class="col-xs-3 text-left">Opérateur</th>
