@@ -10,10 +10,33 @@
       <?php include_partial('degustation/organisationTableManuelleSidebar', compact('degustation', 'numero_table')); ?>
   </div>
   <div class="col-xs-9">
-      <h2>Synthèse toutes tables</h2>
+      <h2>Fiches</h2>
+      <div id="commission-pdf-row">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <span class="glyphicon glyphicon-user"></span> Dégustateurs <i class="caret"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a id="btn_pdf_presence_degustateurs" href="<?php echo url_for('degustation_fiche_presence_degustateurs_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span> Feuille de présence des dégustateurs</a></li>
+              <li><a id="btn_pdf_fiche_individuelle_degustateurs" href="<?php echo url_for('degustation_fiche_individuelle_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span> Fiche individuelle des dégustateurs</a></li>
+              <li><a id="btn_pdf_fiche_resultats_table" href="<?php echo url_for('degustation_fiche_recap_tables_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des résultats par table</a></li>
+            </ul>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <span class="glyphicon glyphicon-transfer"></span> Tiers <i class="caret"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des lots pour les laboratoires</a></li>
+            </ul>
+          </div>
+      </div>
+
+      <h2>Synthèse de toutes les tables</h2>
       <?php foreach ($degustation->getTables() as $table => $lots): ?>
       <h3>Table <?php echo DegustationClient::getNumeroTableStr($table); ?></h3>
-      <table class="table">
+      <table class="table table-condensed">
         <thead>
             <tr>
                 <th class="col-xs-2">Table</th>

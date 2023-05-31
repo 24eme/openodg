@@ -65,11 +65,10 @@
 </div>
 <div class="row row-button">
   <div class="col-xs-4"><a href="<?php echo url_for("degustation_tournees_etape",$degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
-  <div class="col-xs-4 text-center">
-  </div>
-  <div class="col-xs-4 text-right"><a id="btn_suivant" <?php if (!$infosDegustation["nbLotsPrelevesSansLeurre"]):
+
+  <div class="col-xs-4 col-xs-offset-4 text-right"><a id="btn_suivant" <?php if (!$infosDegustation["nbLotsPrelevesSansLeurre"]):
     echo 'disabled="disabled"';
   endif; ?> class="btn btn-primary btn-upper"
-      href="<?php echo ($infosDegustation["nbLotsPrelevesSansLeurre"]) ? url_for('degustation_commission_etape', $degustation) : "#"; ?>">Valider&nbsp;<span
+      href="<?php echo ($infosDegustation["nbLotsPrelevesSansLeurre"]) ? url_for(DegustationEtapes::getInstance()->getRouteLink(DegustationEtapes::getInstance()->getNext(DegustationEtapes::ETAPE_TABLES)), $degustation) : "#"; ?>">Valider&nbsp;<span
         class="glyphicon glyphicon-chevron-right"></span></a></div>
 </div>
