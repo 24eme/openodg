@@ -1381,6 +1381,24 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $etablissements;
 		}
 
+        public function getLotsBySecteur() {
+            $secteurs = [];
+
+            foreach (EtablissementClient::getInstance()->getRegions() as $region) {
+                    $secteurs[$region] = [];
+            }
+            $secteurs['SANS_SECTEUR'] = [];
+
+            foreach($this->getLotsPrelevables() as $lot) {
+                $secteur = $lot->secteur;
+                if(!$secteur) {
+                    $secteur = 'SANS_SECTEUR';
+                }
+
+                $secteurs[$secteur] = $lot;
+            }
+            return $secteurs;
+        }
 
         /**
          * Les différents etablissements liés aux lots degustables  de la degustation

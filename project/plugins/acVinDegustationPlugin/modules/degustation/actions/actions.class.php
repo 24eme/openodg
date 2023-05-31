@@ -274,6 +274,11 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
 
+        $this->secteur = $request->getParameter('secteur');
+        if(!$this->secteur) {
+            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->degustation->getLotsBySecteur()))));
+        }
+
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Lot'));
 
         $this->infosDegustation = $this->degustation->getInfosDegustation();
