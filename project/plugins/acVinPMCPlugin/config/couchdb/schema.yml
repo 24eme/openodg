@@ -32,6 +32,7 @@ PMC:
       type_archive: { required: false }
       version: { required: false }
       numero_archive: {  }
+      date_commission: { required: false } # deprecated
       declarant:
         type: collection
         class: PMCDeclarant
