@@ -17,8 +17,8 @@ class DegustationTourneesForm extends acCouchdbObjectForm
     {
         foreach ($this->lots_par_logements as $logement_key => $lots) {
             $name = $this->getWidgetNameFromLogt($logement_key);
-            $this->setWidget($name , new sfWidgetFormSelect(['choices' => ['' => ''] + $this->getRegions()], ['required' => false]));
-            $this->setValidator($name, new sfValidatorString(['required' => true]));
+            $this->setWidget($name , new WidgetFormInputCheckbox());
+            $this->setValidator($name, new ValidatorBoolean());
         }
 
         $this->widgetSchema->setNameFormat('degustation_modification[%s]');
@@ -28,11 +28,8 @@ class DegustationTourneesForm extends acCouchdbObjectForm
     {
         if (! isset($this->regions)) {
             $this->regions = [];
-            foreach ($this->degustation->getEtablissementsDegustables() as $etablissement) {
-                $region_key = hash('md5', $etablissement->region);
-                if (! isset($this->regions[$region_key])) {
-                    $this->regions[$region_key] = $etablissement->region;
-                }
+            foreach(array_keys($this->getObject()->getLotsBySecteur()) as $secteur) {
+                $this->regions[$secteur] = $secteur;
             }
         }
 

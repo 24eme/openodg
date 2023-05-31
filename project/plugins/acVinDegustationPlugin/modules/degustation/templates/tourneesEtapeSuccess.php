@@ -19,9 +19,9 @@ echo $form->renderGlobalErrors();
             </h2>
         </div>
         <div class="list-group">
-            <?php foreach ($form->getRegions() as $secteur): ?>
-            <a href="#" class="list-group-item">
-                <?php echo $secteur; ?>
+            <?php foreach ($form->getRegions() as $region): ?>
+            <a href="#" class="list-group-item <?php if($secteur == $region): ?>active<?php endif; ?>">
+                <?php echo $region; ?>
             </a>
             <?php endforeach; ?>
             <a href="#" class="list-group-item">
@@ -40,7 +40,7 @@ echo $form->renderGlobalErrors();
                 <li><a href="#etiquettes">Etiquettes</a></li>
             </ul>
         </div>
-        <h2 style="margin-top: 0; margin-bottom: 20px;">Tournée Région 1</h2>
+        <h2 style="margin-top: 0; margin-bottom: 20px;">Tournée <?php echo $secteur ?></h2>
         <table class="table table-bordered table-striped table-condensed">
         <thead>
             <tr>
@@ -58,7 +58,7 @@ echo $form->renderGlobalErrors();
                 <td class="text-left"><?php echo $operator['adresse']; ?></td>
                 <td class="text-left"><?php echo $operator['commune']; ?> (<?php echo $operator['code_postal']; ?>)</td>
                 <td class="text-center"><?php echo $operator['nbLots']; ?></td>
-                <td class="text-center"><?php echo $operator['select']->render(['class' => 'form-control', 'value' => 'SECTEUR_1']); ?></td>
+                <td class="text-center"><?php echo $operator['select']->render(['class' => "degustation bsswitch",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success"]); ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
