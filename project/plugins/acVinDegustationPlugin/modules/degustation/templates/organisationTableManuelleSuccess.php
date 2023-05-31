@@ -14,6 +14,8 @@
         <?php include_partial('degustation/organisationTableManuelleSidebar', compact('degustation', 'numero_table')); ?>
     </div>
     <div class="col-xs-9 row row-no-gutters">
+        <h3>Lots de la table <?php echo DegustationClient::getNumeroTableStr($numero_table) ?></h3>
+
         <input type="hidden" data-placeholder="Sélectionner un opérateur, un produit ou un numéro de logement" data-hamzastyle-container=".table_lots" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
         <form method="POST" action="<?php echo url_for('degustation_organisation_table', ['id' => $degustation->_id, 'numero_table' => $numero_table]) ?>">
         <?php echo $form->renderHiddenFields(); ?>
