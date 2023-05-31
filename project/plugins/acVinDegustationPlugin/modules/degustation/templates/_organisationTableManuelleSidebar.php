@@ -12,11 +12,9 @@
             Table <?php echo DegustationClient::getNumeroTableStr($table) ?>
         </a>
     <?php endforeach ?>
-    <?php if ($numero_table === null): ?>
-        <a href="<?php echo url_for('degustation_organisation_table_recap', ['id' => $degustation->_id]) ?>"
-            class="list-group-item active">
-            Récapitulatif
-        </a>
-    <?php endif ?>
+    <a href="<?php echo url_for('degustation_organisation_table_recap', ['id' => $degustation->_id]) ?>"
+        class="list-group-item<?php if ($numero_table == null): echo " active" ; endif ?>">
+        Récapitulatif
+    </a>
   </ul>
 </div>
