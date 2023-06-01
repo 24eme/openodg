@@ -91,6 +91,8 @@ class DegustationEtapes extends Etapes {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             unset($items[self::ETAPE_ANONYMATS]);
             unset($items[self::ETAPE_PRELEVEMENTS]);
+        } else {
+            unset($items[self::ETAPE_TOURNEES]);
         }
 
         return $items;
