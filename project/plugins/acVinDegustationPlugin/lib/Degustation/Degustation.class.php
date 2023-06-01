@@ -690,6 +690,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getTables()
         {
+            if(count($this->lots) == 0) {
+                return [];
+            }
+
             $last_table = max(array_column($this->lots->toArray(true, false), 'numero_table'));
             $tables = array_fill_keys(range(1, $last_table), []);
 
