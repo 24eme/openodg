@@ -259,7 +259,7 @@ class degustationActions extends sfActions {
 
         $this->degustation = $this->getRoute()->getDegustation();
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            return $this->redirect('degustation_tournees_etape', ['sf_subject' => $this->degustation, ]);
+            return $this->redirect('degustation_tournees_etape', ['sf_subject' => $this->degustation]);
         }
 
         $this->redirectIfIsAnonymized();
