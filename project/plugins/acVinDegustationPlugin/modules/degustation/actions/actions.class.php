@@ -511,7 +511,7 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        return $this->redirect('degustation_tables_etape', $this->degustation);
+        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_TABLES), $this->degustation);
     }
 
     public function executeOrganisationTableManuelle(sfWebRequest $request)
