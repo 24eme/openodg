@@ -29,10 +29,10 @@ PMC:
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
       denomination_auto: { required: false }
-      date_commission: { required: false }
       type_archive: { required: false }
       version: { required: false }
       numero_archive: {  }
+      date_commission: { required: false } # deprecated
       declarant:
         type: collection
         class: PMCDeclarant

@@ -179,7 +179,7 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
     $adresse['telephone'] = trim($adresseSplit[2]);
     $adresse['portable'] = trim($adresseSplit[3]);
     //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé
-    if (!$adresse['code_postal'] && preg_match('//', $adresse['telephone'])) {
+    if (empty($adresse['code_postal']) && preg_match('//', $adresse['telephone'])) {
         $adresse['code_postal'] = $adresse['telephone'];
         $adresse['commune'] = $adresse['portable'];
         $adresse['telephone'] = null;

@@ -256,12 +256,55 @@ class degustationActions extends sfActions {
 
 
     public function executePrelevementsEtape(sfWebRequest $request) {
+
         $this->degustation = $this->getRoute()->getDegustation();
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return $this->redirect('degustation_tournees_etape', ['sf_subject' => $this->degustation]);
+        }
+
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
             $this->degustation->save(false);
         }
+    }
+
+
+    /**
+     * Les tournées par opérateur
+     * @param sfWebRequest $request
+     * @return string
+     */
+    public function executeTourneesEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsAnonymized();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
+            $this->degustation->save(false);
+        }
+
+        $this->secteur = $request->getParameter('secteur');
+        if(!$this->secteur) {
+            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->degustation->getLotsBySecteur()))));
+        }
+
+        $this->lots = $this->degustation->getLotsBySecteur();
+
+        $this->form = new DegustationTourneesForm($this->degustation, $this->secteur);
+
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (! $this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $this->secteur));
     }
 
     public function executeTablesEtape(sfWebRequest $request) {
@@ -270,10 +313,8 @@ class degustationActions extends sfActions {
         if (count($this->degustation->getLotsDegustables()) < 1) {
             return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
         }
-        $this->infosDegustation = $this->degustation->getInfosDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TABLES))) {
-            $this->degustation->save(false);
-        }
+
+        return $this->redirect('degustation_organisation_table', $this->degustation);
     }
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
@@ -386,7 +427,13 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            $this->forward('degustation', 'organisationTableManuelle');
+        }
+
         $this->redirectIfIsAnonymized();
+
         if(!$request->getParameter('numero_table')) {
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
         }
@@ -446,7 +493,12 @@ class degustationActions extends sfActions {
         return $this->redirect($this->generateUrl('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table, 'tri' => $degustation->tri))."#form-organisation-table");
     }
 
-    public function executeOrganisationTableRecap(sfWebRequest $request) {
+    public function executeOrganisationTableRecap(sfWebRequest $request)
+    {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            $this->forward('degustation', 'organisationTableManuelleRecap');
+        }
+
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->tri = $this->degustation->tri;
@@ -460,6 +512,44 @@ class degustationActions extends sfActions {
         }
 
         return $this->redirect('degustation_tables_etape', $this->degustation);
+    }
+
+    public function executeOrganisationTableManuelle(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+
+        if(!$request->getParameter('numero_table')) {
+            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
+        }
+
+        $this->numero_table = $request->getParameter('numero_table');
+        $this->form = new DegustationOrganisationManuelleForm($this->degustation, $this->numero_table);
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, ['table' => $this->numero_table]);
+
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (! $this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        if ($this->degustation->hasFreeLots()) {
+            return $this->redirect('degustation_organisation_table', ['id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1]);
+        }
+
+        return $this->redirect('degustation_organisation_table_recap', ['id' => $this->degustation->_id]);
+    }
+
+    public function executeOrganisationTableManuelleRecap(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
+        $this->numero_table = null;
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
@@ -1073,12 +1163,15 @@ class degustationActions extends sfActions {
 
         if(isset($this->isEtiquette) && sfConfig::get('sf_debug')) {
             $temp = tmpfile();
+            $metadata = stream_get_meta_data($temp);
+
             fwrite($temp, $this->document->output());
-            shell_exec(sprintf("pdftk %s background %s output %s", stream_get_meta_data($temp)['uri'], sfConfig::get('sf_web_dir')."/images/pdf/etiquettes_70x36.pdf", stream_get_meta_data($temp)['uri'].".pdf"));
-            $pdfContent = file_get_contents(stream_get_meta_data($temp)['uri'].".pdf");
-            $this->getResponse()->setHttpHeader('Content-Length', filesize(stream_get_meta_data($temp)['uri'].".pdf"));
-            unlink(stream_get_meta_data($temp)['uri'].".pdf");
+            shell_exec(sprintf("pdftk %s background %s output %s", escapeshellarg($metadata['uri']), escapeshellarg(sfConfig::get('sf_web_dir')."/images/pdf/etiquettes_70x36.pdf"), escapeshellarg($metadata['uri'].".pdf")));
+            $pdfContent = file_get_contents($metadata['uri'].".pdf");
+            $this->getResponse()->setHttpHeader('Content-Length', filesize($metadata['uri'].".pdf"));
+            unlink($metadata['uri'].".pdf");
             fclose($temp);
+
             return $this->renderText($pdfContent);
         }
 
@@ -1087,26 +1180,38 @@ class degustationActions extends sfActions {
     }
 
 
-    private function redirectIfIsAnonymized(){
-      if ($this->degustation->isAnonymized()) {
-          $etape = $this->getRouteEtape($this->degustation->etape);
-          if (DegustationEtapes::$etapes[$this->degustation->etape] < DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
-              return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS),$this->degustation);
-          } else {
-              return $this->redirect($etape, $this->degustation);
-          }
-      }
+    private function redirectIfIsAnonymized()
+    {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return false;
+        }
+
+        if ($this->degustation->isAnonymized()) {
+            $etape = $this->getRouteEtape($this->degustation->etape);
+
+            if (DegustationEtapes::$etapes[$this->degustation->etape] < DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
+                return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS), $this->degustation);
+            } else {
+                return $this->redirect($etape, $this->degustation);
+            }
+        }
     }
 
-    private function redirectIfIsNotAnonymized(){
-      if (!$this->degustation->isAnonymized()) {
-          $etape = $this->getRouteEtape($this->degustation->etape);
-          if (DegustationEtapes::$etapes[$this->degustation->etape] > DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
-              return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS),$this->degustation);
-          } else {
-              return $this->redirect($etape, $this->degustation);
-          }
-      }
+    private function redirectIfIsNotAnonymized()
+    {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            return false;
+        }
+
+        if (! $this->degustation->isAnonymized()) {
+            $etape = $this->getRouteEtape($this->degustation->etape);
+
+            if (DegustationEtapes::$etapes[$this->degustation->etape] > DegustationEtapes::$etapes[DegustationEtapes::ETAPE_ANONYMATS]) {
+                return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_ANONYMATS), $this->degustation);
+            } else {
+                return $this->redirect($etape, $this->degustation);
+            }
+        }
     }
 
     public function executeGetCourrierWithAuth(sfWebRequest $request) {
