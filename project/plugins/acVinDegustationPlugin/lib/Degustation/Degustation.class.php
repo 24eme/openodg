@@ -13,8 +13,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     protected $mouvement_document = null;
     public $generateMouvementsFacturesOnNextSave = false;
 
-    private $etablissementsDegustables = null;
-
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
@@ -502,24 +500,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
 
             $lots[$lot->declarant_identifiant][] = $lot;
-        }
-
-        return $lots;
-    }
-
-    public function getLotsByLogements($identifiant = null)
-    {
-        $lots = [];
-        foreach ($this->getLotsDegustables() as $lot) {
-            if ($lot->isLeurre()) {
-                continue;
-            }
-
-            if ($identifiant && $lot->getAdresseLogement() !== $identifiant) {
-                continue;
-            }
-
-            $lots[$lot->getAdresseLogement()][] = $lot;
         }
 
         return $lots;
