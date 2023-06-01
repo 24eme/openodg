@@ -69,6 +69,6 @@
   <div class="col-xs-4 col-xs-offset-4 text-right"><a id="btn_suivant" <?php if (!$infosDegustation["nbLotsPrelevesSansLeurre"]):
     echo 'disabled="disabled"';
   endif; ?> class="btn btn-primary btn-upper"
-      href="<?php echo ($infosDegustation["nbLotsPrelevesSansLeurre"]) ? url_for(DegustationEtapes::getInstance()->getRouteLink(DegustationEtapes::getInstance()->getNext(DegustationEtapes::ETAPE_TABLES)), $degustation) : "#"; ?>">Valider&nbsp;<span
+      href="<?php echo ($infosDegustation["nbLotsPrelevesSansLeurre"]) ? url_for(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_TABLES), $degustation) : "#"; ?>">Valider&nbsp;<span
         class="glyphicon glyphicon-chevron-right"></span></a></div>
 </div>

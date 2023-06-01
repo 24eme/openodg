@@ -72,9 +72,7 @@
           <a href="<?php echo url_for("degustation_organisation_table", ['id' => $degustation->_id, 'numero_table' => count($degustation->getTables())]) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Précédent</a>
         </div>
         <div class="col-xs-4 col-xs-offset-4 text-right">
-            <a href="<?php echo url_for(DegustationEtapes::getInstance()->getRouteLink(
-                DegustationEtapes::getInstance()->getNext(DegustationEtapes::ETAPE_TABLES)
-            ), ['id' => $degustation->_id]) ?>" class="btn btn-success btn-upper">
+            <a href="<?php echo url_for(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_TABLES), ['id' => $degustation->_id]) ?>" class="btn btn-success btn-upper">
                 Terminer
             </a>
         </div>

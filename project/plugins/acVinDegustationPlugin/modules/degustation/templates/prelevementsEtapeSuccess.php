@@ -98,5 +98,5 @@
 				<div class="col-xs-4"><a href="<?php echo url_for("degustation"); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
 				<div class="col-xs-4 text-center">
 				</div>
-				<div class="col-xs-4 text-right"><a id="btn_suivant" <?php if(!$infosDegustation["nbLotsPrelevesSansLeurre"]): echo 'disabled="disabled"'; endif; ?>  class="btn btn-primary btn-upper" href="<?php echo ($infosDegustation["nbLotsPrelevesSansLeurre"])? url_for('degustation_tournees_etape', $degustation)  : "#"; ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
+				<div class="col-xs-4 text-right"><a id="btn_suivant" <?php if(!$infosDegustation["nbLotsPrelevesSansLeurre"]): echo 'disabled="disabled"'; endif; ?>  class="btn btn-primary btn-upper" href="<?php echo ($infosDegustation["nbLotsPrelevesSansLeurre"]) ? url_for(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_PRELEVEMENTS), ['id' => $degustation->_id])  : "#"; ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
 		</div>
