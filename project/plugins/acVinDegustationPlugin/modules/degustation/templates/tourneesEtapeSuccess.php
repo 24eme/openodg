@@ -35,8 +35,17 @@ echo $form->renderGlobalErrors();
                 Télécharger les PDF <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#tournees">Tournées</a></li>
-                <li><a href="#etiquettes">Etiquettes</a></li>
+                <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des lots à prélever</a></li>
+                <li role="separator" class="divider"></li>
+                <li>
+                    <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
+                        <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'anonymat4labo' => true]) ?>"><span class="glyphicon glyphicon-th"></span>&nbsp;Étiquettes de prélèvement (avec anonymat labo)</a>
+                    <?php else : ?>
+                        <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', $degustation) ?>"><span class="glyphicon glyphicon-th"></span>&nbsp;Étiquettes de prélèvement</a>
+                    <?php endif ?>
+                </li>
             </ul>
         </div>
         <h2 style="margin-top: 0; margin-bottom: 20px;">Tournée <?php echo $secteur ?></h2>
