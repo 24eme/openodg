@@ -15,7 +15,7 @@ all:
   donnees_viticoles:
     regions:
       MAISON_BLANCHE: "MAISON_BLANCHE"
-      BOURG_QUNCY: "BOURG_QUNCY"
+      BOURG_QUINCY: "BOURG_QUINCY"
       EXTERIEUR: "EXTERIEUR"
       REUILLY: "REUILLY"
   communes:
