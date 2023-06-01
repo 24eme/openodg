@@ -98,6 +98,11 @@ class DegustationEtapes extends Etapes {
 
     public function isEtapeDisabled($etape, $doc)
     {
+        if(DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+
+            return false;
+        }
+
         $etapeAnonymat = self::$etapes[self::ETAPE_ANONYMATS];
 
         if($doc->isAnonymized() &&  self::$etapes[$doc->etape] >= $etapeAnonymat){
