@@ -21,11 +21,7 @@ class DegustationTourneesForm extends acCouchdbForm
     {
         $logements = [];
 
-        foreach ($this->lots_par_logements[$this->secteur] as $logementKey => $lots) {
-            $logements[$logementKey] = $logementKey;
-        }
-
-        foreach ($this->lots_par_logements['SANS_SECTEUR'] as $logementKey => $lots) {
+        foreach ($this->lots_par_logements[$this->secteur] + $this->lots_par_logements['SANS_SECTEUR'] as $logementKey => $lots) {
             $logements[$logementKey] = $logementKey;
         }
 
