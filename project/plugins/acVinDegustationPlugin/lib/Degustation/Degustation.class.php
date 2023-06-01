@@ -883,6 +883,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getTheoriticalPosition($table, $without_manual = false) {
             $lots_theoritical = $this->getLotsTableOrFreeLotsCustomSort($table, false, false);
             $theoritical_position = array();
+            $i = 0;
             foreach ($lots_theoritical as $lot) {
                 if ($without_manual && $lot->isPositionManuel()) {
                     continue;
