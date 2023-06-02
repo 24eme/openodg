@@ -12,6 +12,7 @@ cache/[^.]*
 log/[^.]*
 data/*
 .~*
+*.swp
 !data/configuration/
 !data/comptes/
 !data/elk

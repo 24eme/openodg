@@ -28,7 +28,7 @@ class parcellaireAffectationActions extends sfActions {
     	$parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
 
     	$this->secure(ParcellaireSecurity::EDITION, $parcellaireAffectation);
-        $parcellaireAffectation->updateParcellesAffectation();
+
     	if ($parcellaireAffectation->exist('etape') && $parcellaireAffectation->etape) {
     		return $this->redirect('parcellaireaffectation_' . $parcellaireAffectation->etape, $parcellaireAffectation);
     	}
@@ -63,7 +63,6 @@ class parcellaireAffectationActions extends sfActions {
     public function executeExploitation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
-        $this->parcellaireAffectation->updateParcellesAffectation();
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_EXPLOITATION))) {
     		$this->parcellaireAffectation->save();
     	}
@@ -109,6 +108,8 @@ class parcellaireAffectationActions extends sfActions {
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS))) {
     		$this->parcellaireAffectation->save();
     	}
+
+        $this->parcellaireAffectation->updateParcellesAffectation();
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 

@@ -57,13 +57,6 @@ $lots = $document->getLotsByCouleur();
 <br/>
 <br/>
 
-<u><strong>Option choisie</strong></u>
-
-<p>
-Présentation des vins lot par lot. Un lot est un volume de vin présentant les mêmes caractéristiques analytiques. Dans ce
-cas, faire une demande de mise en circulation pour chaque lot.
-</p>
-
 <div><span class="h3"> Déclaration des lots </span></div>
 <?php if (count($lots)): ?>
   <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
@@ -95,29 +88,3 @@ cas, faire une demande de mise en circulation pour chaque lot.
 <p>
 Les vins seront prélevés, dégustés et analysés selon les modalités prévues au plan d'inspection et au réglement intérieur de l'AOC concernée.
 </p>
-
-<p>
-Le délai entre la date de dégustation et la date de 1ère mise en bouteille ou 1ère vente ne doit pas excéder 3 mois. Dans le cas contraire, prévenir l'ODG ou l'OIVC.
-</p>
-
-<u><strong>Contrôle externe</strong></u>
-
-<p>
-À compter de la date choisie, les vins sur l'ensemble de l'appelation seront contrôlés de façon aléatoire par l'Organisme d'Inspection des Vins du Centre selon la fréquence suivante:
-</p>
-
-<table border="1" class="table" cellspacing=0 cellpadding=0>
-    <tr style="text-align: center">
-      <th colspan="2">AOC blanc et rosé</th>
-      <th colspan="2">AOC rouge</th>
-    </tr>
-    <tr>
-      <td> Décembre</td><td style="text-align: center">15%</td> <td> Mars</td><td style="text-align: center">15%</td>
-    </tr>
-    <tr>
-      <td> Janvier</td><td style="text-align: center">10%</td> <td> Avril</td><td style="text-align: center">10%</td>
-    </tr>
-    <tr>
-      <td> Février et au delà</td><td style="text-align: center">5%</td> <td> Mai et au delà</td><td style="text-align: center">5%</td>
-    </tr>
-</table>
