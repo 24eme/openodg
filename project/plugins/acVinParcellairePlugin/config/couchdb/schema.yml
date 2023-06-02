@@ -68,8 +68,6 @@ Parcellaire:
                               campagne_plantation: { }
                               numero_ordre: { required: false }
                               departement: { required: false }
-                              active: { type: integer, required: false }
-                              vtsgn: { type: integer, required: false }
                               code_insee: { required: false }
                               ecart_rang: { type: float }
                               ecart_pieds: { type: float }
@@ -112,4 +110,3 @@ Aire:
       denomination_libelle: { }
       geojson: {}
       md5: {}
-
