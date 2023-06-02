@@ -250,9 +250,25 @@ function styleDegustation() {
     }
 
     .h3Alt {
-        background-color: #88DC89; color: #1F6320; font-weight: bold;   
+        background-color: #88DC89; color: #1F6320; font-weight: bold;
     }
 ";
+}
+
+function style(){
+  return "span.zap { font-family:'zapfdingbats';}
+  th{
+    background-color:grey;
+  }
+
+  .topempty{
+    border-left:1px solid black;
+    border-top:1px solid black;
+    border-right: 1px solid black;
+    border-bottom-color: grey;
+    border-bottom-style:dotted;
+    }
+  ";
 }
 
 function tdStart() {

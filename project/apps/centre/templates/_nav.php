@@ -25,11 +25,24 @@
     <?php if (!$etablissement) $etablissement = $compte->getEtablissement(); ?>
 <?php endif; ?>
 
-
-<nav id="menu_navigation" class="navbar navbar-default container">
-        <div class="navbar-header">
-          <a class="navbar-brand" style="padding-top: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">Centre</h1></a>
+<div class="header-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-4 col-md-1">
+          <div class="logo-site">
+            <a href="<?php echo url_for('accueil') ?>"><img style="margin-top: 20px;margin-bottom: 10px;" src="/images/logo_<?php echo sfConfig::get('sf_app') ?>.png" alt="Logo Centre" height="100px"></a>
+          </div>
         </div>
+        <div class="col-xs-8 col-md-11 text-center">
+          <h1>
+              <span class="hidden-xs">Fédération des unions viticoles du Centre-Loire<br></span>
+              <small>Espace déclaratif professionnel</small>
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+<nav id="menu_navigation" class="navbar navbar-default container">
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
             <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">

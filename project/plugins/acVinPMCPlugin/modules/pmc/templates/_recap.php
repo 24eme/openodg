@@ -12,16 +12,6 @@
               <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_lot" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
           </div>
           <br/>
-          <?php if(!$pmc->validation_odg && $sf_user->isAdmin()): ?>
-          <div class="row text-right">
-            <div class="col-xs-3 col-xs-offset-9">
-              <span>Tout dégustable : <input checked type="checkbox" class="bsswitch" id="btn-degustable-all" data-size = 'small' data-on-text = "<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text = "<span class='glyphicon'></span>" data-on-color = "success"></input>
-            </span>
-
-            </div>
-          </div>
-          <br/>
-          <?php endif; ?>
           <table class="table table-bordered table-striped table_lot">
             <thead>
               <tr>
@@ -33,9 +23,9 @@
                 <?php endif; ?>
                 <th class="text-center col-xs-4">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
-                <th class="text-center col-xs-2">Date de ctrl souhaitée</th>
+                <th class="text-center col-xs-2">Date de dégustation souhaitée</th>
                 <?php if ($sf_user->isAdmin()): ?>
-                  <th class="text-center col-xs-1">Dégustable</th>
+                  <th class="text-center col-xs-1">Date de dégustation</th>
                 <?php endif;?>
               </tr>
             </thead>
@@ -65,19 +55,19 @@
                           <td class="text-center">
                             <?php if(isset($form['lots'])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
-                              <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
+                              <?php echo $form['lots'][$lot->getKey()]['date_commission']->renderError() ?>
                                 <div class="col-xs-12">
                                   <?php if ($sf_user->isAdmin() && !$pmc->validation_odg): ?>
-                                  	<?php echo $form['lots'][$lot->getKey()]['affectable']->render(array('class' => "pmc bsswitch", "data-preleve-adherent" => "$lot->declarant_identifiant", "data-preleve-lot" => "$lot->unique_id",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+                                    <?php echo $form['lots'][$lot->getKey()]['date_commission']->render(array('class' => "pmc")); ?>
                                   <?php else: ?>
-                                      <?php echo pictoDegustable($lot); ?>
+                                      <?php echo $lot->getDateCommissionFr() ?>
                                   <?php endif; ?>
                                 </div>
                             </div>
                           <?php else: ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
-                                  <?php echo pictoDegustable($lot); ?>
+                                <?php echo $lot->getDateCommissionFr() ?>
                               </div>
                             </div>
                           <?php endif; ?>
@@ -105,36 +95,3 @@
             </table>
           <?php endif; ?>
 
-
-<?php if(isset($form["date_commission"])): ?>
-    <h3>Contrôle</h3>
-    <?php echo $form["date_commission"]->renderError(); ?>
-    <?php if(isset($form["degustation"])): ?>
-    <?php echo $form['degustation']->renderError(); ?>
-    <?php endif; ?>
-    <div class="form-group" style="margin-bottom: 20px;">
-        <?php echo $form["date_commission"]->renderLabel("Date de la commission :", array("class" => "col-xs-3 control-label")); ?>
-        <div class="input-group date-picker-week col-xs-3" style="z-index: 100px; position: relative;">
-            <?php if(isset($form["degustation"])): ?>
-            <?php echo $form['degustation']->render(); ?>
-            <?php endif; ?>
-            <?php echo $form["date_commission"]->render(); ?>
-            <div class="input-group-addon">
-                <span class="glyphicon-calendar glyphicon"></span>
-            </div>
-            <?php if(isset($form["degustation"])): ?>
-            <button type="button" onclick="document.querySelector('#validation_date_commission').classList.remove('hidden'); document.querySelector('#validation_degustation').classList.add('hidden'); this.classList.add('invisible');
-            document.querySelector('#validation_date_commission').setAttribute('required', true);
-            document.querySelector('#validation_degustation').removeAttribute('required', true); document.querySelector('#validation_date_commission').focus()" class="btn btn-link btn-sm" style="position: absolute; right: -80px; top: 10px;">(changer)</button>
-        <?php endif; ?>
-        </div>
-        <script>
-            document.querySelector('#validation_degustation').addEventListener('change', function(e) {
-                document.querySelector('#validation_date_commission').value = this.value;
-            });
-        </script>
-    </div>
-<?php elseif($pmc->date_commission): ?>
-    <h3>Contrôle</h3>
-    <p>Date de la commission : <?php echo ($pmc->exist('date_commission')) ? date_format(date_create($pmc->get('date_commission')), 'd/m/Y') : null; ?></p>
-<?php endif ?>
