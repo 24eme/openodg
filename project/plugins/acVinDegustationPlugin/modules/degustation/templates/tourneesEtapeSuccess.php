@@ -35,9 +35,9 @@ echo $form->renderGlobalErrors();
                 Télécharger les PDF <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a></li>
+                <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span> Fiche tournée</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des lots à prélever</a></li>
+                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span> Fiche de prélèvement</a></li>
                 <li role="separator" class="divider"></li>
                 <li>
                     <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
