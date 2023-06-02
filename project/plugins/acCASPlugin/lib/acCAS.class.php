@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__).'/vendor/phpCAS/CAS.php');
+define("PHPCAS_LANG_DEFAULT", PHPCAS_LANG_FRENCH);
 
 class acCAS extends phpCAS {
 
@@ -24,13 +25,14 @@ class acCAS extends phpCAS {
     public static function processAuth() {
         self::initCasInfo();
         $multidomains = sfConfig::get('app_cas_multidomains', array());
-        if (isset($_GET['ticket']) && count($multidomains) && ($postfix = preg_replace('/.*-/', '', $_GET['ticket']))) {
+        if (isset($_GET['ticket']) && count($multidomains) && ($postfix = preg_replace('/.*-/', '', $_GET['ticket'])) && isset($multidomains[$postfix])) {
           $_SESSION['app_cas_domain'] = $multidomains[$postfix]['domain'];
           $_SESSION['app_cas_port'] = $multidomains[$postfix]['port'];
           $_SESSION['app_cas_path'] = $multidomains[$postfix]['path'];
           $_SESSION['app_cas_url'] = $multidomains[$postfix]['url'];
+          $_SESSION['app_cas_origin'] = $postfix;
         }
-        phpCAS::setDebug('/tmp/cas.log');
+        //phpCAS::setDebug('/tmp/cas.log');
         @acCAS::client(CAS_VERSION_2_0, $_SESSION['app_cas_domain'], $_SESSION['app_cas_port'], $_SESSION['app_cas_path'], false);
         @acCAS::setNoCasServerValidation();
         @acCAS::forceAuthentication();
