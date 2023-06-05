@@ -139,7 +139,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         if($lieu){
             $lieu = strtoupper($lieu);
         }
-        $detail->lieu = $lieu;
+        $detail->lieu = trim($lieu);
 
         return $detail;
     }
