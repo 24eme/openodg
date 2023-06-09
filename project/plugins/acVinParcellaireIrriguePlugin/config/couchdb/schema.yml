@@ -59,6 +59,7 @@ ParcellaireIrrigue:
                               numero_parcelle: { }
                               idu: { }
                               lieu: {  }
+                              prefix: { }
                               cepage: {  }
                               departement: { required: false }
                               active: { type: integer }

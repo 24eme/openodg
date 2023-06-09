@@ -442,7 +442,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->date_paiement = null;
       $avoir->modalite_paiement = null;
       $avoir->montant_paiement = null;
-      $avoir->reglement_paiement = null;
+      $avoir->remove('reglement_paiement');
       $avoir->remove('paiements');
       $avoir->add('paiements');
 

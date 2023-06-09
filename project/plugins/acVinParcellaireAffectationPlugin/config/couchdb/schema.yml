@@ -61,6 +61,7 @@ ParcellaireAffectation:
                               idu: { }
                               lieu: {  }
                               cepage: {  }
+                              prefix: { }
                               departement: { required: false }
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
@@ -180,6 +181,7 @@ ParcellaireIntentionAffectation:
                               idu: { }
                               lieu: {  }
                               cepage: {  }
+                              prefix: { }
                               departement: { required: false }
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
