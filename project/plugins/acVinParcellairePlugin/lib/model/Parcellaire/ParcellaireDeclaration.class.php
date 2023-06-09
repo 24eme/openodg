@@ -32,28 +32,24 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return $parcelles;
     }
 
-    public function getParcelles($onlyVtSgn = false, $active = false) {
+    public function getParcelles() {
 
-        return $this->getProduitsDetails($onlyVtSgn, $active);
+        return $this->getProduitsDetails();
     }
 
     public function getProduits($onlyActive = false) {
         $produits = array();
         foreach ($this as $key => $produit) {
-            if ($onlyActive && !$produit->isAffectee()) {
-
-                return array();
-            }
             $produits[$produit->getHash()] = $produit;
         }
 
         return $produits;
     }
 
-    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
+    public function getProduitsDetails() {
         $details = array();
         foreach ($this->getProduits() as $item) {
-            $details = array_merge($details, $item->getProduitsDetails($onlyVtSgn, $active));
+            $details = array_merge($details, $item->getProduitsDetails());
         }
 
         return $details;

@@ -62,8 +62,8 @@
                     </div>
             	</td>
             	<td class="text-center"><?php echo $parcelle->getDateAffectationFr() ?></td>
-                <td class="text-center">
-                    <div style="margin-bottom: 0;" id = "surface" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['superficie_affectation']->hasError()): ?>has-error<?php endif; ?>">
+                <td class="text-center <?php if($form[$produitKey][$parcelle->getKey()]['superficie_affectation']->renderError()): ?>has-error<?php endif; ?>">
+                    <div style="margin-bottom: 0;" id = "surface" class="form-group">
                         <div class="col-xs-12">
                             <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie)); ?>
                         </div>

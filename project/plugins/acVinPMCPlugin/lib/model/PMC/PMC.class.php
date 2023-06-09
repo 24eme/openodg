@@ -4,11 +4,11 @@ class PMC extends BasePMC
 {
     public function constructId() {
         if (!$this->date) {
-            $this->date = date("Y-m-d");
+            $this->date = date("YmdHis");
         }
         $idDate = str_replace('-', '', $this->date);
         if (strlen($idDate) < 8) {
-            throw new sfException(" mauvaise date pour une transaction");
+            throw new sfException("Mauvais format de date pour la construction de l'id");
         }
         $id = 'PMC-' . $this->identifiant . '-' . $idDate;
         $this->set('_id', $id);

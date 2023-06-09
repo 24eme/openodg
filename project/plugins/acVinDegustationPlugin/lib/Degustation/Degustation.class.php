@@ -688,17 +688,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	   		return $lots;
    	 	}
 
-		public function getTables(){
-			$tables = array();
-			foreach ($this->lots as $lot) {
-				if(!$lot->exist('numero_table') || !$lot->numero_table){
-				    continue;
+        public function getTables()
+        {
+            if(count($this->lots) == 0) {
+                return [];
+            }
+
+            $last_table = max(array_column($this->lots->toArray(true, false), 'numero_table'));
+            $tables = array_fill_keys(range(1, $last_table), []);
+
+            foreach ($this->lots as $lot) {
+                if(!$lot->exist('numero_table') || !$lot->numero_table){
+                    continue;
                 }
                 $tables[$lot->numero_table][] = $lot;
-			}
+            }
+
             ksort($tables);
-			return $tables;
-		}
+            return $tables;
+        }
 
 		public function getLotsWithoutLeurre(){
 			$lots = array();
@@ -825,19 +833,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
 		public function getLotsTableOrFreeLots($numero_table, $free_table = true){
-			$lots = array();
-			foreach ($this->getLotsDegustables() as $lot) {
-				if(($lot->numero_table == $numero_table)){
-					$lots[] = $lot;
-					continue;
-				}
-
-				if($free_table && !$lot->numero_table)  {
-					$lots[] = $lot;
-					continue;
-				}
-			}
-			return $lots;
+            return array_filter($this->getLotsDegustables(), function ($lot) use ($numero_table, $free_table) {
+                if ($lot->numero_table == $numero_table) {
+                    return true;
+                }
+                if ($free_table && ! $lot->numero_table) {
+                    return true;
+                }
+                return false;
+            });
 		}
 
         public function getLotsTableOrFreeLotsCustomSort($numero_table, $free_table = true, $with_tri_manual = true){
@@ -879,6 +883,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getTheoriticalPosition($table, $without_manual = false) {
             $lots_theoritical = $this->getLotsTableOrFreeLotsCustomSort($table, false, false);
             $theoritical_position = array();
+            $i = 0;
             foreach ($lots_theoritical as $lot) {
                 if ($without_manual && $lot->isPositionManuel()) {
                     continue;
@@ -1359,6 +1364,47 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 			}
 			return $etablissements;
+		}
+
+        public function getLotsBySecteur() {
+            $secteurs = [];
+
+            foreach (EtablissementClient::getInstance()->getRegions() as $region) {
+                    $secteurs[$region] = [];
+            }
+            $secteurs['SANS_SECTEUR'] = [];
+
+            foreach($this->getLotsPrelevables() as $lot) {
+                $secteur = $lot->secteur;
+                if(!$secteur) {
+                    $secteur = 'SANS_SECTEUR';
+                }
+
+                $secteurs[$secteur][$lot->getAdresseLogement()][] = $lot;
+            }
+            return $secteurs;
+        }
+
+        /**
+         * Les différents etablissements liés aux lots degustables  de la degustation
+         * @return array le tableau des Etablissement
+         */
+		public function getEtablissementsDegustables() {
+
+            if (! isset($this->etablissementsDegustables)) {
+                $this->etablissementsDegustables = [];
+
+                foreach ($this->getLotsDegustables() as $lot) {
+                    if (!isset($this->etablissementsDegustables[$lot->declarant_identifiant])) {
+                        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
+                        if (isset($etablissement)) {
+                            $this->etablissementsDegustables[$lot->declarant_identifiant] = $etablissement;
+                        }
+                    }
+                }
+            }
+
+            return $this->etablissementsDegustables;
 		}
 
         public function isMailEnvoyeEtablissement($identifiant)

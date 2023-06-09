@@ -9,15 +9,16 @@ class pmcActions extends sfActions {
         if (!$isAdmin) {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_PMC, $etablissement);
         }
-        $date = $request->getParameter("date", date('Y-m-d'));
+        $date = $request->getParameter("date", date('YmdHis'));
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
-        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
-        try {
-            $pmc->save();
-        }catch(couchException $e) {
-            $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation aujourd'hui");
+
+        if (PMCClient::getInstance()->findBrouillon($this->etablissement->identifiant, $campagne)) {
+            $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation non terminée");
             return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
         }
+
+        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
+        $pmc->save();
 
         return $this->redirect('pmc_edit', $pmc);
     }
@@ -184,6 +185,10 @@ class pmcActions extends sfActions {
         $this->secure(PMCSecurity::EDITION, $this->pmc);
         $this->isAdmin = $this->getUser()->isAdmin();
 
+        if ($this->pmc->validation) {
+            return $this->redirect('pmc_visualisation', $this->pmc);
+        }
+
         if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_VALIDATION))) {
             $this->pmc->save();
         }
@@ -211,11 +216,11 @@ class pmcActions extends sfActions {
             return sfView::SUCCESS;
         }
         $this->form->save();
-        $dateValidation = date('c');
+        $dateValidation = date('Y-m-d');
 
         if($this->form->getValue("date")) {
             $dt = new DateTime($this->form->getValue("date"));
-            $dateValidation = $dt->modify('+1 minute')->format('c');
+            $dateValidation = $dt->modify('+1 minute')->format('Y-m-d');
         }
 
         $this->pmc->validate($dateValidation);
