@@ -885,6 +885,18 @@ abstract class Lot extends acCouchdbDocumentTree
         return $mvts[$this->numero_dossier.$this->numero_archive];
     }
 
+    public function isCommercialisable()
+    {
+        $status_conforme = [
+            Lot::STATUT_NONPRELEVABLE,
+            Lot::STATUT_CONFORME,
+            Lot::STATUT_CONFORME_APPEL,
+            Lot::STATUT_NONAFFECTABLE
+        ];
+
+        return in_array($this->getLastMouvement()->statut, $status_conforme);
+    }
+
     public function getLotDocumentOrdre($documentOrdre) {
         if(array_key_exists($documentOrdre, $this->lotsDocumentOrdre)) {
             return $this->lotsDocumentOrdre[$documentOrdre];
