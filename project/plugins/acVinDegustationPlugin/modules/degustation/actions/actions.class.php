@@ -687,6 +687,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeLotHistorique(sfWebRequest $request){
+        $this->etablissement = $this->getRoute()->getEtablissement();
         $identifiant = $request->getParameter('identifiant');
         $uniqueId = $request->getParameter('unique_id');
 
@@ -697,7 +698,6 @@ class degustationActions extends sfActions {
             throw new sfError404Exception("Lot non trouvé");
         }
 
-        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
         $this->mouvements = LotsClient::getInstance()->getHistory($identifiant, $uniqueId);
     }
 
@@ -750,8 +750,8 @@ class degustationActions extends sfActions {
     }
 
     public function executeLotsListe(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
         $identifiant = $request->getParameter('identifiant');
-        $this->etablissement = EtablissementClient::getInstance()->find($identifiant);
         $this->forward404Unless($this->etablissement);
 
         if(class_exists("EtablissementChoiceForm")) {
