@@ -98,6 +98,11 @@ function getUrlEtapeFromMvtLot($mvtLot)
 
 function pictoDegustable($lot) {
     $lot = $lot->getLotInDrevOrigine();
+
+    if($lot->isCommercialisable() === false) {
+        return '<span title="Non commercialisable" class="glyphicon glyphicon-remove-circle text-danger"></span>';
+    }
+
     if($lot->id_document_affectation) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
