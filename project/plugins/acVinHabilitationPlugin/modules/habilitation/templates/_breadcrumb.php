@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-    <?php if(!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
+    <?php if(!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && ! $sf_user->isAdmin()): ?>
         <li><a href="<?php echo url_for('habilitation_declarant', $sf_user->getEtablissement()); ?>">Habilitations</a></li>
     <?php elseif(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <li><a href="<?php echo url_for('habilitation_demande'); ?>">Habilitations</a></li>
