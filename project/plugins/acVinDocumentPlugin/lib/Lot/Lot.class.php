@@ -879,6 +879,12 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getDocument()->get($hash);
     }
 
+    public function getLastMouvement()
+    {
+        $mvts = LotsClient::getInstance()->getLastMouvements($this->getDocument());
+        return $mvts[$this->numero_dossier.$this->numero_archive];
+    }
+
     public function getLotDocumentOrdre($documentOrdre) {
         if(array_key_exists($documentOrdre, $this->lotsDocumentOrdre)) {
             return $this->lotsDocumentOrdre[$documentOrdre];
