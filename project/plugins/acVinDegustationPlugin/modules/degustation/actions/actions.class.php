@@ -258,9 +258,10 @@ class degustationActions extends sfActions {
     public function executePrelevementsEtape(sfWebRequest $request) {
 
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->active = DegustationEtapes::ETAPE_PRELEVEMENTS;
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, $this->active))) {
             $this->degustation->save(false);
         }
     }
@@ -1125,7 +1126,7 @@ class degustationActions extends sfActions {
 
     public function executeFicheLotsAPreleverPDF(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationFicheLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false);
+      $this->document = new ExportDegustationFicheLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false, null, null, $request);
       return $this->mutualExcecutePDF($request);
     }
 

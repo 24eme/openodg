@@ -26,6 +26,10 @@ abstract class Etapes
         return $this->getRouteLinksHash()[$step];
     }
 
+    public function getPreviousLink($step) {
+        return $this->getRouteLink($this->getPrevious($step));
+    }
+
     public function getNextLink($step) {
         return $this->getRouteLink($this->getNext($step));
     }
@@ -55,28 +59,34 @@ abstract class Etapes
 		return $first;
 	}
 
-	public function getNext($etape)
+	private function getNextPrev($etape, $next=true)
 	{
 		if (!$etape) {
 			return $this->getFirst();
 		}
 		$etapes = $this->getEtapes();
-		if (!in_array($etape, $etapes)) {
-			throw new sfException('Etape inconnue');
-		}
-		$find = false;
-		$next = $this->getDefaultStep();
-		foreach ($etapes as $e) {
-			if ($find) {
-				$next = $e;
-				break;
-			}
-			if ($etape == $e) {
-				$find = true;
-			}
-		}
-		return $next;
+
+        if (false !== $index_etape = array_search($etape, $etapes)) {
+            if ($next) {
+                return ($index_etape + 1 <= count($etapes)) ? $etapes[$index_etape+1] : $this->getLast();
+            }
+            else {
+                return ($index_etape - 1 >= 0) ? $etapes[$index_etape-1] : $this->getFirst();
+            }
+        }
+
+        throw new sfException('Etape inconnue');
 	}
+
+    public function getPrevious($etape)
+	{
+        return $this->getNextPrev($etape, false);
+    }
+
+    public function getNext($etape)
+	{
+        return $this->getNextPrev($etape, true);
+    }
 
 	public function isGt($etapeToTest, $etape)
 	{
