@@ -40,10 +40,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $acheteursCvi;
     }
 
-    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
-		if ($active && !$this->getActive()) {
-			return array();
-		}
+    public function getProduitsDetails() {
+
         return array($this->getHash() => $this);
     }
 
@@ -109,22 +107,6 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->getProduit()->getConfig()->getAppellation();
     }
 
-    public function isCleanable() {
-    	if (!$this->getActive()) {
-    		return true;
-    	}
-        return ($this->isFromAppellation('ALSACEBLANC') && !$this->getVtsgn());
-    }
-
-    public function isAffectee($lieu = null) {
-        if ($lieu && $this->lieu && KeyInflector::slugify(trim($lieu)) != KeyInflector::slugify(trim($this->lieu))) {
-
-    		return false;
-    	}
-
-        return !$this->isCleanable();
-    }
-
     public function getProduitLibelle() {
         if (!$this->isRealProduit()) {
             return ' - PRODUIT NON RECONNU - ';
@@ -160,20 +142,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return false;
     }
 
-    public function getActive() {
-        $v = $this->_get('active');
-        if (!$this->superficie) {
-            return false;
-        }
-        if ($v === null) {
-            return true;
-        }
-        return ($v) ? true : false;
-    }
-    public function setActive($value) {
-        $this->add('active');
-        return $this->_set('active', $value * 1);
-    }
+
     public function getVtsgn() {
         $v = $this->_get('vtsgn');
         if ($v === null || !$this->superficie) {

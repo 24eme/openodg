@@ -29,8 +29,9 @@
       <tbody>
         <?php $lastiddate = ''; ?>
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
-          <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
+          <?php $url = $sf_user->isAdmin() === false ? '#' : url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
           <?php $class = ($lastiddate == preg_replace("/ .*$/", "", $mouvement->value->document_id.$mouvement->value->date)) ? "text-muted": null ; ?>
+          <?php $class .= $sf_user->isAdmin() === false ? ' disabled' : null; ?>
               <tr<?php if ($lot->unique_id !== $mouvement->value->lot_unique_id) { echo ' style="opacity:0.5"'; } ?>>
                   <td>
                       <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
@@ -49,6 +50,8 @@
                 </td>
             </tr>
             <?php endif; endforeach; ?>
+
+            <?php if ($sf_user->isAdmin()): ?>
             <tr>
               <td colspan="3">
               </td>
@@ -91,6 +94,7 @@
                 </div>
               </td>
           </tr>
+          <?php endif ?>
         </tbody>
           </table>
           <?php endif; ?>
