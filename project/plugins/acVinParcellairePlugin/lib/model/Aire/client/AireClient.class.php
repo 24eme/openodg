@@ -9,6 +9,7 @@ class AireClient extends acCouchdbClient {
 
     private $cache_find = array();
     private $cache_all_aires = array();
+    private $cache_aires_communes = array();
 
     public static function getInstance()
     {
@@ -94,6 +95,15 @@ class AireClient extends acCouchdbClient {
     }
 
     public function getAiresForInseeCommunes($communes) {
+        $commune_hash = implode('-', $communes);
+        if (!isset($this->cache_aires_communes[$communes_hash])) {
+            $this->cache_aires_communes[$communes_hash] = $this->getAiresForInseeCommunesDirect($communes);
+        }
+        return $this->cache_aires_communes[$communes_hash];
+
+    }
+
+    public function getAiresForInseeCommunesDirect($communes) {
         $aires = array();
         foreach($communes as $c) {
             foreach($this->getAireIdsFromCommune($c) as $id) {
