@@ -75,9 +75,13 @@ class DegustationEtapes extends Etapes {
         return self::$_instance;
     }
 
-    public function getEtapesHash() {
-        return $this->filter(self::$etapes);
+    public function getEtapesHash()
+    {
+        $etapes = $this->filter(self::$etapes);
+        asort($etapes);
+        return $etapes;
     }
+
     public function getRouteLinksHash() {
         return $this->filter(self::$links);
     }
@@ -89,8 +93,10 @@ class DegustationEtapes extends Etapes {
     protected function filter($items)
     {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            $items[self::ETAPE_ANONYMATS] = (is_numeric($items[self::ETAPE_ANONYMATS])) ? $items[self::ETAPE_ANONYMATS]++ : $items[self::ETAPE_ANONYMATS];
-            $items[self::ETAPE_TABLES] = (is_numeric($items[self::ETAPE_TABLES])) ? $items[self::ETAPE_TABLES]++ : $items[self::ETAPE_TABLES];
+            if (is_numeric($items[self::ETAPE_ANONYMATS])) {
+                $items[self::ETAPE_ANONYMATS]--;
+                $items[self::ETAPE_TABLES]++;
+            }
         } else {
             unset($items[self::ETAPE_TOURNEES]);
         }
