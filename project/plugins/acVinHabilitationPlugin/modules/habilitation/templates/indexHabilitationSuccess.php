@@ -1,9 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php $query = ($query) ? $query->getRawValue() : $query; ?>
 
-<ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>
-</ol>
+<?php include_partial('habilitation/breadcrumb'); ?>
 
 <?php if(isset($form)): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>

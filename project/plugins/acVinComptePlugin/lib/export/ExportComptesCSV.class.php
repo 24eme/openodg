@@ -36,6 +36,7 @@ class ExportComptesCsv
             "Site",
             "Compte Type",
             "En alerte",
+            "Date de dernière modification",
             "Tags",
             "N° Compte Type"
         ];
@@ -91,6 +92,7 @@ class ExportComptesCsv
                 "https://$domaine/$type/$compte->identifiant/visualisation",
                 $compte->compte_type,
                 $compte->isEnAlerte(),
+                $compte->date_modification,
                 implode(',',$tagsArray),
                 $compte->_id
             ];
@@ -100,27 +102,4 @@ class ExportComptesCsv
 
         fclose($this->csv);
     }
-    /**
-
-            sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
-            $this->compte->getCodeComptable(),
-            $this->compte->nom_a_afficher,
-            "CLIENT",
-            $this->compte->nom_a_afficher,
-            $this->compte->adresse,
-            $this->compte->adresse_complementaire,
-            $this->compte->code_postal,
-            $this->compte->commune,
-            $this->compte->pays,
-            $this->compte->identifiant,
-            $this->compte->societe_informations->siret,
-            $this->compte->statut,
-            ($this->compte->telephone_bureau) ? $this->compte->telephone_bureau : $this->compte->telephone_mobile,
-            $this->compte->fax,
-            $this->compte->email,
-            "https://declaration.syndicat-cotesdeprovence.com/societe/".$this->compte->identifiant."/visualisation"
-        );
-
-    }
-     **/
 }

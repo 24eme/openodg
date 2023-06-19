@@ -425,7 +425,7 @@ class parcellaireAffectationActions extends sfActions {
         if ($this->parcellaire->isPapier()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
-            return $this->redirect('parcellaire_visualisation', $this->parcellaire);
+            return $this->redirect('parcellaireaffectation_visualisation', $this->parcellaire);
         }
 
         $this->sendParcellaireValidation($this->parcellaire);

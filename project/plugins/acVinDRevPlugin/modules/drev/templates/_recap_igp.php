@@ -134,7 +134,11 @@
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
-                        <td class="text-center">
+                        <td class="text-center
+                        <?php if ($lot->isCommercialisable() === false): ?>
+                            alert-danger
+                        <?php endif ?>
+                        ">
                         <?php if($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id) && isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
@@ -149,7 +153,7 @@
                                             ); ?>
                                 </div>
                             </div>
-                          <?php else: ?>
+                          <?php elseif ($sf_user->isAdmin() || ($drev->exist('date_commission') && new DateTime($drev->date_commission) < new DateTime())): ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
                                   <?php echo pictoDegustable($lot); ?>

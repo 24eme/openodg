@@ -132,6 +132,12 @@ class ParcellaireClient extends acCouchdbClient {
         $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $scrapping, $contextInstance);
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
+        $lastParcellaire = $this->getLast($etablissement->identifiant);
+        if($filePdf && is_file($filePdf) && $lastParcellaire && $lastParcellaire->hasParcellairePDF() && md5_file($filePdf) == $lastParcellaire->getParcellairePDFMd5()) {
+
+            throw new Exception("Aucune nouvelle vesion du PDF trouvée (il se peut que le parcellaire de cet opérateur ne soit pas accessible sur prodouane)");
+        }
+
         $return = $this->saveParcellairePDF($etablissement, $filePdf, $errors['pdf']);
         $returncsv = $this->saveParcellaireCSV($etablissement, $fileCsv, $errors['csv'], $contextInstance);
 

@@ -77,7 +77,7 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
         return $this->affectationParcellaire;
     }
 
-    public function createAffectationParcellaire() {
+    public function createAffectationParcellaire() { // Dépréciée mais encore utilisée dans les tests
         $this->affectationParcellaire = ParcellaireAffectationClient::getInstance()->createDoc($this->getEtablissementIdentifiant(), substr($this->getDocument()->campagne, 0, 4));
 
         return $this->affectationParcellaire;

@@ -23,8 +23,6 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $this->campagne = $periode.'-'.($periode + 1);
       $this->constructId();
-      $this->storeDeclarant();
-      $this->storeParcelles();
   }
 
   public function getPeriode() {
@@ -93,12 +91,18 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $affectees = array();
       $parcelles = $this->getParcelles();
-      if (count($parcelles) > 0) {
-          foreach ($parcelles as $parcelle) {
-              if ($parcelle->affectation) {
-                  $affectees[$parcelle->getKey()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
-              }
+      foreach ($parcelles as $parcelle) {
+          if (!$parcelle->affectation) {
+              continue;
           }
+
+          $pMatch = $parcellaire->getDocument()->findParcelle($parcelle);
+
+          if(!$pMatch) {
+              continue;
+          }
+
+          $affectees[$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
       }
       $this->remove('declaration');
       $this->add('declaration');
@@ -126,6 +130,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                   $subitem->superficie = $parcelle->superficie;
                   $subitem->commune = $parcelle->commune;
                   $subitem->code_commune = $parcelle->code_commune;
+                  $subitem->prefix = $parcelle->prefix;
                   $subitem->section = $parcelle->section;
                   $subitem->numero_parcelle = $parcelle->numero_parcelle;
                   $subitem->idu = $parcelle->idu;
@@ -137,18 +142,17 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       $subitem->add('vtsgn', (int)$parcelle->vtsgn);
                   }
                   $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
-                  $superficie_auto = $parcelle->isInDenominationLibelle("AOC Sainte-Victoire");
-                  if ($superficie_auto) {
+                  if (in_array($parcelle->isInDenominationLibelle("AOC Sainte-Victoire"), [AireClient::PARCELLAIRE_AIRE_TOTALEMENT, AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT])) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = "2004-05-29";
                       if ($subitem->campagne_plantation > "2004-2005") {
                           $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
                       }
-                      $subitem->superficie_affectation  = $superficie_auto;
-                  } else if (isset($affectees[$parcelle->getKey()]) && $affectees[$parcelle->getKey()]) {
+                      $subitem->superficie_affectation  = $parcelle->superficie;
+                  } else if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()]) {
                       $subitem->affectation = 1;
-                      $subitem->date_affectation = $affectees[$parcelle->getKey()]['date'];
-                      $subitem->superficie_affectation  = $affectees[$parcelle->getKey()]['superficie'];
+                      $subitem->date_affectation = $affectees[$parcelle->getHash()]['date'];
+                      $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie'];
                   } else {
                     $subitem->affectation = 0;
                     $subitem->superficie_affectation = $parcelle->superficie;

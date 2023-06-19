@@ -13,9 +13,13 @@ class Aire extends BaseAire {
         return trim($this->_get('geojson'));
     }
 
-    public function setPseudoGeojson($geojson) {
-        $this->_set('geojson', $geojson);
+    public function setPseudoGeojsons(array $geojsons) {
+        $this->_set('geojson', implode('|', $geojsons));
         $this->need_tobe_saved = -1;
+    }
+
+    public function getPseudoGeojsons() {
+        return explode('|', $this->geojson);
     }
 
     public function setGeojson($geojson) {
@@ -65,6 +69,10 @@ class Aire extends BaseAire {
             return '#000000';
         }
         return $conf['color'];
+    }
+
+    public function getName() {
+        return addslashes($this->denomination_libelle.' '.$this->commune_libelle);
     }
 
     public function getGeoParcelle(): Geometry {

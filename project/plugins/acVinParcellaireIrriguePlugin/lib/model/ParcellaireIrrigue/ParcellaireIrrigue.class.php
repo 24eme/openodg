@@ -83,6 +83,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   				$subitem->superficie = $detail->superficie;
   				$subitem->commune = $detail->commune;
   				$subitem->code_commune = $detail->code_commune;
+  				$subitem->prefix = $detail->prefix;
   				$subitem->section = $detail->section;
   				$subitem->numero_parcelle = $detail->numero_parcelle;
   				$subitem->idu = $detail->idu;
@@ -182,6 +183,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
     	  		$subitem->superficie = $detail->superficie;
     	  		$subitem->commune = $detail->commune;
                 $subitem->code_commune = $detail->code_commune;
+    	  		$subitem->prefix = $detail->prefix;
     	  		$subitem->section = $detail->section;
     	  		$subitem->numero_parcelle = $detail->numero_parcelle;
                 $subitem->idu = $detail->idu;

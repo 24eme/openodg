@@ -12,6 +12,7 @@ class Parcellaire extends BaseParcellaire {
     protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
     protected $habilitation = false;
     private $cache_geojson = null;
+    protected $parcelles_idu = null;
 
     public function __construct() {
         parent::__construct();
@@ -80,9 +81,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
-    public function getParcelles($onlyVtSgn = false, $active = false) {
+    public function getParcelles() {
 
-        return $this->declaration->getParcelles($onlyVtSgn, $active);
+        return $this->declaration->getParcelles();
     }
 
     public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
@@ -115,6 +116,59 @@ class Parcellaire extends BaseParcellaire {
 
         return $sameParcelle;
 
+    }
+
+    public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
+
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
+    }
+
+    public function findParcelle($parcelle) {
+        $parcelles = $this->getParcellesByIdu();
+
+        if(!isset($parcelles[$parcelle->idu])) {
+
+            return null;
+        }
+
+        $parcellesMatch = [];
+
+        foreach($parcelles[$parcelle->idu] as $p) {
+            $score = 0;
+            if($parcelle->cepage == $p->cepage) {
+                $score += 0.25;
+            }
+            if($parcelle->campagne_plantation == $p->campagne_plantation) {
+                $score += 0.25;
+            }
+            if($parcelle->lieu == $p->lieu) {
+                $score += 0.25;
+            }
+            if($parcelle->superficie == $p->superficie) {
+                $score += 0.25;
+            }
+
+            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
+        }
+
+        krsort($parcellesMatch);
+
+        foreach($parcellesMatch as $key => $pMatch) {
+
+            return $pMatch;
+        }
+
+        return null;
     }
 
     public function getDateFr() {
@@ -278,13 +332,33 @@ class Parcellaire extends BaseParcellaire {
         return $superficie;
     }
 
-    public function getParcellairePDFUri() {
+    public function getParcellairePDFKey() {
         foreach ($this->_attachments as $key => $attachement) {
             if ($attachement->content_type == 'application/pdf') {
-                return $this->getAttachmentUri($key);
+                return $key;
             }
         }
-        return '';
+        return null;
+    }
+
+    public function getParcellairePDFUri() {
+        $key = $this->getParcellairePDFKey();
+
+        if(!$key) {
+
+            return null;
+        }
+
+        return $this->getAttachmentUri($key);
+    }
+
+    public function getParcellairePDFMd5() {
+        if (!$this->hasParcellairePDF()) {
+
+            return null;
+        }
+
+        return md5($this->getParcellairePDF());
     }
 
     public function hasParcellairePDF() {
@@ -320,6 +394,140 @@ class Parcellaire extends BaseParcellaire {
         }
         return $this->cache_geojson;
 
+    }
+
+    public function getGeoJsonWithAires(){
+        $geojson = $this->getGeoJson();
+
+        // Ajoute des couleurs et l'identification
+        foreach ($geojson->features as $feat) {
+            $feat->properties->stroke = '#FF0000';
+            $feat->properties->{'stroke-width'} = 4;
+            $feat->properties->{'stroke-opacity'} = 1;
+            $feat->properties->fill = '#fff';
+            $feat->properties->{'fill-opacity'} = 0;
+            $feat->properties->name = $feat->properties->section. ' ' . $feat->properties->numero;
+            foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
+                $feat->properties->{'parcellaire'.$key} = '';
+                foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
+                    if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                        continue;
+                    }
+                    $feat->properties->{'parcellaire'.$key} .= $prop . ' : ' . $parcellaire_detail->{$prop} . " / \n";
+                }
+            }
+        }
+        
+        // On ajoute les aires des appelations des communes associées avec la bonne couleur
+        foreach ($this->getMergedAires() as $aire) {
+            $aireobj = json_decode($aire->getGeojson());
+            foreach ($aireobj->features as $feat) {
+                // Ajoute les couleurs et infos qui vont bien
+                $feat->properties->name = $aire->getName();
+                $feat->properties->fill = $aire->getColor();
+                $feat->properties->{'fill-opacity'} = 0.5;
+                $feat->properties->stroke = '#000';
+                $feat->properties->{'stroke-width'} = 2;
+                $feat->properties->{'stroke-opacity'} = 0.1;
+                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables. 
+                array_unshift($geojson->features, $feat);
+            }
+        }
+        return $geojson;
+    }
+
+    /**
+     * Reprend le geojson et le transforme en KML
+     */
+    public function getKML($with_aire = true, $with_parcelles = true) {
+        // La transfo de geojson -> kml de geophp ne se faisant que partiellement on reparcours le geojson et on reconstruit le xml
+        $kml = '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
+
+        // Le style pour les parcelles (les couleurs)
+        // Info : L'hexa de la couleur est inversé par rapport à la notation habituelle
+        // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
+        $kml .= '<Style id="parcelle-style">
+        <LineStyle>
+          <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>7d0000ff</color>
+        </PolyStyle>
+      </Style>';
+
+        // Définit un style par couleur à utiliser dans les aires plus bas
+        $styles = [];
+        if ($with_aire) {
+            foreach ($this->getMergedAires() as $aire) {
+                $aireobj = json_decode($aire->getGeojson());
+                if (isset($aireobj->features)) foreach ($aireobj->features as $feat) {
+                    $color = '7d' . str_replace('#', '', $aire->getColor());
+                    $styles[$color] = '<Style id="aire-style-'.$color.'">
+            <LineStyle>
+            <width>1</width>
+            </LineStyle>
+            <PolyStyle>
+            <color>'.$color.'</color>
+            </PolyStyle>
+        </Style>';
+                }
+            }
+
+            // Met les styles en haut du KML
+            $kml .= implode("\n", $styles);
+
+
+            // On met en premier les aires des appelations des communes associées avec la bonne couleur
+            foreach ($this->getMergedAires() as $aire) {
+                foreach ($aire->getPseudoGeojsons() as $geojson) {
+                    $aireobj = json_decode($geojson);
+                    foreach ($aireobj->features as $feat) {
+                        $feat_str = json_encode($feat);
+                        $feat_obj = GeoPHP::load($feat_str, 'geojson');
+
+                        $kml .= '<Placemark>';
+                        $kml .= '<name>'. $aire->getName() .'</name>';
+                        $kml .= '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire->getColor()) . '</styleUrl>';
+                        $kml .= $feat_obj->out('kml');
+                        $kml .= '</Placemark>'."\n";
+                    }
+                }
+            }
+        }
+
+        if ($with_parcelles) {
+
+            $geojson = $this->getGeoJson();
+
+            // Met ensuite les parcelles par dessus les éventuelles aires.
+            foreach ($geojson->features as $feat) {
+                $feat_str = json_encode($feat);
+                $feat_obj = GeoPHP::load($feat_str, 'geojson');
+
+                $kml .= '<Placemark>';
+                $kml .= '<name>'.$feat->properties->commune. ' - ' .$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
+                $kml .= '<description><![CDATA[';
+                foreach ($feat->properties->parcellaires as $key => $parcellaire_detail) {
+                    foreach (["Commune","Lieu dit","Produit","Cepage","Superficie","Superficie cadastrale","Campagne","Ecart pied","Ecart rang","Mode savoir faire"] as $prop) {
+                        if ($prop == "Lieu dit" && ! $parcellaire_detail->{$prop}) {
+                            continue;
+                        }
+                        $kml .= '<p>' . $prop . ' : ' . $parcellaire_detail->{$prop} . '</p>';
+                    }
+
+                    if ($key !== array_key_last($feat->properties->parcellaires)) {
+                        $kml .= "<p>-----------------</p>";
+                    }
+                }
+                $kml .= ']]></description>';
+                $kml .= '<styleUrl>#parcelle-style</styleUrl>';
+                $kml .= $feat_obj->out('kml');
+                $kml .= '</Placemark>';
+            }
+        }
+
+        $kml .= '</Document></kml>';
+        return $kml;
     }
 
     public function getMergedAires() {

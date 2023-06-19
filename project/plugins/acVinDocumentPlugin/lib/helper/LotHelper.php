@@ -97,12 +97,17 @@ function getUrlEtapeFromMvtLot($mvtLot)
 }
 
 function pictoDegustable($lot) {
-    $lot = $lot->getLotInDrevOrigine();
-    if($lot->id_document_affectation) {
+    $lotOrigine = $lot->getLotInDrevOrigine();
+
+    if(!$lotOrigine) {
+        throw new Exception("Lot ".$lot->getDocument()->_id.":".$lot->getHash()." non trouvé");
+    }
+
+    if($lotOrigine->id_document_affectation) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
 
-    if($lot->affectable) {
+    if($lotOrigine->affectable) {
         return '<span title="À déguster" class="glyphicon glyphicon-time text-success"></span>';
     }
 
@@ -179,7 +184,7 @@ function splitLogementAdresse($adresseLogement, $etablissement = null){
     $adresse['telephone'] = trim($adresseSplit[2]);
     $adresse['portable'] = trim($adresseSplit[3]);
     //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé
-    if (!$adresse['code_postal'] && preg_match('//', $adresse['telephone'])) {
+    if (empty($adresse['code_postal']) && preg_match('//', $adresse['telephone'])) {
         $adresse['code_postal'] = $adresse['telephone'];
         $adresse['commune'] = $adresse['portable'];
         $adresse['telephone'] = null;

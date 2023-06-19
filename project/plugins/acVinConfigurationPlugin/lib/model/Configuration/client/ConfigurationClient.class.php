@@ -6,6 +6,7 @@ class ConfigurationClient extends acCouchdbClient {
 
     protected $countries = null;
     protected $campagne_vinicole_manager = null;
+    protected $campagne_parcellaire_manager = null;
     protected $campagne_facturation_manager = null;
 
     const CAMPAGNE_DATE_DEBUT = '%s-08-01';
@@ -96,10 +97,17 @@ class ConfigurationClient extends acCouchdbClient {
 		return new CampagneManager('09-01', $format);
 	}
 
+    public function getCampagneParcellaire() {
+        if(is_null($this->campagne_parcellaire_manager)) {
+            $this->campagne_parcellaire_manager = new CampagneManager('03-01');
+        }
+        return $this->campagne_parcellaire_manager;
+    }
+
     public function getCampagneVinicole() {
         if(is_null($this->campagne_vinicole_manager)) {
 
-            $this->campagne_vinicole_manager = new CampagneManager('03-01');
+            $this->campagne_vinicole_manager = new CampagneManager('08-01');
         }
 
         return $this->campagne_vinicole_manager;

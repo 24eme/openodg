@@ -491,6 +491,6 @@ class compteActions extends sfCredentialActions {
     		}
     	}
 
-    	return $this->redirect('compte_search', array("q" => "(doc.num_interne:" . implode(" OR doc.num_interne:", $identifiants) . ")", "contacts_all" => 1));
+    	return $this->redirect('compte_search', array("q" => "(doc.etablissement_informations.cvi:" . implode(" OR doc.etablissement_informations.cvi:", $identifiants) . ")", "contacts_all" => 1));
     }
 }
