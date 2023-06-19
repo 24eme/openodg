@@ -30,7 +30,7 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $parcellaire = ParcellaireAffectationClient::getInstance()->findOrCreate($arguments['cvi'], $arguments['campagne']);
-        $parcellaire->updateFromLastParcellaire();
+        $parcellaire->updateParcelles();
 
         $parcellaire->save();
     }

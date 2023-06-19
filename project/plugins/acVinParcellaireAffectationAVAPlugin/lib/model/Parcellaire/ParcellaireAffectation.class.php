@@ -144,13 +144,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return count($this->vendeurs);
     }
 
-    public function initProduitFromLastParcellaire() {
-        if (count($this->declaration) == 0) {
-            $this->importProduitsFromLastParcellaire();
-        }
-    }
-
-    public function initOrUpdateProduitsFromAire() {
+    protected function initOrUpdateProduitsFromAire() {
         $parcellesActives = array();
         $parcellesLieux = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
@@ -221,7 +215,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function initOrUpdateProduitsFromCVI() {
+    protected function initOrUpdateProduitsCremantsFromCVI() {
         $parcellesActives = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if(!$parcelle->active) {
@@ -298,15 +292,35 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function updateFromLastParcellaire()
+    public function updateParcelles()
     {
+        if($this->isIntentionCremant() || $this->isParcellaireCremant()) {
+
+            return $this->updateParcellesCremant();
+        }
+
+        if (count($this->declaration) == 0) {
+            $parcellairePrev = $this->getParcellaireLastCampagne();
+            if (!$parcellairePrev) {
+                return;
+            }
+
+            $this->declaration = $parcellairePrev->declaration;
+
+        }
         //TODO: récupérer les aires cochées de l'année dernière
-        $this->initProduitFromLastParcellaire();
+
         return $this->initOrUpdateProduitsFromAire();
     }
 
-    public function updateCremantFromLastParcellaire()
+    protected function updateParcellesCremant()
     {
+        $nbParcelles = count($this->declaration->getProduitsCepageDetails());
+        $this->initOrUpdateProduitsCremantsFromCVI();
+        if($nbParcelles) {
+            return;
+        }
+
         $prevParcellaireCremant = $this->getParcellaireLastCampagne();
 
         if (! $prevParcellaireCremant) {
@@ -338,15 +352,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return $parcellaire;
-    }
-
-    private function importProduitsFromLastParcellaire() {
-        $parcellairePrev = $this->getParcellaireLastCampagne();
-        if (!$parcellairePrev) {
-            return;
-        }
-
-        $this->declaration = $parcellairePrev->declaration;
     }
 
     public function fixSuperficiesHa() {
@@ -795,10 +800,5 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     /**** FIN DES PIECES ****/
-
-    public function isParcelleEditable() {
-
-        return false;
-    }
 
 }
