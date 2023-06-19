@@ -127,7 +127,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function getDateDepot()
 	{
-        if($this->validation && (!$this->exist('date_depot') || !$this->_get('date_depot'))) {
+        if($this->validation && $this->validation !== true && (!$this->exist('date_depot') || !$this->_get('date_depot'))) {
             $date = new DateTime($this->validation);
             $this->add('date_depot', $date->format('Y-m-d'));
         }
