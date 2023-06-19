@@ -51,9 +51,9 @@ th {
              <small><?php
               if($lot->hasLogement()):
                 if ($lot->getLogementNom() != $etablissement->raison_sociale) {
-                    echo substrUtf8($$lot->getLogementNom(), 0, 32).'<br/>';
+                    echo substrUtf8($lot->getLogementNom(), 0, 32).'<br/>';
                 }?>
-                <?php echo substrUtf8($lot->getLogementAdresse(), 0, 32).'<br/>'.substrUtf8($lot->getLogementCodePostal().' '.lot->getLogementCommune(), 0, 32).'<br/>'; ?>
+                <?php echo substrUtf8($lot->getLogementAdresse(), 0, 32).'<br/>'.substrUtf8($lot->getLogementCodePostal().' '.$lot->getLogementCommune(), 0, 32).'<br/>'; ?>
               <?php else: ?>
                 <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
               <?php endif; ?>
