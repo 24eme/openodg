@@ -224,10 +224,6 @@ class parcellaireAffectationActions extends sfActions {
         $this->secure(ParcellaireAffectationSecurity::EDITION, $this->parcellaire);
         $this->appellation = $request->getParameter('appellation');
 
-        if(strpos($this->parcellaire->_id, 'PARCELLAIREAFFECTATIONCREMANT') === false) {
-            throw new Exception('Pas encore implementé');
-        }
-
         $nbParcelles = count($this->parcellaire->declaration->getProduitsCepageDetails());
         $this->parcellaire->initOrUpdateProduitsFromCVI();
         if(!$nbParcelles) {

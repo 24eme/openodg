@@ -97,17 +97,17 @@ function getUrlEtapeFromMvtLot($mvtLot)
 }
 
 function pictoDegustable($lot) {
-    $lot = $lot->getLotInDrevOrigine();
+    $lotOrigine = $lot->getLotInDrevOrigine();
 
-    if($lot->isCommercialisable() === false) {
-        return '<span title="Non commercialisable" class="glyphicon glyphicon-remove-circle text-danger"></span>';
+    if(!$lotOrigine) {
+        throw new Exception("Lot ".$lot->getDocument()->_id.":".$lot->getHash()." non trouvé");
     }
 
-    if($lot->id_document_affectation) {
+    if($lotOrigine->id_document_affectation) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
 
-    if($lot->affectable) {
+    if($lotOrigine->affectable) {
         return '<span title="À déguster" class="glyphicon glyphicon-time text-success"></span>';
     }
 
