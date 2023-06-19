@@ -89,7 +89,8 @@ class DegustationEtapes extends Etapes {
     protected function filter($items)
     {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            unset($items[self::ETAPE_ANONYMATS]);
+            $items[self::ETAPE_ANONYMATS] = (is_numeric($items[self::ETAPE_ANONYMATS])) ? $items[self::ETAPE_ANONYMATS]++ : $items[self::ETAPE_ANONYMATS];
+            $items[self::ETAPE_TABLES] = (is_numeric($items[self::ETAPE_TABLES])) ? $items[self::ETAPE_TABLES]++ : $items[self::ETAPE_TABLES];
         } else {
             unset($items[self::ETAPE_TOURNEES]);
         }
