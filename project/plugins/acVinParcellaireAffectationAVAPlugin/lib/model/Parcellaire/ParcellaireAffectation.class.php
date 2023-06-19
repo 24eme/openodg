@@ -125,6 +125,21 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $this->_get('validation_odg');
     }
 
+    public function getDateDepot()
+	{
+        if($this->validation && (!$this->exist('date_depot') || !$this->_get('date_depot'))) {
+            $date = new DateTime($this->validation);
+            $this->add('date_depot', $date->format('Y-m-d'));
+        }
+
+        if(!$this->exist('date_depot')) {
+
+            return null;
+        }
+
+        return $this->_get('date_depot');
+    }
+
     public function hasVendeurs() {
         return count($this->vendeurs);
     }
@@ -688,6 +703,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function devalidate() {
+        $this->getDateDepot();
         $this->validation = null;
         $this->validation_odg = null;
         $this->etape = null;
@@ -726,6 +742,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     	$this->piece_document->generatePieces();
     }
 
+    public function save() {
+        $this->getDateDepot();
+
+        return parent::save();
+    }
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -734,7 +756,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     	$title = ($this->isIntentionCremant())? 'Intention de production' : 'Affectation parcellaire';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->getValidation(),
+    		'date_depot' => $this->getDateDepot(),
     		'libelle' => $title.' '.$cremant.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
