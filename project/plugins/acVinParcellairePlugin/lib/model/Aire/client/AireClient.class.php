@@ -95,7 +95,7 @@ class AireClient extends acCouchdbClient {
     }
 
     public function getAiresForInseeCommunes($communes) {
-        $commune_hash = implode('-', $communes);
+        $communes_hash = implode('-', $communes);
         if (!isset($this->cache_aires_communes[$communes_hash])) {
             $this->cache_aires_communes[$communes_hash] = $this->getAiresForInseeCommunesDirect($communes);
         }
