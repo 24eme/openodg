@@ -172,7 +172,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
-                foreach($CVIParcelle->isInAires() as $nom => $statut) {
+                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                    continue;
+                }
+                foreach($CVIParcelle->getIsInAires() as $nom => $statut) {
                     $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
                     $libelle = str_replace(' A PETITS GRAINS', '', str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle)));
                     if (strpos(strtoupper($nom), 'GRAND CRU') !== false || strpos(strtoupper($nom), 'COMMUNALE') !== false) {
@@ -245,6 +248,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
+                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                    continue;
+                }
                 $c = false;
                 foreach ($cepages_autorises as $k => $cep) {
                     if (strpos(strtolower($CVIParcelle->getCepage()), strtolower($cep)) !== false) {
