@@ -256,17 +256,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             $this->get($parcelleHash)->active = 1;
         }
-    }
 
-    public function updateFromLastParcellaire()
-    {
-        //TODO: récupérer les aires cochées de l'année dernière
-        $this->initProduitFromLastParcellaire();
-        return $this->initOrUpdateProduitsFromAire();
-    }
-
-    public function updateCremantFromLastParcellaire()
-    {
         if ($this->isIntentionCremant()) {
             $affectation = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT));
         }
@@ -285,7 +275,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $this->remove($hash);
             }
         }
+    }
 
+    public function updateFromLastParcellaire()
+    {
+        //TODO: récupérer les aires cochées de l'année dernière
+        $this->initProduitFromLastParcellaire();
+        return $this->initOrUpdateProduitsFromAire();
+    }
+
+    public function updateCremantFromLastParcellaire()
+    {
         $prevParcellaireCremant = $this->getParcellaireLastCampagne();
 
         if (! $prevParcellaireCremant) {
