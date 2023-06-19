@@ -1,31 +1,24 @@
 <?php
 
-class DegustationOrganisationManuelleForm extends acCouchdbObjectForm
+class DegustationAnonymisationManuelleForm extends acCouchdbObjectForm
 {
     private $tableLots = null;
     private $numero_table = null;
 
-    public function __construct(acCouchdbJson $degustation, $numero_table, $options = array(), $CSRFSecret = null)
+    public function __construct(acCouchdbJson $degustation, $options = array(), $CSRFSecret = null)
     {
-        $this->numero_table = $numero_table;
-        $this->tableLots = $degustation->getLotsTableOrFreeLots($this->numero_table);
         parent::__construct($degustation, $options, $CSRFSecret);
     }
 
     public function configure()
     {
-        foreach ($this->tableLots as $lot) {
+        foreach ($this->getObject()->lots as $lot) {
             $name = $this->getWidgetNameFromLot($lot);
             $this->setWidget($name , new sfWidgetFormInput([], ['required' => false]));
             $this->setValidator($name, new sfValidatorString(['required' => false]));
         }
 
         $this->widgetSchema->setNameFormat('tables[%s]');
-    }
-
-    public function getTableLots()
-    {
-        return $this->tableLots;
     }
 
     public function getWidgetNameFromLot($lot)
@@ -39,13 +32,11 @@ class DegustationOrganisationManuelleForm extends acCouchdbObjectForm
     protected function doUpdateObject($values)
     {
         parent::doUpdateObject($values);
-        foreach ($this->tableLots as $lot) {
+        foreach ($this->getObject()->lots as $lot) {
             $name = $this->getWidgetNameFromLot($lot);
             if ($values[$name]) {
-                $lot->numero_table = $this->numero_table;
                 $lot->numero_anonymat = $values[$name];
             } else {
-                $lot->numero_table = null;
                 $lot->numero_anonymat = $values[$name];
             }
         }
@@ -55,7 +46,7 @@ class DegustationOrganisationManuelleForm extends acCouchdbObjectForm
     {
         $defaults = $this->getDefaults();
         foreach ($this->getObject()->lots as $lot) {
-            if ($lot->exist('numero_table') && $lot->exist('numero_anonymat') && ($lot->numero_table == $this->numero_table)) {
+            if ($lot->exist('numero_anonymat')) {
                 $defaults[$this->getWidgetNameFromLot($lot)] = $lot->numero_anonymat;
             }
         }

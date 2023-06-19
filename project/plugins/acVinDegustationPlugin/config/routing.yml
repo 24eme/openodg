@@ -102,7 +102,7 @@ degustation_anonymats_etape:
     model:    Degustation
     type:     object
     requirements:
-      sf_method: [get]
+      sf_method: [get, post]
 
 degustation_commission_etape:
   url: /degustation/:id/commission

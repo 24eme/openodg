@@ -139,41 +139,10 @@
     document.getElementById("table_anonymisation_manuelle")?.addEventListener('click', function (e) {
       const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-      if (button = e.target.closest('button.add-to-table')) {
-        const numero_table = button.dataset.table;
-        const tr = button.closest('tr')
-        const td_table = tr.querySelector('.lot-table')
-        const td_anonymat = tr.querySelector('.lot-anonymat')
-        const inputdiv = td_anonymat.querySelector('.form-group')
-        const input = inputdiv.querySelector('input')
-
-        td_table.textContent = alphabet[numero_table - 1]
-        document.querySelector("#liste-tables > a[data-table='"+numero_table+"'] > span.badge").textContent++
-
-        inputdiv.style.display = 'block'
-        input.value = document.querySelector("#liste-tables > a[data-table='"+numero_table+"'] > span.badge").textContent
-        input.focus()
-        input.select()
-        button.remove()
-      }
-
       if (del = e.target.closest('.lot-anonymat button.close')) {
-        const tr = del.closest('tr')
-        const td_table = tr.querySelector('.lot-table')
-        const table = td_table.textContent
-        const numero_table = alphabet.indexOf(table) + 1
-        const td_anonymat = tr.querySelector('.lot-anonymat')
-        const inputdiv = td_anonymat.querySelector('.form-group')
-        const input = td_anonymat.querySelector('input')
-
-        td_table.textContent = ''
+        const td = del.closest('td')
+        const input = td.querySelector('input')
         input.value = ''
-        inputdiv.style.display = 'none'
-        document.querySelector("#liste-tables > a[data-table='"+numero_table+"'] > span.badge").textContent--
-
-        const b = document.createElement('div')
-        b.innerHTML = '<button class="add-to-table" data-table="'+numero_table+'">Ajouter à la table '+alphabet[numero_table - 1]+'</button>'.trim()
-        td_anonymat.append(b)
       }
     });
   });

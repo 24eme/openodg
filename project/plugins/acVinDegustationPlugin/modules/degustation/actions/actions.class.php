@@ -315,6 +315,10 @@ class degustationActions extends sfActions {
     }
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            $this->forward('degustation', 'anonymisationManuelle');
+        }
+
         $this->degustation = $this->getRoute()->getDegustation();
         if ($this->degustation->getNbLotsRestantAPreleve() > 0) {
             $this->getUser()->setFlash('error', 'Il reste des lots à prélever');
@@ -511,17 +515,10 @@ class degustationActions extends sfActions {
         return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_TABLES), $this->degustation);
     }
 
-    public function executeOrganisationTableManuelle(sfWebRequest $request)
+    public function executeAnonymisationManuelle(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
-
-        if(!$request->getParameter('numero_table')) {
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
-        }
-
-        $this->numero_table = $request->getParameter('numero_table');
-        $this->form = new DegustationOrganisationManuelleForm($this->degustation, $this->numero_table);
-        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, ['table' => $this->numero_table]);
+        $this->form = new DegustationAnonymisationManuelleForm($this->degustation);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -535,11 +532,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        if ($this->degustation->hasFreeLots()) {
-            return $this->redirect('degustation_organisation_table', ['id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1]);
-        }
-
-        return $this->redirect('degustation_organisation_table_recap', ['id' => $this->degustation->_id]);
+        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_TABLES), ['id' => $this->degustation->_id]);
     }
 
     public function executeOrganisationTableManuelleRecap(sfWebRequest $request)
