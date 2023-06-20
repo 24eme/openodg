@@ -1048,7 +1048,7 @@ abstract class Lot extends acCouchdbDocumentTree
         if (preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) ([^0-9]*)$/', $adresse_total, $m)) {
             return $m;
         }
-        return array($a, $a, '', '');
+        return array($adresse_total, $adresse_total, '', '');
     }
 
     public function getLogementNom() {
