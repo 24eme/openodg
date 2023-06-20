@@ -55,12 +55,12 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             }
 
             $keyParcelle = $detailv->getCepage()->getHash() . '/' . $detailv->getCommune() . '-' . $detailv->getSection() . '-' . $detailv->getNumeroParcelle();
-            if (array_key_exists($keyParcelle, $uniqParcelles)) {
+            if (array_key_exists($keyParcelle, $uniqParcelles) && $detailv->superficie == $uniqParcelles[$keyParcelle]->superficie) {
                 $this->addPoint(self::TYPE_WARNING, 'parcelle_doublon', 'parcelle n°' . $detailv->getSection() . ' ' . $detailv->getNumeroParcelle() . ' à ' . $detailv->getCommune() . ' déclarée en ' . $detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
                             'erreur' => $detailv->getHashForKey())));
             } else {
-                $uniqParcelles[$keyParcelle] = $keyParcelle;
+                $uniqParcelles[$keyParcelle] = $detailv;
             }
         }
         foreach ($coplant as $pid => $phashes) {
