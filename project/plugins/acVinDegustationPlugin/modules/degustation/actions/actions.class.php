@@ -429,10 +429,6 @@ class degustationActions extends sfActions {
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
 
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            $this->forward('degustation', 'organisationTableManuelle');
-        }
-
         $this->redirectIfIsAnonymized();
 
         if(!$request->getParameter('numero_table')) {
@@ -532,14 +528,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_TABLES), ['id' => $this->degustation->_id]);
-    }
-
-    public function executeOrganisationTableManuelleRecap(sfWebRequest $request)
-    {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
-        $this->numero_table = null;
+        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_ANONYMISATION_MANUELLE), ['id' => $this->degustation->_id]);
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
