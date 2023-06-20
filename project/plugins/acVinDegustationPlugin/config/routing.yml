@@ -101,8 +101,8 @@ degustation_anonymats_etape:
   options:
     model:    Degustation
     type:     object
-    requirements:
-      sf_method: [get, post]
+  requirements:
+    sf_method: [get, post]
 
 degustation_commission_etape:
   url: /degustation/:id/commission
@@ -111,8 +111,8 @@ degustation_commission_etape:
   options:
     model:    Degustation
     type:     object
-    requirements:
-      sf_method: [get]
+  requirements:
+    sf_method: [get]
 
 degustation_resultats_etape:
   url: /degustation/:id/resultats-presences
