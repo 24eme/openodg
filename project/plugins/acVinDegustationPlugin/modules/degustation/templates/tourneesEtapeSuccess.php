@@ -60,10 +60,10 @@ echo $form->renderGlobalErrors();
             </tr>
         </thead>
         <tbody>
-            <?php
+            <?php foreach ($form as $key => $item):
                 if($key == '_revision') { continue; }
                 $thelots = isset($lots[$secteur][$key]) ? $lots[$secteur][$key] : $lots['SANS_SECTEUR'][$key];
-                $firstlot = array_values($thelots)[0];
+                $firstlot = array_values($thelots->getRawValue())[0];
             ?>
             <tr class="vertical-center">
                 <td class="text-left"><?php echo $firstlot->getLogementNom(); ?></td>
