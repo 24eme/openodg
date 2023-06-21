@@ -47,5 +47,12 @@
             </tr>
           <?php endforeach; ?>
         <?php endforeach; ?>
+        <?php if(!isset($public)): ?>
+            <tr data-hide="1" style="display:none;">
+                <td colspan="6" class="text-right">
+                    <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
+                </td>
+            </tr>
+        <?php endif;?>
     </tbody>
 </table>

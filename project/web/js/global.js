@@ -963,6 +963,11 @@
         $(this).closest('table').find('.open-button').click();
       }
 
+      $('#editHabilitation').on('click', function() {
+        $('#ouvert').click();
+      });
+
+
         $('#voir_toutes_les_demandes').on('click', function() {
             $('#tableaux_des_demandes tr.tohide').toggleClass('hidden');
         });
