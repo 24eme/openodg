@@ -194,9 +194,9 @@ class DegustationClient extends acCouchdbClient {
         return DegustationTousView::getInstance()->getDegustationsByAppellation($appellation, $campagne);
     }
 
-    public function getLastDegustationByStatut($appellation, $identifiant, $statut) {
+    public function getLastDateDegustationByStatut($appellation, $identifiant, $statut) {
 
-        return DegustationTousView::getInstance()->getLastDegustationByStatut($appellation, $identifiant, $statut);
+        return DegustationTousView::getInstance()->getLastDateDegustationByStatut($appellation, $identifiant, $statut);
     }
 
     public function getAppellationLibelle($appellation) {

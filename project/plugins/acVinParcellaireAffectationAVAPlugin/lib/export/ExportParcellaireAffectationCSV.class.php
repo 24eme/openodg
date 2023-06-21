@@ -126,7 +126,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
         } else {
             $export .=";;;;";
         }
-        $export .= $this->parcellaire->validation.";";
+        $export .= $this->parcellaire->getDateDepot().";";
         $export .= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
         $export .= ";".(($parcelle->vtsgn) ? "VTSGN" : "");
         $export .="\n";
