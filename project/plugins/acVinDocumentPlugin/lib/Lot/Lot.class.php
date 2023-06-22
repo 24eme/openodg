@@ -1132,4 +1132,16 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getLotInDrevOrigine(){
         return $this;
     }
+
+    public function isHabilite($activite = HabilitationClient::ACTIVITE_VINIFICATEUR) {
+		$date = date('Y-m-d');
+		if($this->document->isValidee()){
+			$date = $this->document->validation;
+		}
+		$hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->document->identifiant, $date);
+		if (!$hab) {
+			return false;
+		}
+		return $hab->isHabiliteFor($this->getProduitHash(), $activite);
+	}
 }
