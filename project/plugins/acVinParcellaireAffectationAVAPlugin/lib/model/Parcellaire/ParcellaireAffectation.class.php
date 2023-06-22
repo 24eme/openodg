@@ -145,24 +145,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     protected function initOrUpdateProduitsFromAire() {
-        $parcellesActives = array();
-        $parcellesLieux = array();
+        $parcellesActives = [];
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if(!$parcelle->active) {
                 continue;
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
-            if($parcelle->getLieu()) {
-                $parcellesLieux[$parcelle->getHash()] = $parcelle->getLieu();
-                $parcellesLieux[$parcelle->getSectionNumero()] = $parcelle->getLieu();
-            }
         }
-
-       if ($this->exist('declaration/certification/genre')) {
-           $certif = $this->get('declaration/certification');
-           $certif->remove('genre');
-           $certif->add('genre');
-        }
+        $this->declaration->cleanNode();
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
@@ -177,14 +167,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         if ($prod) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
-                            $parcelle->active = 0;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
                     }elseif ($nom == 'Alsace') {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod && $prod->hasVtsgn()) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
-                            $parcelle->active = 0;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                             $parcelle->vtsgn = 0;
                         }
                         $libelle = str_replace('ALSACE', 'ALSACE LIEU-DIT', $libelle);
@@ -192,26 +182,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         if ($prod) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
-                            $parcelle->active = 0;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
-                    }
-
-                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getSectionNumero()])) {
-                        $parcelle->lieu = $parcellesLieux[$parcelle->getSectionNumero()];
-                    }
-                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getHash()])) {
-                        $parcelle->lieu = $parcellesLieux[$parcelle->getHash()];
                     }
                 }
             }
-        }
-
-        foreach($parcellesActives as $parcelleHash) {
-            if(!$this->exist($parcelleHash)) {
-                continue;
-            }
-
-            $this->get($parcelleHash)->active = 1;
         }
     }
 
@@ -224,8 +199,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
 
-        $this->remove('declaration');
-        $this->add('declaration');
+        $this->declaration->cleanNode();
 
         $cepages_autorises = [
             'cepage_PB' => 'PINOT BLANC',
@@ -260,16 +234,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
                 $parcelle = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                 $parcelle->superficie = $CVIParcelle->superficie * 100; // hectare -> are
-                $parcelle->active = 0;
+                $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
             }
-        }
-
-        foreach($parcellesActives as $parcelleHash) {
-            if(!$this->exist($parcelleHash)) {
-                continue;
-            }
-
-            $this->get($parcelleHash)->active = 1;
         }
 
         if ($this->isIntentionCremant()) {
@@ -292,25 +258,16 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
     }
 
-    public function updateParcelles()
+    public function updateParcelles($repriseFromLast = false)
     {
         if($this->isIntentionCremant() || $this->isParcellaireCremant()) {
 
             return $this->updateParcellesCremant();
         }
 
-        if (count($this->declaration) == 0) {
-            $parcellairePrev = $this->getParcellaireLastCampagne();
-            if (!$parcellairePrev) {
-                return;
-            }
+        $this->initOrUpdateProduitsFromAire();
 
-            $this->declaration = $parcellairePrev->declaration;
-
-        }
         //TODO: récupérer les aires cochées de l'année dernière
-
-        return $this->initOrUpdateProduitsFromAire();
     }
 
     protected function updateParcellesCremant()
