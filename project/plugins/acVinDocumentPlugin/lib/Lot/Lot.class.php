@@ -1028,6 +1028,85 @@ abstract class Lot extends acCouchdbDocumentTree
         return Anonymization::hideIfNeeded($this->_get('adresse_logement'));
     }
 
+    public function hasLogement() {
+        return ($this->getAdresseLogement());
+    }
+
+    private function splitLogementIfHasSeparator() {
+        if (strpos($this->getAdresseLogement(), '—') === false) {
+            return null;
+        }
+        return explode('—', $this->getAdresseLogement());
+    }
+
+    private function explodeLogement() {
+        $adresse_total = $this->getAdresseLogement();
+        $s = $this->splitLogementIfHasSeparator();
+        if ($s) {
+            $adresse_total = $s[1];
+        }
+        if (preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) ([^0-9]*)$/', $adresse_total, $m)) {
+            return $m;
+        }
+        return array($adresse_total, $adresse_total, '', '');
+    }
+
+    public function getLogementNom() {
+        $r = $this->splitLogementIfHasSeparator();
+        if ($r) {
+            return $r[0];
+        }
+        return $this->getEtablissement()->raison_sociale;
+    }
+
+    public function getLogementCommune() {
+        $r = $this->explodeLogement();
+        if ($r && $r[3]) {
+            return $r[3];
+        }
+        $s = $this->splitLogementIfHasSeparator();
+        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+        if ($s && isset($s[3]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
+            return $s[3];
+        }
+        return $this->getEtablissement()->commune;
+    }
+    public function getLogementCodePostal() {
+        $r = $this->explodeLogement();
+        if ($r && $r[2]) {
+            return $r[2];
+        }
+        $s = $this->splitLogementIfHasSeparator();
+        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+        if ($s && isset($s[2]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
+            return $s[2];
+        }
+        return $this->getEtablissement()->code_postal;
+
+    }
+    public function getLogementAdresse() {
+        $r = $this->explodeLogement();
+        if ($r) {
+            return $r[1];
+        }
+        return $this->getEtablissement()->adresse;
+
+    }
+    public function getLogementTelephone() {
+        $r = $this->splitLogementIfHasSeparator();
+        if ($r && isset($r[2]) && preg_match('/^[0-9+][0-9\. ]{4,16}[0-9]$/', $r[2])) {
+            return $r[2];
+        }
+        return $this->getEtablissement()->telephone_bureau;
+    }
+    public function getLogementPortable() {
+        $r = $this->splitLogementIfHasSeparator();
+        if ($r && isset($r[3]) && preg_match('/^[0-9+][0-9\. ]{4,16}[0-9]$/', $r[3])) {
+            return $r[3];
+        }
+        return $this->getEtablissement()->telephone_mobile;
+    }
+
     public function getDeclarantNom() {
         return Anonymization::hideIfNeeded($this->_get('declarant_nom'));
     }

@@ -60,14 +60,16 @@ echo $form->renderGlobalErrors();
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($form as $key => $item):?>
-            <?php if($key == '_revision'): continue; endif; ?>
-            <?php $logement = splitLogementAdresse($key); ?>
+            <?php foreach ($form as $key => $item):
+                if($key == '_revision') { continue; }
+                $thelots = isset($lots[$secteur][$key]) ? $lots[$secteur][$key] : $lots['SANS_SECTEUR'][$key];
+                $firstlot = array_values($thelots->getRawValue())[0];
+            ?>
             <tr class="vertical-center">
-                <td class="text-left"><?php echo $logement['nom']; ?></td>
-                <td class="text-left"><?php echo $logement['adresse'] ?></td>
-                <td class="text-left"><?php echo $logement['commune']; ?> (<?php echo $logement['code_postal']; ?>)</td>
-                <td class="text-center"><?php echo isset($lots[$secteur][$key]) ? count($lots[$secteur][$key]) : count($lots['SANS_SECTEUR'][$key]); ?></td>
+                <td class="text-left"><?php echo $firstlot->getLogementNom(); ?></td>
+                <td class="text-left"><?php echo $firstlot->getLogementAdresse(); ?></td>
+                <td class="text-left"><?php echo $firstlot->getLogementCommune(); ?> (<?php echo $firstlot->getLogementCodePostal(); ?>)</td>
+                <td class="text-center"><?php echo count($thelots); ?></td>
                 <td class="text-center"><?php echo $item->render(['class' => "degustation bsswitch",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success"]); ?></td>
             </tr>
             <?php endforeach; ?>

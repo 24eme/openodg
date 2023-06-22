@@ -26,7 +26,6 @@ th {
     foreach($lots as $logement => $lots_du_logement):
         $etablissement = $etablissements[$logement];
         foreach ($lots_du_logement as $lot) :
-            $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
     <?php if ($ligne % 9 == 0 ) : $table_header = true; ?>
       </table>
@@ -51,11 +50,11 @@ th {
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale; ?></small></strong></td>
            <td>
              <small><?php
-              if($adresseLogement):
-                if ($adresseLogement['nom'] != $etablissement->raison_sociale) {
-                    echo substrUtf8($adresseLogement['nom'], 0, 32).'<br/>';
+              if($lot->hasLogement()):
+                if ($lot->getLogementNom() != $etablissement->raison_sociale) {
+                    echo substrUtf8($lot->getLogementNom(), 0, 32).'<br/>';
                 }?>
-                <?php echo substrUtf8($adresseLogement['adresse'], 0, 32).'<br/>'.substrUtf8($adresseLogement['code_postal'].' '.$adresseLogement['commune'], 0, 32).'<br/>'; ?>
+                <?php echo substrUtf8($lot->getLogementAdresse(), 0, 32).'<br/>'.substrUtf8($lot->getLogementCodePostal().' '.$lot->getLogementCommune(), 0, 32).'<br/>'; ?>
               <?php else: ?>
                 <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
               <?php endif; ?>
