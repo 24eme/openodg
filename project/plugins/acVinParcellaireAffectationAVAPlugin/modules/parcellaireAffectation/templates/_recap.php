@@ -13,13 +13,9 @@ if ($last) {
 <?php endif; ?>
 
 <?php if (count($parcellaire->declaration->getAppellationsOrderParcellaire()) > 0): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <?php
-            foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation):
-                ?>
+            <?php foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation): ?>
                 <?php if(!isset($notitle) || !$notitle): ?>
-                <h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' ares'; ?></span></h3>
+                <h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong></h3>
                 <?php endif; ?>
                 <?php
                 if (!$appellation->getSuperficieTotale()) {
@@ -27,7 +23,7 @@ if ($last) {
                     continue;
                 }
                 ?>
-                <table class="table table-striped table-condensed">
+                <table style="margin-bottom: 0;" class="table table-striped table-condensed">
                     <thead>
                         <tr>
                             <th class="col-xs-4 text-center">Appellation</th>
@@ -52,7 +48,7 @@ if ($last) {
                                 <td>
                                     <?php echo $detail->getCommune(); ?>
                                 </td>
-                                <td style="text-align: right;">
+                                <td class="text-right">
                                     <?php echo $detail->getSection(); ?> <?php echo $detail->getNumeroParcelle(); ?>
                                 </td>
                                 <td>
@@ -61,14 +57,20 @@ if ($last) {
                                 <td>
                                     <?php echo $detail->getCepageLibelle();  ?>
                                 </td>
-                                <td class="<?php echo $classsuperficie ?>" style="text-align: right;">
+                                <td class="text-right">
                                     <?php echoFloat($detail->getSuperficie()) ?> <small class="text-muted">ares</small>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4">Superficie totale affectable de l'appellation</th>
+                                    <th colspan="2" class="text-right"><?php echoFloat($appellation->getSuperficieTotale()) ?> <small class="text-muted">ares</small></th>
+                                </tr>
+                            </tfoot>
                     </tbody>
                 </table>
-                <p class="text-muted">Ces raisins sont destinés à être vinifiés <?php
+                <p class="text-muted" style="margin-top: 10px;">Ces raisins sont destinés à être vinifiés <?php
                     $libelledestination = array('SUR_PLACE' => 'sur place', 'CAVE_COOPERATIVE' => 'en caves coopératives', 'NEGOCIANT' => 'par des négociants');
                     $acheteurs = $appellation->getAcheteursNode();
                     $i = 0;
@@ -98,14 +100,8 @@ if ($last) {
                     }
                     ?>.</p>
     <?php endforeach; ?>
-        </div>
-    </div>
 <?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <p class="text-muted">
-                Aucune parcelle n'a été déclarée pour cette année.
-            </p>
-        </div>
-    </div>
+    <p class="text-muted">
+        Aucune parcelle n'a été déclarée pour cette année.
+    </p>
 <?php endif; ?>
