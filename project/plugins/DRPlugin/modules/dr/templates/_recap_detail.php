@@ -73,3 +73,12 @@
     <?php endforeach; ?>. Ces volumes ne figurent pas dans le tableau.
     </p>
 <?php endif; ?>
+<?php if ($dr->hasApporteurs(true)): ?>
+<?php $apporteurs = $dr->getApporteurs(true)->getRawValue(); ?>
+<?php if(count($apporteurs)): ?>
+    <p style="margin-top: -10px; margin-bottom: 20px;">
+        Ce document implique <?php echo count($apporteurs); ?> apporteurs :
+        <?php echo implode(', ', array_values($apporteurs)); ?>.
+    </p>
+<?php endif; ?>
+<?php endif; ?>
