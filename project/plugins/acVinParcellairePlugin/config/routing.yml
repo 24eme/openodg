@@ -54,6 +54,13 @@ parcellaire_map:
     model: Etablissement
     type: object
 
+parcellaire_form_pp:
+  url: /parcellaire/form/pp
+  param: {module: parcellaire, action: calculPPForm}
+  class: ParcellaireGeneralRoute
+  requirements:
+    sf_method: [get, post]
+
 parcellaire_pdf:
   url: /parcellaire/pdf/:id
   param: { module: parcellaire, action: parcellairePDF}
