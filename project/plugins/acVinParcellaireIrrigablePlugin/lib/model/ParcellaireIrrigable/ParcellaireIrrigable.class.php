@@ -188,45 +188,8 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     }
 
     public function findParcelle($parcelle) {
-        $parcelles = $this->getParcellesByIdu();
 
-        if(!isset($parcelles[$parcelle->idu])) {
-
-            return null;
-        }
-
-        $parcellesMatch = [];
-
-        foreach($parcelles[$parcelle->idu] as $p) {
-            $score = 0;
-            if($parcelle->cepage == $p->cepage) {
-                $score += 0.25;
-            }
-            if($parcelle->campagne_plantation == $p->campagne_plantation) {
-                $score += 0.25;
-            }
-            if($parcelle->lieu == $p->lieu) {
-                $score += 0.25;
-            }
-            if($parcelle->superficie == $p->superficie) {
-                $score += 0.25;
-            }
-
-            if($score < 0.75) {
-                continue;
-            }
-
-            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
-        }
-
-        krsort($parcellesMatch);
-
-        foreach($parcellesMatch as $key => $pMatch) {
-
-            return $pMatch;
-        }
-
-        return null;
+        return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
     }
 
     public function getDeclarantSiret(){

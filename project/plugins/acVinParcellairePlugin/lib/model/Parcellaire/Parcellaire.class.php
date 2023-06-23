@@ -12,7 +12,6 @@ class Parcellaire extends BaseParcellaire {
     protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
     protected $habilitation = false;
     private $cache_geojson = null;
-    protected $parcelles_idu = null;
 
     public function __construct() {
         parent::__construct();
@@ -119,56 +118,13 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getParcellesByIdu() {
-        if(is_array($this->parcelles_idu)) {
 
-            return $this->parcelles_idu;
-        }
-
-        $this->parcelles_idu = [];
-
-        foreach($this->getParcelles() as $parcelle) {
-            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-        }
-
-        return $this->parcelles_idu;
+        return $this->declaration->getParcellesByIdu();
     }
 
     public function findParcelle($parcelle) {
-        $parcelles = $this->getParcellesByIdu();
 
-        if(!isset($parcelles[$parcelle->idu])) {
-
-            return null;
-        }
-
-        $parcellesMatch = [];
-
-        foreach($parcelles[$parcelle->idu] as $p) {
-            $score = 0;
-            if($parcelle->cepage == $p->cepage) {
-                $score += 0.25;
-            }
-            if($parcelle->campagne_plantation == $p->campagne_plantation) {
-                $score += 0.25;
-            }
-            if($parcelle->lieu == $p->lieu) {
-                $score += 0.25;
-            }
-            if($parcelle->superficie == $p->superficie) {
-                $score += 0.25;
-            }
-
-            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
-        }
-
-        krsort($parcellesMatch);
-
-        foreach($parcellesMatch as $key => $pMatch) {
-
-            return $pMatch;
-        }
-
-        return null;
+        return ParcellaireClient::findParcelle($this, $parcelle);
     }
 
     public function getDateFr() {
