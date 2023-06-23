@@ -75,24 +75,25 @@
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: center; width: 170px;">&nbsp;Commune</th>        
-        <th class="th" style="text-align: center; width: 74px;">Section</th>       
+        <th class="th" style="text-align: center; width: 170px;">&nbsp;Commune</th>
+        <th class="th" style="text-align: center; width: 74px;">Section</th>
         <th class="th" style="text-align: center; width: 74px;">Numéro</th>
 <?php if(!$parcellaire->isParcellaireCremant()) : ?>
-        <th class="th" style="text-align: center; width: 160px;">Cépage</th> 
+        <th class="th" style="text-align: center; width: 160px;">Cépage</th>
         <th class="th" style="text-align: center; width: 60px;">VT/SGN</th>
 <?php else: ?>
-        <th class="th" style="text-align: center; width: 220px;">Lieu - Cépage</th> 
+        <th class="th" style="text-align: center; width: 220px;">Lieu - Cépage</th>
 <?php endif; ?>
         <th class="th" style="text-align: center; width: 100px;">Surface</th>
     </tr>
     <?php
+    $totaleSuperficie = 0;
     foreach ($parcellesForDetail->parcelles as $detailHash => $parcelle):
         $hasVtSgn = $parcelle->parcelle->getCepage()->getConfig()->hasVtsgn();
         ?>
         <tr>
-            <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->commune ?>&nbsp;</td>        
-            <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->section ?>&nbsp;</td>       
+            <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->commune ?>&nbsp;</td>
+            <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->section ?>&nbsp;</td>
             <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->numero_parcelle ?>&nbsp;</td>
             <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage_libelle ?>&nbsp;</td>
             <?php if(!$parcellaire->isParcellaireCremant()) : ?>
@@ -106,7 +107,20 @@
             <?php endif; ?>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.2f", $parcelle->parcelle->superficie); ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
         </tr>
+        <?php $totaleSuperficie += $parcelle->parcelle->superficie; ?>
 <?php endforeach; ?>
+<tr>
+    <td class="td" style="text-align: left; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<strong>Total</strong>&nbsp;</td>
+    <td class="td"></td>
+    <td class="td"></td>
+    <?php if(!$parcellaire->isParcellaireCremant()) : ?>
+    <td class="td"></td>
+    <td class="td"></td>
+    <?php else: ?>
+    <td class="td"></td>
+    <?php endif; ?>
+    <td class="td" style="text-align:right; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.2f", $totaleSuperficie); ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
+</tr>
 </table>
 
 <br />
