@@ -32,7 +32,7 @@ class parcellaireAffectationActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
         $this->parcellaire = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
-        $this->parcellaire->updateFromLastParcellaire();
+        $this->parcellaire->updateParcelles();
 
         $this->parcellaire->save();
 
@@ -46,7 +46,7 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->parcellaire = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
         $this->parcellaire->add('papier', 1);
-        $this->parcellaire->updateFromLastParcellaire();
+        $this->parcellaire->updateParcelles();
         $this->parcellaire->save();
 
         return $this->redirect('parcellaire_edit', $this->parcellaire);
@@ -224,15 +224,7 @@ class parcellaireAffectationActions extends sfActions {
         $this->secure(ParcellaireAffectationSecurity::EDITION, $this->parcellaire);
         $this->appellation = $request->getParameter('appellation');
 
-        if(strpos($this->parcellaire->_id, 'PARCELLAIREAFFECTATIONCREMANT') === false) {
-            throw new Exception('Pas encore implementé');
-        }
-
-        $nbParcelles = count($this->parcellaire->declaration->getProduitsCepageDetails());
-        $this->parcellaire->initOrUpdateProduitsFromCVI();
-        if(!$nbParcelles) {
-            $this->parcellaire->updateCremantFromLastParcellaire();
-        }
+        $this->parcellaire->updateParcelles();
         $this->parcellaire->save();
 
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));

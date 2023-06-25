@@ -135,7 +135,7 @@
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
                         <td class="text-center
-                        <?php if (in_array($mouvements[$lot->numero_dossier.$lot->numero_archive]->statut, [Lot::STATUT_MANQUEMENT_EN_ATTENTE, Lot::STATUT_NONCONFORME])): ?>
+                        <?php if ($lot->isCommercialisable() === false): ?>
                             alert-danger
                         <?php endif ?>
                         ">

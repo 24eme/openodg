@@ -2,7 +2,6 @@
 <?php use_helper('Lot') ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Text') ?>
-<?php $adresseLgt = splitLogementAdresse($adresseLogement, $etablissement); ?>
 <style>
 <?php echo style(); ?>
 .bg-white{
@@ -49,18 +48,21 @@ p, div {
         </p>
     </td>
     <td border="1px" class="border">
+<?php
+    $lot = array_values($lots->getRawValue())[0];
+?>
         <p>
-          <span><strong>Nom :</strong> <?php echo $adresseLgt['nom'] ?></span>
+          <span><strong>Nom :</strong> <?php echo truncate_text($lot->getLogementNom(), 43, '...') ?></span>
         </p>
         <p>
-          <span><strong>Adresse :</strong> <?php echo $adresseLgt['adresse'] ?></span>
+          <span><strong>Adresse :</strong> <?php echo $lot->getLogementAdresse(); ?></span>
         </p>
         <p>
-          <span><strong>Code postal : </strong><?php echo $adresseLgt['code_postal'] ?></span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ville</strong> : <?php echo $adresseLgt['commune'] ?></span>
+          <span><strong>Code postal : </strong><?php echo $lot->getLogementCodePostal(); ?></span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Ville</strong> : <?php echo $lot->getLogementCommune(); ?></span>
         </p>
         <p>
-          <span><strong>Téléphone :</strong> <?php echo $adresseLgt['telephone'] ?> <?php echo ($adresseLgt['portable']) ? ' / '.$adresseLgt['portable'] : ''; ?></span>
+          <span><strong>Téléphone :</strong> <?php echo $lot->getLogementTelephone() ?> <?php echo ($lot->getLogementPortable()) ? ' / '.$lot->getLogementPortable() : ''; ?></span>
         </p>
         <p>
             <strong>Laboratoire :</strong> <?php echo $etablissement->getLaboLibelle(); ?>

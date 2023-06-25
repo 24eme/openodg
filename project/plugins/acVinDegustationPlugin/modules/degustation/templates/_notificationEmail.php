@@ -2,7 +2,7 @@
 <?php use_helper('Date') ?>
 Madame, Monsieur,
 
-Au vu des documents fournis, et des résultats du contrôle documentaire, analytique et organoleptique, nous vous prions de bien vouloir trouver ci-dessous le résultat de vos lots prélevés pour la séance de dégustation du <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?>.
+Au vu des documents fournis, et des résultats des contrôles analytique et organoleptique, nous vous prions de bien vouloir trouver ci-dessous le résultat de vos lots prélevés pour la séance de dégustation du <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?>.
 
 <?php if(count($lotsConformes)): ?>
 <?php if(count($lotsNonConformes) > 0 && count($lotsConformes) == 1): ?>1 de vos lots est CONFORME et APTE à la commercialisation<?php elseif(count($lotsNonConformes)): ?><?= count($lotsConformes) ?> de vos lots sont CONFORMES et APTES à la commercialisation<?php elseif(count($lotsConformes) == 1): ?>Votre lot est CONFORME et APTE à la commercialisation<?php else: ?>Vos <?= count($lotsConformes) ?> lots sont CONFORMES et APTES à la commercialisation<?php endif; ?>, vous pouvez télécharger le courrier en cliquant sur ce lien : <a href="<?php echo url_for('degustation_get_courrier_auth_conforme', [

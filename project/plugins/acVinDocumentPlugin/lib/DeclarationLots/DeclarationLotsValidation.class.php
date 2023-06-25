@@ -9,6 +9,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
         $this->addControle(self::TYPE_FATAL, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
+        $this->addControle(self::TYPE_ERROR, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
         /*
          * Engagement
          */
@@ -36,6 +37,10 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             if(!$lot->volume && $lot->volume !== 0){
               $this->addPoint(self::TYPE_FATAL, 'lot_incomplet_fatal', "Lot n° ".($key+1)." - Volume manquant", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
+            }
+            $activite = ($lot->getDocument()->type == TransactionClient::TYPE_MODEL) ? HabilitationClient::ACTIVITE_VRAC : HabilitationClient::ACTIVITE_CONDITIONNEUR;
+            if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$lot->isHabilite($activite)) {
+                $this->addPoint(self::TYPE_ERROR, 'declaration_habilitation', $lot->getConfigProduit()->getCepage()->getLibelleComplet(), $this->generateUrl($routeName, array("id" => $this->document->_id)) );
             }
 
             $volume = sprintf("%01.02f",$lot->getVolume());

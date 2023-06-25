@@ -946,6 +946,7 @@
            table.find('.invisible').removeClass('invisible').addClass('visible');
           $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-open');/*.addClass('glyphicon-eye-close');*/ });
           $(this).css("opacity","0.6");
+          $('#editHabilitation').hide();
         }else{
           table.find('tr[data-hide="1"]').each(function(){
             $(this).hide();
@@ -956,12 +957,18 @@
           table.find('.visible').removeClass('visible').addClass('invisible');
           $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open'); });
           $(this).css("opacity","1");
+          $('#editHabilitation').show();
         }
       });
 
       if($('#ouvert:target').length) {
         $(this).closest('table').find('.open-button').click();
       }
+
+      $('#editHabilitation').on('click', function() {
+        $('#ouvert').click();
+      });
+
 
         $('#voir_toutes_les_demandes').on('click', function() {
             $('#tableaux_des_demandes tr.tohide').toggleClass('hidden');

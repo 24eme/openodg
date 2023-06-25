@@ -9,6 +9,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     protected $declarant_document = null;
     protected $piece_document = null;
     protected $repartition_par_parcelle = [];
+    protected $parcelles_idu = null;
 
     public function __construct() {
         parent::__construct();
@@ -125,38 +126,40 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $this->_get('validation_odg');
     }
 
+    public function getDateDepot()
+	{
+        if($this->validation && $this->validation !== true && (!$this->exist('date_depot') || !$this->_get('date_depot'))) {
+            $date = new DateTime($this->validation);
+            $this->add('date_depot', $date->format('Y-m-d'));
+        }
+
+        if(!$this->exist('date_depot')) {
+
+            return null;
+        }
+
+        return $this->_get('date_depot');
+    }
+
     public function hasVendeurs() {
         return count($this->vendeurs);
     }
 
-    public function initProduitFromLastParcellaire() {
-        if (count($this->declaration) == 0) {
-            $this->importProduitsFromLastParcellaire();
-        }
-    }
-
-    public function initOrUpdateProduitsFromAire() {
-        $parcellesActives = array();
-        $parcellesLieux = array();
+    protected function initOrUpdateProduitsFromAire() {
+        $this->declaration->cleanNode();
+        $parcellesActives = [];
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if(!$parcelle->active) {
                 continue;
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
-            if($parcelle->getLieu()) {
-                $parcellesLieux[$parcelle->getHash()] = $parcelle->getLieu();
-                $parcellesLieux[$parcelle->getSectionNumero()] = $parcelle->getLieu();
-            }
-        }
-
-       if ($this->exist('declaration/certification/genre')) {
-           $certif = $this->get('declaration/certification');
-           $certif->remove('genre');
-           $certif->add('genre');
         }
         $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
+                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                    continue;
+                }
                 foreach($CVIParcelle->getIsInAires() as $nom => $statut) {
                     $libelle = strtoupper($nom.' '.$CVIParcelle->getCepage());
                     $libelle = str_replace(' A PETITS GRAINS', '', str_replace('GEWURZTRAMINER', 'GEWURZT', preg_replace('/ (B|RS|N|G)$/', '', $libelle)));
@@ -165,14 +168,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         if ($prod) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
-                            $parcelle->active = 0;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
                     }elseif ($nom == 'Alsace') {
                         $prod = $this->getConfiguration()->identifyProductByLibelle($libelle);
                         if ($prod && $prod->hasVtsgn()) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
-                            $parcelle->active = 0;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                             $parcelle->vtsgn = 0;
                         }
                         $libelle = str_replace('ALSACE', 'ALSACE LIEU-DIT', $libelle);
@@ -180,30 +183,17 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                         if ($prod) {
                             $parcelle = $this->addProduitParcelle($prod->getHash(), $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                             $parcelle->superficie = $CVIParcelle->superficie * 100;
-                            $parcelle->active = 0;
+                            $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
                         }
-                    }
-
-                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getSectionNumero()])) {
-                        $parcelle->lieu = $parcellesLieux[$parcelle->getSectionNumero()];
-                    }
-                    if(isset($parcelle) && isset($parcellesLieux[$parcelle->getHash()])) {
-                        $parcelle->lieu = $parcellesLieux[$parcelle->getHash()];
                     }
                 }
             }
         }
-
-        foreach($parcellesActives as $parcelleHash) {
-            if(!$this->exist($parcelleHash)) {
-                continue;
-            }
-
-            $this->get($parcelleHash)->active = 1;
-        }
     }
 
-    public function initOrUpdateProduitsFromCVI() {
+    protected function initOrUpdateProduitsCremantsFromCVI() {
+        $this->declaration->cleanNode();
+
         $parcellesActives = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if(!$parcelle->active) {
@@ -212,8 +202,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
 
-        $this->remove('declaration');
-        $this->add('declaration');
 
         $cepages_autorises = [
             'cepage_PB' => 'PINOT BLANC',
@@ -230,6 +218,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
+                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                    continue;
+                }
                 $c = false;
                 foreach ($cepages_autorises as $k => $cep) {
                     if (strpos(strtolower($CVIParcelle->getCepage()), strtolower($cep)) !== false) {
@@ -245,28 +236,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $hash = "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur/$c";
                 $parcelle = $this->addProduitParcelle($hash, $CVIParcelle->getKey(), $CVIParcelle->getCommune(), $CVIParcelle->getSection(), $CVIParcelle->getNumeroParcelle(), $CVIParcelle->getLieu());
                 $parcelle->superficie = $CVIParcelle->superficie * 100; // hectare -> are
-                $parcelle->active = 0;
+                $parcelle->active = (int) isset($parcellesActives[$parcelle->getHash()]);
             }
         }
 
-        foreach($parcellesActives as $parcelleHash) {
-            if(!$this->exist($parcelleHash)) {
-                continue;
-            }
-
-            $this->get($parcelleHash)->active = 1;
-        }
-    }
-
-    public function updateFromLastParcellaire()
-    {
-        //TODO: récupérer les aires cochées de l'année dernière
-        $this->initProduitFromLastParcellaire();
-        return $this->initOrUpdateProduitsFromAire();
-    }
-
-    public function updateCremantFromLastParcellaire()
-    {
         if ($this->isIntentionCremant()) {
             $affectation = ParcellaireAffectationClient::getInstance()->find(ParcellaireAffectationClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT));
         }
@@ -285,20 +258,80 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $this->remove($hash);
             }
         }
+    }
 
-        $prevParcellaireCremant = $this->getParcellaireLastCampagne();
+    public function updateParcelles()
+    {
+        if($this->isIntentionCremant() || $this->isParcellaireCremant()) {
 
-        if (! $prevParcellaireCremant) {
+            return $this->updateParcellesCremant();
+        }
+
+        $reprise = count($this->declaration) == 0;
+
+        $this->initOrUpdateProduitsFromAire();
+
+        if($reprise) {
+            $this->updateFromLastParcellaire();
+        }
+    }
+
+    protected function updateParcellesCremant()
+    {
+        $reprise = count($this->declaration) == 0;
+
+        $this->initOrUpdateProduitsCremantsFromCVI();
+
+        if($reprise) {
+            $this->updateFromLastParcellaire();
+        }
+    }
+
+    public function updateFromLastParcellaire() {
+        $prevParcellaire = $this->getParcellaireLastCampagne();
+        if(!$prevParcellaire) {
             return;
         }
 
-        foreach ($prevParcellaireCremant->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleCremant) {
-            foreach ($this->getAllParcellesByAppellation(ParcellaireAffectationClient::APPELLATION_CREMANT) as $parcelleAActiver) {
-                if ($parcelleAActiver->section == $parcelleCremant->section && $parcelleAActiver->numero_parcelle == $parcelleCremant->numero_parcelle) {
-                    $parcelleAActiver->active = 1;
+        foreach($prevParcellaire->declaration->getAppellations() as $appellation) {
+            foreach($appellation->getParcelles() as $prevParcelle) {
+                $parcelle = null;
+                if($this->exist($appellation->getHash())) {
+                    $parcelle = $this->get($appellation->getHash())->findParcelle($prevParcelle);
                 }
+                if(!$parcelle) {
+                    $parcelle = $this->addParcelleForAppellation($appellation->getHash(), $prevParcelle->getCepage()->getHash(), $prevParcelle->commune, $prevParcelle->section, $prevParcelle->numero_parcelle, $prevParcelle->lieu, $prevParcelle->departement);
+                    $parcelle->superficie = $prevParcelle->superficie;
+                }
+                $parcelle->active = $prevParcelle->active;
+                $parcelle->vtsgn = $prevParcelle->vtsgn;
             }
         }
+    }
+
+    public function getParcelles() {
+
+        return $this->declaration->getProduitsCepageDetails();
+    }
+
+    public function findParcelle($parcelle) {
+
+        return ParcellaireClient::findParcelle($this, $parcelle, 0.5);
+    }
+
+    public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
+
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
     }
 
     public function getParcellaireLastCampagne($type = null) {
@@ -317,15 +350,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return $parcellaire;
-    }
-
-    private function importProduitsFromLastParcellaire() {
-        $parcellairePrev = $this->getParcellaireLastCampagne();
-        if (!$parcellairePrev) {
-            return;
-        }
-
-        $this->declaration = $parcellairePrev->declaration;
     }
 
     public function fixSuperficiesHa() {
@@ -688,6 +712,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function devalidate() {
+        $this->getDateDepot();
         $this->validation = null;
         $this->validation_odg = null;
         $this->etape = null;
@@ -726,6 +751,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     	$this->piece_document->generatePieces();
     }
 
+    public function save() {
+        $this->getDateDepot();
+
+        return parent::save();
+    }
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -734,7 +765,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     	$title = ($this->isIntentionCremant())? 'Intention de production' : 'Affectation parcellaire';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->getValidation(),
+    		'date_depot' => $this->getDateDepot(),
     		'libelle' => $title.' '.$cremant.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
@@ -767,10 +798,5 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     /**** FIN DES PIECES ****/
-
-    public function isParcelleEditable() {
-
-        return false;
-    }
 
 }

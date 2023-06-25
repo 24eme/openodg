@@ -40,6 +40,15 @@ EOF;
             $drev->save();
         }
 
+        $is_facture = 0;
+        foreach($drev->mouvements as $id => $mvts ) {
+            foreach ($mvts as $key => $mvt) {
+                $is_facture = 1;
+                echo sprintf("ERROR;Des mouvements déjà facturés;%s\n", $drev->_id);
+                exit(1);
+            }
+        }
+
         $drev->remove('mouvements');
         $drev->add('mouvements');
         if (!$options['onlydeletemouvements']) {

@@ -3,6 +3,7 @@
 class LotsClient
 {
     protected static $self = null;
+    protected $mouvements_declarant = [];
 
     const INITIAL_TYPE_CHANGE = "Changé";
 
@@ -353,5 +354,20 @@ class LotsClient
     {
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
         return MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+    }
+
+    public function getLastMouvements($doc)
+    {
+        if (empty($this->mouvements_declarant) === false) {
+            return $this->mouvements_declarant;
+        }
+
+        foreach (MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($doc->identifiant, $doc->campagne)->rows as $mouvement) {
+            $this->mouvements_declarant[
+                $mouvement->key[MouvementLotHistoryView::KEY_NUMERO_DOSSIER] . $mouvement->key[MouvementLotHistoryView::KEY_NUMERO_ARCHIVE]
+            ] = $mouvement->value;
+        }
+
+        return $this->mouvements_declarant;
     }
 }

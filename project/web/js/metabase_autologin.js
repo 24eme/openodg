@@ -1,4 +1,8 @@
 function metabase_redirect_to_external_auth(metabase_webpath, metabase_external_auth_page) {
+	var href = document.location.href;
+	if (href.indexOf('/metabase/public/') != -1) {
+		return;
+	}
 	var xhttp = new XMLHttpRequest();
 	xhttp.open("GET", metabase_webpath + "/api/user/current", true);
 	xhttp.send();
