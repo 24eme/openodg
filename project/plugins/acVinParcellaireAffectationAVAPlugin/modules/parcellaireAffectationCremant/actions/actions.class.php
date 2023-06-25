@@ -9,8 +9,7 @@ class parcellaireAffectationCremantActions extends sfActions {
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
         $this->parcellaireCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()), ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
-        $this->parcellaireCremant->initOrUpdateProduitsFromCVI();
-        $this->parcellaireCremant->updateCremantFromLastParcellaire();
+        $this->parcellaireCremant->updateParcelles();
         $this->parcellaireCremant->save();
         return $this->redirect('parcellaire_edit', $this->parcellaireCremant);
     }
@@ -22,8 +21,7 @@ class parcellaireAffectationCremantActions extends sfActions {
 
         $this->parcellaireCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()), ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
         $this->parcellaireCremant->add('papier', 1);
-        $this->parcellaireCremant->initOrUpdateProduitsFromCVI();
-        $this->parcellaireCremant->updateCremantFromLastParcellaire();
+        $this->parcellaireCremant->updateParcelles();
         $this->parcellaireCremant->save();
 
         return $this->redirect('parcellaire_edit', $this->parcellaireCremant);

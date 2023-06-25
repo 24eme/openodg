@@ -303,4 +303,47 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
+    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1) {
+        $parcelles = $parcellaire->getParcellesByIdu();
+
+        if(!isset($parcelles[$parcelle->idu])) {
+
+            return null;
+        }
+
+        $parcellesMatch = [];
+
+        foreach($parcelles[$parcelle->idu] as $p) {
+            $score = 0;
+
+            if($parcelle->getCepageLibelle() == $p->getCepageLibelle()) {
+                $score += 0.25;
+            }
+            if($parcelle->campagne_plantation == $p->campagne_plantation) {
+                $score += 0.25;
+            }
+            if($parcelle->lieu == $p->lieu) {
+                $score += 0.25;
+            }
+            if($parcelle->superficie == $p->superficie) {
+                $score += 0.25;
+            }
+
+            if($score < $scoreMin) {
+                continue;
+            }
+
+            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
+        }
+
+        krsort($parcellesMatch);
+
+        foreach($parcellesMatch as $key => $pMatch) {
+
+            return $pMatch;
+        }
+
+        return null;
+    }
+
 }

@@ -11,13 +11,13 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
     }
 
     public function create() {
-      $etablissements = array();
       $lots = array();
+      $etablissements = array();
       foreach ($this->degustation->getLotsPrelevables() as $lot) {
           if(!isset($etablissements[$lot->declarant_identifiant])) {
               $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
           }
-          $lots[$etablissements[$lot->declarant_identifiant]->code_postal.'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
+          $lots[$lot->getLogementCodePostal().'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
       }
 
       ksort($lots);

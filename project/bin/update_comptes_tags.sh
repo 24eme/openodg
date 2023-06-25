@@ -15,3 +15,4 @@ else
 fi
 
 php symfony compte:updateTagsFromHabilitations $SYMFONYTASKOPTIONS
+php symfony compte:updateProductionTag $SYMFONYTASKOPTIONS

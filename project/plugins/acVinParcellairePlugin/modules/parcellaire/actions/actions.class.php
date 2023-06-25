@@ -100,9 +100,38 @@ class parcellaireActions extends sfActions {
         $this->redirect('parcellaire_declarant', $this->etablissement);
     }
 
+    public function executeCalculPPForm(sfWebRequest $request){
+        $this->form = new ParcellaireCalculPPForm();
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        // header("Content-Type: application/pdf; charset=UTF-8");
+        // header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s.pdf"', time()));
+        header("Content-Type: application/vnd.oasis.opendocument.spreadsheet; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s.ods"', time()));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        $dgc =  $this->form['dgc']->getValue();
+        unset($this->form['dgc']);
+        $ods = new ExportCalculPPODS($dgc, $this->form);
+        echo $ods->create();
+
+        exit;
+    }
+
     public function executeParcellairePDF(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
@@ -233,7 +262,7 @@ class parcellaireActions extends sfActions {
 
         echo json_encode($parcellaire->getGeoJsonWithAires());
 
-        exit;        
+        exit;
     }
 
 

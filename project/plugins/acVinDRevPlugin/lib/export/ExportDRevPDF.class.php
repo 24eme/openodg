@@ -93,6 +93,10 @@ class ExportDRevPDF extends ExportPDF {
             $titre .= " (".$infos['nom'].")";
         }
 
+        if ($this->drev->_rev === null) {
+            $titre .= " - Numéro de dossier " . $this->drev->lots[0]->getNumeroDossier();
+        }
+
         return $titre;
     }
 
