@@ -23,6 +23,7 @@ SV12:
                   tiers: { }
                   tiers_raison_sociale: { }
                   tiers_cvi: { }
+                  tiers_commune: { }
                   bailleur: { }
                   bailleur_ppm: { }
                   bailleur_raison_sociale: { }
