@@ -451,9 +451,16 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return $value;
     }
 
+    public function getDonnees() {
+        if (!$this->exist('donnees')) {
+            $this->generateDonnees();
+        }
+        return $this->_get('donnees');
+    }
+
     public function getNbApporteurs($produitFilter = null) {
         $apporteurs = array();
-        foreach($this->donnees as $donnee) {
+        foreach($this->getDonnees() as $donnee) {
             if (!$donnee->tiers_cvi) {
                 continue;
             }
