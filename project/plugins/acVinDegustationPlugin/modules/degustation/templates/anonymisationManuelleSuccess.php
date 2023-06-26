@@ -29,7 +29,7 @@
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($degustation->lots as $lot): ?>
+            <?php foreach ($degustation->getLotsDegustables() as $lot): ?>
                 <?php $name = $form->getWidgetNameFromLot($lot); ?>
                 <tr class="lot <?= ($lot->leurre) ? ' warning' : '' ?>">
                     <td class="lot-declarant"><?php echo $lot->declarant_nom ?></td>

@@ -668,6 +668,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lots;
 		}
 
+        public function getLotsPreleves()
+        {
+            return array_filter($this->getLots()->toArray(), function ($lot) {
+                return $lot->isPreleve() === true;
+            });
+        }
+
         public function getLotsSansVolume() {
             $lots = array();
 	   		foreach ($this->getLots() as $lot) {

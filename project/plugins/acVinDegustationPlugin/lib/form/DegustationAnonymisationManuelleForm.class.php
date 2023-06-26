@@ -12,7 +12,7 @@ class DegustationAnonymisationManuelleForm extends acCouchdbObjectForm
 
     public function configure()
     {
-        foreach ($this->getObject()->lots as $lot) {
+        foreach ($this->getObject()->getLotsDegustables() as $lot) {
             $name = $this->getWidgetNameFromLot($lot);
             $this->setWidget($name , new sfWidgetFormInput([], ['required' => false]));
             $this->setValidator($name, new sfValidatorString(['required' => false]));
