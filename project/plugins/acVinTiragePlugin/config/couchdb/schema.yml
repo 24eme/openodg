@@ -17,6 +17,7 @@ Tirage:
       campagne: { }
       identifiant: { }
       numero: { }
+      commentaire:  { }
       etape: { }
       validation: { }
       validation_odg: { }
