@@ -7,7 +7,7 @@
             <th class="col-xs-2">Activités</th>
             <th class="text-center col-xs-2">Statut de l'habilitation</th>
             <th class="text-center col-xs-1">Date</th>
-            <?php if(!isset($public)): ?>
+            <?php if(!isset($public) || !$public): ?>
             <th class="text-center col-xs-3">Commentaire</th>
             <th class="text-center"><span id="ouvert" class="open-button glyphicon glyphicon-eye-open" style="cursor: pointer;" ></span></th>
             <?php endif; ?>
@@ -36,7 +36,7 @@
                   </td>
                   <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" <?php $rowDisplayed ?> ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
                   <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
-                  <?php if(!isset($public)): ?>
+                  <?php if(!isset($public) || !$public): ?>
                   <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
                   <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" >
                     <?php if(isset($editForm)): ?>
@@ -47,7 +47,7 @@
             </tr>
           <?php endforeach; ?>
         <?php endforeach; ?>
-        <?php if(!isset($public)): ?>
+        <?php if(!isset($public) || !$public): ?>
             <tr data-hide="1" style="display:none;">
                 <td colspan="6" class="text-right">
                     <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
