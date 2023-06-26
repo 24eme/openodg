@@ -29,7 +29,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
             return "CsvVendanges";
         }
 
-        return null;
+        throw new sfException('Format non supporté');
     }
 
     public function convertFromCsvVendanges() {
