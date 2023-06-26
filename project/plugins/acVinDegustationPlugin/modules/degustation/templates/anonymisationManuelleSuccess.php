@@ -22,7 +22,7 @@
           <thead>
             <tr>
               <th class="col-xs-3 text-center">Opérateur</th>
-              <th class="col-xs-4 text-center">Produit (millesime)</th>
+              <th class="col-xs-4 text-center">Produit (millesime)<br/><span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</span></th>
               <th class="col-xs-1 text-center">Lgmt</th>
               <th class="col-xs-1 text-center">Num. ODG</th>
               <th class="col-xs-3 text-center">Anonymat</th>
@@ -64,6 +64,8 @@
         </form>
     </div>
 </div>
+
+<?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => 0, 'service' => url_for('degustation_anonymats_etape', ['id' => $degustation->_id]))), 'form' => $triTableForm)); ?>
 
 <script>
     document.querySelector('#table_filtre').onkeyup = function() {

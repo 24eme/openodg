@@ -511,6 +511,8 @@ class degustationActions extends sfActions {
     {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->form = new DegustationAnonymisationManuelleForm($this->degustation);
+        $this->tri = $this->degustation->tri;
+        $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray());
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -980,16 +982,17 @@ class degustationActions extends sfActions {
     public function executeTriTable(sfWebRequest $request) {
         $degustation = $this->getRoute()->getDegustation();
         $numero_table = $request->getParameter('numero_table');
+        $service = $request->getParameter('service', null);
         $this->triTableForm = new DegustationTriTableForm(array());
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
-        }
 
         $this->triTableForm->bind($request->getParameter($this->triTableForm->getName()));
         $recap = $this->triTableForm->getValue('recap');
 
         if (!$this->triTableForm->isValid()) {
+            if ($service) {
+                return $this->redirect($service);
+            }
+
             if($recap) {
                 return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
             }
@@ -1001,6 +1004,10 @@ class degustationActions extends sfActions {
 
         $degustation->tri = join('|', array_filter(array_unique(array_values($values))));
         $degustation->save();
+
+        if ($service) {
+            return $this->redirect($service);
+        }
 
         if($recap) {
             return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
