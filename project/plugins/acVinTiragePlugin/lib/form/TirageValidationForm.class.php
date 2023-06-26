@@ -1,8 +1,12 @@
 <?php
-class TirageValidationForm extends acCouchdbForm 
-{    
+class TirageValidationForm extends acCouchdbForm
+{
     public function configure()
     {
+        if(sfContext::getInstance()->getUser()->isAdmin()) {
+            $this->setWidget('commentaire', new sfWidgetFormTextarea(array('default' => $this->getDocument()->commentaire)));
+            $this->validatorSchema['commentaire'] = new sfValidatorPass();
+        }
         if(!$this->getDocument()->isPapier()) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {

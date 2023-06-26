@@ -94,7 +94,7 @@ class Parcellaire extends BaseParcellaire {
         $sameParcelle = 0;
 
         foreach ($this->getParcelles() as $parcelleExistante) {
-            if ($parcelleExistante->section !== $section) {
+            if ($parcelleExistante->section !== preg_replace('/^0*/', '', $section)) {
                 continue;
             }
 
