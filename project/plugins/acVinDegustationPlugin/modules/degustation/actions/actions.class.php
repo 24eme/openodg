@@ -492,10 +492,6 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTableRecap(sfWebRequest $request)
     {
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            $this->forward('degustation', 'organisationTableManuelleRecap');
-        }
-
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->tri = $this->degustation->tri;

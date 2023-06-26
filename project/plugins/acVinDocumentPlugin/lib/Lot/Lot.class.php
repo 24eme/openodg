@@ -755,7 +755,7 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getTypeProvenance()
     {
         if ($this->id_document_provenance) {
-            return substr($this->id_document_provenance, 0, 4);
+            return substr(strtok($this->id_document_provenance, '-'), 0, 4);
         }
         return '';
     }
