@@ -86,6 +86,26 @@
     </div>
 </div>
 
+<?php if($sf_user->isAdmin() && $tirage->exist('commentaire')): ?>
+    <?php if ($tirage->getValidationOdg() && $tirage->commentaire): ?>
+        <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+        <pre>
+        <?php echo $tirage->commentaire; ?>
+        </pre>
+    <?php elseif(!$tirage->getValidationOdg()): ?>
+        <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+      <form id="formUpdateCommentaire" action="<?php echo url_for('tirage_update_commentaire', $tirage) ?>" method="post">
+            <?php echo $tirageCommentaireValidationForm->renderHiddenFields(); ?>
+            <?php echo $tirageCommentaireValidationForm->renderGlobalErrors(); ?>
+            <?php echo $tirageCommentaireValidationForm['commentaire']->render(['class' => 'form-control']) ?>
+            <br/>
+            <div class="form-group">
+                <button type="submit" form="formUpdateCommentaire" class="btn btn-default btn-lg btn-upper">Modifier le commentaire</button>
+            </div>
+      </form>
+    <?php endif; ?>
+<?php endif; ?>
+
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php echo url_for("declaration_etablissement", $tirage->getEtablissementObject()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
