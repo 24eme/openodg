@@ -15,7 +15,7 @@
         <h4>Organisation des tables</h4>
         <ul class="list-group">
             <li class="list-group-item">
-                <span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (
+                <span class="glyphicon glyphicon-file"></span>&nbsp;Fiches des lots ventilés (
                 <a id="btn_pdf_degustation_fiche_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_anonymat_pdf', $degustation) ?>">triées par Numéro d'anonymat </a>
                 -
                 <a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>">triées par Numéro de dossier</a>
