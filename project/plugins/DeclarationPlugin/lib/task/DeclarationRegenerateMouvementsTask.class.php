@@ -43,9 +43,11 @@ EOF;
         $is_facture = 0;
         foreach($drev->mouvements as $id => $mvts ) {
             foreach ($mvts as $key => $mvt) {
-                $is_facture = 1;
-                echo sprintf("ERROR;Des mouvements déjà facturés;%s\n", $drev->_id);
-                exit(1);
+                if ($mvt->facture) {
+                    $is_facture = 1;
+                    echo sprintf("ERROR;Des mouvements déjà facturés;%s\n", $drev->_id);
+                    exit(1);
+                }
             }
         }
 
