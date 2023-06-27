@@ -38,7 +38,8 @@ abstract class DeclarationLotsValidation extends DocumentValidation
               $this->addPoint(self::TYPE_FATAL, 'lot_incomplet_fatal', "Lot n° ".($key+1)." - Volume manquant", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
             }
-            $activite = ($lot->getDocument()->type == TransactionClient::TYPE_MODEL) ? HabilitationClient::ACTIVITE_VRAC : HabilitationClient::ACTIVITE_CONDITIONNEUR;
+
+            $activite = $this->getActivite($lot->getDocument()->type);
             if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$lot->isHabilite($activite)) {
                 $this->addPoint(self::TYPE_ERROR, 'declaration_habilitation', $lot->getConfigProduit()->getCepage()->getLibelleComplet(), $this->generateUrl($routeName, array("id" => $this->document->_id)) );
             }
@@ -94,5 +95,18 @@ abstract class DeclarationLotsValidation extends DocumentValidation
 
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, implode(', ', $msg));
         }
+    }
+
+    private function getActivite($type)
+    {
+        $activite = HabilitationClient::ACTIVITE_VINIFICATEUR;
+
+        switch ($type) {
+            case TransactionClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_VRAC; break;
+            case ConditionnementClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_CONDITIONNEUR; break;
+            case DRevClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_VINIFICATEUR; break;
+        }
+
+        return $activite;
     }
 }
