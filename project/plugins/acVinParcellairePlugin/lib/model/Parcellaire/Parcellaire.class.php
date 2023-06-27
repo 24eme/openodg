@@ -11,6 +11,7 @@ class Parcellaire extends BaseParcellaire {
     protected $piece_document = null;
     protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
     protected $habilitation = false;
+    protected $parcelles_idu = null;
     private $cache_geojson = null;
 
     public function __construct() {
