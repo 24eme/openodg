@@ -11,7 +11,7 @@ class ExportCalculPPODS extends ExportGenericParcellaireODS {
     private $cepages;
 
     public function __construct($dgc, $cepages) {
-        parent::__construct(null, 'FT-22-V1_Calculatrice_PP.ods');
+        parent::__construct(null, 'FT-22-V1_Calculatrice_PP_'.$dgc.'.ods');
         $this->dgc = $dgc;
         $this->cepages = $cepages;
     }
