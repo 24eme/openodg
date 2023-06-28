@@ -12,4 +12,4 @@ fi
 mkdir -p "$DOSSIER"/07_chais
 
 echo $DEBUG_WITH_BROWSER
-USER="$USER" PASSWORD="$PASSWORD" DOSSIER="$DOSSIER" node import/igp/scrapping_chais.js
+USER="$USER" PASSWORD="$PASSWORD" DOSSIER="$DOSSIER" URLSITE="$URLSITE" node scrapping_chais.js
