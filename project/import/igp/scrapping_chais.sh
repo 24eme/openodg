@@ -1,15 +1,13 @@
 #!/bin/bash
 
-fichier=$(dirname $0)/configs/$1
+CONFIGFILE=$1
 
-if ! test -f "$fichier"; then
+if ! test -f "$CONFIGFILE"; then
     echo "Fichier config requis";
     exit 1;
 fi
 
-CONFIGFILE=$1
-
-. $fichier
+. $CONFIGFILE
 
 mkdir -p "$DOSSIER"/07_chais
 
