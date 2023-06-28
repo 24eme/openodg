@@ -1,7 +1,11 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-const baseURL = 'https://aocvins.fr';
+if(!process.env.URLSITE){
+  throw "Initialisez la variable d'environnement URLSITE";
+}
+
+const baseURL = process.env.URLSITE;
 exports.baseURL = baseURL;
 var browser;
 
