@@ -70,4 +70,9 @@ class DegustationConfiguration {
     {
         return $this->configuration['avis'];
     }
+
+    public function getConformites()
+    {
+        return $this->configuration['conformite'];
+    }
 }
