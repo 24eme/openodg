@@ -113,10 +113,8 @@ class parcellaireActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        // header("Content-Type: application/pdf; charset=UTF-8");
-        // header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s.pdf"', time()));
-        header("Content-Type: application/vnd.oasis.opendocument.spreadsheet; charset=UTF-8");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s.ods"', time()));
+        header("Content-Type: application/pdf; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s.pdf"', time()));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
@@ -124,7 +122,7 @@ class parcellaireActions extends sfActions {
         $dgc =  $this->form['dgc']->getValue();
         unset($this->form['dgc']);
         $ods = new ExportCalculPPODS($dgc, $this->form);
-        echo $ods->create();
+        echo $ods->createPDF();
 
         exit;
     }

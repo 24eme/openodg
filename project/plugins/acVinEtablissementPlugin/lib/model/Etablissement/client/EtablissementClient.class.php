@@ -214,28 +214,30 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public function findByCviOrAcciseOrPPM($accise, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-      return $this->findByCviOrAcciseOrPPMOrSiren($accise, $with_suspendu, $hydrate);
+      return $this->findByCviOrAcciseOrPPMOrSirenOrTVA($accise, $with_suspendu, $hydrate);
     }
-    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+    public function findByCviOrAcciseOrPPMOrSirenOrTVA($cvi_or_accise_or_ppm, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+
       $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi_or_accise_or_ppm));
 
-      if (!count($rows)) {
-          return null;
-      }
-
-      foreach ($rows as $r) {
+      if (count($rows)) {
+        foreach ($rows as $r) {
           $e = $this->find($r->id, acCouchdbClient::HYDRATE_JSON);
-          if ($e->statut == EtablissementClient::STATUT_SUSPENDU) {
+          if (!$with_suspendu && $e->statut == EtablissementClient::STATUT_SUSPENDU) {
               continue;
           }
-          return $this->find($r->id, $hydrate);
-      }
-      
-      if($with_suspendu) {
-          foreach ($rows as $r) {
-              return $this->find($r->id, $hydrate);
+          $e = $this->find($r->id, $hydrate);
+          if ($e) {
+              return $e;
           }
+        }
       }
+
+      $s = SocieteClient::getInstance()->findBySiretOrTVA($cvi_or_accise_or_ppm);
+      if ($s) {
+          return $s->getEtablissementPrincipal();
+      }
+
       return null;
     }
 

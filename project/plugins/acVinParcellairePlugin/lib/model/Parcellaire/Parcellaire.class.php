@@ -11,6 +11,7 @@ class Parcellaire extends BaseParcellaire {
     protected $piece_document = null;
     protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
     protected $habilitation = false;
+    protected $parcelles_idu = null;
     private $cache_geojson = null;
 
     public function __construct() {
@@ -118,8 +119,18 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
 
-        return $this->declaration->getParcellesByIdu();
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
     }
 
     public function findParcelle($parcelle) {
