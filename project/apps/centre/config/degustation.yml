@@ -2,3 +2,6 @@ all:
   configuration:
     degustation:
       anonymisation_manuelle: true
+      avis:
+        favorable: "Fav."
+        defavorable: "Def."

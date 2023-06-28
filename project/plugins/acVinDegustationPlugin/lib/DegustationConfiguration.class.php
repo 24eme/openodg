@@ -65,4 +65,9 @@ class DegustationConfiguration {
     {
         return $this->configuration['anonymisation_manuelle'] === true;
     }
+
+    public function getAvis()
+    {
+        return $this->configuration['avis'];
+    }
 }

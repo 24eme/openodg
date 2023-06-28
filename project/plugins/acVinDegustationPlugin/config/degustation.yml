@@ -9,3 +9,6 @@ all:
       anonymat4labo: false
       notation: true
       anonymisation_manuelle: false
+      avis:
+        favorable: "C"
+        defavorable: "NC"
