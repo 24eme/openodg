@@ -7,7 +7,7 @@ class ParcellaireCalculPPForm extends BaseForm
         parent::__construct();
     }
     public function configure() {
-        $dgc_array = array('CDP' =>"Pas de DGC (AOC Côte de Provence)",'SVI'=>"Sainte-Victoire",'FRE'=>"Féjus",'PIE'=>"Pierrefeu",'LLE'=>"La Londe",'NDA'=>"Notre-Dame-des-Anges");
+        $dgc_array = array('CDP' =>"Pas de DGC (AOC Côte de Provence)",'SVI'=>"Sainte-Victoire",'FRE'=>"Féjus",'PIE'=>"Pierrefeu",'LLO'=>"La Londe",'NDA'=>"Notre-Dame-des-Anges");
         $this->setWidget('dgc' ,new bsWidgetFormChoice(array('choices' => $dgc_array )) );
         $this->setValidator('dgc', new sfValidatorPass());
 
