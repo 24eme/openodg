@@ -23,7 +23,7 @@ abstract class ExportGenericParcellaireODS {
         $this->parcellaire = $parcellaire;
         $this->ods_filename = $ods_filename;
 
-        $suffix = $parcellaire ? ($parcellaire->get('_id') . $this->parcellaire->get('_rev')) : strval(time());
+        $suffix = $parcellaire ? ($parcellaire->get('_id') . $parcellaire->get('_rev')) : strval(time());
 
         // Les chemins des fichiers
         $this->tmp_dir = sfConfig::get('sf_cache_dir');

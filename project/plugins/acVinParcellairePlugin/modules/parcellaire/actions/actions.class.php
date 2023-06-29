@@ -120,8 +120,14 @@ class parcellaireActions extends sfActions {
         header("Expires: 0");
 
         $dgc =  $this->form['dgc']->getValue();
-        unset($this->form['dgc']);
-        $ods = new ExportCalculPPODS($dgc, $this->form);
+        $cepages = [];
+        foreach ($this->form as $key => $cepage) {
+            if ($key == 'dgc') {
+                continue;
+            }
+            $cepages[$key] = $cepage->getValue();
+        }
+        $ods = new ExportCalculPPODS($dgc, $cepages);
         echo $ods->createPDF();
 
         exit;

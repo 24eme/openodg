@@ -50,10 +50,10 @@ class ExportCalculPPODS extends ExportGenericParcellaireODS {
             $key = $this->getKeyFromCepage($c);
 
             if (!isset($synthese[$key])) {
-                $synthese[$key] = 0;
+                $synthese[$key] = 0.0;
             }
-            if ($ha->getValue()) {
-                $synthese[$key] = round($synthese[$key] + floatval($ha->getValue()), 6);
+            if ($ha) {
+                $synthese[$key] = round(floatval($ha), 6);
             }
         }
 
