@@ -103,16 +103,25 @@
     <?php endforeach; ?>. Ces volumes ne figurent pas dans le tableau.
     </p>
 <?php endif; ?>
-<?php if ($dr->hasApporteurs(true)): ?>
-<?php $apporteurs = $dr->getApporteurs(true)->getRawValue(); ?>
-<?php if(count($apporteurs)): ?>
+
+<?php
+$tiers = array();
+if ($dr->isApporteur()):
+    $tiers = $dr->getTiers()->getRawValue();
+    $tiers_type = 'tiers (négociants et coopératives)';
+elseif ($dr->hasApporteurs(true)):
+    $tiers = $dr->getApporteurs(true)->getRawValue();
+    $tiers_type = 'apporteurs';
+endif;
+?>
+<?php if(count($tiers)): ?>
     <p style="margin-top: -10px; margin-bottom: 20px;">
-        Ce document implique <?php echo count($apporteurs); ?> apporteurs :
+        Ce document implique <?php echo count($tiers); ?> <?php echo $tiers_type; ?> :
 <?php
     $list = array();
-    foreach($apporteurs as $a) {
+    foreach($tiers as $a) {
         if ($a['etablissement']) {
-            $list[] = '<a href="'.url_for('declaration_etablissement', array('identifiant' => $a['etablissement']->identifiant, 'campagne' => $dr->campagne)).'">'.$a['etablissement']->raison_sociale.'</a>';
+            $list[] = '<a href="'.url_for('dr_redirect', array('identifiant' => $a['etablissement']->identifiant, 'campagne' => $dr->campagne)).'">'.$a['etablissement']->raison_sociale.'</a>';
         }else{
             $list[] = $a['raison_sociale'].' ('.$a['cvi'].')';
         }
@@ -120,7 +129,6 @@
     echo implode(', ', $list);
 ?>
     </p>
-<?php endif; ?>
 <?php endif; ?>
 
 <div class="row row-margin row-button">
