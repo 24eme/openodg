@@ -72,15 +72,15 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
         if (!$this->parcellaire->isPapier()) {
             if ($this->parcellaire->validation && $this->parcellaire->campagne >= "2015") {
-                $date = new DateTime($this->parcellaire->validation);
+                $date = new DateTime($this->parcellaire->getDateDepot());
                 $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
             }else{
                 $header_subtitle .= sprintf("Exemplaire brouilllon");
             }
         }
 
-        if ($this->parcellaire->isPapier() && $this->parcellaire->validation && $this->parcellaire->validation !== true) {
-            $date = new DateTime($this->parcellaire->validation);
+        if ($this->parcellaire->isPapier() && $this->parcellaire->getDateDepot() && $this->parcellaire->validation !== true) {
+            $date = new DateTime($this->parcellaire->getDateDepot());
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
 

@@ -33,4 +33,8 @@ class DR extends BaseDR {
         }
         return false;
     }
+
+    public function hasApporteurs($include_non_reconnu = false) {
+        return false;
+    }
 }

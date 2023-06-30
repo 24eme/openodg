@@ -3,11 +3,11 @@ all:
 
 lotsListe:
   is_secure: true
-  credentials: [habilitation]
+  credentials: []
 
 lotHistorique:
   is_secure: true
-  credentials: [habilitation]
+  credentials: []
 
 getCourrierWithAuth:
   is_secure: false

@@ -36,7 +36,7 @@
   <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
 <?php endif; ?>
 
-<?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null)); ?>
+<?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null, 'public' => !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION))); ?>
 
     <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
         <div class="text-right">
@@ -47,12 +47,12 @@
     <?php if ($sf_user->isAdmin() && isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
         <div class="row">
             <div class="col-xs-12">
-                <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
+                <button class="btn btn-sm btn-default pull-right" id="editHabilitation" type="button"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Éditer l'habilitation</button>
             </div>
         </div>
     <?php endif; ?>
 
-    <?php if(HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
+    <?php if($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>
     <h3>Demandes en cours <small><a id="voir_toutes_les_demandes" href="javascript:void(0)">(voir tout)</a></small></h3>
     <table id="tableaux_des_demandes" class="table table-condensed table-bordered">
         <thead>
@@ -85,6 +85,7 @@
     </table>
     <?php endif; ?>
 
+    <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
       <thead>
@@ -114,6 +115,7 @@
         <?php endforeach; ?>
       </tbody>
     </table>
+    <?php endif; ?>
 
 <?php if(isset($editForm)): ?>
 <form role="form" class="ajaxForm" action="<?php echo url_for("habilitation_edition", $habilitation) ?>" method="post">

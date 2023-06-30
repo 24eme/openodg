@@ -7,7 +7,7 @@
     <?php if($parcellaire->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> reçue le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
     <?php elseif($parcellaire->validation): ?>
-    <small class="pull-right">Télédéclaration<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> validée le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
+    <small class="pull-right">Télédéclaration<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> signée le <?php echo format_date($parcellaire->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
     <?php endif; ?>
     </h2>
 </div>

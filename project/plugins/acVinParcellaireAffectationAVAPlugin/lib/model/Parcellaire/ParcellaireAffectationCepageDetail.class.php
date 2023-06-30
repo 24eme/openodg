@@ -23,6 +23,15 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return $this->getCepage()->getAcheteursNode($this->lieu);
     }
 
+    public function getCampagnePlantation() {
+
+        return null;
+    }
+
+    public function getIDU() {
+        return $this->getParcelleIdentifiant();
+    }
+
     public function getAcheteursCepageByCVI() {
         $acheteursCvi = array();
         foreach($this->getAcheteursCepage() as $type => $acheteurs) {

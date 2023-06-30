@@ -4,8 +4,25 @@
     <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
 </ol>
 <div class="row">
-    <div class="col-xs-9">
+    <div class="col-sm-9 col-xs-12">
     <h2 style="margin-top: 0; margin-bottom: 20px;">Historique des documents</h2>
+    <?php //ATTENTION DUPLIQUÉ pour la version desktop plus bas ?>
+    <div class="visible-xs col-xs-6">
+    <?php if ($sf_user->isAdmin() || $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
+    <a style="margin-bottom: 20px;" class="btn btn-block btn-sm btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
+    <?php endif; ?>
+    </div>
+    <div class="visible-xs col-xs-6">
+    <form>
+        <select class="form-control select2 select2SubmitOnChange select2autocomplete text-center" id="year" name="campagne">
+            <option value="0">Toutes les campagnes</option>
+            <?php foreach ($campagnes as $c): ?>
+            <option value="<?php echo $c ?>"<?php if($c == $campagne): ?> selected="selected"<?php endif; ?>><?php echo $c ?></option>
+            <?php endforeach; ?>
+        </select>
+    </form>
+    </div>
+
     <?php if(count($history) > 0): ?>
     <table class="table table-bordered table-striped">
         <thead>
@@ -87,7 +104,9 @@
     <p class="text-center"><em>Aucun document disponible<?php if ($campagne): ?> pour la campagne <strong><?php echo $campagne ?></strong><?php endif; ?></em></p>
     <?php endif; ?>
     </div>
-    <div class="col-xs-3">
+    <div class="col-sm-3 col-xs-12">
+    <?php //ATTENTION DUPLIQUÉ pour la version mobile plus haut ?>
+    <div class="hidden-xs">
     <?php if ($sf_user->isAdmin() || $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
     <a style="margin-bottom: 20px;" class="btn btn-block btn-sm btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
     <?php endif; ?>
@@ -99,6 +118,7 @@
             <?php endforeach; ?>
         </select>
     </form>
+    </div>
     <h4 style="margin-top: 20px;">Types de document</h4>
     <div class="list-group">
 	<a class="list-group-item <?php if (!$category):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne))?>">Tous<span class="badge" style="position: absolute; right: 10px;"><?php echo count($history) - $decreases ?></span></a>

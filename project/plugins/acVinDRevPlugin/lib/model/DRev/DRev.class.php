@@ -1088,9 +1088,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
-        if(!$this->exist('date_depot') || !$this->date_depot) {
-            $this->add('date_depot', $this->getDateValidation());
-        }
+        $this->getDateDepot();
 
         $this->validation = null;
         $this->validation_odg = null;

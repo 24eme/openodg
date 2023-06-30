@@ -131,17 +131,20 @@ class DouaneImportCsvFile {
                     $p[] = $donnee->categorie;
                     $p[] = $donnee->categorie_libelle;
                     $p[] = str_replace('.', ',', $donnee->valeur);
-                    if ($donnee->tiers && $t = EtablissementClient::getInstance()->find($donnee->tiers)) {
-                        $p[] = $t->cvi;
-                        $p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
-                        $p[] = null;
-                        $p[] = ($t->siege->commune) ? $t->siege->commune : $t->commune;
-                    } else {
-                        $p[] = $donnee->tiers_cvi;
-                        $p[] = ($donnee->tiers_cvi) ? DouaneImportCsvFile::cleanRaisonSociale("CVI non reconnu : ".preg_replace('/(^"|"$)/', '', $donnee->tiers_raison_sociale)) : '';
-                        $p[] = null;
-                        $p[] = null;
+
+                    $donnee->tiers_cvi = str_replace('"', '', $donnee->tiers_cvi);
+                    if ($donnee->tiers_cvi && (!$donnee->tiers || !$donnee->tiers_raison_sociale || !$donnee->tiers_commune)) {
+                        DouaneProduction::fillItemWithTiersData($donnee, $donnee->tiers_cvi, $donnee->tiers_raison_sociale);
                     }
+                    $p[] = $donnee->tiers_cvi;
+                    if ($donnee->tiers_cvi && !$donnee->tiers) {
+                        $p[] = DouaneImportCsvFile::cleanRaisonSociale("CVI non reconnu : ".preg_replace('/(^"|"$)/', '', $donnee->tiers_raison_sociale));
+                    }else {
+                        $p[] =  DouaneImportCsvFile::cleanRaisonSociale($donnee->tiers_raison_sociale);
+                    }
+                    $p[] = null;
+                    $p[] = $donnee->tiers_commune;
+
                     $p[] = $donnee->colonneid;
                     $p[] = Organisme::getCurrentOrganisme();
                     $p[] = $produit->getHash();

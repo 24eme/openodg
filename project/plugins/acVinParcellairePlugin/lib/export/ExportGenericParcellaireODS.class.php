@@ -23,9 +23,11 @@ abstract class ExportGenericParcellaireODS {
         $this->parcellaire = $parcellaire;
         $this->ods_filename = $ods_filename;
 
+        $suffix = $parcellaire ? ($parcellaire->get('_id') . $parcellaire->get('_rev')) : strval(time());
+
         // Les chemins des fichiers
         $this->tmp_dir = sfConfig::get('sf_cache_dir');
-        $this->ods_tmp_file = $this->tmp_dir . '/' . str_replace('.ods', '', $this->ods_filename) . $this->parcellaire->get('_id') . $this->parcellaire->get('_rev') . '.ods';
+        $this->ods_tmp_file = $this->tmp_dir . '/' . str_replace('.ods', '', $this->ods_filename) . $suffix . '.ods';
     }
 
     protected function getParcellaire() {
@@ -102,7 +104,7 @@ abstract class ExportGenericParcellaireODS {
             // Si c'est un float on doit spécifier à libreoffice que le format est float (notamment pour être utilisé dans les formules)
             if (gettype($value) == 'double' || gettype($value) === 'integer') {
                 $content = preg_replace(
-                    '#(<table:table-cell *table:style-name="[^"]+".*?office:value-type=")string"( *calcext:value-type=")string("[^>]*><text:p>)'.$key.'(</text:p></table:table-cell>)#',
+                    '#(office:value-type=")string"( *calcext:value-type=")string("[^>]*><text:p>)'.$key.'(</text:p></table:table-cell>)#',
                     '${1}float" office:value="'.$value.'" ${2}float${3}'.str_replace('.', ',', $value).'${4}',
                     $content
                 );
@@ -112,12 +114,11 @@ abstract class ExportGenericParcellaireODS {
         }
 
         // Supprime le contenu p:text quand c'est une formule. Sinon il affiche p:text plutôt que le résultat de la formule.
-        preg_match_all( '#table:formula=".*?</table:table-cell>#', $content, $matches_form, PREG_SET_ORDER);
-        foreach ($matches_form as $match_form) {
-            $replace = preg_replace ('#<text:p>[^<]*</text:p>#', '<text:p></text:p>', $match_form[0] );
-            $replace = preg_replace ('#office:((?:string-)?)value="[^"]*"#', 'office:$1value=""', $replace );
-            $content = str_replace($match_form[0], $replace, $content);
-        }
+        $content = preg_replace (
+            '#(table:formula="[^"]*" .*?office:(?:[^-]*-)?value=")[^"]*("[^>]*>)<text:p>[^<]*</text:p>(</table:table-cell>)#',
+            '$1$2$3',
+            $content
+        );
 
         return $content;
     }
