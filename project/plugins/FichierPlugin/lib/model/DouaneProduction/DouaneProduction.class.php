@@ -687,7 +687,21 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return count($this->getApporteurs($include_non_reconnu));
     }
 
+    public function isApporteur($include_non_reconnu = false) {
+        if ($this->getDocumentDefinitionModel() != 'DR') {
+            return false;
+        }
+        return count($this->getTiers($include_non_reconnu));
+    }
+
     public function getApporteurs($include_non_reconnu = false, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
+        if ($this->getDocumentDefinitionModel() == 'DR') {
+            return array();
+        }
+        return $this->getTiers();
+    }
+
+    public function getTiers($include_non_reconnu = false, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
         $cvis = array();
         foreach($this->getCsv() as $data) {
             $cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];

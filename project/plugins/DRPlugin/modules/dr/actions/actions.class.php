@@ -91,5 +91,22 @@ class drActions extends sfActions
         throw new sfStopException();
     }
 
+    public function executeRedirect(sfWebRequest $request) {
+        $identifiant = $request->getParameter('identifiant');
+        $campagne = $request->getParameter('campagne');
+        $dr = DRClient::getInstance()->findByArgs($identifiant, $campagne);
+        if ($dr) {
+            return $this->redirect('dr_visualisation', $dr);
+        }
+        $sv = SV11Client::getInstance()->findByArgs($identifiant, $campagne);
+        if ($sv) {
+            return $this->redirect('dr_visualisation', $sv);
+        }
+        $sv = SV12Client::getInstance()->findByArgs($identifiant, $campagne);
+        if ($sv) {
+            return $this->redirect('dr_visualisation', $sv);
+        }
+        return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant, 'campagne' => $campagne));
+    }
 
 }

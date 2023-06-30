@@ -11,7 +11,7 @@ class ExportCalculPPODS extends ExportGenericParcellaireODS {
     private $cepages;
 
     public function __construct($dgc, $cepages) {
-        parent::__construct(null, 'FT-22-V1_Calculatrice_PP.ods');
+        parent::__construct(null, 'FT-22-V1_Calculatrice_PP_'.$dgc.'.ods');
         $this->dgc = $dgc;
         $this->cepages = $cepages;
     }
@@ -50,10 +50,10 @@ class ExportCalculPPODS extends ExportGenericParcellaireODS {
             $key = $this->getKeyFromCepage($c);
 
             if (!isset($synthese[$key])) {
-                $synthese[$key] = 0;
+                $synthese[$key] = 0.0;
             }
-            if ($ha->getValue()) {
-                $synthese[$key] = round($synthese[$key] + floatval($ha->getValue()), 6);
+            if ($ha) {
+                $synthese[$key] = round(floatval($ha), 6);
             }
         }
 
