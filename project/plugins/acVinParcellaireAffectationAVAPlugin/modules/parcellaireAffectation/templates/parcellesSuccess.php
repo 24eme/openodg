@@ -8,8 +8,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
     <h2>Saisie des <?php if ($parcellaire->isIntentionCremant()): ?>intentions de production<?php else: ?>parcelles<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
 </div>
 
-<?php if(strpos($parcellaire->_id, 'CREMANT') !== false && count($parcellaire->declaration->getProduitsCepageDetails())): ?>
-<a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>" class="btn btn-sm btn-warning pull-right" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les parcelles via Prodouane</a>
+<?php if(count($parcellaire->declaration->getProduitsCepageDetails())): ?>
+<a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>" class="btn btn-sm btn-warning pull-right ajax" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les parcelles via Prodouane</a>
 <?php endif; ?>
 
 <ul style="margin-top: 0;" class="nav nav-tabs">
@@ -112,9 +112,9 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                                     <td class="edit text-right" style="position: relative;">
                                         <?php echoFloat($parcelle->getSuperficie()) ?> <small class="text-muted">ares</small>
                                         <span style="position: absolute; right: -20px;">
-                                        <?php if (!$parcellaire->isParcelleEditable() && (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC))): ?>
+                                        <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireAffectationClient::APPELLATION_ALSACEBLANC)): ?>
                                            <a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <?php elseif(!$parcellaire->isParcelleEditable()): ?>
+                                        <?php else: ?>
                                            <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
                                        <?php endif; ?>
                                        </span>
@@ -127,18 +127,14 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireAffect
                         </tbody>
                     </table>
                 </div>
-            <?php elseif($parcellaire->isParcelleEditable() && !count($parcellaire->declaration->getProduitsCepageDetails())): ?>
+            <?php elseif(!count($parcellaire->declaration->getProduitsCepageDetails())): ?>
 				<p class="text-muted">Nous n'avons trouvé aucune parcelle, vous pouvez <a class="btn btn-default" href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>"><i class="glyphicon glyphicon-refresh"></i> Récupérer vos parcelles depuis Prodouane</a></p>
 			<?php else: ?>
                 <p class="text-muted">Vous n'avez aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> à affecter dans cette appellation.</p><br/>
             <?php endif; ?>
-			<?php if(!$parcellaire->isParcelleEditable()): ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
-			<?php else: ?>
-			<p>Si vous remarquez une incohérence, vous pouvez <a href="<?php echo url_for('parcellaire_scrape_douane', array('sf_subject' => $parcellaire->getEtablissementObject(), 'url' => url_for('parcellaire_parcelles_update_cvi', array('id' => $parcellaire->_id, 'appellation' => $appellation)))) ?>">récupérer la dernière version de votre casier viticole</a> et si toutefois des incohérences subsistent veuillez contacter les douanes ou l'AVA.</p>
-			<?php endif; ?>
         </div>
     </div>
     <div class="row row-margin row-button">

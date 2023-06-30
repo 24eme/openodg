@@ -9,7 +9,7 @@
         </div>
         <div class="panel-bottom">
                 <p>
-                    <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('parcellaire_visualisation', $parcellaireCremant) ?>">Visualiser</a>
+                    <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('parcellaireaffectation_visualisation', $parcellaireCremant) ?>">Visualiser</a>
                 </p>
                 <?php if($sf_user->isAdmin()): ?>
                 <p>

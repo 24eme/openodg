@@ -317,6 +317,7 @@ class tirageActions extends sfActions {
 
         if ($this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) {
             $this->validation = new TirageValidation($this->tirage);
+            $this->tirageCommentaireValidationForm = new TirageCommentaireValidationForm($this->tirage);
         }
 
         $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg && !$this->tirage->hasCompleteDocuments()) ? new TirageDocumentsForm($documents) : null;
@@ -425,6 +426,30 @@ class tirageActions extends sfActions {
         $this->getResponse()->setHttpHeader('Expires', '0');
 
         return $this->renderText($file);
+    }
+
+    public function executeUpdateCommentaire(sfWebRequest $request)
+    {
+        $this->tirage = $this->getRoute()->getTirage();
+
+        if(!$this->getUser()->isAdmin()) {
+            throw new sfError403Exception();
+        }
+        //$this->secure(TirageSecurity::VALIDATION_ADMIN, $this->tigage);
+
+        $this->tirageCommentaireValidationForm = new TirageCommentaireValidationForm($this->tirage);
+        $this->tirageCommentaireValidationForm->bind($request->getParameter($this->tirageCommentaireValidationForm->getName()));
+
+        if (! $this->tirageCommentaireValidationForm->isValid()) {
+            return $this->redirect('tirage_visualisation', $this->tirage);
+        }
+
+        if($this->tirageCommentaireValidationForm->getValue("commentaire")) {
+            $this->tirage->commentaire = $this->tirageCommentaireValidationForm->getValue("commentaire");
+        }
+
+        $this->tirage->save();
+        return $this->redirect('tirage_visualisation', $this->tirage);
     }
 
 }

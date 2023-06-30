@@ -29,7 +29,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
             return "CsvVendanges";
         }
 
-        return null;
+        throw new sfException('Format non supporté');
     }
 
     public function convertFromCsvVendanges() {
@@ -211,6 +211,8 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
+                print_r($values);
+                $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[7]));
 	        			$produits[] = $produit;
                     }
                     $cpt++;

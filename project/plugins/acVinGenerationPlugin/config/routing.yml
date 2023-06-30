@@ -1,5 +1,5 @@
 generation_view:
-  url: /generation/:type_document/:date_emission
+  url: /generation/:id
   param: { module: generation, action: view }
   requirements:
     sf_method: [get]
@@ -11,7 +11,7 @@ generation_delete:
     sf_method: [get]
 
 generation_reload:
-  url: /generation/:type_document/:date_emission/reload
+  url: /generation/:id/reload
   param: { module: generation, action: reload }
   requirements:
     sf_method: [get]

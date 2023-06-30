@@ -35,12 +35,23 @@ class SocieteClient extends acCouchdbClient {
         return $identifiant = str_replace('SOCIETE-', '', $id_or_identifiant);
     }
 
+    public function findBySiretOrTVA($siret) {
+        $s = $this->findBySiret($siret);
+        if ($s) {
+            return $s;
+        }
+        return $this->findByField('no_tva_intracommunautaire', $siret);
+    }
+
     public function findBySiret($siret) {
+        return $this->findByField('siret', $siret);
+    }
+
+    private function findByField($field, $siret) {
         $index = acElasticaManager::getType('SOCIETE');
         $elasticaQueryString = new acElasticaQueryQueryString();
         $elasticaQueryString->setDefaultOperator('AND');
-        $elasticaQueryString->setQuery(sprintf("doc.siret:%s", $siret));
-
+        $elasticaQueryString->setQuery(sprintf("doc.$field:%s", $siret));
         $q = new acElasticaQuery();
         $q->setQuery($elasticaQueryString);
         $q->setLimit(1);
@@ -49,8 +60,7 @@ class SocieteClient extends acCouchdbClient {
 
         foreach ($res->getResults() as $er) {
             $r = $er->getData();
-
-            return $this->find($r['_id']);
+            return $this->find($r['id']);
         }
 
         return null;

@@ -61,6 +61,11 @@ function statutToIconCssClass($statut)
         return 'glyphicon glyphicon-remove-circle';
     }
 
+    if($statut == GenerationClient::GENERATION_STATUT_RELANCABLE) {
+
+        return 'glyphicon glyphicon-refresh';
+    }
+
     return null;
 }
 

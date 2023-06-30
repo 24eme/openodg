@@ -136,8 +136,8 @@ abstract class ParcellaireAffectationParcelleForm extends acCouchdbObjectForm {
         	$parcelle->vtsgn = 1;
         }
 
-        if($this->getObject() instanceof ParcellaireCepageDetail && $this->getObject()->getHash() != $parcelle->getHash()) {
-            $this->getObject()->getCepage()->detail->remove($this->getObject()->getKey());
+        if($this->getObject() instanceof ParcellaireAffectationCepageDetail && $this->getObject()->getHash() != $parcelle->getHash()) {
+            $this->getObject()->active = 0;
         }
     }
 

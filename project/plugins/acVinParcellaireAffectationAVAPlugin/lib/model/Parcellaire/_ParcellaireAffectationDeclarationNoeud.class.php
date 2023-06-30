@@ -1,6 +1,7 @@
 <?php
 
 abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocumentTree {
+    protected $parcelles_idu = null;
 
     public function getConfig() {
         return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
@@ -93,6 +94,31 @@ abstract class _ParcellaireAffectationDeclarationNoeud extends acCouchdbDocument
         }
 
         return $produits;
+    }
+
+    public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
+
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
+    }
+
+    public function getParcelles() {
+
+        return $this->getProduitsCepageDetails();
+    }
+
+    public function findParcelle($parcelle) {
+
+        return ParcellaireClient::findParcelle($this, $parcelle, 0.5);
     }
 
     public function getLieuxEditable() {

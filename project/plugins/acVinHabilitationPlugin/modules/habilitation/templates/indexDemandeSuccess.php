@@ -1,9 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php $query = ($query) ? $query->getRawValue() : $query; ?>
 
-<ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('habilitation_demande'); ?>">Habilitations</a></li>
-</ol>
+<?php include_partial('habilitation/breadcrumb'); ?>
 
 <div class="row row-margin">
     <div class="col-xs-12">

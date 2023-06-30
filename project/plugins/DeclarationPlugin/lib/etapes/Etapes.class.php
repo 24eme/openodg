@@ -26,6 +26,10 @@ abstract class Etapes
         return $this->getRouteLinksHash()[$step];
     }
 
+    public function getNextLink($step) {
+        return $this->getRouteLink($this->getNext($step));
+    }
+
     public function getLibelle($step, $doc = null) {
         return $this->getLibellesHash()[$step];
     }

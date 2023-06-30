@@ -40,6 +40,9 @@ class parcellaireActions extends sfActions {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->form = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
+        }
         $this->setTemplate('parcellaire');
     }
 
@@ -84,7 +87,7 @@ class parcellaireActions extends sfActions {
         }
 
         if (! empty($msg)) {
-            $this->getUser()->setFlash('erreur_import', $msg);
+            $this->getUser()->setFlash('error', $msg);
         }else{
             $this->getUser()->setFlash('success_import', "La mise à jour a été un succès.");
         }
@@ -97,9 +100,42 @@ class parcellaireActions extends sfActions {
         $this->redirect('parcellaire_declarant', $this->etablissement);
     }
 
+    public function executeCalculPPForm(sfWebRequest $request){
+        $this->form = new ParcellaireCalculPPForm();
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        header("Content-Type: application/pdf; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s.pdf"', time()));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        $dgc =  $this->form['dgc']->getValue();
+        $cepages = [];
+        foreach ($this->form as $key => $cepage) {
+            if ($key == 'dgc') {
+                continue;
+            }
+            $cepages[$key] = $cepage->getValue();
+        }
+        $ods = new ExportCalculPPODS($dgc, $cepages);
+        echo $ods->createPDF();
+
+        exit;
+    }
+
     public function executeParcellairePDF(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
@@ -120,21 +156,21 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
-        header("Content-Type: application/csv; charset=UTF-8");
+        header("Content-Type: application/csv; charset=iso-8859-1");
         header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.csv"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
         $csv = new ExportParcellaireCSV($parcellaire);
-        echo $csv->export();
+        echo iconv("UTF-8", "ISO-8859-1//TRANSLIT", $csv->export());
 
         exit;
     }
 
     public function executeParcellaireExportODS(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
@@ -150,112 +186,87 @@ class parcellaireActions extends sfActions {
         exit;
     }
 
-    public function executeParcellaireExportGeo(sfWebRequest $request) {
+    public function executeParcellaireExportPPODS(sfWebRequest $request) {
         $this->secureTeledeclarant();
-        
+
         $parcellaire = $this->getRoute()->getParcellaire();
         $this->forward404Unless($parcellaire);
 
-        header("Content-Type: application/vnd.google-earth.kml+xml");
-        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date));
+        header("Content-Type: application/vnd.oasis.opendocument.spreadsheet; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s-%s.ods"', $parcellaire->identifiant, $parcellaire->date));
         header("Pragma: ");
         header("Cache-Control: public");
         header("Expires: 0");
 
-        echo '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document>';
-        
-        // L'hexa de la couleur est inversé par rapport à la notation habituelle
-        // aabbggrr, où aa=alpha (00 à ff) ; bb=blue (00 à ff) ; gg=green(00 à ff) ; rr=red (00 à ff).
-        echo '<Style id="parcelle-style">
-        <LineStyle>
-          <width>2</width>
-        </LineStyle>
-        <PolyStyle>
-          <color>7d0000ff</color>
-        </PolyStyle>
-      </Style>';
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
+        echo $ods->create();
 
-        $styles = [];
-        foreach ($parcellaire->getCachedAires() as $aire) {
-            foreach ($aire['jsons'] as $airejson) {
-                $aireobj = json_decode($airejson);
-                foreach ($aireobj->features as $feat) {
-                    $color = '7d' . str_replace('#', '', $aire['infos']['color']);
-                    $styles[$color] = '<Style id="aire-style-'.$color.'">
-            <LineStyle>
-            <width>1</width>
-            </LineStyle>
-            <PolyStyle>
-            <color>'.$color.'</color>
-            </PolyStyle>
-        </Style>';
-                }
+        exit;
+    }
+
+    public function executeParcellaireExportPPPDF(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        header("Content-Type: application/pdf; charset=UTF-8");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-PP-%s-%s.pdf"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
+
+        $ods = new ExportParcellairePotentielProductionODS($parcellaire);
+        echo $ods->createPDF();
+
+        exit;
+    }
+    public function executeParcellaireExportKML(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
+
+        $has_parcelles = $request->getParameter('with_parcelles', true);
+        $has_aires = $request->getParameter('with_aires', true);
+
+        $type = '';
+        if ($has_parcelles) {
+            $type = 'parcelles';
+        }
+        if ($has_aires) {
+            if ($type) {
+                $type .= '-et-';
             }
+            $type .= 'aires';
         }
 
-        foreach ($styles as $style) {
-            echo $style;
-        }
+        header("Content-Type: application/vnd.google-earth.kml+xml");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s-%s.kml"', $parcellaire->identifiant, $parcellaire->date, $type));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
 
-        // Pour mémoire la possibilité de mettre du texte directement dans la carte en mettant du texte en PNG
-        /*
-        echo '<Placemark>
-        <name>Test</name>
-        <Style>
-            <IconStyle>
-                <scale>0.03125</scale>
-                <Icon>
-                    <href>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNiYAAAAAkAAxkR2eQAAAAASUVORK5CYII=</href>
-                    <gx:w>1</gx:w>
-                    <gx:h>1</gx:h>
-                </Icon>
-                <hotSpot x="0" y="1" xunits="pixels" yunits="pixels"/>
-            </IconStyle>
-            <LabelStyle>
-                <color>ff000000</color>
-                <LabelStyleSimpleExtensionGroup xmlns="" fontFamily="Sans" haloColor="ffffffff" haloRadius="3" haloOpacity="1"/>
-            </LabelStyle>
-        </Style>
-        <Point>
-            <coordinates>6.096128276094139,43.24822642695386</coordinates>
-        </Point>
-    </Placemark>';
-    */
+        echo $parcellaire->getKML($has_aires, $has_parcelles);
 
-        // Le json décodé des parcelles
-        $geojson = $parcellaire->getDocument()->getGeoJson();
+        exit;
+    }
 
-        // On y ajoute les json (décodés) des aires des appelations des communes associées
-        foreach ($parcellaire->getCachedAires() as $aire) {
-            foreach ($aire['jsons'] as $airejson) {
-                $aireobj = json_decode($airejson);
-                foreach ($aireobj->features as $feat) {
-                    $feat_str = json_encode($feat);
-                    $feat_obj = GeoPHP::load($feat_str, 'geojson');
-        
-                    echo '<Placemark>';
-                    echo '<name>'.$aire['infos']['name'].'</name>';
-                    echo '<styleUrl>#aire-style-7d' . str_replace('#', '', $aire['infos']['color']) . '</styleUrl>';
-                    echo $feat_obj->out('kml');
-                    echo '</Placemark>';
-                }
-            }
-        }
+    public function executeParcellaireExportGeoJson(sfWebRequest $request) {
+        $this->secureTeledeclarant();
 
-        // Ajoute des couleurs et l'identification
-        foreach ($geojson->features as $feat) {
-            $feat_str = json_encode($feat);
-            $feat_obj = GeoPHP::load($feat_str, 'geojson');
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $this->forward404Unless($parcellaire);
 
-            echo '<Placemark>';
-            echo '<name>'.$feat->properties->section. ' ' . $feat->properties->numero.'</name>';
-            echo '<styleUrl>#parcelle-style</styleUrl>';
-            echo $feat_obj->out('kml');
-            echo '</Placemark>';
-        }
+        header("Content-Type: application/vnd.geo+json");
+        header("Content-disposition: attachment; filename=".sprintf('"PARCELLAIRE-%s-%s.geojson"', $parcellaire->identifiant, $parcellaire->date));
+        header("Pragma: ");
+        header("Cache-Control: public");
+        header("Expires: 0");
 
-        echo '</Document></kml>';
-        exit;        
+        echo json_encode($parcellaire->getGeoJsonWithAires());
+
+        exit;
     }
 
 

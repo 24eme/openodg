@@ -30,26 +30,56 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
             return "CsvVendanges";
         }
 
-        return null;
+        if(preg_match('/CODE PRODUIT/i', $csvFile->getCsv()[0][0]) &&
+           preg_match('/DENOMINATION/i', $csvFile->getCsv()[0][1]) &&
+           preg_match('/MENTION VALORISANTE/i', $csvFile->getCsv()[0][3]) &&
+           preg_match('/NUMERO CVI APPORTEUR/i', $csvFile->getCsv()[0][5])) {
+
+            return "CsvVendanges";
+        }
+
+        throw new sfException('Format non supporté');
     }
 
     public function convertFromCsvVendanges() {
         $csvFile = new CsvFile($this->filePath);
         $csv = $csvFile->getCsv();
-
         if(preg_match('/-([0-9]{10})_/', $this->filePath, $matches)) {
             $this->cvi = $matches[1];
         }
 
         $cpt = 1;
         $index2L = array(
-            7 => "04",
-            5 => "08",
-            9 => "15",
-            11 => "16",
-            14 => "17",
-            12 => "18",
-            13 => "19",
+            'SUPERFICIE RECOLTE' => "04",
+            'VOLUME APPORT DE RAISIN' => "08",
+            'VOLUME ISSU DE MOUTS' => "15",
+            'VOLUME APPORT DE MOUTS' => "08",
+            'VOLUME ISSU DE RAISINS' => "15",
+            'VOLUME A ELIMINER' => "16",
+            'EAU ELIMINEE' => "17",
+            'VSI' => "18",
+            'VCI' => "19",
+        );
+
+        $valuename2valueid = array(
+            'CODE PRODUIT' => 0,
+            'DENOMINATION' => 1,
+            'MENTION VALORISANTE' => 2,
+            'NUMERO CVI APPORTEUR' => 3,
+            'LIBELLE APPORTEUR' => 4,
+            'VOLUME APPORT DE RAISIN' => 5,
+            'VOLUME APPORT DE MOUTS' => 6,
+            'SUPERFICIE RECOLTE' => 7,
+            'ZONE DE RECOLTE' => 8,
+            'VOLUME ISSU DE RAISINS' => 9,
+            'VOLUME ISSU DE MOUTS' => 10,
+            'VOLUME A ELIMINER' => 11,
+            'VSI' => 12,
+            'VCI' => 13,
+            'EAU ELIMINEE' => 14,
+            'MOUT CONCENTRE' => 15,
+            'JUS DE RAISINS' => 16,
+            "VOLUME D'ALCOOL AJOUTE" => 17,
         );
 
         $drev_filter = $this->getRelatedDrev();
@@ -63,33 +93,34 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 $libellesLigne = $values;
                 continue;
             }
-            foreach (array_keys($index2L) as $v) {
+            foreach (array_keys($index2L) as $vname) {
+                $v = $valuename2valueid[$vname];
                 if (!isset($values[$v])||!VarManipulator::floatize($values[$v])) {
                     continue;
                 }
-                if (!isset($known_produit[$values[0]])) {
-                    $p = $this->configuration->findProductByCodeDouane($values[0]);
+                if (!isset($known_produit[$values[$valuename2valueid['CODE PRODUIT']]])) {
+                    $p = $this->configuration->findProductByCodeDouane($values[$valuename2valueid['CODE PRODUIT']]);
                     if (!$p) {
                         $produit = array(null, null, null, null, null, null, null);
                     } else {
                         $produit = array($p->getCertification()->getKey(), $p->getGenre()->getKey(), $p->getAppellation()->getKey(), $p->getMention()->getKey(), $p->getLieu()->getKey(), $p->getCouleur()->getKey(), $p->getCepage()->getKey());
                     }
-                    $known_produit[$values[0]] = $produit;
+                    $known_produit[$values[$valuename2valueid['CODE PRODUIT']]] = $produit;
                 }
 
-                $produit = $known_produit[$values[0]];
-                $produit[] = $values[0]; //Code douane
-                $produit[] = $values[1]; //Libelle produit
-                $produit[] = $values[2]; //Mention valorisante
-                $produit[] = $index2L[$v]; //Code categorie
-                $produit[] = DouaneCsvFile::getCategorieLibelle('SV11', $index2L[$v])." - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
-                if ($index2L[$v] == "04") {
+                $produit = $known_produit[$values[$valuename2valueid['CODE PRODUIT']]];
+                $produit[] = $values[$valuename2valueid['CODE PRODUIT']]; //Code douane
+                $produit[] = $values[$valuename2valueid['DENOMINATION']]; //Libelle produit
+                $produit[] = $values[$valuename2valueid['MENTION VALORISANTE']]; //Mention valorisante
+                $produit[] = $index2L[$vname]; //Code categorie
+                $produit[] = DouaneCsvFile::getCategorieLibelle('SV11', $index2L[$vname])." - ".preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
+                if ($index2L[$vname] == "04") {
                     $produit[] = self::numerizeVal($values[$v], 4);
                 } else {
                     $produit[] = self::numerizeVal($values[$v], 2);
                 }
-                $produit[] = '"'.$values[3].'"';
-                $produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[4]));
+                $produit[] = '"'.$values[$valuename2valueid['NUMERO CVI APPORTEUR']].'"';
+                $produit[] = DouaneImportCsvFile::cleanRaisonSociale(html_entity_decode($values[$valuename2valueid['LIBELLE APPORTEUR']]));
                 $produit[] = null;
                 $produit[] = null;
                 $produit[] = $cpt;
@@ -101,7 +132,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
-                $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[2]));
+                $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[$valuename2valueid['MENTION VALORISANTE']]));
                 $produits[] = $produit;
             }
             $cpt++;
@@ -207,6 +238,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
+                $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[8]));
 	        			$produits[] = $produit;
         			}
                     $cpt++;

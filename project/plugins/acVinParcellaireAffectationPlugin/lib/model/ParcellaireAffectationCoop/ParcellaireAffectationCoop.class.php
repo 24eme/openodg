@@ -92,7 +92,6 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             }
             $apporteur->updateParcelles();
             $apporteur->intention = ($apporteur->nb_parcelles_identifiees);
-            $affectation = $apporteur->createAffectationParcellaire();
         }
     }
 

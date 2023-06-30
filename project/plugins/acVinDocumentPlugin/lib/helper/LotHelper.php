@@ -97,12 +97,17 @@ function getUrlEtapeFromMvtLot($mvtLot)
 }
 
 function pictoDegustable($lot) {
-    $lot = $lot->getLotInDrevOrigine();
-    if($lot->id_document_affectation) {
+    $lotOrigine = $lot->getLotInDrevOrigine();
+
+    if(!$lotOrigine) {
+        throw new Exception("Lot ".$lot->getDocument()->_id.":".$lot->getHash()." non trouvé");
+    }
+
+    if($lotOrigine->id_document_affectation) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
 
-    if($lot->affectable) {
+    if($lotOrigine->affectable) {
         return '<span title="À déguster" class="glyphicon glyphicon-time text-success"></span>';
     }
 
@@ -136,57 +141,6 @@ function showLotStatusCartouche($statut, $detail = null, $secondPassage = false)
         $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
     }
     return $text;
-}
-
-function splitLogementAdresse($adresseLogement, $etablissement = null){
-    $logementEtablissement = null;
-    if ($etablissement) {
-        $logementEtablissement = array(
-            'nom' => $etablissement->nom,
-            'adresse' => $etablissement->adresse,
-            'code_postal' => $etablissement->code_postal,
-            'commune' => $etablissement->commune,
-            'telephone' => $etablissement->telephone_bureau,
-            'portable' => $etablissement->telephone_mobile
-        );
-    }
-
-    if(!$adresseLogement){
-        return $logementEtablissement;
-    }
-
-    $adresseSplit = explode('—',$adresseLogement);
-    $adresse['nom'] = trim($adresseSplit[0]);
-    $adresse['adresse_totale'] = $adresseSplit[1];
-    if (!trim($adresse['adresse_totale'])) {
-        return $logementEtablissement;
-    }
-    //Hack des premières version de logement : devra être supprimé
-    if (preg_match('/^[0-9 ]+$/', trim($adresse['adresse_totale']))) {
-        $adresse['telephone'] = $adresse['adresse_totale'];
-        $adresse['adresse_totale'] = $adresse['nom'];
-        $adresse['nom'] = '';
-    }
-    //split l'adresse en différents champs
-    if (preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) (.*)$/', $adresse['adresse_totale'], $m)) {
-        $adresse['adresse'] = trim($m[1]);
-        $adresse['code_postal'] = trim($m[2]);
-        $adresse['commune'] = trim($m[3]);
-    }else{
-        $adresse['adresse'] = trim($adresse['adresse_totale']);
-    }
-
-    $adresse['telephone'] = trim($adresseSplit[2]);
-    $adresse['portable'] = trim($adresseSplit[3]);
-    //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé
-    if (!$adresse['code_postal'] && preg_match('//', $adresse['telephone'])) {
-        $adresse['code_postal'] = $adresse['telephone'];
-        $adresse['commune'] = $adresse['portable'];
-        $adresse['telephone'] = null;
-        $adresse['portable'] = null;
-    }
-
-    return $adresse;
 }
 
 function substrUtf8($str, $offset, $length) {

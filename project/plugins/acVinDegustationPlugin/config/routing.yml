@@ -74,6 +74,16 @@ degustation_prelevements_etape:
   requirements:
     sf_method: [get]
 
+degustation_tournees_etape:
+  url: /degustation/:id/tournees
+  param: { module: degustation, action: tourneesEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_tables_etape:
   url: /degustation/:id/tables
   param: { module: degustation, action: tablesEtape }
@@ -654,6 +664,16 @@ degustation_convocation_auth:
     type: object
   requirements:
     sf_method: [get, post]
+
+degustation_convocation_presence:
+  url: /degustation/convocation/:id/:college/:identifiant/:auth
+  param: { module: degustation, action: convocationReponse }
+  class: DegustationRoute
+  options:
+    model: Degustation
+    type: object
+  requirements:
+    sf_method: [get]
 
 degustation_affectation_lot:
   url: /historique/:id/:unique_id/affectation

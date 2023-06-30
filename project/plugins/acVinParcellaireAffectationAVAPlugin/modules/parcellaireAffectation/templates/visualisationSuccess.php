@@ -7,7 +7,7 @@
     <?php if($parcellaire->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> reçue le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
     <?php elseif($parcellaire->validation): ?>
-    <small class="pull-right">Télédéclaration<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> validée le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
+    <small class="pull-right">Télédéclaration<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> signée le <?php echo format_date($parcellaire->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
     <?php endif; ?>
     </h2>
 </div>
@@ -38,14 +38,14 @@
                             <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>">Global (PDF)</a>
                         </li>
                         <li>
-                            <a href="<?php echo url_for("parcellaire_export_csv", $parcellaire) ?>">Global (CSV)</a>
+                            <a href="<?php echo url_for("parcellaire_affectation_export_csv", $parcellaire) ?>">Global (CSV)</a>
                         </li>
                         <?php foreach ($parcellaire->getAcheteursByCVI() as $cvi => $acheteur): ?>
                         <li>
                             <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (PDF)</a>
                         </li>
                         <li>
-                            <a href="<?php echo url_for("parcellaire_export_csv", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (CSV)</a>
+                            <a href="<?php echo url_for("parcellaire_affectation_export_csv", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (CSV)</a>
                         </li>
                         <?php endforeach; ?>
                     </ul>

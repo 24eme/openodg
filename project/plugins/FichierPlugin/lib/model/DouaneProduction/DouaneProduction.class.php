@@ -17,6 +17,8 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     protected $mouvement_document = null;
     protected $declarant_document = null;
     protected $enhanced_donnees = null;
+    protected static $cvi2tiers = null;
+
 
     public function getPeriode() {
 
@@ -346,16 +348,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $item->categorie_libelle = $data[DouaneCsvFile::CSV_LIGNE_LIBELLE];
         $item->valeur = VarManipulator::floatize($data[DouaneCsvFile::CSV_VALEUR]);
         $item->colonneid = $data[DouaneCsvFile::CSV_COLONNE_ID];
-        if ($data[DouaneCsvFile::CSV_TIERS_CVI]) {
-            if ($tiers = EtablissementClient::getInstance()->findByCvi($data[DouaneCsvFile::CSV_TIERS_CVI])) {
-                $item->tiers = $tiers->_id;
-                $item->tiers_raison_sociale = $tiers->raison_sociale;
-                $item->tiers_cvi = $tiers->cvi;
-            }else{
-                $item->tiers_raison_sociale = preg_replace('/(^"|"$)/', '', $data[DouaneCsvFile::CSV_TIERS_LIBELLE]);
-                $item->tiers_cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
-            }
-        }
+        self::fillItemWithTiersData($item, $data[DouaneCsvFile::CSV_TIERS_CVI], $data[DouaneCsvFile::CSV_TIERS_LIBELLE]);
         if ($data[DouaneCsvFile::CSV_BAILLEUR_PPM]) {
             if ($tiers = EtablissementClient::getInstance()->findByPPM($data[DouaneCsvFile::CSV_BAILLEUR_PPM])) {
                 $item->bailleur = $tiers->_id;
@@ -369,6 +362,29 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         }
 
         return $item;
+    }
+
+    public static function fillItemWithTiersData(&$item, $tiers_cvi, $tiers_libelle) {
+        if (!self::$cvi2tiers) {
+            self::$cvi2tiers = array();
+        }
+        if ($tiers_cvi) {
+            $tiers_cvi = str_replace('"', '', $tiers_cvi);
+            if (!isset(self::$cvi2tiers[$tiers_cvi])) {
+                self::$cvi2tiers[$tiers_cvi] = EtablissementClient::getInstance()->findByCvi($tiers_cvi);
+            }
+            $tiers = self::$cvi2tiers[$tiers_cvi];
+            if ($tiers) {
+                $item->tiers = $tiers->_id;
+                $item->tiers_raison_sociale = $tiers->raison_sociale;
+                $item->tiers_cvi = str_replace('"', '', $tiers->cvi);
+                $item->tiers_commune = $tiers->siege->commune;
+            } else {
+                $item->tiers_raison_sociale = preg_replace('/(^"|"$)/', '', $tiers_libelle);
+                $item->tiers_cvi = $tiers_cvi;
+                $item->tiers_commune = null;
+            }
+        }
     }
 
     public function getCategorie(){
@@ -408,9 +424,8 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
 
-    public function getTotalValeur($numLigne, $familles = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array()) {
+    public function getTotalValeur($numLigne, $familles = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array(), $metayer_only = true) {
         $value = 0;
-
         foreach($this->getEnhancedDonnees() as $donnee) {
             if (in_array($donnee->colonne_famille, $throw_familles)) {
                 throw new sfException("Famille $donnee->colonne_famille non permise");
@@ -424,18 +439,28 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
                 continue;
             }
-            if($donnee->categorie != str_replace("L", "", $numLigne)) {
+            if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
                 continue;
             }
-
-            $value += VarManipulator::floatize($donnee->valeur);
+            if ($metayer_only && $donnee->bailleur_raison_sociale) {
+                continue;
+            }
+            $value = $value + VarManipulator::floatize($donnee->valeur);
         }
 
         return $value;
     }
+
+    public function getDonnees() {
+        if (!$this->exist('donnees')) {
+            $this->generateDonnees();
+        }
+        return $this->_get('donnees');
+    }
+
     public function getNbApporteurs($produitFilter = null) {
         $apporteurs = array();
-        foreach($this->donnees as $donnee) {
+        foreach($this->getDonnees() as $donnee) {
             if (!$donnee->tiers_cvi) {
                 continue;
             }
@@ -511,7 +536,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $donnees = [];
 
         // Produits :
-        $donnees['lignes'] = ['04', '04b', '05', '06', '07', '08', '15', '16', '18', '19'];
+        $donnees['lignes'] = ['04', '04b', '05', '06', '07', '08', '09', '15', '16', '18', '19'];
         $donnees['produits'] = [];
         foreach ($this->getEnhancedDonnees() as $entry) {
             if($entry->bailleur_ppm) {
@@ -558,6 +583,12 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return $donnees;
     }
 
+
+	public function getConfiguration() {
+
+		return ConfigurationClient::getConfiguration($this->campagne.'-12-10');
+	}
+
     public function switchEnAttente()
     {
         if (! $this->exist('statut_odg')) {
@@ -575,6 +606,13 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         if ($this->exist('statut_odg') && $this->statut_odg === DRClient::STATUT_EN_ATTENTE) {
             $this->statut_odg = null;
         }
+    }
+
+    public function isValideeOdg() {
+        if (DRConfiguration::getInstance()->hasValidationDR()) {
+            return $this->exist('validation_odg') && ($this->validation_odg);
+        }
+        return false;
     }
 
     public function isDeletable() {
@@ -612,22 +650,22 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         }
 
 
-    	$bailleurs = array();
-    	foreach($csv as $line) {
-    		$produitConfig = $configuration->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
-    		if(!$produitConfig) {
-    			continue;
-    		}
-    		if (!$produitConfig->isActif()) {
-    			continue;
-    		}
+        $bailleurs = array();
+        foreach($csv as $line) {
+            $produitConfig = $configuration->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
+            if(!$produitConfig) {
+                continue;
+            }
+            if (!$produitConfig->isActif()) {
+                continue;
+            }
             if($line[DRCsvFile::CSV_RECOLTANT_ID] != $etablissement->identifiant) {
                 continue;
             }
 
-    		if($line[DouaneCsvFile::CSV_TYPE] != DRCsvFile::CSV_TYPE_DR) {
+            if($line[DouaneCsvFile::CSV_TYPE] != DRCsvFile::CSV_TYPE_DR) {
                 continue;
-    		}
+            }
 
             if(!trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
                 continue;
@@ -640,8 +678,60 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             $etablissement_id = isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : null;
             $id = ($etablissement_id) ? $etablissement_id : $line[DRCsvFile::CSV_BAILLEUR_PPM];
             $bailleurs[$id]  = array('raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM], 'etablissement_id' => $etablissement_id, 'ppm' => $line[DRCsvFile::CSV_BAILLEUR_PPM]);
-    	}
-    	return $bailleurs;
+        }
+        return $bailleurs;
     }
 
+
+    public function hasApporteurs($include_non_reconnu = false) {
+        return count($this->getApporteurs($include_non_reconnu));
+    }
+
+    public function isApporteur($include_non_reconnu = false) {
+        if ($this->getDocumentDefinitionModel() != 'DR') {
+            return false;
+        }
+        return count($this->getTiers($include_non_reconnu));
+    }
+
+    public function getApporteurs($include_non_reconnu = false, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
+        if ($this->getDocumentDefinitionModel() == 'DR') {
+            return array();
+        }
+        return $this->getTiers();
+    }
+
+    public function getTiers($include_non_reconnu = false, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
+        $cvis = array();
+        foreach($this->getCsv() as $data) {
+            $cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
+            $cvi = str_replace('"', '', $cvi);
+            if(!$cvi) {
+                continue;
+            }
+            if(isset($cvis[$cvi])) {
+                continue;
+            }
+            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, true, acCouchdbClient::HYDRATE_JSON);
+            if(!$etablissement) {
+                $cvis[$cvi] = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
+                continue;
+            }
+
+            $cvis[$cvi] = $etablissement;
+        }
+
+        $etablissements = array();
+        foreach($cvis as $cvi => $etablissement) {
+            if(is_string($etablissement)) {
+                if ($include_non_reconnu) {
+                    $etablissements[$cvi] = array('etablissement' => null , "cvi" => $cvi, 'raison_sociale' => $etablissement);
+                }
+                continue;
+            }
+            $etablissements[$etablissement->_id] = array('etablissement' => $etablissement, 'cvi' => $cvi, 'raison_sociale' => $etablissement->raison_sociale);
+        }
+
+        return $etablissements;
+    }
 }

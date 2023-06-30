@@ -9,14 +9,14 @@
 </ol>
 
 <div class="row">
-    <div class="col-xs-8">
+    <div class="col-xs-12 col-sm-8">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-9">
+                    <div class="col-xs-8 col-sm-9">
                         <h4><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> Societe n° <?php echo $societe->identifiant; ?></h4>
                     </div>
-                    <div class="col-xs-3 text-muted text-right">
+                    <div class="col-xs-4 col-sm-3 text-muted text-right">
                         <?php if($modifiable): ?>
                         <div class="btn-group">
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
@@ -113,7 +113,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-12 col-sm-4">
         <?php include_component('societe', 'sidebar', array('societe' => $societe, 'activeObject' => $societe, 'modifiable' => $modifiable)); ?>
     </div>
 </div>

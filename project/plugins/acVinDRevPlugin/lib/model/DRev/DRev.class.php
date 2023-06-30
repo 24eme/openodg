@@ -1088,9 +1088,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
-        if(!$this->exist('date_depot') || !$this->date_depot) {
-            $this->add('date_depot', $this->getDateValidation());
-        }
+        $this->getDateDepot();
 
         $this->validation = null;
         $this->validation_odg = null;
@@ -1565,6 +1563,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         return true;
+    }
+
+    public function getNumerosDossier()
+    {
+        if (!$this->exist('lots')) {
+            return array();
+        }
+        return array_unique(array_column($this->lots->toArray(true, false), 'numero_dossier'));
     }
 
     public function hasVolumeRevendiqueLots($produitFilter = null) {
@@ -2433,5 +2439,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         return false;
+    }
+
+    public function cloneDRevForOneDossier($numero_dossier)
+    {
+        $drev = clone $this;
+        $drev->_rev = null;
+
+        $lots = array_filter($drev->lots->toArray(), function ($lot) use ($numero_dossier) {
+            return $numero_dossier === $lot->numero_dossier;
+        });
+
+        $drev->remove('lots');
+        $drev->add('lots', array_values($lots));
+
+        return $drev;
     }
 }

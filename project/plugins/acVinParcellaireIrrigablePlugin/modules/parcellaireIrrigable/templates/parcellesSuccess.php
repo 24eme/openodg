@@ -33,14 +33,14 @@
 		</thead>
 		<tbody>
 		<?php foreach ($parcelles as $parcelle): ?>
-			<tr style="cursor: pointer;" class="parcellerow switch-to-higlight <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>success<?php endif; ?>" >
+			<tr style="cursor: pointer;" class="parcellerow switch-to-higlight <?php if ($parcellaireIrrigable->findParcelle($parcelle)): ?>success<?php endif; ?>" >
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: right;"><?php echo $parcelle->section; ?></td>
                 <td><?php echo $parcelle->numero_parcelle; ?></td>
-                <td><?php echo $parcelle->cepage; ?></td>
+                <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
-				<td class="text-center"><input <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+				<td class="text-center"><input <?php if ($parcellaireIrrigable->findParcelle($parcelle)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>
         </tbody>

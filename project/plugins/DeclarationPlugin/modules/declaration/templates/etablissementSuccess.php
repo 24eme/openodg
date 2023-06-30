@@ -9,12 +9,9 @@
 </ol>
 
 <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'), 'noautofocus' => true)); ?>
-    </div>
-</div>
+    <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'), 'noautofocus' => true)); ?>
 <?php endif; ?>
+
 <div class="page-header">
     <div class="pull-right">
         <?php if ($sf_user->hasDrevAdmin()) $nb_campagne = 5 ; else $nb_campagne = 2; ?>
@@ -67,6 +64,9 @@
     <?php endif; ?>
     <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
+    <?php if(class_exists("PMC") && in_array('pmc', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('pmc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
     <?php endif; ?>
     <?php if(class_exists("Transaction") && in_array('transaction', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>

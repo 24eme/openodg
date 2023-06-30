@@ -53,6 +53,7 @@ ParcellaireIrrigable:
                               superficie: { type: float }
                               commune: { }
                               code_commune: { }
+                              prefix: { }
                               section: { }
                               numero_parcelle: { }
                               idu: { }

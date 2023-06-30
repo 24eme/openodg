@@ -25,9 +25,17 @@ class ExportTiragePDF extends ExportPDF {
 
         $header_subtitle = sprintf("A.O.C. Crémant d'Alsace\n%s\n", $this->tirage->declarant->nom);
 
-        if (!$this->tirage->isPapier() && $this->tirage->validation && $this->tirage->validation !== true) {
-            $date = new DateTime($this->tirage->validation);
-            $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+        $dateValidation = null;
+        if($this->tirage->validation && $this->tirage->validation !== true) {
+            $dateValidation = new DateTime($this->tirage->validation);
+        }
+        $dateOdg = null;
+        if($this->tirage->validation_odg) {
+            $dateOdg = new DateTime($this->tirage->validation_odg);
+        }
+
+        if (!$this->tirage->isPapier() && $dateValidation) {
+            $header_subtitle .= sprintf("Signé électroniquement via la télédéclaration le %s, %s", $dateValidation->format('d/m/Y'), ($dateOdg) ? "validée par l'ODG le ".$dateOdg->format('d/m/Y') : "en attente de l'approbation par l'ODG");
         } elseif(!$this->tirage->isPapier()) {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }

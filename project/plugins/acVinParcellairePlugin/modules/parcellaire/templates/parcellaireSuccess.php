@@ -1,3 +1,4 @@
+<?php use_javascript('hamza_style.js?20230328'); ?>
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php
@@ -25,6 +26,11 @@ $list_idu = [];
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
 </ol>
 <?php endif; ?>
+
+<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm") && isset($form)): ?>
+    <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
+<?php endif; ?>
+
 <div class="page-header no-border">
     <?php if($parcellaire): ?>
     <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?> <small class="text-muted"><?= $parcellaire->source ?></small></h2>
@@ -41,15 +47,12 @@ $list_idu = [];
 
 <?php include_partial('global/flash'); ?>
 
-<div class="row">
-    <div class="col-xs-12">
-        <?php if($parcellaire): ?>
-            <div class="well">
-                <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
-            </div>
-        <?php endif; ?>
+<?php if($parcellaire): ?>
+    <div class="well">
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
     </div>
-</div>
+<?php endif; ?>
+
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
     $import = $parcellaire->getGeoJson(); ?>
@@ -110,39 +113,7 @@ $list_idu = [];
                     <tbody>
                         <?php foreach ($parcelles as $detail):
                             $classline = '';
-                            $styleline = '';
-                            $styleproduit = '';
                             $styleparcelle = '';
-                            $classparcelle = '';
-                            $classsuperficie = '';
-                            $stylesuperficie = '';
-                            if (isset($diff) && $diff) {
-                                if ($last && !$last->exist($detail->getHash())) {
-                                    $styleline = 'border-style: solid; border-width: 1px; border-color: darkgreen;';
-                                } else {
-                                    if ($last && $detail->getParcelleIdentifiant() != $last->get($detail->getHash())->getParcelleIdentifiant()) {
-                                        $styleparcelle = 'border-style: solid; border-width: 1px; border-color: darkorange;';
-                                    }
-                                    if ($last && $detail->getSuperficie() != $last->get($detail->getHash())->getSuperficie()) {
-                                        $styleline = (!$detail->superficie) ? 'text-decoration: line-through; border-style: solid; border-width: 1px; border-color: darkred' : '';
-                                        $classline = (!$detail->superficie) ? 'danger' : '';
-                                        $stylesuperficie = (!$detail->superficie) ? 'border-style: solid; border-width: 1px; border-color: darkgreen' : 'border-style: solid; border-width: 1px; border-color: darkgreen';
-                                    }
-                                }
-                                if (!$detail->getSuperficie()) {
-                                    $stylesuperficie = 'border-style: solid; border-width: 1px; border-color: darkred';
-                                }
-
-                                if (!$detail->isAffectee()) {
-                                    $styleline="opacity: 0.4;";
-                                    $styleproduit="text-decoration: line-through;";
-                                    $styleparcelle="text-decoration: line-through;";
-                                    $stylesuperficie="text-decoration: line-through;";
-                                    $classline="";
-                                    $classsuperficie="";
-                                    $classparcelle="";
-                                }
-                            }
                             $classecart = '';
                             $classcepage = '';
                             if ($detail->hasProblemExpirationCepage()) {
@@ -170,30 +141,36 @@ $list_idu = [];
                                     $cepage .= ' - jeunes vignes';
                                 }
                             ?>
-                            <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item" style="<?php echo $styleline; ?>">
+                            <tr data-words='<?php echo json_encode(array_merge(array(strtolower($lieu), strtolower($section.$num_parcelle),strtolower($compagne), strtolower($cepage), $ecart_pieds.'x'.$ecart_rang)), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>' class="<?php echo $classline ?> hamzastyle-item">
                             <?php $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"]; ?>
-                                <td style="<?php echo $styleproduit; ?>"><?php echo $lieu; ?></td>
+                                <td><?php echo $lieu; ?></td>
                                 <td class="" style="text-align: center;">
                                     <?php echo $section; ?> <?php echo $num_parcelle; ?></br>
                                     <span class="text-muted"><?php echo $detail->idu; ?></span>
                                 </td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" >
+                                <td class="<?php echo $classcepage; ?>">
                                     <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>
-                                    <?php $aires = $detail->isInAires(); if ($aires): ?>
+                                    <?php $aires = $detail->getIsInAires(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
                                     <?php
                                     $separateur = '';
                                     foreach($aires as $nom => $a) {
                                         echo "$separateur ";
-                                        if ($a != ParcellaireClient::PARCELLAIRE_AIRE_TOTALEMENT){
+                                        if ($a != AireClient::PARCELLAIRE_AIRE_TOTALEMENT){
                                             echo '<span class="text-danger">';
                                         }else{
                                             echo '<span class="text-muted">';
                                         }
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_HORSDELAIRE) ? "Hors de l'aire " : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) ? "Partiellement " : '' ;
-                                        echo ($a == ParcellaireClient::PARCELLAIRE_AIRE_EN_ERREUR) ? "En erreur " : '' ;
-                                        echo "$nom</span>";
+                                        if($a == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) {
+                                            echo "Hors de l'aire ".$nom;
+                                        } elseif($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) {
+                                            echo "Partiellement ".$nom;
+                                        } elseif($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) {
+                                            echo "En erreur";
+                                        } else {
+                                            echo $nom;
+                                        }
+                                        echo "</span>";
                                         $separateur = ',';
                                     }?>
                                     <?php endif; ?>
@@ -321,20 +298,7 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
-<div class="dropdown dropup center-block" style="width: 150px;">
-    <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Télécharger...&nbsp;<span class="caret"></span></button>
-    <ul class="dropdown-menu">
-<?php if($sf_user->isAdmin()): ?>
-        <li class="dropdown-header">Documents internes</li>
-        <li><a href="<?php echo url_for('parcellaire_export_ods', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le doc de contrôle</a></li>
-        <li><a href="<?php echo url_for('parcellaire_export_geo', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger les coordonnées géographiques</a></li>
-        <li class="divider"></li>
-        <li class="dropdown-header">Documents partagés avec les opérateurs</li>
-<?php endif; ?>
-        <li><a href="<?php echo url_for('parcellaire_export_csv', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le CSV du parcellaire</a></li>
-        <li><a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le PDF Douanier</a></li>
-    </ul>
-</div>
+<?php include_partial('downloadLinks', array('parcellaire' => $parcellaire)); ?>
 <?php endif; ?>
 
 <?php if($sf_user->hasTeledeclaration()): ?>
@@ -344,7 +308,6 @@ $list_idu = [];
     </div>
 </div>
 <?php endif;?>
-<?php use_javascript('hamza_style.js'); ?>
 <script type="text/javascript">
     var all_idu = JSON.parse('<?php echo json_encode(($list_idu)); ?>');
 </script>

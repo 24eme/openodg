@@ -28,13 +28,22 @@
 
 <nav id="menu_navigation" class="navbar navbar-default container">
         <div class="navbar-header">
-          <a class="navbar-brand" style="padding: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">ASSVAS</h1></a>
+            <button type="button" class="navbar-toggle collapsed hidden-lg hidden-md" data-toggle="collapse" data-target="#menu_items_collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" style="padding-top: 0;padding-right: 15px;" href="<?php echo url_for('accueil') ?>"><h1 style="color: black; font-size: 1.5em; margin-top: 10px; font-weight: bold;">ASSVAS</h1></a>
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
+
+        <div class="collapse navbar-collapse" id="menu_items_collapse" style="">
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
                 <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
                     <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
-                    <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
+                    <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>  <?php if(!$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>disabled<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDeclarationRoute): ?><?php echo url_for('declaration_etablissement', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">DR / SV</a></li>
+                    <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDocumentsRoute): ?><?php echo url_for('pieces_historique', $etablissement); ?><?php else: ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
+                    <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceHabilitationRoute): ?><?php echo url_for('habilitation_declarant', $etablissement); ?><?php else: ?><?php echo url_for('habilitation_demande'); ?><?php endif; ?>">Habilitations</a></li>
                     <li class="<?php if($route instanceof InterfaceCompteRoute && !$route instanceof FacturationDeclarantRoute): ?>active<?php endif; ?>"><a href="<?php if($compte && !$route instanceof InterfaceCompteRoute || $route instanceof FacturationDeclarantRoute): ?><?php echo url_for('compte_visualisation', $compte); ?><?php else: ?><?php echo url_for('compte_search'); ?><?php endif; ?>">Contacts</a></li>
                 </ul>
                 <?php elseif($sf_user->isAuthenticated() && $etablissement): ?>
@@ -71,7 +80,6 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
-                    <li><a href="<?php echo url_for("facturation_template_last") ?>">Facturation</a></li>
                   </ul>
                 </li>
                 <?php elseif($sf_user->isAuthenticated()): ?>

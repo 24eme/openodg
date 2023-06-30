@@ -185,6 +185,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_get('validation_odg');
     }
 
+    public function getDateDepot()
+    {
+        if($this->validation && $this->validation !== true && (!$this->exist('date_depot') || !$this->_get('date_depot'))) {
+            $date = new DateTime($this->validation);
+            $this->add('date_depot', $date->format('Y-m-d'));
+        }
+
+        if(!$this->exist('date_depot')) {
+
+            return null;
+        }
+
+        return $this->_get('date_depot');
+    }
+
     public function hasDR() {
 
         return $this->_attachments->exist('DR.csv');
@@ -553,6 +568,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
+        $this->getDateDepot();
         $this->validation = null;
         $this->validation_odg = null;
         $this->remove('etape');
@@ -615,6 +631,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+
+        $this->generateMouvementsFactures();
     }
 
     public function getEtablissementObject() {
@@ -911,6 +929,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		$this->piece_document->generatePieces();
   }
   public function save($con = null) {
+    $this->getDateDepot();
+
     if ($this->exist('non_conditionneur') && $this->non_conditionneur) {
       if ($this->prelevements->exist('cuve_ALSACE')) {
         $this->prelevements->cuve_ALSACE->add('force', 1);
@@ -1105,7 +1125,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $this->getValidation(),
+            'date_depot' => $this->getDateDepot(),
             'libelle' => 'Revendication des appellations viticoles '.$this->campagne.$version.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,

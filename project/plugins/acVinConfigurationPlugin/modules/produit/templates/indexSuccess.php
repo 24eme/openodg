@@ -8,10 +8,6 @@
     <img src="/<?php echo $organisme->getLogoPdfWebPath() ?>" class="pull-right" />
     <h2><?php echo $organisme->getNom(); ?></h2>
     <div class="row">
-      <div class="col-xs-1">Nom&nbsp;Factu.&nbsp;:</div>
-      <div class="col-xs-7"><?php echo $organisme->getNomFacturation(); ?></div>
-    </div>
-    <div class="row">
       <div class="col-xs-1">Adresse : </div>
       <div class="col-xs-7"><?php echo $organisme->getAdresse(); ?><br /><?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?></div>
     </div>
@@ -22,38 +18,6 @@
     <div class="row">
       <div class="col-xs-1">Mail : </div>
       <div class="col-xs-7"><?php echo $organisme->getEmail(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">Mail&nbsp;Factu&nbsp;:</div>
-      <div class="col-xs-7"><?php echo $organisme->getEmailFacturation(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">SIRET : </div>
-      <div class="col-xs-7"><?php echo $organisme->getSiret(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">N°&nbsp;TVA&nbsp;Intra.&nbsp;:</div>
-      <div class="col-xs-7"><?php echo $organisme->getNoTvaIntracommunautaire(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">Nom&nbsp;banq.&nbsp;:</div>
-      <div class="col-xs-7"><?php echo $organisme->getBanqueNom(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">Adr.&nbsp;banq.&nbsp;:</div>
-      <div class="col-xs-7"><?php echo $organisme->getBanqueAdresse(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">IBAN :</div>
-      <div class="col-xs-7"><?php echo $organisme->getIban(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">BIC :</div>
-      <div class="col-xs-7"><?php echo $organisme->getBic(); ?></div>
-    </div>
-    <div class="row">
-      <div class="col-xs-1">Paiement&nbsp;:</div>
-      <div class="col-xs-11"><?php echo FactureConfiguration::getInstance()->getModaliteDePaiement(); ?></div>
     </div>
     <div class="row">
       <div class="col-xs-1">OI :</div>
@@ -86,3 +50,24 @@
     <?php endforeach; ?>
     </tbody>
 </table>
+<?php if(class_exists("Parcellaire") && in_array('parcellaire', sfConfig::get('sf_enabled_modules'))): ?>
+<h2>Les Aires</h2>
+<table class="table table-condensed table-striped table-bordered">
+    <thead>
+    <tr>
+        <th class="col-xs-10">Dénomination libellé</th>
+        <th class="col-xs-1 text-center">Identifiant INAO</th>
+        <th class="col-xs-1 text-center">Couleur</th>
+    </tr>
+    </thead>
+    <tbody>
+<?php foreach(ParcellaireConfiguration::getInstance()->getAiresInfos() as $aire): ?>
+    <tr>
+        <td><?php echo $aire['name'];  ?></td>
+        <td class="text-center"><a href="https://www.opendatawine.fr/denominations/<?php echo $aire['denomination_id']; ?>.html"><?php echo $aire['denomination_id']; ?></a></td>
+        <td class="text-center"><span style="background-color: <?php echo $aire['color']; ?>"> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; </span></td>
+    </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>
+<?php endif; ?>

@@ -49,9 +49,11 @@
                       <td class="text-right">
                               <?php  if ($synthese['nb_lots'] > 0): ?>
                                   <?php if ($isTotal): ?>
-                                  <span class="text-muted"><?php printf("%0.0f", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100.0); ?>%</span> &nbsp;&nbsp;
+                                  <span class="text-muted" data-toggle="tooltip" title="<?= $synthese['nb_lots_degustables'] ?> lot(s) dégusté(s) sur <?= $synthese['nb_lots'] ?> lot(s)">
+                                      <?php printf("%0.0f", $synthese['nb_lots_degustables'] / $synthese['nb_lots'] * 100.0); ?>%
+                                  </span> &nbsp;&nbsp;
                                   <?php endif;?>
-                                  <?php echo $synthese['nb_lots']; ?>
+                                  <small data-toggle='tooltip' title="<?= $synthese['nb_lots_degustables'] ?> lot(s) dégusté(s) sur <?= $synthese['nb_lots'] ?> lot(s)"><small class="text-right text-muted"><?= $synthese['nb_lots_degustables'] ?> / </small></small><?php echo $synthese['nb_lots']; ?>
                               <?php else: ?>
                                    aucun lots
                                <?php endif; ?>
@@ -72,7 +74,7 @@
 
           <h3 id="table_igp_title">Déclaration des lots IGP</h3>
           <div class="row">
-              <input type="hidden" data-placeholder="Sélectionner un produit" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="select2autocomplete hamzastyle col-xs-12">
+              <input type="hidden" data-placeholder="Sélectionner un produit ou un numéro de dossier" data-hamzastyle-container=".table_igp" data-hamzastyle-mininput="3" class="hamzastyle col-xs-12">
           </div>
           <br/>
           <?php if(!$drev->validation_odg && $sf_user->isAdmin()): ?>
@@ -147,7 +149,7 @@
                                             ); ?>
                                 </div>
                             </div>
-                          <?php else: ?>
+                          <?php elseif ($sf_user->isAdmin() || ($drev->exist('date_commission') && new DateTime($drev->date_commission) < new DateTime())): ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
                                   <?php echo pictoDegustable($lot); ?>

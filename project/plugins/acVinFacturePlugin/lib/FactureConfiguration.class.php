@@ -50,10 +50,6 @@ class FactureConfiguration {
       return $this->configuration['uniq_template_prefix']."-%s";
     }
 
-    public function isFacturationAllEtablissements(){
-      return isset($this->configuration['all_etablissements']) && $this->configuration['all_etablissements'];
-    }
-
     public function getPrefixCodeComptable(){
       if(!isset($this->configuration['prefix_code_comptable']) || !$this->configuration['prefix_code_comptable']){
         return "";
@@ -168,6 +164,14 @@ class FactureConfiguration {
             return '511150';
         }
         return $this->configuration['numerocompte_banquepaiement'];
+    }
+
+    public function getNumeroCompteMaxLength() {
+        if (!isset($this->configuration['numerocompte_maxlength'])) {
+            return 8;
+        }
+
+        return $this->configuration['numerocompte_maxlength'];
     }
 
     public function displayTypesDocumentOnMassive() {

@@ -477,6 +477,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->date_paiement;
     }
 
+    public function isVersementComptablePaiement() {
+
+        return $this->versement_comptable_paiement && $this->exist('paiements') && count($this->paiements) > 0;
+    }
+
     public function updateMontantPaiement() {
         $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
     }
@@ -688,6 +693,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateVersementComptablePaiement() {
+        if(!$this->exist('paiements') && $this->_get('montant_paiement') && $this->_get('date_paiement')) {
+            $paiement = $this->add('paiements')->add();
+            $paiement->montant = $this->_get('montant_paiement');
+            $paiement->commentaire = $this->_get('reglement_paiement');
+            $paiement->date = $this->_get('date_paiement');
+            $paiement->versement_comptable = $this->versement_comptable_paiement;
+            $this->remove('reglement_paiement');
+            $this->updateMontantPaiement();
+        }
+
         $versement = true;
         $date = null;
         if ($this->exist('paiements')) {

@@ -73,6 +73,7 @@ Degustation:
                   nonconformite_levee: {}
                   a_redeguster: {required: false}
                   preleve: {}
+                  secteur: {}
       mouvements_lots:
         type: collection
         definition:

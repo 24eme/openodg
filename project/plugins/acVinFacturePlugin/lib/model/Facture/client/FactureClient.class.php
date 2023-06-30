@@ -12,8 +12,10 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_PAIEMENT_PRELEVEMENT_AUTO = "PRELEVEMENT_AUTO";
     const FACTURE_REJET_PRELEVEMENT = "REJET_PRELEVEMENT";
     const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
+    const FACTURE_PAIEMENT_ESPECES = "ESPECES";
+    const FACTURE_PAIEMENT_CARTE_BANCAIRE = "CARTE_BANCAIRE";
 
-    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
+    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement", self::FACTURE_PAIEMENT_ESPECES => "Espèces", self::FACTURE_PAIEMENT_CARTE_BANCAIRE => "Carte Bancaire");
 
     private $documents_origine = array();
 
@@ -207,7 +209,7 @@ class FactureClient extends acCouchdbClient {
         if(FactureConfiguration::getInstance()->hasPaiements()){
           $facture->add("paiements",array());
         }
-        if(!$facture->total_ttc && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
+        if(!$facture->total_ttc){
           return null;
         }
         return $facture;
@@ -327,17 +329,27 @@ class FactureClient extends acCouchdbClient {
             $ids[] = $arguments['compte'];
             return $ids;
         }
-        if(!$arguments['requete'] && FactureConfiguration::getInstance()->isFacturationAllEtablissements()){
-          $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
-          foreach($comptes as $compte) {
-             $ids[] = $compte->id;
-          }
-        }else{
+
+        if ($argument['requete']) {  //Pour l'AVA déprécié
           $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
           foreach($comptes as $compte) {
             $ids[] = $compte->doc['_id'];
           }
+
+          return $ids;
         }
+
+        if(!class_exists("CompteAllView")) { //Pour l'AVA
+
+            return CompteClient::getInstance()->getAll(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+        }
+
+
+        $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
+        foreach($comptes as $compte) {
+            $ids[] = $compte->id;
+        }
+
 
         return $ids;
     }
@@ -430,7 +442,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->date_paiement = null;
       $avoir->modalite_paiement = null;
       $avoir->montant_paiement = null;
-      $avoir->reglement_paiement = null;
+      $avoir->remove('reglement_paiement');
       $avoir->remove('paiements');
       $avoir->add('paiements');
 
