@@ -9,3 +9,13 @@ all:
       anonymat4labo: false
       notation: true
       anonymisation_manuelle: false
+      avis:
+        favorable: "C"
+        defavorable: "NC"
+      conformite:
+        - CONFORME
+        - NONCONFORME_MINEUR
+        - NONCONFORME_MAJEUR
+        - NONCONFORME_GRAVE
+        - NONTYPICITE_CEPAGE
+        - NONCONFORME_ANALYTIQUE
