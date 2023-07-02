@@ -277,6 +277,8 @@ EOF;
     }
 
     public function clearProduitKey($key) {
+      $key = implode("-", array_unique(explode("-", $key)));
+      $key = preg_replace('/[\-]*[0-9]+$/', '', $key);
       $key = str_replace('MAURE-VAR-', 'MAURE-', $key);
       $key = str_replace('MONT-CAUME-VAR-', 'MONT-CAUME-', $key);
       $key = str_replace('MEDITERRANEE-VAR-', 'MEDITERRANEE-', $key);
