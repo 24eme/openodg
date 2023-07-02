@@ -107,6 +107,12 @@ var browser;
       console.log("FIN");
       console.log("===================");
     }
+
+    for (let i = 0; i < 2000; i++) {
+      await page.goto(baseURL+"/commission/VisuCommission.aspx?IdCommission="+i);
+      fs.writeFileSync(process.env.DOSSIER+"/04_controles_produits/commissions/commission_"+i+".html",await page.content());
+    }
+
     await browser.close();
 
 }catch (e) {
