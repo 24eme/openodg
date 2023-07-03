@@ -91,7 +91,7 @@ PMC:
                   document_fils: { required: false }
                   document_ordre: { }
                   date_degustation_voulue: {  }
-                  engagement_8515: { }
+                  engagement_8515: { required: false }
                   cepages:
                     type: collection
                     definition:
