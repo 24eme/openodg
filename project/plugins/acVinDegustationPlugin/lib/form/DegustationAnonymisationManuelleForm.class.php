@@ -36,8 +36,9 @@ class DegustationAnonymisationManuelleForm extends acCouchdbObjectForm
             $name = $this->getWidgetNameFromLot($lot);
             if ($values[$name]) {
                 $lot->numero_anonymat = $values[$name];
+                $lot->statut = Lot::STATUT_ANONYMISE;
             } else {
-                $lot->numero_anonymat = $values[$name];
+                $lot->numero_anonymat = null;
             }
         }
     }
