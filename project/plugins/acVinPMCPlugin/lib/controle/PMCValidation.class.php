@@ -102,7 +102,7 @@ class PMCValidation extends DocumentValidation
 
                 if ($volume + $volumeCommercialise > $volumeRevendique) {
                     if ($lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) < $volumeRevendique) {
-                        $this->addPoint(self::TYPE_WARNING, '8515', "Vous zdadazdadevez présenter un papier");
+                        $this->addPoint(self::TYPE_WARNING, '8515', "Vous devez présenter un papier");
                     } else {
                       $this->addPoint(self::TYPE_ERROR, 'volume_depasse', "Lot n° ".($key+1)." - Volume dépassé", $this->generateUrl($routeName, array("id" => $this->document->_id)));
                     }
