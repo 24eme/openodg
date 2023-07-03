@@ -6,3 +6,10 @@ all:
         degustateur_technicien: "Technicien"
         degustateur_porteur_de_memoire: "Porteur de mémoire"
         degustateur_usager_du_produit: "Usager du produit"
+      conformite:
+        - CONFORME
+        - NONCONFORME_MINEUR
+        - NONCONFORME_MAJEUR
+        - NONCONFORME_GRAVE
+        - NONTYPICITE_CEPAGE
+        - NONCONFORME_ANALYTIQUE
