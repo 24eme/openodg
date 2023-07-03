@@ -96,7 +96,7 @@
         <pre>
         <?php echo $tirage->commentaire; ?>
         </pre>
-    <?php elseif(!$tirage->getValidationOdg()): ?>
+    <?php elseif($tirage->getValidation() && !$tirage->getValidationOdg()): ?>
         <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
       <form id="formUpdateCommentaire" action="<?php echo url_for('tirage_update_commentaire', $tirage) ?>" method="post">
             <?php echo $tirageCommentaireValidationForm->renderHiddenFields(); ?>

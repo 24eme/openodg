@@ -763,6 +763,14 @@ class habilitationActions extends sfActions {
                 }
             } catch(sfException $e) {
                 $this->res = array($e->getMessage());
+                $this->errors = array();
+                foreach($this->res as $r) {
+                    if (strpos($r, '{"errors"') > 0) {
+                        $r = preg_replace('/.*{"errors"/', '{"errors"', $r);
+                        $o = json_decode($r);
+                        $this->errors = array_merge($this->errors, $o->errors);
+                    }
+                }
             }
         }
         try {
