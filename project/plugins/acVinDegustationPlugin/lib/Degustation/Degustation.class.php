@@ -839,14 +839,20 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lotsAnon;
         }
 
-		public function getLotsTableOrFreeLots($numero_table, $free_table = true){
+        public function getLotsTableOrFreeLots($numero_table, $free_table = true)
+        {
             return array_filter($this->getLotsDegustables(), function ($lot) use ($numero_table, $free_table) {
+                if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() && ! $lot->numero_anonymat) {
+                    return false;
+                }
+
                 if ($lot->numero_table == $numero_table) {
                     return true;
                 }
                 if ($free_table && ! $lot->numero_table) {
                     return true;
                 }
+
                 return false;
             });
 		}

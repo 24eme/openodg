@@ -12,10 +12,4 @@ all:
       avis:
         favorable: "C"
         defavorable: "NC"
-      conformite:
-        - CONFORME
-        - NONCONFORME_MINEUR
-        - NONCONFORME_MAJEUR
-        - NONCONFORME_GRAVE
-        - NONTYPICITE_CEPAGE
-        - NONCONFORME_ANALYTIQUE
+      conformite: []

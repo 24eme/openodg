@@ -16,6 +16,7 @@ class PMCValidation extends DocumentValidation
     {
         $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
+        $this->addControle(self::TYPE_ERROR, 'limite_volume_lot', 'La limite de volume pour un lot est dépassé');
         $this->addControle(self::TYPE_ERROR, 'volume_depasse', "Vous avez dépassé le volume total revendiqué");
         $this->addControle(self::TYPE_WARNING, 'depassement_8515', "Vous devez présenter un papier");
         $this->addControle(self::TYPE_WARNING, '8515', "Vous devrez justifier votre assemblage 85/15");
@@ -52,6 +53,12 @@ class PMCValidation extends DocumentValidation
             if(!$lot->volume && $lot->volume !== 0){
               $this->addPoint(self::TYPE_FATAL, 'lot_incomplet_fatal', "Lot n° ".($key+1)." - Volume manquant", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
+            }
+
+            $volumeMax = strpos($lot->produit_hash, 'SCR') !== false ? 500 : 1000;
+            if ($lot->volume > $volumeMax) {
+                $this->addPoint(self::TYPE_ERROR, 'limite_volume_lot', 'Vous ne pouvez pas revendiquer plus de '.$volumeMax.' hl de '.$lot->getProduitLibelle(), $this->generateUrl($routeName, ["id" => $this->document->_id]));
+                continue;
             }
 
             if ($lot->engagement_8515) {
@@ -102,7 +109,7 @@ class PMCValidation extends DocumentValidation
 
                 if ($volume + $volumeCommercialise > $volumeRevendique) {
                     if ($lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) < $volumeRevendique) {
-                        $this->addPoint(self::TYPE_WARNING, '8515', "Vous zdadazdadevez présenter un papier");
+                        $this->addPoint(self::TYPE_WARNING, '8515', "Vous devez présenter un papier");
                     } else {
                       $this->addPoint(self::TYPE_ERROR, 'volume_depasse', "Lot n° ".($key+1)." - Volume dépassé", $this->generateUrl($routeName, array("id" => $this->document->_id)));
                     }
