@@ -24,8 +24,8 @@
               <th class="col-xs-3 text-center">Opérateur</th>
               <th class="col-xs-4 text-center">Produit (millesime)<br/><span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</span></th>
               <th class="col-xs-1 text-center">Lgmt</th>
-              <th class="col-xs-1 text-center">Num. ODG</th>
-              <th class="col-xs-3 text-center">Anonymat</th>
+              <th class="col-xs-2 text-center">Num. ODG</th>
+              <th class="col-xs-2 text-center">Anonymat</th>
             </tr>
           </thead>
           <tbody>
