@@ -100,7 +100,6 @@ EOF;
             $lot->date_commission = $dateCommission;
             $lot->affectable = true;
 
-            $pmc->add('date_commission', $dateCommission);
             $pmc->validate($dateDeclaration);
             $pmc->validateOdg($dateDeclaration);
             $pmc->save();
