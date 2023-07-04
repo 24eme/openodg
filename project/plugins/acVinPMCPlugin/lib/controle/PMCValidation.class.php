@@ -61,7 +61,7 @@ class PMCValidation extends DocumentValidation
                 continue;
             }
 
-                if ($lot->exist('engagement_8515') && $lot->engagement_8515) {
+            if ($lot->exist('engagement_8515') && $lot->engagement_8515) {
                 $this->addPoint(self::TYPE_WARNING, '8515', "Lot ".$lot->getProduitLibelle()." ( ".$lot->volume." hl )", $this->generateUrl($routeName, ["id" => $this->document->_id]));
             }
 
@@ -102,20 +102,23 @@ class PMCValidation extends DocumentValidation
         $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagne);
         $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, substr($this->document->campagne, 0, 4)]));
 
-        if ($lot->exist('engagement_8515') && $lot->engagement_8515) {
-            foreach ($totalVolumePMC as $hash => $millesimes) {
-                $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
-                $volumeRevendique = ($drev) ? $drev->declaration->getTotalVolumeRevendique($hash) : 0;
+        foreach ($totalVolumePMC as $hash => $millesimes) {
+            $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
+            $volumeRevendique = ($drev) ? $drev->declaration->getTotalVolumeRevendique($hash) : 0;
 
-                foreach ($millesimes as $millesime => $volume) {
+            foreach ($millesimes as $millesime => $volume) {
+                if (isset($syntheseLots[$produit->getAppellation()->getLibelle()]) === false) { $volumeCommercialise = 0; }
+                elseif (isset($syntheseLots[$produit->getAppellation()->getLibelle()][$millesime]) === false) { $volumeCommercialise = 0; }
+                elseif (isset($syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]) === false) { $volumeCommercialise = 0; }
+                else {
                     $volumeCommercialise = $syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()];
+                }
 
-                    if ($volume + $volumeCommercialise > $volumeRevendique) {
-                        if ($lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) < $volumeRevendique) {
-                            $this->addPoint(self::TYPE_WARNING, '8515', "Vous devez présenter un papier");
-                        } else {
-                          $this->addPoint(self::TYPE_ERROR, 'volume_depasse', "Lot n° ".($key+1)." - Volume dépassé", $this->generateUrl($routeName, array("id" => $this->document->_id)));
-                        }
+                if ($volume + $volumeCommercialise > $volumeRevendique) {
+                    if ($lot->exist('engagement_8515') && $lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) < $volumeRevendique) {
+                        $this->addPoint(self::TYPE_WARNING, '8515', "Vous devez présenter un papier");
+                    } else {
+                      $this->addPoint(self::TYPE_ERROR, 'volume_depasse', "Lot n° ".($key+1)." - Volume dépassé", $this->generateUrl($routeName, array("id" => $this->document->_id)));
                     }
                 }
             }
