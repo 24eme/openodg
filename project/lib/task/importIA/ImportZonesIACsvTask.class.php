@@ -33,21 +33,34 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $zones = [];
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
-
-            $etablissement = $this->identifyEtablissement($data[self::CSV_RAISON_SOCIALE_OPERATEUR]);
-
-            if(!$etablissement) {
-                echo "Établissement non trouvé : ".$data[self::CSV_RAISON_SOCIALE_OPERATEUR]."\n";
+            if($data[1] == "RaisonSociale") {
                 continue;
             }
-
-            $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
-            $etablissement->region = $data[self::CSV_SECTEUR];
-            $etablissement->save();
-
-            echo $etablissement->_id."\n";
+            if(!trim($data[5]) || !trim($data[6])) {
+                continue;
+            }
+            $zones[$data[0]][] = $data;
         }
+
+        $geojson = [];
+        foreach($zones as $zone => $datas) {
+            $points = [];
+            $color = "rgb(".rand(0,255).",".rand(0,255).",".rand(0,255).")";
+            foreach($datas as $data) {
+                $resultat = CompteClient::getInstance()->calculCoordonnees($data[2], $data[6], $data[5]);
+
+                $points[] = ["type" => "Feature", "properties" => ["Zone" => $zone, "Raison Sociale" => $data[1], "Adresse" => $data[2], "Code postal" => $data[5], "Commune" => $data[6], "marker-color" => $color], "geometry" => ["coordinates" => [$resultat['lon'], $resultat['lat']], "type" => "Point"]];
+            }
+            $geojson = array_merge($geojson, $points);
+
+            $geo = geoPHP::load(json_encode(["type" => "FeatureCollection", "features" => $points]));
+            $area = ["type" => "Feature", "properties" => ["Zone" => $zone, "fill" => $color], "geometry" => json_decode($geo->envelope()->out("json"))];
+            $geojson[] = $area;
+        }
+
+        echo json_encode(["type" => "FeatureCollection", "features" => $geojson]);
     }
 }
