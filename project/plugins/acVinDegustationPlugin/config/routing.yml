@@ -473,6 +473,16 @@ degustation_fiche_tables_echantillons_par_anonymat_pdf:
     requirements:
       sf_method: [get]
 
+degustation_fiche_tables_echantillons_par_raison_sociale_pdf:
+    url: /degustation/:id/ficheTablesEchantillonsParRaisonSociale/pdf
+    param: { module: degustation, action: ficheTablesEchantillonsParRaisonSocialePDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
 degustation_all_notification_pdf:
   url: /degustation/:id/degustation-notification/pdf
   param: { module: degustation, action: degustationAllNotificationsPDF }

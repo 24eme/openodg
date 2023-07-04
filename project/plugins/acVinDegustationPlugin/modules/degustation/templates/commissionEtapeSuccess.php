@@ -19,6 +19,8 @@
                 <a id="btn_pdf_degustation_fiche_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_anonymat_pdf', $degustation) ?>">triées par Numéro d'anonymat </a>
                 -
                 <a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>">triées par Numéro de dossier</a>
+                -
+                <a id="btn_degustation_fiche_tables_echantillons_par_raison_sociale_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_raison_sociale_pdf', $degustation) ?>">triées par Raison sociale</a>
                 )
             </li>
             <li class="list-group-item">
