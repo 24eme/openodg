@@ -35,12 +35,12 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_CONVOCATIONS => 'Convocations',
         self::ETAPE_TOURNEES => 'Tournées',
-        self::ETAPE_PRELEVEMENTS => 'Prélévements / Confirmation',
+        self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
         self::ETAPE_TABLES => 'Tables',
         self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_COMMISSION => 'Commission',
-        self::ETAPE_RESULTATS => 'Résultats / Présences',
+        self::ETAPE_RESULTATS => 'Résultats',
         self::ETAPE_NOTIFICATIONS => 'Notifications'
     );
 
