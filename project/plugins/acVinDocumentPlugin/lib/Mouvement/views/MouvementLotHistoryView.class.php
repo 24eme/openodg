@@ -88,7 +88,7 @@ class MouvementLotHistoryView extends acCouchdbView
         $syntheseLots = [];
         foreach ($mouvements as $mouvementLot) {
             # Démo: https://regex101.com/r/J9XQnv/3
-            preg_match('/([\w ]+) (Rouge|Rosé|Blanc) (\d{4})/u', $mouvementLot->value->libelle, $matches);
+            preg_match('/([\w ]+)( Rouge| Rosé| Blanc|) (\d{4})/u', $mouvementLot->value->libelle, $matches);
             $libelle = $matches[0];
             $produit = $matches[1];
             $couleur = $matches[2];
