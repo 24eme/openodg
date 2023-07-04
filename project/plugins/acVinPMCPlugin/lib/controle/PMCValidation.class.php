@@ -65,6 +65,8 @@ class PMCValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_WARNING, '8515', "Lot ".$lot->getProduitLibelle()." ( ".$lot->volume." hl )", $this->generateUrl($routeName, ["id" => $this->document->_id]));
             }
 
+            if (isset($totalVolumePMC[$lot->produit_hash]) === false) { $totalVolumePMC[$lot->produit_hash] = []; }
+            if (isset($totalVolumePMC[$lot->produit_hash][$lot->millesime]) === false) { $totalVolumePMC[$lot->produit_hash][$lot->millesime] = 0; }
             $totalVolumePMC[$lot->produit_hash][$lot->millesime] += $lot->volume;
 
             $volume = sprintf("%01.02f",$lot->getVolume());
@@ -102,7 +104,7 @@ class PMCValidation extends DocumentValidation
 
         foreach ($totalVolumePMC as $hash => $millesimes) {
             $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
-            $volumeRevendique = $drev->declaration->getTotalVolumeRevendique($hash);
+            $volumeRevendique = ($drev) ? $drev->declaration->getTotalVolumeRevendique($hash) : 0;
 
             foreach ($millesimes as $millesime => $volume) {
                 $volumeCommercialise = $syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()];

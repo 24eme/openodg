@@ -36,13 +36,11 @@ th {
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Adresse</strong></th>
-          <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>Produit</strong></th>
-          <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Millesime</strong></th>
-          <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>Volume</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Produit</strong></th>
           <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>Cuve</strong></th>
           <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>N° Lot</strong></th>
-          <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>Date prélev</strong></th>
-          <th class="topempty bg-white"style="width:19%;"><?php echo tdStart() ?><strong>Observation</strong></th>
+          <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Date prélev</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Observation</strong></th>
           <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Signature</strong></th>
         </tr>
     <?php endif;?>
@@ -64,13 +62,8 @@ th {
             </small>
           </td>
           <td><?php echo tdStart() ?>
-          <?php echo $lot->getProduitLibelle(); ?><br/>
-          </td>
-          <td><?php echo tdStart() ?>
-          <?php echo $lot->millesime; ?><br/>
-          </td>
-          <td><?php echo tdStart() ?>
-          <small><?php echo $lot->volume; ?> hl</small><br/>
+              <?php echo $lot->getProduitLibelle(); ?> <?php echo $lot->millesime; ?><br/>
+              <small><?php echo $lot->volume; ?> hl</small>
           </td>
           <td></td><td></td><td></td><td></td><td></td>
          </tr>

@@ -9,3 +9,4 @@ all:
         - CONFORME
         - NONCONFORME_ANALYTIQUE
         - NONCONFORME_ORGANOLEPTIQUE
+      typicite_cepage: false
