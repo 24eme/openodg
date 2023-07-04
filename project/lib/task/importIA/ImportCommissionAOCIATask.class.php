@@ -16,7 +16,8 @@ class ImportCommissionA0CIATask extends ImportLotsIATask
     const CSV_NUM_LOT_OPERATEUR = 23;
     const CSV_NUMERO_TABLE = 26;
     const CSV_NUMERO_ANONYMAT = 27;
-    const CSV_RESULTAT = 28;
+    const CSV_RESULTAT_LABO = 28;
+    const CSV_RESULTAT_ORGANO = 31;
 
     const CSV_MILLESIME = 98;
     const CSV_NOM_RESPONSABLE = 4;
@@ -27,6 +28,8 @@ class ImportCommissionA0CIATask extends ImportLotsIATask
     const CSV_COULEUR = 12;
     const CSV_OBSERVATION = 22;
     const CSV_CVI = 99;
+
+    protected $dates = [];
 
     protected function configure()
     {
@@ -80,19 +83,23 @@ EOF;
           }
           $data[self::CSV_ID] = trim($data[self::CSV_ID]);
 
+          if(!isset($this->dates[$data[self::CSV_ID]])) {
+              $heure = preg_replace("/-.*$/", "", $data[self::CSV_ID]);
+              $minute = preg_replace("/^.*-/", "", $data[self::CSV_ID]);
+
+              if($heure > 23) {
+                  $heure = rand(1,23);
+              }
+
+              if($minute > 59) {
+                  $minute = rand(1,59);
+              }
+              $this->dates[$data[self::CSV_ID]] = $degustation_date." ".sprintf("%02d:%02d:00", $heure, $minute);
+          }
+          $date = $this->dates[$data[self::CSV_ID]];
+
           $heure = preg_replace("/-.*$/", "", $data[self::CSV_ID]);
           $minute = preg_replace("/^.*-/", "", $data[self::CSV_ID]);
-
-          if($heure > 23) {
-              $heure = rand(1,23);
-          }
-
-          if($minute > 59) {
-              $minute = rand(1,59);
-          }
-
-          $date = $degustation_date." ".sprintf("%02d:%02d:00", $heure, $minute);
-
 
           $campagne = trim($data[self::CSV_CAMPAGNE]);
 
@@ -165,12 +172,9 @@ EOF;
           $numeroTable = trim($data[self::CSV_NUMERO_TABLE]);
           $numeroEchantillon = sprintf("%05d", trim($data[self::CSV_NUMERO_ECHANTILLON]));
 
-          $alphas = range('A', 'Z');
-          $resultat = $data[self::CSV_RESULTAT];
-
           /*$lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONAFFECTABLE));*/
 
-              $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONAFFECTABLE), false);
+              $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE), false);
               $lot = null;
               if(count($lots) == 1) {
                   $lot = $lots[0];
@@ -192,25 +196,25 @@ EOF;
 
           $lot->preleve = preg_replace('/ .*/', '', $date);
 
-          $lot->numero_table = intval($numeroTable);
+          $lot->_set('numero_table', intval($numeroTable));
 
           if ($lot->numero_table) {
-              $lot->numero_anonymat = $alphas[$lot->numero_table - 1].sprintf("%02d", $numeroAnonymat);
+              $lot->numero_anonymat = sprintf("%02d", $numeroAnonymat);
           }
           $lot->email_envoye = $lot->preleve;
 
-          if(trim($data[self::CSV_RESULTAT]) == "NC") {
+          if(trim($data[self::CSV_RESULTAT_LABO]) == "NC") {
              $lot->statut = Lot::STATUT_NONCONFORME;
-             $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
-         } else {
+             $lot->conformite = Lot::CONFORMITE_NONCONFORME_ANALYTIQUE;
+           } elseif(trim($data[self::CSV_RESULTAT_ORGANO]) == "NC") {
+             $lot->statut = Lot::STATUT_NONCONFORME;
+             $lot->conformite = Lot::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE;
+          } else {
              $lot->statut = Lot::STATUT_CONFORME;
-             $lot->conformite = Lot::CONFORMITE_CONFORME;
-         }
-          /*$data[self::CSV_OBSERVATION] = trim($data[self::CSV_OBSERVATION]);
-          if($data[self::CSV_OBSERVATION]) {
-              $lot->observation = $data[self::CSV_OBSERVATION];
-          }*/
+             $lot->conformite = Lot::STATUT_CONFORME;
+          }
         }
+
 
 
         if($degustation) {
