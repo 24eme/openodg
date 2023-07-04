@@ -1,5 +1,7 @@
 <?php
 
+require_once(dirname(__FILE__).'/../../../plugins/acVinParcellairePlugin/lib/vendor/geoPHP/geoPHP.inc');
+
 class ImportZonesIACsvTask extends importOperateurIAAOCCsvTask
 {
     const CSV_SECTEUR = 0;
