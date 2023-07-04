@@ -512,6 +512,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->form = new DegustationAnonymisationManuelleForm($this->degustation);
         $this->tri = $this->degustation->tri;
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation);
         $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray());
 
         if (! $request->isMethod(sfWebRequest::POST)) {
@@ -538,9 +539,14 @@ class degustationActions extends sfActions {
         }
         $this->ajoutLeurreForm->bind($request->getParameter($this->ajoutLeurreForm->getName()));
 
-        if (!$this->ajoutLeurreForm->isValid()) {
-
+        if (!$this->ajoutLeurreForm->isValid())
+        {
             $this->getUser()->setFlash('error', 'Formulaire d\'ajout de leurre invalide');
+
+            if ($service = $request->getParameter('service', null)) {
+                return $this->redirect($service);
+            }
+
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 0));
         }
         $this->ajoutLeurreForm->save();
@@ -548,6 +554,10 @@ class degustationActions extends sfActions {
         $table = $this->ajoutLeurreForm->getValue('table');
         if ($table == null) {
             $table = 0;
+        }
+
+        if ($service = $request->getParameter('service', null)) {
+            return $this->redirect($service);
         }
 
         return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $table));

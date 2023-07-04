@@ -55,7 +55,10 @@
             <tr><td colspan="7">Aucun lot trouvé <a id="btn_annuler_filtre_table" href=""><small>(annuler la recherche)</small></a></td></tr>
           </tfoot>
         </table>
-        <div class="col-xs-4 col-xs-offset-8 text-right">
+        <div class="col-xs-4 col-xs-offset-4 text-center">
+            <button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupLeurreForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un leurre</button>
+        </div>
+        <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-primary">
                 Confirmer l'anonymat <i class="glyphicon glyphicon-chevron-right"></i>
             </button>
@@ -66,6 +69,7 @@
 </div>
 
 <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => 0, 'service' => url_for('degustation_anonymats_etape', ['id' => $degustation->_id]))), 'form' => $triTableForm)); ?>
+<?php include_partial('degustation/popupAjoutLeurreForm', array('url' => url_for('degustation_ajout_leurre', ['id' => $degustation->_id, 'service' => url_for('degustation_anonymats_etape', ['id' => $degustation->_id])]), 'form' => $ajoutLeurreForm, 'table' => null)); ?>
 
 <script>
     document.querySelector('#table_filtre').onkeyup = function() {

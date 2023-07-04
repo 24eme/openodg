@@ -119,7 +119,9 @@
                         <?php endif; ?>
                     </div>
           			<div class="col-xs-4 text-center">
+                    <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() === false) : ?>
           				<button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupLeurreForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un leurre</button>
+                    <?php endif ?>
           			</div>
           			<div class="col-xs-4 text-right">
                         <button type="submit" class="btn btn-primary btn-upper">Continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
@@ -127,7 +129,9 @@
           		</div>
           	</form>
 
+        <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() === false) : ?>
           <?php include_partial('degustation/popupAjoutLeurreForm', array('url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm, 'table' => $numero_table)); ?>
+        <?php endif ?>
           <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => $numero_table)), 'form' => $triTableForm, 'table' => $numero_table)); ?>
       </div>
     </div>
