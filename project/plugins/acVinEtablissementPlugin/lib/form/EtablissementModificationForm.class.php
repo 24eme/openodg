@@ -29,6 +29,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         }
         $this->setWidget('nature_inao', new bsWidgetFormChoice(array('choices' => self::getNaturesInao())));
         $this->setWidget('no_accises', new bsWidgetFormInput());
+        $this->setWidget('num_interne', new bsWidgetFormInput());
         $this->setWidget('commentaire', new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
         $this->setWidget('site_fiche', new bsWidgetFormInput());
 
@@ -39,6 +40,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
           $this->widgetSchema->setLabel('region', 'Région viticole');
         }
         $this->widgetSchema->setLabel('no_accises', "N° d'Accise");
+        $this->widgetSchema->setLabel('num_interne', "N° interne");
         $this->widgetSchema->setLabel('commentaire', 'Commentaire');
         $this->widgetSchema->setLabel('site_fiche', 'Site Fiche Publique');
 
@@ -50,6 +52,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         }
         $this->setValidator('site_fiche', new sfValidatorString(array('required' => false)));
         $this->setValidator('no_accises', new sfValidatorString(array('required' => false)));
+        $this->setValidator('num_interne', new sfValidatorString(array('required' => false)));
         $this->setValidator('commentaire', new sfValidatorString(array('required' => false)));
 
         if (!$this->etablissement->isCourtier()) {
