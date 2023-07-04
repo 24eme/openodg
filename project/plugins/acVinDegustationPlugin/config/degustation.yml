@@ -13,3 +13,4 @@ all:
         favorable: "C"
         defavorable: "NC"
       conformite: []
+      typicite_cepage: true
