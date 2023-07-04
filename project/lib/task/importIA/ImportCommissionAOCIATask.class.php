@@ -141,13 +141,18 @@ EOF;
           }
 
           $produitKey = $this->clearProduitKey(KeyInflector::slugify(trim($data[self::CSV_PRODUIT])));
+
+          if(!$produitKey) {
+              continue;
+          }
+
           if (!isset($this->produits[$produitKey])) {
             echo "WARNING;produit $produitKey non trouvé;pas d'import;$line\n";
             continue;
           }
           $produit = $this->produits[$produitKey];
 
-          $etablissement = $this->identifyEtablissement(preg_replace("/[ ]*[0-9]+$/", "", $data[self::CSV_OPERATEUR]));
+          $etablissement = $this->identifyEtablissement(preg_replace("/[ ]*[0-9]+$/", "", $data[self::CSV_OPERATEUR]), preg_replace("/^.*([0-9]+)$/", '\1', $data[self::CSV_OPERATEUR]));
           if (!$etablissement) {
                echo "WARNING;établissement non trouvé ".$data[self::CSV_OPERATEUR].";pas d'import;$line\n";
                continue;
@@ -194,15 +199,13 @@ EOF;
           }
           $lot->email_envoye = $lot->preleve;
 
-          if(trim($data[self::CSV_RESULTAT]) == "C") {
-             $lot->statut = Lot::STATUT_CONFORME;
-             $lot->conformite = Lot::CONFORMITE_CONFORME;
-          }
-
           if(trim($data[self::CSV_RESULTAT]) == "NC") {
              $lot->statut = Lot::STATUT_NONCONFORME;
              $lot->conformite = Lot::CONFORMITE_NONCONFORME_MINEUR;
-          }
+         } else {
+             $lot->statut = Lot::STATUT_CONFORME;
+             $lot->conformite = Lot::CONFORMITE_CONFORME;
+         }
           /*$data[self::CSV_OBSERVATION] = trim($data[self::CSV_OBSERVATION]);
           if($data[self::CSV_OBSERVATION]) {
               $lot->observation = $data[self::CSV_OBSERVATION];
