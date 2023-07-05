@@ -85,7 +85,7 @@ th {
         </tr>
         <tr style="line-height:20px;">
         <?php for ($i=0; $i < $nb_cols; $i++) : ?>
-            <td></td>
+            <td>&nbsp;<br />&nbsp;</td>
         <?php endfor; ?>
         </tr>
         <tr style="line-height:20px;">
