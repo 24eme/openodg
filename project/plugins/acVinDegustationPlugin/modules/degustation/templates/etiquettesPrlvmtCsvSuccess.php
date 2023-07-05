@@ -1,4 +1,4 @@
-numero_archive;numero_dossier;declarant_nom;cvi;siret;code_postal;ville;produit_libelle;millesime;details;centilisation;numero_logement_operateur;volume;labo
+numero_archive;numero_dossier;declarant_nom;cvi;siret;"numero interne";code_postal;ville;produit_libelle;millesime;details;centilisation;numero_logement_operateur;volume;"numero_anonymat";labo
 <?php
 
 
