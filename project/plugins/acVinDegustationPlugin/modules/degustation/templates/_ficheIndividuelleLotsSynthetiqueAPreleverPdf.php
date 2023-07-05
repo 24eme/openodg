@@ -27,7 +27,7 @@ th {
         $etablissement = $etablissements[$logement];
         foreach ($lots_du_logement as $lot) :
     ?>
-    <?php if ($ligne % 9 == 0 ) : $table_header = true; ?>
+    <?php if ($ligne % 8 == 0 ) : $table_header = true; ?>
       </table>
       <br pagebreak="true" />
     <?php endif;?>
@@ -85,7 +85,7 @@ th {
         </tr>
         <tr style="line-height:20px;">
         <?php for ($i=0; $i < $nb_cols; $i++) : ?>
-            <td></td>
+            <td>&nbsp;<br />&nbsp;</td>
         <?php endfor; ?>
         </tr>
         <tr style="line-height:20px;">
@@ -95,7 +95,7 @@ th {
         </tr>
         <tr style="line-height:20px;">
         <?php for ($i=0; $i < $nb_cols; $i++) : ?>
-            <td></td>
+            <td>&nbsp;<br />&nbsp;</td>
         <?php endfor; ?>
         </tr>
         </table>
