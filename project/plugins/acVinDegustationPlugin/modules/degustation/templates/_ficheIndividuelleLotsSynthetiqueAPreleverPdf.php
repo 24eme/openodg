@@ -35,12 +35,12 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Adresse</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse</strong></th>
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Produit</strong></th>
           <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>Cuve</strong></th>
           <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>N° Lot</strong></th>
           <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Date prélev</strong></th>
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Observation</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Observation</strong></th>
           <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Signature</strong></th>
         </tr>
     <?php endif;?>
@@ -58,12 +58,12 @@ th {
               <?php endif; ?>
              <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?>
              <?php echo ($etablissement->telephone_bureau && $etablissement->telephone_mobile) ? ' / ' : ''; ?>
-             <?php echo ($etablissement->telephone_mobile) ? $etablissement->telephone_mobile : '' ?>
-            </small>
+             <?php echo ($etablissement->telephone_mobile) ? $etablissement->telephone_mobile : '' ?></small>
           </td>
           <td><?php echo tdStart() ?>
+              <small>
               <?php echo $lot->getProduitLibelle(); ?> <?php echo $lot->millesime; ?><br/>
-              <small><?php echo $lot->volume; ?> hl</small>
+              <?php echo $lot->volume; ?> hl</small>
           </td>
           <td></td><td></td><td></td><td></td><td></td>
          </tr>
