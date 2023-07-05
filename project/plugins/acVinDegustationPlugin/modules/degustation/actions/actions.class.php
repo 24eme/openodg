@@ -9,8 +9,6 @@ class degustationActions extends sfActions {
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
 
-        $this->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
-
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON);
 
         if(class_exists("EtablissementChoiceForm")) {
