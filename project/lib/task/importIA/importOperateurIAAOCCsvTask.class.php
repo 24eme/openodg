@@ -164,7 +164,7 @@ EOF;
             }
             $etablissement->cvi = $cvi;
             $etablissement->ppm = $ppm;
-            $etablissement->numero_interne = trim($data[self::CSV_CODE_INTERNE]);
+            $etablissement->num_interne = trim($data[self::CSV_CODE_INTERNE]);
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);
             $etablissement->save();
