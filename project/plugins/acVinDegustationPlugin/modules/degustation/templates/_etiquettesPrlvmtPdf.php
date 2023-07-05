@@ -27,7 +27,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28px; line-height: 14px; overflow: hidden;" ><?php if ($i != 2 || !$anonymat4labo): ?><strong><?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->lot->declarant_nom, 47, '…', 'middle') : "Leurre";  ?></strong> <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi); elseif ($lotInfo->etablissement->siret):echo substr($lotInfo->etablissement->siret,0,9)." "; endif; ?><?php else: ?><br /><i>Destiné au laboratoire</i><?php endif; ?></td>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28px; line-height: 14px; overflow: hidden;" ><?php if ($i != 2 || !$anonymat4labo): ?><strong><?php echo ($lotInfo->lot->declarant_nom)? truncate_text($lotInfo->lot->declarant_nom, 47, '…', 'middle') : "Leurre";  ?></strong> <?php if($lotInfo->etablissement->cvi):echo ($lotInfo->etablissement->cvi); elseif ($lotInfo->etablissement->siret):echo substr($lotInfo->etablissement->siret,0,9)." "; endif; ?><?php if($lotInfo->etablissement->num_interne): ?>&nbsp;/&nbsp;<?php echo substr($lotInfo->etablissement->num_interne,0,6) ?><?php endif; ?><?php else: ?><br /><i>Destiné au laboratoire</i><?php endif; ?></td>
                   </tr>
 		          <tr>
                         <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
@@ -36,9 +36,15 @@
                     <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent($lotInfo->lot->getConfig()->getCertification()->libelle." ".$lotInfo->getRawValue()->lot->produit_libelle)), 50, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
                     </td>
                   </tr>
+                  <?php if(DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
                   <tr>
                     <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 24px; line-height: 12px; overflow: hidden;">&nbsp;&nbsp;<?php echo showOnlyCepages($lotInfo->lot, 58, 'span') ?></td>
                   </tr>
+                  <?php else: ?>
+                  <tr>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: left; height: 24px; line-height: 12px; overflow: hidden;">&nbsp;&nbsp;NOM PRELEVEUR&nbsp;_________________<br />&nbsp;&nbsp;DATE PRELEVMT&nbsp;____/____/_______</td>
+                  </tr>
+                  <?php endif; ?>
                   <tr>
                     <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>LGT <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
                     </td>
