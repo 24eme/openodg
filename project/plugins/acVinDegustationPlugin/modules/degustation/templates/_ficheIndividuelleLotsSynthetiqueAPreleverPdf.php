@@ -27,7 +27,7 @@ th {
         $etablissement = $etablissements[$logement];
         foreach ($lots_du_logement as $lot) :
     ?>
-    <?php if ($ligne % 8 == 0 ) : $table_header = true; ?>
+    <?php if ($ligne % 10 == 0 ) : $table_header = true; ?>
       </table>
       <br pagebreak="true" />
     <?php endif;?>
