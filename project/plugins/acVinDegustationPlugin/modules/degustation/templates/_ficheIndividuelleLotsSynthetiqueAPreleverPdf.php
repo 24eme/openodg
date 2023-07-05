@@ -35,8 +35,8 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse</strong></th>
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Produit</strong></th>
+          <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Adresse</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Produit</strong></th>
           <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>Cuve</strong></th>
           <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>N° Lot</strong></th>
           <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Date prélev</strong></th>
