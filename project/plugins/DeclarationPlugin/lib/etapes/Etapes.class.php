@@ -59,33 +59,29 @@ abstract class Etapes
 		return $first;
 	}
 
-	private function getNextPrev($etape, $next=true)
+    public function getPrevious($etape)
 	{
-		if (!$etape) {
+        $etapes = $this->getEtapes();
+
+        if (false !== $index_etape = array_search($etape, $etapes)) {
+            return ($index_etape - 1 >= 0) ? $etapes[$index_etape-1] : $this->getFirst();
+        }
+
+        throw new sfException('Etape inconnue');
+    }
+
+    public function getNext($etape)
+	{
+        if (!$etape) {
 			return $this->getFirst();
 		}
 		$etapes = $this->getEtapes();
 
         if (false !== $index_etape = array_search($etape, $etapes)) {
-            if ($next) {
-                return ($index_etape + 1 <= count($etapes)) ? $etapes[$index_etape+1] : $this->getLast();
-            }
-            else {
-                return ($index_etape - 1 >= 0) ? $etapes[$index_etape-1] : $this->getFirst();
-            }
+            return ($index_etape + 1 <= count($etapes)) ? $etapes[$index_etape+1] : $this->getLast();
         }
 
         throw new sfException('Etape inconnue');
-	}
-
-    public function getPrevious($etape)
-	{
-        return $this->getNextPrev($etape, false);
-    }
-
-    public function getNext($etape)
-	{
-        return $this->getNextPrev($etape, true);
     }
 
 	public function isGt($etapeToTest, $etape)
