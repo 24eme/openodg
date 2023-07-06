@@ -72,6 +72,7 @@ Degustation:
                   conforme_appel: {}
                   nonconformite_levee: {}
                   a_redeguster: {required: false}
+                  engagement_8515: { required: false }
                   preleve: {}
                   secteur: {}
       mouvements_lots:

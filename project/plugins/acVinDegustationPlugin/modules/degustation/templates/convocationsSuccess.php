@@ -80,7 +80,7 @@
   <div class="col-xs-4 text-center">
   </div>
   <div class="col-xs-4 text-right">
-    <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_prelevements_etape', $degustation) ?>" >&nbsp;Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+    <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_CONVOCATIONS), $degustation) ?>" >&nbsp;Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
   </div>
 </div>
 <?php if($college && $degustateur): ?>

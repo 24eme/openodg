@@ -68,6 +68,10 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">CVI :</div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?></div>
                                 <?php endif; ?>
+                                <?php if ($etablissement->num_interne): ?>
+                                    <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">N° interne:</div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->num_interne; ?></div>
+                                <?php endif; ?>
                                 <?php if ($etablissement->ppm): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">PPM :</div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->ppm; ?></div>

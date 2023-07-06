@@ -27,6 +27,8 @@ class LotCommissionForm extends acCouchdbObjectForm
     {
         parent::updateDefaultsFromObject();
 
-        $this->setDefault('date_commission', DateTimeImmutable::createFromFormat('Y-m-d', $this->getObject()->date_commission)->format('d/m/Y'));
+        if ($this->getObject()->date_commission) {
+            $this->setDefault('date_commission', DateTimeImmutable::createFromFormat('Y-m-d', $this->getObject()->date_commission)->format('d/m/Y'));
+        }
     }
 }

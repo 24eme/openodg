@@ -35,9 +35,9 @@ echo $form->renderGlobalErrors();
                 Télécharger les PDF <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée prélevement</a></li>
+                <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche individuelle des lots à prélever</a></li>
+                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de prélèvement</a></li>
                 <li role="separator" class="divider"></li>
                 <li>
                     <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
@@ -60,10 +60,10 @@ echo $form->renderGlobalErrors();
             </tr>
         </thead>
         <tbody>
-            <?php
+            <?php foreach ($form as $key => $item):
                 if($key == '_revision') { continue; }
                 $thelots = isset($lots[$secteur][$key]) ? $lots[$secteur][$key] : $lots['SANS_SECTEUR'][$key];
-                $firstlot = array_values($thelots)[0];
+                $firstlot = array_values($thelots->getRawValue())[0];
             ?>
             <tr class="vertical-center">
                 <td class="text-left"><?php echo $firstlot->getLogementNom(); ?></td>
@@ -78,11 +78,13 @@ echo $form->renderGlobalErrors();
     </div>
     </div>
 
-    <div class="row row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape",$degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
-    <div class="col-xs-4 text-center"></div>
-    <div class="col-xs-4 text-right">
-        <button type="submit" class="btn btn-primary btn-upper">Valider</button>
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-9 text-center">
+            <button type="submit" class="btn btn-primary">Enregistrer la tournée du secteur <?php echo $secteur; ?></button>
+        </div>
     </div>
-    </div>
+
+    <?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES, 'is_enabled' => true)); ?>
+
 </form>
