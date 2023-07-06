@@ -50,16 +50,18 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
         }
       }
 
-      @$this->printable_document->addPage(
-        $this->getPartial('degustation/ficheIndividuelleLotsSynthetiqueAPreleverPdf',
-          array(
-            'degustation' => $this->degustation,
-            'etablissements' => $etablissements,
-            "date_edition" => date("d/m/Y"),
-            "nbLotTotal" => count($this->degustation->getLotsPrelevables()),
-            'lots' => $lots
-          )
-        ));
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() ) {
+            @$this->printable_document->addPage(
+            $this->getPartial('degustation/ficheIndividuelleLotsSynthetiqueAPreleverPdf',
+              array(
+                'degustation' => $this->degustation,
+                'etablissements' => $etablissements,
+                "date_edition" => date("d/m/Y"),
+                "nbLotTotal" => count($this->degustation->getLotsPrelevables()),
+                'lots' => $lots
+              )
+            ));
+        }
     }
 
 
