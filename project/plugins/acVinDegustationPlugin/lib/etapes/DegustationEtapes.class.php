@@ -7,6 +7,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_CONVOCATIONS = 'CONVOCATIONS';
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
     const ETAPE_TOURNEES = 'TOURNEES';
+    const ETAPE_PRELEVEMENT_MANUEL = 'PRELEVEMENT_MANUEL';
     const ETAPE_ANONYMISATION_MANUELLE = 'ANONYMISATION_MANUELLE';
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
@@ -21,6 +22,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 2,
         self::ETAPE_CONVOCATIONS => 3,
         self::ETAPE_TOURNEES => 3.5,
+        self::ETAPE_PRELEVEMENT_MANUEL => 3.6,
         self::ETAPE_PRELEVEMENTS => 4,
         self::ETAPE_ANONYMISATION_MANUELLE => 4.5,
         self::ETAPE_TABLES => 5,
@@ -35,6 +37,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_CONVOCATIONS => 'Convocations',
         self::ETAPE_TOURNEES => 'Tournées',
+        self::ETAPE_PRELEVEMENT_MANUEL => 'Prélevé',
         self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
         self::ETAPE_TABLES => 'Tables',
@@ -49,6 +52,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_CONVOCATIONS => 'Convocations',
         self::ETAPE_TOURNEES => 'Tournées',
+        self::ETAPE_PRELEVEMENT_MANUEL => 'Prélevé',
         self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
         self::ETAPE_TABLES => 'Tables',
@@ -63,6 +67,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'degustation_selection_degustateurs',
         self::ETAPE_CONVOCATIONS => 'degustation_convocations',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
+        self::ETAPE_PRELEVEMENT_MANUEL => 'degustation_prelevements_manuel_etape',
         self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_etape',
         self::ETAPE_ANONYMISATION_MANUELLE => 'degustation_anonymats_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
@@ -97,8 +102,10 @@ class DegustationEtapes extends Etapes {
     {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             unset($items[self::ETAPE_ANONYMATS]);
+            unset($items[self::ETAPE_PRELEVEMENTS]);
         } else {
             unset($items[self::ETAPE_TOURNEES]);
+            unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
             unset($items[self::ETAPE_ANONYMISATION_MANUELLE]);
         }
 

@@ -74,6 +74,16 @@ degustation_prelevements_etape:
   requirements:
     sf_method: [get]
 
+degustation_prelevements_manuel_etape:
+  url: /degustation/:id/prelevements-manuel
+  param: { module: degustation, action: prelevementsManuel }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
 degustation_tournees_etape:
   url: /degustation/:id/tournees
   param: { module: degustation, action: tourneesEtape }
