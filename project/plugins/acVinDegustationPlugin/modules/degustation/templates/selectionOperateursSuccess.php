@@ -38,7 +38,12 @@
         <div class="col-xs-4"><a href="<?php echo url_for("degustation") ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
-        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right">
+            <a href="<?php echo url_for(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_LOTS), $degustation) ?>"
+            class="btn btn-primary">
+                Étape suivante <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+        </div>
     </div>
 </form>
 </div>
