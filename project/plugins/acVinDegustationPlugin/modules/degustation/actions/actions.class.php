@@ -315,6 +315,27 @@ class degustationActions extends sfActions {
         return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_PRELEVEMENT_MANUEL), $this->degustation);
     }
 
+    public function executeAjoutLotPrelevementsManuel(sfWebRequest $request)
+    {
+        $degustation = $this->getRoute()->getDegustation();
+        $lot = $degustation->lots->add();
+        $lot->date = date('Y-m-d');
+        $lot->id_document = $degustation->_id;
+        $lot->campagne = $degustation->campagne;
+        $lot->affectable = false;
+        $lot->numero_dossier = $degustation->numero_archive;
+
+        $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$request->getParameter('operateur'));
+
+        $lot->declarant_identifiant = $etablissement->identifiant;
+        $lot->declarant_nom = $etablissement->raison_sociale;
+        $lot->adresse_logement = $etablissement->adresse . ' ' . $etablissement->code_postal . ' ' . $etablissement->commune;
+
+        $degustation->save();
+
+        $this->redirect('degustation_prelevements_manuel_etape', $degustation);
+    }
+
     /**
      * Les tournées par opérateur
      * @param sfWebRequest $request
