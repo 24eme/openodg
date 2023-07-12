@@ -79,7 +79,7 @@ class LotForm extends acCouchdbObjectForm
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if(!$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
+            if(! isset($values['cepage_'.$i], $values['repartition_hl_'.$i]) || !$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
                 continue;
             }
 

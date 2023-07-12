@@ -12,6 +12,7 @@
             </div>
             <div class="col-md-6">
                 <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
+                <?php if (isset($form['cepage_0'])): ?>
                 <div class="form-group">
                     <div class="col-sm-11">
                         <div class="checkbox checkboxlots">
@@ -24,6 +25,7 @@
                         </div>
                     </div>
                 </div>
+                <?php endif ?>
             </div>
         </div>
         <div class="row">
@@ -122,7 +124,8 @@
                           </div>
                         </div>
                       </div>
-                <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
+                        <?php if (isset($form['cepage_0'])): ?>
+                        <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage ">
                                 <div class="col-sm-8">
                                     <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
@@ -139,6 +142,7 @@
                                 </div>
                             </div>
                         <?php endfor; ?>
+                        <?php endif; ?>
                         <div class="form-group ligne_volume_total">
                             <div class="col-sm-4"></div>
                             <div class="col-sm-4 text-right">

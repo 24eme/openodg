@@ -12,7 +12,7 @@ class DegustationLotsForm extends acCouchdbForm
         });
 
         foreach ($lots as $lot) {
-            $formLots->embedForm($lot->getKey(), new LotForm($lot));
+            $formLots->embedForm($lot->getKey(), new DegustationLotForm($lot));
         }
 
         $this->embedForm('lots', $formLots);
