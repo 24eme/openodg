@@ -32,5 +32,9 @@ class DegustationLotForm extends LotForm
     public function doUpdateObject($values)
     {
         parent::doUpdateObject($values);
+
+        if (! $this->getObject()->preleve) {
+            $this->getObject()->set('preleve', date('Y-m-d'));
+        }
     }
 }
