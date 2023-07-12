@@ -6,7 +6,12 @@ class DegustationLotsForm extends acCouchdbForm
     {
         $formLots = new BaseForm();
 
-        foreach ($this->getDocument()->lots as $lot) {
+        $lots = $this->getDocument()->lots->toArray();
+        usort($lots, function ($lot1, $lot2) {
+            return $lot1->declarant_nom < $lot2->declarant_nom;
+        });
+
+        foreach ($lots as $lot) {
             $formLots->embedForm($lot->getKey(), new LotForm($lot));
         }
 

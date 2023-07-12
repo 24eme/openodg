@@ -8,9 +8,13 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 
+<?php $operateur = null; ?>
 <?php foreach($form['lots'] as $key => $lotForm): ?>
     <?php $lot = $degustation->lots->get($key); ?>
-    <h4>Lot de l'opérateur : <?php echo $lot->declarant_nom ?></h4>
+    <?php if ($operateur !== $lot->declarant_nom) : ?>
+        <?php $operateur = $lot->declarant_nom ?>
+        <h4>Lots de l'opérateur : <?php echo $lot->declarant_nom ?></h4>
+    <?php endif ?>
     <?php include_partial('degustation/lotForm', array('form' => $lotForm, 'lot' => $lot)); ?>
 <?php endforeach ?>
 </form>
