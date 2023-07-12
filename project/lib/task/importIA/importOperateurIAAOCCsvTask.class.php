@@ -20,8 +20,8 @@ class importOperateurIAAOCCsvTask extends sfBaseTask
   const CSV_TVA_INTRA = 15;
   const CSV_CODE_COMPTABLE = 17;
   const CSV_TYPE_DECLARATION = 18;
-  const CSV_PPM = 19;
-  const CSV_CODE_INTERNE = 20;
+  const CSV_PPM = 20;
+  const CSV_CODE_INTERNE = 21;
   const CSV_STATUT = 22;
   const CSV_ACHETEUR = 23;
 
@@ -164,6 +164,7 @@ EOF;
             }
             $etablissement->cvi = $cvi;
             $etablissement->ppm = $ppm;
+            $etablissement->num_interne = trim($data[self::CSV_CODE_INTERNE]);
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);
             $etablissement->save();

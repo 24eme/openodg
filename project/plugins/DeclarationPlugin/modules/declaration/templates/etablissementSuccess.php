@@ -56,6 +56,9 @@
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
         <?php include_component('drev', 'monEspaceIGP', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
+    <?php if(class_exists("ParcellaireManquant") && in_array('parcellaireManquant', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php endif; ?>
     <?php if(class_exists("TravauxMarc")): ?>
     <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>

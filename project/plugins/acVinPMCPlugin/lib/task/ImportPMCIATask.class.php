@@ -97,9 +97,9 @@ EOF;
             $lot->volume = $volume;
             $lot->numero_logement_operateur = trim($logement.' '.$numeroLot);
             $lot->date_degustation_voulue = $datePresentation;
-            $lot->affectable = false;
+            $lot->date_commission = $dateCommission;
+            $lot->affectable = true;
 
-            $pmc->add('date_commission', $dateCommission);
             $pmc->validate($dateDeclaration);
             $pmc->validateOdg($dateDeclaration);
             $pmc->save();

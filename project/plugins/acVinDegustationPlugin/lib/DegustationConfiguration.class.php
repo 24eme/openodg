@@ -65,4 +65,19 @@ class DegustationConfiguration {
     {
         return $this->configuration['anonymisation_manuelle'] === true;
     }
+
+    public function hasTypiciteCepage()
+    {
+        return $this->configuration['typicite_cepage'] === true;
+    }
+
+    public function getAvis()
+    {
+        return $this->configuration['avis'];
+    }
+
+    public function getConformites()
+    {
+        return $this->configuration['conformite'];
+    }
 }
