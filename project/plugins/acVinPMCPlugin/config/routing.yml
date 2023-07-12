@@ -147,3 +147,13 @@ pmcnc_lots:
     type:     object
   requirements:
     sf_method: [get, post]
+
+pmcnc_create:
+  url: /pmcnc/creation/:identifiant
+  param: { module: pmcNc, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]

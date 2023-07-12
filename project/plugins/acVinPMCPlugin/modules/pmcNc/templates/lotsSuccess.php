@@ -33,7 +33,7 @@
             <td><?php echo showProduitCepagesLot($lot->getRawValue()) ?></td>
             <td class="text-right"><?php echo echoFloat($lot->volume); ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class="text-muted text-center"><?php echo Lot::getLibelleStatut($lot->statut) ?></td>
-            <td><a href="<?php echo url_for('pmc_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>" class="btn btn-sm btn-default">Démarrer la télédéclaration</a></td>
+            <td><a href="<?php echo url_for('pmcnc_create', array('sf_subject' => $etablissement, 'unique_id' => $lot->unique_id)) ?>" class="btn btn-sm btn-default">Démarrer la télédéclaration</a></td>
         </tr>
         <?php endforeach; ?>
         </tbody>
