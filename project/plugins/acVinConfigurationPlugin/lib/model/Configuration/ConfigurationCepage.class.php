@@ -214,7 +214,7 @@ class ConfigurationCepage extends BaseConfigurationCepage {
 
     public function isRevendicationParLots() {
 
-        return preg_match("/IGP/", $this->getHash());
+        return strpos($this->getHash(), '/VSIG/') === false;
     }
 
     public function isRevendicationAOC() {
