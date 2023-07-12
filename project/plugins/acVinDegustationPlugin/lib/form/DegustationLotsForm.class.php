@@ -24,6 +24,7 @@ class DegustationLotsForm extends acCouchdbForm
         foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
             $embedForm->doUpdateObject($values['lots'][$key]);
         }
+        $this->getDocument()->archiverLot($this->getDocument()->numero_archive);
         $this->getDocument()->save();
     }
 }

@@ -323,7 +323,6 @@ class degustationActions extends sfActions {
         $lot->id_document = $degustation->_id;
         $lot->campagne = $degustation->campagne;
         $lot->affectable = false;
-        $lot->numero_dossier = $degustation->numero_archive;
 
         $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$request->getParameter('operateur'));
 
