@@ -357,10 +357,10 @@ class LotsClient
         $syntheseLots = [];
         foreach ($mouvements as $mouvementLot) {
             # Démo: https://regex101.com/r/J9XQnv/3
-            preg_match('/(.+)( Rouge| Rosé| Blanc|) (\d{4})/u', $mouvementLot->value->libelle, $matches);
+            preg_match('/([\w -]+) (Rouge|Rosé|Blanc|) (\d{4})/u', $mouvementLot->value->libelle, $matches);
             $libelle = $matches[0];
             $produit = $matches[1];
-            $couleur = str_replace(' ', '', $matches[2]);
+            $couleur = $matches[2];
             $millesime = $matches[3];
 
             if (array_key_exists($produit, $syntheseLots) === false) {
