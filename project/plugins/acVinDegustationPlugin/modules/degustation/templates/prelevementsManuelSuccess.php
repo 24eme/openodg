@@ -11,7 +11,7 @@
 <?php $operateur = null; ?>
 <?php foreach($form['lots'] as $key => $lotForm): ?>
     <?php $lot = $degustation->lots->get($key); ?>
-    <?php if ($operateur !== $lot->declarant_identifiant) : ?>
+    <?php if ($operateur && $operateur !== $lot->declarant_identifiant) : ?>
         <div class="row">
           <div class="col-xs-12">
             <a href="<?php echo url_for('degustation_ajout_lot_prelevement_manuel', [
@@ -24,11 +24,22 @@
           </div>
         </div>
 
-        <?php $operateur = $lot->declarant_identifiant ?>
         <h4>Lots de l'opérateur : <?php echo $lot->declarant_nom ?></h4>
     <?php endif ?>
+    <?php $operateur = $lot->declarant_identifiant ?>
     <?php include_partial('degustation/lotForm', array('form' => $lotForm, 'lot' => $lot)); ?>
 <?php endforeach ?>
+    <div class="row" style="margin-bottom: 1rem">
+      <div class="col-xs-12">
+        <a href="<?php echo url_for('degustation_ajout_lot_prelevement_manuel', [
+            'id' => $degustation->_id,
+            'operateur' => $operateur
+        ]) ?>" class="btn btn-default pull-right">
+                <span class="glyphicon glyphicon-plus"></span>
+                Ajouter un lot
+        </a>
+      </div>
+    </div>
 </form>
 
 <div class="row row-margin row-button">
