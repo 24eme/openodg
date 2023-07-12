@@ -805,6 +805,19 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $this->lots->reindex();
         }
 
+        public function cleanLotsSansProduit()
+        {
+            foreach ($this->lots->toArray() as $lot) {
+                if ($lot->produit_hash) {
+                    continue;
+                }
+
+                $this->remove($lot->getHash());
+            }
+
+            $this->lots->reindex();
+        }
+
         public function getTri() {
             $tri = $this->_get('tri');
             if (!$tri) {
