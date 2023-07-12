@@ -137,3 +137,13 @@ pmc_export_pdf:
     type:     object
   requirements:
     sf_method: [get]
+
+pmcnc_lots:
+  url: /pmcnc/lots/:identifiant
+  param: { module: pmcNc, action: lots }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
