@@ -9,8 +9,9 @@
 <?php echo $form->renderGlobalErrors(); ?>
 
 <?php foreach($form['lots'] as $key => $lotForm): ?>
-    <?php $lotItem = $degustation->lots->get($key); ?>
-    <?php include_partial('degustation/lotForm', array('form' => $lotForm, 'lot' => $lotItem)); ?>
+    <?php $lot = $degustation->lots->get($key); ?>
+    <h4>Lot de l'opérateur : <?php echo $lot->declarant_nom ?></h4>
+    <?php include_partial('degustation/lotForm', array('form' => $lotForm, 'lot' => $lot)); ?>
 <?php endforeach ?>
 </form>
 
