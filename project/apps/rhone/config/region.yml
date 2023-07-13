@@ -59,3 +59,13 @@ all:
           produits:
             - "TRANQ/appellations/VAC"
           habilitation_produits: "/Vacqueyras/"
+        RASTEAU:
+          nom: "Syndicat des Vignerons de Rasteau"
+          adresse: "1 place de l'Eglise 84110 Rasteau"
+          telephone: "%app_drev_RASTEAU_telephone%"
+          email: "%app_drev_RASTEAU_email%"
+          produits:
+            - "TRANQ/appellations/RTA"
+            - "VDN/appellations/VDR"
+          habilitation_produits: "/Rasteau/"
+
