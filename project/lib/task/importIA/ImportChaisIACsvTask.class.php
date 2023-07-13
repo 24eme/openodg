@@ -1,6 +1,6 @@
 <?php
 
-class importChaisIACsvTask extends sfBaseTask
+class importChaisIACsvTask extends importOperateurIAAOCCsvTask
 {
     const CSV_RAISON_SOCIALE_OPERATEUR = 0;
     const CSV_NOM_SITE = 1;
@@ -84,68 +84,5 @@ EOF;
             $etablissement->save();
             echo "chai ".$chai->nom." ajouté à l'établissement ".$etablissement->raison_sociale." (".$etablissement->_id.")\n";
         }
-    }
-
-    protected function identifyEtablissement($raisonSociale, $cvi = null, $codePostal = null, $hydrate = acCouchdbClient::HYDRATE_JSON) {
-        if(!$this->etablissements) {
-            $this->etablissements = EtablissementAllView::getInstance()->getAll();
-        }
-
-        $CSV_HABILITATION_CVI = preg_replace('/[^0-9]/', '', $cvi);
-        for($i = strlen($CSV_HABILITATION_CVI) ; $i < 10 ; $i++) {
-            $CSV_HABILITATION_CVI .= '0';
-        }
-        if (!intval($CSV_HABILITATION_CVI)){
-            $CSV_HABILITATION_CVI = '';
-        }
-        $CSV_HABILITATION_RS = KeyInflector::slugify(trim($raisonSociale));
-        $key_raisonsociale_cvi_codepostal = KeyInflector::slugify($CSV_HABILITATION_RS.$CSV_HABILITATION_CVI.str_replace(' ', '', $codePostal));
-
-        if(isset($this->etablissementsCache[$key_raisonsociale_cvi_codepostal])) {
-
-            return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-        }
-
-        $key_raisonsociale_codepostal = KeyInflector::slugify($CSV_HABILITATION_RS.trim($codePostal));
-        foreach ($this->etablissements as $etab) {
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM].$etab->key[EtablissementAllView::KEY_CVI].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_cvi_codepostal) {
-                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
-
-                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-            }
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::VALUE_RAISON_SOCIALE].$etab->key[EtablissementAllView::KEY_CVI].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_cvi_codepostal) {
-                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
-
-                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-            }
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_codepostal) {
-                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
-
-                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-            }
-            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE].$etab->value[EtablissementAllView::VALUE_CODE_POSTAL]) == $key_raisonsociale_codepostal) {
-                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
-
-                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-            }
-        }
-        foreach ($this->etablissements as $etab) {
-            if ($CSV_HABILITATION_CVI && $etab->key[EtablissementAllView::KEY_CVI] == $CSV_HABILITATION_CVI ) {
-                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
-
-                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-            }
-            if (KeyInflector::slugify($etab->key[EtablissementAllView::KEY_NOM]) == $CSV_HABILITATION_RS) {
-                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
-
-                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-            }
-            if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == $CSV_HABILITATION_RS) {
-                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
-
-                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
-            }
-        }
-        return null;
     }
 }

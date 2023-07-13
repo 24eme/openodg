@@ -277,7 +277,13 @@ EOF;
     }
 
     public function clearProduitKey($key) {
+      $key = implode("-", array_unique(explode("-", $key)));
+      $key = preg_replace('/[\-]*[0-9]+$/', '', $key);
       $key = str_replace('MAURE-VAR-', 'MAURE-', $key);
+      $key = str_replace('POUILLY-FUME-BLANC', 'POUILLY-FUME', $key);
+      $key = str_replace('POUILLY-FUME-NM', 'POUILLY-FUME', $key);
+      $key = str_replace('CHATEAUMEILLANT-GRIS', 'CHATEAUMEILLANT-ROSE', $key);
+      $key = str_replace('POUILLY-SUR-LOIRE-BLANC', 'POUILLY-SUR-LOIRE', $key);
       $key = str_replace('MONT-CAUME-VAR-', 'MONT-CAUME-', $key);
       $key = str_replace('MEDITERRANEE-VAR-', 'MEDITERRANEE-', $key);
       $key = str_replace('VAR-VAR-', 'VAR-', $key);

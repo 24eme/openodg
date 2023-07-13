@@ -1,4 +1,4 @@
-numero_archive;numero_dossier;declarant_nom;cvi;siret;code_postal;ville;produit_libelle;millesime;details;centilisation;numero_logement_operateur;volume;labo
+numero_archive;numero_dossier;declarant_nom;cvi;siret;"numero interne";code_postal;ville;produit_libelle;millesime;details;centilisation;numero_logement_operateur;volume;"numero_anonymat";labo
 <?php
 
 
@@ -10,6 +10,7 @@ foreach ($degustation->getEtiquettesFromLots(7) as $plancheLots) {
         echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->declarant_nom)).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->cvi).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->siret).";";
+        echo str_replace(';', ' ', $lotInfo->etablissement->num_interne).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->code_postal).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->commune).";";
         echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->produit_libelle).' '.str_replace(';', ' ', $lotInfo->lot->getCepagesLibelle(false))).";";
@@ -18,6 +19,7 @@ foreach ($degustation->getEtiquettesFromLots(7) as $plancheLots) {
         echo str_replace(';', ' ', $lotInfo->lot->centilisation).";";
         echo iconv("UTF-8", "ISO-8859-1", str_replace(';', ' ', $lotInfo->lot->numero_logement_operateur)).";";
         echo str_replace(';', ' ', $lotInfo->lot->volume).";";
+        echo str_replace(';', ' ', $lotInfo->lot->numero_anonymat).";";
         echo str_replace(';', ' ', $lotInfo->etablissement->getLaboLibelle())."\n";
     }
 }

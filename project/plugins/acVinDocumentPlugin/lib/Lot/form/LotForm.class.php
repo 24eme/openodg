@@ -25,7 +25,7 @@ class LotForm extends acCouchdbObjectForm
     }
 
     public function configure() {
-        $this->all_produit = false;
+        $this->all_produits = false;
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
 

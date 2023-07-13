@@ -292,21 +292,23 @@ class CompteClient extends acCouchdbClient {
       return strcmp($a->id, $b->id);
     }
 
-    public function calculCoordonnees($adresse, $commune, $code_postal) {
+    public function calculCoordonnees($adresse, $commune, $code_postal, $type = "housenumber") {
         if (!$adresse) {
 		$adresse = '';
 	}
         $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
-        $url = CompteClient::API_ADRESSE_URL.'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=housenumber");
+        $url = CompteClient::API_ADRESSE_URL.'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=".$type);
 
         $file = file_get_contents($url, false, stream_context_create(["http"=>["timeout"=>1]]));
         $result = json_decode($file);
-        if(!$result || !count($result->features)){
+        if((!$result || !count($result->features)) && $type == "housenumber"){
+
+            return $this->calculCoordonnees($adresse, $commune, $code_postal, "street");
+        } elseif(!$result || !count($result->features)) {
+
             return false;
         }
-        if(KeyInflector::slugify($result->features[0]->properties->city) != KeyInflector::slugify($commune)) {
-            //echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
-        }
+
         return array("lat" => $result->features[0]->geometry->coordinates[1], "lon" => $result->features[0]->geometry->coordinates[0]);
     }
 

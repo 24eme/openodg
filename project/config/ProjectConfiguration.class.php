@@ -45,6 +45,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         }
 
         $this->enablePlugins('acVinParcellairePlugin');
+        $this->enablePlugins('acVinParcellaireManquantPlugin');
         $this->enablePlugins('acVinParcellaireIrrigablePlugin');
         $this->enablePlugins('acVinParcellaireIrriguePlugin');
         $this->enablePlugins('acVinParcellaireAffectationPlugin');

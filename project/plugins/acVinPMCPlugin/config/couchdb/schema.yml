@@ -32,7 +32,6 @@ PMC:
       type_archive: { required: false }
       version: { required: false }
       numero_archive: {  }
-      date_commission: { required: false } # deprecated
       declarant:
         type: collection
         class: PMCDeclarant
@@ -91,6 +90,7 @@ PMC:
                   document_fils: { required: false }
                   document_ordre: { }
                   date_degustation_voulue: {  }
+                  engagement_8515: { required: false }
                   cepages:
                     type: collection
                     definition:

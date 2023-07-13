@@ -64,9 +64,12 @@ class DegustationResultatsForm extends acCouchdbObjectForm {
         $this->setDefaults($defaults);
     }
 
-    protected function getConformites(){
-
-      return Lot::$libellesConformites;
+    protected function getConformites()
+    {
+        $configurationConformite = DegustationConfiguration::getInstance()->getConformites();
+        return array_filter(Lot::$libellesConformites, function ($k) use ($configurationConformite) {
+            return in_array($k, $configurationConformite);
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     protected function doSave($con = NULL) {
