@@ -6,6 +6,7 @@ ParcellaireManquant:
       _rev: { }
       type: { }
       campagne: { }
+      periode: { }
       identifiant: { }
       etape: { }
       validation: { }
