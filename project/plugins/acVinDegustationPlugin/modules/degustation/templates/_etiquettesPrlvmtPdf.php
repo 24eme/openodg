@@ -42,7 +42,7 @@
                   </tr>
                   <?php else: ?>
                   <tr>
-                    <td colspan="2" style="overflow-wrap:break-word;text-align: left; height: 24px; line-height: 12px; overflow: hidden;">&nbsp;&nbsp;NOM PRELEVEUR&nbsp;_________________<br />&nbsp;&nbsp;DATE PRELEVMT&nbsp;____/____/_______</td>
+                    <td colspan="2" style="overflow-wrap:break-word;text-align: left; height: 24px; line-height: 12px; overflow: hidden;">&nbsp;&nbsp;DATE PRELEVMT&nbsp;____/____/_______<br />&nbsp;&nbsp;NOM PRELEVEUR&nbsp;_________________</td>
                   </tr>
                   <?php endif; ?>
                   <tr>
