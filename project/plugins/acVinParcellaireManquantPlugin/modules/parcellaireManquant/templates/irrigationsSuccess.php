@@ -20,7 +20,7 @@
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
                 <th class="col-xs-1">Densité</th>
-                <th class="col-xs-1">% de pieds manquants</th>
+                <th class="col-xs-1">% de pieds manquants <span class="text-muted">(si&nbsp;+&nbsp;de&nbsp;20%)</span></th>
             </tr>
 		</thead>
 		<tbody>
