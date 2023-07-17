@@ -50,14 +50,14 @@
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
 <div class="row">
+    <?php if(class_exists("ParcellaireManquant") && in_array('parcellaireManquant', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php endif; ?>
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && (!class_exists("DRevConfiguration") || !DRevConfiguration::getInstance()->isRevendicationParLots())): ?>
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
         <?php include_component('drev', 'monEspaceIGP', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
-    <?php endif; ?>
-    <?php if(class_exists("ParcellaireManquant") && in_array('parcellaireManquant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("TravauxMarc")): ?>
     <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
@@ -65,14 +65,14 @@
     <?php if(class_exists("DRevMarc")): ?>
     <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
-    <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
-    <?php endif; ?>
     <?php if(class_exists("PMC") && in_array('pmc', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('pmc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
     <?php endif; ?>
     <?php if(class_exists("PMC") && in_array('pmcNc', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('pmcNc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
+    <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
     <?php endif; ?>
     <?php if(class_exists("Transaction") && in_array('transaction', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
