@@ -128,10 +128,10 @@ class parcellaireManquantActions extends sfActions {
             return $this->redirect('declaration_etablissement', $this->parcellaireManquant->getEtablissementObject());
         }
 
-    	return $this->redirect('parcellairemanquant_irrigations', $this->parcellaireManquant);
+    	return $this->redirect('parcellairemanquant_manquants', $this->parcellaireManquant);
     }
 
-    public function executeIrrigations(sfWebRequest $request) {
+    public function executeManquants(sfWebRequest $request) {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireManquant);
 

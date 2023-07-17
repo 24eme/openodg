@@ -4,7 +4,7 @@ class ParcellaireManquantEtapes extends Etapes {
 
 	const ETAPE_EXPLOITATION = 'exploitation';
     const ETAPE_PARCELLES = 'parcelles';
-    const ETAPE_IRRIGATIONS = 'irrigations';
+    const ETAPE_IRRIGATIONS = 'manquants';
     const ETAPE_VALIDATION = 'validation';
 
     private static $_instance = null;
@@ -18,7 +18,7 @@ class ParcellaireManquantEtapes extends Etapes {
     public static $links = array(
         self::ETAPE_EXPLOITATION => 'parcellairemanquant_exploitation',
         self::ETAPE_PARCELLES => 'parcellairemanquant_parcelles',
-        self::ETAPE_IRRIGATIONS => 'parcellairemanquant_irrigations',
+        self::ETAPE_IRRIGATIONS => 'parcellairemanquant_manquants',
         self::ETAPE_VALIDATION => 'parcellairemanquant_validation'
     );
 
