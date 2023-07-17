@@ -70,18 +70,27 @@ th {
             <tr style="line-height:20px;">
                <th class="topempty bg-white"style="width:10%; "><?php echo tdStart() ?><strong>Anon</strong></th>
                <th class="topempty bg-white" style="width:30%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
+               <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
                <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
                <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
+               <?php else : ?>
+               <th class="bg-white" colspan="2"style="width:20%;"><?php echo tdStart() ?><strong>Avis</strong></th>
+               <?php endif ?>
                <th class="topempty bg-white" style="width:10%;"><?php echo tdStart() ?><strong>Note</strong></th>
                <th class="topempty bg-white" style="width:30%;"><strong>Motifs (si non conforme)</strong></th>
             </tr>
             <tr style="line-height:13px;">
               <th class="empty bg-white"></th>
               <th class="empty bg-white"></th>
-              <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
-              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
-              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
-              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+              <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
+              <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
+              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
+              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
+              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
+              <?php else : ?>
+              <th class="bg-white" style="width:10%;" ><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
+              <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
+              <?php endif ?>
               <th class="empty bg-white"></th>
               <th class="empty bg-white"></th>
             </tr>

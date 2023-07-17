@@ -9,8 +9,6 @@ class degustationActions extends sfActions {
         $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows;
         $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
 
-        $this->campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
-
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON);
 
         if(class_exists("EtablissementChoiceForm")) {
@@ -258,13 +256,10 @@ class degustationActions extends sfActions {
     public function executePrelevementsEtape(sfWebRequest $request) {
 
         $this->degustation = $this->getRoute()->getDegustation();
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            return $this->redirect('degustation_tournees_etape', ['sf_subject' => $this->degustation]);
-        }
-
+        $this->active = DegustationEtapes::ETAPE_PRELEVEMENTS;
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, $this->active))) {
             $this->degustation->save(false);
         }
     }
@@ -318,6 +313,10 @@ class degustationActions extends sfActions {
     }
 
     public function executeAnonymatsEtape(sfWebRequest $request) {
+        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+            $this->forward('degustation', 'anonymisationManuelle');
+        }
+
         $this->degustation = $this->getRoute()->getDegustation();
         if ($this->degustation->getNbLotsRestantAPreleve() > 0) {
             $this->getUser()->setFlash('error', 'Il reste des lots à prélever');
@@ -428,10 +427,6 @@ class degustationActions extends sfActions {
     public function executeOrganisationTable(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
 
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            $this->forward('degustation', 'organisationTableManuelle');
-        }
-
         $this->redirectIfIsAnonymized();
 
         if(!$request->getParameter('numero_table')) {
@@ -495,10 +490,6 @@ class degustationActions extends sfActions {
 
     public function executeOrganisationTableRecap(sfWebRequest $request)
     {
-        if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-            $this->forward('degustation', 'organisationTableManuelleRecap');
-        }
-
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->tri = $this->degustation->tri;
@@ -514,17 +505,13 @@ class degustationActions extends sfActions {
         return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_TABLES), $this->degustation);
     }
 
-    public function executeOrganisationTableManuelle(sfWebRequest $request)
+    public function executeAnonymisationManuelle(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
-
-        if(!$request->getParameter('numero_table')) {
-            return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 1));
-        }
-
-        $this->numero_table = $request->getParameter('numero_table');
-        $this->form = new DegustationOrganisationManuelleForm($this->degustation, $this->numero_table);
-        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation, ['table' => $this->numero_table]);
+        $this->form = new DegustationAnonymisationManuelleForm($this->degustation);
+        $this->tri = $this->degustation->tri;
+        $this->ajoutLeurreForm = new DegustationAjoutLeurreForm($this->degustation);
+        $this->triTableForm = new DegustationTriTableForm($this->degustation->getTriArray());
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -538,18 +525,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        if ($this->degustation->hasFreeLots()) {
-            return $this->redirect('degustation_organisation_table', ['id' => $this->degustation->_id, 'numero_table' => $this->numero_table + 1]);
-        }
-
-        return $this->redirect('degustation_organisation_table_recap', ['id' => $this->degustation->_id]);
-    }
-
-    public function executeOrganisationTableManuelleRecap(sfWebRequest $request)
-    {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->syntheseLots = $this->degustation->getSyntheseLotsTable(null);
-        $this->numero_table = null;
+        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_ANONYMISATION_MANUELLE), ['id' => $this->degustation->_id]);
     }
 
     public function executeAjoutLeurre(sfWebRequest $request){
@@ -561,9 +537,14 @@ class degustationActions extends sfActions {
         }
         $this->ajoutLeurreForm->bind($request->getParameter($this->ajoutLeurreForm->getName()));
 
-        if (!$this->ajoutLeurreForm->isValid()) {
-
+        if (!$this->ajoutLeurreForm->isValid())
+        {
             $this->getUser()->setFlash('error', 'Formulaire d\'ajout de leurre invalide');
+
+            if ($service = $request->getParameter('service', null)) {
+                return $this->redirect($service);
+            }
+
             return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => 0));
         }
         $this->ajoutLeurreForm->save();
@@ -571,6 +552,10 @@ class degustationActions extends sfActions {
         $table = $this->ajoutLeurreForm->getValue('table');
         if ($table == null) {
             $table = 0;
+        }
+
+        if ($service = $request->getParameter('service', null)) {
+            return $this->redirect($service);
         }
 
         return $this->redirect('degustation_organisation_table', array('id' => $this->degustation->_id, 'numero_table' => $table));
@@ -1005,16 +990,17 @@ class degustationActions extends sfActions {
     public function executeTriTable(sfWebRequest $request) {
         $degustation = $this->getRoute()->getDegustation();
         $numero_table = $request->getParameter('numero_table');
+        $service = $request->getParameter('service', null);
         $this->triTableForm = new DegustationTriTableForm(array());
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-            return $this->redirect('degustation_organisation_table', array('id' => $degustation->_id, 'numero_table' => $numero_table));
-        }
 
         $this->triTableForm->bind($request->getParameter($this->triTableForm->getName()));
         $recap = $this->triTableForm->getValue('recap');
 
         if (!$this->triTableForm->isValid()) {
+            if ($service) {
+                return $this->redirect($service);
+            }
+
             if($recap) {
                 return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
             }
@@ -1026,6 +1012,10 @@ class degustationActions extends sfActions {
 
         $degustation->tri = join('|', array_filter(array_unique(array_values($values))));
         $degustation->save();
+
+        if ($service) {
+            return $this->redirect($service);
+        }
 
         if($recap) {
             return $this->redirect('degustation_organisation_table_recap', array('id' => $degustation->_id));
@@ -1066,6 +1056,14 @@ class degustationActions extends sfActions {
       $this->redirectIfIsNotAnonymized();
       $this->document = new ExportDegustationFicheTablesEchantillonsParDossierPDF($this->degustation,$request->getParameter('output','pdf'),false);
       return $this->mutualExcecutePDF($request);
+    }
+
+    public function executeFicheTablesEchantillonsParRaisonSocialePDF(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsNotAnonymized();
+        $this->document = new ExportDegustationFicheTablesEchantillonsParRaisonSocialePDF($this->degustation,$request->getParameter('output','pdf'), false);
+        return $this->mutualExcecutePDF($request);
     }
 
     public function executeFicheTablesEchantillonsParAnonymatPDF(sfWebRequest $request){
@@ -1129,7 +1127,7 @@ class degustationActions extends sfActions {
 
     public function executeFicheLotsAPreleverPDF(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationFicheLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false);
+      $this->document = new ExportDegustationFicheLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false, null, null, $request);
       return $this->mutualExcecutePDF($request);
     }
 

@@ -2,3 +2,11 @@ all:
   configuration:
     degustation:
       anonymisation_manuelle: true
+      avis:
+        favorable: "Fav."
+        defavorable: "Def."
+      conformite:
+        - CONFORME
+        - NONCONFORME_ANALYTIQUE
+        - NONCONFORME_ORGANOLEPTIQUE
+      typicite_cepage: false

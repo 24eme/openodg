@@ -56,11 +56,15 @@ class SocieteClient extends acCouchdbClient {
         $q->setQuery($elasticaQueryString);
         $q->setLimit(1);
 
-        $res = $index->search($q);
+        try {
+            $res = $index->search($q);
 
-        foreach ($res->getResults() as $er) {
-            $r = $er->getData();
-            return $this->find($r['id']);
+            foreach ($res->getResults() as $er) {
+                $r = $er->getData();
+                return $this->find($r['id']);
+            }
+        } catch(Exception $e) {
+
         }
 
         return null;
