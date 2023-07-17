@@ -22,6 +22,7 @@ class DRValidation extends DocumentValidation
         if (!DRConfiguration::getInstance()->hasValidationDR()) {
             return ;
         }
+        $this->document->generateDonnees();
         foreach ($this->document->getProduits() as $produit) {
             $this->controleRendement($produit);
         }
