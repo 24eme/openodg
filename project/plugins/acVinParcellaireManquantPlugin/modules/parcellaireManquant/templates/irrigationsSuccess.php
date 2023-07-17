@@ -3,7 +3,14 @@
 <?php include_partial('parcellaireManquant/step', array('step' => 'irrigations', 'parcellaireManquant' => $parcellaireManquant)) ?>
 <div class="page-header">
     <h2>Pieds morts ou manquants sur votre exploitation <br/><small>Merci d'indiquer la densité et le % de pied manquant</small></h2>
-    <p class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> Il n'est pas nécessaire d'indiquer les parcelles avec moins de 20% de pieds manquants.</p>
+    <div class="alert alert-info">
+        <div style="display: inline-block; margin-right: 1rem;">
+            <p><span class="glyphicon glyphicon-info-sign"></span></p>
+        </div>
+        <div style="display: inline-block; vertical-align: middle">
+            Il n'est pas nécessaire d'indiquer les parcelles avec moins de 20% de pieds manquants.<br/>Si vous n'avez aucune parcelle concernée, vous pouvez aller directement à la <a href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>">validation</a>.
+        </div>
+    </div>
 </div>
 
 <form action="<?php echo url_for("parcellairemanquant_irrigations", $parcellaireManquant) ?>" method="post" class="form-horizontal">
