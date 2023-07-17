@@ -48,6 +48,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
   public function initDoc($identifiant, $periode) {
       $this->identifiant = $identifiant;
       $this->campagne = $periode.'-'.($periode + 1);
+      $this->periode = $periode;
       $this->set('_id', ParcellaireManquantClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->periode);
       $this->storeDeclarant();
   }
