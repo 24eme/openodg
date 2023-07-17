@@ -15,5 +15,4 @@ class ParcellaireManquantProduitIrrigationForm extends acCouchdbObjectForm {
     	));
         $this->widgetSchema->setNameFormat('parcellaire_manquant[%s]');
     }
-
 }
