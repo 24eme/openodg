@@ -26,8 +26,8 @@ foreach ($parcellaireManquant->declaration->getParcellesByCommune() as $commune 
 				<td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
 				<td><?php echo $parcelle->campagne_plantation; ?></td>
 				<td style="text-align: right;"><?php echo echoFloat($parcelle->superficie); $somme_superficie += $parcelle->superficie; ?></td>
-            	<td><?php echo $parcelle->materiel; ?></td>
-            	<td><?php echo $parcelle->ressource; ?></td>
+            	<td><?php echo $parcelle->densite; ?></td>
+            	<td><?php echo $parcelle->pourcentage; ?></td>
             </tr>
         <?php  endforeach; ?>
 <?php  endforeach; ?>
