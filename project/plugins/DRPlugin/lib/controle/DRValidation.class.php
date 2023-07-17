@@ -16,6 +16,7 @@ class DRValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'rendement_ligne_manquante', "Il manque une ligne dans le produit");
         $this->addControle(self::TYPE_WARNING, 'rendement_declaration', "Le rendement n'est pas respecté");
         if (class_exists(ParcellaireManquant::class)) {
+            $this->addControle(self::TYPE_WARNING, 'pied_mort_present', "Déclaration de pied mort présente");
             $this->addControle(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort");
         }
     }
@@ -83,6 +84,8 @@ class DRValidation extends DocumentValidation
 
             if ($PM === null || $PM->periode !== $this->document->campagne) {
                 $this->addPoint(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort pour cette campagne");
+            } else {
+                $this->addPoint(self::TYPE_WARNING, 'pied_mort_present', "Il ne faut pas oublier de vérifier les rendements");
             }
         }
     }
