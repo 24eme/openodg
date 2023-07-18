@@ -80,4 +80,9 @@ class DegustationConfiguration {
     {
         return $this->configuration['conformite'];
     }
+
+    public function getNbEtiquettes()
+    {
+        return $this->configuration['nb_etiquettes'];
+    }
 }

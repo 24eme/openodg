@@ -21,7 +21,7 @@ class ExportDegustationEtiquettesPrlvmtPDF extends ExportPDF {
     }
 
     public function create() {
-      foreach ($this->degustation->getEtiquettesFromLots(7, $this->identifiant) as $plancheLots) {
+      foreach ($this->degustation->getEtiquettesFromLots(24 / DegustationConfiguration::getInstance()->getNbEtiquettes() - 1, $this->identifiant) as $plancheLots) {
         $this->printable_document->addPage($this->getPartial('degustation/etiquettesPrlvmtPdf', array('degustation' => $this->degustation, 'plancheLots' => $plancheLots, 'anonymat4labo' => $this->anonymat4labo)));
       }
   }
