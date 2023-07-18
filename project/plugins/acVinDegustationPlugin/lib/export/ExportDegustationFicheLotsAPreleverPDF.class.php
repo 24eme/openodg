@@ -58,4 +58,8 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
         return $filename . '.pdf';
     }
 
+    protected function getConfig() {
+        return new ExportDegustationFicheLotsAPreleverPDFConfig();
+    }
+
 }
