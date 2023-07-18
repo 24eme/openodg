@@ -1203,7 +1203,7 @@ class degustationActions extends sfActions {
 
     public function executeFicheIndividuelleLotsAPreleverPDF(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
-      $this->document = new ExportDegustationFicheIndividuelleLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false);
+      $this->document = new ExportDegustationFicheIndividuelleLotsAPreleverPDF($this->degustation,$request->getParameter('output','pdf'),false, null, null, $request->getParameter('secteur'));
       return $this->mutualExcecutePDF($request);
     }
 
