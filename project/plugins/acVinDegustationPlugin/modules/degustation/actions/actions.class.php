@@ -759,6 +759,7 @@ class degustationActions extends sfActions {
     public function executeLotModification(sfWebRequest $request){
         $identifiant = $request->getParameter('identifiant');
         $uniqueId = $request->getParameter('unique_id');
+        $this->service = $request->getParameter('service', null);
 
         $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
         $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
