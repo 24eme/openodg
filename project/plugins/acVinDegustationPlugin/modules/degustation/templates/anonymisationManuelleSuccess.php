@@ -22,7 +22,8 @@
           <thead>
             <tr>
               <th class="col-xs-3 text-center">Opérateur</th>
-              <th class="col-xs-4 text-center">Produit (millesime)<br/><span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</span></th>
+              <th class="col-xs-3 text-center">Produit (millesime)<br/><span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</span></th>
+              <th class="col-xs-1 text-center">Volume</th>
               <th class="col-xs-1 text-center">Lgmt</th>
               <th class="col-xs-2 text-center">Num. ODG</th>
               <th class="col-xs-2 text-center">Anonymat</th>
@@ -34,6 +35,7 @@
                 <tr class="lot <?= ($lot->leurre) ? ' warning' : '' ?>">
                     <td class="lot-declarant"><?php echo $lot->declarant_nom ?></td>
                     <td class="lot-produit"><?php echo $lot->produit_libelle ?> (<?php echo $lot->millesime ?>)</td>
+                    <td class="lot-volume text-right"><?php echo $lot->volume ?> <small class="text-muted">hl</small></td>
                     <td class="lot-logement"><?php echo $lot->numero_logement_operateur ?></td>
                     <td class="lot-numero"><?php echo $lot->numero_dossier . ' / ' . $lot->numero_archive ?></td>
                     <td class="lot-anonymat">
