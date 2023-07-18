@@ -72,10 +72,15 @@
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
       <td><?php echo tdStart() ?></td>
+      <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <?php else: ?>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <?php endif; ?>
       <td><?php echo tdStart() ?>&nbsp;</td>
     </tr>
     <?php $i++; ?>
