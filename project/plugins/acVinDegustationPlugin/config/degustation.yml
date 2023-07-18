@@ -6,6 +6,7 @@ all:
         degustateur_technicien: "Technicien"
         degustateur_porteur_de_memoire: "Porteur de mémoire"
         degustateur_usager_du_produit: "Usager du produit"
+      nb_etiquettes: 3
       anonymat4labo: false
       notation: true
       anonymisation_manuelle: false

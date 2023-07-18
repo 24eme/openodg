@@ -65,7 +65,11 @@
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
               &nbsp;
-              <a class= "ajax" title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
+              <a class= "ajax" title="Modifier le volume" href="<?php echo url_for("degustation_lot_modification", [
+                  'identifiant' => $lot->declarant_identifiant,
+                  'unique_id'=> $lot->unique_id,
+                  'service' => url_for('degustation_preleve', $degustation)
+              ]); ?>">
                 <i class="glyphicon glyphicon-share-alt"></i>
               </a>
         </td>

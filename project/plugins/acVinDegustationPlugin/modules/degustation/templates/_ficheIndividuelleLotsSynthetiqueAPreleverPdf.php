@@ -53,7 +53,9 @@ th {
               <?php echo $lot->getProduitLibelle(); ?> <?php echo $lot->millesime; ?><br/>
               <?php echo $lot->volume; ?> hl</small>
           </td>
-          <td></td><td></td><td></td><td></td>
+          <td><small><?php echo $lot->getNumeroLogementOperateur() ?></small></td>
+          <td><small><?php echo $lot->getNumeroDossier() ?><br/>/<br/><?php echo $lot->getNumeroArchive() ?></small></td>
+          <td></td><td></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>
