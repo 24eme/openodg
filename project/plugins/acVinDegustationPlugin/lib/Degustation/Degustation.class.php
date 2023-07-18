@@ -146,7 +146,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function startFromLots()
     {
-        return false;
+        return true;
     }
 
 	public function findLot($origineMouvement) {
