@@ -10,19 +10,7 @@ th {
 }
 
 </style>
-      <table>
-        <tr>
-          <td style="width:20%;"></td>
-          <td style="width:30%;">Préleveur :</td>
-          <td style="width:30%">Date d'édition : <?php echo $date_edition;?></td>
-          <td style="width:20%;"></td>
-        </tr>
-      </table>
-      <table>
-        <tr style="line-height: 25em; height:25em;">
-          <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
-        </tr>
-      </table>
+    <p>&nbsp;</p>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
         $key_etablissement = explode('/', $key_lots)[1];
@@ -40,9 +28,9 @@ th {
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
           <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Coordonnées</strong></th>
-          <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
-          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
         </tr>
     <?php endif;?>
          <tr style="line-height:17px;">

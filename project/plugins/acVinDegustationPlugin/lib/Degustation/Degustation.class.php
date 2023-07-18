@@ -1267,7 +1267,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Gestion PDF ****/
 
-		public function getEtiquettesFromLots($maxLotsParPlanche, $identifiant = null){
+		public function getEtiquettesFromLots($maxLotsParPlanche, $identifiant = null, $secteur = null){
 			$nbLots = 0;
 			$planche = 0;
 			$etiquettesPlanches = array();
@@ -1276,6 +1276,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			$lots = array();
 
 			foreach ($this->getLotsPrelevables() as $lot) {
+                if ($secteur && $secteur != $lot->secteur) {
+                    continue;
+                }
                 if($identifiant && $identifiant != $lot->declarant_identifiant) {
                     continue;
                 }
