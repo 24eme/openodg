@@ -1,6 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
+<?php use_javascript('degustation.js') ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>

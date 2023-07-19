@@ -123,7 +123,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   	}
 
     if(count($irrigations) > 0) {
-        throw new Exception("Des parcelles déja irrigués disparaissent : ".$this->_id);
+        throw new Exception("Des parcelles déja irrigués disparaissent : ".$this->_id." ".implode(", ", array_keys($irrigations)));
     }
   }
 

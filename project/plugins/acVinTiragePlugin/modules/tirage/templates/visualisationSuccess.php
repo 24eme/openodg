@@ -3,7 +3,7 @@
 <?php include_partial('tirage/breadcrumb', array('tirage' => $tirage )); ?>
 
 <?php if (isset($form)): ?>
-<form action="<?php echo url_for('tirage_visualisation', $tirage) ?>" method="post">
+<form action="<?php echo url_for('tirage_visualisation', $tirage) ?>" id="form-tirage" method="post">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
@@ -86,13 +86,17 @@
     </div>
 </div>
 
+<?php if (isset($form)): ?>
+    </form>
+<?php endif; ?>
+
 <?php if($sf_user->isAdmin() && $tirage->exist('commentaire')): ?>
     <?php if ($tirage->getValidationOdg() && $tirage->commentaire): ?>
         <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
         <pre>
         <?php echo $tirage->commentaire; ?>
         </pre>
-    <?php elseif(!$tirage->getValidationOdg()): ?>
+    <?php elseif($tirage->getValidation() && !$tirage->getValidationOdg()): ?>
         <h3 class="">Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
       <form id="formUpdateCommentaire" action="<?php echo url_for('tirage_update_commentaire', $tirage) ?>" method="post">
             <?php echo $tirageCommentaireValidationForm->renderHiddenFields(); ?>
@@ -130,12 +134,8 @@
             <?php if($tirage->hasCompleteDocuments()): ?>
                 <a href="<?php echo url_for("tirage_validation_admin", array("sf_subject" => $tirage, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
             <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
+                <button type="submit" form="form-tirage" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
             <?php endif; ?>
         </div>
     <?php endif; ?>
 </div>
-
-<?php if (isset($form)): ?>
-    </form>
-<?php endif; ?>

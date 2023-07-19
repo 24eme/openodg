@@ -63,7 +63,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
+                      <div class="form-group">
+                        <div class="col-md-offset-3 checkbox">
+                            <?php echo $lot['engagement_8515']->render(); ?>
+                            <?php echo $lot['engagement_8515']->renderLabel("Est en 85/15"); ?>
+                        </div>
+                        <div class="col-sm-12 text-danger">
+                          <?php echo $lot['engagement_8515']->renderError(); ?>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-1">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                     </div>
                 </div>

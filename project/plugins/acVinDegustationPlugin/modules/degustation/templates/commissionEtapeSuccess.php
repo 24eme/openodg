@@ -15,10 +15,12 @@
         <h4>Organisation des tables</h4>
         <ul class="list-group">
             <li class="list-group-item">
-                <span class="glyphicon glyphicon-file"></span>&nbsp;Fiche des lots ventilés (
+                <span class="glyphicon glyphicon-file"></span>&nbsp;Fiches des lots ventilés (
                 <a id="btn_pdf_degustation_fiche_tables_echantillons_par_anonymat_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_anonymat_pdf', $degustation) ?>">triées par Numéro d'anonymat </a>
                 -
                 <a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>">triées par Numéro de dossier</a>
+                -
+                <a id="btn_degustation_fiche_tables_echantillons_par_raison_sociale_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_raison_sociale_pdf', $degustation) ?>">triées par Raison sociale</a>
                 )
             </li>
             <li class="list-group-item">
@@ -48,9 +50,4 @@
 
 <?php include_partial('degustation/convocationDegustateurs', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)) ?>
 
-<div class="row row-button">
-    <div class="col-xs-4"><a href="<?php echo url_for('degustation_tables_etape', $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
-    <div class="col-xs-4 text-center">
-    </div>
-    <div class="col-xs-4 text-right"><a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_resultats_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
-</div>
+<?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_COMMISSION, 'is_enabled' => true)); ?>

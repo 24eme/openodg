@@ -55,28 +55,35 @@
 
           		<table class="table table-bordered table-condensed table-striped">
           			<thead>
-          				<tr>
+                    <tr>
+                      <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()): ?>
+                          <th class="col-xs-1">Anon.</th>
+                      <?php else: ?>
                       <th class="col-xs-1">&nbsp;</th>
+                      <?php endif ?>
                       <th class="col-xs-9">Échantillons &nbsp; <span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a> )</span></th>
                       <th class="col-xs-1">Provenance</th>
-          					  <th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
-          				</tr>
+                      <th class="col-xs-1">Table <?php echo DegustationClient::getNumeroTableStr($numero_table); ?></th>
+                    </tr>
           			</thead>
           			<tbody>
-          				<?php
-          				foreach ($form->getTableLots() as $lot):
-          					$name = $form->getWidgetNameFromLot($lot);
-          					if (isset($form[$name])):
-          						?>
-          						<tr class="vertical-center cursor-pointer">
-                        <td class="edit text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>">
-                          <?php if ($numero_table == $lot->numero_table): ?>
-                          <a href="<?php echo url_for('degustation_position_lot_up', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-up"></span></a>
-                          <a href="<?php echo url_for('degustation_position_lot_down', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-down"></span></a>
-                          <?php endif; ?>
-                            <br/>
-                            <small class="text-muted"><?php echo $lot->position ?></small>
-                        </td>
+                    <?php foreach ($form->getTableLots() as $lot):
+                        $name = $form->getWidgetNameFromLot($lot);
+                        if (isset($form[$name])):
+                    ?>
+                        <tr class="vertical-center cursor-pointer">
+                            <td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>">
+                            <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()): ?>
+                                <?php echo $lot->getNumeroAnonymat() ?>
+                            <?php else: ?>
+                              <?php if ($numero_table == $lot->numero_table): ?>
+                              <a href="<?php echo url_for('degustation_position_lot_up', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-up"></span></a>
+                              <a href="<?php echo url_for('degustation_position_lot_down', array('id' => $degustation->_id, 'index' => $lot->getKey(), 'tri' => $tri, 'numero_table' => $numero_table)) ?>"><span class="glyphicon glyphicon-chevron-down"></span></a>
+                              <?php endif; ?>
+                                <br/>
+                                <small class="text-muted"><?php echo $lot->position ?></small>
+                            <?php endif ?>
+                            </td>
           							<td<?php if ($lot->leurre === true): ?> class="bg-warning"<?php endif ?>>
           								<div class="row">
                                               <div class="col-xs-4 text-right">
@@ -112,7 +119,9 @@
                         <?php endif; ?>
                     </div>
           			<div class="col-xs-4 text-center">
+                    <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() === false) : ?>
           				<button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupLeurreForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un leurre</button>
+                    <?php endif ?>
           			</div>
           			<div class="col-xs-4 text-right">
                         <button type="submit" class="btn btn-primary btn-upper">Continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
@@ -120,7 +129,9 @@
           		</div>
           	</form>
 
+        <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle() === false) : ?>
           <?php include_partial('degustation/popupAjoutLeurreForm', array('url' => url_for('degustation_ajout_leurre', $degustation), 'form' => $ajoutLeurreForm, 'table' => $numero_table)); ?>
+        <?php endif ?>
           <?php include_partial('degustation/popupTableTriForm', array('url' => url_for('degustation_tri_table', array('id' => $degustation->_id, 'numero_table' => $numero_table)), 'form' => $triTableForm, 'table' => $numero_table)); ?>
       </div>
     </div>
