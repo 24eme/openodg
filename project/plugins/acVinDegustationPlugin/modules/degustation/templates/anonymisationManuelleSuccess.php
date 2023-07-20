@@ -39,7 +39,7 @@
                     <td class="lot-logement"><?php echo $lot->numero_logement_operateur ?></td>
                     <td class="lot-numero"><?php echo $lot->numero_dossier . ' / ' . $lot->numero_archive ?></td>
                     <td class="lot-anonymat">
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 0">
                             <label class="sr-only" for="">Numéro anonymat</label>
                             <div class="input-group">
                                 <?php echo $form[$name]->render(['class' => 'form-control']); ?>
