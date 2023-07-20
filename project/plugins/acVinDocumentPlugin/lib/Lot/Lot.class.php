@@ -289,6 +289,9 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == DegustationClient::DEGUSTATION_TRI_PRODUIT) {
             return $this->_get('produit_hash').$this->_get('details');
         }
+        if ($type == DegustationClient::DEGUSTATION_TRI_OPERATEUR) {
+            return $this->_get('declarant_nom');
+        }
         throw new sfException('unknown type of value : '.$type);
     }
 

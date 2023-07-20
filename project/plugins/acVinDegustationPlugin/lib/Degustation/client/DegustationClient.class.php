@@ -11,6 +11,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     const DEGUSTATION_TRI_COULEUR = "couleur";
     const DEGUSTATION_TRI_CEPAGE = "cepage";
     const DEGUSTATION_TRI_MILLESIME = "millesime";
+    const DEGUSTATION_TRI_OPERATEUR = 'operateur';
     const DEGUSTATION_TRI_MANUEL = "manuel";
     const DEGUSTATION_TRI_NUMERO_ANONYMAT = "numero_anonymat";
     const DEGUSTATION_TRI_PRODUIT = "produit";
