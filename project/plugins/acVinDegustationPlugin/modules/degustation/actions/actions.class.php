@@ -595,6 +595,11 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
+        if ($this->degustation->isFullyAnonymized() === false) {
+            $this->getUser()->setFlash("error", "Tous les lots doivent être anonymisés afin de passer à l'étape suivante. Cependant, vos numéros d'anonymats renseignés ont bien été enregistré.");
+            return $this->redirect('degustation_anonymats_etape', $this->degustation);
+        }
+
         return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_ANONYMISATION_MANUELLE), ['id' => $this->degustation->_id]);
     }
 

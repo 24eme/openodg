@@ -878,6 +878,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return ($this->lots[0]->numero_anonymat);
 		}
 
+        public function isFullyAnonymized()
+        {
+            return count(array_filter($this->getLots()->toArray(), function ($lot) {
+                return $lot->numero_anonymat === null;
+            })) === 0;
+        }
+
         public function getLotsAnonymized(){
             $lotsAnon = array();
             foreach ($this->getLotsDegustables() as $k => $lot){
