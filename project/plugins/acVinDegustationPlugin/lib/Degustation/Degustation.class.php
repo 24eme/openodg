@@ -678,7 +678,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
 		/**** Gestion des tables de la degustation ****/
 
-        public function getLotsDegustables() {
+        public function getLotsDegustables($tri = false) {
             $lots = array();
             foreach ($this->getLots() as $lot) {
                 if(!$lot->isDegustable()) {
@@ -686,6 +686,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 }
 
                 $lots[] = $lot;
+            }
+
+            if ($tri) {
+                if (! $this->array_tri) {
+                    $this->array_tri = $this->getTriArray();
+                }
+
+                uasort($lots, [$this, 'sortLotsByThisTri']);
             }
 
             return $lots;
