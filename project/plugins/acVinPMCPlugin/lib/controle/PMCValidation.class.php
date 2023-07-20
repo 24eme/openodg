@@ -19,7 +19,7 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'limite_volume_lot', 'La limite de volume pour un lot est dépassé');
         $this->addControle(self::TYPE_ERROR, 'volume_depasse', "Vous avez dépassé le volume total revendiqué");
         $this->addControle(self::TYPE_WARNING, 'depassement_8515', "Vous devez présenter un papier");
-        $this->addControle(self::TYPE_WARNING, '8515', "Vous devrez justifier votre assemblage 85/15");
+        $this->addControle(self::TYPE_ENGAGEMENT, '8515', "Vous devrez justifier votre assemblage 85/15");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
         $this->addControle(self::TYPE_WARNING, 'date_degust_proche', "La date est dans moins de 5 semaines et risque de ne pas être validée");
     }
@@ -62,7 +62,7 @@ class PMCValidation extends DocumentValidation
             }
 
             if ($lot->exist('engagement_8515') && $lot->engagement_8515) {
-                $this->addPoint(self::TYPE_WARNING, '8515', "Lot ".$lot->getProduitLibelle()." ( ".$lot->volume." hl )", $this->generateUrl($routeName, ["id" => $this->document->_id]));
+                $this->addPoint(self::TYPE_ENGAGEMENT, '8515', "Lot ".$lot->getProduitLibelle()." ( ".$lot->volume." hl )", $this->generateUrl($routeName, ["id" => $this->document->_id]));
             }
 
             if (isset($totalVolumePMC[$lot->produit_hash]) === false) { $totalVolumePMC[$lot->produit_hash] = []; }
@@ -116,7 +116,7 @@ class PMCValidation extends DocumentValidation
 
                 if ($volume + $volumeCommercialise > $volumeRevendique) {
                     if ($lot->exist('engagement_8515') && $lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) < $volumeRevendique) {
-                        $this->addPoint(self::TYPE_WARNING, '8515', "Vous devez présenter un papier");
+                        $this->addPoint(self::TYPE_ENGAGEMENT, '8515', "Vous devez présenter un papier");
                     } else {
                       $this->addPoint(self::TYPE_ERROR, 'volume_depasse', "Lot n° ".($key+1)." - Volume dépassé", $this->generateUrl($routeName, array("id" => $this->document->_id)));
                     }
