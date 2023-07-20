@@ -13,10 +13,9 @@
 
 <?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
-<p>Sélectionner les lots qui ont été prélevés</p>
 <div class="row">
   <div class="form-group col-xs-10">
-    <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="hamzastyle form-control">
+    <p>Sélectionner les lots qui ont été prélevés</p>
   </div>
 
   <div class="col-xs-2">
@@ -27,6 +26,11 @@
   </div>
 </div>
 
+<div class="input-group" style="margin-bottom: 0; position: relative;">
+    <span class="input-group-addon">Filtrer le tableau</span>
+    <input id="table_filtre" type="text" class="form-control" placeholder="Rechercher par opérateur, produit ou numéro de logement" autofocus="autofocus" />
+    <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute;">Annuler la recherche</a>
+</div>
 <form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="ajaxForm form-horizontal degustation prelevements">
 	<?php echo $form->renderHiddenFields(); ?>
 
@@ -34,7 +38,7 @@
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
 
-    <table class="table table-bordered table-condensed table-striped" id="table_prelevements">
+    <table class="table table-bordered table-condensed table-striped table_filterable" id="table_prelevements">
         <thead>
             <tr>
                 <th class="col-xs-2">Opérateur</th>
@@ -49,7 +53,7 @@
 		<tbody>
 		<?php foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
-      <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->declarant_identifiant; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
+      <tr class="vertical-center cursor-pointer searchable" data-adherent="<?php echo $lot->declarant_identifiant; ?>">
         <td><?php echo $lot->declarant_nom; ?></td>
         <td><?php echo $lot->getTypeProvenance(); ?> <span class="text-muted">n°<?php echo $lot->numero_dossier; ?></span></td>
         <td class="edit"><?= $lot->numero_logement_operateur ?>
@@ -92,6 +96,7 @@
         </td>
       </tr>
     <?php endforeach; ?>
+      <tr class="hidden"><td colspan="7">Aucun lot trouvé <a id="btn_annuler_filtre_table" href=""><small>(annuler la recherche)</small></a></td></tr>
     </tbody>
 	</table>
 
