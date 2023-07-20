@@ -1467,6 +1467,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $secteurs;
         }
 
+        public function hasLotsSansSecteurs()
+        {
+            return count(array_filter($this->getLotsPrelevables(), function ($lot) {
+                return $lot->secteur === null;
+            })) > 0;
+        }
+
         /**
          * Les différents etablissements liés aux lots degustables  de la degustation
          * @return array le tableau des Etablissement
