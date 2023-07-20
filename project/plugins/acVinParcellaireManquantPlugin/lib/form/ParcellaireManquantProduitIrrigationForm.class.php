@@ -5,13 +5,13 @@ class ParcellaireManquantProduitIrrigationForm extends acCouchdbObjectForm {
     public function configure() {
 
     	$this->setWidgets(array(
-    			'densite' => new bsWidgetFormInput(),
-    			'pourcentage' => new bsWidgetFormInput(),
+            'densite' => new bsWidgetFormInputInteger(),
+            'pourcentage' => new bsWidgetFormInputFloat(),
     	));
 
     	$this->setValidators(array(
-    			'densite' => new sfValidatorString(array('required' => false)),
-    			'pourcentage' => new sfValidatorString(array('required' => false)),
+            'densite' => new sfValidatorInteger(array('required' => false)),
+            'pourcentage' => new sfValidatorNumber(array('required' => false)),
     	));
         $this->widgetSchema->setNameFormat('parcellaire_manquant[%s]');
     }
