@@ -19,6 +19,19 @@ class DegustationAnonymisationManuelleForm extends acCouchdbObjectForm
         }
 
         $this->widgetSchema->setNameFormat('tables[%s]');
+
+        $this->validatorSchema->setPostValidator(
+            new sfValidatorCallback(['callback' => [$this, 'checkUnicity']])
+        );
+    }
+
+    public function checkUnicity($validator, $values)
+    {
+        if (count($values) !== count(array_unique($values))) {
+            throw new sfValidatorError($validator, "Au moins deux valeurs ont le même numéro d'anonymat");
+        }
+
+        return $values;
     }
 
     public function getWidgetNameFromLot($lot)
