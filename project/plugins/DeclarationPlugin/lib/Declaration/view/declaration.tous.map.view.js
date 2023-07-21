@@ -174,6 +174,21 @@ function(doc) {
            }
     }
 
+    if(doc.lots){
+      let produitsHash = [];
+      for(lotKey in doc.lots) {
+         let lot = doc.lots[lotKey];
+         if(lot.produit_hash) {
+           let pHash = lot.produit_hash.replace('/declaration/', '');
+           produitsHash[pHash] = pHash;
+         }
+      }
+      for(produitHash in produitsHash) {
+          emit([type, campagne, doc.identifiant, mode, statut, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+          nb_emits = nb_emits + 1;
+      }
+    }
+
     if(!nb_emits){
         emit([type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
     }
