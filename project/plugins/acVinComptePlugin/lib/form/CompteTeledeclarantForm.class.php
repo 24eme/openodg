@@ -13,9 +13,9 @@ class CompteTeledeclarantForm extends acCouchdbForm {
         }
         $defaultEmail = null;
         if($etablissementPrincipal){
-            $defaultEmail = $etablissementPrincipal->getEmailTeledeclaration();
+            $defaultEmail = $etablissementPrincipal->getTeledeclarationEmail();
         }else{
-            $defaultEmail = $societe->getEmailTeledeclaration();
+            $defaultEmail = $societe->getTeledeclarationEmail();
         }
         if(!$defaultEmail){
             $defaultEmail = $societe->email;
