@@ -2,6 +2,7 @@ all:
   configuration:
     drev:
       validation_odg: 'admin'
-      mentions_complementaire: true
+      pdf_unique_region: true
+      logement_adresse: false
       denomination_auto: true
-      exploitation_save: true
+      engagement_pdf: true
