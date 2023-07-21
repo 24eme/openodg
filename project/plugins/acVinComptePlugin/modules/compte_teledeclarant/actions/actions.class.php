@@ -163,12 +163,9 @@ class compte_teledeclarantActions extends sfActions {
 
                 $societe = $compte->getSociete();
                 $lien = $this->generateUrl("compte_teledeclarant_mot_de_passe_oublie_login", array("login" => $societe->identifiant, "mdp" => str_replace("{OUBLIE}", "", $compte->mot_de_passe)), true);
-                $emailCible = null;
-
-                if (!$societe->isTransaction()) {
-                    $emailCible = $societe->getEmailTeledeclaration();
-                }else{
-                    $emailCible = $societe->getEtablissementPrincipal()->getEmailTeledeclaration();
+                $emailCible = $compte->getTeledeclarationEmail();
+                if (!$emailCible) {
+                    $emailCible = $compte->getEmail();
                 }
 
                 $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Demande de mot de passe oublié", $this->getPartial('motDePasseOublieEmail', array('compte' => $compte, 'lien' => $lien)));
