@@ -157,7 +157,7 @@ function showLotPublicStatusCartouche($mvt_value) {
 }
 function showSummerizedLotPublicStatusCartouche($mvt_value) {
     if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
-        return "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"L'opérateur voit ici EN ATTENTE DE CONTROLE, la notification n'ayant pas été envoyée\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'><span class='glyphicon glyphicon-eye-close'></span></span>";
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"L'opérateur voit ici EN ATTENTE DE CONTROLE, la notification n'ayant pas été envoyée. L'accès à l'historique ne leur est pas permis.\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'><span class='glyphicon glyphicon-eye-close'></span></span>";
     }
 }
 
