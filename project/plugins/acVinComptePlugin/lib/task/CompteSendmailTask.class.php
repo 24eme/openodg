@@ -32,8 +32,8 @@ class CompteSendmailTask extends sfBaseTask
     if(!$compte){
         throw new sfException("Le compte ".$arguments['identifiant']." n'existe pas");
     }
-    
-    $email = $compte->getSociete()->getEmailTeledeclaration();
+
+    $email = $compte->getSociete()->getTeledeclarationEmail();
     if(!$email){
         echo "ERROR;$compte->_id;L'opérateur n'a pas de mail\n";
         return null;

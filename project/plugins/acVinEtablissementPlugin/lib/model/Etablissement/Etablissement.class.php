@@ -454,9 +454,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $this->getSociete()->getMasterCompte()->isTeledeclarationActive();
     }
 
-    public function getEmailTeledeclaration() {
-        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return $this->teledeclaration_email;
+    public function getTeledeclarationEmail() {
+        if ($this->exist('teledeclaration_email') && $this->_get('teledeclaration_email')) {
+            return $this->_get('teledeclaration_email');
         }
     	if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {

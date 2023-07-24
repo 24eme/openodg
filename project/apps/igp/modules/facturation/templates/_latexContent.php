@@ -144,7 +144,10 @@
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-  <?php $i=0; foreach ($facture->lignes as $ligne): ?>
+  <?php $i=0; foreach ($facture->lignes as $key => $ligne): ?>
+    <?php if ($key === "00_cotisationSyndicale" || $key === "01_cotisationMediterranee"): ?>
+        <?php $exoneration = true; ?>
+    <?php endif ?>
     <?php foreach ($ligne->details as $detail): ?>
         <?php if ($i % 40  == 0) : ?>
           <?php if ($i): ?>
@@ -211,5 +214,9 @@ le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
 \textbf{Modalités de paiements} \\ \\
 <?= escape_string_for_latex($facture->modalite_paiement) ?>
 <?php endif; ?>
+<?php if (isset($exoneration) && $exoneration === true): ?>
+\\ \\
+\textbf{Exonération de tva, article 261,4-9° du Code général des impôts}
+<?php endif ?>
 \end{center}
 \end{document}
