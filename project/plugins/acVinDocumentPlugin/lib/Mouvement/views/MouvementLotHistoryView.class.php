@@ -84,7 +84,13 @@ class MouvementLotHistoryView extends acCouchdbView
     }
 
     public static function isWaitingLotNotification($mvt_value) {
-        return ($mvt_value->document_type == 'Degustation') && (!isset($mvt_value->date_notification) || !$mvt_value->date_notification);
+        if (($mvt_value->document_type == 'Degustation') && (!isset($mvt_value->date_notification) || !$mvt_value->date_notification)) {
+            return true;
+        }
+        if (isset($mvt_value->date_commission) && ($mvt_value->date_commission > date('Y-m-d'))) {
+            return true;
+        }
+        return false;
     }
 
 }
