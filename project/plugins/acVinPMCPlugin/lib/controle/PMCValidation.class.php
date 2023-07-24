@@ -114,12 +114,9 @@ class PMCValidation extends DocumentValidation
                     $volumeCommercialise = $syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()];
                 }
 
-                if ($volume + $volumeCommercialise > $volumeRevendique) {
-                    if ($lot->exist('engagement_8515') && $lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) < $volumeRevendique) {
-                        $this->addPoint(self::TYPE_ENGAGEMENT, '8515', "Vous devez présenter un papier");
-                    } else {
+                if ($volume + $volumeCommercialise > $volumeRevendique
+                    || $lot->exist('engagement_8515') && $lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) > $volumeRevendique) {
                       $this->addPoint(self::TYPE_ERROR, 'volume_depasse', "Lot n° ".($key+1)." - Volume dépassé", $this->generateUrl($routeName, array("id" => $this->document->_id)));
-                    }
                 }
             }
         }
