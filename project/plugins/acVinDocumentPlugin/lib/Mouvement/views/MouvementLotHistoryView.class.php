@@ -83,4 +83,8 @@ class MouvementLotHistoryView extends acCouchdbView
             ->getView($this->design, $this->view);
     }
 
+    public static function isWaitingLotNotification($mvt_value) {
+        return ($mvt_value->document_type == 'Degustation') && (!isset($mvt_value->date_notification) || !$mvt_value->date_notification);
+    }
+
 }

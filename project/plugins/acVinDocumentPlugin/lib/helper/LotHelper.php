@@ -114,11 +114,21 @@ function pictoDegustable($lot) {
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
 
-function showLotStatusCartouche($statut, $detail = null, $secondPassage = false) {
+function getLabelClass($statut) {
+    return isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
+}
+
+function showLotStatusCartouche($lot_ou_mvt_value) {
+    $statut = $lot_ou_mvt_value->statut;
+    $detail = null;
+    if(isset($lot_ou_mvt_value->detail)) {
+        $detail = $lot_ou_mvt_value->detail;
+    }
     if (!isset(Lot::$libellesStatuts[$statut]) && !$detail) {
         return ;
     }
-    $labelClass = isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
+    $secondPassage = isset($lot_ou_mvt_value->libelle) && preg_match("/ème dégustation/", $lot_ou_mvt_value->libelle);
+    $labelClass = getLabelClass($statut);
     $text = '';
     if($secondPassage) {
         $text .= '<span class="label label-danger" style="margin-right: -14px;">&nbsp;&nbsp;</span>';
@@ -141,6 +151,21 @@ function showLotStatusCartouche($statut, $detail = null, $secondPassage = false)
         $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
     }
     return $text;
+}
+
+function showLotPublicStatusCartouche($mvt_value) {
+    if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'>En attente de contrôle</span>";
+    }
+    return showLotStatusCartouche($mvt_value);
+}
+function showSummerizedLotPublicStatusCartouche($mvt_value) {
+    if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"Cette information est cachée à l'opérateur\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'><span class='glyphicon glyphicon-eye-close'></span></span>";
+    }else{
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"Cette information est visible à l'opérateur\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".getLabelClass($mvt_value->statut)."><span class='glyphicon glyphicon-eye-close'></span></span>";
+
+    }
 }
 
 function substrUtf8($str, $offset, $length) {

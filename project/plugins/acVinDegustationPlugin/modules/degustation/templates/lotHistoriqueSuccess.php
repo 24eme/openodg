@@ -42,7 +42,7 @@
                     <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
                 </td>
                 <!-- TODO trouver l'origine concrète du débordement du tableau. La solution display:grid peut être temporaire -->
-                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;"><?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?></p></td>
+                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;"><?php echo showLotStatusCartouche($mouvement->value); ?></p></td>
 
                 <td class="text-right">
                     <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
