@@ -22,6 +22,7 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, '8515', "Vous devrez justifier votre assemblage 85/15");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
         $this->addControle(self::TYPE_WARNING, 'date_degust_proche', "La date est dans moins de 5 semaines et risque de ne pas être validée");
+        $this->addControle(self::TYPE_ERROR, 'logement_chai_inexistant', "Vous devez créer le chai logeant le vin");
     }
 
     public function controle()
@@ -120,7 +121,11 @@ class PMCValidation extends DocumentValidation
                 }
             }
         }
-
+        if (DRevConfiguration::getInstance()->hasLogementChais() && sfContext::getInstance()->getUser()->isAdmin()) {
+            if (!$this->document->chais->nom && !$this->document->chais->adresse && !$this->document->chais->commune && ! $this->document->chais->code_postal) {
+                $this->addPoint(self::TYPE_ERROR, 'logement_chai_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));
+            }
+        }
     }
 
 }
