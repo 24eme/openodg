@@ -84,6 +84,7 @@ PMC:
                   eleve: { }
                   statut: {}
                   adresse_logement: {}
+                  secteur: {}
                   specificite: { }
                   centilisation: { required: false }
                   affectable: { }
@@ -105,6 +106,7 @@ PMC:
             commune: { }
             code_postal: { }
             telephone: { }
+            secteur: { }
       mouvements:
         type: collection
         definition:
