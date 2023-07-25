@@ -14,6 +14,7 @@ class PMCValidation extends DocumentValidation
 
     public function configure()
     {
+        $this->addControle(self::TYPE_FATAL, 'produits_multi_region', "Les produits d'une même mise en circulation ne doivent pas être géré par 2 syndicats différents");
         $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_ERROR, 'limite_volume_lot', 'La limite de volume pour un lot est dépassé');
@@ -36,6 +37,18 @@ class PMCValidation extends DocumentValidation
         }
 
         $totalVolumePMC = [];
+
+        $regions = array();
+        foreach ($this->document->lots as $key => $lot) {
+            foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+                if(RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->produit_hash)) {
+                    $regions[$region] = $region;
+                }
+            }
+        }
+        if(count($regions) > 1) {
+            $this->addPoint(self::TYPE_FATAL, 'produits_multi_region', null, $this->generateUrl($routeName, array("id" => $this->document->_id)));
+        }
 
         foreach ($this->document->lots as $key => $lot) {
 
