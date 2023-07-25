@@ -678,6 +678,10 @@ class degustationActions extends sfActions {
 
         $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
 
+        if (!$this->getUser()->hasDrevAdmin() && MouvementLotHistoryView::isWaitingLotNotification($this->lot)) {
+            throw new sfError403Exception('Accès impossible');
+        }
+
         if(!$this->lot) {
 
             throw new sfError404Exception("Lot non trouvé");
@@ -754,7 +758,7 @@ class degustationActions extends sfActions {
 
         uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
 
-        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, $this->campagne);
+        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, $this->campagne, $this->getUser()->isAdmin());
     }
 
     public function executeManquements(sfWebRequest $request) {
