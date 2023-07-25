@@ -20,6 +20,7 @@
         }
         $('#checkbox_logement_vin').on('change', function() {
             $('#form_logement_vin').find('input').val("");
+            $('#form_logement_vin').find('select').val("");
         });
     }
 
