@@ -82,9 +82,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->resetAndImportFromDocumentDouanier();
         }
 
+        $millesime = substr($this->campagne, 0, 4);
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
-            $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR();
+            $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR().' '.$millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_total' => 0, 'volume_sur_place' => 0,
@@ -93,8 +94,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                                             'nb_lots_degustables' => 0
                                            );
             }
-            $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' Total';
-            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $p->getConfig()->getAppellation()->getLibelleComplet()).' '.$p->getConfig()->getCouleur()->getLibelleDR().' Total';
+            $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' XXX'.$millesime.' Total';
+            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $p->getConfig()->getAppellation()->getLibelleComplet()).' '.$p->getConfig()->getCouleur()->getLibelleDR().' XXX'.$millesime.' Total';
             $couleurs[$couleur]['volume_total'] += $p->recolte->volume_total;
             if(isset($couleurs[$couleur]['volume_sur_place']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
                 $couleurs[$couleur]['volume_sur_place'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
@@ -108,13 +109,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         // Parcours dans les lots
         foreach($this->lots as $lot) {
-            if($lot->millesime != $this->getPeriode()) {
-                continue;
-            }
             if(!$lot->produit_hash) {
                 continue;
             }
-            $couleur = $lot->getConfig()->getCouleur()->getLibelleCompletDR();
+            $couleur = $lot->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
                                             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
@@ -123,10 +121,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                                             'nb_lots_degustables' => 0
                                            );
             }
-            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' Total';
-            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' '.$lot->getConfig()->getCouleur()->getLibelleDR().' Total';
+            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' XXX'.$lot->millesime.' Total';
+            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' '.$lot->getConfig()->getCouleur()->getLibelleDR().' XXX'.$lot->millesime.' Total';
             if($lot->getProduitRevendique()){
-                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR();
+                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
             }
             $couleurs[$couleur]['volume_lots'] += $lot->volume;
             $couleurs[$couleur]['nb_lots']++;
@@ -224,9 +222,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         ksort($couleurs);
-        if (isset($couleurs['XXXTotal global'])) {
-            $couleurs['Total global'] = $couleurs['XXXTotal global'];
-            unset($couleurs['XXXTotal global']);
+        $keys = array_keys($couleurs);
+        foreach($keys as $k) {
+            $couleurs[$k]['libelle'] = str_replace('XXX', '', $k);
         }
         return $couleurs;
     }
