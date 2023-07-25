@@ -74,9 +74,12 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $lot;
     }
 
-	public function getLotsPrelevables() {
+	public function getLotsPrelevables($region = null) {
 	    $lots = array();
 	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $lot) {
+            if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
+                continue;
+            }
             if (!$lot->value) {
                 throw new sfException("Lot ne devrait pas être vide : ".print_r($lot, true));
             }
@@ -101,9 +104,12 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
       return intval($numero_table) ? $alphas[$numero_table-1] : false;
     }
 
-    public function getElevages($campagne = null) {
+    public function getElevages($campagne = null, $region = null) {
         $elevages = array();
         foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows as $item) {
+            if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $item->value->produit_hash)) {
+                continue;
+            }
             $item->value->id_document = $item->id;
             $elevages[$item->value->unique_id] = $this->cleanLotForDegustation($item->value);
         }
@@ -112,9 +118,12 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     }
 
 
-    public function getManquements($campagne = null) {
+    public function getManquements($campagne = null, $region = null) {
         $manquements = array();
-        foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows as $item) {
+        foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE, )->rows as $item) {
+            if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $item->value->produit_hash)) {
+                continue;
+            }
             $item->value->id_document = $item->id;
             $manquement = $this->cleanLotForDegustation($item->value);
             if ($campagne && $manquement->campagne != $campagne) {

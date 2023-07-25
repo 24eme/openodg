@@ -3,8 +3,8 @@
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo ($regionParam)?  url_for('declaration',(array('region' => $regionParam))) : url_for('declaration'); ?>">Déclarations</a></li>
-  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
-  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php if ($sf_user->getRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getRegion(); ?></a></li>
   <?php endif; ?>
 </ol>
 

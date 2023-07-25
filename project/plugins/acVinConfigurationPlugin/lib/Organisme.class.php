@@ -9,6 +9,10 @@ class Organisme
     private $type = null;
 
     public static function getCurrentRegion() {
+        if(sfConfig::get('app_region')) {
+
+            return strtoupper(sfConfig::get('app_region'));
+        }
 
         return strtoupper(self::getCurrentOrganisme());
     }

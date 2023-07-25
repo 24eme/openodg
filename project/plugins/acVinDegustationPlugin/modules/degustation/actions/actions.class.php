@@ -5,9 +5,9 @@ class degustationActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         $this->form = new DegustationCreationForm();
 
-        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
-        $this->lotsElevages = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_ELEVAGE_EN_ATTENTE)->rows;
-        $this->lotsManquements = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_MANQUEMENT_EN_ATTENTE)->rows;
+        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion());
+        $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, $this->getUser()->getRegion());
+        $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, $this->getUser()->getRegion());
 
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON);
 
@@ -72,7 +72,7 @@ class degustationActions extends sfActions {
 
     public function executePrelevables(sfWebRequest $request)
     {
-        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion());
     }
 
     public function executeSelectionLots(sfWebRequest $request) {
@@ -843,11 +843,11 @@ class degustationActions extends sfActions {
     public function executeManquements(sfWebRequest $request) {
       $this->chgtDenoms = [];
       $this->campagne = $request->getParameter('campagne', null);
-      $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne);
+      $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne, $this->getUser()->getRegion());
     }
 
     public function executeElevages(sfWebRequest $request) {
-      $this->lotsElevages = DegustationClient::getInstance()->getElevages($request->getParameter('campagne'));
+      $this->lotsElevages = DegustationClient::getInstance()->getElevages($request->getParameter('campagne'), $this->getUser()->getRegion());
     }
 
     public function executeRedeguster(sfWebRequest $request) {
