@@ -241,6 +241,7 @@ DRev:
                         numero_dossier: {  }
                         numero_archive: {  }
                         date_commission: { }
+                        date_notification: { }
                         libelle: {}
                         detail: {}
                         volume: { type: float }
