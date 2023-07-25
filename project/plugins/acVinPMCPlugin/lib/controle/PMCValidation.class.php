@@ -99,7 +99,7 @@ class PMCValidation extends DocumentValidation
             }
         }
 
-        $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagn, sfContext::getInstance()->getUser()->isAdmin());
+        $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagne, sfContext::getInstance()->getUser()->isAdmin());
         $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, substr($this->document->campagne, 0, 4)]));
 
         foreach ($totalVolumePMC as $hash => $millesimes) {
