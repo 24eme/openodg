@@ -126,10 +126,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($lot->getProduitRevendique()){
                 $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
             }
-            $couleurs[$couleur]['volume_lots'] += $lot->volume;
-            $couleurs[$couleur]['nb_lots']++;
-            if ($lot->isControle()) {
-                $couleurs[$couleur]['nb_lots_degustables']++;
+            if ($lot->volume) {
+                $couleurs[$couleur]['volume_lots'] += $lot->volume;
+                $couleurs[$couleur]['nb_lots']++;
+                if ($lot->isControle()) {
+                    $couleurs[$couleur]['nb_lots_degustables']++;
+                }
             }
         }
         $total_appellations = array("XXXTotal global" =>  array(
