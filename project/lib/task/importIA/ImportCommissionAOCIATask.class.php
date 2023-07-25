@@ -159,6 +159,14 @@ EOF;
           }
           $produit = $this->produits[$produitKey];
 
+          if($degustation->region) {
+              foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+                  if(RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->getHash())) {
+                    $degustation->region = $region;
+                  }
+              }
+          }
+
           $etablissement = $this->identifyEtablissement(preg_replace("/[ ]*[0-9]+$/", "", $data[self::CSV_OPERATEUR]), preg_replace("/^.*([0-9]+)$/", '\1', $data[self::CSV_OPERATEUR]));
           if (!$etablissement) {
                echo "WARNING;établissement non trouvé ".$data[self::CSV_OPERATEUR].";pas d'import;$line\n";
