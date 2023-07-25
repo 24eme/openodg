@@ -159,6 +159,7 @@ Etablissement:
                    archive: boolean
                    lat: {  }
                    lon: {  }
+                   secteur: {}
                    attributs:
                      type: collection
                      definition:
