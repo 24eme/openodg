@@ -34,7 +34,17 @@ class RegionConfiguration {
       }
       return $this->configuration['odg'][$odgName]['produits'];
     }
-    
+
+    public function isHashProduitInRegion($odgName, $hashProduit) {
+        foreach($this->getOdgProduits($odgName) as $hash) {
+            if(preg_match("|".$hash."|", $hashProduit))  {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getOdgHabilitationProduits($odgName) {
         if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName]['habilitation_produits']) ){
           return array();

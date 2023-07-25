@@ -9,7 +9,7 @@ class declarationActions extends sfActions {
           $this->getUser()->usurpationOn($login, $request->getReferer());
       }
       $this->regionParam = $request->getParameter('region',null);
-      if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
+      if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
         $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($region);
         if($regionRadixProduits){
             $params = $request->getGetParameters();
@@ -17,7 +17,7 @@ class declarationActions extends sfActions {
            return $this->redirect('declaration', $params);
         }
       }
-      if($this->regionParam){  //&& $this->getUser()->getTeledeclarationDrevRegion()){
+      if($this->regionParam){
         $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($this->regionParam);
         if($regionRadixProduits){
           $request->setParameter('produits-filtre',$regionRadixProduits);
@@ -155,8 +155,8 @@ class declarationActions extends sfActions {
     public function executeExport(sfWebRequest $request) {
 
         $this->regionParam = null;
-        if($this->getUser() && $this->getUser()->getTeledeclarationDrevRegion()){
-          $this->regionParam = $this->getUser()->getTeledeclarationDrevRegion();
+        if($this->getUser() && $this->getUser()->getRegion()){
+          $this->regionParam = $this->getUser()->getRegion();
         }
 
         if($this->regionParam){
