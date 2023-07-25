@@ -169,9 +169,7 @@
         <?php endif; ?>
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && ( $sf_user->isAdmin() ||
-                                                 ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))
-                                               )): ?>
+        <?php elseif(!$drev->validation_odg && ( $sf_user->isAdmin() && !DrevConfiguration::getInstance()->hasValidationOdgRegion() || ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam)))): ?>
         <?php if (!$drev->isMiseEnAttenteOdg()): ?>
                 <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;&nbsp;Mettre en attente</a>
         <?php endif; ?>

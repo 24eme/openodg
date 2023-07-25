@@ -597,4 +597,32 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $liaisonsOperateurs;
     }
 
+    public function getAllChais() {
+        $chais = [];
+        if (!$this->exist('chais')) return $chais;
+        foreach ($this->chais as $key => $chai) {
+            $chais[$key] = (string)$chai;
+        }
+        return $chais;
+    }
+
+    public function getChai($key) {
+        if (!$this->exist('chais')) return null;
+        if (!is_numeric($key)) return null;
+        if (!$this->chais->exist($key)) return null;
+        return $this->chais->get($key);
+    }
+
+    public function getKeyChai($infos) {
+        if (!$this->exist('chais')) return null;
+        foreach ($this->chais as $key => $chai) {
+            if ($infos->nom == $chai->nom &&
+    			$infos->adresse == $chai->adresse &&
+    			$infos->commune == $chai->commune &&
+                $infos->code_postal = $chai->code_postal
+            ) return $key;
+        }
+        return null;
+    }
+
 }

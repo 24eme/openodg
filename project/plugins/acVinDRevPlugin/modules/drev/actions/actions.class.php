@@ -748,6 +748,9 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
         $this->regionParam = $request->getParameter('region',null);
+        if (!$this->regionParam && $this->getUser()->getRegion()) {
+            $this->regionParam = $this->getUser()->getRegion();
+        }
 
         $service = $request->getParameter("service", null);
         $params = array('sf_subject' => $this->drev, 'service' => $service);
@@ -844,9 +847,10 @@ class drevActions extends sfActions {
 
         $documents = $this->drev->getOrAdd('documents');
         $this->regionParam = $request->getParameter('region',null);
-        if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
-            $this->regionParam = $this->getUser()->getCompte()->region;
+        if (!$this->regionParam && $this->getUser()->getRegion()) {
+            $this->regionParam = $this->getUser()->getRegion();
         }
+
         $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);

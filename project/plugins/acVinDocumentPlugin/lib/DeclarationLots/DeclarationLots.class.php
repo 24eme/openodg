@@ -109,8 +109,6 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           $lot->declarant_identifiant = $this->identifiant;
           $lot->declarant_nom = $this->declarant->raison_sociale;
           $lot->affectable = true;
-          $lot->adresse_logement = $this->constructAdresseLogement();
-
           $lot->initDefault();
           return $lot;
       }
@@ -335,6 +333,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
     	protected function doSave() {
             $this->piece_document->generatePieces();
+            $this->updateAdresseLogementLots();
     	}
 
         public function saveDeclaration($saveDependants = true) {
@@ -674,5 +673,18 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
     public function hasDocumentDouanier() {
         return false;
+    }
+
+    public function updateAdresseLogementLots() {
+        foreach($this->lots as $lot) {
+            $lot->adresse_logement = $this->constructAdresseLogement();
+            if ($lot->exist('secteur')) {
+                $lot->secteur = $this->getSecteur();
+            }
+        }
+    }
+
+    public function getSecteur() {
+        return ($this->chais->exist('secteur'))? $this->chais->secteur : null;
     }
 }

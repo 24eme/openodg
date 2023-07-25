@@ -30,16 +30,35 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
-    public function createDoc($date) {
+    public function createDoc($date, $region = null) {
         $degustation = new Degustation();
         $degustation->date = $date;
+        if($region) {
+            $degustation->add('region', $region);
+        }
         $degustation->constructId();
 
         return $degustation;
     }
 
-    public function getHistory($limit = 10, $annee = "", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return $this->startkey(self::TYPE_COUCHDB."-".$annee."Z")->endkey(self::TYPE_COUCHDB."-".$annee)->descending(true)->limit($limit)->execute($hydrate);
+    public function getHistory($limit = 10, $annee = "", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $region = null) {
+        $docs = $this->startkey(self::TYPE_COUCHDB."-".$annee."Z")->endkey(self::TYPE_COUCHDB."-".$annee)->descending(true)->limit(($region) ? $limit * 5 : $limit)->execute($hydrate);
+
+        if($region) {
+            $docsByRegion = [];
+            foreach($docs as $doc) {
+                if(isset($doc->region) && $doc->region == $region) {
+                    $docsByRegion[] = $doc;
+                }
+                if(count($docsByRegion) >= $limit) {
+                    break;
+                }
+            }
+
+            return $docsByRegion;
+        }
+
+        return $docs;
     }
 
     public function getHistoryEncours() {

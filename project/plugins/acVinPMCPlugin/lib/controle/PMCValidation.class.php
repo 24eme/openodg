@@ -14,6 +14,7 @@ class PMCValidation extends DocumentValidation
 
     public function configure()
     {
+        $this->addControle(self::TYPE_FATAL, 'produits_multi_region', "Les produits d'une même mise en circulation ne doivent pas être géré par 2 syndicats différents");
         $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_ERROR, 'limite_volume_lot', 'La limite de volume pour un lot est dépassé');
@@ -22,6 +23,8 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, '8515', "Vous devrez justifier votre assemblage 85/15");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
         $this->addControle(self::TYPE_WARNING, 'date_degust_proche', "La date est dans moins de 5 semaines et risque de ne pas être validée");
+        $this->addControle(self::TYPE_ERROR, 'logement_chai_inexistant', "Vous devez créer le chai logeant le vin");
+        $this->addControle(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', "Vous devez affecter un secteur au chai logeant le vin");
     }
 
     public function controle()
@@ -36,6 +39,18 @@ class PMCValidation extends DocumentValidation
         }
 
         $totalVolumePMC = [];
+
+        $regions = array();
+        foreach ($this->document->lots as $key => $lot) {
+            foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+                if(RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->produit_hash)) {
+                    $regions[$region] = $region;
+                }
+            }
+        }
+        if(count($regions) > 1) {
+            $this->addPoint(self::TYPE_FATAL, 'produits_multi_region', null, $this->generateUrl($routeName, array("id" => $this->document->_id)));
+        }
 
         foreach ($this->document->lots as $key => $lot) {
 
@@ -120,7 +135,13 @@ class PMCValidation extends DocumentValidation
                 }
             }
         }
-
+        if (DRevConfiguration::getInstance()->hasLogementChais() && sfContext::getInstance()->getUser()->isAdmin()) {
+            if (!$this->document->chais->nom && !$this->document->chais->adresse && !$this->document->chais->commune && ! $this->document->chais->code_postal) {
+                $this->addPoint(self::TYPE_ERROR, 'logement_chai_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));
+            } elseif(!$this->document->chais->secteur) {
+                $this->addPoint(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));
+            }
+        }
     }
 
 }
