@@ -297,7 +297,7 @@ $list_idu = [];
     </div>
 <?php endif; ?>
 
-<?php if ($parcellaire && $parcellaire->hasParcellairePDF()): ?>
+<?php if ($parcellaire): ?>
 <?php include_partial('downloadLinks', array('parcellaire' => $parcellaire)); ?>
 <?php endif; ?>
 

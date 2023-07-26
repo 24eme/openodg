@@ -8,7 +8,9 @@
   <li><a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne)); ?>" ><?php echo $campagne ?></a>
 </ol>
 
+<?php if ($sf_user->hasDrevAdmin()): ?>
 <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
+<?php endif; ?>
 
 <div class="page-header no-border">
   <div class="pull-right">
@@ -41,7 +43,9 @@
           N°&nbsp;Archive</th>
           <th class="col-sm-4">Libellé</th>
           <th class="col-sm-1 text-right">Volume</th>
+          <?php if ($sf_user->hasDrevAdmin()): ?>
           <th class="col-sm-1 text-center">Document</th>
+          <?php endif; ?>
           <th class="col-sm-2">Dernière&nbsp;étape</th>
           <th class="col-sm-1 text-right hidden-print">Detail</th>
         </thead>
@@ -55,13 +59,23 @@
                   <?php echo $mouvement->value->numero_archive;  ?></td>
                   <td><?php  echo str_replace(array("(", ")"), array("<span class='text-muted'> - ", "</span>"), $mouvement->value->libelle);  ?></td>
                   <td class="text-right"><?php echo echoFloat($mouvement->value->volume);  ?>&nbsp;<small class="text-muted">hl</span></td>
+                  <?php if ($sf_user->hasDrevAdmin()): ?>
                   <td class="text-center">
                       <a href="<?php  echo url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id));  ?>">
                           <?php echo $mouvement->value->document_type;  ?>
                       </a>
                   </td>
-                  <td><?php  echo showLotStatusCartouche($mouvement->value->statut, null, preg_match("/ème dégustation/", $mouvement->value->libelle));  ?></td>
-                  <td class="text-right hidden-print"><a class="btn btn-xs btn-default btn-historique" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
+                  <td>
+                      <?php  echo showLotStatusCartouche($mouvement->value);  ?>&nbsp;<?php  echo showSummerizedLotPublicStatusCartouche($mouvement->value, true);  ?>
+                  <?php else: ?>
+                  </td>
+                  <td><?php  echo showLotPublicStatusCartouche($mouvement->value, false);  ?></td>
+                  <?php endif; ?>
+                  <td class="text-right hidden-print">
+                  <?php if ($sf_user->hasDrevAdmin() || !MouvementLotHistoryView::isWaitingLotNotification($mouvement->value)): ?>
+                      <a class="btn btn-xs btn-default btn-historique" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+                  <?php endif; ?>
+                  </td>
 
               </tr>
                   <?php endforeach; ?>

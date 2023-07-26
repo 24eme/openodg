@@ -210,4 +210,11 @@ class DegustationLot extends BaseDegustationLot {
         return parent::setNumeroTable($n);
     }
 
+    public function setEmailEnvoye($s) {
+        if ($s && !strtotime($s)) {
+            throw new sfException('On ne peut pas générer la date de notification avec un email envoyé ayant pour valeur '.$s);
+        }
+        return $this->_set('email_envoye', $s);
+    }
+
 }
