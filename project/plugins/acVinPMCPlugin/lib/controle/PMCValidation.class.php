@@ -72,7 +72,7 @@ class PMCValidation extends DocumentValidation
 
             $volumeMax = strpos($lot->produit_hash, 'SCR') !== false ? 500 : 1000;
             if ($lot->volume > $volumeMax) {
-                $this->addPoint(self::TYPE_ERROR, 'limite_volume_lot', 'Vous ne pouvez pas revendiquer plus de '.$volumeMax.' hl de '.$lot->getProduitLibelle(), $this->generateUrl($routeName, ["id" => $this->document->_id]));
+                $this->addPoint(self::TYPE_ERROR, 'limite_volume_lot', 'Vous ne pouvez pas déclarer plus de '.$volumeMax.' hl de '.$lot->getProduitLibelle().' pour un même lot', $this->generateUrl($routeName, ["id" => $this->document->_id]));
                 continue;
             }
 
@@ -82,7 +82,12 @@ class PMCValidation extends DocumentValidation
 
             if (isset($totalVolumePMC[$lot->produit_hash]) === false) { $totalVolumePMC[$lot->produit_hash] = []; }
             if (isset($totalVolumePMC[$lot->produit_hash][$lot->millesime]) === false) { $totalVolumePMC[$lot->produit_hash][$lot->millesime] = 0; }
-            $totalVolumePMC[$lot->produit_hash][$lot->millesime] += $lot->volume;
+
+            if($lot->exist('engagement_8515') && $lot->engagement_8515) {
+                $totalVolumePMC[$lot->produit_hash][$lot->millesime] += $lot->volume * 0.85;
+            } else {
+                $totalVolumePMC[$lot->produit_hash][$lot->millesime] += $lot->volume;
+            }
 
             $volume = sprintf("%01.02f",$lot->getVolume());
 
@@ -129,9 +134,14 @@ class PMCValidation extends DocumentValidation
                     $volumeCommercialise = $syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()];
                 }
 
-                if (($lot->exist('engagement_8515') === false || ! $lot->engagement_8515) && $volume + $volumeCommercialise > $volumeRevendique
-                    || ($lot->exist('engagement_8515') && $lot->engagement_8515 && (($lot->volume * 85 / 100) + $volumeCommercialise) > $volumeRevendique)) {
-                      $this->addPoint(self::TYPE_ERROR, 'volume_depasse', "Lot n° ".($key+1)." - Volume dépassé", $this->generateUrl($routeName, array("id" => $this->document->_id)));
+                $volumeTotalCommercialise = $volumeCommercialise;
+
+                if(! $this->document->isValideeOdg()) {
+                    $volumeTotalCommercialise += $volume;
+                }
+
+                if ($volumeTotalCommercialise > $volumeRevendique) {
+                    $this->addPoint(self::TYPE_ERROR, 'volume_depasse', $produit->getLibelleComplet().'  '.$millesime." - ".$volumeTotalCommercialise . " hl déclaré en circulation pour ".$volumeRevendique." hl revendiqué" , $this->generateUrl($routeName, array("id" => $this->document->_id)));
                 }
             }
         }
