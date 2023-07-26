@@ -9,7 +9,7 @@ if ($last) {
 ?>
 
 <?php if($parcellaire->isIntentionCremant()): ?>
-    <p class="text-muted">En plus des vos éventuelles parcelles déclarées dans votre affectation crémant, vous avez décidé de produire cette année du crémant dans les parcelles suivantes :</p>
+    <p class="text-muted">En plus de vos éventuelles parcelles déclarées dans votre affectation crémant, vous avez décidé de produire cette année du crémant dans les parcelles suivantes :</p>
 <?php endif; ?>
 
 <?php if (count($parcellaire->declaration->getAppellationsOrderParcellaire()) > 0): ?>
