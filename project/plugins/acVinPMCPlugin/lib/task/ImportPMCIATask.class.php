@@ -89,10 +89,16 @@ EOF;
             $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($dateDeclaration);
 
             $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dateDeclaration);
-            $pmc->chais->nom = $pmc->declarant->nom;
-            $pmc->chais->adresse = $pmc->declarant->adresse;
-            $pmc->chais->commune = $pmc->declarant->commune;
-            $pmc->chais->code_postal = $pmc->declarant->code_postal;
+            foreach($etablissement->chais as $chai) {
+                if($chai->adresse == $pmc->declarant->adresse && $chai->commune == $pmc->declarant->commune && $chai->code_postal == $pmc->declarant->code_postal) {
+                    $pmc->chais->nom = $chai->nom;
+                    $pmc->chais->adresse = $chai->adresse;
+                    $pmc->chais->commune = $chai->commune;
+                    $pmc->chais->code_postal = $chai->code_postal;
+                    $pmc->chais->secteur = $chai->secteur;
+                    break;
+                }
+            }
 
             $lot = $pmc->addLot();
             $lot->produit_hash = $produit->getHash();
