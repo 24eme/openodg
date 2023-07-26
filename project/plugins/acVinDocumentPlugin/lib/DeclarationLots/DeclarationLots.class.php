@@ -605,6 +605,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
       $rienAFacturer = true;
 
+      if(!$cotisations) {
+          $cotisations = [];
+      }
+
       foreach($cotisations as $cotisation) {
           $mouvement = ConditionnementMouvementFactures::freeInstance($this);
           $mouvement->detail_identifiant = $this->numero_archive;

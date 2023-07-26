@@ -175,11 +175,11 @@ function(doc) {
     }
 
     if(doc.lots){
-      let produitsHash = [];
+      var produitsHash = [];
       for(lotKey in doc.lots) {
-         let lot = doc.lots[lotKey];
+         var lot = doc.lots[lotKey];
          if(lot.produit_hash) {
-           let pHash = lot.produit_hash.replace('/declaration/', '');
+           var pHash = lot.produit_hash.replace('/declaration/', '');
            produitsHash[pHash] = pHash;
          }
       }

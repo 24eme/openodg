@@ -159,10 +159,10 @@ EOF;
           }
           $produit = $this->produits[$produitKey];
 
-          if($degustation->region) {
+          if(!$degustation->region) {
               foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
                   if(RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->getHash())) {
-                    $degustation->region = $region;
+                    $degustation->add('region', $region);
                   }
               }
           }
