@@ -4,7 +4,7 @@
                   <tr>
                     <th class="text-center col-xs-5" style="border-top: hidden; border-left: hidden;"></th>
                     <th class="text-center col-xs-2" colspan="2">
-                        <?php echo $drev->getDocumentDouanierType(); ?> &nbsp;
+                        <?php echo $drev->getDocumentDouanierType(); ?> <?php echo substr($drev->campagne, 0, 4); ?> &nbsp;
                         <a href="<?php echo url_for('drev_update_recolte', array('sf_subject' => $drev)); ?>"><span class="glyphicon glyphicon-refresh">&nbsp;</span></a>
                     </th>
                     <th class="text-center col-xs-5" colspan="3">DRev</th>
@@ -26,7 +26,7 @@
                     ?>
                     <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
                       <td>
-                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a>
+                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong></a>
                           <?php if (!$isTotal) : ?>
                               <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?>
                           <?php endif; ?>
