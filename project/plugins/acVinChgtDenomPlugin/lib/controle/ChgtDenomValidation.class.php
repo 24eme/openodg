@@ -74,7 +74,7 @@ class ChgtDenomValidation extends DocumentValidation
 
         $seuil = $this->document->getVolumeSeuil();
 
-        $synthese = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagne);
+        $synthese = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagne, sfContext::getInstance()->getUser()->isAdmin());
         preg_match('/([\w ]+) (Rouge|Rosé|Blanc)/u', $this->document->changement_produit_libelle, $matches);
         $volume_produit = $synthese[$matches[1]][$this->document->changement_millesime][$matches[2]];
 
