@@ -577,7 +577,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
-    		if (!mkdir($path)) {
+    		if (!mkdir($path, 2775)) {
     			throw new sfException('cannot create '.$path);
     		}
     	}
