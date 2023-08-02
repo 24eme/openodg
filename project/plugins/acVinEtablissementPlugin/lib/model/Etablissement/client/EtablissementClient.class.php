@@ -218,9 +218,15 @@ class EtablissementClient extends acCouchdbClient {
     }
     public function findByCviOrAcciseOrPPMOrSirenOrTVA($cvi_or_accise_or_ppm, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
 
-      $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi_or_accise_or_ppm));
+      $cvi_or_accise_or_ppm = str_replace(' ', '', $cvi_or_accise_or_ppm);
 
-      if (count($rows)) {
+      if (!$cvi_or_accise_or_ppm) {
+          return null;
+      }
+
+      $rows = EtablissementFindByCviView::getInstance()->findByCvi($cvi_or_accise_or_ppm);
+      $c = count($rows);
+      if ($c && $c < 20) {
         foreach ($rows as $r) {
           $e = $this->find($r->id, acCouchdbClient::HYDRATE_JSON);
           if (!$with_suspendu && $e->statut == EtablissementClient::STATUT_SUSPENDU) {
