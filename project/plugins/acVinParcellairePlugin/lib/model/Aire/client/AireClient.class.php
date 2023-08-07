@@ -148,6 +148,9 @@ class AireClient extends acCouchdbClient {
                 }
                 $is_in_aires[$a->denomination_libelle] = $iia;
             } catch(Exception $e) {
+                if (sfConfig::get('sf_environment') == 'dev') {
+                    throw new sfException('error on '.$a->denomination_libelle.' (AIRE-'.$commune_insee.'-'.$a->denomination_identifiant.') : '.$e->getMessage());
+                }
                 if ($a->exist('denomination_libelle')) {
                     $is_in_aires[$a->denomination_libelle] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
                 }else{
