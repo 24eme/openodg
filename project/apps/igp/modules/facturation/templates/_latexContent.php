@@ -147,7 +147,6 @@
   <?php $i=0; $exoneration = false; foreach ($facture->lignes as $ligne): ?>
     <?php foreach ($ligne->details as $detail): ?>
         <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
-        <?php if ($detail->taux_tva == 0) { $exoneration = true; } ?>
         <?php if ($i % 40  == 0) : ?>
           <?php if ($i): ?>
               \end{tabular}
@@ -158,7 +157,12 @@
           \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
           \hline
         <?php endif; ?>
-        <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> <?php if ($exoneration) echo '\textbf{*} '; ?>&
+        <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?>
+        <?php if ($detail->taux_tva == 0) {
+            $exoneration = true;
+            echo '\textbf{*} ';
+        }
+        ?>&
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
         {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php if($detail->exist('unite')): ?><?php echo ($detail->unite); ?><?php else: ?>~~~<?php endif; ?>} &
         <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
