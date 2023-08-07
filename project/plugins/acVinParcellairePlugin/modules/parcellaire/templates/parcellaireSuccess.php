@@ -166,7 +166,7 @@ $list_idu = [];
                                         } elseif($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) {
                                             echo "Partiellement ".$nom;
                                         } elseif($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) {
-                                            echo "En erreur";
+                                            echo "Erreur interne sur ".$nom;
                                         } else {
                                             echo $nom;
                                         }
