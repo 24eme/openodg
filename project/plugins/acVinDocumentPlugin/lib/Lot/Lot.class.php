@@ -404,6 +404,10 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->preleve !== null;
     }
 
+    public function isDiffere(){
+        return ($this->isPreleve() && $this->statut == self::STATUT_PRELEVE_EN_ATTENTE);
+    }
+
     public function isLeurre()
     {
         return $this->exist('leurre') && $this->leurre;

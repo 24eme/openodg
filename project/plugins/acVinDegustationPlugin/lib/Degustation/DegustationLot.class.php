@@ -144,6 +144,10 @@ class DegustationLot extends BaseDegustationLot {
         $this->statut = Lot::STATUT_PRELEVE;
     }
 
+    public function setIsDiffere() {
+        $this->statut = Lot::STATUT_PRELEVE_EN_ATTENTE;
+    }
+
     public function setVolume($volume) {
         $this->_set('volume', $volume);
         if($this->isAnnule()) {
