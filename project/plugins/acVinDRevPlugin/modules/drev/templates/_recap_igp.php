@@ -35,12 +35,13 @@
                           <?php if($synthese['superficie_totale']): ?><?php printf("%.04f", $synthese['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?>
                       </td>
                         <?php if(isset($synthese['volume_sur_place']) && $synthese['volume_sur_place']): ?>
-                          <td class="text-right">
+                            <?php if(isset($synthese['is_precis_sur_place']) && !$synthese['is_precis_sur_place']): ?>
+                              <td class="text-right text-warning">
+                              <abbr title="Volume max : cet opérateur est apporteur et a du volume en cave. On ne peut pas connaitre précisemment son volume hors lies">⚠</abbr>
+                            <?php else: ?>
+                              <td class="text-right">
+                            <?php endif; ?>
                           <?php echoFloat($synthese['volume_sur_place']); ?><small class="text-muted">&nbsp;hl</small>
-                          </td>
-                         <?php elseif(isset($synthese['volume_max']) && $synthese['volume_max']): ?>
-                          <td class="text-right alert-danger">
-                              <abbr title="Volume max : cet opérateur est apporteur et a du volume en cave. On ne peut pas connaitre précisemment son volume hors lies">⚠</abbr> <?php echoFloat($synthese['volume_max']); ?><small class="text-muted">&nbsp;hl</small></span>
                           </td>
                          <?php else: ?>
                           <td></td>
