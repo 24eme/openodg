@@ -9,14 +9,13 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
             $lots[$l->campagne.$l->numero_dossier.$l->adresse_logement.$l->unique_id] = array('lot' => $l, 'key' => $k);
         }
         ksort($lots);
-
         foreach (array_values($lots) as $v) {
             $lot = $v['lot'];
             $key = $v['key'];
             if ($lot->isLeurre()) {
                 continue;
             }
-            $formLots->embedForm($key, new DegustationPreleveLotForm($lot));
+            $formLots->embedForm($key, new DegustationPreleveLotForm($lot, ['preleve' => $lot->isPreleve()]));
         }
 
         $this->embedForm('lots', $formLots);
