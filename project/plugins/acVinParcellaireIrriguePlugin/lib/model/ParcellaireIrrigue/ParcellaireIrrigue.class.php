@@ -8,6 +8,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
   protected $declarant_document = null;
   protected $piece_document = null;
+  protected $parcelles_idu = null;
 
   public function __construct() {
       parent::__construct();
@@ -103,28 +104,51 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
   public function updateParcelles() {
   	$irrigations = array();
-  	foreach ($this->declaration as $key => $parcelle) {
-  		foreach ($parcelle->detail as $subkey => $detail) {
-  			if ($detail->date_irrigation) {
-  				$irrigations[$detail->getHash()] = $detail->date_irrigation;
-  			}
-  		}
+  	foreach ($this->getParcelles() as $key => $parcelle) {
+		if (!$parcelle->date_irrigation) {
+            continue;
+        }
+
+        $irrigations[$parcelle->getHash()] = $parcelle;
   	}
   	$this->remove('declaration');
   	$this->add('declaration');
   	$this->storeParcelles();
-  	foreach ($irrigations as $hash => $date) {
-  		if ($this->getDocument()->exist($hash)) {
-  			$parcelle = $this->getDocument()->get($hash);
-  			$parcelle->date_irrigation = $date;
-  			$parcelle->irrigation = 1;
-            unset($irrigations[$hash]);
-  		}
+
+    foreach($irrigations as $hash => $oldparcelle) {
+        $parcelle = $this->findParcelle($oldparcelle);
+        if(!$parcelle) {
+            continue;
+        }
+		$parcelle->date_irrigation = $oldparcelle->date_irrigation;
+		$parcelle->irrigation = 1;
+
+        unset($irrigations[$hash]);
   	}
 
     if(count($irrigations) > 0) {
-        throw new Exception("Des parcelles déja irrigués disparaissent : ".$this->_id);
+        throw new Exception("Des parcelles déja irrigués disparaissent : ".$this->_id." ".implode(", ", array_keys($irrigations)));
     }
+  }
+
+  public function findParcelle($parcelle) {
+
+      return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
+  }
+
+  public function getParcellesByIdu() {
+      if(is_array($this->parcelles_idu)) {
+
+          return $this->parcelles_idu;
+      }
+
+      $this->parcelles_idu = [];
+
+      foreach($this->getParcelles() as $parcelle) {
+          $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+      }
+
+      return $this->parcelles_idu;
   }
 
   public function getConfiguration() {

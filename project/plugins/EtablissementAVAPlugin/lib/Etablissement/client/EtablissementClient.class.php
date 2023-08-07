@@ -88,7 +88,7 @@ class EtablissementClient extends acCouchdbClient {
         return $id;
     }
 
-    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
+    public function findByCviOrAcciseOrPPMOrSirenOrTVA($cvi_or_accise_or_ppm, $with_suspendu = false){
         if(!$cvi_or_accise_or_ppm) {
 
             return null;

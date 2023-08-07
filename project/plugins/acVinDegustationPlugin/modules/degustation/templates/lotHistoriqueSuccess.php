@@ -2,7 +2,7 @@
 <?php use_helper('Lot'); ?>
 <?php use_helper('Float') ?>
 
-<ol class="breadcrumb">
+<ol class="breadcrumb hidden-print">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant)); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
   <li><a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $lot->campagne)); ?>" ><?php echo $lot->campagne ?></a>
@@ -24,7 +24,7 @@
           <th class="col-sm-1">Document</th>
         <th class="col-sm-1">Date</th>
         <th class="col-sm-8">Étape / Détail</th>
-        <th class="col-sm-1"></th>
+        <th class="col-sm-1 hidden-print"></th>
       </thead>
       <tbody>
         <?php $lastiddate = ''; ?>
@@ -42,9 +42,9 @@
                     <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
                 </td>
                 <!-- TODO trouver l'origine concrète du débordement du tableau. La solution display:grid peut être temporaire -->
-                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;"><?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?></p></td>
+                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;"><?php echo showLotStatusCartouche($mouvement->value); ?></p></td>
 
-                <td class="text-right">
+                <td class="text-right hidden-print">
                     <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
                     <?php $lastiddate = $mouvement->value->document_id.preg_replace("/ .*$/", "", $mouvement->value->date) ; ?>
                 </td>
@@ -52,7 +52,7 @@
             <?php endif; endforeach; ?>
 
             <?php if ($sf_user->isAdmin()): ?>
-            <tr>
+            <tr class="hidden-print">
               <td colspan="3">
               </td>
               <td class="text-right">
@@ -102,6 +102,6 @@
 
   </div>
 
-    <div>
+    <div class="hidden-print">
         <a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $lot->campagne)); ?>" class=" btn btn-default" alt="Retour"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>

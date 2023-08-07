@@ -1,5 +1,5 @@
 <?php
-
+umask(0002);
 require_once dirname(__FILE__).'/../lib/vendor/symfony/lib/autoload/sfCoreAutoload.class.php';
 sfCoreAutoload::register();
 

@@ -25,7 +25,7 @@
           <span class="text-muted"><?php echo showOnlyCepages($lot->getRawValue(), false) ?>&nbsp;</span>
       </td>
       <td>
-          <?php echo showLotStatusCartouche($lot->statut); ?>
+          <?php echo showLotStatusCartouche($lot); ?>
       </td>
       <td>
             <a class="btn btn-default btn-xs" href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id)) ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>

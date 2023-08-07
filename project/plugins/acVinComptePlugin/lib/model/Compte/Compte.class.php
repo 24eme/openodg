@@ -808,4 +808,17 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         return $tags;
     }
+
+    public function getTeledeclarationEmail() {
+        $email = '';
+        if ($this->isEtablissementContact()) {
+            $email = $this->getEtablissement()->getTeledeclarationEmail();
+        }elseif ($this->isSocieteContact()) {
+            $email = $this->getSociete()->getTeledeclarationEmail();
+        }
+        if ($email && ! in_array($email, $this->getEmails())) {
+            return $email;
+        }
+        return null;
+    }
 }

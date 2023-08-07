@@ -82,39 +82,38 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->resetAndImportFromDocumentDouanier();
         }
 
+        $millesime = substr($this->campagne, 0, 4);
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
-            $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR();
+            $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR().' '.$millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_total' => 0, 'volume_sur_place' => 0,
                                             'volume_max' => 0, 'volume_lots' => 0,
                                             'volume_restant' => 0, 'nb_lots' => 0,
-                                            'nb_lots_degustables' => 0
+                                            'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
                                            );
             }
-            $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' Total';
-            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $p->getConfig()->getAppellation()->getLibelleComplet()).' '.$p->getConfig()->getCouleur()->getLibelleDR().' Total';
+            $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' XXX'.$millesime.' Total';
+            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $p->getConfig()->getAppellation()->getLibelleComplet()).' '.$p->getConfig()->getCouleur()->getLibelleDR().' XXX'.$millesime.' Total';
             $couleurs[$couleur]['volume_total'] += $p->recolte->volume_total;
-            if(isset($couleurs[$couleur]['volume_sur_place']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
-                $couleurs[$couleur]['volume_sur_place'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
+            if(isset($couleurs[$couleur]['volume_sur_place'])) {
+                $couleurs[$couleur]['volume_sur_place'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             } elseif($p->hasDonneesRecolte()) {
                 unset($couleurs[$couleur]['volume_sur_place']);
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
+            $couleurs[$couleur]['is_precis_sur_place'] = $couleurs[$couleur]['is_precis_sur_place'] && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte();
             $couleurs[$couleur]['superficie_revendiquee'] += $p->superficie_revendique;
             $couleurs[$couleur]['superficie_totale'] += $p->recolte->superficie_total;
         }
 
         // Parcours dans les lots
         foreach($this->lots as $lot) {
-            if($lot->millesime != $this->getPeriode()) {
-                continue;
-            }
             if(!$lot->produit_hash) {
                 continue;
             }
-            $couleur = $lot->getConfig()->getCouleur()->getLibelleCompletDR();
+            $couleur = $lot->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
                                             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
@@ -123,15 +122,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                                             'nb_lots_degustables' => 0
                                            );
             }
-            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' Total';
-            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' '.$lot->getConfig()->getCouleur()->getLibelleDR().' Total';
+            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' XXX'.$lot->millesime.' Total';
+            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' '.$lot->getConfig()->getCouleur()->getLibelleDR().' XXX'.$lot->millesime.' Total';
             if($lot->getProduitRevendique()){
-                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR();
+                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
             }
-            $couleurs[$couleur]['volume_lots'] += $lot->volume;
-            $couleurs[$couleur]['nb_lots']++;
-            if ($lot->isControle()) {
-                $couleurs[$couleur]['nb_lots_degustables']++;
+            if ($lot->volume) {
+                $couleurs[$couleur]['volume_lots'] += $lot->volume;
+                $couleurs[$couleur]['nb_lots']++;
+                if ($lot->isControle()) {
+                    $couleurs[$couleur]['nb_lots_degustables']++;
+                }
             }
         }
         $total_appellations = array("XXXTotal global" =>  array(
@@ -139,14 +140,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             'volume_sur_place' => 0, 'volume_total' => 0,
             'volume_max' => 0, 'volume_lots' => 0,
             'volume_restant' => 0, 'volume_restant_max' => 0,
-            'nb_lots' => 0, 'nb_lots_degustables' => 0
+            'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
         ));
         $total_couleurs = array("XXXTotal global" =>  array(
             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
             'volume_sur_place' => 0, 'volume_total' => 0,
             'volume_max' => 0, 'volume_lots' => 0,
             'volume_restant' => 0, 'volume_restant_max' => 0,
-            'nb_lots' => 0, 'nb_lots_degustables' => 0
+            'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
         ));
 
         foreach($couleurs as $k => $couleur) {
@@ -169,7 +170,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     'volume_sur_place' => 0, 'volume_total' => 0,
                     'volume_max' => 0, 'volume_lots' => 0,
                     'volume_restant' => 0, 'volume_restant_max' => 0,
-                    'nb_lots' => 0, 'nb_lots_degustables' => 0
+                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
                 );
             }
             $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
@@ -177,6 +178,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations[$couleur['appellation']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
+            $total_appellations[$couleur['appellation']]['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
             $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
             $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
             $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -187,6 +189,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations['XXXTotal global']['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations['XXXTotal global']['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations['XXXTotal global']['volume_max'] += $couleur['volume_max'];
+            $total_appellations['XXXTotal global']['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
             $total_appellations['XXXTotal global']['volume_lots'] += $couleur['volume_lots'];
             $total_appellations['XXXTotal global']['volume_restant'] += $couleur['volume_restant'];
             $total_appellations['XXXTotal global']['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -199,7 +202,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     'volume_sur_place' => 0, 'volume_total' => 0,
                     'volume_max' => 0, 'volume_lots' => 0,
                     'volume_restant' => 0, 'volume_restant_max' => 0,
-                    'nb_lots' => 0, 'nb_lots_degustables' => 0
+                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
                 );
             }
             $total_couleurs[$couleur['appellation_couleur']]['volume_total'] += $couleur['volume_total'];
@@ -207,6 +210,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_couleurs[$couleur['appellation_couleur']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_couleurs[$couleur['appellation_couleur']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_max'] += $couleur['volume_max'];
+            $total_couleurs[$couleur['appellation_couleur']]['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_lots'] += $couleur['volume_lots'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant'] += $couleur['volume_restant'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -224,9 +228,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         ksort($couleurs);
-        if (isset($couleurs['XXXTotal global'])) {
-            $couleurs['Total global'] = $couleurs['XXXTotal global'];
-            unset($couleurs['XXXTotal global']);
+        $keys = array_keys($couleurs);
+        foreach($keys as $k) {
+            $couleurs[$k]['libelle'] = str_replace('XXX', '', $k);
         }
         return $couleurs;
     }
@@ -573,7 +577,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
-    		if (!mkdir($path)) {
+    		if (!mkdir($path, 2775)) {
     			throw new sfException('cannot create '.$path);
     		}
     	}
