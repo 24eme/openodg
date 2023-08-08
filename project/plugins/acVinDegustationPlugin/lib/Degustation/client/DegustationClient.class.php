@@ -95,7 +95,9 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 
 	public function getLotsPrelevables($region = null) {
 	    $lots = array();
-	    foreach (MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows as $lot) {
+        $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows +
+            MouvementLotView::getInstance()->getByStatut(Lot::STATUT_PRELEVE_EN_ATTENTE)->rows;
+	    foreach ($rows as $lot) {
             if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
                 continue;
             }
