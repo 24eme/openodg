@@ -24,5 +24,6 @@ $etapes =  DegustationEtapes::getInstance();
         >
             Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
         </a>
+        <?php endif; ?>
     </div>
 </div>
