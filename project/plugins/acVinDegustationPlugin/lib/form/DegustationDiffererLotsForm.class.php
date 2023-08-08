@@ -13,7 +13,7 @@ class DegustationDiffererLotsForm extends acCouchdbForm {
         foreach (array_values($lots) as $v) {
             $lot = $v['lot'];
             $key = $v['key'];
-            if ($lot->isLeurre()||$lot->isAnnule()) {
+            if ($lot->isLeurre()||$lot->isAnnule()||!$lot->isPreleve()) {
                 continue;
             }
             $formLots->embedForm($key, new DegustationPreleveLotForm($lot, ['preleve' => $lot->isDiffere()]));
