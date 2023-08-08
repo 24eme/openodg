@@ -310,6 +310,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE,"Table : ".$lot->getNumeroTableStr()));
 
                 case Lot::STATUT_PRELEVE:
+                case Lot::STATUT_PRELEVE_EN_ATTENTE:
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
 
@@ -328,7 +329,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             if($lot->isAnnule()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANNULE));
             }
-            if ($lot->isPreleve()) {
+            if ($lot->isDiffere()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE_EN_ATTENTE, '', $lot->preleve));
+            } elseif ($lot->isPreleve()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
             }
 			if ($lot->isChange()) {
