@@ -175,6 +175,9 @@ class DegustationLot extends BaseDegustationLot {
         if($this->isAnnule()) {
             return false;
         }
+        if($this->isDiffere()) {
+            return false;
+        }
 
         return true;
     }
