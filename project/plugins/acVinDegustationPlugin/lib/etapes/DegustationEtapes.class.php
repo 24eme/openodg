@@ -115,8 +115,11 @@ class DegustationEtapes extends Etapes {
 
     public function isEtapeDisabled($etape, $doc)
     {
-        if(DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
+        if ($doc->isEntierementDifferee() && ($etape != self::ETAPE_PRELEVEMENTS) && $this->isGt($etape, self::ETAPE_PRELEVEMENTS)) {
+            return true;
+        }
 
+        if(DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             return false;
         }
 
