@@ -751,6 +751,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lots;
         }
 
+        public function isEntierementDifferee() {
+            return count($this->getLots()) == count($this->getLotsDifferes());
+        }
+
 		public function getLotsDegustablesCustomSort(array $tri = null) {
 			$lots = $this->getLotsDegustables();
 			if (!$tri) {
