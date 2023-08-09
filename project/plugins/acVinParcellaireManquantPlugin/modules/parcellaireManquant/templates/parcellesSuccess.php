@@ -36,7 +36,7 @@
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
 
-                <th class="col-xs-2 text-center">Pieds morts ou manquants ?</th>
+                <th class="col-xs-2 text-center">Pieds morts ou manquants ? <span class="text-muted">(si&nbsp;+&nbsp;de&nbsp;20%)</span></th>
             </tr>
 		</thead>
 		<tbody>
