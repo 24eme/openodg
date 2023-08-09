@@ -274,6 +274,9 @@ class compteActions extends sfCredentialActions {
 	  break;
 	}
       }
+      if ($cpt == 1 && strpos($request->getParameter('retour'), '/visualisation')) {
+          return true;
+      }
       $q = $this->initSearch($request, $tag, !$remove);
       $resset = $index->search($q);
 
@@ -342,6 +345,9 @@ class compteActions extends sfCredentialActions {
     public function executeRemovetag(sfWebRequest $request) {
       if (!$this->addremovetag($request, true)) {
 		      return ;
+      }
+      if ($r = $request->getParameter('retour')) {
+          return $this->redirect($r);
       }
       $this->args['tags'] = implode(',', array_diff($this->selected_rawtags, array('manuel:'.$request->getParameter('tag'))));
       return $this->redirect('compte_search', $this->args);

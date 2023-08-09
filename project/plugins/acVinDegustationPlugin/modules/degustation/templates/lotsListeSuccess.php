@@ -9,7 +9,9 @@
 </ol>
 
 <?php if ($sf_user->hasDrevAdmin()): ?>
+<div class="hidden-print">
 <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
+</div>
 <?php endif; ?>
 
 <div class="page-header no-border">

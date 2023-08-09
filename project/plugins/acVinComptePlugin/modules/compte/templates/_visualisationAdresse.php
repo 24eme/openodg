@@ -23,16 +23,6 @@
             </div>
     </div>
 <?php endif; ?>
-<?php if ($compte->getTeledeclarationEmail()) : ?>
-    <div class="row">
-        <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
-            Email&nbsp;Télédecl.&nbsp;:
-        </div>
-            <div style="margin-bottom: 5px" class="col-xs-9">
-                    <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo $compte->getTeledeclarationEmail(); ?></a></small><br/>
-            </div>
-    </div>
-<?php endif; ?>
 <?php if ($compte->telephone_perso) : ?>
     <div class="row">
         <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
