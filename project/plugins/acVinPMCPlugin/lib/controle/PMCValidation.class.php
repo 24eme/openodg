@@ -16,6 +16,7 @@ class PMCValidation extends DocumentValidation
     {
         $this->addControle(self::TYPE_FATAL, 'produits_multi_region', "Les produits d'une même mise en circulation ne doivent pas être géré par 2 syndicats différents");
         $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
+        $this->addControle(self::TYPE_FATAL, 'revendication_manquante', "Il manque la déclaration de revendication");
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_ERROR, 'limite_volume_lot', 'La limite de volume pour un lot est dépassé');
         $this->addControle(self::TYPE_ERROR, 'volume_depasse', "Vous avez dépassé le volume total revendiqué");
@@ -50,6 +51,11 @@ class PMCValidation extends DocumentValidation
         }
         if(count($regions) > 1) {
             $this->addPoint(self::TYPE_FATAL, 'produits_multi_region', null, $this->generateUrl($routeName, array("id" => $this->document->_id)));
+        }
+
+        $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, substr($this->document->campagne, 0, 4)]));
+        if ($drev === null || ! $drev->validation_odg) {
+            $this->addPoint(self::TYPE_FATAL, 'revendication_manquante', null, null);
         }
 
         foreach ($this->document->lots as $key => $lot) {
