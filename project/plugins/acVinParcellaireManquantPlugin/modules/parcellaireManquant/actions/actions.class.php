@@ -43,7 +43,7 @@ class parcellaireManquantActions extends sfActions {
     	$parcellaireManquant->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => ($parcellaireManquant->periode - 1).'-'.$parcellaireManquant->periode));
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireManquant->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {
