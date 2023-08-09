@@ -16,8 +16,18 @@
 <div style="margin-bottom: 5px;" class="col-xs-6 text-muted">Mot de passe déjà créé</div>
 <?php endif; ?>
 </div>
+<?php if ($compte->getTeledeclarationEmail()) : ?>
+    <div class="row">
+        <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
+            Email&nbsp;Télédecl.&nbsp;:
+        </div>
+            <div style="margin-bottom: 5px" class="col-xs-9">
+                    <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo $compte->getTeledeclarationEmail(); ?></a></small><br/>
+            </div>
+    </div>
+<?php endif; ?>
 <div class="row">
-<?php if ($compte->getSociete()->getMasterCompte()->exist('alternative_logins') && count($compte->getSociete()->getMasterCompte()->alternative_logins)) : ?>
+<?php if ($compte->getSociete()->getMasterCompte()->hasAlternativeLogins()) : ?>
 <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Logins Interpro&nbsp;:</div>
 <div style="margin-bottom: 5px;" class="col-xs-9"><?php echo implode(', ', $compte->getSociete()->getMasterCompte()->alternative_logins->getRawValue()->toArray()); ?></div>
 </div>
