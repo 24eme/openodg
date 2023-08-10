@@ -6,9 +6,7 @@ all:
         VINIFICATEUR: "Vinificateur"
         CONDITIONNEUR: "Conditionneur"
         PRODUCTEUR_MOUTS: "Producteur de moût"
-        PRESSURAGE: "Pressurage"
         ELEVEUR: "Éleveur"
-        NEGOCIANT: "Négociant"
       demande:
         statuts:
           DEPOT: "Dépôt"
