@@ -154,7 +154,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
     	  		$subitem->lieu = $detail->lieu;
     	  		$subitem->cepage = $detail->cepage;
     	  		$subitem->active = 1;
-                $subitem->densite = round(10000 / $detail->ecart_pieds * $detail->ecart_rang, 0);
+                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
 
                 $subitem->remove('vtsgn');
                 if($detail->exist('vtsgn')) {
