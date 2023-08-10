@@ -103,7 +103,7 @@ class EtablissementForm extends acCouchdbObjectForm
 			$this->setDefault('chais_telephone', $this->getObject()->getDocument()->chais->telephone);
 		}
 
-        if (DRevConfiguration::getInstance()->hasLogementChais()) {
+        if (DRevConfiguration::getInstance()->hasLogementChais() && $this->getObject()->getDocument()->getDocument()->exist('chais')) {
             $this->setDefault('chai', $this->getObject()->getDocument()->getEtablissementObject()->getKeyChai($this->getObject()->getDocument()->chais));
         }
     }
@@ -131,12 +131,12 @@ class EtablissementForm extends acCouchdbObjectForm
 			$this->getObject()->getDocument()->chais->telephone = $values['chais_telephone'];
         }
 
-        if(!$this->getObject()->getDocument()->isAdresseLogementDifferente()) {
+        if(!$this->getObject()->getDocument()->isAdresseLogementDifferente() && $this->getObject()->getDocument()->exist('chais')) {
             $this->getObject()->getDocument()->remove('chais');
             $this->getObject()->getDocument()->add('chais');
         }
 
-        if (DRevConfiguration::getInstance()->hasLogementChais()) {
+        if (DRevConfiguration::getInstance()->hasLogementChais() && $this->getObject()->getDocument()->exist('chais')) {
             $chai = $this->getObject()->getDocument()->getEtablissementObject()->getChai($values['chai']);
             if (!$chai) {
                 $key = $this->getObject()->getDocument()->getEtablissementObject()->getKeyChai($this->getObject());
