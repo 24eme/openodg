@@ -10,7 +10,6 @@ th {
 }
 
 </style>
-    <p>&nbsp;</p>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $logement => $lots_du_logement):
         $etablissement = $etablissements[$logement];

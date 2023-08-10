@@ -10,7 +10,6 @@ th {
 }
 
 </style>
-    <p>&nbsp;</p>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
         $key_etablissement = explode('/', $key_lots)[1];
