@@ -29,7 +29,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const STATUT_BROUILLON = null;
 
     public static $denominationsAuto = array(
-        self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
+        self::DENOMINATION_CONVENTIONNEL => "Conventionnel ou en conversion",
         self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
         self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
     );
