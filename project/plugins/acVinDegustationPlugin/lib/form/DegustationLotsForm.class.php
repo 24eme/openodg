@@ -22,6 +22,9 @@ class DegustationLotsForm extends acCouchdbForm
     public function save() {
         $values = $this->getValues();
         foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+            if (! $embedForm->getObject()->preleve) {
+                $embedForm->getObject()->set('preleve', date('Y-m-d'));
+            }
             $embedForm->doUpdateObject($values['lots'][$key]);
         }
         $this->getDocument()->cleanLotsSansProduit();
