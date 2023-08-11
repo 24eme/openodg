@@ -104,6 +104,10 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
+        if (count($this->degustation->getLotsPreleves()) == count($this->degustation->getLotsPrelevables())) {
+            return $this->redirect($this->getRouteNextEtape(DegustationEtapes::ETAPE_TOURNEES), $this->degustation);
+        }
+
         return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_LOTS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }
 
