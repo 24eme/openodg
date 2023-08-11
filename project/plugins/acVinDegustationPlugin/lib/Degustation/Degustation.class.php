@@ -800,13 +800,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $lots;
 		}
 
-        public function getLotsFromProvenance() {
+        public function getLotsFromProvenance($filter_empty = false) {
             $lots = array();
             foreach($this->getLots() as $lot) {
                 if ($lot->isLeurre()) {
                     continue;
                 }
                 $lotProvenance = $lot->getLotProvenance();
+
+                if ($filter_empty && ! $lotProvenance) {
+                    continue;
+                }
+
                 if(!$lotProvenance) {
                     throw new sfException("Le lot ".$this->getDocument()->_id.$lot->getHash(). " (".$lot->unique_id.") n'a pas de provenance");
                 }

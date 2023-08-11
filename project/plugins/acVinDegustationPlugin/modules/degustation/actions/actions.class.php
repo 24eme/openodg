@@ -115,19 +115,31 @@ class degustationActions extends sfActions {
             $this->degustation->save(false);
         }
 
-        $this->form = new DegustationSelectionOperateursForm($this->degustation);
+        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation);
+        $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true]);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
         }
 
-        $this->form->bind($request->getParameter($this->form->getName()));
+        $this->formOperateurs->bind($request->getParameter($this->formOperateurs->getName()));
+        $this->formLots->bind($request->getParameter($this->formLots->getName()));
 
-        if (! $this->form->isValid()) {
-            return sfView::SUCCESS;
+        if ($request->getParameter($this->formOperateurs->getName())) {
+            if (! $this->formOperateurs->isValid()) {
+                return sfView::SUCCESS;
+            } else {
+                $this->formOperateurs->save();
+            }
         }
 
-        $this->form->save();
+        if ($request->getParameter($this->formLots->getName())) {
+            if(! $this->formLots->isValid()) {
+                return sfView::SUCCESS;
+            } else {
+                $this->formLots->save();
+            }
+        }
 
         return $this->redirect('degustation_selection_operateurs', $this->degustation);
     }

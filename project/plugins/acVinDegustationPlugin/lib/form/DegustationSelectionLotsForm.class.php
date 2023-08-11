@@ -4,6 +4,8 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
     private $lots = [];
     private $leurres = [];
+    private $lotsOperateurs = [];
+    private $filter_empty = false;
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
     protected $object = null;
@@ -12,18 +14,25 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
         $id = $object->_id;
         $this->object = $object;
         $this->date_degustation = $object->getDateFormat('Ymd');
+        $this->filter_empty = isset($options['filter_empty']) && $options['filter_empty'];
 
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }
 
     public function configure() {
-        $this->lots = $this->object->getLotsFromProvenance();
+        $this->lots = $this->object->getLotsFromProvenance($this->filter_empty);
         uasort($this->lots, array("DegustationClient", "sortLotByDate"));
 
         foreach ($this->object->getLots() as $lot) {
             if ($lot->isLeurre()) {
                 $this->leurres[] = $lot;
             }
+        }
+
+        if ($this->filter_empty) {
+            $this->lotsOperateurs = array_filter($this->object->getLots()->toArray(), function ($v) {
+                return $v->id_document_provenance === null;
+            });
         }
 
         foreach (DegustationClient::getInstance()->getLotsPrelevables($this->getObject()->getRegion()) as $key => $item) {
@@ -66,7 +75,7 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
             }
         }
 
-        $lots = array_merge($lots, $this->leurres);
+        $lots = array_merge($lots, $this->leurres, $this->lotsOperateurs);
 
         $this->getObject()->setLots($lots);
         if (!$this->getObject()->max_lots < count($lots)) {
