@@ -8,7 +8,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     const DEFAULT_KEY = 'DEFAUT';
     const VIP2C_COLONNE_CVI = 3;
-    const VIP2C_COLONNE_NOM = 11;
+    const VIP2C_COLONNE_VOLUME = 11;
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
@@ -2397,7 +2397,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $volumes = array();
         while (($line = fgetcsv($configFile)) !== false) {
-            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_NOM]);
+            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
         }
         fclose($configFile);
 
