@@ -178,7 +178,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations[$couleur['appellation']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
-            $total_appellations[$couleur['appellation']]['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
+            $total_appellations[$couleur['appellation']]['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
             $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
             $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -189,7 +189,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations['XXXTotal global']['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations['XXXTotal global']['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations['XXXTotal global']['volume_max'] += $couleur['volume_max'];
-            $total_appellations['XXXTotal global']['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
+            $total_appellations['XXXTotal global']['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_appellations['XXXTotal global']['volume_lots'] += $couleur['volume_lots'];
             $total_appellations['XXXTotal global']['volume_restant'] += $couleur['volume_restant'];
             $total_appellations['XXXTotal global']['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -210,7 +210,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_couleurs[$couleur['appellation_couleur']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_couleurs[$couleur['appellation_couleur']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_max'] += $couleur['volume_max'];
-            $total_couleurs[$couleur['appellation_couleur']]['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
+            $total_couleurs[$couleur['appellation_couleur']]['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_lots'] += $couleur['volume_lots'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant'] += $couleur['volume_restant'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant_max'] += $couleur['volume_restant_max'];
