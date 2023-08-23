@@ -12,5 +12,7 @@ all:
       avis:
         favorable: "C"
         defavorable: "NC"
+        defavorable_non_redhibitoire: "NCNR"
+        defavorable_redhibitoire: "NCR"
       conformite: []
       typicite_cepage: true
