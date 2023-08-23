@@ -8,7 +8,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     const DEFAULT_KEY = 'DEFAUT';
     const VIP2C_COLONNE_CVI = 3;
-    const VIP2C_COLONNE_NOM = 11;
+    const VIP2C_COLONNE_VOLUME = 11;
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
@@ -178,7 +178,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations[$couleur['appellation']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
-            $total_appellations[$couleur['appellation']]['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
+            $total_appellations[$couleur['appellation']]['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
             $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
             $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -189,7 +189,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations['XXXTotal global']['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations['XXXTotal global']['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations['XXXTotal global']['volume_max'] += $couleur['volume_max'];
-            $total_appellations['XXXTotal global']['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
+            $total_appellations['XXXTotal global']['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_appellations['XXXTotal global']['volume_lots'] += $couleur['volume_lots'];
             $total_appellations['XXXTotal global']['volume_restant'] += $couleur['volume_restant'];
             $total_appellations['XXXTotal global']['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -210,7 +210,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_couleurs[$couleur['appellation_couleur']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_couleurs[$couleur['appellation_couleur']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_max'] += $couleur['volume_max'];
-            $total_couleurs[$couleur['appellation_couleur']]['is_precis_sur_place'] &= $couleur['is_precis_sur_place'];
+            $total_couleurs[$couleur['appellation_couleur']]['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_lots'] += $couleur['volume_lots'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant'] += $couleur['volume_restant'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -665,6 +665,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $has_bio_in_dr = false;
         $has_hve_in_dr = false;
 
+        $has_coop_l8 = false;
+        $has_mout_l7 = false;
+
         if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
             $labelsDefault = array_fill_keys($this->getDenominationAuto(), true);
             foreach($csv as $k => $line) {
@@ -789,7 +792,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16) {
             	$produitRecolte->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
                 if (!$has_coop_l8) {
-                    $produitRecolte->usages_industriels_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    if (!$has_mout_l7) {
+                        $produitRecolte->usages_industriels_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    }else{
+                        $produitRecolte->usages_industriels_sur_place = $produitRecolte->volume_sur_place - $produitRecolte->volume_sur_place_revendique;
+                    }
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4) {
@@ -798,6 +805,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_COOPERATIVE_L8 && $line[DRCsvFile::CSV_VALEUR])  {
                 $has_coop_l8 = true;
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_MOUTS_L7 && $line[DRCsvFile::CSV_VALEUR])  {
+                $has_mout_l7 = true;
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME_L9)  {
             	$produitRecolte->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
@@ -2397,7 +2407,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $volumes = array();
         while (($line = fgetcsv($configFile)) !== false) {
-            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_NOM]);
+            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
         }
         fclose($configFile);
 
