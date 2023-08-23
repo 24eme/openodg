@@ -1,6 +1,7 @@
 bin/config.inc
 bin/config_*.inc
 bin/config_extra.inc
+bin/config.ds.inc
 config/app.yml
 config/databases.yml
 config/databases.*.yml
