@@ -32,7 +32,7 @@ cd -
 
 ls $DOCUMENTS_FOLDER | grep 'ds-' |  grep $DOCUMENTS_SUFFIXE.csv | while read csv ; do php symfony import:ds-csv --application=provence --header=$header ../../prodouane_scrapy/documents/$csv;header=null; done >> $TMP_CSV_FILE
 
-mv $TMP_CVS_FILE $EXPORT_FOLDER
+mv $TMP_CSV_FILE $EXPORT_FOLDER
 
 rm $TMP_FILE_LIST_CVI
 rm $TMP_CSV_FILE
