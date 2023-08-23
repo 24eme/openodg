@@ -665,6 +665,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $has_bio_in_dr = false;
         $has_hve_in_dr = false;
 
+        $has_coop_l8 = false;
+        $has_mout_l7 = false;
+
         if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
             $labelsDefault = array_fill_keys($this->getDenominationAuto(), true);
             foreach($csv as $k => $line) {
@@ -789,7 +792,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16) {
             	$produitRecolte->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
                 if (!$has_coop_l8) {
-                    $produitRecolte->usages_industriels_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    if (!$has_mout_l7) {
+                        $produitRecolte->usages_industriels_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    }else{
+                        $produitRecolte->usages_industriels_sur_place = $produitRecolte->volume_sur_place - $produitRecolte->volume_sur_place_revendique;
+                    }
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4) {
@@ -798,6 +805,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_COOPERATIVE_L8 && $line[DRCsvFile::CSV_VALEUR])  {
                 $has_coop_l8 = true;
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_MOUTS_L7 && $line[DRCsvFile::CSV_VALEUR])  {
+                $has_mout_l7 = true;
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME_L9)  {
             	$produitRecolte->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
