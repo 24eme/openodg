@@ -21,6 +21,10 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
         $siret = $csv[3][1];
         $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
 
+        if(!$etablissement){
+            throw new sfException("ETABLISSMENT NON TROUVE POUR LE CVI : ".$cvi);
+        }
+
         $identifiant = $etablissement->getIdentifiant();
         $raison_sociale =  $etablissement->getNom();
         $code_commune = $etablissement->getCodePostal();
