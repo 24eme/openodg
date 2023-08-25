@@ -67,8 +67,8 @@ class VIP2C
         return substr(self::getConfigCampagneVolumeSeuil(), 0, 4);
     }
 
-    public static function getProduitHashWithVolumeSeuil() {
-        return DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil();
+    public static function getProduitsHashWithVolumeSeuil() {
+        return array(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
     }
 
     public static function hasVolumeSeuil() {

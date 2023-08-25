@@ -2341,32 +2341,36 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return false;
         }
 
-        if(!isset($this->document->declaration[VIP2C::getProduitHashWithVolumeSeuil()])){
-            return false;
-        }
-
         if(!($this->getCampagne() == VIP2C::getConfigCampagneVolumeSeuil())){
             return false;
         }
 
-        if(!$this->document->declaration->get(VIP2C::getProduitHashWithVolumeSeuil())->exist('DEFAUT')) {
-            return false;
+        $ret = false;
+        foreach(VIP2C::getProduitsHashWithVolumeSeuil() as $hash_produit) {
+
+            if(!isset($this->document->declaration[$hash_produit])){
+                continue;
+            }
+
+            if(!$this->document->declaration->get($hash_produit)->exist('DEFAUT')) {
+                continue;
+            }
+
+            $produit = $this->document->declaration->get($hash_produit)->DEFAUT;
+
+            if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne))){
+                continue;
+            }
+            if($produit->exist('volume_revendique_seuil')){
+                $ret = true;
+                continue;
+            }
+
+            $volumeSeuil = VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne);
+            $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
+            $this->save()   ;
         }
-
-        $produit = $this->document->declaration->get(VIP2C::getProduitHashWithVolumeSeuil())->DEFAUT;
-
-        if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne))){
-            return false;
-        }
-        if($produit->exist('volume_revendique_seuil')){
-            return true;
-        }
-
-        $volumeSeuil = VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne);
-        $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
-        $this->save();
-
-        return true;
+        return $ret;
 
     }
 

@@ -40,7 +40,9 @@ class ChgtDenomValidation extends DocumentValidation
         $this->controleLots();
 
         if (VIP2C::hasVolumeSeuil() && $this->document->campagne === VIP2C::getConfigCampagneVolumeSeuil()) {
-            $this->controleVolumeSeuil(VIP2C::getProduitHashWithVolumeSeuil());
+            foreach(VIP2C::getProduitsHashWithVolumeSeuil() as $produit_hash) {
+                $this->controleVolumeSeuil($produit_hash);
+            }
         }
     }
 
