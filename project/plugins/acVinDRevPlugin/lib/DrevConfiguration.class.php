@@ -145,13 +145,6 @@ class DRevConfiguration {
         return null;
     }
 
-    public function getMillesime(){
-        if($this->getCampagneVolumeSeuil()){
-            return(substr($this->getCampagneVolumeSeuil(),0,4));
-        }
-        return null;
-    }
-
     public function hasEmailDisabled() {
         return isset($this->configuration['email_disabled']) && boolval($this->configuration['email_disabled']);
     }

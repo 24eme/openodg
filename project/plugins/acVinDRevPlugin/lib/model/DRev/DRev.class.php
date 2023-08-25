@@ -7,8 +7,6 @@
 class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument {
 
     const DEFAULT_KEY = 'DEFAUT';
-    const VIP2C_COLONNE_CVI = 3;
-    const VIP2C_COLONNE_VOLUME = 11;
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
@@ -2339,32 +2337,32 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasVolumeSeuilAndSetIfNecessary(){
 
-        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+        if(!VIP2C::hasVolumeSeuil()) {
             return false;
         }
 
-        if(!isset($this->document->declaration[DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil()])){
+        if(!isset($this->document->declaration[VIP2C::getProduitHashWithVolumeSeuil()])){
             return false;
         }
 
-        if(!($this->getCampagne() == DRevConfiguration::getInstance()->getCampagneVolumeSeuil())){
+        if(!($this->getCampagne() == VIP2C::getConfigCampagneVolumeSeuil())){
             return false;
         }
 
-        if(!$this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->exist('DEFAUT')) {
+        if(!$this->document->declaration->get(VIP2C::getProduitHashWithVolumeSeuil())->exist('DEFAUT')) {
             return false;
         }
 
-        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
+        $produit = $this->document->declaration->get(VIP2C::getProduitHashWithVolumeSeuil())->DEFAUT;
 
-        if(!$produit->exist('volume_revendique_seuil') && !($this->getVolumeSeuilFromCSV($this->declarant->cvi))){
+        if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne))){
             return false;
         }
         if($produit->exist('volume_revendique_seuil')){
             return true;
         }
 
-        $volumeSeuil = $this->getVolumeSeuilFromCSV($this->declarant->cvi);
+        $volumeSeuil = VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne);
         $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
         $this->save();
 
@@ -2373,7 +2371,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeRevendiqueSeuil($hash){
-        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+        if(!VIP2C::hasVolumeSeuil()) {
             return null;
         }
 
@@ -2397,53 +2395,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getVolumeCommercialisableLibre($hash){
         $volumeSeuil = $this->getVolumeRevendiqueSeuil($hash);
         return($volumeSeuil-($volumeSeuil*0.1)); #les prévenir à 10%
-    }
-
-    protected function getVolumeSeuilFromCSV($cvi){
-        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()){
-            return null;
-        }
-        $configFile = fopen(sfConfig::get('sf_root_dir')."/".sfConfig::get('app_api_contrats_fichier_csv'),"r");
-
-        $volumes = array();
-        while (($line = fgetcsv($configFile)) !== false) {
-            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
-        }
-        fclose($configFile);
-
-        if (!isset($volumes[$cvi])) {
-            return null;
-        }
-        return $volumes[$cvi];
-    }
-
-
-    public function getContratsAPIURL(){
-
-        $api_link = sfConfig::get('app_api_contrats_link');
-        $secret = sfConfig::get('app_api_contrats_secret');
-        if (!$api_link || !$secret) {
-            return array();
-        }
-
-        $cvi = $this->declarant->cvi;
-        $millesime = DRevConfiguration::getInstance()->getMillesime();
-        $epoch = (string)time();
-
-        $md5 = md5($secret."/".$cvi."/".$millesime."/".$epoch);
-        return $api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5;
-    }
-
-    public function getContratsFromAPI(){
-        $url = $this->getContratsAPIURL();
-        if (!$url) {
-            return array();
-        }
-        $content = file_get_contents($url);
-
-        $result = json_decode($content,true);
-
-        return($result);
     }
 
     public function hasLotsProduitFilter($hash_or_filter) {
