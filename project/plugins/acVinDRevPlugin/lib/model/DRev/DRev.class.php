@@ -88,8 +88,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_total' => 0, 'volume_sur_place' => 0,
                                             'volume_max' => 0, 'volume_lots' => 0,
-                                            'volume_restant' => 0, 'nb_lots' => 0,
-                                            'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
+                                            'volume_restant' => 0, 'volume_restant_max' => 0, 'nb_lots' => 0,
+                                            'nb_lots_degustables' => 0, 'is_precis_sur_place' => true,
+                                            'millesime' => $millesime
                                            );
             }
             $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' XXX'.$millesime.' Total';
@@ -116,8 +117,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
                                             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_max' => 0, 'volume_lots' => 0,
-                                            'volume_restant' => 0, 'nb_lots' => 0,
-                                            'nb_lots_degustables' => 0
+                                            'volume_restant' => 0, 'volume_restant_max' => 0, 'nb_lots' => 0,
+                                            'nb_lots_degustables' => 0, 'millesime' => $lot->millesime
                                            );
             }
             $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' XXX'.$lot->millesime.' Total';
@@ -153,7 +154,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $couleur['volume_sur_place'] = 0;
                 $couleur['volume_total'] = 0;
             }
-            if (isset($couleur['volume_lots'])) {
+            if (isset($couleur['volume_lots']) && $couleur['millesime'] == $millesime) {
                 $couleur['volume_restant'] = $couleur['volume_sur_place'] - $couleur['volume_lots'];
                 $couleur['volume_restant_max'] = $couleur['volume_max'] - $couleur['volume_lots'];
                 $couleurs[$k]['volume_restant'] = $couleur['volume_restant'];
@@ -168,7 +169,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     'volume_sur_place' => 0, 'volume_total' => 0,
                     'volume_max' => 0, 'volume_lots' => 0,
                     'volume_restant' => 0, 'volume_restant_max' => 0,
-                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
+                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true,
+                    'millesime' => $couleur['millesime']
                 );
             }
             $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
@@ -200,7 +202,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     'volume_sur_place' => 0, 'volume_total' => 0,
                     'volume_max' => 0, 'volume_lots' => 0,
                     'volume_restant' => 0, 'volume_restant_max' => 0,
-                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
+                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true,
+                    'millesime' => $couleur['millesime']
                 );
             }
             $total_couleurs[$couleur['appellation_couleur']]['volume_total'] += $couleur['volume_total'];
