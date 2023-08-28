@@ -63,7 +63,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) : Centilisation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
             }
-            if(!$lot->destination_date){
+            if(!$this->document->isValidee() && !$lot->destination_date){
               $this->addPoint(self::TYPE_WARNING, 'lot_a_completer', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
