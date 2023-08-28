@@ -1063,7 +1063,7 @@ class drevActions extends sfActions {
 
     public function executeDeclarvapi(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        print_r([$drev->getContratsAPIURL(), $drev->getContratsFromAPI()]);
+        print_r([VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->campagne), VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->campagne)]);
         exit;
     }
 

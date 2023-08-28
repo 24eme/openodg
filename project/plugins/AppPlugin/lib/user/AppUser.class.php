@@ -97,21 +97,6 @@ class AppUser extends sfBasicSecurityUser {
         return $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
     }
 
-    public function getEtablissement() {
-        $etablissement = null;
-
-        $compte = $this->getCompte();
-        $societe = $compte->getSociete() ;
-        if ($societe) {
-            $etablissement = $societe->getEtablissementPrincipal();
-        }
-        if (!$etablissement) {
-            $etablissement = $compte->getEtablissement();
-        }
-
-        return $etablissement;
-    }
-
     public function getCompteOrigin() {
 
         return $this->getCompteByNamespace(self::NAMESPACE_COMPTE_ORIGIN);

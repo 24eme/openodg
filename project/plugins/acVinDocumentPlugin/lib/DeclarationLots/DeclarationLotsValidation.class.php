@@ -51,7 +51,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
               continue;
             }
 
-            if(in_array('destination_type', $lot->getFieldsToFill()) && !$lot->destination_type){
+            if(!$this->document->isValideeOdg() && in_array('destination_type', $lot->getFieldsToFill()) && !$lot->destination_type){
                 $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Type de destination", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
             }
@@ -63,7 +63,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) : Centilisation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
             }
-            if(!$lot->destination_date){
+            if(!$this->document->isValideeOdg() && !$lot->destination_date){
               $this->addPoint(self::TYPE_WARNING, 'lot_a_completer', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }

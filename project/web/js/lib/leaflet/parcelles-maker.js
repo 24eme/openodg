@@ -367,7 +367,7 @@ $(document).ready(function(){
                 if(!element.style.display.length){
                     var parent = element.parentNode;
                     var p = document.createElement("p");
-                    p.innerHTML = "non-trouvée";
+                    p.innerHTML = "non-trouvée (<a href='https://www.opendatawine.fr/carte.html?insee="+idu.substr(0, 5)+"#"+idu+"' target='blank'>Vérifier</a>)";
                     parent.append(p);
                     element.style.display = 'none';
                 }

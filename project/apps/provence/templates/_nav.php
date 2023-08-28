@@ -19,7 +19,14 @@ if ($route instanceof SocieteRoute) {
     }
 }
 if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)) {
-    $etablissement = $sf_user->getEtablissement();
+    $compte = $sf_user->getCompte();
+    $societe = $compte->getSociete() ;
+    if ($societe) {
+        $etablissement = $societe->getEtablissementPrincipal();
+    }
+    if (!$etablissement) {
+        $etablissement = $compte->getEtablissement();
+    }
 }
 if ($sf_user->isAuthenticated() && !$compte && !$etablissement && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
     throw new sfError403Exception("pas de compte");
