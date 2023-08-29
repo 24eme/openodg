@@ -11,7 +11,7 @@ Le tableau suivant récapitule le volume total revendiqué et le volume seuil qu
   </thead>
   <tbody>
     <tr>
-<?php foreach (VIP2C::getProduitsHashWithVolumeSeuil() as $produit_hash): ?>
+<?php foreach ($drev->getProduitsHashWithVolumeSeuil() as $produit_hash): ?>
 <?php
         $td_extra_class = "";
         if ( $drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash()) - $drev->getVolumeRevendiqueSeuil($produit_hash) > 0) {

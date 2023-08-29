@@ -2337,6 +2337,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return -1;
     }
 
+    public function getProduitsHashWithVolumeSeuil() {
+        $p = array();
+        foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->campagne) as $hash_produit) {
+            if ($this->declaration->exist($hash_produit)) {
+                $p[] = $hash_produit;
+            }
+        }
+        return $p;
+    }
 
     public function hasVolumeSeuilAndSetIfNecessary(){
 
@@ -2344,12 +2353,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return false;
         }
 
-        if(!($this->getCampagne() == VIP2C::getConfigCampagneVolumeSeuil())){
+        if(!($this->getCampagne() >= VIP2C::getConfigCampagneVolumeSeuil())){
             return false;
         }
 
         $ret = false;
-        foreach(VIP2C::getProduitsHashWithVolumeSeuil() as $hash_produit) {
+        foreach($this->getProduitsHashWithVolumeSeuil() as $hash_produit) {
 
             if(!isset($this->document->declaration[$hash_produit])){
                 continue;
@@ -2361,7 +2370,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $produit = $this->document->declaration->get($hash_produit)->DEFAUT;
 
-            if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne))){
+            if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->campagne, $hash_produit))) {
                 continue;
             }
             if($produit->exist('volume_revendique_seuil')){
@@ -2369,9 +2378,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-            $volumeSeuil = VIP2C::getVolumeSeuilFromCSV($this->declarant->cvi, $this->campagne);
-            $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
-            $this->save()   ;
+            $volumeSeuil = VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->campagne, $hash_produit);
+            if ($volumeSeuil) {
+                $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
+                $this->save();
+            }
         }
         return $ret;
 

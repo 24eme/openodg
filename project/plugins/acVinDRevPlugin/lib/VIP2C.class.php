@@ -8,6 +8,8 @@ class VIP2C
     const VIP2C_COLONNE_PRODUIT = 6;
     const VIP2C_COLONNE_VOLUME = 7;
 
+    static $csv_seuil;
+
     public static function getContratsAPIURL($cvi, $campagne)
     {
         $api_link = sfConfig::get('app_api_contrats_link');
@@ -49,7 +51,13 @@ class VIP2C
 
         $volumes = array();
         while (($line = fgetcsv($configFile)) !== false) {
-            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
+            if (intval($line[self::VIP2C_COLONNE_MILLESIME]) * 1 != intval($campagne) *1) {
+                continue;
+            }
+            if (!isset($volumes[$line[self::VIP2C_COLONNE_CVI]])) {
+                $volumes[$line[self::VIP2C_COLONNE_CVI]] = array();
+            }
+            $volumes[$line[self::VIP2C_COLONNE_CVI]][$line[self::VIP2C_COLONNE_PRODUIT]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
         }
         fclose($configFile);
 
@@ -57,6 +65,16 @@ class VIP2C
             return null;
         }
         return $volumes[$cvi];
+    }
+
+    public static function getVolumeSeuilProduitFromCSV($cvi, $campagne, $hash_produit) {
+        if (!self::$csv_seuil[$campagne]) {
+            self::$csv_seuil[$campagne] = self::getVolumeSeuilFromCSV($cvi, $campagne);
+        }
+        if (!isset(self::$csv_seuil[$campagne][$hash_produit])) {
+            return null;
+        }
+        return self::$csv_seuil[$campagne][$hash_produit];
     }
 
     public static function getConfigCampagneVolumeSeuil() {
@@ -67,8 +85,12 @@ class VIP2C
         return substr(self::getConfigCampagneVolumeSeuil(), 0, 4);
     }
 
-    public static function getProduitsHashWithVolumeSeuil() {
-        return array(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
+    public static function getProduitsHashWithVolumeSeuil($cvi, $campagne) {
+        $r = self::getVolumeSeuilFromCSV($cvi, $campagne);
+        if (!$r) {
+            return array();
+        }
+        return array_keys($r);
     }
 
     public static function hasVolumeSeuil() {
