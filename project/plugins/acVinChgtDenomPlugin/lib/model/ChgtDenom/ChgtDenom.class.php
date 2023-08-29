@@ -961,6 +961,6 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     public function getVolumeSeuil()
     {
-        return VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->changement_millesime, str_replace('/declaration', '', $this->changement_produit_hash));
+        return VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->changement_millesime, str_replace('/declaration/', '', $this->changement_produit_hash));
     }
 }
