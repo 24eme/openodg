@@ -10,7 +10,7 @@ class VIP2C
 
     static $csv_seuil;
 
-    public static function getContratsAPIURL($cvi, $campagne)
+    public static function getContratsAPIURL($cvi, $millesime)
     {
         $api_link = sfConfig::get('app_api_contrats_link');
         $secret = sfConfig::get('app_api_contrats_secret');
@@ -18,11 +18,9 @@ class VIP2C
             return array();
         }
 
-        if ($campagne < VIP2C::getConfigCampagneVolumeSeuil()) {
+        if ($millesime < VIP2C::getConfigMillesimeVolumeSeuil()) {
             return array();
         }
-
-        $millesime = substr($campagne, 0, 4);
 
         $epoch = (string) time();
 
@@ -30,9 +28,9 @@ class VIP2C
         return $api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5;
     }
 
-    public static function getContratsFromAPI($cvi, $campagne)
+    public static function getContratsFromAPI($cvi, $millesime)
     {
-        $url = self::getContratsAPIURL($cvi, $campagne);
+        $url = self::getContratsAPIURL($cvi, $millesime);
         if (!$url) {
             return array();
         }
@@ -43,7 +41,7 @@ class VIP2C
         return($result);
     }
 
-    public static function getVolumeSeuilFromCSV($cvi, $campagne){
+    public static function getVolumeSeuilFromCSV($cvi, $millesime){
         if(!VIP2C::hasVolumeSeuil()){
             return null;
         }
@@ -51,7 +49,7 @@ class VIP2C
 
         $volumes = array();
         while (($line = fgetcsv($configFile)) !== false) {
-            if (intval($line[self::VIP2C_COLONNE_MILLESIME]) * 1 != intval($campagne) *1) {
+            if ($line[self::VIP2C_COLONNE_MILLESIME] != $millesime) {
                 continue;
             }
             if (!isset($volumes[$line[self::VIP2C_COLONNE_CVI]])) {
@@ -67,14 +65,14 @@ class VIP2C
         return $volumes[$cvi];
     }
 
-    public static function getVolumeSeuilProduitFromCSV($cvi, $campagne, $hash_produit) {
-        if (!self::$csv_seuil[$campagne]) {
-            self::$csv_seuil[$campagne] = self::getVolumeSeuilFromCSV($cvi, $campagne);
+    public static function getVolumeSeuilProduitFromCSV($cvi, $millesime, $hash_produit) {
+        if (!self::$csv_seuil[$millesime]) {
+            self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
         }
-        if (!isset(self::$csv_seuil[$campagne][$hash_produit])) {
+        if (!isset(self::$csv_seuil[$millesime][$hash_produit])) {
             return null;
         }
-        return self::$csv_seuil[$campagne][$hash_produit];
+        return self::$csv_seuil[$millesime][$hash_produit];
     }
 
     public static function getConfigCampagneVolumeSeuil() {
@@ -85,8 +83,8 @@ class VIP2C
         return substr(self::getConfigCampagneVolumeSeuil(), 0, 4);
     }
 
-    public static function getProduitsHashWithVolumeSeuil($cvi, $campagne) {
-        $r = self::getVolumeSeuilFromCSV($cvi, $campagne);
+    public static function getProduitsHashWithVolumeSeuil($cvi, $millesime) {
+        $r = self::getVolumeSeuilFromCSV($cvi, $millesime);
         if (!$r) {
             return array();
         }

@@ -2339,7 +2339,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getProduitsHashWithVolumeSeuil() {
         $p = array();
-        foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->campagne) as $hash_produit) {
+        foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->getDefaultMillesime()) as $hash_produit) {
             if ($this->declaration->exist($hash_produit)) {
                 $p[] = $hash_produit;
             }
@@ -2370,7 +2370,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $produit = $this->document->declaration->get($hash_produit)->DEFAUT;
 
-            if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->campagne, $hash_produit))) {
+            if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->getDefaultMillesime(), $hash_produit))) {
                 continue;
             }
             if($produit->exist('volume_revendique_seuil')){
@@ -2378,7 +2378,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-            $volumeSeuil = VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->campagne, $hash_produit);
+            $volumeSeuil = VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->getDefaultMillesime(), $hash_produit);
             if ($volumeSeuil) {
                 $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
                 $this->save();
@@ -2437,5 +2437,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $drev->add('lots', array_values($lots));
 
         return $drev;
+    }
+
+    public function getDefaultMillesime() {
+        return substr($this->campagne, 0, 4);
     }
 }
