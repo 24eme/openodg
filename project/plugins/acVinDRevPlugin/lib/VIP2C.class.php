@@ -8,7 +8,9 @@ class VIP2C
     const VIP2C_COLONNE_PRODUIT = 6;
     const VIP2C_COLONNE_VOLUME = 7;
 
-    public static function getContratsAPIURL($cvi, $campagne)
+    static $csv_seuil;
+
+    public static function getContratsAPIURL($cvi, $millesime)
     {
         $api_link = sfConfig::get('app_api_contrats_link');
         $secret = sfConfig::get('app_api_contrats_secret');
@@ -16,11 +18,9 @@ class VIP2C
             return array();
         }
 
-        if ($campagne < VIP2C::getConfigCampagneVolumeSeuil()) {
+        if ($millesime < VIP2C::getConfigMillesimeVolumeSeuil()) {
             return array();
         }
-
-        $millesime = substr($campagne, 0, 4);
 
         $epoch = (string) time();
 
@@ -28,9 +28,9 @@ class VIP2C
         return $api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5;
     }
 
-    public static function getContratsFromAPI($cvi, $campagne)
+    public static function getContratsFromAPI($cvi, $millesime)
     {
-        $url = self::getContratsAPIURL($cvi, $campagne);
+        $url = self::getContratsAPIURL($cvi, $millesime);
         if (!$url) {
             return array();
         }
@@ -41,7 +41,7 @@ class VIP2C
         return($result);
     }
 
-    public static function getVolumeSeuilFromCSV($cvi, $campagne){
+    public static function getVolumeSeuilFromCSV($cvi, $millesime){
         if(!VIP2C::hasVolumeSeuil()){
             return null;
         }
@@ -49,7 +49,13 @@ class VIP2C
 
         $volumes = array();
         while (($line = fgetcsv($configFile)) !== false) {
-            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
+            if ($line[self::VIP2C_COLONNE_MILLESIME] != $millesime) {
+                continue;
+            }
+            if (!isset($volumes[$line[self::VIP2C_COLONNE_CVI]])) {
+                $volumes[$line[self::VIP2C_COLONNE_CVI]] = array();
+            }
+            $volumes[$line[self::VIP2C_COLONNE_CVI]][$line[self::VIP2C_COLONNE_PRODUIT]] = str_replace(",","",$line[self::VIP2C_COLONNE_VOLUME]);
         }
         fclose($configFile);
 
@@ -57,6 +63,16 @@ class VIP2C
             return null;
         }
         return $volumes[$cvi];
+    }
+
+    public static function getVolumeSeuilProduitFromCSV($cvi, $millesime, $hash_produit) {
+        if (!self::$csv_seuil[$millesime]) {
+            self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
+        }
+        if (!isset(self::$csv_seuil[$millesime][$hash_produit])) {
+            return null;
+        }
+        return self::$csv_seuil[$millesime][$hash_produit];
     }
 
     public static function getConfigCampagneVolumeSeuil() {
@@ -67,8 +83,12 @@ class VIP2C
         return substr(self::getConfigCampagneVolumeSeuil(), 0, 4);
     }
 
-    public static function getProduitsHashWithVolumeSeuil() {
-        return array(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
+    public static function getProduitsHashWithVolumeSeuil($cvi, $millesime) {
+        $r = self::getVolumeSeuilFromCSV($cvi, $millesime);
+        if (!$r) {
+            return array();
+        }
+        return array_keys($r);
     }
 
     public static function hasVolumeSeuil() {
