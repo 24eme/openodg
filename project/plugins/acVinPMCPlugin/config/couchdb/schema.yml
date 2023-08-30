@@ -171,6 +171,7 @@ PMC:
                         declarant_identifiant: {  }
                         declarant_nom: {  }
                         statut: {}
+                        region: { require: false }
       pieces:
         type: array_collection
         definition:

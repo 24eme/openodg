@@ -856,9 +856,15 @@ class degustationActions extends sfActions {
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
 
+        if ($region = $this->getUser()->getRegion()) {
+            $this->mouvements = array_filter($this->mouvements, function($mouvement) use ($region) {
+                return $mouvement->value->region === $region;
+            });
+        }
+
         uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
 
-        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, $this->campagne);
+        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, $this->campagne, $region);
     }
 
     public function executeManquements(sfWebRequest $request) {

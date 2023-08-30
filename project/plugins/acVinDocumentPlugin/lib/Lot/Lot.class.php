@@ -865,6 +865,11 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->campagne = $this->getCampagne();
         $mouvement->statut = $statut;
 
+        try {
+            $mouvement->add('region', RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash));
+        } catch (sfException $e) {
+        }
+
         return $mouvement;
     }
 

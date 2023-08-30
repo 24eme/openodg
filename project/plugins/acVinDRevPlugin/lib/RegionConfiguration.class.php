@@ -80,4 +80,19 @@ class RegionConfiguration {
         }
         return $odgInfos;
     }
+
+    public function getOdgRegion($hash_produit)
+    {
+        $regions = array_filter($this->configuration['odg'], function ($v) use ($hash_produit) {
+            return count(array_filter($v['produits'], function ($p) use ($hash_produit) {
+                return strpos($hash_produit, $p) !== false;
+            })) > 0;
+        });
+
+        if (count($regions) > 1) {
+            throw new Exception("Plusieurs régions pour le produit ".$hash_produit);
+        }
+
+        return array_key_first($regions);
+    }
 }
