@@ -18,14 +18,14 @@ class ChgtDenomValidation extends DocumentValidation
     {
         $this->addControle(self::TYPE_ERROR, 'lot_volume', "Le volume saisi est supérieur au volume initial.");
         $this->addControle(self::TYPE_ERROR, 'chgtdenom_produit', "Le changement de dénomination n'a pas de produit");
-        $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats', "Pour le millésime ".DRevConfiguration::getInstance()->getMillesime().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeSeuil()." hl de Méditerranée Rosé qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
-        $this->addControle(self::TYPE_WARNING, 'vip2c_volume_seuil', 'Pour le millésime 2022, la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (<strong>VIP2C</strong>) sur le Méditerranée Rosé. Vous dépassez le seuil qui vous a été attribué, vous devrez avoir une preuve de commercialisation');
+        $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats', "Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeSeuil()." hl de '.$this->document->getConfig()->getLibelleComplet().' qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
+        $this->addControle(self::TYPE_WARNING, 'vip2c_volume_seuil', 'Pour le millésime 2022, la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (<strong>VIP2C</strong>) sur le '.$this->document->getConfig()->getLibelleComplet().'. Vous dépassez le seuil qui vous a été attribué, vous devrez avoir une preuve de commercialisation');
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
-        if (DRevConfiguration::getInstance()->hasVolumeSeuil() && $this->document->campagne === DRevConfiguration::getInstance()->getCampagneVolumeSeuil()) {
-            $this->contrats = (new VIP2C())->getContratsFromAPI($this->document->declarant->cvi);
+        if (VIP2C::hasVolumeSeuil() && $this->document->campagne >= VIP2C::getConfigCampagneVolumeSeuil()) {
+            $this->contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->changement_millesime);
 
             if($this->contrats){
                 foreach($this->contrats as $contrat_id => $contrat_info){
@@ -39,8 +39,8 @@ class ChgtDenomValidation extends DocumentValidation
     {
         $this->controleLots();
 
-        if (DRevConfiguration::getInstance()->hasVolumeSeuil() && $this->document->campagne === DRevConfiguration::getInstance()->getCampagneVolumeSeuil()) {
-            $this->controleVolumeSeuil(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil());
+        if (VIP2C::hasVolumeSeuil() && $this->document->campagne >= VIP2C::getConfigCampagneVolumeSeuil()) {
+            $this->controleVolumeSeuil();
         }
     }
 
@@ -66,13 +66,12 @@ class ChgtDenomValidation extends DocumentValidation
     }
   }
 
-    public function controleVolumeSeuil($hash)
+    public function controleVolumeSeuil()
     {
-        if (strpos($this->document->changement_produit_hash, $hash) === false) {
-            return null;
-        }
-
         $seuil = $this->document->getVolumeSeuil();
+        if (!$seuil) {
+            return;
+        }
 
         $synthese = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagne, sfContext::getInstance()->getUser()->isAdmin());
         preg_match('/([\w ]+) (Rouge|Rosé|Blanc)/u', $this->document->changement_produit_libelle, $matches);

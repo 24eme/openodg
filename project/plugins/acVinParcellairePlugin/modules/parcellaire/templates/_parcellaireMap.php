@@ -25,4 +25,4 @@
     aires.push({'color': '<?php echo $aire->getColor(); ?>', 'name': '<?php echo $aire->getName() ?>', 'geojson': '<?php echo addslashes($aire->getRawValue()->geojson); ?>'});
     <?php endforeach; ?>
 </script>
-<?php use_javascript('lib/leaflet/parcelles-maker.js?202303281559'); ?>
+<?php use_javascript('lib/leaflet/parcelles-maker.js?202308081559'); ?>

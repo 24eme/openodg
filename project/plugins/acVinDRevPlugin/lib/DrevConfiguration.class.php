@@ -131,23 +131,9 @@ class DRevConfiguration {
         return isset($this->configuration['volume_seuil']) && boolval($this->configuration['volume_seuil']);
     }
 
-    public function getProduitHashWithVolumeSeuil(){
-        if(isset($this->configuration['volume_seuil']['hash']) && boolval($this->configuration['volume_seuil']['hash'])){
-            return($this->configuration['volume_seuil']['hash']);
-        }
-        return null;
-    }
-
     public function getCampagneVolumeSeuil(){
         if(isset($this->configuration['volume_seuil']['campagne']) && boolval($this->configuration['volume_seuil']['campagne'])){
             return($this->configuration['volume_seuil']['campagne']);
-        }
-        return null;
-    }
-
-    public function getMillesime(){
-        if($this->getCampagneVolumeSeuil()){
-            return(substr($this->getCampagneVolumeSeuil(),0,4));
         }
         return null;
     }
