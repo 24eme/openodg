@@ -4,7 +4,7 @@
             <td style="overflow-wrap:break-word;text-align: left; height: 6px; line-height: 6px; overflow: hidden;" colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden;">&nbsp;&nbsp;N°ODG <strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong></td>
+        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden;">&nbsp;&nbsp;N° <strong><?php echo (int)$lotInfo->lot->numero_archive;  ?></strong></td>
         <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; padding-right">N°DOSSIER <strong><?php echo (int)$lotInfo->lot->numero_dossier;  ?></strong>
         </td>
       </tr>
