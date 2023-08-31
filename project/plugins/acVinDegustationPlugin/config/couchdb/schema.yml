@@ -118,6 +118,7 @@ Degustation:
                         affectable: { required: false }
                         a_redeguster: {required: false}
                         recours_oc: { required: false }
+                        region: { required: false }
       mouvements:
         type: collection
         definition:
