@@ -81,6 +81,14 @@ class RegionConfiguration {
         return $odgInfos;
     }
 
+    public function filterMouvementsByRegion($mouvements, $region)
+    {
+        return array_filter($mouvements, function($mouvement) use ($region) {
+            if (property_exists($mouvement->value, 'region') === false) { return false; }
+            return $mouvement->value->region === $region;
+        });
+    }
+
     public function getOdgRegion($hash_produit)
     {
         $regions = array_filter($this->configuration['odg'], function ($v) use ($hash_produit) {
