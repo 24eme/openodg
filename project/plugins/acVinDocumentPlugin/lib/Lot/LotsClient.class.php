@@ -354,6 +354,7 @@ class LotsClient
     {
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
         $mouvements = array_filter($mouvements, function($mouvement) use ($region) {
+            if (property_exists($mouvement->value, 'region') === false) { return false; }
             return $mouvement->value->region === $region;
         });
 

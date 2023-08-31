@@ -858,6 +858,7 @@ class degustationActions extends sfActions {
 
         if ($region = $this->getUser()->getRegion()) {
             $this->mouvements = array_filter($this->mouvements, function($mouvement) use ($region) {
+                if (property_exists($mouvement->value, 'region') === false) { return false; }
                 return $mouvement->value->region === $region;
             });
         }
