@@ -353,7 +353,9 @@ class LotsClient
     public function getSyntheseLots($identifiant, $campagne, $region = null)
     {
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
-        $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
+        if ($region) {
+            $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
+        }
 
         return MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
     }
