@@ -42,6 +42,16 @@ class PMCLotForm extends TransactionLotForm
                 continue;
             }
 
+            if ($this->getObject()->getDocument()->exist('region') && $this->getObject()->getDocument()->region != "") {
+                $filtered_produits = array_filter(RegionConfiguration::getInstance()->getOdgProduits($this->getObject()->getDocument()->region), function ($v) use ($produit) {
+                    return strpos($produit->getHash(), $v) !== false;
+                });
+
+                if (count($filtered_produits) < 1) {
+                    continue;
+                }
+            }
+
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
 
