@@ -3,23 +3,27 @@
 class PMCEtapes extends Etapes
 {
 	const ETAPE_EXPLOITATION = 'exploitation';
+    const ETAPE_REGION = 'region';
 	const ETAPE_LOTS = 'lots';
 	const ETAPE_VALIDATION = 'validation';
 
 	public static $etapes = array(
             self::ETAPE_EXPLOITATION => 1,
-			self::ETAPE_LOTS => 2,
-            self::ETAPE_VALIDATION => 3
+            self::ETAPE_REGION => 2,
+            self::ETAPE_LOTS => 3,
+            self::ETAPE_VALIDATION => 4
     );
 
 	public static $links = array(
             self::ETAPE_EXPLOITATION => 'pmc_exploitation',
+            self::ETAPE_REGION => 'pmc_region',
             self::ETAPE_LOTS => 'pmc_lots',
             self::ETAPE_VALIDATION => 'pmc_validation'
     );
 
 	public static $libelles = array(
             self::ETAPE_EXPLOITATION => "Entreprise",
+            self::ETAPE_REGION => "Région",
             self::ETAPE_LOTS => "Lots",
             self::ETAPE_VALIDATION => "Validation"
     );
@@ -34,7 +38,11 @@ class PMCEtapes extends Etapes
 		return self::$_instance;
 	}
 
-	protected function filterItems($items) {
+    protected function filterItems($items)
+    {
+        if (RegionConfiguration::getInstance()->hasOdgProduits() === false) {
+            unset($items[self::ETAPE_REGION]);
+        }
 
         return $items;
 	}
