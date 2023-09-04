@@ -51,6 +51,7 @@
     <div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("degustation") ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-aleatoire-aleatoire-renforce">Ajouter un opérateur</button>
         </div>
         <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-primary">
@@ -60,3 +61,4 @@
     </div>
 </form>
 
+<?php include_partial('degustation/popupAjoutOperateur', ['degustation' => $degustation, 'form' => $formOperateurs]); ?>
