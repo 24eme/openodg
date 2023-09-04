@@ -14,6 +14,7 @@
                     </div>
 
                     <?php echo $form['identifiant']->render() ?>
+                    <?php echo $form['initial_type']->render() ?>
                 </form>
             </div>
             <div class="modal-footer">
