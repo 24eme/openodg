@@ -3,7 +3,7 @@
 class TourneeDegustationEtapes extends DegustationEtapes
 {
     const ETAPE_LOTS = 'LOTS';
-    const ETAPE_TOURNEES = 'TOURNEE';
+    const ETAPE_TOURNEES = 'TOURNEES';
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
 
     private static $_instance = null;
