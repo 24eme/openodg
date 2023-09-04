@@ -158,6 +158,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         return true;
     }
 
+    public function getSousType()
+    {
+        return null;
+    }
+
 	public function findLot($origineMouvement) {
 		foreach($this->lots as $lot) {
 			if($lot->origine_mouvement != $origineMouvement) {
