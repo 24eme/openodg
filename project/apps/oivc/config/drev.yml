@@ -1,9 +1,1 @@
-all:
-  configuration:
-    drev:
-      validation_odg: 'region'
-      pdf_unique_region: true
-      logement_adresse: false
-      logement_chais: true
-      denomination_auto: true
-      engagement_pdf: true
+../../centre/config/drev.yml

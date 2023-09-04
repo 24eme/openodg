@@ -1,13 +1,1 @@
-all:
-  configuration:
-    degustation:
-      nb_etiquettes: 4
-      anonymisation_manuelle: true
-      avis:
-        favorable: "Fav."
-        defavorable: "Def."
-      conformite:
-        - CONFORME
-        - NONCONFORME_ANALYTIQUE
-        - NONCONFORME_ORGANOLEPTIQUE
-      typicite_cepage: false
+../../centre/config/degustation.yml

@@ -1,6 +1,6 @@
 <?php
 
-class centreConfiguration extends sfApplicationConfiguration
+class oivcConfiguration extends sfApplicationConfiguration
 {
 
     public function configure()
