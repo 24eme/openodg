@@ -78,9 +78,17 @@ class DegustationEtapes extends Etapes {
     );
 
 
-    public static function getInstance() {
+    public static function getInstance(Degustation $degustation = null) {
         if (is_null(self::$_instance)) {
-            self::$_instance = new DegustationEtapes();
+            self::$_instance =  new DegustationEtapes();
+
+            if ($degustation) {
+                switch (get_class($degustation)) {
+                    case "TourneeDegustation":
+                        self::$_instance = new TourneeDegustationEtapes();
+                        break;
+                }
+            }
         }
         return self::$_instance;
     }
