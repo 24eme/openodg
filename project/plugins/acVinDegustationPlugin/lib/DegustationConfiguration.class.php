@@ -85,4 +85,8 @@ class DegustationConfiguration {
     {
         return $this->configuration['nb_etiquettes'];
     }
+
+    public function isTourneeAutonome() {
+        return $this->configuration['tournee_autonome'];
+    }
 }

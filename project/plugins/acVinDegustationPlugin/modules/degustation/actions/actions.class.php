@@ -28,13 +28,14 @@ class degustationActions extends sfActions {
 
         $degustation = $this->form->save();
 
-        if ($degustation->startFromLots()) {
-            $redirect = 'degustation_selection_lots';
-        } else {
-            $redirect = 'degustation_selection_operateurs';
-        }
+        return $this->redirect('degustation_selection_lots', $degustation);
+    }
 
-        return $this->redirect($redirect, $degustation);
+    public function executeCreateTournee(sfWebRequest $request) {
+        $tournee = TourneeDegustationClient::getInstance()->createDoc(date('Y-m-d'));
+        $tournee->save();
+
+        return $this->redirect('degustation_selection_operateurs', $tournee);
     }
 
     public function executeEtablissementSelection(sfWebRequest $request) {
