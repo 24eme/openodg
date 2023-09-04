@@ -59,6 +59,13 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
             }
         }
 
+        if ($this->filter_empty) {
+            foreach ($this->lotsOperateurs as $key => $lot) {
+                $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
+                $this->dates_degust_drevs[$lot->id_document] = date('Ymd');
+            }
+        }
+
         $this->embedForm('lots', $formLots);
         $this->widgetSchema->setNameFormat('prelevement[%s]');
 
@@ -75,7 +82,7 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
             }
         }
 
-        $lots = array_merge($lots, $this->leurres, $this->lotsOperateurs);
+        $lots = array_merge($lots, $this->leurres);
 
         $this->getObject()->setLots($lots);
         if (!$this->getObject()->max_lots < count($lots)) {
@@ -129,6 +136,12 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
     public function getLot($key)
     {
+        if ($this->filter_empty) {
+            if (array_key_exists($key, $this->lotsOperateurs)) {
+                return $this->lotsOperateurs[$key];
+            }
+        }
+
         return $this->lots[$key];
     }
 }

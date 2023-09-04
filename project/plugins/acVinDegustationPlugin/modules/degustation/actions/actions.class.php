@@ -135,6 +135,7 @@ class degustationActions extends sfActions {
                 return sfView::SUCCESS;
             } else {
                 $this->formOperateurs->save();
+                return $this->redirect('degustation_selection_operateurs', $this->degustation);
             }
         }
 
@@ -146,7 +147,7 @@ class degustationActions extends sfActions {
             }
         }
 
-        return $this->redirect('degustation_selection_operateurs', $this->degustation);
+        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_LOTS), $this->degustation);
     }
 
     public function executePreleve(sfWebRequest $request) {
