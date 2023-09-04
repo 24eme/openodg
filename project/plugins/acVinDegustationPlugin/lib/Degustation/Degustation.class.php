@@ -1340,6 +1340,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if($identifiant && $identifiant != $lot->declarant_identifiant) {
                     continue;
                 }
+
+                if (in_array($lot->initial_type, ['Degustation:aleatoire', 'Degustation:aleatoire_renforce'])) {
+                    continue;
+                }
+
 				$lots[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant.$lot->unique_id] = $lot;
 			}
 			$lotsSorted = $lots;
