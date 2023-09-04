@@ -29,8 +29,21 @@ class TourneeDegustationEtapes extends DegustationEtapes
     public static $links = [
         self::ETAPE_LOTS => 'degustation_selection_operateurs',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
-        self::ETAPE_PRELEVEMENTS => 'degustation_prelevement_manuel_etape'
+        self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_manuel_etape'
     ];
+
+    public function getEtapesHash()
+    {
+        return $this->filter(self::$etapes);
+    }
+
+    public function getRouteLinksHash() {
+        return $this->filter(self::$links);
+    }
+
+    public function getLibellesHash() {
+        return $this->filter(self::$libelles);
+    }
 
     protected function filter($items)
     {

@@ -23,6 +23,7 @@ class DegustationRoute extends sfObjectRoute implements InterfaceDegustationGene
         if (!$this->degustation) {
             $this->getObject();
         }
+        DegustationEtapes::getInstance($this->degustation);
         return $this->degustation;
     }
 }
