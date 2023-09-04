@@ -153,16 +153,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         DeclarationClient::getInstance()->clearCache();
     }
 
-    public function startFromLots()
-    {
-        return true;
-    }
-
-    public function getSousType()
-    {
-        return null;
-    }
-
 	public function findLot($origineMouvement) {
 		foreach($this->lots as $lot) {
 			if($lot->origine_mouvement != $origineMouvement) {

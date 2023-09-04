@@ -5,6 +5,13 @@ degustation:
     sf_method: [get]
   class: DegustationGeneralRoute
 
+degustation_create_tournee:
+  url: /degustationtournee/creation
+  param: { module: degustation, action: createTournee }
+  requirements:
+    sf_method: [get]
+  class: DegustationGeneralRoute
+
 degustation_liste:
   url: /degustation/all/:campagne
   param: { module: degustation, action: liste }

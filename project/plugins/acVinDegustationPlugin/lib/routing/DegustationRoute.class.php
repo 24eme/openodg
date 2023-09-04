@@ -6,7 +6,8 @@ class DegustationRoute extends sfObjectRoute implements InterfaceDegustationGene
 
     protected function getObjectForParameters($parameters) {
 
-        $this->degustation = DegustationClient::getInstance()->find("DEGUSTATION-".str_replace("DEGUSTATION-", "", $parameters['id']));
+        $this->degustation = DegustationClient::getInstance()->find($parameters['id']);
+
         if (!$this->degustation) {
 
             throw new sfError404Exception(sprintf("Pas de degustation trouvé avec l'id \"%s\"", $parameters['id']));
