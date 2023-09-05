@@ -142,10 +142,10 @@ class DegustationLot extends BaseDegustationLot {
         }
         $this->preleve = $date;
         $this->statut = Lot::STATUT_PRELEVE;
-    }
 
-    public function setIsDiffere() {
-        $this->statut = Lot::STATUT_PRELEVE_EN_ATTENTE;
+        if ($this->getDocument()->getType() === TourneeClient::TYPE_MODEL) {
+            $this->affectable = true;
+        }
     }
 
     public function setVolume($volume) {

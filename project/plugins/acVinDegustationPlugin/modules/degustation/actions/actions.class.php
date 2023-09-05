@@ -155,13 +155,8 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
-        $this->differer = $request->getParameter('differer');
 
-        if ($this->differer) {
-            $this->form = new DegustationDiffererLotsForm($this->degustation);
-        } else {
-            $this->form = new DegustationPreleveLotsForm($this->degustation);
-        }
+        $this->form = new DegustationPreleveLotsForm($this->degustation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

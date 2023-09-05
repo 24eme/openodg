@@ -1,7 +1,7 @@
 <?php
 
-class DegustationPreleveLotsForm extends acCouchdbForm {
-
+class DegustationPreleveLotsForm extends acCouchdbForm
+{
     public function configure() {
         $formLots = new BaseForm();
         $lots = array();
@@ -36,8 +36,8 @@ class DegustationPreleveLotsForm extends acCouchdbForm {
             if(!isset($value['preleve']) || !$value['preleve']) {
                 $this->getDocument()->lots->get($key)->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
                 $this->getDocument()->lots->get($key)->preleve = null;
-            } elseif(!$this->getDocument()->lots->get($key)->isPreleve()){
-              $this->getDocument()->lots->get($key)->setIsPreleve();
+            } elseif (!$this->getDocument()->lots->get($key)->isPreleve()){
+                $this->getDocument()->lots->get($key)->setIsPreleve();
             }
             if($this->getDocument()->lots->get($key)->isAnnule()) {
                 $this->getDocument()->lots->get($key)->setIsPreleve();
