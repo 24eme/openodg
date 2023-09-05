@@ -10,28 +10,13 @@
 
 <?php if(DegustationConfiguration::getInstance()->isTourneeAutonome()): ?>
 <div style="margin-top: 0px;" class="page-header no-border">
-    <h2>Création d'une tournée</h2>
+    <a href="<?php echo url_for('degustation_create_tournee'); ?>" class="btn btn-primary pull-right">Créer une tournée</a>
+    <h2>Tournées</h2>
 </div>
-<form action="<?php echo url_for('degustation') ?>" method="post" class="form-horizontal">
-    <?php echo $form->renderHiddenFields(); ?>
-
-    <div class="bg-danger">
-    <?php echo $form->renderGlobalErrors(); ?>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-10 col-xs-12">
-            <div class="form-group text-right">
-                <div class="col-sm-4 col-sm-offset-8 col-xs-12">
-                    <a href="<?php echo url_for('degustation_create_tournee'); ?>" class="btn btn-primary">Créer une tournée</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
+<?php include_partial('degustation/listeTournees', ['tournees' => $tournees]) ?>
 <?php endif; ?>
 
-<div style="margin-top: 0px;" class="page-header no-border">
+<div style="margin-top: 40px;" class="page-header no-border">
     <h2>Création d'une dégustation</h2>
 </div>
 <form action="<?php echo url_for('degustation') ?>" method="post" class="form-horizontal">

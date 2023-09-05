@@ -18,11 +18,13 @@
     </div>
 
     <?php include_partial('degustation/tableSelectionLots', ['degustation' => $degustation, 'form' => $formLots]); ?>
-
+    <div class="col-xs-12 text-center">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-aleatoire-aleatoire-renforce"><span class="glyphicon glyphicon-plus"></span> Ajouter un opérateur</button>
+    </div>
     <div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("degustation") ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-aleatoire-aleatoire-renforce">Ajouter un opérateur</button>
+
         </div>
         <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-primary">

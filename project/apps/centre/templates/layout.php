@@ -19,6 +19,7 @@
         <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="/css/style_centreloire.css" rel="stylesheet" type="text/css">
 
         <?php include_stylesheets() ?>
 

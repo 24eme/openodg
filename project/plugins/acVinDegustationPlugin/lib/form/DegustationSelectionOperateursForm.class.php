@@ -11,16 +11,14 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
     public function configure()
     {
         $this->setWidget('identifiant', new WidgetEtablissement(['interpro_id' => 'INTERPRO-declaration'], [
-            'class' => 'form-control select2SubmitOnChange select2autocompleteAjax input-md col-xs-8'
+            'class' => 'form-control select2autocompleteAjax'
         ]));
-        $this->widgetSchema->setLabel('identifiant', 'Sélectionner un établissement&nbsp;:');
+        $this->widgetSchema->setLabel('identifiant', 'Établissement');
         $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => true)));
         $this->validatorSchema['identifiant']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
 
-        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => ['ALEATOIRE' => 'Aléatoire', 'RENFORCE' => 'Aléatoire renforcé']], [
-            'class' => 'form-control input-md col-xs-4'
-        ]));
-        $this->widgetSchema->setLabel('initial_type', 'Type :');
+        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => ['ALEATOIRE' => 'Aléatoire', 'RENFORCE' => 'Aléatoire renforcé']], []));
+        $this->widgetSchema->setLabel('initial_type', 'Type de contrôle');
         $this->setValidator('initial_type', new sfValidatorChoice(['choices' => ['ALEATOIRE', 'RENFORCE']]));
         $this->validatorSchema['initial_type']->setMessage('required', 'Le choix d\'un type est obligatoire');
 
