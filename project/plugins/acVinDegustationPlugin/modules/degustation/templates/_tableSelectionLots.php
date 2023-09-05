@@ -21,7 +21,11 @@
         <td>
           <?php if ($lot->id_document !== $degustation->_id): ?>
           <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
-            <?php echo substr($lot->id_document, 0, 4).' n°&nbsp;'.$lot->numero_dossier; ?>
+            <?php if ($lot->initial_type): ?>
+                Aléatoire <?php echo (strpos($lot->initial_type, 'renforce') !== false) ? 'renforcé' : '' ?>
+            <?php else: ?>
+                <?php echo substr($lot->id_document, 0, 4).' n°&nbsp;'.$lot->numero_dossier; ?>
+            <?php endif ?>
           </a>
           <?php endif ?>
         </td>
