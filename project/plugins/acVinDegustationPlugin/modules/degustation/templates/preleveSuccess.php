@@ -7,7 +7,7 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
 
 <div class="page-header no-border">
-  <h2>Échantillons prélevés<?php if($differer): ?> a différer<?php endif; ?></h2>
+  <h2>Échantillons prélevés<?php if($differer): ?> à différer<?php endif; ?></h2>
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
 
