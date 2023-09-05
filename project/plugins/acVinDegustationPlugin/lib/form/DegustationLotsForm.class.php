@@ -23,7 +23,7 @@ class DegustationLotsForm extends acCouchdbForm
         $values = $this->getValues();
         foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
             if (! $embedForm->getObject()->preleve) {
-                $embedForm->getObject()->set('preleve', date('Y-m-d'));
+                $embedForm->getObject()->setIsPreleve(date('Y-m-d'));
             }
             $embedForm->doUpdateObject($values['lots'][$key]);
         }
