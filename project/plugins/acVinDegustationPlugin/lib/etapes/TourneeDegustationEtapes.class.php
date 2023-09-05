@@ -34,7 +34,7 @@ class TourneeDegustationEtapes extends DegustationEtapes
         self::ETAPE_LOTS => 'degustation_selection_operateurs',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
         self::ETAPE_SAISIE => 'degustation_saisie_etape',
-        self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_manuel_etape'
+        self::ETAPE_PRELEVEMENTS => 'degustation_preleve'
     ];
 
     public function getEtapesHash()

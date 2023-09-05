@@ -399,7 +399,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_PRELEVEMENT_MANUEL), $this->degustation);
+        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(TourneeDegustationEtapes::ETAPE_SAISIE), $this->degustation);
     }
 
     public function executeTablesEtape(sfWebRequest $request) {
