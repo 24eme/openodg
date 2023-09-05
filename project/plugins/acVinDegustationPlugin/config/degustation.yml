@@ -15,3 +15,4 @@ all:
         defavorable: "NC"
       conformite: []
       typicite_cepage: true
+      tournee_autonome: false
