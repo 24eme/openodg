@@ -155,6 +155,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         $this->infosDegustation = $this->degustation->getInfosDegustation();
+        $this->differer = null;
 
         $this->form = new DegustationPreleveLotsForm($this->degustation);
 
