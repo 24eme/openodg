@@ -10,6 +10,7 @@ class degustationActions extends sfActions {
         $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, $this->getUser()->getRegion());
 
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, $this->getUser()->getRegion());
+        $this->tournees = TourneeClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, $this->getUser()->getRegion());
 
         if(class_exists("EtablissementChoiceForm")) {
             $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);

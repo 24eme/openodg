@@ -18,6 +18,26 @@ class TourneeClient extends DegustationClient {
         return $doc;
     }
 
+    public function getHistory($limit = 10, $annee = "", $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $region = null) {
+        $docs = $this->startkey(self::TYPE_COUCHDB."-".$annee."Z")->endkey(self::TYPE_COUCHDB."-".$annee)->descending(true)->limit(($region) ? $limit * 5 : $limit)->execute($hydrate);
+
+        if($region) {
+            $docsByRegion = [];
+            foreach($docs as $doc) {
+                if(isset($doc->region) && $doc->region == $region) {
+                    $docsByRegion[] = $doc;
+                }
+                if(count($docsByRegion) >= $limit) {
+                    break;
+                }
+            }
+
+            return $docsByRegion;
+        }
+
+        return $docs;
+    }
+
     public function createDoc($date, $region = null) {
         $degustation = new Tournee();
         $degustation->date = $date;
