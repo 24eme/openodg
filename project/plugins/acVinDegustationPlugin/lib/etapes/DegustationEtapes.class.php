@@ -85,7 +85,7 @@ class DegustationEtapes extends Etapes {
             }
 
             switch (get_class($degustation)) {
-                case "TourneeDegustation":
+                case "Tournee":
                     self::$_instance = new TourneeDegustationEtapes();
                     break;
                 case "Degustation":

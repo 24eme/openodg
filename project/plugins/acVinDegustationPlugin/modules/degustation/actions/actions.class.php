@@ -32,7 +32,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeCreateTournee(sfWebRequest $request) {
-        $tournee = TourneeDegustationClient::getInstance()->createDoc(date('Y-m-d'));
+        $tournee = TourneeClient::getInstance()->createDoc(date('Y-m-d H:i:s'));
         $tournee->save();
 
         return $this->redirect('degustation_selection_operateurs', $tournee);
