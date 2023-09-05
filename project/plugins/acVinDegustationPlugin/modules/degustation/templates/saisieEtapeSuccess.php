@@ -1,9 +1,9 @@
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENT_MANUEL)); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => TourneeDegustationEtapes::ETAPE_SAISIE)); ?>
 
 <?php echo include_partial('global/flash'); ?>
 
-<form role="form" action="<?php echo url_for("degustation_prelevements_manuel_etape", $degustation) ?>" method="post" id="form_degustation_lots" class="form-horizontal">
+<form role="form" action="<?php echo url_for("degustation_saisie_etape", $degustation) ?>" method="post" id="form_degustation_lots" class="form-horizontal">
 
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
@@ -16,7 +16,7 @@
     <?php elseif ($operateur !== $lot->declarant_identifiant) : ?>
         <div class="row">
           <div class="col-xs-12">
-            <a href="<?php echo url_for('degustation_ajout_lot_prelevement_manuel', [
+            <a href="<?php echo url_for('degustation_ajout_lot_saisie', [
                 'id' => $degustation->_id,
                 'operateur' => $operateur
             ]) ?>" class="btn btn-default pull-right">
@@ -35,7 +35,7 @@
 <?php endforeach ?>
     <div class="row" style="margin-bottom: 1rem">
       <div class="col-xs-12">
-        <a href="<?php echo url_for('degustation_ajout_lot_prelevement_manuel', [
+        <a href="<?php echo url_for('degustation_ajout_lot_saisie', [
             'id' => $degustation->_id,
             'operateur' => $operateur
         ]) ?>" class="btn btn-default pull-right">

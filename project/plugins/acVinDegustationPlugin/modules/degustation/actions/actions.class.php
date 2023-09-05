@@ -318,27 +318,7 @@ class degustationActions extends sfActions {
         }
     }
 
-    public function executePrelevementsManuel(sfWebRequest $request)
-    {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->form = new DegustationLotsForm($this->degustation);
-
-        if (! $request->isMethod(sfWebRequest::POST)) {
-            return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (! $this->form->isValid()) {
-            return sfView::SUCCESS;
-        }
-
-        $this->form->save();
-
-        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_PRELEVEMENT_MANUEL), $this->degustation);
-    }
-
-    public function executeAjoutLotPrelevementsManuel(sfWebRequest $request)
+    public function executeAjoutLotSaisie(sfWebRequest $request)
     {
         $degustation = $this->getRoute()->getDegustation();
         $lot = $degustation->lots->add();
@@ -355,7 +335,7 @@ class degustationActions extends sfActions {
 
         $degustation->save();
 
-        $this->redirect('degustation_prelevements_manuel_etape', $degustation);
+        $this->redirect('degustation_saisie_etape', $degustation);
     }
 
     /**
@@ -400,6 +380,26 @@ class degustationActions extends sfActions {
         }
 
         return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $this->secteur));
+    }
+
+    public function executeSaisieEtape(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->form = new DegustationLotsForm($this->degustation);
+
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (! $this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_PRELEVEMENT_MANUEL), $this->degustation);
     }
 
     public function executeTablesEtape(sfWebRequest $request) {
