@@ -95,9 +95,11 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 
 	public function getLotsPrelevables($region = null) {
 	    $lots = array();
-        $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows +
-            MouvementLotView::getInstance()->getByStatut(Lot::STATUT_PRELEVE_EN_ATTENTE)->rows;
+        $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows;
 	    foreach ($rows as $lot) {
+            if($lot->value->preleve) {
+                continue;
+            }
             if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
                 continue;
             }
@@ -114,6 +116,30 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         ksort($lots);
         return $lots;
 	}
+
+    public function getLotsDegustables($region = null) {
+        $lots = array();
+        $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows;
+        foreach ($rows as $lot) {
+            if(!$lot->value->preleve) {
+                continue;
+            }
+            if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
+                continue;
+            }
+            if (!$lot->value) {
+                throw new sfException("Lot ne devrait pas être vide : ".print_r($lot, true));
+            }
+            $lots[$lot->value->unique_id] = $this->cleanLotForDegustation($lot->value);
+            $lots[$lot->value->unique_id]->type_document = substr($lot->id, 0, 4);
+            $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;
+            if ($nb_passage > 1) {
+                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $nb_passage);
+            }
+        }
+        ksort($lots);
+        return $lots;
+    }
 
     public static function sortLotByDate($lot1, $lot2) {
 

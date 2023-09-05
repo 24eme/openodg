@@ -305,7 +305,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTABLE,"Table : ".$lot->getNumeroTableStr()));
 
                 case Lot::STATUT_PRELEVE:
-                case Lot::STATUT_PRELEVE_EN_ATTENTE:
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
 
@@ -324,9 +323,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             if($lot->isAnnule()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANNULE));
             }
-            if ($lot->isDiffere()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE_EN_ATTENTE, '', $lot->preleve));
-            } elseif ($lot->isPreleve()) {
+            if($lot->isPreleve()) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
             }
 			if ($lot->isChange()) {
@@ -437,7 +434,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot = $this->lots->add(null, $lotOrig);
         $lot->date = $this->date;
 		$lot->getDateCommission();
-        $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
         $lot->id_document_provenance = $lotOrig->id_document;
         $lot->id_document_affectation = null;
         $lot->id_document = $this->_id;
@@ -447,15 +443,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->conformite = null;
         $lot->numero_table = null;
         $lot->recours_oc = null;
-        if ($lotOrig->statut == Lot::STATUT_PRELEVE_EN_ATTENTE) {
-            $lot->statut = Lot::STATUT_PRELEVE;
-            if($update) {
-                $lot->updateDocumentDependances();
-            }
-            return $lot;
-        }
 		$lot->email_envoye = null;
-        $lot->preleve = null;
+        if(!$lot->preleve) {
+            $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
+            $lot->preleve = null;
+        }
         if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) ||
                 isset($lotOrig->document_ordre)) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
@@ -751,10 +743,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 }
             }
             return $lots;
-        }
-
-        public function isEntierementDifferee() {
-            return count($this->getLots()) == count($this->getLotsDifferes());
         }
 
 		public function getLotsDegustablesCustomSort(array $tri = null) {

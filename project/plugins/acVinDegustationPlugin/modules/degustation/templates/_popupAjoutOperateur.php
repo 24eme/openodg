@@ -32,7 +32,7 @@
             <div class="modal-footer">
                 <a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
 
-                <button form="form_degustation_ajout_operateur" class="btn btn-primary" type="submit">Ajouter</a>
+                <button form="form_degustation_ajout_operateur" class="btn btn-primary" type="submit">Ajouter l'opérateur</a>
             </div>
         </div>
     </div>

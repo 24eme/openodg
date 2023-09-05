@@ -31,7 +31,7 @@
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
 
-    <?php include_partial('degustation/tableSelectionLots', ['form' => $form]); ?>
+    <?php include_partial('degustation/tableSelectionLots', ['degustation' => $degustation, 'form' => $form]); ?>
 
 	<div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("degustation") ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
