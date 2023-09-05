@@ -767,6 +767,8 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         if ($this->id_document_provenance) {
             return substr(strtok($this->id_document_provenance, '-'), 0, 4);
+        } elseif ($this->initial_type) {
+            return $this->initial_type;
         }
         return '';
     }
