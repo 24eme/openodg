@@ -7,7 +7,7 @@
             <th class="col-xs-1">Logement</th>
             <th class="col-xs-5">Produit (millésime, spécificité)</th>
             <th class="col-xs-1">Volume</th>
-            <th class="col-xs-1">À prélever?</th>
+            <th class="col-xs-1"><?php if($degustation->getType() == TourneeClient::TYPE_MODEL): ?>À prélever?<?php else: ?>À déguster<?php endif; ?></th>
         </tr>
     </thead>
     <tbody>

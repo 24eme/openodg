@@ -7,21 +7,21 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
 
 <div class="page-header no-border">
-  <h2>Échantillons prélevés<?php if($differer): ?> à différer<?php endif; ?></h2>
+  <h2>Échantillons prélevés</h2>
   <h3><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?> <small><?php echo $degustation->getLieuNom(); ?></small></h3>
 </div>
 
-<?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation, 'differer' => $differer)); ?>
+<?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
 <div class="row">
   <div class="form-group col-xs-10">
-    <p>Sélectionner les lots <?php if($differer): ?>prélévés dont la dégustation est différée<?php else: ?>qui ont été prélevés<?php endif; ?></p>
+    <p>Sélectionner les lots qui ont été prélevés</p>
   </div>
 
   <div class="col-xs-2">
     <button class="btn btn-block btn-default" id="btn-preleve-all">
       <i class="glyphicon glyphicon-ok-sign"></i>
-      Tout <?php if($differer): ?>différer<?php else: ?>prélever<?php endif; ?>
+      Tout prélever
     </button>
   </div>
 </div>
@@ -46,10 +46,8 @@
                 <th class="col-xs-1">Logement</th>
                 <th class="col-xs-3">Produit (millésime, spécificité)</th>
                 <th class="col-xs-1">Volume</th>
-                <th class="col-xs-1"><?php if($differer): ?>Différé<?php else: ?>Prélevé<?php endif; ?></th>
-                <?php if(!$differer): ?>
+                <th class="col-xs-1">Prélevé</th>
                 <th class="col-xs-1"></th>
-                <?php endif; ?>
             </tr>
         </thead>
 		<tbody>
@@ -59,7 +57,7 @@
         <td><?php echo $lot->declarant_nom; ?></td>
         <td><?php echo $lot->getTypeProvenance(); ?> <span class="text-muted">n°<?php echo $lot->numero_dossier; ?></span></td>
         <td class="edit"><?= $lot->numero_logement_operateur ?>
-          <?php if (! $lot->isLeurre() && !$differer): ?>
+          <?php if (! $lot->isLeurre()): ?>
             <span class="pull-right">
               <a title="Modifier le logement" href="<?php echo url_for('degustation_preleve_update_logement', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
             </span>
@@ -70,7 +68,6 @@
         </td>
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
-              <?php if(!$differer): ?>
               &nbsp;
               <a class= "ajax" title="Modifier le volume" href="<?php echo url_for("degustation_lot_modification", [
                   'identifiant' => $lot->declarant_identifiant,
@@ -79,7 +76,6 @@
               ]); ?>">
                 <i class="glyphicon glyphicon-share-alt"></i>
               </a>
-            <?php endif; ?>
         </td>
       	<td class="text-center">
               <div style="margin-bottom: 0;" class="<?php if($formLot->hasError()): ?>has-error<?php endif; ?>">
@@ -89,7 +85,6 @@
                   </div>
               </div>
       	</td>
-        <?php if(!$differer): ?>
         <td class="edit text-center">
             <a class="text-muted" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le logement <?php echo $lot->numero_logement_operateur.' de '.$lot->volume."hl" ?> ?');" title="Supprimer le logement" href="<?php echo url_for('degustation_supprimer_lot_non_preleve', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-trash"></i></a>
 
@@ -100,7 +95,6 @@
           <?php endif ?>
         </td>
       </tr>
-      <?php endif ?>
     <?php endforeach; ?>
       <tr class="hidden"><td colspan="7">Aucun lot trouvé <a id="btn_annuler_filtre_table" href=""><small>(annuler la recherche)</small></a></td></tr>
     </tbody>

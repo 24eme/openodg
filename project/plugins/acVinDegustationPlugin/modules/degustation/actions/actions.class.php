@@ -5,7 +5,7 @@ class degustationActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         $this->form = new DegustationCreationForm();
 
-        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion());
+        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion()), DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
         $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, $this->getUser()->getRegion());
         $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, $this->getUser()->getRegion());
 
@@ -74,7 +74,7 @@ class degustationActions extends sfActions {
 
     public function executePrelevables(sfWebRequest $request)
     {
-        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion());
+        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion()), DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
     }
 
     public function executeSelectionLots(sfWebRequest $request) {
@@ -105,10 +105,6 @@ class degustationActions extends sfActions {
         }
 
         $this->form->save();
-
-        if (count($this->degustation->getLotsPreleves()) == count($this->degustation->getLotsPrelevables())) {
-            return $this->redirect($this->getRouteNextEtape(DegustationEtapes::ETAPE_TOURNEES), $this->degustation);
-        }
 
         return ($next = $this->getRouteNextEtape(DegustationEtapes::ETAPE_LOTS))? $this->redirect($next, $this->degustation) : $this->redirect('degustation');
     }

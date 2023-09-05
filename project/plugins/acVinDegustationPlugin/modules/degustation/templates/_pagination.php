@@ -13,9 +13,6 @@ $etapes =  DegustationEtapes::getInstance();
     <div class="col-xs-4 text-center">
     </div>
     <div class="col-xs-4 text-right">
-        <?php if ($degustation->isEntierementDifferee()): ?>
-            <small>Tous les lots ont été prélevés.<br /><strong>La dégustation est différée.</strong></small>
-        <?php else: ?>
         <a
             id="btn_suivant"
             class="btn btn-primary btn-upper"
@@ -24,6 +21,5 @@ $etapes =  DegustationEtapes::getInstance();
         >
             Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span>
         </a>
-        <?php endif; ?>
     </div>
 </div>

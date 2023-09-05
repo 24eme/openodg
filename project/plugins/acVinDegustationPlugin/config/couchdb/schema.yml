@@ -5,7 +5,6 @@ Degustation:
       _id: {  }
       _rev: {  }
       type: {  }
-      sous_type: { required: false }
       date: {  }
       campagne: { }
       lieu: {  }

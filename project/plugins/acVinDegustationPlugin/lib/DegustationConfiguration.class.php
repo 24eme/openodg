@@ -89,4 +89,8 @@ class DegustationConfiguration {
     public function isTourneeAutonome() {
         return $this->configuration['tournee_autonome'];
     }
+
+    public function isDegustationAutonome() {
+        return $this->configuration['tournee_autonome'];
+    }
 }

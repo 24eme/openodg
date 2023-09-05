@@ -22,7 +22,6 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 2,
         self::ETAPE_CONVOCATIONS => 3,
         self::ETAPE_TOURNEES => 3.5,
-        self::ETAPE_PRELEVEMENT_MANUEL => 3.6,
         self::ETAPE_PRELEVEMENTS => 4,
         self::ETAPE_ANONYMISATION_MANUELLE => 4.5,
         self::ETAPE_TABLES => 5,
@@ -37,7 +36,6 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_CONVOCATIONS => 'Convocations',
         self::ETAPE_TOURNEES => 'Tournées',
-        self::ETAPE_PRELEVEMENT_MANUEL => 'Prélevé',
         self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
         self::ETAPE_TABLES => 'Tables',
@@ -52,7 +50,6 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_CONVOCATIONS => 'Convocations',
         self::ETAPE_TOURNEES => 'Tournées',
-        self::ETAPE_PRELEVEMENT_MANUEL => 'Prélevé',
         self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
         self::ETAPE_TABLES => 'Tables',
@@ -121,15 +118,16 @@ class DegustationEtapes extends Etapes {
             unset($items[self::ETAPE_ANONYMISATION_MANUELLE]);
         }
 
+        if(DegustationConfiguration::getInstance()->isDegustationAutonome()) {
+            unset($items[self::ETAPE_TOURNEES]);
+            unset($items[self::ETAPE_PRELEVEMENTS]);
+        }
+
         return $items;
     }
 
     public function isEtapeDisabled($etape, $doc)
     {
-        if ($doc->isEntierementDifferee() && ($etape != self::ETAPE_PRELEVEMENTS) && $this->isGt($etape, self::ETAPE_PRELEVEMENTS)) {
-            return true;
-        }
-
         if(DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             return false;
         }

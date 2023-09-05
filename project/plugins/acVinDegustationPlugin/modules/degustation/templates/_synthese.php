@@ -4,11 +4,11 @@
   <table class="table table-condensed">
     <tbody>
       <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total de <strong>lots <?php if($differer): ?>différés<?php else: ?>prélevés<?php endif; ?>&nbsp;:</strong></td>
+        <td class="col-xs-3" >Nombre total de <strong>lots prélevés&nbsp;:</strong></td>
         <td class="col-xs-9"><strong id="nbLotsSelectionnes"><?php echo $infosDegustation["nbLotsSansLeurre"]; ?></strong></td>
       </tr>
       <tr class="vertical-center">
-        <td class="col-xs-3" >Nombre total <strong>d'adhérents <?php if($differer): ?>différés<?php else: ?>prélevés<?php endif; ?>&nbsp;:</strong></td>
+        <td class="col-xs-3" >Nombre total <strong>d'adhérents prélevés&nbsp;:</strong></td>
         <td class="col-xs-9"><strong id="nbAdherentsAPrelever"><?php echo $infosDegustation["nbAdherents"]; ?></strong></td>
       </tr>
     </tbody>
