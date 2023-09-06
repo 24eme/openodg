@@ -30,6 +30,11 @@ class TemplateFactureClient extends acCouchdbClient {
         if (!$campagne_start) {
             $campagne_start = date('Y');
         }
+
+        if (($region = sfConfig::get('app_region')) && strpos($template, '%region%') !== false) {
+            $template = str_replace('%region%', $region, $template);
+        }
+
         for($d = $campagne_start ; $d > $campagne_start - 10 ; $d--) {
             $id = sprintf($template, $d);
             if ($this->find($id, self::HYDRATE_JSON)) {
