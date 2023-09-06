@@ -93,7 +93,7 @@ EOF;
              echo " => import pour  $cvi - $siren \n";
              $eta = EtablissementClient::getInstance()->findByCvi($cvi);
              if (!$eta) {
-                 $eta = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSiren($siren);
+                 $eta = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($siren);
              }
              if (!$eta) {
                  echo "WARNING: établissement non trouvé ".$data[self::CSV_CVI]." - ".$data[self::CSV_SIRET]." : pas d'import\n";
