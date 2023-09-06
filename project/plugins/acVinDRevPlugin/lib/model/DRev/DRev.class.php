@@ -992,13 +992,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->declaration->reorderByConf();
         }
 
-        if(!$exist && $produit->getConfig()->isRevendicationParLots()) {
-            $lot = $this->addLot();
-            if($lot) {
-                $lot->setProduitHash($produit->getConfig()->getHash());
-            }
-        }
-
         return $this->get($produit->getHash());
     }
 
