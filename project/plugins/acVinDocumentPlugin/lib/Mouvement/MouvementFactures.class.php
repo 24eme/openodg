@@ -28,6 +28,10 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
         if($doc->exist('campagne')) {
             $this->campagne = $doc->campagne;
         }
+
+        if ($cotisation->getConfigCollection()->getDocument()->exist('region')) {
+            $this->add('region', $cotisation->getConfigCollection()->getDocument()->getRegion());
+        }
     }
 
     public function fillFromCotisation($cotisation) {

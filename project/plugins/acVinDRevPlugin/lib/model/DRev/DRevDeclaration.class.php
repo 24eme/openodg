@@ -232,19 +232,15 @@ class DRevDeclaration extends BaseDRevDeclaration
     {
     	$total = 0;
 
-		$produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-		$produitExclude = (bool) $produitExclude;
-		$regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
-      foreach($this->getProduits() as $key => $item) {
-				if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $key)) {
-						continue;
-				}
-				if($produitFilter && $produitExclude && preg_match($regexpFilter, $key)) {
-						continue;
-				}
+        foreach($this->getProduits() as $key => $item) {
+            if (DRevClient::getInstance()->matchFilter($item, $produitFilter) === false) {
+                continue;
+            }
+
             $total += $item->getTotalVolumeRevendique();
-      }
-			return $total;
+        }
+
+        return $total;
     }
 
 	public function getTotalSuperficieVinifiee()
