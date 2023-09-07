@@ -49,6 +49,14 @@ class DouaneImportCsvFile {
         return null;
     }
     public static function getTypeFromFile($file)  {
+      if (preg_match('/production/i', $file)) {
+          $str = file_get_contents($file, false, null, 0, 200);
+          if (preg_match('/APPORTEUR/', $str)) {
+              return 'SV11';
+          }else{
+              return 'SV12';
+          }
+      }
       if (preg_match('/sv11/i', $file)) {
         return 'SV11';
       }

@@ -176,7 +176,7 @@ class habilitationActions extends sfActions {
 
         $this->numero = preg_replace('/[^0-9A-Za-z]+/', '', $request->getParameter('numero'));
 
-        $this->etablissement = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSiren($this->numero);
+        $this->etablissement = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($this->numero);
 
         if($this->etablissement && $this->etablissement->cvi != $this->numero) {
 

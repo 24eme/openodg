@@ -68,4 +68,11 @@ all:
             - "TRANQ/appellations/RTA"
             - "VDN/appellations/VDR"
           habilitation_produits: "/Rasteau/"
-
+        TAVEL:
+          nom: "Syndicat AOC Tavel"
+          adresse: "56 Chemin de la Croix d’Alix 30126 Tavel"
+          telephone: "%app_drev_TAVEL_telephone%"
+          email: "%app_drev_TAVEL_email%"
+          produits:
+            - "TRANQ/appellations/TAV"
+          habilitation_produits: "/Tavel/"

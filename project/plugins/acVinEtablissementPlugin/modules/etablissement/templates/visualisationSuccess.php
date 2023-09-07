@@ -106,9 +106,15 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
                 <?php include_partial('compte/visualisationLogin', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
-                <?php if ($etablissement->commentaire && $modifiable) : ?>
-                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <p><?php echo nl2br(html_entity_decode($etablissement->commentaire)); ?></p>
+                <?php if ((($etablissement->commentaire) || ($societe->commentaire)) && $modifiable) : ?>
+                <h5 style="margin-bottom: 15px; margin-top: 0px;"><strong>🗣 Commentaire️</strong></h5>
+                <?php if ($etablissement->commentaire): ?>
+                <p>🗨️ <?php echo str_replace('\n', '</p><p>🗨️ ', html_entity_decode($etablissement->commentaire)); ?></p>
+                <?php endif; ?>
+                <?php if ($societe->commentaire): ?>
+                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Provenant de la société</strong></h5>
+                <p>🗨️ <?php echo str_replace('\n', '</p><p>🗨️ ', html_entity_decode($societe->commentaire)); ?></p>
+                <?php endif; ?>
                 <hr />
                 <?php endif; ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>

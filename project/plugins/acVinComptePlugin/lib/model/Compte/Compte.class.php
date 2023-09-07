@@ -194,6 +194,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', 'teledeclaration_active');
             }
         }
+        if ($this->exist('region') && $this->region) {
+            $this->addTag('automatique', 'region_'.$this->region);
+        }
 
         $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
 
