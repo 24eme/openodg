@@ -9,14 +9,14 @@ class changeStatutLotTask extends sfBaseTask
             new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Doc ID"),
             new sfCommandArgument('lot_unique_id', sfCommandArgument::REQUIRED, "lot id"),
             new sfCommandArgument('affectable', sfCommandArgument::REQUIRED, "affectable (true/false)"),
-            new sfCommandArgument('statut', sfCommandArgument::OPTIONAL, "statut"),
-            new sfCommandArgument('elevage', sfCommandArgument::OPTIONAL, "elevage", "-1"),
         ));
 
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('statut', null, sfCommandOption::PARAMETER_OPTIONAL, "statut"),
+            new sfCommandOption('elevage', null, sfCommandOption::PARAMETER_OPTIONAL, "elevage", "-1"),
         ));
 
         $this->namespace = 'lot';
