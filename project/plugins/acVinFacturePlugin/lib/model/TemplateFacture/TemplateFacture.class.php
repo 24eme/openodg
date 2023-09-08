@@ -11,7 +11,7 @@ class TemplateFacture extends BaseTemplateFacture
 	{
 		$cotisations = array();
         if (method_exists($document, 'getEtablissementObject') && $e = $document->getEtablissementObject()) {
-            if ($e->exist('region') && strpos('HORS_', $e->region) !== false) {
+            if ($e->exist('region') && strpos($e->region, 'HORS_') !== false) {
                 return;
             }
         }
