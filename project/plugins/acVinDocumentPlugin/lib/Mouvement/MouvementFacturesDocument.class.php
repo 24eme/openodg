@@ -19,7 +19,11 @@ class MouvementFacturesDocument
 
     public function generateMouvementsFactures() {
         $this->document->clearMouvementsFactures();
-        $this->document->set($this->hash, $this->document->getMouvementsFacturesCalcule());
+        $mouvements = [];
+        foreach (['CHATEAUMEILLANT', 'SANCERRE'] as $r) {
+            $mouvements = array_merge_recursive($mouvements, $this->document->getMouvementsFacturesCalcule($r));
+        }
+        $this->document->set($this->hash, $mouvements);
     }
 
     public function facturerMouvements() {
