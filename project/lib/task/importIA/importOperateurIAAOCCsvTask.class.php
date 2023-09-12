@@ -133,7 +133,7 @@ EOF;
 
             $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
 
-            if(strpos($data[self::CSV_TYPE_DECLARATION], 'NV') !=== false) {
+            if(strpos($data[self::CSV_TYPE_DECLARATION], 'NV') !== false) {
                 $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
             }
 
