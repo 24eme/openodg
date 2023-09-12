@@ -133,6 +133,10 @@ EOF;
 
             $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
 
+            if(strpos($data[self::CSV_TYPE_DECLARATION], 'NV') !== false) {
+                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            }
+
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $etablissement->statut = EtablissementClient::STATUT_SUSPENDU;
