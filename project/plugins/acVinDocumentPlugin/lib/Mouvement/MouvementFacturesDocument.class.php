@@ -20,9 +20,15 @@ class MouvementFacturesDocument
     public function generateMouvementsFactures() {
         $this->document->clearMouvementsFactures();
         $mouvements = [];
-        foreach (['CHATEAUMEILLANT', 'SANCERRE'] as $r) {
-            $mouvements = array_merge_recursive($mouvements, $this->document->getMouvementsFacturesCalcule($r));
+
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            foreach ($this->document->getProduitsRegion() as $r) {
+                $mouvements = array_merge_recursive($mouvements, $this->document->getMouvementsFacturesCalcule($r));
+            }
+        } else {
+            $mouvements = $this->document->getMouvementsFacturesCalcule();
         }
+
         $this->document->set($this->hash, $mouvements);
     }
 
