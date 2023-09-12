@@ -21,5 +21,5 @@ all:
           date_jour_mois: "30.06"
           libelle: '(3\up{ème} tiers)'
           montant_division: 3.0
-      uniq_template_prefix: "TEMPLATE-FACTURE"
+      uniq_template_prefix: "TEMPLATE-FACTURE-%region%"
       export_type: "custom"

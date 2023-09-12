@@ -150,6 +150,7 @@ class facturationActions extends sfActions
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne);
 
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
+            $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, sfConfig::get('app_region'));
 
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
 

@@ -222,6 +222,7 @@ DRev:
                         categorie: {  }
                         type: {  }
                         campagne: {  }
+                        region: { required: false }
       mouvements_lots:
         type: collection
         definition:

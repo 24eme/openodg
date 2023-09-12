@@ -22,7 +22,7 @@ class TemplateFactureClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function getTemplateIdFromCampagne($campagne_start = null) {
+    public function getTemplateIdFromCampagne($campagne_start = null, $region = null) {
         $template = FactureConfiguration::getinstance()->getUniqueTemplateFactureName();
         if (!$template){
             return null;
@@ -30,6 +30,15 @@ class TemplateFactureClient extends acCouchdbClient {
         if (!$campagne_start) {
             $campagne_start = date('Y');
         }
+
+        if (strpos($template, '%region%') !== false) {
+            if ($region === null) {
+                throw new sfException("Le template nécessite une région");
+            }
+
+            $template = str_replace('%region%', $region, $template);
+        }
+
         for($d = $campagne_start ; $d > $campagne_start - 10 ; $d--) {
             $id = sprintf($template, $d);
             if ($this->find($id, self::HYDRATE_JSON)) {
@@ -39,8 +48,8 @@ class TemplateFactureClient extends acCouchdbClient {
         throw new sfException("Object TEMPLATE-FACTURE not found from template $template");
     }
 
-    public function findByCampagne($campagne, $hydrate = self::HYDRATE_DOCUMENT){
-        $id = $this->getTemplateIdFromCampagne();
+    public function findByCampagne($campagne, $region = null, $hydrate = self::HYDRATE_DOCUMENT){
+        $id = $this->getTemplateIdFromCampagne($campagne, $region);
 
         if(!$id) {
 
