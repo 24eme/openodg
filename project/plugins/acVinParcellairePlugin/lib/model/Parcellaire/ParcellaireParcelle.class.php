@@ -215,6 +215,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
                 }
             }
         }
+        return '{"type":"Feature","id":"","geometry":{"type":"Polygon","coordinates":[]},"properties":{"error":"parcelle '.$this->idu.' not found in geojeson"}}';
         throw new sfException('parcelle not found in geojeson');
     }
 

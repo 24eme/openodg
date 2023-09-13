@@ -34,7 +34,7 @@ stats_vci.reset_index().to_csv("../../web/exports/stats/inao_vci_"+campagne+".cs
 # In[ ]:
 
 
-stats_drev_vci = drev_campagne_with_vci[['Produit', 'Superficie revendiqué', 'Volume revendiqué net total', 'Volume revendiqué issu de la récolte']].groupby('Produit').sum()
+stats_drev_vci = drev_campagne_with_vci[['Produit', 'Superficie revendiquée', 'Volume revendiqué net total', 'Volume revendiqué issu de la récolte']].groupby('Produit').sum()
 stats_drev_vci['nb déclarants'] = drev_campagne_with_vci[['Produit', 'CVI Opérateur']].groupby('Produit').count()
 drev_with_vci_complete = drev_campagne_with_vci[['Produit', 'CVI Opérateur', 'VCI Complément']][drev_campagne_with_vci['VCI Complément'] > 0]
 stats_drev_vci['VCI Complément - nb déclarants'] = drev_with_vci_complete[['Produit', 'CVI Opérateur']].groupby('Produit').count()
