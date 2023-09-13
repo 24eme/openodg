@@ -24,7 +24,7 @@
 
 
 <nav id="menu_navigation" class="navbar navbar-default container">
-    <a style="position: absolute; left: -140px; z-index: 0;" href="<?php echo url_for('accueil') ?>" title="Syndicat des Vins de Cheverny | Retour à la page d'accueil">
+    <a style="position: absolute; left: -124px; z-index: 0;" href="<?php echo url_for('accueil') ?>" title="Syndicat des Vins de Cheverny | Retour à la page d'accueil">
         <img style="height: 50px;" src="/images/logo_cheverny.png" alt="Syndicat des Vins de Cheverny">
     </a>
         <div class="navbar-header hidden-lg hidden-md">
