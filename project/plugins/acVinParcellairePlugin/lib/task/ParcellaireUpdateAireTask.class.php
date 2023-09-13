@@ -56,10 +56,11 @@ EOF;
             foreach($communes as $c) {
                 try {
                     $aire = AireClient::getInstance()->createOrUpdateAireFromHttp($c, $d);
+                    $aire->isInAire($aire->getGeoParcelle());
                     $aire->save();
-                    echo "DEBUG: ".$aire->denomination_libelle." (".$aire->denomination_identifiant.") form ".$aire->commune_libelle." (".$aire->commune_identifiant.") imported\n";
-                }catch(sfException $e) {
-                    echo "Error: ".$e->getMessage()."\n";
+                    echo "DEBUG: ".$aire->denomination_libelle." (".$aire->denomination_identifiant.") for ".$aire->commune_libelle." (".$aire->commune_identifiant.") imported\n";
+                }catch(Exception $e) {
+                    echo "Error: unable to import delimitation $d for commune $c because ".$e->getMessage()."\n";
                 }
             }
         }
