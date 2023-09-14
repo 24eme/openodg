@@ -22,7 +22,7 @@ class MouvementFacturesDocument
         $mouvements = [];
 
         if (RegionConfiguration::getInstance()->hasOdgProduits()) {
-            foreach ($this->document->getProduitsRegion() as $r) {
+            foreach ($this->document->getRegions() as $r) {
                 $mouvements = array_merge_recursive($mouvements, $this->document->getMouvementsFacturesCalcule($r));
             }
         } else {

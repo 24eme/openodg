@@ -37,4 +37,9 @@ class DR extends BaseDR {
     public function hasApporteurs($include_non_reconnu = false) {
         return false;
     }
+
+    public function getRegions()
+    {
+        return [];
+    }
 }
