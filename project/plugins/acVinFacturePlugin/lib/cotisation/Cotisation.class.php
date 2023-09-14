@@ -59,7 +59,7 @@ class Cotisation
             $params = $this->getConfig()->callback_parameters->toArray(true, false);
         }
 
-        return new TemplateFactureCotisationCallbackParameters($this->getDoc(), $params);
+        return new TemplateFactureCotisationCallbackParameters($this->getConfigDocument(), $params);
     }
 
     public function getConfigDate() {
