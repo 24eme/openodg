@@ -15,7 +15,7 @@ class CotisationFixe extends Cotisation
     public function getCallbackValue()
 	{
         return round(
-            call_user_func_array([$this->getDoc(), $this->getConfigCallback()], $this->getConfigCallbackParameters()),
+            call_user_func([$this->getDoc(), $this->getConfigCallback()], $this->getConfigCallbackParameters()),
             self::PRECISION
         );
 	}
