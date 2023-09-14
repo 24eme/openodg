@@ -34,8 +34,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->_get('campagne');
     }
 
-    public function storeEmetteur($region = null) {
-        foreach (FactureConfiguration::getInstance()->getInfos($region) as $param => $value) {
+    public function storeEmetteur() {
+        foreach (FactureConfiguration::getInstance()->getInfos($this->region) as $param => $value) {
             if($this->emetteur->exist($param)){
                 $this->emetteur->$param = $value;
             }
@@ -67,11 +67,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return $this->_set('modalite_paiement', $modalitePaiement);
     }
 
-    public function constructIds($doc) {
-        if (!$doc)
-            throw new sfException('Pas de document attribué');
-        $this->region = $doc->getRegionViticole();
-        $this->identifiant = $doc->identifiant;
+    public function constructIds() {
         if(FactureConfiguration::getInstance()->deprecatedNumeroFactureIsId()){ // Pour nantes obsolète
           $this->numero_facture = FactureClient::getInstance()->getNextNoFactureCampagneFormatted($this->identifiant, $this->campagne,FactureConfiguration::getInstance()->getNumeroFormat());
         }else{
