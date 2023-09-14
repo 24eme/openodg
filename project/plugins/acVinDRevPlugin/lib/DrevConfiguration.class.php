@@ -46,6 +46,11 @@ class DRevConfiguration {
       return isset($this->configuration['denomination_auto']) && boolval($this->configuration['denomination_auto']);
     }
 
+    public function hasDenominationBiodynamie() {
+
+      return isset($this->configuration['denomination_biodynamie']) && boolval($this->configuration['denomination_biodynamie']);
+    }
+
     public function hasExploitationSave() {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
