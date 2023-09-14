@@ -23,7 +23,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRecolte",
+                   "callback": "getQuantiteVolumeRevendique",
                    "callback_parameters": [
                    ]
                }
@@ -40,12 +40,12 @@
                    "prix": 0.15,
                    "tva": 0,
                    "unite": "hl",
-                   "libelle": "Cotisation sur récolte",
+                   "libelle": "Volume revendiqué",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRecolte",
+                   "callback": "getQuantiteVolumeRevendique",
                    "callback_parameters": [
                    ]
                }
@@ -67,7 +67,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRecolte",
+                   "callback": "getQuantiteVolumeRevendique",
                    "callback_parameters": [
                    ]
                }
@@ -89,7 +89,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRecolte",
+                   "callback": "getQuantiteVolumeRevendique",
                    "callback_parameters": [
                    ]
                }
