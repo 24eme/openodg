@@ -30,12 +30,12 @@
       <div class="row">
         <div class="col-xs-4 col-md-1">
           <div class="logo-site">
-            <a href="<?php echo url_for('accueil') ?>"><img style="margin-top: 20px;margin-bottom: 10px;" src="/images/logo_<?php echo sfConfig::get('sf_app') ?>.png" alt="Logo Centre" height="100px"></a>
+            <a href="<?php echo url_for('accueil') ?>"><img style="margin-top: 20px;margin-bottom: 10px;" src="/<?php echo Organisme::getInstance()->getLogoWebPath() ?>" alt="Logo Centre" height="50px"></a>
           </div>
         </div>
         <div class="col-xs-8 col-md-11 text-center">
-          <h1>
-              <span class="hidden-xs">Fédération des unions viticoles du Centre-Loire<br></span>
+          <h1 class="h3">
+              <span class="hidden-xs"><?php echo Organisme::getInstance()->getNom() ?><br></span>
               <small>Espace déclaratif professionnel</small>
           </h1>
         </div>
