@@ -228,6 +228,19 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $total;
     }
 
+    public function getProduitsFilteredBy(TemplateFactureCotisationCallbackParameters $parameters)
+    {
+        $produits = [];
+
+        foreach ($this->getProduits() as $hash => $p) {
+            if (RegionConfiguration::getInstance()->isHashProduitInRegion($parameters->getParameters('region'), $hash)) {
+                $produits[] = $p;
+            }
+        }
+
+        return $produits;
+    }
+
 	public function getTotalVolumeRevendique($produitFilter = null)
     {
     	$total = 0;
