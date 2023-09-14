@@ -82,6 +82,21 @@ xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $
 sed -i 's/Choisir Ville//' $DATA_DIR/membres.csv
 php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" --trace
 
+echo "Import DRev"
+
+echo -n > $DATA_DIR/vci.csv
+ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
+    MILLESIME=$(echo -n $vci_file | sed -r 's|^.*/vci_||' | sed 's/\.xlsx//')
+    xlsx2csv -l '\r\n' -d ";" $vci_file | tr -d "\n" | tr "\r" "\n" | sed "s/^/$MILLESIME;/" >> $DATA_DIR/vci.csv
+done;
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev.csv
+php symfony import:drev-ia $DATA_DIR/drev.csv $DATA_DIR/vci.csv  --application="$ODG" --trace
+
+echo "Import DRev"
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev.csv
+php symfony import:drev-ia $DATA_DIR/drev.csv --application="$ODG" --trace
+
 echo "Import lots PMC"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_pmc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_pmc.csv
 php symfony import:pmc-ia $DATA_DIR/lots_pmc.csv --application="$ODG" --trace
