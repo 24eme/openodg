@@ -190,6 +190,8 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
+        } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_BIODYNAMIE] = DRevClient::DENOMINATION_BIODYNAMIE;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BIOLOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(VIN ?BIOL|agriculture biol|AGRICBIOLOGIQUE)/i', $mentionComplementaire)) {
@@ -207,10 +209,6 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(non bio)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             unset($labels['DENOMINATION_BIO']);
-        }
-
-        if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(demeter|biody|biodynamie|bio-dynamie|biodyn|biodynamique)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
-            $labels[DRevClient::DENOMINATION_DEMETER] = DRevClient::DENOMINATION_DEMETER;
         }
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(hve|h.v.e.|haute valeur environnementale|hve3)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {

@@ -680,8 +680,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     unset($labelsDefault[DRevClient::DENOMINATION_BIO]);
                     continue;
                 }
-                if (in_array(DRevClient::DENOMINATION_DEMETER, $labelsDouane)) {
-                    unset($labelsDefault[DRevClient::DENOMINATION_BIO]);
+                if (in_array(DRevClient::DENOMINATION_BIODYNAMIE, $labelsDouane)) {
+                    unset($labelsDefault[DRevClient::DENOMINATION_BIODYNAMIE]);
                     continue;
                 }
                 if (in_array(DRevClient::DENOMINATION_HVE, $labelsDouane)) {
@@ -755,8 +755,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $complement = null;
-            if (DRevConfiguration::getInstance()->hasDenominationAuto() && (in_array(DRevClient::DENOMINATION_BIO, $labelsDouane) || in_array(DRevClient::DENOMINATION_DEMETER, $labelsDouane))) {
+            if (DRevConfiguration::getInstance()->hasDenominationAuto() && (in_array(DRevClient::DENOMINATION_BIO, $labelsDouane))) {
                 $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
+            } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && in_array(DRevClient::DENOMINATION_BIODYNAMIE, $labelsDouane)) {
+                $complement = DRevClient::DENOMINATION_BIODYNAMIE_LIBELLE_AUTO;
             } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && in_array(DRevClient::DENOMINATION_HVE, $labelsDouane)) {
                 $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
             } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && count($labelsDefault) == 1 && array_key_first($labelsDefault) != DRevClient::DENOMINATION_CONVENTIONNEL) {
