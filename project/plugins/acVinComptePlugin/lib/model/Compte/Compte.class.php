@@ -786,10 +786,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return $this->_get('region');
     }
 
-    public function getRegionViticole(){
-      return strtoupper(sfContext::getInstance()->getConfiguration()->getApplication());
-    }
-
     public function getCodeComptable(){
       return ($this->getSociete())? $this->getSociete()->getCodeComptable() : null;
     }

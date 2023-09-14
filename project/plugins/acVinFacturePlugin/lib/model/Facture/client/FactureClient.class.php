@@ -155,10 +155,12 @@ class FactureClient extends acCouchdbClient {
           $compte = $compte->getSociete()->getMasterCompte();
         }
         if (!$region) {
-            $region = $compte->region;
+            $region = Organisme::getCurrentRegion();
         }
-        $facture->constructIds($compte);
-        $facture->storeEmetteur($region);
+        $facture->identifiant = $compte->getSociete()->identifiant;
+        $facture->region = $region;
+        $facture->constructIds();
+        $facture->storeEmetteur();
         $facture->storeDeclarant($compte);
         $facture->storeTemplates($template);
         if(trim($message_communication)) {
