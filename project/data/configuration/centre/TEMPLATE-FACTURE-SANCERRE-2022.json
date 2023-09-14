@@ -17,7 +17,7 @@
                    "modele": "CotisationVariable",
                    "prix": 2.81,
                    "tva": 0,
-                   "unite": "ha",
+                   "unite": "hl",
                    "libelle": "Cotisation sur récolte",
                    "complement_libelle": "",
                    "docs": [
@@ -39,7 +39,7 @@
                    "modele": "CotisationVariable",
                    "prix": 0.15,
                    "tva": 0,
-                   "unite": "ha",
+                   "unite": "hl",
                    "libelle": "Cotisation sur récolte",
                    "complement_libelle": "",
                    "docs": [
@@ -61,7 +61,7 @@
                    "modele": "CotisationVariable",
                    "prix": 0.42,
                    "tva": 0,
-                   "unite": "ha",
+                   "unite": "hl",
                    "libelle": "Cotisation sur récolte",
                    "complement_libelle": "",
                    "docs": [
@@ -83,7 +83,7 @@
                    "modele": "CotisationVariable",
                    "prix": 0.12,
                    "tva": 0,
-                   "unite": "ha",
+                   "unite": "hl",
                    "libelle": "Cotisation sur récolte",
                    "complement_libelle": "",
                    "docs": [

@@ -441,7 +441,7 @@ class facturationActions extends sfActions
     }
 
     public function executeRedirectTemplate(sfWebRequest $request) {
-        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne();
+        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne(null, Organisme::getCurrentRegion());
         return $this->redirect('facturation_template', array('id' => $template));
     }
 
