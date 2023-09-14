@@ -149,6 +149,10 @@ class Organisme
         return $this->getInfo('url');
     }
 
+    public function getLogoPath() {
+        return sfConfig::get('sf_web_dir')."/".$this->getLogoWebPath();
+    }
+
     public function getLogoWebPath() {
         return 'images/logo_'.strtolower($this->region).'.png';
     }
