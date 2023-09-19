@@ -95,12 +95,14 @@
                 </div>
             </div>
         </div>
+        <?php if (isset($form['elevage'])): ?>
         <div class="row mb-3">
             <div class="col-md-offset-8 col-md-3 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
                 <?php echo $form['elevage']->render() ?>
                 <?php echo $form['elevage']->renderLabel('Lot prévu en élevage') ?>
             </div>
         </div>
+        <?php endif ?>
     </div>
 </div>
 <div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $form['volume']->renderId() ?>" id="<?php echo $lotHtmlId ?>cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
