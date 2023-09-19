@@ -400,6 +400,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     	return $this->existRendementByKey('rendement_vci');
     }
 
+    public function hasRendementVsi() {
+
+    	return 0;
+    }
+
     public function hasRendementVci() {
 
     	return $this->hasRendementByKey('rendement_vci');
@@ -410,7 +415,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     	return $this->hasRendementByKey('rendement_vci_total');
     }
 
+    public function getRendementVsi() {
+    	return 0;
+    }
+
     public function getRendementVci() {
+        if (!$this->hasRendementVciTotal()) {
+            return null;
+        }
     	return $this->getRendementByKey('rendement_vci');
     }
 
