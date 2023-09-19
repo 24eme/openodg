@@ -103,8 +103,9 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
           if ($lot->isLeurre()) {
               continue;
           }
-          $defaults['lots'][$lot->getUniqueId()] = array('preleve' => 1);
-          $lots_preleves[] = $lot->getUniqueId();
+          $uniqueID = $lot->getUniqueId() ?: str_replace('/lots/', '', $lot->getHash());
+          $defaults['lots'][$uniqueID] = array('preleve' => 1);
+          $lots_preleves[] = $uniqueID;
           $nbLots++;
         }
 
