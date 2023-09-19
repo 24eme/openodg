@@ -65,6 +65,7 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
         if ($this->filter_empty) {
             foreach ($this->lotsOperateurs as $key => $lot) {
+                $key = $lot->getUniqueId() ?: $key;
                 $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
                 $this->dates_degust_drevs[$lot->id_document] = date('Ymd');
             }
@@ -144,6 +145,12 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
         if ($this->filter_empty) {
             if (array_key_exists($key, $this->lotsOperateurs)) {
                 return $this->lotsOperateurs[$key];
+            }
+
+            foreach ($this->lotsOperateurs as $k => $lot) {
+                if ($lot->unique_id === $key) {
+                    return $lot;
+                }
             }
         }
 
