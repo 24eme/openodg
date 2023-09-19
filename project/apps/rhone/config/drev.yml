@@ -5,4 +5,5 @@ all:
       pdf_unique_region: true
       logement_adresse: false
       denomination_auto: true
+      denomination_biodynamie: true
       engagement_pdf: true

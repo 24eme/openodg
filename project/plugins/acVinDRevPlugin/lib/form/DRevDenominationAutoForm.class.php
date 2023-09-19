@@ -17,7 +17,7 @@ class DRevDenominationAutoForm extends acCouchdbObjectForm
 
     public function getDenominationAutoChoices()
     {
-        return DrevClient::$denominationsAuto;
+        return DRevClient::getDenominationsAuto();
     }
 
     public function formatter($widget, $inputs)
