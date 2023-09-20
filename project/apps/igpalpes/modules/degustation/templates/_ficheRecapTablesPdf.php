@@ -82,15 +82,15 @@ th {
               <th class="empty bg-white"></th>
               <th class="empty bg-white"></th>
               <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
-              <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-              <th class="bg-hite" style="width:6%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable_non_redhibitoire'] ?></small></strong></th>
-              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable_redhibitoire'] ?></small></strong></th>
-              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
+              <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
+              <th class="bg-hite" style="width:6%;"><?php echo tdStart() ?><strong><small>NCNR</small></strong></th>
+              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NCR</small></strong></th>
+              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
               <?php else : ?>
-              <th class="bg-white" style="width:10%;" ><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-              <th class="bg-hite" style="width:11%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable_non_redhibitoire'] ?></small></strong></th>
-              <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable_redhibitoire'] ?></small></strong></th>
+              <th class="bg-white" style="width:10%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
+              <th class="bg-hite" style="width:11%;"><?php echo tdStart() ?><strong><small>NCNR</small></strong></th>
+              <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>NCR</small></strong></th>
               <?php endif ?>
               <th class="empty bg-white"></th>
             </tr>
