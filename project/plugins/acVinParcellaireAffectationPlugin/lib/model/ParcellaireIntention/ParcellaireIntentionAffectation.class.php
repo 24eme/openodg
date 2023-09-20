@@ -43,7 +43,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
         }
     }
     $this->addParcellesFromParcellaire($lieuxArr);
-    if ($parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant, $this->periode)) {
+    if ($parcellaireIntentionAffectation = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode)) {
  		foreach ($this->getParcelles() as $hash => $parcelle) {
 			            $hashWithoutNumeroOrdre = preg_replace("/(-[0-9]+)-[0-9]{2}(-?)/", '\1\2', $hash);
 			                   $parcellesMatch = array();
@@ -215,7 +215,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
     
     protected function doSave() {
     	if ($this->isNew()) {
-    		if ($last = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant)) {
+    		if ($last = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant)) {
     			$last->add('lecture_seule', true);
     			$last->save();
     		}

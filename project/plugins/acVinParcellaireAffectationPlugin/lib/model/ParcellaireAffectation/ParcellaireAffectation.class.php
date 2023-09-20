@@ -70,9 +70,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     if($this->validation){
         return;
     }
-    $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant);
+    $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant);
     if (!$intention) {
-        $intention = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->identifiant, $this->campagne);
+        $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->campagne);
         if (!count($intention->declaration)) {
             $intention = null;
         }

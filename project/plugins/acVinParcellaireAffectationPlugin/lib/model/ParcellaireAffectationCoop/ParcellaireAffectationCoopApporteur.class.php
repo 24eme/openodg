@@ -85,7 +85,7 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
 
     public function updateParcelles() {
         $this->nb_parcelles_identifiees = 0;
-        $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->getEtablissementIdentifiant());
+        $intention = ParcellaireIntentionClient::getInstance()->getLast($this->getEtablissementIdentifiant());
         if ($intention) {
             $this->nb_parcelles_identifiees = count($intention->getParcelles());
         }

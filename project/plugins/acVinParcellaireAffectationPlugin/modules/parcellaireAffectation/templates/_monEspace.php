@@ -37,7 +37,7 @@
                         <?php endif; ?>
                     </div>
                 </div>
-            <?php elseif($intentionParcellaireAffectation):  ?>
+            <?php elseif(!ParcellaireConfiguration::getInstance()->affectationNeedIntention() || $intentionParcellaireAffectation):  ?>
             <div class="panel-body">
                 <p class="explications">Identifier ou mettre à jour l'affectation de vos<br />parcelles<br /></p>
             	<div class="actions">
