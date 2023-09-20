@@ -381,6 +381,16 @@ degustation_degustateurs_presences:
   requirements:
     sf_method: [get, post]
 
+tournee_visualisation:
+  url: /degustation/:id/visualisation
+  param: { module: degustation, action: visualisation }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_visualisation:
   url: /degustation/:id/visualisation
   param: { module: degustation, action: visualisation }
