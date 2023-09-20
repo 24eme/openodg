@@ -1,4 +1,4 @@
-<?php $gitcommit = file_exists('../../.git/ORIG_HEAD') ? str_replace("\n", "", file_get_contents('../../.git/ORIG_HEAD')) : null;?>
+<?php $gitcommit = $_ENV['GIT_LAST_COMMIT'];?>
 <!doctype html>
 <!-- ####### PLEASE KEEP ####### -->
 <!--[if lte IE 6 ]><html class="no-js ie6 ielt7 ielt8 ielt9" lang="fr"><![endif]-->
