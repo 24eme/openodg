@@ -19,20 +19,18 @@
         <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
         <td><?php echo $lot->declarant_nom; ?></td>
         <td>
-          <?php if ($lot->id_document !== $degustation->_id): ?>
-          <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
-            <?php if ($lot->initial_type): ?>
-                <?php echo $lot->initial_type ?>
-            <?php else: ?>
-                <?php echo substr($lot->id_document, 0, 4).' n°&nbsp;'.$lot->numero_dossier; ?>
-            <?php endif ?>
-          </a>
+          <?php if ($lot->getUniqueId()): ?>
+              <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
+          <?php endif ?>
+          <?php echo $lot->getTypeProvenance() ?>
+          <?php if ($lot->getUniqueId()): ?>
+              </a>
           <?php endif ?>
         </td>
         <td><?php echo $lot->numero_logement_operateur; ?></td>
         <td><?php echo showProduitCepagesLot($lot, false) ?></td>
         <td class="edit text-right">
-         <?php if ($lot->id_document !== $degustation->_id): ?>
+         <?php if ($lot->volume): ?>
           <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
           <a title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
             <i class="glyphicon glyphicon-share-alt"></i>
