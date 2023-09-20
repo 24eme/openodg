@@ -70,27 +70,18 @@ th {
             <tr style="line-height:20px;">
                <th class="topempty bg-white"style="width:10%; "><?php echo tdStart() ?><strong>Anon</strong></th>
                <th class="topempty bg-white" style="width:30%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
-               <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
-               <th class="bg-white" colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
-               <th class="bg-white"  colspan="2"style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-               <?php else : ?>
-               <th class="bg-white" colspan="2"style="width:20%;"><?php echo tdStart() ?><strong>Avis</strong></th>
-               <?php endif ?>
-               <th class="topempty bg-white" style="width:10%;"><?php echo tdStart() ?><strong>Note</strong></th>
-               <th class="topempty bg-white" style="width:30%;"><strong>Motifs (si non conforme)</strong></th>
+               <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Avis</strong></th>
+               <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
+               <th class="topempty bg-white"  style="width:30%;"><strong>Motifs (si non conforme)</strong></th>
+               <th class="topempty bg-white"  style="width:10%;"><strong>Mineur Majeur Grave</strong></th>
             </tr>
             <tr style="line-height:13px;">
               <th class="empty bg-white"></th>
               <th class="empty bg-white"></th>
-              <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
               <th class="bg-white" style="width:5%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
-              <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+              <th class="bg-hite" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
               <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
               <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
-              <?php else : ?>
-              <th class="bg-white" style="width:10%;" ><?php echo tdStart() ?><strong><small>C</small></strong></th>
-              <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
-              <?php endif ?>
               <th class="empty bg-white"></th>
               <th class="empty bg-white"></th>
             </tr>
@@ -108,3 +99,4 @@ th {
          <?php $ligne++; ?>
        <?php endforeach; ?>
       </table>
+      <span><small>NCR = non conformité rédhibitoire<br>NCNR = non conformité non rédhibitoire</small></span>
