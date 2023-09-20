@@ -191,12 +191,16 @@ class DegustationLot extends BaseDegustationLot {
         return $this->volume === 0;
     }
 
-    public function getDocumentType() {
-
-        return DegustationClient::TYPE_MODEL;
+    public function getDocumentType()
+    {
+        return $this->getDocument()->getType();
     }
 
     public function getDocumentOrdre() {
+        if ($this->id_document_provenance === null) {
+            $this->_set('document_ordre', "01");
+        }
+
         return $this->_get('document_ordre');
     }
 

@@ -434,7 +434,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot = $this->lots->add(null, $lotOrig);
         $lot->date = $this->date;
 		$lot->getDateCommission();
-        $lot->id_document_provenance = $lotOrig->id_document;
+        $lot->id_document_provenance = ($lotOrig->id_document !== $this->_id) ? $lotOrig->id_document : null;
         $lot->id_document_affectation = null;
         $lot->id_document = $this->_id;
         $lot->affectable = false;
@@ -451,7 +451,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) ||
                 isset($lotOrig->document_ordre)) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
-            if ($lot->document_ordre < 2) {
+            if ($lot->getDocumentType() === DegustationClient::TYPE_MODEL && $lot->document_ordre < 2) {
                 throw new sfException("On ne peut ajouter un lot qui n'a pas de numéro d'ordre : ".$lotOrig->unique_id);
             }
         }
