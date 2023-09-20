@@ -77,6 +77,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
                 $csv .= $this->floatHelper->formatFr($detail->montant_tva).";";
                 $csv .= $this->floatHelper->formatFr($detail->montant_ht + $detail->montant_tva).";";
                 $csv .= ";;";
+                $csv .= Organisme::getCurrentOrganisme().";";
                 $csv .= $this->facture->_id.";";
                 $csv .= $campagne.";";
                 $csv .= $this->facture->getNumeroOdg().";";
