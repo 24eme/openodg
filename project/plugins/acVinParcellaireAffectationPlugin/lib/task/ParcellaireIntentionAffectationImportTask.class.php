@@ -74,7 +74,7 @@ class ParcellaireIntentionAffectationImportTask extends sfBaseTask
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));
                 continue;
             }
-            $intentionDpap = ParcellaireIntentionAffectationClient::getInstance()->createDoc($etablissement->identifiant, $campagne, 1, $arguments['date']);
+            $intentionDpap = ParcellaireIntentionClient::getInstance()->createDoc($etablissement->identifiant, $campagne, 1, $arguments['date']);
             if (!$intentionDpap->hasParcellaire()) {
                 echo sprintf("ERROR;Pas de parcellaire;%s\n", implode(';', $data));
                 continue;

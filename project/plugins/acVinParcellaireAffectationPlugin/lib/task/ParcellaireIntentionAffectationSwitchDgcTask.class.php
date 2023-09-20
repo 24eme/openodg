@@ -54,7 +54,7 @@ class ParcellaireIntentionAffectationSwitchDgcTask extends sfBaseTask
                 echo sprintf("ERROR;Etablissement non trouvé;%s\n", implode(';', $data));
                 continue;
             }
-            $intentionDpap = ParcellaireIntentionAffectationClient::getInstance()->getLast($identifiant);
+            $intentionDpap = ParcellaireIntentionClient::getInstance()->getLast($identifiant);
             if (!$intentionDpap) {
                 echo sprintf("ERROR;Pas de parcellaire intention affectation;%s\n", implode(';', $data));
                 continue;
