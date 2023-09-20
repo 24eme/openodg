@@ -52,22 +52,11 @@ gps.addTo(map);
 
 // Fin GPS
 
-
-function getColor(d) {
-
-    return d.includes("rouge") ? '#790000' :
-           d.includes("rosé") ? '#f95087':
-           d.includes("blanc") ? '#edcb09':'#ffffff';
-}
-
 /**
-* Css style for parcelles according product color ie "Côtes de Provence Rouge GRENACHE"
 * Color will be Red
 **/
 
 function style(feature) {
-    var color;
-    color = getColor(feature.properties.parcellaires['0'].Produit);
     return {
         fillColor: '#fff',
         weight: 2,
