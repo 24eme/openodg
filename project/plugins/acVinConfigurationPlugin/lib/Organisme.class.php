@@ -45,6 +45,7 @@ class Organisme
 
         if (!array_key_exists($this->region, $infos)) {
             $infos = sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
+            return $infos;
         }
 
         if (!array_key_exists($this->region, $infos)) {

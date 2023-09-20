@@ -48,10 +48,10 @@
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>Olfactif<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>Gustatif<br><?php if($notation): ?>/24<?php endif ?></small></strong></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>TOTAL<br><?php if($notation): ?>/48<?php endif ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
          <th class="empty bg-white"></th>
        </tr>
    <?php endif;?>
