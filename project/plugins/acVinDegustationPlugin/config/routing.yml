@@ -560,6 +560,16 @@ degustation_non_conformite_pdf:
   requirements:
     sf_method: [get,post]
 
+degustation_rapport_inspection_pdf:
+  url: /degustation/:id/:lot_dossier/:lot_archive/rapport/pdf
+  param: { module: degustation, action: degustationRapportInspectionPDF }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
 degustation_mail_resultats_previsualisation:
   url: /degustation/:id/:identifiant/mail-previsualisation
   param: { module: degustation, action: mailPrevisualisation }
