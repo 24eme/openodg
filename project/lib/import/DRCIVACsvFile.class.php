@@ -22,39 +22,13 @@ class DRCIVACsvFile extends CIVACsvFile
   const CSV_VCI_TOTAL = 16;
   const CSV_HASH = 20;
 
-  private $file = null;
-  private $separator = null;
-  private $csvdata = null;
-  private $ignore = null;
-
-  public function getFileName() {
-    return $this->file;
-  }
-
-  public function __construct($file, $ignore_first_if_comment = 1) {
-    $this->ignore = $ignore_first_if_comment;
-    if (!file_exists($file) && !preg_match('/^http/', $file))
-      throw new Exception("Cannont access $file");
-
-    $this->file = $file;
-    $handle = fopen($this->file, 'r');
-    if (!$handle)
-      throw new Exception('invalid_file');
-    $buffer = fread($handle, 500);
-    fclose($handle);
-    $buffer = preg_replace('/$[^\n]*\n/', '', $buffer);
-    if (!$buffer) {
-      throw new Exception('invalid_file');
-    }
-    if (!preg_match('/("?)[0-9]{10}("?)([,;\t])/', $buffer, $match)) {
-      throw new Exception('invalid_csv_file');
-    }
-    $this->separator = $match[3];
-  }
-
     public static function getHashProduitByLine($line) {
 
-        return $line[self::CSV_HASH];
+        $hashProduit = $line[self::CSV_HASH];
+        $hashProduit = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hashProduit);
+        $hashProduit = preg_replace('|/recolte.|', '/declaration/', $hashProduit);
+        $hashProduit = preg_replace("|/detail/.+$|", "", $hashProduit);
+        return $hashProduit;
     }
 
   public function getCsvRecoltant($cvi) {
@@ -100,7 +74,6 @@ class DRCIVACsvFile extends CIVACsvFile
   }
 
   public function updateDRevProduitDetail(DRev $drev) {
-      $drev->resetProduitDetail();
       foreach ($this->getCsvAcheteur($drev->identifiant) as $line) {
           $hashProduit = DRCIVACsvFile::getHashProduitByLine($line);
 
@@ -108,9 +81,6 @@ class DRCIVACsvFile extends CIVACsvFile
 
               continue;
           }
-
-          $hashProduit = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hashProduit);
-          $hashProduit = preg_replace('|/recolte.|', '/declaration/', $hashProduit);
 
           if (!$drev->getConfiguration()->exist($hashProduit)) {
               continue;
@@ -174,12 +144,9 @@ class DRCIVACsvFile extends CIVACsvFile
               $produitDetail->vci_sur_place += (float) $line[DRCIVACsvFile::CSV_VCI];
           }
       }
-
-      $drev->updateProduitDetail();
   }
 
   public function updateDRevCepage(DRev $drev) {
-      $drev->resetCepage();
 
       foreach ($this->getCsvAcheteur($drev->identifiant) as $line) {
           if (
@@ -192,9 +159,6 @@ class DRCIVACsvFile extends CIVACsvFile
           }
 
           $hashProduit = DRCIVACsvFile::getHashProduitByLine($line);
-
-          $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $hashProduit)));
-          $hash = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hash);
 
           if (!$drev->getConfiguration()->exist($hash)) {
               continue;

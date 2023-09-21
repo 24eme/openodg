@@ -84,13 +84,13 @@ class drevActions extends sfActions {
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $drev);
-
+        $typedoc = ($drev->isNonRecoltant()) ? 'SV' : 'DR';
         return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
-                        "?" .
-                        http_build_query(array(
-                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne),
-                            'url' => $this->generateUrl('drev_dr_import', $drev, true),
-                        )));
+                    "?" .
+                    http_build_query(array(
+                        'id' => sprintf($typedoc.'-%s-%s', $drev->identifiant, $drev->campagne),
+                        'url' => $this->generateUrl('drev_dr_import', $drev, true),
+                    )));
     }
 
     public function executeDrImport(sfWebRequest $request) {
@@ -103,16 +103,19 @@ class drevActions extends sfActions {
             mkdir($cache_dir);
         }
 
-        if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
+        $typedoc = $request->getParameter('typedoc', 'DR');
 
-            return sfView::SUCCESS;
+        if ($request->getParameter('csv')) {
+
+            file_put_contents($cache_dir . "/$typedoc.csv", base64_decode($request->getParameter('csv')));
+            $this->drev->storeAttachment($cache_dir . "/$typedoc.csv", "text/csv");
         }
 
-        file_put_contents($cache_dir . "/DR.csv", base64_decode($request->getParameter('csv')));
-        $this->drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
+        if ($request->getParameter('pdf')) {
 
-        file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
-        $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
+            file_put_contents($cache_dir . "/$typedoc.pdf", base64_decode($request->getParameter('pdf')));
+            $this->drev->storeAttachment($cache_dir . "/$typedoc.pdf", "application/pdf");
+        }
 
         $this->drev->updateFromCIVACsvFile(true, true);
         $this->drev->save();
@@ -161,12 +164,8 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
+        return $this->redirect('drev_dr', $this->drev);
 
-            return $this->redirect('drev_dr', $this->drev);
-        }
-
-        return $this->redirect('drev_revendication', $this->drev);
     }
 
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {

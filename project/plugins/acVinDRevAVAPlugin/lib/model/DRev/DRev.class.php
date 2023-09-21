@@ -202,7 +202,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasDR() {
 
-        return $this->_attachments->exist('DR.csv');
+        return $this->_attachments->exist('DR.csv') || $this->_attachments->exist('SV.csv');
     }
 
     public function getCurrentRegistreVCI() {
@@ -268,7 +268,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getCIVACsvFile() {
-        $csv = new DRCIVACsvFile($this->getAttachmentUri('DR.csv'));
+        if ($this->_attachments->exist('SV.csv')) {
+            $csv = new SVMouvementCIVACsvFile($this->getAttachmentUri('SV.csv'));
+        }else{
+            $csv = new DRCIVACsvFile($this->getAttachmentUri('DR.csv'));
+        }
         return $csv;
     }
 
@@ -289,12 +293,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->add('declaration');
         }
 
+        $this->resetProduitDetail();
         $csv->updateDRevProduitDetail($this);
+        $this->updateProduitDetail();
 
         if($updateProduitRevendique) {
             $this->updateProduitRevendiqueFromDetail();
         }
 
+        $this->resetCepage();
         $csv->updateDRevCepage($this);
 
         if($updatePrelevements) {
@@ -392,7 +399,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($add_appellation) {
             $this->addAppellation($config->getAppellation()->getHash());
         }
-        $produit = $this->getOrAdd($config->getHash());
+        $produit = $this->getOrAdd($config->getHash())->getCouleur();
         $produit->getLibelle();
         $produit->add('superficie_vinifiee');
         if($produit->getConfig()->hasProduitsVtsgn()) {
