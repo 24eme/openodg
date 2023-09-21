@@ -15,17 +15,14 @@ $list_communes = [];
 $list_idu = [];
 ?>
 
+<ol class="breadcrumb">
 <?php if($sf_user->hasTeledeclaration()): ?>
-<ol class="breadcrumb">
-  <li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire</a></li>
-  <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
-</ol>
+  <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire</a></li>
 <?php else: ?>
-<ol class="breadcrumb">
-  <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
+    <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
+<?php endif; ?>
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
 </ol>
-<?php endif; ?>
 
 <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm") && isset($form)): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'), 'noautofocus' => true)); ?>
@@ -49,7 +46,7 @@ $list_idu = [];
 
 <?php if($parcellaire): ?>
     <div class="well">
-        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $etablissement)); ?>
     </div>
 <?php endif; ?>
 
