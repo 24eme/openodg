@@ -93,7 +93,6 @@ class SVMouvementCIVACsvFile extends CIVACsvFile
 
                 case self::TYPE_MOUVEMENT_VOLUME_REVENDIQUE:
                     $produitDetail->volume_total += (float) $line[self::CSV_QUANTITE];
-                    $produitDetail->volume_sur_place += (float) $line[self::CSV_QUANTITE];
                     break;
 
                 case self::TYPE_MOUVEMENT_VOLUME_DETRUIT:
