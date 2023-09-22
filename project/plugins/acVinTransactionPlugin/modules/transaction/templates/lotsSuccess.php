@@ -1,10 +1,11 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('PointsAides');?>
+<?php use_helper('Declaration') ?>
 
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php include_partial('transaction/step', array('step' => TransactionEtapes::ETAPE_LOTS, 'transaction' => $transaction, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Vrac export des Lots IGP</h2></div>
+    <div class="page-header"><h2>Vrac export des Lots <?php echo getLibelleHashRevendicableParLots(sfConfig::get('app_hash_revendicable_par_lots', 'IGP')) ?></h2></div>
 
 
 
