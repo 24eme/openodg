@@ -456,11 +456,11 @@ class DRevValidation extends DeclarationLotsValidation
             return;
         }
         foreach($this->document->getProduits() as $produit) {
-            if(round($produit->getCepage()->getRendementVsi(), 2) <= $produit->getConfig()->getRendementVci()) {
+            if(round($produit->getCepage()->getRendementVsi(), 2) <= $produit->getConfig()->getRendementVsi()) {
                 continue;
             }
 
-            $point = $this->addPoint(self::TYPE_ERROR, 'vsi_rendement', $produit->getLibelleComplet() . ' (rendement VSI de ' . round($produit->getCepage()->getRendementVsi(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVci().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            $point = $this->addPoint(self::TYPE_ERROR, 'vsi_rendement', $produit->getLibelleComplet() . ' (rendement VSI de ' . round($produit->getCepage()->getRendementVsi(), 2) . ' hl/ha pour '. $produit->getConfig()->getRendementVsi().' hl/ha autorisé)', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if($this->document->isPapier()) {
             return;

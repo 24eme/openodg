@@ -1,6 +1,6 @@
 <?php
 
-interface InterfaceDocumentsRoute
+interface InterfaceDocumentsRoute extends InterfaceUsurpationRoute
 {
 
 }

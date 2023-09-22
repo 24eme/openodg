@@ -31,7 +31,6 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $denominations = array();
         $communes = array();
-        $empty_args = (!$arguments['commune_insee'] && !$arguments['identifiant_inao']);
         if ($arguments['commune_insee']) {
             $communes[] = $arguments['commune_insee'];
         }
@@ -47,8 +46,8 @@ EOF;
             }
         }
         foreach($denominations as $d) {
-            if ($empty_args) {
-                $communes = [];
+            if (!$arguments['commune_insee']) {
+                $communes = array();
                 foreach(AireClient::getInstance()->getCommunesArrayFromDenominationId($d) as $c) {
                     $communes[$c] = $c;
                 }
