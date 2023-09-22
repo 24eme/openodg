@@ -1,4 +1,4 @@
-<?php if(count($drev->getOrAdd('documents')->toArray()) > 0 || $drev->hasDr()): ?>
+<?php if(count($drev->getOrAdd('documents')->toArray()) > 0 || $drev->hasDR()): ?>
 <h3>Documents à joindre</h3>
 <table class="table table-striped">
     <thead>
@@ -8,7 +8,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php if($drev->hasDr()): ?>
+        <?php if($drev->hasDR()): ?>
             <tr>
                 <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle(DRevDocuments::DOC_DR) ?></td>
                 <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank">Télécharger</a></td>

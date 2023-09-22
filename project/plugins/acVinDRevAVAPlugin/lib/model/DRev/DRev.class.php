@@ -202,8 +202,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasDR() {
 
-        return $this->_attachments->exist('DR.csv') || $this->_attachments->exist('SV.csv');
+        return $this->_attachments->exist('DR.csv');
     }
+
+    public function hasSV() {
+
+        return $this->_attachments->exist('SV.csv');
+    }
+
+
+    public function hasDROrSV() {
+
+        return $this->hasDR() || $this->hasSV();
+    }
+
 
     public function getCurrentRegistreVCI() {
       return RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
@@ -277,7 +289,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function updateFromCIVACsvFile($updateProduitRevendique = false, $updatePrelevements = false,  CIVACsvFile $csv = null) {
-    	if (!$this->hasDR() && !$csv) {
+    	if (!$this->hasDROrSV() && !$csv) {
     		return;
     	}
         if(is_null($csv)) {
