@@ -103,7 +103,7 @@ class drevActions extends sfActions {
             mkdir($cache_dir);
         }
 
-        $typedoc = $request->getParameter('typedoc', 'DR');
+        $typedoc = ($this->drev->isNonRecoltant()) ? 'SV' : 'DR';
 
         if ($request->getParameter('csv')) {
 
