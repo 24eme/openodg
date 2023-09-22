@@ -213,8 +213,8 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     /* FIN DR */
 
     public function isRevendicationParLots() {
-
-        return preg_match("/IGP/", $this->getHash());
+        $hashRevendicableParLots = sfConfig::get('app_hash_revendicable_par_lots', 'IGP');
+        return preg_match("/$hashRevendicableParLots/", $this->getHash());
     }
 
     public function isRevendicationAOC() {
