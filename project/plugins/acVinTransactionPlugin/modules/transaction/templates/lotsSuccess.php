@@ -83,7 +83,7 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro de logement", array('class' => "col-sm-3 control-label")); ?>
-                      <div class="col-sm-3">
+                      <div class="col-sm-5">
                             <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>
                       <div class="col-sm-6 text-danger">
