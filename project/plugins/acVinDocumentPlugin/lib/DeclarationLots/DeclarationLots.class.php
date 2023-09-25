@@ -221,6 +221,15 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
         }
     }
 
+    public function getRegions() {
+        $regions = [];
+        foreach ($this->getProduits() as $p) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($p->getHash());
+        }
+
+        return array_values(array_unique($regions));
+    }
+
       public function devalidate() {
           $this->validation = null;
           $this->validation_odg = null;
