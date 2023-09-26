@@ -24,7 +24,7 @@ class DRevValidation extends DocumentValidation {
 
         //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
         $this->addControle(self::TYPE_WARNING, 'declaration_lots', 'Vous devez déclarer vos lots.');
-        $this->addControle(self::TYPE_ERROR, 'declaration_lots_inferieur', 'Vous avez revendiqué des cepages  qui n\'ont pas de lots.');
+        $this->addControle(self::TYPE_ERROR, 'declaration_lots_inferieur', 'Vous devez déclarer au moins autant de lots de cepages revendiqués.');
 
         $this->addControle(self::TYPE_WARNING, 'revendication_cepage_sans_lot', 'Vous ne déclarez aucun lot pour un cépage que vous avez revendiqué. Si c\'est un lot qui a été replié en assemblage, ne tenez pas compte de ce point de vigilance.');
 
@@ -61,9 +61,7 @@ class DRevValidation extends DocumentValidation {
          * Engagement
          */
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre une copie de votre Déclaration de Récolte');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre Document de Production');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Une <strong>copie</strong> du Carnet de Pressoir');
     }
 
@@ -186,6 +184,9 @@ class DRevValidation extends DocumentValidation {
         if (!$this->document->isNonRecoltant() && !$this->document->hasDR()) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, '');
         }
+        if ($this->document->isNonRecoltant() && !$this->document->hasSV()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
+        }
     }
 
     protected function controleEngagementPressoir($produit) {
@@ -290,8 +291,9 @@ class DRevValidation extends DocumentValidation {
             }
         }
         foreach ($nb_total_lots_cepages as $key => $value) {
-          if($value < $this->document->prelevements->get($key)->getNbLotsMinimum()) {
-            $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "Dégustation conseil - ".$this->document->prelevements->get($key)->libelle_produit, $this->generateUrl('drev_lots', $this->document->prelevements->get($key)));
+          $nbmin = $this->document->prelevements->get($key)->getNbLotsMinimum();
+          if($value < $nbmin) {
+            $this->addPoint(self::TYPE_ERROR, 'declaration_lots_inferieur', "Dégustation conseil - vos $value lot(s) / $nbmin de ".$this->document->prelevements->get($key)->libelle_produit, $this->generateUrl('drev_lots', $this->document->prelevements->get($key)));
             break;
           }
         }
@@ -329,7 +331,7 @@ class DRevValidation extends DocumentValidation {
         }
 
         if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE)) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, '');
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
 
             return;
         }

@@ -381,14 +381,17 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getLibelleComplet($libelle_long = false)
     {
-        if(is_null($this->libelleCompletCache)) {
-            $this->libelleCompletCache = $this->getParent()->getLibelleComplet();
-        }
-    	$libelle = $this->libelleCompletCache;
-
         if($libelle_long) {
-            return trim(trim($libelle).' '.$this->getLibelleLong());
+
+            return trim(trim($this->getParent()->getLibelleComplet(true)).' '.$this->getLibelleLong());
         }
+
+        if(!is_null($this->libelleCompletCache)) {
+
+            return $this->libelleCompletCache;
+        }
+
+    	$libelle = $this->getParent()->getLibelleComplet();
 
         $this->libelleCompletCache = trim(trim($libelle).' '.$this->libelle);
 
