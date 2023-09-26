@@ -473,4 +473,54 @@ class facturationActions extends sfActions
       $this->xml = $facture->getXml();
 
     }
+
+    public function executeLibre(sfWebRequest $request) {
+        $this->facturationsLibre = MouvementsFactureClient::getInstance()->startkey('MOUVEMENTSFACTURE-0000000000')->endkey('MOUVEMENTSFACTURE-9999999999')->execute()->getDatas();
+        krsort($this->facturationsLibre);
+    }
+
+    public function executeCreationLibre(sfWebRequest $request) {
+            $this->factureMouvements = MouvementsFactureClient::getInstance()->createMouvementsFacture();
+            $this->factureMouvements->save();
+            $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
+    }
+
+    public function executeEditionLibre(sfWebRequest $request) {
+        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . $request->getParameter('id'));
+
+        $this->form = new FactureMouvementsEditionForm($this->factureMouvements);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if ($this->form->isValid()) {
+            $this->form->save();
+            $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
+        }
+    }
+
+    public function executeSuppressionLibre(sfWebRequest $request) {
+        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . $request->getParameter('id'));
+        if ($this->factureMouvements->getNbMvtsAFacture()) {
+            $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
+        }
+        $this->factureMouvements->delete();
+        $this->redirect('facturation_libre');
+    }
+
+    public function executeComptabiliteLibre(sfWebRequest $request) {
+        $compta = ComptabiliteClient::getInstance()->findCompta();
+        $this->form = new ComptabiliteForm($compta);
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->form->save();
+                return $this->redirect('facturation_libre_comptabilite');
+            }
+        }
+    }
 }
