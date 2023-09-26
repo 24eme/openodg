@@ -75,7 +75,7 @@
                 <hr />
                 <?php if ($societe->commentaire && $modifiable) : ?>
                 <h5 style="margin-bottom: 15px; margin-top: 0px;"><strong>🗣 Commentaire️</strong></h5>
-                <p>🗨️ <?php echo str_replace('\n', '</p><p>🗨️ ', html_entity_decode($societe->commentaire)); ?></p>
+                <p>🗨️ <?php echo implode('</p><p>🗨️ ', $societe->getCommentaires()->getRawValue()); ?></p>
                 <hr />
                 <?php endif; ?>
                 <?php if (MandatSepaConfiguration::getInstance()->isActive()): ?>
