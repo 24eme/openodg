@@ -109,11 +109,11 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <?php if ((($etablissement->commentaire) || ($societe->commentaire)) && $modifiable) : ?>
                 <h5 style="margin-bottom: 15px; margin-top: 0px;"><strong>🗣 Commentaire️</strong></h5>
                 <?php if ($etablissement->commentaire): ?>
-                <p>🗨️ <?php echo str_replace('\n', '</p><p>🗨️ ', html_entity_decode($etablissement->commentaire)); ?></p>
+                <p>🗨️ <?php echo implode('</p><p>🗨️ ', $etablissement->getCommentaires()->getRawValue()); ?></p>
                 <?php endif; ?>
                 <?php if ($societe->commentaire): ?>
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Provenant de la société</strong></h5>
-                <p>🗨️ <?php echo str_replace('\n', '</p><p>🗨️ ', html_entity_decode($societe->commentaire)); ?></p>
+                <p>🗨️ <?php echo implode('</p><p>🗨️ ', $societe->getCommentaires()->getRawValue()); ?></p>
                 <?php endif; ?>
                 <hr />
                 <?php endif; ?>
