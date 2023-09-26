@@ -69,7 +69,7 @@
             <?php endif; ?>
 
             <div class="form-group text-right">
-                <div class="col-xs-3 col-xs-offset-6">
+                <div class="col-xs-3 col-xs-offset-3">
                     <button class="btn btn-default btn-block btn-upper" type="submit"><?php if($massive): ?>Générer<?php else: ?>Générer la facture<?php endif; ?></button>
                 </div>
             </div>
