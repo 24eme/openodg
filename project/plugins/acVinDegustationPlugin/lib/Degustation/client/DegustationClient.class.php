@@ -97,7 +97,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
 	    $lots = array();
         $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows;
 	    foreach ($rows as $lot) {
-            if($lot->value->preleve) {
+            if(isset($lot->value->preleve) && $lot->value->preleve) {
                 continue;
             }
             if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
@@ -121,7 +121,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         $lots = array();
         $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows;
         foreach ($rows as $lot) {
-            if(!$lot->value->preleve) {
+            if(!isset($lot->value->preleve) || !$lot->value->preleve) {
                 continue;
             }
             if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
