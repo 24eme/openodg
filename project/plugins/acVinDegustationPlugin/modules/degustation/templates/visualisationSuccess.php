@@ -73,7 +73,7 @@
     </tbody>
 </table>
 
-<h4>Lots à prélever (<?php echo count($aPreleves->getRawValue(), COUNT_RECURSIVE) - count(array_keys($aPreleves->getRawValue())) ?>)</h4>
+<h4>Lots à prélever (<?php echo count($aPrelever->getRawValue(), COUNT_RECURSIVE) - count(array_keys($aPrelever->getRawValue())) ?>)</h4>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -84,10 +84,10 @@
         </tr>
     </thead>
     <tbody>
-    <?php if (count($aPreleves) < 1): ?>
+    <?php if (count($aPrelever) < 1): ?>
         <tr><td colspan=4 class='text-center'>Aucun lot à prélever</td></tr>
     <?php endif ?>
-    <?php foreach ($aPreleves as $etablissement_id => $operateur): ?>
+    <?php foreach ($aPrelever as $etablissement_id => $operateur): ?>
         <tr class="active">
             <td colspan=4>
                 <a href="<?php echo url_for('etablissement_visualisation', ['identifiant' => $etablissement_id]) ?>">
