@@ -15,7 +15,7 @@
   </h2>
 </div>
 
-<h4>Lots prélevés</h4>
+<h4>Lots prélevés (<?php echo count($preleves->getRawValue(), COUNT_RECURSIVE) - count(array_keys($preleves->getRawValue())) ?>)</h4>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -73,7 +73,7 @@
     </tbody>
 </table>
 
-<h4>Lots à prélever</h4>
+<h4>Lots à prélever (<?php echo count($aPreleves->getRawValue(), COUNT_RECURSIVE) - count(array_keys($aPreleves->getRawValue())) ?>)</h4>
 <table class="table table-bordered">
     <thead>
         <tr>
