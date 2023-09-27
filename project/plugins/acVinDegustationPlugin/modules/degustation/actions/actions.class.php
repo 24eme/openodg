@@ -74,7 +74,13 @@ class degustationActions extends sfActions {
 
     public function executePrelevables(sfWebRequest $request)
     {
-        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion()), DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
+        $this->lotsPrelevables = [];
+
+        $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevables());
+
+        if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
+            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
+        }
     }
 
     public function executeSelectionLots(sfWebRequest $request) {
