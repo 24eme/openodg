@@ -733,6 +733,21 @@ class degustationActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        $this->preleves = $this->aPreleves = [];
+
+        foreach ($this->degustation->getLots() as $lot) {
+            if ($lot->isPreleve()) {
+                $this->preleves[$lot->declarant_identifiant][] = $lot;
+            } else {
+                $this->aPreleves[$lot->declarant_identifiant][] = $lot;
+            }
+        }
+
+        if ($request->getParameter('visu')) {
+            return sfView::SUCCESS;
+        }
+
         $etape = $this->getRouteEtape($this->degustation->etape);
         if(!$etape){
 
