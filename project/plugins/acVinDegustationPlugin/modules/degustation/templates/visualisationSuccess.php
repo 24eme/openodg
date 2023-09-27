@@ -29,9 +29,13 @@
     <?php if (count($preleves) < 1): ?>
         <tr><td colspan=4 class='text-center'>Aucun lot prélevé</td></tr>
     <?php endif ?>
-    <?php foreach ($preleves as $operateur): ?>
+    <?php foreach ($preleves as $etablissement_id => $operateur): ?>
         <tr class="active">
-            <td colspan=4><strong><?php echo $operateur[0]->declarant_nom ?></strong></td>
+            <td colspan=4>
+                <a href="<?php echo url_for('etablissement_visualisation', ['identifiant' => $etablissement_id]) ?>">
+                    <strong><?php echo $operateur[0]->declarant_nom ?></strong>
+                </a>
+            </td>
         </tr>
         <?php foreach ($operateur as $lot): ?>
         <tr>
@@ -83,9 +87,13 @@
     <?php if (count($aPreleves) < 1): ?>
         <tr><td colspan=4 class='text-center'>Aucun lot à prélever</td></tr>
     <?php endif ?>
-    <?php foreach ($aPreleves as $operateur): ?>
+    <?php foreach ($aPreleves as $etablissement_id => $operateur): ?>
         <tr class="active">
-            <td colspan=4><strong><?php echo $operateur[0]->declarant_nom ?></strong></td>
+            <td colspan=4>
+                <a href="<?php echo url_for('etablissement_visualisation', ['identifiant' => $etablissement_id]) ?>">
+                    <strong><?php echo $operateur[0]->declarant_nom ?></strong>
+                </a>
+            </td>
         </tr>
         <?php foreach ($operateur as $lot): ?>
         <tr>
