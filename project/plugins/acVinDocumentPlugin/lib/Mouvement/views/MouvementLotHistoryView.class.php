@@ -87,6 +87,9 @@ class MouvementLotHistoryView extends acCouchdbView
     {
         $syntheseLots = [];
         foreach ($mouvements as $mouvementLot) {
+            if(!$mouvementLot->value->lot_unique_id) {
+                continue;
+            }
             # Démo: https://regex101.com/r/J9XQnv/4
             preg_match('/([\w -]+)(?: (\w+))? (\d{4})/uU', $mouvementLot->value->libelle, $matches);
             $libelle = $matches[0];
