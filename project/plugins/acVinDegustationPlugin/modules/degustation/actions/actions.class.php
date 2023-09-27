@@ -740,15 +740,8 @@ class degustationActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
 
-        $this->preleves = $this->aPreleves = [];
-
-        foreach ($this->degustation->getLots() as $lot) {
-            if ($lot->isPreleve()) {
-                $this->preleves[$lot->declarant_identifiant][] = $lot;
-            } else {
-                $this->aPreleves[$lot->declarant_identifiant][] = $lot;
-            }
-        }
+        $this->lots = $this->degustation->getLotsPreleves();
+        uasort($this->lots, function ($a, $b) { return $a->declarant_nom > $b->declarant_nom; });
 
         if ($request->getParameter('visu')) {
             return sfView::SUCCESS;

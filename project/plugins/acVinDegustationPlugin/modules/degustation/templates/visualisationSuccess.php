@@ -15,86 +15,34 @@
   </h2>
 </div>
 
-<h4>Lots prélevés</h4>
-<table class="table table-bordered">
+<h4>Lots prélevés (<?php echo count($lots->getRawValue()) ?>)</h4>
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Information sur le lot</th>
-            <th>Adresse de logement</th>
+            <th>Opérateur</th>
+            <th>Provenance</th>
+            <th>Produit</th>
+            <th>Volume</th>
             <th>Date de prélèvement</th>
-            <th>Affection</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-    <?php if (count($preleves) < 1): ?>
+    <?php if (count($lots) < 1): ?>
         <tr><td colspan=4 class='text-center'>Aucun lot prélevé</td></tr>
     <?php endif ?>
-    <?php foreach ($preleves as $operateur): ?>
-        <tr class="active">
-            <td colspan=4><strong><?php echo $operateur[0]->declarant_nom ?></strong></td>
-        </tr>
-        <?php foreach ($operateur as $lot): ?>
+    <?php foreach ($lots as $lot): ?>
         <tr>
-            <td>
-                <?php echo showOnlyProduit($lot); ?><br/>
-                Volume : <?php echo $lot->volume ?> <small class="text-muted">hl</small>
-            </td>
-            <td>
-                <?php echo $lot->getAdresseLogement(); ?><br/>
-                <small class='text-muted'>SECTEUR: <?php echo $lot->getSecteur(); ?></small><br/>
-            </td>
+            <td><?php echo $lot->declarant_nom ?></td>
+            <td><?php echo $lot->getTypeProvenance() ?></td>
+            <td><?php echo showOnlyProduit($lot); ?></td>
+            <td class="text-right"><?php echo $lot->volume ?> <small class="text-muted">hl</small></td>
             <td class='text-center'>
                 <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->getPreleve())->format('d/m/Y'); ?>
             </td>
-            <td style="display: flex; flex-flow: column wrap; align-items: center">
-                <?php if ($lot->id_document_provenance): ?>
-                    <small class="text-muted">
-                        <a href="#"><?php echo $lot->id_document_provenance ?></a>
-                    </small>
-                    <span class="glyphicon glyphicon-chevron-down"></span>
-                <?php endif ?>
-                <strong class="text-bold">
-                    <a href="#">Ce document</a>
-                </strong>
-                <?php if ($lot->id_document_affectation): ?>
-                    <span class="glyphicon glyphicon-chevron-down">↓</span>
-                    <small class="text-muted">
-                        <a href="#"><?php echo $lot->id_document_affectation ?></a>
-                    </small>
-                <?php endif ?>
-            </td>
+            <td>Voir <a href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>">l'historique du lot</a></td>
         </tr>
-        <?php endforeach ?>
     <?php endforeach ?>
     </tbody>
 </table>
 
-<h4>Lots à prélever</h4>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Information sur le lot</th>
-            <th>Adresse de logement</th>
-            <th>Date de prélèvement</th>
-            <th>Affection</th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php if (count($aPreleves) < 1): ?>
-        <tr><td colspan=4 class='text-center'>Aucun lot à prélever</td></tr>
-    <?php endif ?>
-    <?php foreach ($aPreleves as $operateur): ?>
-        <tr class="active">
-            <td colspan=4><strong><?php echo $operateur[0]->declarant_nom ?></strong></td>
-        </tr>
-        <?php foreach ($operateur as $lot): ?>
-        <tr>
-            <td>
-                <?php echo showOnlyProduit($lot); ?><br/>
-                Volume : <?php echo $lot->volume ?> <small class="text-muted">hl</small>
-            </td>
-        </tr>
-        <?php endforeach ?>
-    <?php endforeach ?>
-    </tbody>
-</table>
