@@ -41,7 +41,10 @@
         <tr>
             <td>
                 <?php echo showOnlyProduit($lot); ?><br/>
-                Volume : <?php echo $lot->volume ?> <small class="text-muted">hl</small>
+                Volume : <?php echo $lot->volume ?> <small class="text-muted">hl</small><br/>
+                <?php if ($lot->unique_id): ?>
+                    Voir <a href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $etablissement_id, 'unique_id' => $lot->unique_id]) ?>">l'historique du lot</a>
+                <?php endif ?>
             </td>
             <td>
                 <?php echo $lot->getAdresseLogement(); ?><br/>
