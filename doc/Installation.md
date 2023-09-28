@@ -9,7 +9,7 @@ sudo aptitude install texlive-fonts-recommended texlive-latex-extra texlive-late
 
 Installer couchdb : https://docs.couchdb.org/en/stable/install/unix.html#enabling-the-apache-couchdb-package-repository
 
-En mode dév : https://sergio.24eme.fr/2020/10/19/demarrer-couchdb3-sans-mot-de-passe-admin/
+En mode dév il est préférable d'appliquer cette procédure : https://sergio.24eme.fr/2020/10/19/demarrer-couchdb3-sans-mot-de-passe-admin/
 
 Une fois installé couchdb est accessible ici : http://localhost:5984
 
