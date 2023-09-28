@@ -29,6 +29,12 @@ cd openodg/project
 
 # Configuration
 
+Copier et configurer le fichier de configuration config/databases.yml
+
+```
+cp bin/databases.yml{.example,}
+``
+
 Copier le fichier de configuration bin/config.inc
 
 ```
