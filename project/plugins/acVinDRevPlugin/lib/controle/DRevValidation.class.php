@@ -61,9 +61,6 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'dr_vci_vsi', "Du VCI et VSI ont été déclarés pour le même produit dans la déclaration de récolte");
         $this->addControle(self::TYPE_ERROR, 'declaration_lot_millesime_inf_n_1', "Le lot révendiqué est anterieur au millésime ".($this->document->periode-1));
 
-
-        $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats',"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(VIP2C::getProduitsHashWithVolumeSeuil($this->document->declarant->cvi, $this->document->campagne)[0])." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
-
         /*
          * Engagement
          */
@@ -99,8 +96,11 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'lot_volume_total_depasse', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
         $this->addControle(self::TYPE_WARNING, 'lot_volume_total_depasse_warn', 'Les volumes revendiqués de vos lots sont supérieurs aux volumes revendicables déclarés dans votre DR, SV11 ou SV12');
 
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable',"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil(VIP2C::getProduitsHashWithVolumeSeuil($this->document->declarant->cvi, $this->document->campagne)[0])." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
-        $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise',"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil(VIP2C::getProduitsHashWithVolumeSeuil($this->document->declarant->cvi, $this->document->campagne)[0])." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
+        foreach($this->document->getProduitsHashWithVolumeSeuil() as $produit_hash) {
+            $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit_hash,"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
+            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
+            $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
+        }
     }
 
     public function controle()
@@ -116,7 +116,7 @@ class DRevValidation extends DeclarationLotsValidation
           $produits[$produit->getParent()->getHash()] = $produit;
         }
         $this->controleNeant();
-        foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->document->declarant->cvi, $this->document->campagne) as $produit_hash) {
+        foreach($this->document->getProduitsHashWithVolumeSeuil() as $produit_hash) {
             $this->controleVolumeSeuilDeclare($produit_hash);
         }
         $this->controleEngagementVCI();
@@ -415,7 +415,7 @@ class DRevValidation extends DeclarationLotsValidation
             return null;
         }
 
-        $produit = $this->document->declaration->get($hash_produit)->getConfig()->getLibelleComplet();
+        $produit = $this->document->declaration->get($hash_produit)->getConfig()->getLibelleComplet()." ".$this->document->getDefaultMillesime();
 
         $volumeTotalSeuilDeclare = $this->document->summerizeProduitsLotsByCouleur()[$produit]['volume_lots'];
         $volumeCommercialisableLibre = $this->document->getVolumeCommercialisableLibre($hash_produit);
