@@ -15,35 +15,48 @@ En mode dév : https://sergio.24eme.fr/2020/10/19/demarrer-couchdb3-sans-mot-de-
 
 Récupération du projet
 
-```git clone https://github.com/24eme/openodg.git```
+```
+git clone https://github.com/24eme/openodg.git
+```
 
 Aller dans le dossier openodg/project/
 
-```cd openodg/project```
+```
+cd openodg/project
+```
 
 # Configuration
 
 Copier le fichier de configuration bin/config.inc
 
-```cp bin/config.inc{.example,}```
+```
+cp bin/config.inc{.example,}
+```
 
 Configurer le fichier bin/config.inc si besoin
 
-        #bin/config.inc
-        COUCHDBDOMAIN=your_couchdb_host
-        COUCHDBPORT=your_couchdb_port
-        COUCHDBBASE=your_database_name
+```
+#bin/config.inc
+COUCHDBDOMAIN=your_couchdb_host
+COUCHDBPORT=your_couchdb_port
+COUCHDBBASE=your_database_name
+```
  
 Lancer le script d'installation :
 
-```bash bin/install.sh```
+```
+bash bin/install.sh
+```
 
 Création des dossier cache et log
 
-```mkdir cache log```
+```
+mkdir cache log
+```
 
 Test avec un serveur web PHP :
 
- > php -S localhost:9000 -t web
-
+```
+php -S localhost:9000 -t web
+```
 
