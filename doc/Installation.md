@@ -41,13 +41,6 @@ Copier le fichier de configuration config/app.yml
 cp config/app.yml{.example,}
 ```
 
-```
-#bin/config.inc
-COUCHDBDOMAIN=your_couchdb_host
-COUCHDBPORT=your_couchdb_port
-COUCHDBBASE=your_database_name
-```
-
 Création des dossier cache et log
 
 ```
