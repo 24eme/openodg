@@ -35,13 +35,11 @@ Copier et configurer le fichier de configuration config/databases.yml
 cp config/databases.yml{.example,}
 ```
 
-Copier le fichier de configuration bin/config.inc
+Copier le fichier de configuration config/app.yml
 
 ```
-cp bin/config.inc{.example,}
+cp config/app.yml{.example,}
 ```
-
-Configurer le fichier bin/config.inc si besoin
 
 ```
 #bin/config.inc
