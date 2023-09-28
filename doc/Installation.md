@@ -11,6 +11,8 @@ Installer couchdb : https://docs.couchdb.org/en/stable/install/unix.html#enablin
 
 En mode dév : https://sergio.24eme.fr/2020/10/19/demarrer-couchdb3-sans-mot-de-passe-admin/
 
+Une fois installé couchdb est accessible ici : http://localhost:5984
+
 # Récupération
 
 Récupération du projet
@@ -40,12 +42,6 @@ Configurer le fichier bin/config.inc si besoin
 COUCHDBDOMAIN=your_couchdb_host
 COUCHDBPORT=your_couchdb_port
 COUCHDBBASE=your_database_name
-```
- 
-Lancer le script d'installation :
-
-```
-bash bin/install.sh
 ```
 
 Création des dossier cache et log
