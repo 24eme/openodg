@@ -26,7 +26,8 @@
             <th>Volume</th>
             <th>Date de prélèvement</th>
             <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL): ?>
-                <th>Résultat</th>
+                <th>Conformité</th>
+                <th>Type</th>
             <?php endif ?>
             <th></th>
         </tr>
@@ -45,7 +46,7 @@
                 <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->getPreleve())->format('d/m/Y'); ?>
             </td>
             <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL): ?>
-                <td>
+                <td class='text-center'>
                 <?php if($lot->hasSpecificitePassage()): ?>
                     <span class="label label-danger" style="margin-right: -14px;">&nbsp;</span>
                 <?php endif; ?>
@@ -55,7 +56,9 @@
                           style="<?php if($lot->hasSpecificitePassage()): ?>border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;<?php endif; ?>">
                         <span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span>
                     </span>
-                    &nbsp;<?php echo $lot->getShortLibelleConformite() ?>
+                </td>
+                <td>
+                    <?php echo $lot->getShortLibelleConformite() ?>
                 </td>
             <?php endif ?>
             <td>Voir <a href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>">l'historique du lot</a></td>
