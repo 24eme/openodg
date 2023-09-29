@@ -27,6 +27,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		return $this->_get('region');
 	}
 
+	public function getRegions() {
+
+		return [];
+	}
+
     public function getDateFormat($format = 'Y-m-d') {
         if (!$this->date) {
             return date($format);
