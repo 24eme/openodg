@@ -27,7 +27,7 @@ class ParcellaireIntentionClient {
 
       public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           if (ParcellaireConfiguration::getInstance()->affectationNeedsIntention()) {
-              return ParcellaireIntentionClient::getInstance()->getLast($identifiant, $max_annee, $hydrate);
+              return ParcellaireIntentionAffectationClient::getInstance()->getLast($identifiant, $max_annee, $hydrate);
           }
           return new ParcellaireIntentionAuto();
       }
