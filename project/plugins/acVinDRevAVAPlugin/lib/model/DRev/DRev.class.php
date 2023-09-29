@@ -946,7 +946,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $mouvement->date_version = $this->validation;
             $mouvement->version = $this->version;
             $mouvement->template = $templateFacture->_id;
-            $mouvement->type = "DRev";
+            $mouvement->type = DRevClient::TYPE_MODEL;
 
             if(isset($cotisationsPrec[$cotisation->getHash()])) {
                 $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
