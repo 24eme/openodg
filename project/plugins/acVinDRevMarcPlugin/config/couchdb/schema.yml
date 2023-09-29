@@ -48,16 +48,18 @@ DRevMarc:
                         categorie: {  }
                         type_hash: {  }
                         type_libelle: {  }
+                        detail_libelle: {  }
                         quantite: { type: float }
                         taux: { type: float }
+                        tva: { type: float }
                         facture: { type: integer }
                         facturable: { type: integer }
                         template: { }
                         date: {  }
                         date_version: {  }
                         version: {  }
-                        type: {  }
-                        campagne: {  }
+                        type: { }
+                        campagne: { }
       pieces:
         type: array_collection
         definition:

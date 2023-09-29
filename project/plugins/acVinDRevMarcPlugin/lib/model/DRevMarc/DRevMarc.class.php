@@ -137,15 +137,18 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
             $mouvement = DRevMarcMouvementFactures::freeInstance($this);
             $mouvement->categorie = $cotisation->getCollectionKey();
             $mouvement->type_hash = $cotisation->getDetailKey();
-            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->type_libelle = $cotisation->getConfigCollection()->getLibelle();
+            $mouvement->detail_libelle = $cotisation->getLibelle();
             $mouvement->quantite = $cotisation->getQuantite();
             $mouvement->taux = $cotisation->getPrix();
+            $mouvement->tva = $cotisation->getTva();
             $mouvement->facture = 0;
             $mouvement->facturable = 1;
             $mouvement->date = $this->getCampagne()."-10-10";
             $mouvement->date_version = $this->validation;
             $mouvement->version = null;
             $mouvement->template = $templateFacture->_id;
+            $mouvement->type = DRevMarcClient::TYPE_MODEL;
 
             if($mouvement->quantite) {
                 $rienAFacturer = false;
@@ -164,7 +167,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
 
     public function getTemplateFacture() {
 
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-MARC-".$this->getCampagne());
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
     }
 
     public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {

@@ -4,14 +4,14 @@ class PotentielProductionProvenceGenerator extends PotentielProductionGenerator
     protected $identificationParcellaire;
     public static $categories = ['principaux', 'secondairesNoirs', 'secondairesBlancsVermentino', 'secondairesBlancsAutres'];
     protected $isPetiteSurface;
-    
+
     public function __construct($identifiant_or_etablissement)
     {
         if ($identifiant_or_etablissement) {
             parent::__construct($identifiant_or_etablissement);
             $this->identificationParcellaire = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
             if (!$this->identificationParcellaire) {
-                $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+                $this->identificationParcellaire = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
             }
             $cdp = $this->aggSuperficesByCepages($this->parcellaire->getParcelles(), $this->getCepages());
             if ($this->etablissement->isViticulteur() && $cdp['TOTAL'] < 1.5) {
