@@ -303,7 +303,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1) {
+    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1, $with_cepage_match = false) {
         $parcelles = $parcellaire->getParcellesByIdu();
 
         if(!isset($parcelles[$parcelle->idu])) {
@@ -339,7 +339,11 @@ class ParcellaireClient extends acCouchdbClient {
         krsort($parcellesMatch);
 
         foreach($parcellesMatch as $key => $pMatch) {
-
+            if ($with_cepage_match) {
+                if ($pMatch->cepage != $parcelle->cepage) {
+                    continue;
+                }
+            }
             return $pMatch;
         }
 
