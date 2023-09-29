@@ -7,7 +7,7 @@ mkdir $EXPORTDIR 2> /dev/null
 split_export_by_annee () {
     EXPORTTYPE=$1
     FILEPART=$EXPORTDIR/$EXPORTTYPE.csv.part
-    cat $FILEPART | cut -d ";" -f 1 | sort -u | grep -E "^[0-9]+;" | while read annee; do
+    cat $FILEPART | cut -d ";" -f 1 | sort -u | grep -E "^[0-9]+" | while read annee; do
         FILEPARTANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv.part
         FILEANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv
         mkdir $EXPORTDIR/$annee 2> /dev/null;

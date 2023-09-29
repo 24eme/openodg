@@ -306,6 +306,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
+    public function getOrigineTypes() {
+        $origines = [];
+        foreach($this->origines as $id) {
+            $origines[] = explode("-", $id)[0];
+        }
+
+        return  $origines;
+    }
+
     public function storeTemplates($template) {
         if ($template) {
             $this->templates->add($template->_id, $template->_id);

@@ -36,33 +36,39 @@
        <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:5%; "><?php echo tdStart() ?><strong>Anon</strong></th>
           <th class="topempty bg-white" style="width:34%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
-          <th class="bg-white" colspan="3" style="width:12%;"><?php echo tdStart() ?><strong>Avis</strong></th>
-          <th class="bg-white"  colspan="3"style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-          <th class="topempty bg-white" style="width:41%;"><strong>Motifs (si non conforme)</strong></th>
+         <th colspan="4"style="width:20%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
+          <th class="bg-white" colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Avis</strong></th>
+          <th class="bg-white"  colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
+          <th class="topempty bg-white" style="width:25%;"><strong>Motifs (si non conforme)</strong></th>
        </tr>
        <tr style="line-height:13px;">
          <th class="empty bg-white"></th>
          <th class="empty bg-white"></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable_non_redhibitoire'] ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable_redhibitoire'] ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
-         <th class="empty bg-white" style="width:41%;"></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Visuel<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Olfactif<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Gustatif<br><?php if($notation): ?>/24<?php endif ?></small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>TOTAL<br><?php if($notation): ?>/48<?php endif ?></small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
+         <th class="empty bg-white"></th>
        </tr>
    <?php endif;?>
 
     <tr style="line-height:30px; height:32px">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
       <td style="text-align:left;"><?php echo tdStart() ?><span style="line-height: 16px;"> <?php echo showOnlyProduit($lotInfo, false, 'span') ?> <?php echo showOnlyCepages($lotInfo, false) ?></span></td>
-      <td><?php echo tdStart() ?><span class="zap">o</span></td>
-      <td><?php echo tdStart() ?><span class="zap">o</span></td>
-      <td><?php echo tdStart() ?><span class="zap">o</span></td>
-      <td><?php echo tdStart() ?><span class="zap">o</span></td>
-      <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?>&nbsp;</td>
     </tr>
     <?php $i++; ?>
   <?php endforeach; ?>
 </table>
-<span><small>NCR = non conformité rédhibitoire<br>NCNR = non conformité non rédhibitoire</small></span>

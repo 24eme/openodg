@@ -455,14 +455,18 @@ class facturationActions extends sfActions
     }
 
     protected function forwardCompteSecure(){
-      if(!method_exists($this->getUser(),"getEtablissement")){
-          if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
-              return $this->forwardSecure();
-          }
-      }elseif(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
+      if(!class_exists("Societe") && !$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) { // Pour l'AVA
 
           return $this->forwardSecure();
       }
+
+      if(!class_exists("Societe")) { // Pour l'AVA
+          return;
+      }
+
+      if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
+          return $this->forwardSecure();
+     }
     }
 
     public function executeXml(sfWebRequest $request){

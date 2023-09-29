@@ -2,11 +2,11 @@ all:
   configuration:
     region:
       odg:
-        BEAUMESVENISES:
+        BEAUMESVENISE:
           nom: "Conservatoire AOC Beaumes Venise"
           adresse: "Place du marché à coté de la poste, 84190 Beaumes-de-Venise"
-          telephone: "%app_drev_BEAUMESVENISES_telephone%"
-          email: "%app_drev_BEAUMESVENISES_email%"
+          telephone: "%app_drev_BEAUMESVENISE_telephone%"
+          email: "%app_drev_BEAUMESVENISE_email%"
           produits:
             - "TRANQ/appellations/BEA"
             - "VDN/appellations/VDB"
@@ -68,4 +68,11 @@ all:
             - "TRANQ/appellations/RTA"
             - "VDN/appellations/VDR"
           habilitation_produits: "/Rasteau/"
-
+        TAVEL:
+          nom: "Syndicat AOC Tavel"
+          adresse: "56 Chemin de la Croix d’Alix 30126 Tavel"
+          telephone: "%app_drev_TAVEL_telephone%"
+          email: "%app_drev_TAVEL_email%"
+          produits:
+            - "TRANQ/appellations/TAV"
+          habilitation_produits: "/Tavel/"

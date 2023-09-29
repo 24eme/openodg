@@ -70,4 +70,15 @@ class ParcellaireConfiguration {
 
         return $this->configuration['aires'][$key];
     }
+
+    public function affectationNeedsIntention() {
+        if(!isset($this->configuration['affectation'])) {
+            return true;
+        }
+        if(!isset($this->configuration['affectation']['needs_intention'])) {
+            return true;
+        }
+        return $this->configuration['affectation']['needs_intention'];
+
+    }
 }

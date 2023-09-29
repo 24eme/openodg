@@ -26,7 +26,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;Export comptable;id facture;Campagne;Numero;Numéro Avoir\n";
+        return "Date;Identifiant societe;Code comptable client;Raison sociale;Adresse;Code Postal;Ville;Telephone fixe;Telephone Portable;eMail;Piece;Identifiant Analytique;Nom Cotisation;Cotisation Prix unitaire;Quantite Cotisation;Prix HT;TVA;Prix TTC;Montant payé;Export comptable;organisme;id facture;Campagne;Numero;Numéro Avoir\n";
     }
 
     public function export() {
@@ -77,6 +77,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
                 $csv .= $this->floatHelper->formatFr($detail->montant_tva).";";
                 $csv .= $this->floatHelper->formatFr($detail->montant_ht + $detail->montant_tva).";";
                 $csv .= ";;";
+                $csv .= Organisme::getCurrentOrganisme().";";
                 $csv .= $this->facture->_id.";";
                 $csv .= $campagne.";";
                 $csv .= $this->facture->getNumeroOdg().";";
@@ -97,6 +98,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
             ($this->floatHelper->formatFr($this->facture->getMontantPaiement())) ?: 0
         ).";";
         $csv .= $this->facture->versement_comptable.';';
+        $csv .= Organisme::getCurrentOrganisme().";";
         $csv .= $this->facture->_id.";";
         $csv .= $campagne.";";
         $csv .= $this->facture->getNumeroOdg().";";

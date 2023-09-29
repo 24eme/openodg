@@ -80,7 +80,7 @@ sleep $EXPORTSLEEP
 
 php symfony declarations:lots-export-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/declarations_cepages_lots.csv.part
 
-cat $EXPORTDIR/declarations_cepages_lots.csv.part | awk -F ';' 'BEGIN{OFS=";"}  {gsub("\\.", " ", $24); print $0; }' | sed 's/ / /g' |  sed 's/CABERNET-SAUVIGNON/CABERNET SAUVIGNON/g' | sed 's/CAB-SAUV-N/CABERNET SAUVIGNON N/' | sed 's/CALADOC"/CALADOC N"/' | sed 's/CAMENèRE N/CAMENÈRE N/' | sed 's/CHARDONAY B/CHARDONNAY B/' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHASAN"/CHASAN B"/' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MERLOT"/MERLOT N"/' | sed 's/MOURVED N/MOURVEDRE N/' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT A B/MUSCAT A PETITS GRAINS B/' | sed 's/MUSCAT À PETITS GRAINS/MUSCAT A PETITS GRAINS/g' | sed 's/MUSCAT D.HAMBOURG N/MUSCAT DE HAMBOURG N/' | sed 's/MUSCAT H N/MUSCAT DE HAMBOURG N/' | sed 's/MUS HAMB N/MUSCAT DE HAMBOURG N/' | sed 's/MUS P G /MUSCAT A PETITS GRAINS /' | sed 's/MUS PT G /MUSCAT A PETITS GRAINS /' | sed 's/Syrah/SYRAH N/' | sed 's/SYRAH"/SYRAH N"/' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VIOGNIER"/VIOGNIER B"/' | sed 's/VIOGNIER"/VIOGNIER B"/g' > $EXPORTDIR/declarations_lots.csv.part
+cat $EXPORTDIR/declarations_cepages_lots.csv.part | awk -F ';' 'BEGIN{OFS=";"}  {gsub("\\.", " ", $24); print $0; }' | sed 's/ / /g' |  sed 's/CABERNET-SAUVIGNON/CABERNET SAUVIGNON/g' | sed 's/CAB-SAUV-N/CABERNET SAUVIGNON N/' | sed 's/CALADOC"/CALADOC N"/' | sed 's/CAMENèRE N/CAMENÈRE N/' | sed 's/CHARDONAY B/CHARDONNAY B/' | sed 's/CHARDONNAY"/CHARDONNAY B"/g' | sed 's/CHASAN"/CHASAN B"/' | sed 's/GRENACHE"/GRENACHE N"/g' | sed 's/Grenache N/GRENACHE N/g' | sed 's/MARSELAN"/MARSELAN N"/g' | sed 's/MERLOT"/MERLOT N"/' | sed 's/MOURVED N/MOURVEDRE N/' | sed 's/MOURVÈDRE N/MOURVEDRE N/g' | sed 's/MUSCAT A B/MUSCAT A PETITS GRAINS B/' | sed 's/MUSCAT À PETITS GRAINS/MUSCAT A PETITS GRAINS/g' | sed 's/MUSCAT D.HAMBOURG N/MUSCAT DE HAMBOURG N/' | sed 's/MUSCAT H N/MUSCAT DE HAMBOURG N/' | sed 's/MUS HAMB N/MUSCAT DE HAMBOURG N/' | sed 's/MUS P G /MUSCAT A PETITS GRAINS /' | sed 's/MUS PT G /MUSCAT A PETITS GRAINS /' | sed 's/Syrah/SYRAH N/' | sed 's/SYRAH"/SYRAH N"/' | sed 's/VERMENTINO"/VERMENTINO B"/g' | sed 's/VIOGNIER"/VIOGNIER B"/' | sed 's/VIOGNIER"/VIOGNIER B"/g' | sed 's/cinsau[lt]*/CINSAULT/ig' > $EXPORTDIR/declarations_lots.csv.part
 
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
@@ -117,9 +117,9 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
     eval 'SUBFILTRE=$EXPORT_SUB_HABILITATION_'$subhab'_FILTRE'
     mkdir -p $SUBDIR
     head -n 1 $EXPORTDIR/habilitation.csv > $SUBDIR/habilitation.csv
-    cat $EXPORTDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | grep "$SUBFILTRE" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/habilitation.csv
+    cat $EXPORTDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/habilitation.csv
     head -n 1 $EXPORTDIR/drev.csv > $SUBDIR/drev.csv
-    cat $EXPORTDIR/drev.csv | iconv -f ISO88591 -t UTF8 | grep "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drev.csv
+    cat $EXPORTDIR/drev.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drev.csv
 done
 
 sleep $EXPORTSLEEP

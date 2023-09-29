@@ -1,6 +1,6 @@
 <?php
 
-class DegustationDeclarantRoute extends EtablissementRoute implements InterfaceDegustationGeneralRoute
+class DegustationDeclarantRoute extends EtablissementRoute implements InterfaceDegustationGeneralRoute, InterfaceUsurpationRoute
 {
 
 }

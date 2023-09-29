@@ -15,7 +15,7 @@
 	<?php endif; ?>
 	<th rowspan="2" style="width:15px;">Code douane</th>
 	<th rowspan="2" style="width:15px;" class="text-center" title="Réserve Interpro">RI</th>
-	<th style="width:15px;" colspan="6" class="text-center">Rendement</th>
+	<th style="width:15px;" colspan="7" class="text-center">Rendement</th>
 	<th rowspan="2" style="width:15px;" class="text-center">Code OI</th>
 </tr>
 <tr>
@@ -25,4 +25,5 @@
 	<th style="width:15px;" class="text-center" title="Rendement DR L5">L15</th>
 	<th style="width:15px;" class="text-center" title="Rendement VCI">VCI</th>
 	<th style="width:15px;" class="text-center" title="Rendement VCI Total">VCI Tot.</th>
+    <th style="width:15px;" class="text-center" title="Rendement VCI">VSI</th>
 </tr>

@@ -333,7 +333,7 @@ class declarationActions extends sfActions {
                         }
                     }
                     if (!isset($this->query['Campagne']) && isset($this->query['Campagne_max'])) {
-                        if ($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_A_APPROUVER && $row->key[DeclarationTousView::KEY_CAMPAGNE] != $this->query['Campagne_max']) {
+                        if ($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_A_APPROUVER && $row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_BROUILLON && $row->key[DeclarationTousView::KEY_CAMPAGNE] != $this->query['Campagne_max']) {
                             $find = false;
                             break;
                         }

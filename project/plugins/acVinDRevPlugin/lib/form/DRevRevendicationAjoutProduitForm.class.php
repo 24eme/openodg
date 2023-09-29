@@ -58,7 +58,7 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbForm
 
     public function getDenominationAuto() {
 
-        return DrevClient::$denominationsAuto;
+        return DRevClient::getDenominationsAuto();
     }
 
     public function formatter($widget, $inputs)
@@ -78,7 +78,7 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbForm
         $denomination_complementaire = (isset($values['denomination_complementaire']) && !empty($values['denomination_complementaire']))? ($values['denomination_complementaire']) : null;
 
         if(isset($values['denomination_auto']) && $values['denomination_auto'] && $values['denomination_auto'] != DRevClient::DENOMINATION_CONVENTIONNEL) {
-            $denomination_complementaire = DRevClient::$denominationsAuto[$values['denomination_auto']];
+            $denomination_complementaire = $this->getDenominationAuto()[$values['denomination_auto']];
         }
 
         if (isset($values['hashref']) && !empty($values['hashref'])) {
