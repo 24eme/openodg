@@ -2,13 +2,13 @@
 
 class ParcellaireIntentionClient {
 
-      private static $instance;
+      private static $_instance;
 
       public static function getInstance() {
-          if (!self::$instance) {
-              self::$instance = new ParcellaireIntentionClient();
+          if (!self::$_instance) {
+              self::$_instance = new ParcellaireIntentionClient();
           }
-          return self::$instance;
+          return self::$_instance;
       }
 
       public function createDoc($identifiant, $periode, $papier = false, $date = null, $type = ParcellaireIntentionAffectationClient::TYPE_COUCHDB) {
