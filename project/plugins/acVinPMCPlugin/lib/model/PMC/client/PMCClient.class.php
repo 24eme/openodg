@@ -68,6 +68,22 @@ class PMCClient extends acCouchdbClient
         return $doc;
     }
 
+    public function createPMCNC($lot, $papier = false) {
+        $pmcNc = PMCClient::getInstance()->createDoc($lot->declarant_identifiant, $lot->campagne, date('YmdHis'), $papier);
+        $lotDef = PMCLot::freeInstance(new PMC());
+        foreach($lot->getFields() as $key => $value) {
+            if($lotDef->getDefinition()->exist($key)) {
+                continue;
+            }
+            $lot->remove($key);
+        }
+        $lot = $pmcNc->lots->add(null, $lot);
+        $lot->id_document = $pmcNc->_id;
+        $lot->updateDocumentDependances();
+
+        return $pmcNc;
+    }
+
     public function getIds($periode) {
         $ids = $this->startkey_docid(sprintf("PMC-%s-%s", "0000000000", "00000000"))
                     ->endkey_docid(sprintf("PMC-%s-%s", "ZZZZZZZZZZ", "99999999"))

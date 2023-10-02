@@ -556,6 +556,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               $lot->updateDocumentDependances();
               $lot->updateStatut();
 
+              if($lot->id_document_provenance) {
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CHANGE_DEST, "Changé pour : ".$lot->getLibelle().", ".$lot->volume." hl"));
+              }
+
               $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
 
               if ($lot->elevage === true) {
