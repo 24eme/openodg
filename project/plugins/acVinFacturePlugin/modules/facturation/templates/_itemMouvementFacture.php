@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-4 <?php if($mvtForm["identifiant"]->hasError()): ?>text-danger<?php endif; ?>">
                 <?php echo $mvtForm['identifiant']->renderError(); ?>
-                <?php echo $mvtForm['identifiant']->render(array('class' => 'form-control select2autocomplete input-md', 'autofocus' => 'autofocus', 'placeholder' => 'Rechercher')); ?>
+                <?php echo $mvtForm['identifiant']->render(array('class' => 'form-control select2autocompleteAjax input-md', 'autofocus' => 'autofocus', 'placeholder' => 'Rechercher')); ?>
             </div>
             <div class="col-xs-2 <?php if($mvtForm["identifiant_analytique"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0; padding-right: 0;">
                 <?php echo $mvtForm['identifiant_analytique']->renderError(); ?>
