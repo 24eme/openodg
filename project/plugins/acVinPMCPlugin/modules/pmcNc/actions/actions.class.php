@@ -21,25 +21,9 @@ class pmcNcActions extends sfActions {
         }
         $lot = LotsClient::getInstance()->findByUniqueId($etablissement->identifiant, $request->getParameter('unique_id'));
 
-        $campagne = ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent();
-        $periode = preg_replace('/-.*/', '', $campagne);
-        $date = date('Y-m-d');
-
-        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
-        $lotDef = PMCLot::freeInstance(new PMC());
-        foreach($lot->getFields() as $key => $value) {
-            if($lotDef->getDefinition()->exist($key)) {
-                continue;
-            }
-            $lot->remove($key);
-        }
-        $lot = $pmc->lots->add(null, $lot);
-        $lot->id_document = $pmc->_id;
-        $lot->date = date('Y-m-d');
-        $lot->updateDocumentDependances();
-        $pmc->save();
-
-        return $this->redirect('pmc_lots', $pmc);
+        $pmcNc = PMCClient::getInstance()->createPMCNC($lot, $isAdmin);
+        $pmcNc->save();
+        return $this->redirect('pmc_lots', $pmcNc);
     }
 
     protected function secure($droits, $doc) {
