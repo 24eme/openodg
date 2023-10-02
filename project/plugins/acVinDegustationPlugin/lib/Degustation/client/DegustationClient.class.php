@@ -107,7 +107,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
                 throw new sfException("Lot ne devrait pas être vide : ".print_r($lot, true));
             }
 	        $lots[$lot->value->unique_id] = $this->cleanLotForDegustation($lot->value);
-            $lots[$lot->value->unique_id]->type_document = substr($lot->id, 0, 4);
+            $lots[$lot->value->unique_id]->type_document = substr(strtok($lot->id, '-'), 0, 4);
             $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;
             if ($nb_passage > 1) {
                 $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $nb_passage);
@@ -131,7 +131,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
                 throw new sfException("Lot ne devrait pas être vide : ".print_r($lot, true));
             }
             $lots[$lot->value->unique_id] = $this->cleanLotForDegustation($lot->value);
-            $lots[$lot->value->unique_id]->type_document = substr($lot->id, 0, 4);
+            $lots[$lot->value->unique_id]->type_document = substr(strtok($lot->id, '-'), 0, 4);
             $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;
             if ($nb_passage > 1) {
                 $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $nb_passage);
