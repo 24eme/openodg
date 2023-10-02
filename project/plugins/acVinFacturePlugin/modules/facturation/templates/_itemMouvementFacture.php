@@ -14,7 +14,11 @@
             </div>
             <div class="col-xs-3 <?php if($mvtForm["libelle"]->hasError()): ?>text-danger<?php endif; ?>">
                 <?php echo $mvtForm['libelle']->renderError(); ?>
-                <?php echo $mvtForm['libelle']->render(array('class' => 'form-control input-md select2-libelle')); ?>
+                <?php echo $mvtForm['libelle']->render(array('class' => 'form-control input-md select2-libelle', 'list' => "suggestions")); ?>
+                <datalist id="suggestions">
+                  <option value="Forfait kilométrique">
+                  <option value="Temps passé">
+                </datalist>
             </div>
             <div class="col-xs-2 <?php if($mvtForm["prix_unitaire"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
                 <?php echo $mvtForm['prix_unitaire']->renderError(); ?>
