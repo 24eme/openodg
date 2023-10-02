@@ -1,8 +1,10 @@
+<?php use_helper('Float'); ?>
 <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
 
 <?php include_partial('parcellaireManquant/step', array('step' => 'manquants', 'parcellaireManquant' => $parcellaireManquant)) ?>
-<div class="page-header">
-    <h2>Pieds morts ou manquants sur votre exploitation <br/><small>Merci d'indiquer la densité et le % de pied manquant</small></h2>
+<div">
+    <h2>Pieds morts ou manquants sur votre exploitation</h2>
+    <p class="pt-3">Merci d'indiquer la densité et le % de pied manquant</p>
     <div class="alert alert-info">
         <div style="display: inline-block; margin-right: 1rem;">
             <p><span class="glyphicon glyphicon-info-sign"></span></p>
@@ -13,7 +15,7 @@
     </div>
 </div>
 
-<form action="<?php echo url_for("parcellairemanquant_manquants", $parcellaireManquant) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("parcellairemanquant_manquants", $parcellaireManquant) ?>" method="post" class="form-inline">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -24,11 +26,11 @@
         	<tr>
                 <th class="col-xs-2">Lieu-dit</th>
                 <th class="col-xs-1">Section /<br />N° parcelle</th>
-                <th class="col-xs-3">Produit</th>
-                <th class="col-xs-1">Année plantat°</th>
+                <th class="col-xs-4">Produit</th>
+                <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-1">Densité</th>
-                <th class="col-xs-1">% de pieds manquants</th>
+                <th class="col-xs-1" style="text-align: center;">Densité</th>
+                <th class="col-xs-2" style="text-align: center;">% de pieds<br/>manquants</th>
             </tr>
 		</thead>
 		<tbody>
@@ -41,21 +43,20 @@
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
-                <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
-            	<td>
+                <td style="text-align: center;"><?php echo $parcelle->campagne_plantation; ?></td>
+                <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
+            	<td style="text-align: center;">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['densite']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['densite']->renderError() ?>
-                        <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['densite']->render(array('class' => 'form-control', "placeholder" => "Densité")) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['densite']->render(array('class' => 'form-control text-right', 'maxlength' => 4, 'size' => 4)) ?>
                         </div>
-                    </div>
             	</td>
-            	<td>
+                <td style="text-align: center;">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['pourcentage']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->renderError() ?>
-                        <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->render(array('class' => 'form-control', "placeholder" => "% de pieds manquants")) ?>
+                        <div class="input-group">
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->render(array('class' => 'form-control text-right', "maxlength" => 5, "size" => 5)) ?>
+                            <div class="input-group-addon">%</div>
                         </div>
                     </div>
             	</td>
