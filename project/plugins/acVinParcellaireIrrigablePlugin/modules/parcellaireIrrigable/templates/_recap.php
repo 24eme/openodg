@@ -6,10 +6,10 @@
 		        <th class="col-xs-2">Lieu-dit</th>
 		        <th class="col-xs-1 text-center">Section / N° parcelle</th>
 		        <th class="col-xs-2">Cépage</th>
-		        <th class="col-xs-1">Année plantat°</th>
-		        <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
-		        <th class="col-xs-2">Type de matériel</th>
-		        <th class="col-xs-2">Type de ressource</th>
+		        <th class="col-xs-1 text-center">Année plantat°</th>
+		        <th class="col-xs-1 text-right">Surf. <span class="text-muted small">(ha)</span></th>
+		        <th class="col-xs-2 text-center">Type de matériel</th>
+		        <th class="col-xs-2 text-center">Type de ressource</th>
 
             </tr>
 		</thead>
@@ -24,10 +24,10 @@ foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune
 				<td><?php echo $parcelle->lieu; ?></td>
 				<td class="text-center"><?php echo $parcelle->section; ?> <?php echo $parcelle->numero_parcelle; ?></td>
 				<td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
-				<td><?php echo $parcelle->campagne_plantation; ?></td>
-				<td style="text-align: right;"><?php echo echoFloat($parcelle->superficie); $somme_superficie += $parcelle->superficie; ?></td>
-            	<td><?php echo $parcelle->materiel; ?></td>
-            	<td><?php echo $parcelle->ressource; ?></td>
+				<td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
+				<td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); $somme_superficie += $parcelle->superficie; ?></td>
+            	<td class="text-center"><?php echo $parcelle->materiel; ?></td>
+            	<td class="text-center"><?php echo $parcelle->ressource; ?></td>
             </tr>
         <?php  endforeach; ?>
 <?php  endforeach; ?>
@@ -35,7 +35,7 @@ foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune
 <tfooter>
     <tr>
         <th colspan="5">Total superficie</th>
-        <th class="text-right"><?php echoFloat($somme_superficie); ?></th>
+        <th class="text-right"><?php echoFloatFr($somme_superficie, 4); ?></th>
         <th colspan="2">&nbsp;</th>
     <tr>
 <tfooter>
