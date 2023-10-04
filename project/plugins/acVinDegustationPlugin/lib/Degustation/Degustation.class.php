@@ -1494,12 +1494,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                         $secteurs[$region] = [];
                     }
             }
-            $secteurs['SANS_SECTEUR'] = [];
+            $secteurs[DegustationClient::DEGUSTATION_SANS_SECTEUR] = [];
 
             foreach($this->getLotsPrelevables() as $lot) {
                 $secteur = $lot->secteur;
                 if(!$secteur) {
-                    $secteur = 'SANS_SECTEUR';
+                    $secteur = DegustationClient::DEGUSTATION_SANS_SECTEUR;
                 }
 
                 $secteurs[$secteur][$lot->getAdresseLogement()][] = $lot;

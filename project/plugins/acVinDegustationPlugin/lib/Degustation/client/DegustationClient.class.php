@@ -15,7 +15,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
     const DEGUSTATION_TRI_MANUEL = "manuel";
     const DEGUSTATION_TRI_NUMERO_ANONYMAT = "numero_anonymat";
     const DEGUSTATION_TRI_PRODUIT = "produit";
-
+    const DEGUSTATION_SANS_SECTEUR = "SANS_SECTEUR";
 
     public static function getInstance()
     {

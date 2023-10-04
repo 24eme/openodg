@@ -351,9 +351,12 @@ class degustationActions extends sfActions {
         }
 
         $this->secteur = $request->getParameter('secteur');
+
         if(!$this->secteur) {
             return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->degustation->getLotsBySecteur()))));
         }
+
+        $this->afficher_tous_les_secteurs = $request->getParameter('afficher_tous_les_secteurs', false);
 
         $this->lots = $this->degustation->getLotsBySecteur();
 

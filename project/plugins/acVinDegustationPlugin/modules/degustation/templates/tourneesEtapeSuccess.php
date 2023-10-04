@@ -13,7 +13,7 @@ echo $form->renderGlobalErrors();
 ?>
     <div class="row">
     <div class="col-xs-3">
-        <div class="panel panel-default" style="min-height: 160px">
+        <div class="panel panel-default">
         <div class="panel-heading">
             <h2 class="panel-title">
             Liste des tournées
@@ -21,12 +21,15 @@ echo $form->renderGlobalErrors();
         </div>
         <div class="list-group">
             <?php foreach (array_keys($lots->getRawValue()) as $region): ?>
-                <?php if($region == 'SANS_SECTEUR'): continue; endif; ?>
-            <a href="<?php echo url_for('degustation_tournees_etape', array('sf_subject' => $degustation, 'secteur' => $region)); ?>" class="list-group-item <?php if($secteur == $region): ?>active<?php endif; ?>">
-                <span class="glyphicon glyphicon-map-marker"></span> <?php echo $region; ?> <span class="badge"><?php echo count($lots[$region]) ?></span>
+            <?php if (!count($lots[$region]) && !$afficher_tous_les_secteurs && $region != $secteur): continue; endif; ?>
+            <a href="<?php echo url_for('degustation_tournees_etape', array('sf_subject' => $degustation, 'secteur' => $region, 'afficher_tous_les_secteurs' => $afficher_tous_les_secteurs)); ?>" class="list-group-item <?php if($secteur == $region): ?>active<?php endif; ?>">
+                <span class="glyphicon <?php if($region == DegustationClient::DEGUSTATION_SANS_SECTEUR): ?>glyphicon-ban-circle<?php else: ?>glyphicon-map-marker<?php endif; ?>"></span> <?php echo $region; ?> <span class="badge"><?php echo count($lots[$region]) ?></span>
             </a>
             <?php endforeach; ?>
         </div>
+            <div class="panel-footer text-center">
+                <a href="<?php echo url_for('degustation_tournees_etape', array('sf_subject' => $degustation, 'secteur' => $secteur, 'afficher_tous_les_secteurs' => !$afficher_tous_les_secteurs)); ?>" class="btn-link"><?php if(!$afficher_tous_les_secteurs): ?>Afficher tous les secteurs<?php else: ?>Cacher les secteurs non utilisés<?php endif; ?> </a>
+            </div>
         </div>
     </div>
     <div class="col-xs-9">
