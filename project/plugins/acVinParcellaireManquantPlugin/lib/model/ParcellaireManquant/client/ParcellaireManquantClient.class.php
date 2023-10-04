@@ -99,16 +99,6 @@ class ParcellaireManquantClient extends acCouchdbClient {
           return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
       }
 
-      public function getRessources($value = null)
-      {
-      	return $this->getFromConfig('ressources', $value);
-      }
-
-      public function getMateriels($value = null)
-      {
-      	return $this->getFromConfig('materiels', $value);
-      }
-
       private function getFromConfig($type, $value = null)
       {
       	$items = sfConfig::get('app_parcellaire_manquant_'.$type);

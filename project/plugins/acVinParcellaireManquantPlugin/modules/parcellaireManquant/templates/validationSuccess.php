@@ -51,7 +51,7 @@
    </div>
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
-        	<a href="<?php echo url_for("parcellairemanquant_irrigations", $parcellaireManquant) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+        	<a href="<?php echo url_for("parcellairemanquant_manquants", $parcellaireManquant) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for('parcellairemanquant_export_pdf', $parcellaireManquant) ?>" class="btn btn-primary">
