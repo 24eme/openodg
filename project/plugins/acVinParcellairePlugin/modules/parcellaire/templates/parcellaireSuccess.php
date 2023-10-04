@@ -224,7 +224,7 @@ $list_idu = [];
 ?>
     <tr>
         <td><strong>Total</strong></td>
-        <td class="text-right"><strong><?php echo array_sum(array_column($synthese->getRawValue(), 'superficie')) ?></strong></td>
+        <td class="text-right"><strong><?php echoSuperficie(array_sum(array_column($synthese->getRawValue(), 'superficie'))); ?></strong></td>
     </tr>
   </tbody>
 </table>
