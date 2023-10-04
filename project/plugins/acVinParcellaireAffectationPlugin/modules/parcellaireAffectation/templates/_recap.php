@@ -1,3 +1,4 @@
+<?php use_helper('Float') ?>
 <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
 <div class="row">
     <div class="col-xs-12">
@@ -29,8 +30,8 @@
             <td><?php echo $parcelle->lieu; ?></td>
             <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
             <td><?php echo $parcelle->cepage; ?></td>
-            <td><?php echo $parcelle->campagne_plantation; ?></td>
-            <td style="text-align: right;"><span><?php echo number_format($parcelle->superficie_affectation,4); ?></span></td>
+            <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
+            <td class="text-right"><span><?php echoFloatFr($parcelle->superficie_affectation, 4); ?></span></td>
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>
             <td style="text-align: center;">
@@ -43,7 +44,7 @@
     <?php endif; endforeach; ?>
         <tr class="vertical-center">
             <td colspan="5" style="text-align: right; font-weight: bold;">Surface affectable totale <?php echo ($nbParcelles > 1 )? "des $nbParcelles parcelles sélectionnées" : " de la parcelle sélectionnée"; ?></td>
-            <td style="text-align: right; font-weight: bold;"><?php echo number_format($totalSurface,4); ?></td>
+            <td style="text-align: right; font-weight: bold;"><?php echoFloatFr($totalSurface,4); ?></td>
             <td></td>
         </tr>
     </tbody>

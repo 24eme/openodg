@@ -15,3 +15,6 @@ scrape:
 
 import:
   credentials: []
+
+calculPPForm:
+  is_secure: false

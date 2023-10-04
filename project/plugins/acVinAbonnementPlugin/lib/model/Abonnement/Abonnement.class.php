@@ -35,7 +35,7 @@ class Abonnement extends BaseAbonnement {
 
     public function getTemplateFacture() {
 
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-ABONNEMENT-".str_replace("-", "", $this->getDateDebut())."-".str_replace("-", "", $this->getDateFin()));
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".explode("-", $this->date_debut)[0]);
     }
 
     public function getMouvementsFacturesCalcule() {
@@ -63,7 +63,7 @@ class Abonnement extends BaseAbonnement {
             $mouvement->date_version = $this->date_debut;
             $mouvement->version = null;
             $mouvement->template = $templateFacture->_id;
-            $mouvement->type = "Abonnement";
+            $mouvement->type = AbonnementClient::TYPE_MODEL;
 
             if($mouvement->quantite) {
                 $rienAFacturer = false;

@@ -1,10 +1,17 @@
 <?php use_helper('Float'); ?>
-
 <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
-
 <?php include_partial('parcellaireManquant/step', array('step' => 'parcelles', 'parcellaireManquant' => $parcellaireManquant)) ?>
-<div class="page-header">
-    <h2>Parcelles de votre exploitation<br/><small>Merci d'indiquer vos parcelles ayant des pieds manquants ou morts en cliquant sur la ligne de la parcelle concernée.</small></h2>
+<div>
+    <h2>Parcelles de votre exploitation</h2>
+    <p class="pt-3">Merci d'indiquer vos parcelles ayant des pieds manquants ou morts en cliquant sur la ligne de la parcelle concernée.</p>
+    <div class="alert alert-info">
+        <div style="display: inline-block; margin-right: 1rem;">
+            <p><span class="glyphicon glyphicon-info-sign"></span></p>
+        </div>
+        <div style="display: inline-block; vertical-align: middle">
+            Il n'est pas nécessaire d'indiquer les parcelles avec moins de 20% de pieds manquants.<br/>Si vous n'avez aucune parcelle concernée, vous pouvez aller directement à la <a href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>">validation</a>.
+        </div>
+    </div>
 </div>
 
 <form action="<?php echo url_for("parcellairemanquant_parcelles", $parcellaireManquant) ?>" method="post" class="form-horizontal">
@@ -24,11 +31,11 @@
                 <th class="col-xs-3">Lieu-dit</th>
                 <th class="col-xs-1" style="text-align: right;">Section</th>
                 <th class="col-xs-1">N° parcelle</th>
-                <th class="col-xs-3">Cépage</th>
-                <th class="col-xs-1">Année plantat°</th>
+                <th class="col-xs-3">Produit</th>
+                <th class="col-xs-1 text-center">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
 
-                <th class="col-xs-2 text-center">Pieds morts ou manquants ?</th>
+                <th class="col-xs-2 text-center">Pieds morts ou manquants ? <span class="text-muted">(si&nbsp;+&nbsp;de&nbsp;20%)</span></th>
             </tr>
 		</thead>
 		<tbody>
@@ -38,8 +45,8 @@
                 <td style="text-align: right;"><?php echo $parcelle->section; ?></td>
                 <td><?php echo $parcelle->numero_parcelle; ?></td>
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
-                <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
+                <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
+                <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
 				<td class="text-center"><input <?php if ($parcellaireManquant->findParcelle($parcelle)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>

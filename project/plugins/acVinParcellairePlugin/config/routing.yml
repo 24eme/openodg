@@ -55,7 +55,7 @@ parcellaire_map:
     type: object
 
 parcellaire_form_pp:
-  url: /parcellaire/form/pp
+  url: /parcellaire/potentieldeproduction
   param: {module: parcellaire, action: calculPPForm}
   class: ParcellaireGeneralRoute
   requirements:

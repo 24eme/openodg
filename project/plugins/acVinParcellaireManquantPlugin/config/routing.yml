@@ -68,9 +68,9 @@ parcellairemanquant_parcelles:
   requirements:
     sf_method: [get, post]
 
-parcellairemanquant_irrigations:
-  url: /parcellaire-manquant/irrigations/:id
-  param: { module: parcellaireManquant, action: irrigations }
+parcellairemanquant_manquants:
+  url: /parcellaire-manquant/manquants/:id
+  param: { module: parcellaireManquant, action: manquants }
   class: ParcellaireManquantRoute
   options:
     model:    ParcellaireManquant

@@ -173,8 +173,14 @@ class FactureClient extends acCouchdbClient {
             $region = Organisme::getCurrentRegion();
         }
         $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
-
+        $types = [];
+        foreach($mouvements as $mvt) {
+            $types[$mvt->value->type] = $mvt->value->type;
+        }
         foreach($template->cotisations as $configCollection) {
+            if(!$configCollection->isForType($types)) {
+                continue;
+            }
             if(!$configCollection->isRequired()) {
                 continue;
             }
