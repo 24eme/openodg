@@ -374,13 +374,6 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        if ($this->degustation->hasLotsSansSecteurs()) {
-            $secteurs = array_keys($this->degustation->getLotsBySecteur());
-            $index_secteur = array_search($this->secteur, $secteurs) ;
-            $next_secteur = $secteurs[$index_secteur + 1];
-            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $next_secteur));
-        }
-
         return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $this->secteur));
     }
 

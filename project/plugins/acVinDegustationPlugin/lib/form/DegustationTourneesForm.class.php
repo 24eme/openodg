@@ -11,25 +11,36 @@ class DegustationTourneesForm extends acCouchdbForm
         $this->lots_par_logements = $degustation->getLotsBySecteur();
         $defaults = [];
         foreach($this->lots_par_logements[$this->secteur] as $key => $lots) {
-            $defaults[$key] = true;
+            $defaults[$key] = $this->secteur;
         }
 
         parent::__construct($degustation, $defaults, $options, $CSRFSecret);
+    }
+
+    private function getSecteurs() {
+        $secteurs = [DegustationClient::DEGUSTATION_SANS_SECTEUR => ''];
+        foreach ($this->lots_par_logements as $secteur => $lots) {
+            if ($secteur == DegustationClient::DEGUSTATION_SANS_SECTEUR) {
+                continue;
+            }
+            $secteurs[$secteur] = $secteur;
+        }
+        return $secteurs;
     }
 
     public function configure()
     {
         $logements = [];
 
-        foreach ($this->lots_par_logements[$this->secteur] + $this->lots_par_logements['SANS_SECTEUR'] as $logementKey => $lots) {
+        foreach ($this->lots_par_logements[$this->secteur] as $logementKey => $lots) {
             $logements[$logementKey] = $logementKey;
         }
 
         ksort($logements);
 
         foreach($logements as $logementKey) {
-            $this->setWidget($logementKey, new WidgetFormInputCheckbox());
-            $this->setValidator($logementKey, new ValidatorBoolean());
+            $this->setWidget($logementKey, new bsWidgetFormChoice(['choices' => $this->getSecteurs()], ['class' => 'form-control select2SubmitOnChange']));
+            $this->setValidator($logementKey, new sfValidatorChoice(['choices' => array_keys($this->getSecteurs())]));
         }
 
         $this->widgetSchema->setNameFormat('degustation_tournees[%s]');
@@ -42,16 +53,8 @@ class DegustationTourneesForm extends acCouchdbForm
                 continue;
             }
 
-            $lots = [];
-            if(isset($this->lots_par_logements['SANS_SECTEUR'][$key])) {
-                $lots = $this->lots_par_logements['SANS_SECTEUR'][$key];
-            }
-
-            if(isset($this->lots_par_logements[$this->secteur][$key])) {
-                $lots = $this->lots_par_logements[$this->secteur][$key];
-            }
-            foreach($lots as $lot) {
-                $lot->secteur = ($value) ? $this->secteur : null;
+            foreach($this->lots_par_logements[$this->secteur][$key] as $lot) {
+                $lot->secteur = ($value != DegustationClient::DEGUSTATION_SANS_SECTEUR) ? $value : null;
             }
         }
 

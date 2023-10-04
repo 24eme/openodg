@@ -73,7 +73,7 @@ echo $form->renderGlobalErrors();
                 <td class="text-left"><?php echo $firstlot->getLogementAdresse(); ?></td>
                 <td class="text-left"><?php echo $firstlot->getLogementCommune(); ?> (<?php echo $firstlot->getLogementCodePostal(); ?>)</td>
                 <td class="text-center"><?php echo count($thelots); ?></td>
-                <td class="text-center"><?php echo $item->render(['class' => "degustation bsswitch",'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success"]); ?></td>
+                <td class="text-center"><?php echo $item->render(); ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
@@ -81,13 +81,7 @@ echo $form->renderGlobalErrors();
     </div>
     </div>
 
-    <div class="row" style="margin-bottom: 20px;">
-        <div class="col-xs-3"></div>
-        <div class="col-xs-9 text-center">
-            <button type="submit" class="btn btn-primary">Enregistrer la tournée du secteur <?php echo $secteur; ?></button>
-        </div>
-    </div>
 
-    <?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES, 'is_enabled' => true)); ?>
+    <?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES, 'is_enabled' => !$degustation->hasLotsSansSecteurs())); ?>
 
 </form>
