@@ -357,7 +357,17 @@ class LotsClient
             $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
         }
 
-        return MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+
+        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);
+
+        if($drev) {
+            foreach($drev->declaration->getProduitsWithoutLots() as $produit) {
+                $syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_total;
+            }
+        }
+
+        return $syntheseLots;
     }
 
     public function getLastMouvements($doc)
