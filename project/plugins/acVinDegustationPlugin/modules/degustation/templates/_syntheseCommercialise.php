@@ -14,15 +14,15 @@
                 <?php foreach ($couleurs as $couleur => $volumes): ?>
                     <tr>
                         <td><?php echo implode(' ', [$produit, $couleur, $millesime]) ?></td>
-                        <td class="text-right"><?php echo echoFloat($volumes["DRev"]) ?> <small class="text-muted">hl</small></td>
-                        <td class="text-right"><?php echo echoFloat($volumes["Lot"]) ?> <small class="text-muted">hl</small></td>
+                        <td class="text-right"><?php echo echoFloat(@$volumes["DRev"]) ?> <small class="text-muted">hl</small></td>
+                        <td class="text-right"><?php echo echoFloat(@$volumes["Lot"]) ?> <small class="text-muted">hl</small></td>
                     </tr>
                 <?php endforeach; ?>
                 <?php if (count($couleurs) > 1): ?>
                     <tr>
                         <td><strong>Total <?php echo implode(' ', [$produit, $millesime]) ?></strong></td>
-                        <td class="text-right"><strong><?php $nb = 0; foreach($couleurs as $couleur): $nb += $couleur['DRev']; endforeach; echo echoFloat($nb); ?> <small class="text-muted">hl</small></strong></td>
-                        <td class="text-right"><strong><?php $nb = 0; foreach($couleurs as $couleur): $nb += $couleur['Lot']; endforeach; echo echoFloat($nb); ?> <small class="text-muted">hl</small></strong></td>
+                        <td class="text-right"><strong><?php $nb = 0; foreach($couleurs as $couleur): $nb += @$couleur['DRev']; endforeach; echo echoFloat($nb); ?> <small class="text-muted">hl</small></strong></td>
+                        <td class="text-right"><strong><?php $nb = 0; foreach($couleurs as $couleur): $nb += @$couleur['Lot']; endforeach; echo echoFloat($nb); ?> <small class="text-muted">hl</small></strong></td>
                     </tr>
                 <?php endif ?>
             <?php endforeach; ?>

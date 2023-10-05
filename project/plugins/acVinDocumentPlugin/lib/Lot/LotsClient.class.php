@@ -363,7 +363,10 @@ class LotsClient
 
         if($drev) {
             foreach($drev->declaration->getProduitsWithoutLots() as $produit) {
-                $syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_total;
+                if($region && $produit->getRegion() != $region) {
+                    continue;
+                }
+                @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_total;
             }
         }
 
