@@ -350,23 +350,32 @@ class LotsClient
         }
     }
 
-    public function getSyntheseLots($identifiant, $campagne, $region = null)
+    public function getSyntheseLots($identifiant, $campagnes, $region = null)
     {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
+        if(!is_array($campagnes)) {
+            $campagnes = [$campagnes];
+        }
+        $mouvements = [];
+        foreach($campagnes as $campagne) {
+            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows);
+        }
+
         if ($region) {
             $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
         }
 
         $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
 
-        $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);
+        foreach($campagnes as $campagne) {
+            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);
 
-        if($drev) {
-            foreach($drev->declaration->getProduitsWithoutLots() as $produit) {
-                if($region && $produit->getRegion() != $region) {
-                    continue;
+            if($drev) {
+                foreach($drev->declaration->getProduitsWithoutLots() as $produit) {
+                    if($region && $produit->getRegion() != $region) {
+                        continue;
+                    }
+                    @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_total;
                 }
-                @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_total;
             }
         }
 

@@ -1,5 +1,3 @@
-<h3>Synthèse</h3>
-
 <table class="table table-bordered table-striped">
     <thead>
         <tr>

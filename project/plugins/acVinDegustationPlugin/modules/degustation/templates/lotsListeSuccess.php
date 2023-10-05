@@ -29,7 +29,9 @@
   <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
 
-<?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $etablissement->identifiant, 'campagne' => $campagne, 'region' => $sf_user->getRegion()]) ?>
+<h3>Synthèse de la commercialisation</h3>
+
+<?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $etablissement->identifiant, 'campagnes' => [$campagne], 'region' => $sf_user->getRegion()]) ?>
 
 <?php if (count($mouvements)): ?>
       <table class="table table-condensed table-striped">

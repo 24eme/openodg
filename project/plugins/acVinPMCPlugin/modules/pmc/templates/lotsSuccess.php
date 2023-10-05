@@ -12,7 +12,7 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'campagne' => $pmc->campagne, 'region' => $sf_user->getRegion()]) ?>
+    <?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'campagnes' => [ConfigurationClient::getInstance()->getPreviousCampagne($pmc->campagne), $pmc->campagne], 'region' => $sf_user->getRegion()]) ?>
 
     <?php foreach($pmc->lots as $lot): ?>
       <?php if(!$lot->hasBeenEdited()){ continue; } ?>

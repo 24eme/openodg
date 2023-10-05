@@ -24,6 +24,6 @@ class degustationComponents extends sfComponents {
     }
 
     public function executeSyntheseCommercialise(sfWebRequest $request) {
-        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->identifiant, $this->campagne);
+        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->identifiant, $this->campagnes, $this->region);
     }
 }
