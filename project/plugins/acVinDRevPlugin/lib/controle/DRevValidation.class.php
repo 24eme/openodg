@@ -432,7 +432,7 @@ class DRevValidation extends DeclarationLotsValidation
                 $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne);
 
                 if(!$contrats){
-                    $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats', $produit,$this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
+                    $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$hash_produit, $produit,$this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
                 }
                 else{
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
