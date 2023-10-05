@@ -41,7 +41,7 @@ class VIP2C
         $result = json_decode($content,true);
         $todelete = array();
         foreach($result as $contratid => $data) {
-            if (strpos($data['produit'], $hash_produit) === false) {
+            if ($hash_produit && strpos($data['produit'], $hash_produit) === false) {
                 $todelete[] = $contratid;
             }
         }
