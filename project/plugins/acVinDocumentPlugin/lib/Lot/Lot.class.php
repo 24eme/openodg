@@ -1161,4 +1161,8 @@ abstract class Lot extends acCouchdbDocumentTree
 		}
 		return $hab->isHabiliteFor($this->getProduitHash(), $activite);
 	}
+
+    public function getRegion() {
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getProduitHash());
+    }
 }
