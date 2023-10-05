@@ -12,6 +12,7 @@ class VIP2C
 
     public static function getContratsAPIURL($cvi, $millesime)
     {
+        $millesime = explode('-', $millesime)[0];
         $api_link = sfConfig::get('app_api_contrats_link');
         $secret = sfConfig::get('app_api_contrats_secret');
         if (!$api_link || !$secret) {
@@ -30,6 +31,7 @@ class VIP2C
 
     public static function getContratsFromAPI($cvi, $millesime)
     {
+        $millesime = explode('-', $millesime)[0];
         $url = self::getContratsAPIURL($cvi, $millesime);
         if (!$url) {
             return array();
