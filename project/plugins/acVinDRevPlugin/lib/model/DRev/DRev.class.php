@@ -1207,6 +1207,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->getMother()->save();
         }
 
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
+
         if(!$allValidate) {
 
             return;
