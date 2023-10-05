@@ -405,17 +405,45 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return eval("return $calcul;");
     }
 
+    public function matchFilter($produit, $produitFilter)
+    {
+        $match = true;
+        $etablissements = [];
 
-    public function matchFilterProduit($produitHash, $produitFilter) {
+        foreach ($produitFilter as $type => $filter) {
+            if ($type === 'appellations') {
+                $match = $match && $this->matchFilterProduit($produit, $filter);
+            } elseif ($type === 'millesime') {
+                $match = $match && $this->matchFilterMillesime($produit, $filter);
+            } elseif ($type === 'deja') {
+                // On gère que l'option (NOT)? /deja/CONFORME pour le moment
+                // Pas NONCONFORME
+                $match = $match && $this->matchFilterConformite($produit, $filter);
+            } elseif ($type === 'region') {
+                $region = $filter;
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
+            } elseif($type === 'famille') {
+                if (array_key_exists($produit->declarant_identifiant, $etablissements) === false) {
+                    $etablissements[$produit->declarant_identifiant] = EtablissementClient::getInstance()->find($produit->declarant_identifiant);
+                }
+
+                $match = $match && $this->matchFilterFamille($etablissements[$produit->declarant_identifiant]->famille, $filter);
+            }
+        }
+
+        return $match;
+    }
+
+    public function matchFilterProduit($produit, $produitFilter) {
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produitHash)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produitHash)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
@@ -436,7 +464,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
                 continue;
             }
-            if($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
+            if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
                 continue;
             }
             if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
