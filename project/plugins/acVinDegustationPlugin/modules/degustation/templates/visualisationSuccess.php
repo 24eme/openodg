@@ -21,12 +21,13 @@
         <tr>
             <th>Opérateur</th>
             <th>Provenance</th>
+            <th>Nº Lot</th>
+            <th>Nº logement</th>
             <th>Produit</th>
             <th>Volume</th>
             <th>Date de prélèvement</th>
             <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL): ?>
                 <th>Conformité</th>
-                <th>Type</th>
             <?php endif ?>
             <th></th>
         </tr>
@@ -38,7 +39,9 @@
     <?php foreach ($lots as $lot): ?>
         <tr>
             <td><?php echo $lot->declarant_nom ?></td>
-            <td><?php echo $lot->getTypeProvenance() ?></td>
+            <td class="text-center"><?php echo $lot->getTypeProvenance() ?></td>
+            <td class="text-center"><a href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>"><?php echo $lot->numero_archive; ?></a></td>
+            <td class="text-center"><?php echo $lot->numero_logement_operateur; ?></td>
             <td><?php echo showOnlyProduit($lot); ?></td>
             <td class="text-right"><?php echo $lot->volume ?> <small class="text-muted">hl</small></td>
             <td class='text-center'>
@@ -56,11 +59,8 @@
                         <span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span>
                     </span>
                 </td>
-                <td>
-                    <?php echo $lot->getShortLibelleConformite() ?>
-                </td>
             <?php endif ?>
-            <td>Voir <a href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>">l'historique du lot</a></td>
+            <td class="text-right hidden-print"><a class="btn btn-xs btn-default btn-historique" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
         </tr>
     <?php endforeach ?>
     </tbody>

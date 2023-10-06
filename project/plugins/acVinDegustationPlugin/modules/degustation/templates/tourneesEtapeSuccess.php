@@ -82,6 +82,6 @@ echo $form->renderGlobalErrors();
     </div>
 
 
-    <?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES, 'is_enabled' => !$degustation->hasLotsSansSecteurs())); ?>
+    <?php include_partial('degustation/pagination', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_TOURNEES, 'is_enabled' => true)); ?>
 
 </form>
