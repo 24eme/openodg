@@ -1,6 +1,6 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('Date'); ?>
-<?php use_javascript('facture.js'); ?>
+<?php use_javascript('facture.js?20231006'); ?>
 
 <ol class="breadcrumb">
     <li class="visited"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
