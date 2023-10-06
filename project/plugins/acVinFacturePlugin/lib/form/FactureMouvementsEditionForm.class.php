@@ -48,9 +48,6 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
           $inserted_keys[$societeMvtKey.'_'.$k] = 1;
 
           $mvt->identifiant = $societeMvtKey;
-          if ($this->interproFacturable) {
-              $mvt->add('interpro', $this->interproFacturable);
-          }
           $mvt->updateIdentifiantAnalytique($mouvement['identifiant_analytique']);
           $mvt->libelle = $mouvement['libelle'];
           $mvt->quantite = floatval($mouvement['quantite']);
