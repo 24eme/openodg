@@ -1,6 +1,6 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('Date'); ?>
-<?php use_javascript('facture.js'); ?>
+<?php use_javascript('facture.js?20231006'); ?>
 
 <ol class="breadcrumb">
     <li class="visited"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
@@ -38,7 +38,7 @@
             foreach ($form['mouvements'] as $k => $mvtForm) {
               $kExploded = explode('_', $k);
               $object = ($kExploded[1] != 'nouveau')? $form->getObject()->mouvements->get($kExploded[1])->get($kExploded[2]) : null;
-              include_partial('itemMouvementFacture', array('mvtForm' => $mvtForm, 'object' => $object));
+              include_partial('itemMouvementFacture', array('mvtForm' => $mvtForm, 'object' => $object, 'suggestions' => $form->getSuggestionsFacturationLibre()));
             }
             ?>
         </div>

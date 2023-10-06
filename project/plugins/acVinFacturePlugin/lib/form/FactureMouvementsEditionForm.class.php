@@ -36,7 +36,7 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
           }
           if ($id == 'nouveau') {
             $k = uniqid();
-            $societe = SocieteClient::getInstance()->find($mouvement['identifiant']);
+            $societe = EtablissementClient::getInstance()->find($mouvement['identifiant']);
             $societeMvtKey = $societe->identifiant;
           } else {
             $k = $key;
@@ -48,9 +48,6 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
           $inserted_keys[$societeMvtKey.'_'.$k] = 1;
 
           $mvt->identifiant = $societeMvtKey;
-          if ($this->interproFacturable) {
-              $mvt->add('interpro', $this->interproFacturable);
-          }
           $mvt->updateIdentifiantAnalytique($mouvement['identifiant_analytique']);
           $mvt->libelle = $mouvement['libelle'];
           $mvt->quantite = floatval($mouvement['quantite']);
@@ -96,6 +93,10 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
     public function updateEmbedForm($name, $form) {
         $this->widgetSchema[$name] = $form->getWidgetSchema();
         $this->validatorSchema[$name] = $form->getValidatorSchema();
+    }
+
+    public function getSuggestionsFacturationLibre() {
+        return FactureConfiguration::getInstance()->getSuggestionsFacturationLibre();
     }
 
 }
