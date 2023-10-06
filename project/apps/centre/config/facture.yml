@@ -2,6 +2,7 @@ all:
   configuration:
     facture:
       ligneUnique: true
+      suggestions_facturation_libre: ["Forfait kilométrique|90.00", "Temps passé|49.00"]
       echeances:
         1ertiers:
           libelle_date: "A réception"

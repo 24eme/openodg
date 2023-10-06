@@ -192,4 +192,9 @@ class FactureConfiguration {
         return $this->configuration['types_document_facturant'];
     }
 
+    public function getSuggestionsFacturationLibre() {
+        if(!isset($this->configuration['suggestions_facturation_libre'])) return [];
+        return $this->configuration['suggestions_facturation_libre'];
+    }
+
 }
