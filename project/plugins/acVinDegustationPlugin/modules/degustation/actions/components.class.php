@@ -22,4 +22,8 @@ class degustationComponents extends sfComponents {
         $this->email = EtablissementClient::getInstance()->find($this->identifiant)->getEmail();
         $this->cc = Organisme::getInstance(null, 'degustation')->getEmail();
     }
+
+    public function executeSyntheseCommercialise(sfWebRequest $request) {
+        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->identifiant, $this->campagnes, $this->region);
+    }
 }

@@ -5,5 +5,5 @@ all:
       pdf_unique_region: true
       logement_adresse: false
       logement_chais: true
-      denomination_auto: true
+      denomination_auto: false
       engagement_pdf: true

@@ -65,7 +65,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     {
         $regions = [];
         foreach ($this->getProduits() as $p) {
-            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($p->getHash());
+            $regions[] = $p->getRegion();
         }
 
         return array_values(array_unique($regions));
@@ -1207,6 +1207,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->getMother()->save();
         }
 
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
+
         if(!$allValidate) {
 
             return;
@@ -1710,13 +1715,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalTotalSuperficie();
 	}
 
-    public function getQuantiteVolumeRecolte($produitFilter = null) {
+    public function getQuantiteVolumeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
         $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+
         if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
-
         }
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5);
+
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters->getParameters());
     }
 
     public function getQuantiteVolumeVendue($produitFilter = null) {

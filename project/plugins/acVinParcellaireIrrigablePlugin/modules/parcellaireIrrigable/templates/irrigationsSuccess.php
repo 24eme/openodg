@@ -1,5 +1,5 @@
+<?php use_helper('Float'); ?>
 <?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
-
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'irrigations', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
     <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer le type de matériel et de ressource utilisés sur chaque parcelle irrigable</small></h2>
@@ -17,11 +17,11 @@
                 <th class="col-xs-2">Lieu-dit</th>
                 <th class="col-xs-1">Section /<br />N° parcelle</th>
                 <th class="col-xs-2">Cépage</th>
-                <th class="col-xs-1">Année plantat°</th>
-                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
-                <th class="col-xs-2">Type de matériel</th>
-                <th class="col-xs-2">Type de ressource</th>
-                <th class="col-xs-1">Dupliquer les types</th>
+                <th class="col-xs-1 text-center">Année plantat°</th>
+                <th class="col-xs-1 text-right">Surf. <span class="text-muted small">(ha)</span></th>
+                <th class="col-xs-2 text-center">Type de matériel</th>
+                <th class="col-xs-2 text-center">Type de ressource</th>
+                <th class="col-xs-1 text-center">Dupliquer les types</th>
 
             </tr>
 		</thead>
@@ -35,8 +35,8 @@
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
-                <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
+                <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
+                <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
             	<td>
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>

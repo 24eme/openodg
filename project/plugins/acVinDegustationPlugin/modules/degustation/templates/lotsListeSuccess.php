@@ -28,10 +28,12 @@
   </div>
   <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
+
+<h3>Synthèse de la commercialisation</h3>
+
+<?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $etablissement->identifiant, 'campagnes' => [$campagne], 'region' => $sf_user->getRegion()]) ?>
+
 <?php if (count($mouvements)): ?>
-
-    <?php include_partial('degustation/syntheseCommercialise', ['syntheseLots' => $syntheseLots]) ?>
-
       <table class="table table-condensed table-striped">
         <thead>
           <th class="col-sm-1">Date</th>

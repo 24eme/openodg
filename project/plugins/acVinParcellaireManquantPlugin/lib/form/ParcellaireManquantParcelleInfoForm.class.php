@@ -1,6 +1,6 @@
 <?php
 
-class ParcellaireManquantProduitIrrigationForm extends acCouchdbObjectForm {
+class ParcellaireManquantParcelleInfoForm extends acCouchdbObjectForm {
 
     public function configure() {
 

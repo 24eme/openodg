@@ -1,10 +1,10 @@
 <?php
 
-class ParcellaireManquantProduitIrrigationsForm extends acCouchdbObjectForm {
+class ParcellaireManquantParcellesInfosForm extends acCouchdbObjectForm {
 
     public function configure() {
 		foreach ($this->getObject()->detail as $key => $value) {
-			$this->embedForm($key, new ParcellaireManquantProduitIrrigationForm($value));
+			$this->embedForm($key, new ParcellaireManquantParcelleInfoForm($value));
 		}
         $this->widgetSchema->setNameFormat('[%s]');
     }

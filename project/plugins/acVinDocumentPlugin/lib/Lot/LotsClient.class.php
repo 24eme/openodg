@@ -350,14 +350,36 @@ class LotsClient
         }
     }
 
-    public function getSyntheseLots($identifiant, $campagne, $region = null)
+    public function getSyntheseLots($identifiant, $campagnes, $region = null)
     {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
+        if(!is_array($campagnes)) {
+            $campagnes = [$campagnes];
+        }
+        $mouvements = [];
+        foreach($campagnes as $campagne) {
+            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows);
+        }
+
         if ($region) {
             $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
         }
 
-        return MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+
+        foreach($campagnes as $campagne) {
+            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);
+
+            if($drev) {
+                foreach($drev->declaration->getProduitsWithoutLots() as $produit) {
+                    if($region && $produit->getRegion() != $region) {
+                        continue;
+                    }
+                    @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_total;
+                }
+            }
+        }
+
+        return $syntheseLots;
     }
 
     public function getLastMouvements($doc)

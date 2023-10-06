@@ -401,4 +401,9 @@ class DRevProduit extends BaseDRevProduit
 		return $this->getCepage()->getSommeProduits($hash);
 	}
 
+    public function getRegion() {
+
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getHash());
+    }
+
 }
