@@ -45,36 +45,46 @@
     <?php return; ?>
 <?php endif; ?>
 
-<?php foreach($parcellesByCommune as $commune => $parcelles): ?>
-<br />
-<div><span class="h3">&nbsp;<?php echo $commune; ?>&nbsp;</span></div>
-
-<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
-    <tr>
-        <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
-        <th class="th" style="text-align: center; width: 70px;">Section</th>
-        <th class="th" style="text-align: center; width: 70px;">N° parcelle</th>
-        <th class="th" style="text-align: center; width: 180px;">Produit</th>
-        <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
-        <th class="th" style="text-align: center; width: 80px;">Surface</th>
-        <th class="th" style="text-align: center; width: 125px;">Densité</th>
-        <th class="th" style="text-align: center; width: 140px;">% de pieds manquants</th>
-    </tr>
-    <?php foreach ($parcelles as $parcelle): ?>
+<?php
+    $nbparcelles = 0;
+    foreach($parcellesByCommune as $commune => $parcelles):
+    $nouvellecommeune = true;
+    foreach ($parcelles as $parcelle):
+    if ($nouvellecommeune || ($nbparcelles % 14 < 1) ):
+        $nouvellecommeune = false ;
+?>
+        <?php if ($nbparcelles): ?>
+        </table>
+        <?php endif; ?>
+        <br />
+        <div><span class="h3">&nbsp;<?php echo $commune; ?>&nbsp;</span></div>
+        <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+            <tr>
+                <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
+                <th class="th" style="text-align: center; width: 70px;">Section</th>
+                <th class="th" style="text-align: center; width: 70px;">N° parcelle</th>
+                <th class="th" style="text-align: center; width: 180px;">Produit</th>
+                <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
+                <th class="th" style="text-align: center; width: 80px;">Surface</th>
+                <th class="th" style="text-align: center; width: 125px;">Densité</th>
+                <th class="th" style="text-align: center; width: 140px;">% de pieds manquants</th>
+            </tr>
+<?php $nbparcelles += 2; //Incrément de l'enteête ?>
+<?php endif; ?>
     	<tr>
 			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->lieu; ?>&nbsp;</td>
 			<td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section; ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->numero_parcelle; ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
-            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $parcelle->superficie); ?>&nbsp;<small>ha</small>&nbsp;</td>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;</td>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloat($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->densite; ?>&nbsp;</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloat($parcelle->pourcentage); ?>&nbsp;%</td>
     	</tr>
-    <?php endforeach; ?>
-</table>
+<?php $nbparcelles++; ?>
 <?php endforeach; ?>
-
+<?php endforeach; ?>
+</table>
 <?php if($lastPage && $parcellaireManquant->observations): ?>
     <br />
     <div><span class="h3">&nbsp;Observations&nbsp;</span></div>

@@ -24,7 +24,7 @@ class PMC extends BasePMC
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $date,
-    		'libelle' => 'Déclaration de mise en circulation '.$complement,
+    		'libelle' => 'Déclaration de mise en circulation '.$this->getCampagne().' '.implode(', ', $this->getRegions()).' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null

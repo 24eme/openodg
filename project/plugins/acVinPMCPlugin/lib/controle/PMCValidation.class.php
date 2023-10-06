@@ -97,7 +97,7 @@ class PMCValidation extends DocumentValidation
 
             $volume = sprintf("%01.02f",$lot->getVolume());
 
-            if(!$lot->numero_logement_operateur){
+            if(!$this->document->isValideeOdg() && !$lot->numero_logement_operateur){
               $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Numéro de lot", $this->generateUrl($routeName, array("id" => $this->document->_id)));
               continue;
             }
@@ -119,35 +119,23 @@ class PMCValidation extends DocumentValidation
             }
             $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
             $nb_days_from_degust = (int) $date_degust->diff(new DateTimeImmutable($this->document->date))->format('%a');
-            if(date('Y-m-d') < $lot->date_degustation_voulue && $nb_days_from_degust <= 45){
+            if(!$this->document->isValideeOdg() && date('Y-m-d') < $lot->date_degustation_voulue && $nb_days_from_degust <= 45){
               $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation souhaitée (" . $date_degust->format('d/m/Y') . ")", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
         }
 
-        $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, $this->document->campagne);
-        $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, substr($this->document->campagne, 0, 4)]));
+        $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant,[ConfigurationClient::getInstance()->getPreviousCampagne($this->document->campagne), $this->document->campagne]);
+        if(!$this->document->isValideeOdg()) {
+            foreach ($totalVolumePMC as $hash => $millesimes) {
+                $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
+                foreach ($millesimes as $millesime => $volume) {
+                    $volumeDejaCommercialise = $syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['Lot'];
+                    $volumeDRev = $syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['DRev'];
 
-        foreach ($totalVolumePMC as $hash => $millesimes) {
-            $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
-            $volumeRevendique = ($drev) ? $drev->declaration->getTotalVolumeRevendique($hash) : 0;
-
-            foreach ($millesimes as $millesime => $volume) {
-                if (isset($syntheseLots[$produit->getAppellation()->getLibelle()]) === false) { $volumeCommercialise = 0; }
-                elseif (isset($syntheseLots[$produit->getAppellation()->getLibelle()][$millesime]) === false) { $volumeCommercialise = 0; }
-                elseif (isset($syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]) === false) { $volumeCommercialise = 0; }
-                else {
-                    $volumeCommercialise = $syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()];
-                }
-
-                $volumeTotalCommercialise = $volumeCommercialise;
-
-                if(! $this->document->isValideeOdg()) {
-                    $volumeTotalCommercialise += $volume;
-                }
-
-                if ($volumeTotalCommercialise > $volumeRevendique) {
-                    $this->addPoint(self::TYPE_ERROR, 'volume_depasse', $produit->getLibelleComplet().'  '.$millesime." - ".$volumeTotalCommercialise . " hl déclaré en circulation pour ".$volumeRevendique." hl revendiqué" , $this->generateUrl($routeName, array("id" => $this->document->_id)));
+                    if (round($volumeDejaCommercialise + $volume, 2) > $volumeDRev) {
+                        $this->addPoint(self::TYPE_ERROR, 'volume_depasse', $produit->getLibelleComplet().'  '.$millesime." - ".$volumeDejaCommercialise . " hl déclaré en circulation pour ".$volumeDRev." hl revendiqué" , $this->generateUrl($routeName, array("id" => $this->document->_id)));
+                    }
                 }
             }
         }

@@ -135,13 +135,13 @@ class parcellaireManquantActions extends sfActions {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireManquant);
 
-    	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_IRRIGATIONS))) {
+    	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_SAISIEINFOS))) {
     		$this->parcellaireManquant->save();
     	}
 
     	$this->etablissement = $this->parcellaireManquant->getEtablissementObject();
 
-    	$this->form = new ParcellaireManquantProduitsForm($this->parcellaireManquant);
+    	$this->form = new ParcellaireManquantInfosForm($this->parcellaireManquant);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
 
