@@ -34,7 +34,9 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
       if ($this->getObject()->getKey() == 'nouveau' && $lastMouvement) {
         $this->setDefault('identifiant', $lastMouvement->identifiant);
         $this->setDefault('identifiant_analytique', $lastMouvement->identifiant_analytique);
-        //$this->setDefault('libelle', $lastMouvement->libelle);
+        if (!FactureConfiguration::getInstance()->getSuggestionsFacturationLibre()) {
+            $this->setDefault('libelle', $lastMouvement->libelle);
+        }
       }
     }
 
