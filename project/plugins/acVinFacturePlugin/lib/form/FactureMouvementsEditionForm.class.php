@@ -36,7 +36,7 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
           }
           if ($id == 'nouveau') {
             $k = uniqid();
-            $societe = SocieteClient::getInstance()->find($mouvement['identifiant']);
+            $societe = EtablissementClient::getInstance()->find($mouvement['identifiant']);
             $societeMvtKey = $societe->identifiant;
           } else {
             $k = $key;

@@ -12,19 +12,18 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
     }
 
     public function configure() {
-        $this->setWidget('identifiant', new WidgetSociete(array('interpro_id' => null, 'type_societe' => array(SocieteClient::TYPE_OPERATEUR,SocieteClient::TYPE_AUTRE)), $this->isreadonly));
+        $this->setWidget('identifiant', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration'), $this->isreadonly));
         $this->setWidget("identifiant_analytique", new sfWidgetFormChoice(array('choices' => $this->getIdentifiantsAnalytiques()), $this->isreadonly));
         $this->setWidget("libelle", new bsWidgetFormInput(array(), $this->isreadonly));
         $this->setWidget("quantite", new bsWidgetFormInputFloat(array(), $this->isreadonly));
         $this->setWidget("prix_unitaire", new bsWidgetFormInputFloat(array(), $this->isreadonly));
 
-        $this->setValidator('identifiant', new ValidatorSociete(array('required' => false)));
+        $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => false)));
         $this->setValidator("identifiant_analytique", new sfValidatorChoice(array('choices' => array_keys($this->getIdentifiantsAnalytiques()), 'required' => false)));
         $this->setValidator("libelle", new sfValidatorString(array('required' => false)));
         $this->setValidator("quantite", new sfValidatorNumber(array('required' => false)));
         $this->setValidator("prix_unitaire", new sfValidatorNumber(array('required' => false)));
 
-        $this->configureTypeSociete(array(SocieteClient::TYPE_OPERATEUR));
         $this->widgetSchema->setNameFormat('facture_mouvement_etablissement_edition_ligne[%s]');
     }
 
@@ -38,12 +37,6 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
             $this->setDefault('libelle', $lastMouvement->libelle);
         }
       }
-    }
-
-    public function configureTypeSociete($types) {
-
-        $this->getWidget('identifiant')->setOption('type_societe', $types);
-        $this->getValidator('identifiant')->setOption('type_societe', $types);
     }
 
     public function getSociete() {
