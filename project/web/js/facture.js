@@ -103,4 +103,21 @@
 
         element.change();
     }
+
+    const inputsSuggestions = document.querySelectorAll('input[list="suggestions"]');
+    inputsSuggestions.forEach(input => {
+      input.addEventListener('input', event => {
+        if (event.data) {
+            event.target.value = (event.data).split('|')[0];
+            const inputPU = document.getElementById((event.target.id).replace('libelle', 'prix_unitaire'));
+            const inputQuantite = document.getElementById((event.target.id).replace('libelle', 'quantite'));
+            if ((event.data).split('|')[1]) {
+                inputPU.value = (event.data).split('|')[1];
+                inputQuantite.focus();
+            } else {
+                inputPU.focus();
+            }
+        }
+      });
+    });
 })(jQuery);
