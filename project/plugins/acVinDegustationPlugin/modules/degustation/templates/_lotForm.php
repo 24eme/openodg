@@ -43,9 +43,9 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <?php echo $form['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <div class="input-group">
-                            <?php echo $form['millesime']->render(); ?>
+                            <?php echo $form['millesime']->render(array('class' => "form-control text-right", 'maxlength' => "4")); ?>
                         </div>
                     </div>
                 </div>
