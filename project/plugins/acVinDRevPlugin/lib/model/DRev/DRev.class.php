@@ -1727,7 +1727,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getQuantiteVolumeVendue($produitFilter = null) {
         $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
-        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
 
         }
