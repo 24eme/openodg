@@ -39,7 +39,7 @@ class TemplateFactureClient extends acCouchdbClient {
             $template = str_replace('%region%', $region, $template);
         }
 
-        for($d = $campagne_start ; $d > $campagne_start - 10 ; $d--) {
+        for($d = $campagne_start ; $d > $campagne_start - 14 ; $d--) {
             $id = sprintf($template, $d);
             if ($this->find($id, self::HYDRATE_JSON)) {
                 return $id;
