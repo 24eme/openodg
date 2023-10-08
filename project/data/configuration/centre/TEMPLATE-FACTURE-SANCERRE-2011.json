@@ -1,8 +1,8 @@
 {
-   "_id": "TEMPLATE-FACTURE-SANCERRE-2022",
+   "_id": "TEMPLATE-FACTURE-SANCERRE-2011",
    "type": "TemplateFacture",
-   "campagne": 2022,
-   "libelle": "2022 - Sancerre",
+   "campagne": 2011,
+   "libelle": "2011 - Sancerre",
    "docs": [
        "DRev"
    ],

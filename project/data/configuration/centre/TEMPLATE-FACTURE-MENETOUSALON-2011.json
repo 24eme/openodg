@@ -1,9 +1,9 @@
 {
-   "_id": "TEMPLATE-FACTURE-MENETOUSALON-2022",
+   "_id": "TEMPLATE-FACTURE-MENETOUSALON-2011",
    "type": "TemplateFacture",
    "region": "MENETOUSALON",
-   "campagne": 2022,
-   "libelle": "2022 - Menetou-Salon",
+   "campagne": 2011,
+   "libelle": "2011 - Menetou-Salon",
    "docs": [
        "DRev"
    ],

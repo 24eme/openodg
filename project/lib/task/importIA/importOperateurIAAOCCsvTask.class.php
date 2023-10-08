@@ -167,7 +167,7 @@ EOF;
                 $ppm = trim($data[self::CSV_PPM]);
             }
             $etablissement->cvi = $cvi;
-            $etablissement->ppm = $ppm;
+            $etablissement->ppm = strtoupper($ppm);
             $etablissement->num_interne = trim($data[self::CSV_CODE_INTERNE]);
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);

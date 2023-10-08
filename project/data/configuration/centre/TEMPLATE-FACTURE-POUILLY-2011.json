@@ -1,9 +1,9 @@
 {
-   "_id": "TEMPLATE-FACTURE-POUILLY-2022",
+   "_id": "TEMPLATE-FACTURE-POUILLY-2011",
    "type": "TemplateFacture",
    "region": "POUILLY",
-   "campagne": 2022,
-   "libelle": "2022 - Pouilly",
+   "campagne": 2011,
+   "libelle": "2011 - Pouilly",
    "docs": [
        "DRev"
    ],

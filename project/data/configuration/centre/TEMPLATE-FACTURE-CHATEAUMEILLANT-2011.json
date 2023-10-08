@@ -1,25 +1,24 @@
 {
-   "_id": "TEMPLATE-FACTURE-GIENNOIS-2022",
+   "_id": "TEMPLATE-FACTURE-CHATEAUMEILLANT-2011",
    "type": "TemplateFacture",
-   "region": "GIENNOIS",
-   "campagne": 2022,
-   "libelle": "2022 - Giennois",
+   "campagne": 2011,
+   "libelle": "2011 - Châteaumeillant",
    "docs": [
        "DRev"
    ],
    "cotisations": {
-       "00_arelfa": {
+       "00_fuvc": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Cotisation ADELFA",
+           "libelle": "FUVC",
            "code_comptable": "70610000",
            "details": {
-               "00_volumeRevendique": {
+               "00_superficie": {
                    "modele": "CotisationVariable",
-                   "prix": 20,
+                   "prix": 3.54,
                    "tva": 0,
                    "unite": "ha",
-                   "libelle": "",
+                   "libelle": "Superficie",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -30,32 +29,18 @@
                }
            }
        },
-       "01_syndicale": {
+       "01_inao": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Cotisation Syndicale",
-           "code_comptable": "70620000",
+           "libelle": "INAO",
+           "code_comptable": "70610000",
            "details": {
-               "00_surfaceProduction": {
+               "00_volumeRevendique": {
                    "modele": "CotisationVariable",
-                   "prix": 70,
-                   "tva": 0,
-                   "unite": "ha",
-                   "libelle": "surface en production",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ],
-                   "callback": "getQuantiteSuperficieRevendique",
-                   "callback_parameters": [
-                   ]
-               },
-               "01_volumeRevendique": {
-                   "modele": "CotisationVariable",
-                   "prix": 1.05,
+                   "prix": 0.15,
                    "tva": 0,
                    "unite": "hl",
-                   "libelle": "volume revendiqué",
+                   "libelle": "Volume revendiqué",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -69,29 +54,15 @@
        "02_oivc": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Cotisation OIVC",
-           "code_comptable": "70620000",
+           "libelle": "OIVC",
+           "code_comptable": "70610000",
            "details": {
-               "00_surfaceProduction": {
-                   "modele": "CotisationVariable",
-                   "prix": 12,
-                   "tva": 0,
-                   "unite": "ha",
-                   "libelle": "surface en production",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ],
-                   "callback": "getQuantiteSuperficieRevendique",
-                   "callback_parameters": [
-                   ]
-               },
-               "01_volumeRevendique": {
+               "00_volumeRevendique": {
                    "modele": "CotisationVariable",
                    "prix": 0.22,
                    "tva": 0,
                    "unite": "hl",
-                   "libelle": "volume revendiqué",
+                   "libelle": "Volume revendiqué",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
@@ -99,8 +70,59 @@
                    "callback": "getQuantiteVolumeRevendique",
                    "callback_parameters": [
                    ]
+               },
+               "01_superficie": {
+                   "modele": "CotisationVariable",
+                   "prix": 12,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "Superficie",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficieRevendique",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "03_odg": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "UVS",
+           "code_comptable": "70610000",
+           "details": {
+               "00_volumeRevendique": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.3,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "Volume revendiqué",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendique",
+                   "callback_parameters": [
+                   ]
+               },
+               "01_superficie": {
+                   "modele": "CotisationVariable",
+                   "prix": 80,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "Superficie",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficieRevendique",
+                   "callback_parameters": [
+                   ]
                }
            }
        }
-   }
+   },
+   "region": "CHATEAUMEILLANT"
 }
