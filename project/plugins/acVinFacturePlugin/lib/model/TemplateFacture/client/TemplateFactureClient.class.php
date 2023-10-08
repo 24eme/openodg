@@ -45,7 +45,7 @@ class TemplateFactureClient extends acCouchdbClient {
                 return $id;
             }
         }
-        throw new sfException("Object TEMPLATE-FACTURE not found from template $template");
+        throw new sfException("Object TEMPLATE-FACTURE not found from template $id");
     }
 
     public function findByCampagne($campagne, $region = null, $hydrate = self::HYDRATE_DOCUMENT){
