@@ -33,7 +33,6 @@ class TransactionLotForm extends acCouchdbObjectForm
 
     public function configure() {
         $produits = $this->getProduits();
-        $cepages = $this->getCepages();
 
         $this->setWidget('volume', new bsWidgetFormInputFloat());
         $this->setValidator('volume', new sfValidatorNumber(array('required' => false)));
@@ -66,16 +65,19 @@ class TransactionLotForm extends acCouchdbObjectForm
         $this->setWidget('pays', new bsWidgetFormChoice(array('choices' => $this->getCountryList())));
         $this->setValidator('pays', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getCountryList()))));
 
-        for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if ($cepages && count($cepages)) {
-                $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
-                $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
-            }else{
-                $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
-                $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
+        if ($this->hasSaisieCepages()) {
+            $cepages = $this->getCepages();
+            for($i = 0; $i < self::NBCEPAGES; $i++) {
+                if ($cepages && count($cepages)) {
+                    $this->setWidget('cepage_'.$i, new bsWidgetFormChoice(array('choices' => $cepages)));
+                    $this->setValidator('cepage_'.$i, new sfValidatorChoice(array('required' => false, 'choices' => array_keys($cepages))));
+                }else{
+                    $this->setWidget('cepage_'.$i, new bsWidgetFormInput());
+                    $this->setValidator('cepage_'.$i, new sfValidatorString(array('required' => false)));
+                }
+                $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
+                $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
             }
-            $this->setWidget('repartition_'.$i, new bsWidgetFormInputFloat([], ['class' => 'form-control text-right input-float input-hl']));
-            $this->setValidator('repartition_'.$i, new sfValidatorNumber(array('required' => false)));
         }
 
         $this->widgetSchema->setNameFormat('[%s]');
@@ -87,12 +89,14 @@ class TransactionLotForm extends acCouchdbObjectForm
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
         $this->getObject()->destination_type = DRevClient::LOT_DESTINATION_TRANSACTION;
-        for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
-                continue;
-            }
+        if ($this->hasSaisieCepages()) {
+            for($i = 0; $i < self::NBCEPAGES; $i++) {
+                if(!$values['cepage_'.$i] || !$values['repartition_'.$i]) {
+                    continue;
+                }
 
-            $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+                $this->getObject()->addCepage($values['cepage_'.$i], $values['repartition_'.$i]);
+            }
         }
         $this->getObject()->set("affectable",true);
 
@@ -126,6 +130,10 @@ class TransactionLotForm extends acCouchdbObjectForm
             $m[] = date('Y') - $i;
         }
         return $m;
+    }
+
+    public function hasSaisieCepages() {
+        return LotsClient::getInstance()->saisieMentionCepageActive();
     }
 
 }
