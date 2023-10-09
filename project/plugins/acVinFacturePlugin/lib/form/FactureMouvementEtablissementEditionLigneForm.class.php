@@ -19,7 +19,7 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
         $this->setWidget("prix_unitaire", new bsWidgetFormInputFloat(array(), $this->isreadonly));
 
         $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => false)));
-        $this->setValidator("identifiant_analytique", new sfValidatorChoice(array('choices' => array_keys($this->getIdentifiantsAnalytiques()), 'required' => false)));
+        $this->setValidator("identifiant_analytique", new sfValidatorChoice(array('choices' => array_keys($this->getIdentifiantsAnalytiques()))));
         $this->setValidator("libelle", new sfValidatorString(array('required' => false)));
         $this->setValidator("quantite", new sfValidatorNumber(array('required' => false)));
         $this->setValidator("prix_unitaire", new sfValidatorNumber(array('required' => false)));
