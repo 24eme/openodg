@@ -102,9 +102,10 @@ EOF;
                 echo "WARNING: statut non trouvé ".$line." : pas d'import\n";
                 continue;
             }
-
             if($data[self::CSV_HABILITATION_NEGOCIANT] == "oui") {
+                $etablissement = EtablissementClient::getInstance()->find($eta->_id);
                 $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+                $etablissement->save();
             }
 
             if (($statut == HabilitationClient::STATUT_HABILITE) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]]) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]])) {
