@@ -35,7 +35,7 @@
               <tr<?php if ($lot->unique_id !== $mouvement->value->lot_unique_id) { echo ' style="opacity:0.5"'; } ?>>
                   <td>
                       <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
-                      <?php echo $mouvement->value->document_type;  ?>
+                      <?php echo clarifieTypeDocumentLibelle($mouvement->value->document_type);  ?>
                       </a>
                   </td>
                 <td class="<?php echo $class; ?>">

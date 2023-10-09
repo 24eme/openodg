@@ -64,6 +64,7 @@
                             </div>
                         </div>
                     </div>
+                    <?php if (isset($lot['cepage_0'])): ?>
                     <div class="col-md-6">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
@@ -79,6 +80,7 @@
                             </div>
                         </div>
                     </div>
+                <?php endif; ?>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
@@ -150,6 +152,7 @@
                 </div>
             </div>
         </div>
+        <?php if (isset($lot['cepage_0'])): ?>
         <div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $lot['volume']->renderId() ?>" id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -187,7 +190,7 @@
                               </div>
                           </div>
                       </div>
-                      <?php endfor; ?>
+                  <?php endfor; ?>
                       <div class="form-group ligne_volume_total">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-4 text-right">
@@ -208,6 +211,7 @@
               </div>
             </div>
         </div>
+        <?php endif; ?>
     <?php endforeach; ?>
     <div class="text-right">
         <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>

@@ -9,6 +9,9 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
 
     public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null, $secteur = null) {
         $this->degustation = $degustation;
+        if($secteur == DegustationClient::DEGUSTATION_SANS_SECTEUR) {
+            $secteur = null;
+        }
         $this->secteur = $secteur;
         $this->engine();
         parent::__construct($degustation,$type, $use_cache, $file_dir, $filename);
