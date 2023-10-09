@@ -3,6 +3,7 @@
 class DRCsvFile extends DouaneCsvFile
 {
   const CSV_TYPE_DR = 'DR';
+  const CSV_LIGNE_CODE_RECOLTE_L4 = "4";
   const CSV_LIGNE_CODE_RECOLTE_L5 = "5";
   const CSV_LIGNE_CODE_USAGESIND_L16 = "16";
   const CSV_LIGNE_CODE_SUPERFICIE_L4 = "4";
