@@ -396,4 +396,8 @@ class LotsClient
 
         return $this->mouvements_declarant;
     }
+
+    public function saisieMentionCepageActive() {
+        return sfConfig::get('app_donnees_viticoles_lot_saisie_mention_cepage_active', true);
+    }
 }
