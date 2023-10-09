@@ -68,7 +68,6 @@
                 </tr>
                 <tr>
                     <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsPreleves()) ?></td>
-                    <td>lots prélevés<?php if ($nbDifferes = count($degustation->getLotsDifferes())): ?> (dont <?php echo $nbDifferes ?> différé<?php if($nbDifferes>1): ?>s<?php endif; ?>)<?php endif; ?></td>
                 </tr>
                 <tr>
                     <td class="col-xs-1 text-right"><?php echo count($degustation->getLotsSansVolume()); ?></td>
