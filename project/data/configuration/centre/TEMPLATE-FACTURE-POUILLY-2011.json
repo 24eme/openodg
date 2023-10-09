@@ -14,7 +14,7 @@
            "libelle": "Cotisation de récolte Organisme de Gestion et Contrôle des AOC de Pouilly sur\nLoire et Pouilly Fumé (à l’hectare)",
            "code_comptable": "70610000",
            "details": {
-               "00_surfaceRevendique": {
+               "00_surfaceRecolte": {
                    "modele": "CotisationVariable",
                    "prix": 85,
                    "tva": 0,
@@ -24,7 +24,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteSuperficieRevendique",
+                   "callback": "getQuantiteSuperficeRecolte",
                    "callback_parameters": [
                    ]
                }
