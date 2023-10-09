@@ -185,6 +185,7 @@ MouvementsFacture:
                 fields:
                   '*':
                     class: FactureMouvement
+                    inheritance: MouvementFactures
                     type: collection
                     definition:
                       fields:
