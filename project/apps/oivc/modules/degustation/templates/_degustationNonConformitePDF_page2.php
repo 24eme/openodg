@@ -56,10 +56,10 @@
         <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement</td> <td>Code manquement</td>
     </tr>
     <tr>
-        <td>Examen analytique</td> <td></td> <td></td> <td></td> <td></td> <td></td>
+        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td></td> <td></td> <td></td> <td></td>
     </tr>
     <tr>
-        <td>Examen organoleptique</td> <td></td> <td></td> <td></td> <td></td> <td></td>
+        <td>Examen organoleptique<br/></td> <td></td> <td></td> <td></td> <td></td> <td></td>
     </tr>
     <tr><td colspan="6">Date transmission INAO :</td></tr>
 </table>
