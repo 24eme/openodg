@@ -374,7 +374,11 @@ class LotsClient
                     if($region && $produit->getRegion() != $region) {
                         continue;
                     }
-                    @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_total;
+                    @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_issu_recolte;
+                    if($produit->volume_revendique_issu_vci) {
+                        @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode - 1][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_issu_vci;
+                        @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode - 1][$produit->getConfig()->getCouleur()->getLibelle()]["DREVVCI"] += $produit->volume_revendique_issu_vci;
+                    }
                 }
             }
         }
