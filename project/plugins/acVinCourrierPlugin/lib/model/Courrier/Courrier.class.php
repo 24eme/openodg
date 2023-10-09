@@ -100,22 +100,17 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
 
     public function save($saveDependants = true) {
         $this->generateMouvementsLots();
+        $this->generatePieces();
         return parent::save();
     }
 
     /**** PIECES ****/
 
     public function getAllPieces() {
-    	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
-      $date = null;
-      if ($this->getValidation()) {
-        $dt = new DateTime($this->getValidation());
-        $date = $dt->format('Y-m-d');
-      }
-    	return (!$this->getValidation())? array() : array(array(
+    	return array(array(
     		'identifiant' => $this->getIdentifiant(),
-    		'date_depot' => $date,
-    		'libelle' => 'Revendication des produits '.$this->periode.' '.$complement,
+    		'date_depot' => $this->date,
+    		'libelle' => 'Courrier de notification '.$this->courrier_titre,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
