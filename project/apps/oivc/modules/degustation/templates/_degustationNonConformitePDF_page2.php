@@ -51,7 +51,7 @@
 
 <table border="1">
     <tr><td colspan="6">PARTIE RÉSERVÉE À L'OIVC</td></tr>
-    <tr><td colspan="6">RÉSULTAT DU CONTRÔLE DE LA MESURE DE CORRECTION APRÈS SON ÉXECUTION</td></tr>
+    <tr><td colspan="6">RÉSULTAT DU CONTRÔLE</td></tr>
     <tr style="text-align: center">
         <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement</td> <td>Code manquement</td>
     </tr>
