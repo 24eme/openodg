@@ -1571,9 +1571,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         /**** MOUVEMENTS ****/
 
-        public function getTemplateFacture() {
+        public function getTemplateFacture($region = null) {
 
-            return TemplateFactureClient::getInstance()->findByCampagne($this->campagne);
+            return TemplateFactureClient::getInstance()->findByCampagne($this->campagne, $region);
         }
 
         public function getMouvementsFactures() {
@@ -1581,8 +1581,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $this->_get('mouvements');
         }
 
-        public function getMouvementsFacturesCalcule() {
-          $templateFacture = $this->getTemplateFacture();
+        public function getMouvementsFacturesCalcule($region = null) {
+          $templateFacture = $this->getTemplateFacture($region);
 
           if(!$templateFacture) {
               return array();
