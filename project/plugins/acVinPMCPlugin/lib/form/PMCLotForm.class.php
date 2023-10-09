@@ -11,11 +11,6 @@ class PMCLotForm extends TransactionLotForm
         $this->setWidget('engagement_8515', new sfWidgetFormInputCheckbox());
         $this->setValidator('engagement_8515', new sfValidatorBoolean());
 
-        for($i = 0; $i < self::NBCEPAGES; $i++) {
-            unset($this['cepage_'.$i]);
-            unset($this['repartition_'.$i]);
-        }
-
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
