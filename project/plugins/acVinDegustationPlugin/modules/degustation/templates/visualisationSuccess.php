@@ -1,6 +1,7 @@
 <?php use_helper('Lot'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_VISUALISATION)); ?>
 
 <div class="page-header no-border">
   <h2>

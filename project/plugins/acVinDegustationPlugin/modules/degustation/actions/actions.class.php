@@ -179,6 +179,14 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
         }
 
+        if ($this->degustation->type == TourneeClient::TYPE_MODEL) {
+            if (count($this->degustation->getLotsPreleves()) == count($this->degustation->lots) && $this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VISUALISATION))) {
+                $this->degustation->save(false);
+            }
+
+            return $this->redirect('degustation_visualisation', $this->degustation);
+        }
+
         return $this->redirect('degustation_prelevements_etape', $this->degustation);
     }
 
@@ -748,7 +756,8 @@ class degustationActions extends sfActions {
         $this->lots = $this->degustation->getLotsPreleves();
         uasort($this->lots, function ($a, $b) { return $a->declarant_nom > $b->declarant_nom; });
 
-        if ($request->getParameter('visu')) {
+        if ($this->degustation->etape == TourneeDegustationEtapes::ETAPE_VISUALISATION) {
+
             return sfView::SUCCESS;
         }
 

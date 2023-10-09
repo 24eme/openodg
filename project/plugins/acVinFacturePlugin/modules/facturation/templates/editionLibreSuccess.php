@@ -28,10 +28,11 @@
     <div class="row row-margin">
         <div class="col-xs-12" style="border-bottom: 1px dotted #d2d2d2;" id="mouvementsfacture_list">
             <div class="row">
-                <div class="col-xs-4 text-center">Société</div>
-                <div class="col-xs-2 text-center">Lien comptable</div>
+                <div class="col-xs-3 text-center">Société</div>
+                <div class="col-xs-1 text-center">Compta</div>
+                <div class="col-xs-3 text-center">Opération</div>
                 <div class="col-xs-3 text-center">Libellé article</div>
-                <div class="col-xs-2 text-center">Prix&nbsp;U.</div>
+                <div class="col-xs-1 text-center">Prix&nbsp;U.</div>
                 <div class="col-xs-1 text-center" style="padding-left: 0;">Quantité</div>
             </div>
             <?php
