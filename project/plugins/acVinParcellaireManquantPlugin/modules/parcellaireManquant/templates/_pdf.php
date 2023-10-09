@@ -39,7 +39,7 @@
 <?php if($parcellesByCommune === false): ?>
     <br />
     <br />
-    <i>Aucune parcelle irrigable n'a été déclarée pour cette année en Côtes de Provence.</i>
+    <i>Aucune parcelle dont le taux de pieds ou manquants est supérieur à 20%.</i>
     <br />
     <br />
     <?php return; ?>
