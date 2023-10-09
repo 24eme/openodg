@@ -12,13 +12,13 @@
                 <input class="form-control input-md" disabled="disabled" type="text" value="<?php echo $item->identifiant_analytique_libelle_compta; ?>" />
                 <?php endif; ?>
             </div>
-            <div class="col-xs-3 <?php if($mvtForm["categorie"]->hasError()): ?>text-danger<?php endif; ?>">
-                <?php echo $mvtForm['categorie']->renderError(); ?>
-                <?php echo $mvtForm['categorie']->render(array('class' => 'form-control input-md')); ?>
+            <div class="col-xs-3 <?php if($mvtForm["type_libelle"]->hasError()): ?>text-danger<?php endif; ?>">
+                <?php echo $mvtForm['type_libelle']->renderError(); ?>
+                <?php echo $mvtForm['type_libelle']->render(array('class' => 'form-control input-md')); ?>
             </div>
-            <div class="col-xs-3 <?php if($mvtForm["libelle"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
-                <?php echo $mvtForm['libelle']->renderError(); ?>
-                <?php echo $mvtForm['libelle']->render(array('class' => 'form-control input-md select2-libelle', 'list' => "suggestions")); ?>
+            <div class="col-xs-3 <?php if($mvtForm["detail_libelle"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
+                <?php echo $mvtForm['detail_libelle']->renderError(); ?>
+                <?php echo $mvtForm['detail_libelle']->render(array('class' => 'form-control input-md select2-libelle', 'list' => "suggestions")); ?>
                 <datalist id="suggestions">
                     <?php foreach($suggestions as $suggestion): ?>
                     <option value="<?php echo $suggestion ?>">

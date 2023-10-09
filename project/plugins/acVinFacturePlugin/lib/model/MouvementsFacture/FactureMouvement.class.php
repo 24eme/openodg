@@ -23,6 +23,7 @@ class FactureMouvement extends BaseFactureMouvement {
         }
         $this->setIdentifiantAnalytique($identifiant_analytique);
         $this->setIdentifiantAnalytiqueLibelleCompta($node_analytique->identifiant_analytique_libelle_compta);
+        $this->tva = $node_analytique->identifiant_analytique_taux_tva;
     }
 
     public function getIndexForSaisieForm() {
