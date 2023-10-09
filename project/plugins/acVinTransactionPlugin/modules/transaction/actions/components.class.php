@@ -3,7 +3,7 @@
 class transactionComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        $campagne = $request->getParameter('campagne');
+        $campagne = $request->getParameter('campagne', $this->campagne);
         $date = date('Y-m-d');
         if ($campagne != ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($date)) {
             $date = substr($request->getParameter('campagne'), 5, 4).'-07-31';
