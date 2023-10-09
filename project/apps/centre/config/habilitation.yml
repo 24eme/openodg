@@ -3,9 +3,9 @@ all:
     habilitation:
       activites:
         PRODUCTEUR: "Producteur de raisins"
+        PRODUCTEUR_MOUTS: "Producteur de moût"
         VINIFICATEUR: "Vinificateur"
         CONDITIONNEUR: "Conditionneur"
-        PRODUCTEUR_MOUTS: "Producteur de moût"
         ELEVEUR: "Éleveur"
       demande:
         statuts:
