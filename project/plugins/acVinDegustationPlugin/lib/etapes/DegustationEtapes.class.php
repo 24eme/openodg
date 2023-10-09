@@ -43,7 +43,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_COMMISSION => 'Commission',
         self::ETAPE_RESULTATS => 'Résultats',
-        self::ETAPE_NOTIFICATIONS => 'Notifications'
+        self::ETAPE_NOTIFICATIONS => 'Notifications',
+        self::ETAPE_VISUALISATION => 'Visualisation',
     );
 
     public static $libelles_short = array(
@@ -57,7 +58,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_COMMISSION => 'Commission',
         self::ETAPE_RESULTATS => 'Résultats',
-        self::ETAPE_NOTIFICATIONS => 'Notifications'
+        self::ETAPE_NOTIFICATIONS => 'Notifications',
+        self::ETAPE_VISUALISATION => 'Visualisation',
     );
 
     public static $links = array(
@@ -72,7 +74,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
         self::ETAPE_COMMISSION => 'degustation_commission_etape',
         self::ETAPE_RESULTATS => 'degustation_resultats_etape',
-        self::ETAPE_NOTIFICATIONS => 'degustation_notifications_etape'
+        self::ETAPE_NOTIFICATIONS => 'degustation_notifications_etape',
+        self::ETAPE_VISUALISATION => 'degustation_visualisation',
     );
 
 
