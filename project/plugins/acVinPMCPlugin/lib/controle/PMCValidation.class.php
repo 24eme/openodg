@@ -120,7 +120,7 @@ class PMCValidation extends DocumentValidation
             $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
             $nb_days_from_degust = (int) $date_degust->diff(new DateTimeImmutable($this->document->date))->format('%a');
             if(!$this->document->isValideeOdg() && date('Y-m-d') < $lot->date_degustation_voulue && $nb_days_from_degust <= 45){
-              $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation souhaitée (" . $date_degust->format('d/m/Y') . ")", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+              $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Lot prélevable à partir du (" . $date_degust->format('d/m/Y') . ")", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
         }
