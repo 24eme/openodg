@@ -51,6 +51,8 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
+    const STATUT_NOTIFICATION_COURRIER = "20_NOTIFICATION_COURRIER";
+
     const SPECIFICITE_UNDEFINED = "UNDEFINED";
     const SPECIFICITE_PRIMEUR = "Primeur";
 
@@ -88,6 +90,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
+
+        self::STATUT_NOTIFICATION_COURRIER => 'Courrier de notification',
     );
 
     public static $statut2label = array(
@@ -851,11 +855,15 @@ abstract class Lot extends acCouchdbDocumentTree
         }else{
             $mouvement->numero_archive = substr($this->numero_archive, 0, -1);
         }
-        $mouvement->date_commission = $this->date_commission;
+        if (isset($this->date_commission)) {
+            $mouvement->date_commission = $this->date_commission;
+        }
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
-        $mouvement->version = $this->getVersion();
+        if (isset($this->version)) {
+            $mouvement->version = $this->getVersion();
+        }
         $mouvement->document_ordre = $this->getDocumentOrdre();
         $mouvement->document_type = $this->getDocumentType();
         $mouvement->document_id = $this->getDocument()->_id;

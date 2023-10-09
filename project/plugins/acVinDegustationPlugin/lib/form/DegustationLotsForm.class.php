@@ -12,6 +12,10 @@ class DegustationLotsForm extends acCouchdbForm
         });
 
         foreach ($lots as $lot) {
+            if ($lot->getLotProvenance()) {
+                continue;
+            }
+
             $formLots->embedForm($lot->getKey(), new LotTourneeForm($lot));
         }
 
