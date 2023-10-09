@@ -93,7 +93,7 @@ EOF;
             }
 
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant);
-            if(!$chai->secteur && $habilitation->isHabiliteFor("/declaration/certifications/AOC/genres/TRANQ/appellations/MTS", HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+            if(!$chai->secteur && $habilitation && $habilitation->isHabiliteFor("/declaration/certifications/AOC/genres/TRANQ/appellations/MTS", HabilitationClient::ACTIVITE_VINIFICATEUR)) {
                 $chai->secteur = "MENETOU_SALON";
             }
 
