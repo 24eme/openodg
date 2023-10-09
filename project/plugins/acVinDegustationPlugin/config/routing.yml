@@ -6,7 +6,7 @@ degustation:
   class: DegustationGeneralRoute
 
 degustation_create_tournee:
-  url: /degustationtournee/creation
+  url: /degustation/tournee/creation
   param: { module: degustation, action: createTournee }
   requirements:
     sf_method: [get]

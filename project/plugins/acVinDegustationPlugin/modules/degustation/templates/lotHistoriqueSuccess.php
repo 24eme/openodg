@@ -90,6 +90,9 @@
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous le retrait de la dégustation de ce lot pour qu\' il soit affectable à un autre moment ?')">Retirer de la dégustation</a></li>
                 <?php endif; ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_modification', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Modifier les informations du lot</a></li>
+                <?php if (class_exists('Courrier')): ?>
+                    <li><a class="dropdown-item" href="<?php echo url_for('courrier_lot_creation', array('identifiant' => $lot->declarant_identifiant, 'lot_unique_id' => $mouvement->value->lot_unique_id)) ?>">Créer un courrier</a></li>
+                <?php endif; ?>
                 </ul>
                 </div>
               </td>

@@ -10,7 +10,14 @@
 
 <?php if(DegustationConfiguration::getInstance()->isTourneeAutonome()): ?>
 <div style="margin-top: 0px;" class="page-header no-border">
-    <a href="<?php echo url_for('degustation_create_tournee'); ?>" class="btn btn-primary pull-right">Créer une tournée</a>
+    <form action="<?php echo url_for('degustation_create_tournee'); ?>" method="post">
+        <div class="input-group pull-right col-xs-4 date-picker" role="group">
+            <?php echo $formCreationTournee['date']->render(['class' => 'form-control']) ?>
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-primary pull-right">Créer une tournée</a>
+            </div>
+        </div>
+    </form>
     <h2>Tournées</h2>
 </div>
 <?php include_partial('degustation/listeTournees', ['tournees' => $tournees]) ?>
