@@ -137,6 +137,10 @@ EOF;
                 $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
             }
 
+            if(in_array($data[self::CSV_RAISON_SOCIALE], ["CAVES DE POUILLY/LOIRE", "Cave des Vins de Sancerre"])) {
+                $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            }
+
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $etablissement->statut = EtablissementClient::STATUT_SUSPENDU;
