@@ -20,11 +20,11 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Opérateur</th>
-            <th>Provenance</th>
+            <th class="col-xs-3">Opérateur</th>
+            <th>Prov.</th>
             <th>Nº Lot</th>
             <th>Nº logement</th>
-            <th>Produit</th>
+            <th class="col-xs-3">Produit</th>
             <th>Volume</th>
             <th>Date de prélèvement</th>
             <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL): ?>
