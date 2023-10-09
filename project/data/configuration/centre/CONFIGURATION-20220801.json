@@ -306,8 +306,8 @@
                               "rendement_dr_l15": null,
                               "rendement_conseille": null,
                               "rendement_dr": null,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
+                              "rendement_vci": 10,
+                              "rendement_vci_total": 25
                             }
                           },
                           "rouge": {
@@ -719,8 +719,8 @@
                               "rendement_dr_l15": null,
                               "rendement_conseille": null,
                               "rendement_dr": null,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
+                              "rendement_vci": 7,
+                              "rendement_vci_total": 19.5
                             }
                           },
                           "rouge": {
@@ -918,8 +918,8 @@
                               "rendement_dr_l15": null,
                               "rendement_conseille": null,
                               "rendement_dr": null,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
+                              "rendement_vci": 7,
+                              "rendement_vci_total": 19
                             }
                           }
                         }
@@ -1031,8 +1031,8 @@
                               "rendement_dr_l15": null,
                               "rendement_conseille": null,
                               "rendement_dr": null,
-                              "rendement_vci": null,
-                              "rendement_vci_total": null
+                              "rendement_vci": 4,
+                              "rendement_vci_total": 10
                             }
                           },
                           "rouge": {
