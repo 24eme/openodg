@@ -85,7 +85,7 @@ class ExportParcellaireManquantPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration de pieds manquants %s", $this->parcellaireManquant->campagne."-".(intval($this->parcellaireManquant->campagne) + 1));
+        return sprintf("Déclaration de pieds manquants %s", $this->parcellaireManquant->campagne);
     }
 
     protected function getHeaderSubtitle() {
