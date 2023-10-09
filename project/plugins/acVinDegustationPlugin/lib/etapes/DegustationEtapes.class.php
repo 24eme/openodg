@@ -14,6 +14,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_COMMISSION = 'COMMISSION';
     const ETAPE_RESULTATS = 'RESULTATS';
     const ETAPE_NOTIFICATIONS = 'NOTIFICATIONS';
+    const ETAPE_VISUALISATION = 'VISUALISATION';
 
     private static $_instance = null;
 
