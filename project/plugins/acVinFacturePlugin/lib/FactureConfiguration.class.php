@@ -186,7 +186,7 @@ class FactureConfiguration {
     public function getTypesDocumentFacturant() {
         if(!isset($this->configuration['types_document_facturant'])) {
 
-            return ["TOUS", "DRev", "DR", "SV11", "SV12", "Degustation", "ChgtDenom", "Conditionnement"];
+            return ["TOUS", "DRev", "DR", "SV11", "SV12", "Degustation", "ChgtDenom", "Conditionnement", "MvtLibre"];
         }
 
         return $this->configuration['types_document_facturant'];

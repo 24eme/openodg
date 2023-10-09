@@ -24,7 +24,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteSuperficieRevendique",
+                   "callback": "getQuantiteSuperficeRecolte",
                    "callback_parameters": [
                    ]
                }
@@ -41,30 +41,44 @@
                    "prix": 25,
                    "tva": 0,
                    "unite": "ha",
-                   "libelle": "surface",
+                   "libelle": "surface en production",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteSuperficieRevendique",
+                   "callback": "getQuantiteSuperficeRecolte",
                    "callback_parameters": [
                    ]
                },
-               "01_volumeRevendique": {
+               "01_volumeRevendiqueRecolte": {
                    "modele": "CotisationVariable",
                    "prix": 1.05,
                    "tva": 0,
                    "unite": "hl",
-                   "libelle": "volume revendiqué",
+                   "libelle": "volume revendiqué récolté",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRevendique",
+                   "callback": "getQuantiteVolumeRevendiqueRecolte",
                    "callback_parameters": [
                    ]
                },
-               "02_recolteVendue": {
+               "02_volumeRevendiqueVci": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.05,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "volume revendiqué vci",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueVci",
+                   "callback_parameters": [
+                   ]
+               },
+               "03_recolteVendue": {
                    "modele": "CotisationVariable",
                    "prix": 1.05,
                    "tva": 0,
@@ -96,21 +110,35 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteSuperficieRevendique",
+                   "callback": "getQuantiteSuperficeRecolte",
                    "callback_parameters": [
                    ]
                },
-               "01_volumeRevendique": {
+               "01_volumeRevendiqueRecolte": {
                    "modele": "CotisationVariable",
                    "prix": 0.22,
                    "tva": 0,
                    "unite": "hl",
-                   "libelle": "volume revendiqué",
+                   "libelle": "volume revendiqué recolté",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRevendique",
+                   "callback": "getQuantiteVolumeRevendiqueRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "02_volumeRevendiqueVci": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.22,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "volume revendiqué vci",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueVci",
                    "callback_parameters": [
                    ]
                }

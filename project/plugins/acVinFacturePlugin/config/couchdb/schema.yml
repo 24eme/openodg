@@ -204,6 +204,7 @@ MouvementsFacture:
                         tva: { }
                         version: { }
                         campagne: { }
+                        region: { }
 
 Comptabilite:
   indexable: false

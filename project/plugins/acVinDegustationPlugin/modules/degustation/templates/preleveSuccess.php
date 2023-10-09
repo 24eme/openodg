@@ -2,6 +2,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
 <?php use_javascript('degustation.js') ?>
+<?php use_javascript('hamza_style.js'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
@@ -101,12 +102,10 @@
 	</table>
 
 	<div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("degustation_saisie_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
     </div>
 </form>
 </div>
-
-<?php use_javascript('hamza_style.js'); ?>
