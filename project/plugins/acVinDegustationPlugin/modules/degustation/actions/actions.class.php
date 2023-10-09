@@ -4,6 +4,7 @@ class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $this->form = new DegustationCreationForm();
+        $this->formCreationTournee = new TourneeCreationForm();
 
         $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion()));
         $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, $this->getUser()->getRegion());
@@ -33,8 +34,18 @@ class degustationActions extends sfActions {
     }
 
     public function executeCreateTournee(sfWebRequest $request) {
-        $tournee = TourneeClient::getInstance()->createDoc(date('Y-m-d H:i:s'));
-        $tournee->save();
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return $this->redirect('degustation');
+        }
+
+        $this->form = new TourneeCreationForm();
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (! $this->form->isValid()) {
+            return $this->redirect('degustation');
+        }
+
+        $tournee = $this->form->save();
 
         return $this->redirect('degustation_selection_operateurs', $tournee);
     }
