@@ -592,8 +592,12 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
     /** MOUVEMENTS FACTURES **/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
+    }
+
+    public function getPeriode() {
+        return substr($this->getCampagne(), 0, 4);
     }
 
     public function getMouvementsFactures() {
@@ -601,9 +605,8 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
-
-      $templateFacture = $this->getTemplateFacture();
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
       if(!$templateFacture) {
           return array();
       }

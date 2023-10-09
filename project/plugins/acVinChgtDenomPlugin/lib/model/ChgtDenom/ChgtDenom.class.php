@@ -728,8 +728,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
 
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagneByDate(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -737,8 +737,8 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
-      $templateFacture = $this->getTemplateFacture();
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
       if(!$templateFacture) {
           return array();
       }
