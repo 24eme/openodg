@@ -3,7 +3,27 @@ all:
     parcellaire:
       ecart_pieds_max: 25000
       aires:
-        communes-aoc:
-          name: "AOC Centre"
-          color: "#e58ebc"
-          denomination_id: "01382"
+        sancerre:
+          name: "Sancerre"
+          color: "#cbf078"
+          denomination_id: "00223"
+        pouilly:
+          name: "Pouilly"
+          color: "#f8f398"
+          denomination_id: "00215"
+        menetousalon:
+          name: "Menetou-Salon"
+          color: "#f1b963"
+          denomination_id: "00197"
+        quincy:
+          name: "Quincy"
+          color: "#155263"
+          denomination_id: "00218"
+        reuilly:
+          name: "Reuilly"
+          denomination_id: "00219"
+          color: "#ff9a3c"
+        giennois:
+          name: "Côteaux du Giennois"
+          color: "#ffc93c"
+          denomination_id: "00241"
