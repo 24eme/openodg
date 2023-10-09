@@ -89,14 +89,17 @@ EOF;
             $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($dateDeclaration);
 
             $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dateDeclaration);
-            foreach($etablissement->chais as $chai) {
-                if($chai->adresse == $pmc->declarant->adresse && $chai->commune == $pmc->declarant->commune && $chai->code_postal == $pmc->declarant->code_postal) {
-                    $pmc->chais->nom = $chai->nom;
-                    $pmc->chais->adresse = $chai->adresse;
-                    $pmc->chais->commune = $chai->commune;
-                    $pmc->chais->code_postal = $chai->code_postal;
-                    $pmc->chais->secteur = $chai->secteur;
-                    break;
+
+            if(isset($etablissement->chais)) {
+                foreach($etablissement->chais as $chai) {
+                    if($chai->adresse == $pmc->declarant->adresse && $chai->commune == $pmc->declarant->commune && $chai->code_postal == $pmc->declarant->code_postal) {
+                        $pmc->chais->nom = $chai->nom;
+                        $pmc->chais->adresse = $chai->adresse;
+                        $pmc->chais->commune = $chai->commune;
+                        $pmc->chais->code_postal = $chai->code_postal;
+                        $pmc->chais->secteur = $chai->secteur;
+                        break;
+                    }
                 }
             }
 
