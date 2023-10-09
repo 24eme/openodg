@@ -51,7 +51,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getPeriode() {
-        return preg_replace('/-.*/', '', $this->campagne);
+        return substr($this->campagne, 0, 4);
     }
 
     public function getProduits($region = null) {
