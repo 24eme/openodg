@@ -12,6 +12,7 @@ all:
   societe:
     format_identifiant: "%06d"
   donnees_viticoles:
+    lot_saisie_mention_cepage_active: false
     regions:
       AMIGNY: "AMIGNY"
       BUE: "BUE"
