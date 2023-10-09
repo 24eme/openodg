@@ -40,7 +40,7 @@ echo $form->renderGlobalErrors();
             <ul class="dropdown-menu">
                 <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de prélèvement</a></li>
+                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de prélèvements</a></li>
                 <li role="separator" class="divider"></li>
                 <li>
                     <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
