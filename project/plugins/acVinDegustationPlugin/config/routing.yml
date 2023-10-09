@@ -401,9 +401,9 @@ degustation_visualisation:
   requirements:
     sf_method: [get]
 
-degustation_manquements:
-  url: /degustation/manquements
-  param: { module: degustation, action: manquements }
+degustation_nonconformites:
+  url: /degustation/nonconformites
+  param: { module: degustation, action: nonconformites }
   requirements:
     sf_method: [get]
 

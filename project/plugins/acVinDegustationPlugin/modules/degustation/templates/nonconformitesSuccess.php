@@ -19,7 +19,7 @@
           <span style="margin-top: 8px; display: inline-block;" class="text-muted">Campagne <?php echo $campagne ?></span>
       <?php endif; ?>
     </div>
-    <h2>Liste des manquements à traiter</h2>
+    <h2>Liste des non conformités à traiter</h2>
 </div>
 
 <div class="row">

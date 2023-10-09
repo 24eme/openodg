@@ -68,7 +68,7 @@ function getUrlEtapeFromMvtLot($mvtLot)
 
     switch ($mvtLot->value->statut) {
         case Lot::STATUT_MANQUEMENT_EN_ATTENTE:
-            return url_for('degustation_manquements');
+            return url_for('degustation_nonconformites');
 
         case Lot::STATUT_NONCONFORME :
         case Lot::STATUT_CONFORME :

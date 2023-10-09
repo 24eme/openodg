@@ -899,7 +899,7 @@ class degustationActions extends sfActions {
         $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, $this->campagne, $region);
     }
 
-    public function executeManquements(sfWebRequest $request) {
+    public function executeNonconformites(sfWebRequest $request) {
       $this->chgtDenoms = [];
       $this->campagne = $request->getParameter('campagne', null);
       $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne, $this->getUser()->getRegion());
