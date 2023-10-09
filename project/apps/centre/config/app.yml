@@ -6,7 +6,6 @@ all:
   organisme:
     nom: "Centre Loire"
   elasticversion: '2.4.6'
-  document_validation_signataire: 1
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4

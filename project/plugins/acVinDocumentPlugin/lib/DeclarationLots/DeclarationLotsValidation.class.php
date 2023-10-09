@@ -107,6 +107,11 @@ abstract class DeclarationLotsValidation extends DocumentValidation
             case DRevClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_VINIFICATEUR; break;
         }
 
+        $activites = HabilitationClient::getInstance()->getActivites();
+        if ($activite == HabilitationClient::ACTIVITE_VRAC && !in_array(HabilitationClient::ACTIVITE_VRAC, $activites)) {
+            return HabilitationClient::ACTIVITE_VINIFICATEUR;
+        }
+
         return $activite;
     }
 }
