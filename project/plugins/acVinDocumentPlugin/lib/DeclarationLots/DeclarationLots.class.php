@@ -592,8 +592,12 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
     /** MOUVEMENTS FACTURES **/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getCampagne());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
+    }
+
+    public function getPeriode() {
+        return substr($this->getCampagne(), 0, 4);
     }
 
     public function getMouvementsFactures() {
