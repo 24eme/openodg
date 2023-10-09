@@ -55,7 +55,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['pourcentage']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->renderError() ?>
                         <div class="input-group">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->render(array('class' => 'form-control text-right', "maxlength" => 5, "size" => 5)) ?>
+                                <?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->render(array('class' => 'form-control input-float text-right', "maxlength" => 5, "size" => 5)) ?>
                             <div class="input-group-addon">%</div>
                         </div>
                     </div>
