@@ -17,7 +17,7 @@ class LotCommissionForm extends acCouchdbObjectForm
         $dates = [];
 
         foreach (range(1, 5) as $week) {
-            $dates[$now->modify('+'.$week.' week')->format('d/m/Y')] = $now->modify('+'.$week.' week')->format(DATE_RSS);
+            $dates[$now->modify('+'.$week.' week')->format('d/m/Y')] = $now->modify('+'.$week.' week')->format('d M Y H:i');
         }
 
         return $dates;
