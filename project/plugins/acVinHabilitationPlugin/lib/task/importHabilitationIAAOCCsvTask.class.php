@@ -8,6 +8,7 @@ class importHabilitationIAAOCCsvTask extends importOperateurIACsvTask
   const CSV_HABILITATION_CODE_POSTAL = 5;
   const CSV_HABILITATION_CVI = 11;
   const CSV_HABILITATION_SIRET = 12;
+  const CSV_HABILITATION_NEGOCIANT = 15;
   const CSV_HABILITATION_PRODUIT = 18;
   const CSV_HABILITATION_ACTIVITES = 19;
   const CSV_HABILITATION_STATUT = 20;
@@ -101,6 +102,11 @@ EOF;
                 echo "WARNING: statut non trouvé ".$line." : pas d'import\n";
                 continue;
             }
+
+            if($data[self::CSV_HABILITATION_NEGOCIANT] == "oui") {
+                $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            }
+
             if (($statut == HabilitationClient::STATUT_HABILITE) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]]) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]])) {
                 $di = $cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]];
                 if (isset($di['DATEDEMANDE'])) {
