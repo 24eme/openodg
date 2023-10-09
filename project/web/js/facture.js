@@ -109,8 +109,8 @@
       input.addEventListener('input', event => {
         if (event.data) {
             event.target.value = (event.data).split('|')[0];
-            const inputPU = document.getElementById((event.target.id).replace('libelle', 'prix_unitaire'));
-            const inputQuantite = document.getElementById((event.target.id).replace('libelle', 'quantite'));
+            const inputPU = document.getElementById((event.target.id).replace('detail_libelle', 'prix_unitaire'));
+            const inputQuantite = document.getElementById((event.target.id).replace('detail_libelle', 'quantite'));
             if ((event.data).split('|')[1]) {
                 inputPU.value = (event.data).split('|')[1];
                 inputQuantite.focus();

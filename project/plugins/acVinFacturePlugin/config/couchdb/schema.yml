@@ -191,13 +191,19 @@ MouvementsFacture:
                         identifiant_analytique: {  }
                         identifiant_analytique_libelle_compta: {  }
                         identifiant: {  }
-                        categorie: {  }
-                        libelle: {  }
+                        type_libelle: {  }
+                        detail_libelle: {  }
                         quantite: { type: float }
                         prix_unitaire: { type: float }
                         facture: { type: integer }
                         facturable: { type: integer }
                         date : { }
+                        type : { }
+                        id: { }
+                        taux: { }
+                        tva: { }
+                        version: { }
+                        campagne: { }
 
 Comptabilite:
   indexable: false

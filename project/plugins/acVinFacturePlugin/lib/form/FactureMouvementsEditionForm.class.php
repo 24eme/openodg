@@ -49,19 +49,19 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
 
           $mvt->identifiant = $societeMvtKey;
           $mvt->updateIdentifiantAnalytique($mouvement['identifiant_analytique']);
-          $mvt->categorie = $mouvement['categorie'];
-          $mvt->libelle = $mouvement['libelle'];
+          $mvt->type_libelle = $mouvement['type_libelle'];
+          $mvt->detail_libelle = $mouvement['detail_libelle'];
           $mvt->quantite = floatval($mouvement['quantite']);
           $mvt->prix_unitaire = floatval($mouvement['prix_unitaire']);
-          if (isset($mouvement['taux_tva'])) {
-            $mvt->add('taux_tva', floatval($mouvement['taux_tva']));
-          }
+          $mvt->taux = $mvt->prix_unitaire;
           if (!$mvt->facture) {
             $mvt->facture = 0;
           }
           $mvt->facturable = 1;
-
           $mvt->date = $this->getObject()->date;
+          $mvt->id = $this->getObject()->_id;
+          $mvt->type = 'Facturation Libre';
+          $mvt->region = sfConfig::get('app_region');
       }
       // Suppression des lignes supprimees dynamiquement
       $mvtsToRemove = array();
