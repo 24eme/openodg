@@ -234,7 +234,7 @@ EOF;
         if($degustation->date > date('Y-m-d H:i:s')) {
             $degustation->etape = DegustationEtapes::ETAPE_LOTS;
         } else {
-            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
+            $degustation->etape = DegustationEtapes::ETAPE_VISUALISATION;
         }
         $degustation->save();
     }

@@ -30,6 +30,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_COMMISSION => 7,
         self::ETAPE_RESULTATS => 8,
         self::ETAPE_NOTIFICATIONS => 9,
+        self::ETAPE_VISUALISATION => 10,
     );
 
     public static $libelles = array(
