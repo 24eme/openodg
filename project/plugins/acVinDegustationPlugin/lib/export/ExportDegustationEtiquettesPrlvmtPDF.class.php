@@ -10,6 +10,9 @@ class ExportDegustationEtiquettesPrlvmtPDF extends ExportPDF {
         $this->degustation = $degustation;
         $this->identifiant = $identifiant;
         $this->anonymat4labo = $anonymat4labo;
+        if($secteur == DegustationClient::DEGUSTATION_SANS_SECTEUR) {
+            $secteur = null;
+        }
         $this->secteur = $secteur;
         if (!$filename) {
             $filename = $this->getFileName(true);
