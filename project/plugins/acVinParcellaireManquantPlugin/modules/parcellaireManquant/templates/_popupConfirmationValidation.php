@@ -19,6 +19,8 @@
 				            </div>
 				        </div>
 				    </div>
+                    <?php else: ?>
+                        <p>Êtes vous sûr de vouloir approuver cette déclaration ?</p>
 				    <?php endif; ?>
 				</div>
 				<div class="modal-footer">
