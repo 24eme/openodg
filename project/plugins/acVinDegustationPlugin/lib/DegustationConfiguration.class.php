@@ -49,6 +49,11 @@ class DegustationConfiguration {
         return CacheFunction::cache('model', array(DegustationConfiguration::getInstance(), '_getLieux'));
     }
 
+    public function hasNotification()
+    {
+        return isset($this->configuration['has_notification']) && boolval($this->configuration['has_notification']);
+    }
+
     public function _getLieux() {
         $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON);
         $lieux = array();

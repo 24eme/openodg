@@ -12,3 +12,4 @@ all:
         - NONCONFORME_ORGANOLEPTIQUE
       typicite_cepage: false
       tournee_autonome: true
+      has_notification: true

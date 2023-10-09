@@ -30,7 +30,9 @@
                 <tr>
                   <th class="col-xs-3 text-left">Opérateur</th>
                   <th class="col-xs-5 text-left">Echantillons dégustés</th>
+                    <?php if (DegustationConfiguration::getInstance()->hasNotification()): ?>
                   <th class="col-xs-2 text-left">Notifications</th>
+                    <?php endif; ?>
                 </tr>
               </thead>
               <tbody>
@@ -52,7 +54,9 @@
                         ><span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span></a>&nbsp;
                         <?php endforeach; ?>
                       </td>
-                      <td>
+                        <?php ?>
+                    <?php if (DegustationConfiguration::getInstance()->hasNotification()): ?>
+                        <td>
                           <a class="pull-right" title="Ouvrir le mail" style="color: white;" href="<?php echo url_for('degustation_mail_to_resultats', array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant)); ?>"><span class="glyphicon glyphicon-envelope"></span></a>
                         <?php if ($lot->email_envoye === null): ?>
                             <div class="btn-group">
@@ -79,6 +83,7 @@
                           <br/><a href="<?php echo url_for('degustation_envoi_mail_resultats',array('id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant,'envoye' => 0)); ?>" ><small>Remettre en non envoyé</small></a>
                         <?php endif ?>
                       </td>
+                      <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
               </tbody>

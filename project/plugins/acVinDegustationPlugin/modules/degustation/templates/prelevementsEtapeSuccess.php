@@ -86,9 +86,6 @@
                 <tr><td>&nbsp;</td></tr>
                 <tr><td>&nbsp;</td></tr>
                 <tr><td>&nbsp;</td></tr>
-                <tr>
-                    <td><a id="" class="btn btn-default btn-xs" href="<?php echo url_for('degustation_preleve', $degustation) ?>?differer=1" ><span class="glyphicon glyphicon-time"></span>&nbsp;Différer la dégustation de lot</a></td>
-                </tr>
             </table>
           </div>
           <div class="col-xs-12 text-right">

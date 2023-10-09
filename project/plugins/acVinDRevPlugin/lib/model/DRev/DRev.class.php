@@ -1727,11 +1727,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getQuantiteVolumeVendue($produitFilter = null) {
         $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
-        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
 
         }
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L6);
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6);
     }
 
     /**** MOUVEMENTS ****/

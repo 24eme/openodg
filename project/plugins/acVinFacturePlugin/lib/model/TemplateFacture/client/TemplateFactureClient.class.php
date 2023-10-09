@@ -39,13 +39,13 @@ class TemplateFactureClient extends acCouchdbClient {
             $template = str_replace('%region%', $region, $template);
         }
 
-        for($d = $campagne_start ; $d > $campagne_start - 10 ; $d--) {
+        for($d = $campagne_start ; $d > $campagne_start - 14 ; $d--) {
             $id = sprintf($template, $d);
             if ($this->find($id, self::HYDRATE_JSON)) {
                 return $id;
             }
         }
-        throw new sfException("Object TEMPLATE-FACTURE not found from template $template");
+        throw new sfException("Object TEMPLATE-FACTURE not found from template $id");
     }
 
     public function findByCampagne($campagne, $region = null, $hydrate = self::HYDRATE_DOCUMENT){

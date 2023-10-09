@@ -16,3 +16,4 @@ all:
       conformite: []
       typicite_cepage: true
       tournee_autonome: false
+      has_notification : false

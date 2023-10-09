@@ -29,16 +29,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getRegions()
     {
-        if (RegionConfiguration::getInstance()->hasOdgProduits() === false) {
-            return [];
-        }
-
-        $regions = [];
-        foreach ($this->getLots() as $lot) {
-            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($lot->getProduitHash());
-        }
-
-        return array_values(array_unique($regions));
+		return [];
     }
 
     public function getDateFormat($format = 'Y-m-d') {
