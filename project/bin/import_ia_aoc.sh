@@ -130,3 +130,5 @@ echo "Mise en reputes conforme des lots en attente"
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_AFFECTABLE_ENATTENTE | awk -F '"' '{if ( $9 < "2020-2021" ) print "php symfony lot:change-statut --application='$ODG' "$4" "$10"-"$12"-"$14" false"}' | bash
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/facture | awk -F '"' '{print $4}' | sort -u | grep '[A-Z]' | while read id ; do php symfony declaration:regenerate-mouvements --onlydeletemouvements=true --application=$ODG $id ; done
+
+php symfony parcellaire:update-aire --application="$ODG" --trace
