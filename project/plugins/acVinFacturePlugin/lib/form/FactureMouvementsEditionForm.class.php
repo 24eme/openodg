@@ -60,7 +60,7 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
           $mvt->facturable = 1;
           $mvt->date = $this->getObject()->date;
           $mvt->id = $this->getObject()->_id;
-          $mvt->type = 'MvtLibre';
+          $mvt->type = $this->getObject()->type;
           $mvt->region = sfConfig::get('app_region');
       }
       // Suppression des lignes supprimees dynamiquement

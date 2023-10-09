@@ -35,7 +35,7 @@
 
  */
 
-abstract class BaseFactureMouvement extends acCouchdbDocumentTree {
+abstract class BaseFactureMouvement extends MouvementFactures {
 
     public function configureTree() {
        $this->_root_class_name = 'MouvementsFacture';
