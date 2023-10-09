@@ -1,4 +1,5 @@
 <?php echo use_helper("Date"); ?>
+<?php echo use_helper("Lot"); ?>
 <ol class="breadcrumb">
     <li><a href="<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
     <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
@@ -38,7 +39,7 @@
         		<?php if ($category && strtolower($document->key[PieceAllView::KEYS_CATEGORIE]) != $category) { continue; } ?>
                 <tr>
                     <td><?php if($document->key[PieceAllView::KEYS_DATE_DEPOT]): ?><?php echo format_date(preg_replace('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/', '$1', $document->key[PieceAllView::KEYS_DATE_DEPOT]), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></td>
-                    <td><?php echo ($document->key[PieceAllView::KEYS_CATEGORIE] == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtoupper($document->key[PieceAllView::KEYS_CATEGORIE]))); ?></td>
+                    <td><?php echo ($document->key[PieceAllView::KEYS_CATEGORIE] == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', clarifieTypeDocumentLibelle(ucfirst(strtoupper($document->key[PieceAllView::KEYS_CATEGORIE])))); ?></td>
                     <td>
                         <?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) &&  Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
             				<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
@@ -123,7 +124,7 @@
     <div class="list-group">
 	<a class="list-group-item <?php if (!$category):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne))?>">Tous<span class="badge" style="position: absolute; right: 10px;"><?php echo count($history) - $decreases ?></span></a>
 	<?php foreach ($categories as $categorie => $nbDoc): ?>
-    <a class="list-group-item <?php if ($category && $category == $categorie):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtoupper($categorie))); ?><span class="badge" style="position: absolute; right: 10px;"><?php echo $nbDoc ?></span></a>
+    <a class="list-group-item <?php if ($category && $category == $categorie):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', clarifieTypeDocumentLibelle(ucfirst(strtoupper($categorie)))); ?><span class="badge" style="position: absolute; right: 10px;"><?php echo $nbDoc ?></span></a>
 	<?php endforeach; ?>
     </div>
 </div>

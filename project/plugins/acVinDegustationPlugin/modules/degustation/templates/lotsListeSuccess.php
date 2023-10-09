@@ -52,7 +52,7 @@
                 <tr>
                   <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
                   <td class="hidden-print"><?php echo $mouvement->value->campagne;  ?></td>
-                  <td class="hidden-print"><?php echo $mouvement->value->initial_type;  ?></td>
+                  <td class="hidden-print"><?php echo clarifieTypeDocumentLibelle($mouvement->value->initial_type);  ?></td>
                   <td class="text-center"><?php echo $mouvement->value->numero_dossier;  ?> /
                   <?php echo $mouvement->value->numero_archive;  ?></td>
                   <td><?php  echo str_replace(array("(", ")"), array("<span class='text-muted'> - ", "</span>"), $mouvement->value->libelle);  ?></td>
