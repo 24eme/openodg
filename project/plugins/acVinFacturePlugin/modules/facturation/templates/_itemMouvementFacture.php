@@ -1,18 +1,22 @@
 <div class="form-group line mvt_ligne" >
     <div class="col-xs-12">
         <div class="row">
-            <div class="col-xs-4 <?php if($mvtForm["identifiant"]->hasError()): ?>text-danger<?php endif; ?>">
+            <div class="col-xs-3 <?php if($mvtForm["identifiant"]->hasError()): ?>text-danger<?php endif; ?>">
                 <?php echo $mvtForm['identifiant']->renderError(); ?>
                 <?php echo $mvtForm['identifiant']->render(array('class' => 'form-control select2autocompleteAjax input-md', 'autofocus' => 'autofocus', 'placeholder' => 'Rechercher')); ?>
             </div>
-            <div class="col-xs-2 <?php if($mvtForm["identifiant_analytique"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0; padding-right: 0;">
+            <div class="col-xs-1 <?php if($mvtForm["identifiant_analytique"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0; padding-right: 0;">
                 <?php echo $mvtForm['identifiant_analytique']->renderError(); ?>
                 <?php echo $mvtForm['identifiant_analytique']->render(array('class' => 'form-control input-md select2 identifiant_analytique')); ?>
                 <?php if(isset($item) && $item->facture): ?>
                 <input class="form-control input-md" disabled="disabled" type="text" value="<?php echo $item->identifiant_analytique_libelle_compta; ?>" />
                 <?php endif; ?>
             </div>
-            <div class="col-xs-3 <?php if($mvtForm["libelle"]->hasError()): ?>text-danger<?php endif; ?>">
+            <div class="col-xs-3 <?php if($mvtForm["categorie"]->hasError()): ?>text-danger<?php endif; ?>">
+                <?php echo $mvtForm['categorie']->renderError(); ?>
+                <?php echo $mvtForm['categorie']->render(array('class' => 'form-control input-md')); ?>
+            </div>
+            <div class="col-xs-3 <?php if($mvtForm["libelle"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
                 <?php echo $mvtForm['libelle']->renderError(); ?>
                 <?php echo $mvtForm['libelle']->render(array('class' => 'form-control input-md select2-libelle', 'list' => "suggestions")); ?>
                 <datalist id="suggestions">
@@ -21,7 +25,7 @@
                     <?php endforeach; ?>
                 </datalist>
             </div>
-            <div class="col-xs-2 <?php if($mvtForm["prix_unitaire"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
+            <div class="col-xs-1 <?php if($mvtForm["prix_unitaire"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
                 <?php echo $mvtForm['prix_unitaire']->renderError(); ?>
                 <?php echo $mvtForm['prix_unitaire']->render(array('class' => 'form-control input-md text-right input-float')); ?>
             </div>

@@ -46,7 +46,7 @@ EOF;
         $this->convert_activites['Conditionneur'] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
         $this->convert_activites['Négoce'] = HabilitationClient::ACTIVITE_NEGOCIANT;
         $this->convert_activites['Mise en bouteille'] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
-        $this->convert_activites['Pressurage'] = HabilitationClient::ACTIVITE_PRESSURAGE;
+        $this->convert_activites['Pressurage'] = HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS;;
         $this->convert_activites['Producteur de moûts'] = HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS;
         $this->convert_activites['Eleveur'] = HabilitationClient::ACTIVITE_ELEVEUR;
 

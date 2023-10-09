@@ -21,13 +21,13 @@ class PMCClient extends acCouchdbClient
         return $doc;
     }
 
-    public function findBrouillon($identifiant, $campagne = null)
+    public function findBrouillon($identifiant, $periode = null)
     {
-        if (!$campagne) {
-            $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent();
+        if (!$periode) {
+            $periode = ConfigurationClient::getInstance()->getCampagneVinicole(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
         }
 
-        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent(), $identifiant);
+        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode), $identifiant);
 
         foreach ($docs->rows as $doc) {
             if ($doc->key[4] == DeclarationTousView::STATUT_BROUILLON) {
