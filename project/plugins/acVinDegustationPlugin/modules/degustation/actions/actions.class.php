@@ -429,7 +429,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
         if (count($this->degustation->getLotsDegustables()) < 1) {
-            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_PRELEVEMENTS), $this->degustation);
+            return $this->redirect(DegustationEtapes::getInstance()->getPreviousLink(TourneeDegustationEtapes::ETAPE_TABLES), $this->degustation);
         }
 
         return $this->redirect('degustation_organisation_table', $this->degustation);
