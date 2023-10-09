@@ -28,6 +28,13 @@ class PMCConfiguration {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
 
+    public function hasOdgProduits() {
+        if (!class_exists('RegionConfiguration')) {
+            return false;
+        }
+        return RegionConfiguration::getInstance()->hasOdgProduits();
+    }
+
     public function getOdgRegions(){
       if(!$this->hasOdgProduits()){
         return array();

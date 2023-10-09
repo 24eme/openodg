@@ -21,7 +21,7 @@ echo $form->renderGlobalErrors();
         </div>
         <div class="list-group">
             <?php foreach (array_keys($lots->getRawValue()) as $region): ?>
-            <?php if (!count($lots[$region]) && !$afficher_tous_les_secteurs && $region != $secteur): continue; endif; ?>
+            <?php if (!count($lots[$region]) && !$afficher_tous_les_secteurs && $region != $secteur && $region != DegustationClient::DEGUSTATION_SANS_SECTEUR): continue; endif; ?>
             <a href="<?php echo url_for('degustation_tournees_etape', array('sf_subject' => $degustation, 'secteur' => $region, 'afficher_tous_les_secteurs' => $afficher_tous_les_secteurs)); ?>" class="list-group-item <?php if($secteur == $region): ?>active<?php endif; ?>">
                 <span class="glyphicon <?php if($region == DegustationClient::DEGUSTATION_SANS_SECTEUR): ?>glyphicon-ban-circle<?php else: ?>glyphicon-map-marker<?php endif; ?>"></span> <?php echo $region; ?> <span class="badge"><?php echo count($lots[$region]) ?></span>
             </a>
