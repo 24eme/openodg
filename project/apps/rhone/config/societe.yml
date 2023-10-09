@@ -13,3 +13,4 @@ all:
         "stalker": "Stalker"
         "teledeclaration_drev_admin": "ODG Région"
       visualisation_teledeclaration: true
+      enable_groupes: true

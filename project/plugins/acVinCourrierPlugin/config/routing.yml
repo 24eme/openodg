@@ -1,0 +1,19 @@
+courrier_lot_creation:
+  url: /courrier/:identifiant/:lot_unique_id/create
+  param: { module: courrier, action: create }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+courrier_visualisation:
+  url: /courrier/:id/visualisation
+  param: { module: courrier, action: visualisation }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get]

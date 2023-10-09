@@ -4,7 +4,14 @@
  * Model for MouvementsFacture
  *
  */
-class MouvementsFacture extends BaseMouvementsFacture {
+class MouvementsFacture extends BaseMouvementsFacture implements InterfaceMouvementFacturesDocument {
+
+    protected $mouvement_document = null;
+
+    public function __construct() {
+        parent::__construct();
+        $this->mouvement_document = new MouvementFacturesDocument($this);
+    }
 
     public function constructIds($date) {
         if (!$date) {
@@ -119,6 +126,50 @@ class MouvementsFacture extends BaseMouvementsFacture {
       }
       ksort($result);
       return $result;
+    }
+
+
+    public function getMouvementsFacturesCalculeByIdentifiant($identifiant) {
+
+        return $this->mouvement_document->getMouvementsFacturesCalculeByIdentifiant($identifiant);
+    }
+
+    public function generateMouvementsFactures() {
+
+        return $this->mouvement_document->generateMouvementsFactures();
+    }
+
+    public function findMouvementFactures($cle, $id = null){
+      return $this->mouvement_document->findMouvementFactures($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvementsFactures(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }
+
+
+    public function getMouvementsFacturesCalcule($region = null) {
+      return $this->getMouvementsFactures();
+    }
+
+    public function getMouvementsFactures() {
+        return $this->_get('mouvements');
     }
 
 }
