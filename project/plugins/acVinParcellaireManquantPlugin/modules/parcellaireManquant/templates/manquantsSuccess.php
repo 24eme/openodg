@@ -2,7 +2,7 @@
 <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
 
 <?php include_partial('parcellaireManquant/step', array('step' => 'manquants', 'parcellaireManquant' => $parcellaireManquant)) ?>
-<div">
+<div>
     <h2>Pieds morts ou manquants sur votre exploitation</h2>
     <p class="pt-3">Merci d'indiquer la densité et le % de pied manquant</p>
     <div class="alert alert-info">
