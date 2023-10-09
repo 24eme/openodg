@@ -146,3 +146,9 @@ function showLotStatusCartouche($statut, $detail = null, $secondPassage = false)
 function substrUtf8($str, $offset, $length) {
   return utf8_encode(substr(utf8_decode($str), $offset, $length));
 }
+
+function clarifieTypeDocumentLibelle($type) {
+    $result = str_replace('Transaction', 'VracExport', $type);
+    $result = str_replace('TRANSACTION', 'VRAC_EXPORT', $result);
+    return $result;
+}

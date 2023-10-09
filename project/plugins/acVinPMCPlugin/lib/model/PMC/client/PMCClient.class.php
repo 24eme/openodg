@@ -52,10 +52,10 @@ class PMCClient extends acCouchdbClient
         return $doc;
     }
 
-    public function createDoc($identifiant, $campagne, $date, $papier = false)
+    public function createDoc($identifiant, $periode, $date, $papier = false)
     {
         $doc = new PMC();
-        $doc->initDoc($identifiant, $campagne, $date);
+        $doc->initDoc($identifiant, $periode, $date);
 
         $doc->storeDeclarant();
 
