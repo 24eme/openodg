@@ -14,12 +14,14 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
     public function configure() {
         $this->setWidget('identifiant', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration'), $this->isreadonly));
         $this->setWidget("identifiant_analytique", new sfWidgetFormChoice(array('choices' => $this->getIdentifiantsAnalytiques()), $this->isreadonly));
+        $this->setWidget("categorie", new bsWidgetFormInput(array(), $this->isreadonly));
         $this->setWidget("libelle", new bsWidgetFormInput(array(), $this->isreadonly));
         $this->setWidget("quantite", new bsWidgetFormInputFloat(array(), $this->isreadonly));
         $this->setWidget("prix_unitaire", new bsWidgetFormInputFloat(array(), $this->isreadonly));
 
         $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => false)));
         $this->setValidator("identifiant_analytique", new sfValidatorChoice(array('choices' => array_keys($this->getIdentifiantsAnalytiques()))));
+        $this->setValidator("categorie", new sfValidatorString(array('required' => false)));
         $this->setValidator("libelle", new sfValidatorString(array('required' => false)));
         $this->setValidator("quantite", new sfValidatorNumber(array('required' => false)));
         $this->setValidator("prix_unitaire", new sfValidatorNumber(array('required' => false)));
@@ -33,6 +35,7 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
       if ($this->getObject()->getKey() == 'nouveau' && $lastMouvement) {
         $this->setDefault('identifiant', $lastMouvement->identifiant);
         $this->setDefault('identifiant_analytique', $lastMouvement->identifiant_analytique);
+        $this->setDefault('categorie', $this->getObject()->getDocument()->libelle);
         if (!FactureConfiguration::getInstance()->getSuggestionsFacturationLibre()) {
             $this->setDefault('libelle', $lastMouvement->libelle);
         }
