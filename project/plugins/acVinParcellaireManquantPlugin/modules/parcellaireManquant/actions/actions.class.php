@@ -194,7 +194,7 @@ class parcellaireManquantActions extends sfActions {
 
     	$this->form->save();
 
-    	$this->getUser()->setFlash("notice", "Vos parcelles irrigables ont bien été enregistrées");
+    	$this->getUser()->setFlash("notice", "Vos informations ont bien été enregistrées");
     	return $this->redirect('parcellairemanquant_visualisation', $this->parcellaireManquant);
     }
 
