@@ -71,7 +71,7 @@ php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" -
 
 echo "Habilitations"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+#xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 # xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
 # sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
 php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv --application="$ODG"
