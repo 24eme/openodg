@@ -173,7 +173,7 @@ EOF;
     }
 
     protected function alias($produit) {
-        $produit = str_replace('Pouilly Fumé', 'Pouilly-Fumé', $produit);
+        $produit = preg_replace('/^Pouilly sur Loire$/', 'Pouilly sur Loire Blanc', $produit);
         return $produit;
     }
 

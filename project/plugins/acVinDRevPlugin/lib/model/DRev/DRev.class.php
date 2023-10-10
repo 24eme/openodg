@@ -1738,7 +1738,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getQuantiteVolumeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
         $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
 
-        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
         }
 
@@ -1748,7 +1748,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
         $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
 
-        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
         }
 
