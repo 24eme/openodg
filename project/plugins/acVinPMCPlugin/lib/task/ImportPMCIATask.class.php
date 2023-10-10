@@ -49,6 +49,7 @@ EOF;
 
         $document = null;
         $ligne = 0;
+        $nb = 0;
         foreach(file($arguments['csv']) as $line) {
             $ligne++;
             $line = str_replace("\n", "", $line);
@@ -116,6 +117,13 @@ EOF;
             $pmc->validate($dateDeclaration);
             $pmc->validateOdg($dateDeclaration);
             $pmc->save();
+
+            $nb++;
+
+            if($nb > 500) {
+                sleep(120);
+                $nb = 0;
+            }
         }
     }
 
