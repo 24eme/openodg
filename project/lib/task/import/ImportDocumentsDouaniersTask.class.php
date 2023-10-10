@@ -102,6 +102,7 @@ EOF;
                     foreach($fichiers as $fichier) {
                         if(isset($options['dateimport']) && $options['dateimport']) {
                             $fichier->date_import = $options['dateimport'];
+                            $fichier->date_depot = $options['dateimport'];
                             $fichier->add('validation_odg', $options['dateimport']);
                             $fichier->save();
                         }
