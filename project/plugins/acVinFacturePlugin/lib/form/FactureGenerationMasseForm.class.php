@@ -41,7 +41,7 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
     }
 
     public function getRegions() {
-        return EtablissementClient::getRegionsWithoutHorsInterLoire();
+        return Organisme::getCurrentOrganisme();
     }
 
     public function getModeleChoices() {
