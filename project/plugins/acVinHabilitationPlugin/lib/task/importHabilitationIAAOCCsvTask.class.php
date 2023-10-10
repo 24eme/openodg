@@ -53,11 +53,12 @@ EOF;
 
 
         $this->convert_products = array();
+        $this->convert_products['Coteaux du Giennois'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/CDG';
         $this->convert_products['Quincy'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/QCY';
         $this->convert_products['Chateaumeillant'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/CHM';
         $this->convert_products['Reuilly'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/RLY';
         $this->convert_products['Menetou-Salon'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/MTS';
-        $this->convert_products['Pouilly'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PSL';
+        $this->convert_products['Pouilly sur Loire'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PSL';
         $this->convert_products['Pouilly Fumé'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PFM';
         $this->convert_products['Sancerre'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/SCR';
     }

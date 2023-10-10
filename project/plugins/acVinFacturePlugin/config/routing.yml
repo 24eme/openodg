@@ -173,3 +173,11 @@ facturation_xml:
   options:
     model:    Facture
     type:     object
+
+facturation_email:
+  url : /facture/envoi-email/:id
+  param: { module:facturation, action: envoiEmail }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object

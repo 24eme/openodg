@@ -523,4 +523,38 @@ class facturationActions extends sfActions
             }
         }
     }
+
+    public function executeEnvoiEmail(sfWebRequest $request) {
+        $facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if (!$facture) {
+            $this->getUser()->setFlash("error", "Facture non envoyée par email car celle-ci n'a pas pu être récupérée.");
+            $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
+        }
+
+        if(!$facture->getSociete()->getEmailCompta()) {
+            $this->getUser()->setFlash("error", "Facture non envoyée par email car il n'existe aucune adresse e-mail associée à la société ".$facture->getSociete()->raison_sociale);
+            $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
+        }
+
+        $message = Swift_Message::newInstance()
+         ->setFrom(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')))
+         ->setTo($facture->getSociete()->getEmailCompta())
+         ->setSubject(GenerationFactureMail::getSujet($facture->getNumeroOdg()))
+         ->setBody($this->getPartial("facturation/email", array('id' => $facture->_id)));
+
+         if(Organisme::getInstance()->getEmailFacturation()) {
+            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
+         }
+
+         $sended = sfContext::getInstance()->getMailer()->send($mail);
+
+         if(!$sended) {
+             $this->getUser()->setFlash("error", "Facture non envoyée par email. Une erreur s'est produite à la constitution du message.");
+             $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
+         }
+
+         $this->getUser()->setFlash("notice", "La facture a bien été transmise à l'adresse ".$facture->getSociete()->getEmailCompta());
+         $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
+    }
 }

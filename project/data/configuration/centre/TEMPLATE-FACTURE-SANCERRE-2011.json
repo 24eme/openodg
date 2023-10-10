@@ -23,7 +23,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRevendique",
+                   "callback": "getQuantiteVolumeRecolte",
                    "callback_parameters": [
                    ]
                }
@@ -45,7 +45,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRevendique",
+                   "callback": "getQuantiteVolumeRecolte",
                    "callback_parameters": [
                    ]
                }
@@ -67,7 +67,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRevendique",
+                   "callback": "getQuantiteVolumeRecolte",
                    "callback_parameters": [
                    ]
                }
@@ -89,7 +89,7 @@
                    "docs": [
                        "DRev"
                    ],
-                   "callback": "getQuantiteVolumeRevendique",
+                   "callback": "getQuantiteVolumeRecolte",
                    "callback_parameters": [
                    ]
                }

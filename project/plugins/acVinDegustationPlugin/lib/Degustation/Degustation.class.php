@@ -1472,9 +1472,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $secteurs = [];
             $secteurs[DegustationClient::DEGUSTATION_SANS_SECTEUR] = [];
 
-            foreach (EtablissementClient::getInstance()->getRegions() as $region) {
-                if ($region) {
-                        $secteurs[$region] = [];
+            foreach (EtablissementClient::getInstance()->getSecteurs() as $secteur) {
+                if ($secteur) {
+                        $secteurs[$secteur] = [];
                     }
             }
 

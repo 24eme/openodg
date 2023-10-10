@@ -2,7 +2,6 @@ all:
   configuration:
     parcellaire:
       ecart_pieds_max: 25000
-      limit_produits_configuration: false
       aires:
         sancerre:
           name: "Sancerre"
@@ -28,3 +27,7 @@ all:
           name: "Côteaux du Giennois"
           color: "#ffc93c"
           denomination_id: "00241"
+        chateaumeillant:
+          name: "Chateaumeillant"
+          color: "#b882ed"
+          denomination_id: "02016"
