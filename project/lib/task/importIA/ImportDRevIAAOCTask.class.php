@@ -99,7 +99,11 @@ EOF;
                 $drev = new DRev();
                 $drev->initDoc($etablissement->identifiant, $millesime);
                 $drev->storeDeclarant();
-                $drev->resetAndImportFromDocumentDouanier();
+                try {
+                    $drev->resetAndImportFromDocumentDouanier();
+                } catch(Exception $e) {
+                    continue;
+                }
             }
 
             $drevProduit = $drev->addProduit($produit->getHash(), $data[self::CSV_MENTION_VALORISANTE]);
