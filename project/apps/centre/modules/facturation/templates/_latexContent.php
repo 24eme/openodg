@@ -140,7 +140,7 @@
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \arrayrulecolor{vertclair}
-  <?php $i=0; foreach ($facture->lignes as $ligne): ?>
+  <?php $i=0; $exoneration = false; foreach ($facture->lignes as $ligne): ?>
     <?php foreach ($ligne->details as $detail): ?>
         <?php if ($i % 40  == 0) : ?>
           <?php if ($i): ?>
@@ -153,7 +153,8 @@
           \hline
         <?php endif; ?>
         <?php if ($detail->exist('quantite') && $detail->quantite === 0) {continue;} ?>
-        <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> &
+        <?php if ($detail->taux_tva == 0) { $exoneration = true; } ?>
+        <?php echo $ligne->libelle; ?> <?php echo $detail->libelle; ?> <?php if ($exoneration) echo '\textbf{*} '; ?> &
         {<?php echo formatFloat($detail->prix_unitaire, ','); ?> €} &
         {<?php echo formatFloat($detail->quantite, ','); ?> \texttt{<?php if($detail->exist('unite')): ?><?php echo ($detail->unite); ?><?php else: ?>~~~<?php endif; ?>} &
         <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
@@ -187,6 +188,11 @@
 \end{minipage}
 
 \\\vspace{6mm}
+
+<?php if (isset($exoneration) && $exoneration === true): ?>
+\textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
+<?php endif; ?>
+
 <?php if ($facture->exist('message_communication') && $facture->message_communication): ?>
 \textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\
 <?php endif; ?>
