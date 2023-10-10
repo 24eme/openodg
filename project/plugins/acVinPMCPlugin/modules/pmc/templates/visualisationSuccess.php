@@ -62,13 +62,13 @@
     </div>
 
     <div class="col-xs-4 text-right">
-        <div class="btn-group row">
-        <?php if ($pmc->validation && ConditionnementSecurity::getInstance($sf_user, $pmc->getRawValue())->isAuthorized(PMCSecurity::DEVALIDATION) && !$pmc->hasLotsUtilises()):
-                if (!$pmc->validation_odg): ?>
-                    <a class="btn btn-default" href="<?php echo url_for('pmc_devalidation', $pmc) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-                <?php elseif ($sf_user->isAdmin()): ?>
-                        <a class="btn btn-default btn-sm" href="<?php echo url_for('pmc_devalidation', $pmc) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-                <?php endif; ?>
+        <div class="btn-group">
+        <?php if ($pmc->validation && !$pmc->validation_odg && $sf_user->isAdmin() && !$pmc->hasLotsUtilises()): ?>
+            <a class="btn btn-default" href="<?php echo url_for('pmc_devalidation', $pmc) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+        <?php elseif ($pmc->validation_odg && $sf_user->isAdmin() && !$pmc->hasLotsUtilises()): ?>
+            <a class="btn btn-default btn-sm" href="<?php echo url_for('pmc_devalidation', $pmc) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+        <?php elseif ($pmc->validation_odg && $pmc->hasLotsUtilises()): ?>
+            <button type="button" disabled="disabled" title="Les lots de ce documents ont été dégusté, la dévalidation n'est pas possible" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</button>
         <?php endif; ?>
         <?php if(!$pmc->validation): ?>
                 <a href="<?php echo url_for("pmc_edit", $pmc) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
