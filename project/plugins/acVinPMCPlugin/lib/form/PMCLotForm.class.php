@@ -11,6 +11,13 @@ class PMCLotForm extends TransactionLotForm
         $this->setWidget('engagement_8515', new sfWidgetFormInputCheckbox());
         $this->setValidator('engagement_8515', new sfValidatorBoolean());
 
+        if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
+            $this->getWidget('produit_hash')
+                 ->setAttribute('disabled', 'disabled');
+            $this->getWidget('millesime')
+                 ->setAttribute('disabled', 'disabled');
+        }
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
