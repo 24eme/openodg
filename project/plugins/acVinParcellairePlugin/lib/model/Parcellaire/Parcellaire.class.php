@@ -229,7 +229,11 @@ class Parcellaire extends BaseParcellaire {
     public function getSyntheseProduitsCepages() {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
-            $libelles = array($p->getProduitLibelle(), $p->getAppellation()->getLibelle().'XXXX');
+            $libelles = array($p->getProduitLibelle());
+            if ($p->getAppellation()) {
+                $libelles[] = $p->getAppellation()->getLibelle().'XXXX';
+            }
+
             $cepage = $p->getCepage();
             if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
                 $libelles = array();

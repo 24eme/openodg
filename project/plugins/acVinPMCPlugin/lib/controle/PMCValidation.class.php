@@ -18,6 +18,7 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_FATAL, 'lot_incomplet_fatal', "Cette information est incomplète");
         $this->addControle(self::TYPE_FATAL, 'revendication_manquante', "Vous n'avez pas fait votre déclaration de revendication");
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
+        $this->addControle(self::TYPE_ERROR, 'facture_missing', 'Vous n\'avez pas réglé toutes vos factures, vous ne pouvez donc pas valider votre déclaration');
         $this->addControle(self::TYPE_ERROR, 'limite_volume_lot', 'La limite de volume pour un lot est dépassé');
         $this->addControle(self::TYPE_ERROR, 'volume_depasse', "Vous avez dépassé le volume total revendiqué");
         $this->addControle(self::TYPE_WARNING, 'depassement_8515', "Vous devez présenter un papier");
@@ -146,6 +147,15 @@ class PMCValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));
             }
         }
+
+        $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->document->getEtablissementObject()->getSociete()->identifiant);
+        foreach($this->factures as $f) {
+            if ($f->hasNonPaiement()) {
+                $this->addPoint(self::TYPE_ERROR, 'facture_missing', '');
+                break;
+            }
+        }
+
     }
 
 }

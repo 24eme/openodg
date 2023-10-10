@@ -491,6 +491,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return Anonymization::hideIfNeeded($this->_get('montant_paiement'));
     }
 
+    public function hasNonPaiement() {
+        return $this->getMontantPaiement() <= $this->total_ttc;
+    }
+
     public function getCodeComptableClient() {
       return $this->_get('code_comptable_client');
     }

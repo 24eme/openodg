@@ -13,7 +13,7 @@ all:
     format_identifiant: "%06d"
   donnees_viticoles:
     lot_saisie_mention_cepage_active: false
-    regions:
+    secteurs:
       AMIGNY: "AMIGNY"
       BOURG_QUINCY: "BOURG_QUINCY"
       BUE: "BUE"
