@@ -82,7 +82,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_ELEVAGE_EN_ATTENTE => 'En élevage',
         self::STATUT_ELEVE => 'Fin de l\'élevage',
 
-        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Manquement en attente',
+        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Non confirminté en attente',
 
         self::STATUT_REVENDIQUE => 'Revendiqué',
         self::STATUT_ENLEVE => 'Enlevé',

@@ -109,11 +109,12 @@ class MouvementLotHistoryView extends acCouchdbView
 
             if (array_key_exists($couleur, $syntheseLots[$produit][$millesime]) === false) {
                 $syntheseLots[$produit][$millesime][$couleur]["Lot"] = 0;
-                $syntheseLots[$produit][$millesime][$couleur]["DRev"] = 0;
+                $syntheseLots[$produit][$millesime][$couleur][$mouvementLot->value->initial_type] = 0;
                 ksort($syntheseLots[$produit][$millesime]);
             }
 
             $syntheseLots[$produit][$millesime][$couleur]["Lot"] += $mouvementLot->value->volume;
+            $syntheseLots[$produit][$millesime][$couleur][$mouvementLot->value->initial_type] += $mouvementLot->value->volume;
         };
 
         return $syntheseLots;

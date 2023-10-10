@@ -30,6 +30,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_COMMISSION => 7,
         self::ETAPE_RESULTATS => 8,
         self::ETAPE_NOTIFICATIONS => 9,
+        self::ETAPE_VISUALISATION => 10,
     );
 
     public static $libelles = array(
@@ -68,7 +69,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_CONVOCATIONS => 'degustation_convocations',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
         self::ETAPE_PRELEVEMENT_MANUEL => 'degustation_prelevements_manuel_etape',
-        self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_etape',
+        self::ETAPE_PRELEVEMENTS => 'degustation_preleve',
         self::ETAPE_ANONYMISATION_MANUELLE => 'degustation_anonymats_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
