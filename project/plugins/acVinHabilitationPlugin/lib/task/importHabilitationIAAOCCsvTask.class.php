@@ -53,6 +53,7 @@ EOF;
 
 
         $this->convert_products = array();
+        $this->convert_products['Coteaux du Giennois'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/CDG';
         $this->convert_products['Quincy'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/QCY';
         $this->convert_products['Chateaumeillant'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/CHM';
         $this->convert_products['Reuilly'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/RLY';
