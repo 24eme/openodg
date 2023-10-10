@@ -62,8 +62,8 @@ class facturationActions extends sfActions
     {
         $this->mouvements = [];
         $etablissements = [];
-
-        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente();
+        $region = (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
+        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente($region);
 
         foreach ($mouvements_en_attente as $m) {
             if (empty($m->key[MouvementFactureView::KEY_ETB_ID])) {
