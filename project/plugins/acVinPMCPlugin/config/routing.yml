@@ -128,6 +128,16 @@ pmc_confirmation:
   requirements:
     sf_method: [get, post]
 
+pmcnc_visualisation:
+  url: /pmc/visualisation/:id
+  param: { module: pmc, action: visualisation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 pmc_visualisation:
   url: /pmc/visualisation/:id
   param: { module: pmc, action: visualisation }
