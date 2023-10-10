@@ -96,7 +96,7 @@ ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
     xlsx2csv -l '\r\n' -d ";" $vci_file | tr -d "\n" | tr "\r" "\n" | sed "s/^/$MILLESIME;/" >> $DATA_DIR/vci.csv
 done;
 
-for annee in 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --application="$ODG"; done
+for annee in 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --dateimport="$annee-12-10" --application="$ODG"; done
 
 php symfony import:drev-ia $DATA_DIR/drev.csv $DATA_DIR/vci.csv --application="$ODG" --trace
 
