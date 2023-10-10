@@ -34,7 +34,7 @@
        "01_oivc": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Cotisations OIVC",
+           "libelle": "Cotisation OIVC",
            "code_comptable": "70620000",
            "details": {
                "00_surface": {
@@ -120,7 +120,7 @@
        "03_syndicale": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Cotisations Syndicales",
+           "libelle": "Cotisation Syndicale",
            "code_comptable": "70620000",
            "details": {
                "00_surface": {
