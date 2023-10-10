@@ -32,14 +32,15 @@ class PMCLotForm extends TransactionLotForm
     {
         $produits = [];
 
-        foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if ($produit->isActif() === false) {
+        foreach ($this->getObject()->getDocument()->getDRev()->getProduits() as $produit) {
+            $produitConfig = $produit->getConfig();
+            if ($produitConfig->isActif() === false) {
                 continue;
             }
 
             if ($this->getObject()->getDocument()->exist('region') && $this->getObject()->getDocument()->region != "") {
-                $filtered_produits = array_filter(RegionConfiguration::getInstance()->getOdgProduits($this->getObject()->getDocument()->region), function ($v) use ($produit) {
-                    return strpos($produit->getHash(), $v) !== false;
+                $filtered_produits = array_filter(RegionConfiguration::getInstance()->getOdgProduits($this->getObject()->getDocument()->region), function ($v) use ($produitConfig) {
+                    return strpos($produitConfig->getHash(), $v) !== false;
                 });
 
                 if (count($filtered_produits) < 1) {
