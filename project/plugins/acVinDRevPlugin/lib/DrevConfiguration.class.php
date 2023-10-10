@@ -36,7 +36,7 @@ class DRevConfiguration {
         return isset($this->configuration['import_with_mentions_complementaire']) && boolval($this->configuration['import_with_mentions_complementaire']);
     }
 
-    public function hasMentionsCompletaire() {
+    public function hasMentionsComplementaire() {
 
         return isset($this->configuration['mentions_complementaire']) && boolval($this->configuration['mentions_complementaire']);
     }
