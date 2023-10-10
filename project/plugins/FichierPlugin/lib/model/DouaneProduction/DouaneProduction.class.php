@@ -571,6 +571,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
             $produit = $entry->produit;
+            if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
+                $produit .= ' '.$entry->complement;
+            }
             $categorie = $entry->categorie;
             if (in_array($categorie, $donnees['lignes']) === false) {
                 continue;
@@ -579,6 +582,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if (array_key_exists($produit, $donnees['produits']) === false) {
                 $donnees['produits'][$produit]['lignes'] = [];
                 $donnees['produits'][$produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
+                if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
+                    $donnees['produits'][$produit]['libelle'] .= ' - '.$entry->complement;
+                }
                 $donnees['produits'][$produit]['hash'] = $entry->produit;
             }
 
@@ -603,7 +609,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             }
         }
 
-        ksort($donnees['produits'], SORT_NUMERIC);
+        ksort($donnees['produits']);
         foreach ($donnees['produits'] as &$array) {
             ksort($array['lignes'], SORT_STRING);
         }
