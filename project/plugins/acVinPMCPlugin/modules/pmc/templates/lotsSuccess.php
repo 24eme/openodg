@@ -97,7 +97,7 @@
                           <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
                           <div class="col-sm-3">
                               <div class="input-group">
-                                  <?php echo $lot['millesime']->render(array('class' => "form-control text-right", 'maxlength' => "4")); ?>
+                                  <?php echo $lot['millesime']->render(array('class' => "form-control text-right", 'maxlength' => "4", 'value' => null)); ?>
                               </div>
                           </div>
                           <div class="col-sm-6 text-danger">

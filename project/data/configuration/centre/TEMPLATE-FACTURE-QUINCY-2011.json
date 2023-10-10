@@ -8,45 +8,163 @@
        "DRev"
    ],
    "cotisations": {
-       "01_volume": {
+       "00_odg": {
            "modele": "CotisationsCollection",
            "callback": "",
-           "libelle": "Cotisation récolte %millesime% à l'hl",
+           "libelle": "Cotisation ODG",
            "code_comptable": "70620000",
            "details": {
-               "01_volumeRevendique": {
-                   "modele": "CotisationVariable",
-                   "prix": 5,
-                   "tva": 0,
-                   "unite": "hl",
-                   "libelle": "",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ],
-                   "callback": "getQuantiteVolumeRecolte",
-                   "callback_parameters": [
-                   ]
-               }
-           }
-       },
-       "10_forfait": {
-           "modele": "CotisationsCollection",
-           "callback": "",
-           "libelle": "Cotisation forfaitaire par exploitation",
-           "code_comptable": "70620000",
-           "details": {
-               "10_forfaitParExploitation": {
+               "00_fixe": {
                    "modele": "CotisationFixe",
-                   "prix": 50,
-                   "tva": 0,
+                   "prix": 20,
+                   "tva": 0.2,
                    "unite": "",
                    "libelle": "",
                    "complement_libelle": "",
                    "docs": [
                        "DRev"
                    ],
+                   "date": "%periode+1%-01-01",
                    "callback": null,
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "01_oivc": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation OIVC",
+           "code_comptable": "70620000",
+           "details": {
+               "00_surface": {
+                   "modele": "CotisationVariable",
+                   "prix": 12,
+                   "tva": 0.2,
+                   "unite": "ha",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "01_revendique_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.5,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "02_revendique_vci": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.5,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "VCI",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueVci",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "02_inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Label Vin INAO",
+           "code_comptable": "70620000",
+           "details": {
+               "00_revendique_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.25,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "01_revendique_vci": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.25,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "VCI",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueVci",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "03_syndicale": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Syndicale",
+           "code_comptable": "70620000",
+           "details": {
+               "00_surface": {
+                   "modele": "CotisationVariable",
+                   "prix": 6.2,
+                   "tva": 0.2,
+                   "unite": "ha",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "date": "%periode+1%-01-01",
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "01_revendique_recolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.83,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "date": "%periode+1%-01-01",
+                   "callback": "getQuantiteVolumeRevendiqueRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "02_revendique_vci": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.83,
+                   "tva": 0.2,
+                   "unite": "hl",
+                   "libelle": "VCI",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "date": "%periode+1%-01-01",
+                   "callback": "getQuantiteVolumeRevendiqueVci",
                    "callback_parameters": [
                    ]
                }
