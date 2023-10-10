@@ -128,6 +128,16 @@ pmc_confirmation:
   requirements:
     sf_method: [get, post]
 
+pmcnc_visualisation:
+  url: /pmc/visualisation/:id
+  param: { module: pmc, action: visualisation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 pmc_visualisation:
   url: /pmc/visualisation/:id
   param: { module: pmc, action: visualisation }
@@ -159,7 +169,7 @@ pmcnc_lots:
     sf_method: [get, post]
 
 pmcnc_create:
-  url: /pmcnc/creation/:identifiant
+  url: /pmcnc/creation/:identifiant/:unique_id
   param: { module: pmcNc, action: create }
   class: EtablissementRoute
   options:

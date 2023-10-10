@@ -21,8 +21,9 @@ class pmcNcActions extends sfActions {
         }
         $lot = LotsClient::getInstance()->findByUniqueId($etablissement->identifiant, $request->getParameter('unique_id'));
 
-        $pmcNc = PMCClient::getInstance()->createPMCNC($lot, $isAdmin);
+        $pmcNc = PMCNCClient::getInstance()->createPMCNC($lot, $isAdmin);
         $pmcNc->save();
+
         return $this->redirect('pmc_lots', $pmcNc);
     }
 

@@ -34,7 +34,7 @@ class PMCLot extends BasePMCLot
 
     public function getDocumentType() {
 
-        return PMCClient::TYPE_MODEL;
+        return $this->getDocument()->getType();
     }
 
     public function getDocumentOrdre() {

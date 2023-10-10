@@ -21,7 +21,7 @@
         <td>
         <?php if ($lot instanceof stdClass): ?>
             <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id));  ?>">
-                <?php echo $lot->initial_type ;?>
+                <?php echo (property_exists($lot, 'type_document')) ? $lot->type_document : $lot->initial_type ;?>
             </a>
         <?php else : ?>
           <?php if ($lot->getUniqueId()): ?>

@@ -76,6 +76,7 @@ Degustation:
                   engagement_8515: { required: false }
                   preleve: {}
                   secteur: {}
+                  prelevement_heure: {}
       mouvements_lots:
         type: collection
         definition:
