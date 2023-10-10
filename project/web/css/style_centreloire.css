@@ -7,7 +7,7 @@
 }
 
 body {
-  background: url('../images/bg/bg_centreloire.jpg') 50% 0 no-repeat fixed;
+  background: url('../images/bg/bg_centreloire.jpg') 50% 0 no-repeat fixed !important;
     background-size: auto;
   background-size: cover;
 }
