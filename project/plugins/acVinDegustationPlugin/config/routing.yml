@@ -191,6 +191,16 @@ degustation_selection_operateurs:
   requirements:
     sf_method: [get, post]
 
+degustation_selection_operateurs_add:
+  url: /degustation/:id/selection-operateurs/add
+  param: { module: degustation, action: operateurAdd }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_selection_degustateurs:
   url: /degustation/:id/selection-degustateurs/:college
   param: { module: degustation, action: selectionDegustateurs, college: 0 }
