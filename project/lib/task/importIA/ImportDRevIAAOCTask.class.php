@@ -165,7 +165,9 @@ EOF;
                 echo "WARNING;Le stock final calculé n'est pas identique à celui du csv;$line\n";
                 continue;
             }
-            $drev->validate($periode."-12-10");
+            if(!$drev->isValidee()) {
+                $drev->validate($periode."-12-10");
+            }
             $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             $drev->save();
             echo $drev."\n";
