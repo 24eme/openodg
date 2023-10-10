@@ -82,7 +82,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_ELEVAGE_EN_ATTENTE => 'En élevage',
         self::STATUT_ELEVE => 'Fin de l\'élevage',
 
-        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Non confirminté en attente',
+        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Non conformité en attente',
 
         self::STATUT_REVENDIQUE => 'Revendiqué',
         self::STATUT_ENLEVE => 'Enlevé',
@@ -117,7 +117,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Non conformité grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non conformité analytique",
-      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoléptique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoleptique",
     );
 
     public static $shortLibellesConformites = array(
@@ -127,7 +127,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Typ. cép.",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Analytique",
-      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Organoléptique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Organoleptique",
     );
 
     public static $nonConformites = array(
