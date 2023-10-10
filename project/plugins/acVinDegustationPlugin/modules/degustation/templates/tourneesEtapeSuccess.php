@@ -57,23 +57,23 @@ echo $form->renderGlobalErrors();
             <tr>
             <th class="col-xs-3 text-left">Opérateur</th>
             <th class="col-xs-4 text-left">Adresse du logement</th>
-            <th class="col-xs-2 text-left">Commune du logement</th>
             <th class="col-xs-1 text-left">Nombre de lots</th>
+            <th class="col-xs-2 text-left">Heure</th>
             <th class="col-xs-2 text-center">Secteur</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($form as $key => $item):
-                if($key == '_revision') { continue; }
-                $thelots = isset($lots[$secteur][$key]) ? $lots[$secteur][$key] : $lots['SANS_SECTEUR'][$key];
-                $firstlot = array_values($thelots->getRawValue())[0];
+            <?php foreach ($form as $logementKey => $subForm):
+                $firstlot = $form->getFirstLot($logementKey);
+                if ($logementKey == '_revision') continue;
+                if (!$firstlot) continue;
             ?>
             <tr class="vertical-center">
                 <td class="text-left"><?php echo $firstlot->getLogementNom(); ?></td>
-                <td class="text-left"><?php echo $firstlot->getLogementAdresse(); ?></td>
-                <td class="text-left"><?php echo $firstlot->getLogementCommune(); ?> (<?php echo $firstlot->getLogementCodePostal(); ?>)</td>
-                <td class="text-center"><?php echo count($thelots); ?></td>
-                <td class="text-center"><?php echo $item->render(); ?></td>
+                <td class="text-left"><?php echo $firstlot->getLogementAdresse(); ?><br /><?php echo $firstlot->getLogementCommune(); ?> (<?php echo $firstlot->getLogementCodePostal(); ?>)</td>
+                <td class="text-center"><?php echo $form->getNbLots($logementKey); ?></td>
+                <td class="text-center"><?php echo $subForm['heure']->render(); ?></td>
+                <td class="text-center"><?php echo $subForm['logement']->render(); ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
