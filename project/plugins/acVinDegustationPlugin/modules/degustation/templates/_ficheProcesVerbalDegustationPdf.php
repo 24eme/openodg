@@ -73,7 +73,7 @@ th {
 <div>
   <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
     <tr>
-      <td style="width: 50%">Tableau des échantillons de vin IGP <?php echo $appellation ?> présentés à la commission</td>
+      <td style="width: 50%">Tableau des échantillons de <?php echo $appellation ?> présentés à la commission</td>
       <td style="width: 50%">
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <thead>
