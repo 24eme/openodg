@@ -173,8 +173,7 @@ EOF;
     }
 
     protected function alias($produit) {
-        $produit = preg_replace('/(Pouilly Fumé|Quincy|Pouilly sur Loire) blanc/', '\1', $produit);
-
+        $produit = str_replace('Pouilly Fumé', 'Pouilly-Fumé', $produit);
         return $produit;
     }
 
