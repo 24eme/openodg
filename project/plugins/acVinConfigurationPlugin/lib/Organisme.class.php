@@ -29,6 +29,9 @@ class Organisme
         if(is_null($region)) {
             $region = self::getCurrentRegion();
         }
+        if (!$region) {
+            $region = strtoupper(self::getCurrentOrganisme());
+        }
 
         if (in_array($type, ['degustation', 'facture']) === false) {
             $type = self::DEFAULT_TYPE;
