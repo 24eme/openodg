@@ -27,3 +27,7 @@ all:
           name: "Côteaux du Giennois"
           color: "#ffc93c"
           denomination_id: "00241"
+        chateaumeillant:
+          name: "Chateaumeillant"
+          color: "#b882ed"
+          denomination_id: "02016"
