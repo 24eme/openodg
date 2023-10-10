@@ -13,7 +13,7 @@ class Organisme
             return strtoupper(sfConfig::get('app_region'));
         }
 
-        if (sfContext::getInstance()->getUser()->getRegion()) {
+        if (sfContext::hasInstance() && sfContext::getInstance()->getUser()->getRegion()) {
             return strtoupper(sfContext::getInstance()->getUser()->getRegion());
         }
 
