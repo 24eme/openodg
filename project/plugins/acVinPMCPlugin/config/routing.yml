@@ -159,7 +159,7 @@ pmcnc_lots:
     sf_method: [get, post]
 
 pmcnc_create:
-  url: /pmcnc/creation/:identifiant
+  url: /pmcnc/creation/:identifiant/:unique_id
   param: { module: pmcNc, action: create }
   class: EtablissementRoute
   options:

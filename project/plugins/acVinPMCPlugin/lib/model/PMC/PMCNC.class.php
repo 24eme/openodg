@@ -2,6 +2,12 @@
 
 class PMCNC extends PMC
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->type = PMCNCClient::TYPE_MODEL;
+    }
+
     public function constructId() {
         if (! $this->date) {
             $this->date = date("YmdHis");
