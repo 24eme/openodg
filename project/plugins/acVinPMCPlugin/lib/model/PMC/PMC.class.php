@@ -92,4 +92,8 @@ class PMC extends BasePMC
         return $this->declaration->getProduits($region);
     }
 
+    public function getDRev() {
+        return DRevClient::getInstance()->find('DREV-'.$this->identifiant.'-'.$this->getPeriode());
+    }
+
 }

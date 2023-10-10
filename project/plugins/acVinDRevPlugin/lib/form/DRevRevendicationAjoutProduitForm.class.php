@@ -22,7 +22,7 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbForm
         $this->setValidators(array(
             'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisi."))
         ));
-        if(DrevConfiguration::getInstance()->hasMentionsCompletaire()) {
+        if(DrevConfiguration::getInstance()->hasMentionsComplementaire()) {
             $this->widgetSchema['denomination_complementaire'] = new sfWidgetFormInput();
             $this->widgetSchema['denomination_complementaire']->setLabel("");
             $this->validatorSchema['denomination_complementaire'] = new sfValidatorString(array('required' => false));
