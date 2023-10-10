@@ -39,7 +39,7 @@
             <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
             <td><?php echo $parcelle->cepage; ?></td>
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-            <td class="text-right"><?php echoFr($parcelle->superficie,4); ?></td>
+            <td class="text-right"><?php echoFloatFr($parcelle->superficie,4); ?></td>
             <td class="text-right">
                 <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                 <span class="pull-right superficie2compute"><?php echoFloatFr($parcelle->superficie_affectation,4); ?></span>

@@ -79,7 +79,7 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
 
-        $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne);
+        $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit_hash);
 
         if($contrats){
             foreach($contrats as $k=>$v){
@@ -429,10 +429,10 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT,'');
             }
             if($this->document->hasDestionationVrac()){
-                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne);
+                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $hash_produit);
 
                 if(!$contrats){
-                    $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats', $produit,$this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
+                    $this->addPoint(self::TYPE_ERROR,'vip2c_pas_de_contrats_'.$hash_produit, $produit,$this->generateUrl('drev_lots', array("id" => $this->document->_id)) );
                 }
                 else{
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
