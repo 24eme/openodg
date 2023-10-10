@@ -41,3 +41,7 @@ body {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+#content {
+    padding-bottom: 15px;
+    min-height: 650px;
+}
