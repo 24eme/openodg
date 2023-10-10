@@ -85,8 +85,8 @@ class PMCClient extends acCouchdbClient
     }
 
     public function getIds($periode) {
-        $ids = $this->startkey_docid(sprintf("PMC-%s-%s", "0000000000", "00000000"))
-                    ->endkey_docid(sprintf("PMC-%s-%s", "ZZZZZZZZZZ", "99999999"))
+        $ids = $this->startkey_docid(sprintf("%s-%s-%s", self::TYPE_MODEL, "0000000000", "00000000"))
+                    ->endkey_docid(sprintf("%s-%s-%s", self::TYPE_MODEL, "ZZZZZZZZZZ", "99999999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
         $ids_periode = array();
@@ -127,8 +127,8 @@ class PMCClient extends acCouchdbClient
         $campagne_from = "00000000";
         $campagne_to = "99999999";
 
-        return $this->startkey(sprintf("PMC-%s-%s", $identifiant, $campagne_from))
-                    ->endkey(sprintf("PMC-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
+        return $this->startkey(sprintf("%s-%s-%s", self::TYPE_MODEL, $identifiant, $campagne_from))
+                    ->endkey(sprintf("%s-%s-%s_ZZZZZZZZZZZZZZ", self::TYPE_MODEL, $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 
