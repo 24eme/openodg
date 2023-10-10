@@ -36,8 +36,8 @@ class ParcellaireConfiguration {
      * Seules les parcelles ayant au moins une troisième feuille sont prises
      * en compte dans les synthèse
      */
-    public function isTroisiemeFeuille() {
-        return !$this->getLimitProduitsConfiguration();
+    public function isTroisiemeFeuilleEnabled() {
+        return true;
     }
 
     public function isAres()

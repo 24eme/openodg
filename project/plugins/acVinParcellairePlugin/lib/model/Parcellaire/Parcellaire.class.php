@@ -213,7 +213,7 @@ class Parcellaire extends BaseParcellaire {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
             $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuilleEnabled() && !$p->hasTroisiemeFeuille()) {
                 $cepage .= ' - jeunes vignes';
             }
             if (!isset($synthese[$cepage])) {
@@ -240,8 +240,8 @@ class Parcellaire extends BaseParcellaire {
                     $libelles[] = '';
                 }
             }
-            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                $libelles = array('jeunes vignes');
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuilleEnabled() && !$p->hasTroisiemeFeuille()) {
+                $libelles[] = 'jeunes vignes';
             }
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {
