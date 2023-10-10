@@ -48,7 +48,7 @@ class PMCLotForm extends TransactionLotForm
                 }
             }
 
-            $produits[$produit->getHash()] = $produit->getLibelleComplet();
+            $produits[$produit->getProduitHash()] = $produit->getLibelleComplet();
         }
 
         return array_merge(['' => ''], $produits);
