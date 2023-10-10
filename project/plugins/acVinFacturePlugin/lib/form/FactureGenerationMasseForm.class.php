@@ -41,7 +41,8 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
     }
 
     public function getRegions() {
-        return Organisme::getCurrentOrganisme();
+        $r = Organisme::getCurrentOrganisme();
+        return array($r => $r);
     }
 
     public function getModeleChoices() {
