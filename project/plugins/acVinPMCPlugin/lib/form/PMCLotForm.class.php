@@ -19,6 +19,12 @@ class PMCLotForm extends TransactionLotForm
                 'required' => false,
                 'choices' => array_keys($this->getProduits($this->getObject()->getProduitHash()))
             ]));
+
+            $this->setWidget('millesime', new bsWidgetFormInput());
+            $this->setValidator('millesime', new sfValidatorChoice([
+                'required' => false,
+                'choices' => [$this->getObject()->millesime => $this->getObject()->millesime]
+            ]));
         }
 
         $this->widgetSchema->setNameFormat('[%s]');
