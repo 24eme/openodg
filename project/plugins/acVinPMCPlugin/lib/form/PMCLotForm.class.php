@@ -12,10 +12,13 @@ class PMCLotForm extends TransactionLotForm
         $this->setValidator('engagement_8515', new sfValidatorBoolean());
 
         if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
-            $this->getWidget('produit_hash')
-                 ->setAttribute('disabled', 'disabled');
-            $this->getWidget('millesime')
-                 ->setAttribute('disabled', 'disabled');
+            $this->setWidget('produit_hash', new bsWidgetFormChoice([
+                'choices' => $this->getProduits($this->getObject()->getProduitHash())
+            ]));
+            $this->setValidator('produit_hash', new sfValidatorChoice([
+                'required' => false,
+                'choices' => array_keys($this->getProduits($this->getObject()->getProduitHash()))
+            ]));
         }
 
         $this->widgetSchema->setNameFormat('[%s]');
@@ -35,13 +38,17 @@ class PMCLotForm extends TransactionLotForm
         }
     }
 
-    public function getProduits()
+    public function getProduits($filter_hash = null)
     {
         $produits = [];
 
         foreach ($this->getObject()->getDocument()->getDRev()->getProduits() as $produit) {
             $produitConfig = $produit->getConfig();
             if ($produitConfig->isActif() === false) {
+                continue;
+            }
+
+            if ($filter_hash && $filter_hash !== $produit->getProduitHash()) {
                 continue;
             }
 
@@ -56,6 +63,10 @@ class PMCLotForm extends TransactionLotForm
             }
 
             $produits[$produit->getProduitHash()] = $produit->getLibelleComplet();
+        }
+
+        if ($filter_hash) {
+            return $produits;
         }
 
         return array_merge(['' => ''], $produits);
