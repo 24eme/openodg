@@ -31,6 +31,11 @@ class PMC extends BasePMC
     	));
     }
 
+    public function getDateFr() {
+
+        return preg_replace("/^([0-9]{4})([0-9]{2})([0-9]{2})$/", '\3/\2/\1', substr($this->date, 0, 8));
+    }
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('pmc_export_pdf', $this);
     }

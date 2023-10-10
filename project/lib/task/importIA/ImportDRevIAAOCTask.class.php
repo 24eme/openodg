@@ -111,7 +111,9 @@ EOF;
             $drevProduit->superficie_revendique = $superficie;
             $drevProduit->update();
 
-            $drev->validate($periode."-12-10");
+            if(!$drev->isValidee()) {
+                $drev->validate($periode."-12-10");
+            }
             $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             $drev->save();
 
