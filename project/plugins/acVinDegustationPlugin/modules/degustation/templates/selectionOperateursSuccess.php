@@ -19,7 +19,7 @@
 
     <?php include_partial('degustation/tableSelectionLots', ['degustation' => $degustation, 'form' => $formLots]); ?>
     <div class="col-xs-12 text-center">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-aleatoire-aleatoire-renforce"><span class="glyphicon glyphicon-plus"></span> Ajouter un opérateur</button>
+        <a href="<?php echo url_for('degustation_selection_operateurs_add', $degustation) ;?>" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Ajouter un opérateur</a>
     </div>
     <div class="row row-margin row-button">
         <div class="col-xs-4"><a href="<?php echo url_for("degustation") ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
@@ -33,5 +33,3 @@
         </div>
     </div>
 </form>
-
-<?php include_partial('degustation/popupAjoutOperateur', ['degustation' => $degustation, 'form' => $formOperateurs]); ?>

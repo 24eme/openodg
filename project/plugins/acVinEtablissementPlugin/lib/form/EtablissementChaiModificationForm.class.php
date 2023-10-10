@@ -92,7 +92,7 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
     }
 
     public function getSecteurs(){
-      return EtablissementClient::getRegions();
+      return EtablissementClient::getSecteurs();
     }
 
 

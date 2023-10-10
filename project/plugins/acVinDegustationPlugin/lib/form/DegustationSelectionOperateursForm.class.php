@@ -10,9 +10,10 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
 
     public function configure()
     {
-        $this->setWidget('identifiant', new WidgetEtablissement(['interpro_id' => 'INTERPRO-declaration'], [
-            'class' => 'form-control select2autocompleteAjax'
-        ]));
+
+        $identifiant_options = ['class' => 'form-control select2autocompleteAjax'];
+        $this->setWidget('identifiant', new WidgetEtablissement(['interpro_id' => 'INTERPRO-declaration'], $identifiant_options));
+
         $this->widgetSchema->setLabel('identifiant', 'Établissement');
         $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => true)));
         $this->validatorSchema['identifiant']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
@@ -21,6 +22,10 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('initial_type', 'Type de contrôle');
         $this->setValidator('initial_type', new sfValidatorChoice(['choices' => ['ALEATOIRE', 'RENFORCE']]));
         $this->validatorSchema['initial_type']->setMessage('required', 'Le choix d\'un type est obligatoire');
+
+        $this->widgetSchema['details'] = new bsWidgetFormInput();
+        $this->widgetSchema['details']->setLabel("Appellation à controler");
+        $this->validatorSchema['details'] = new sfValidatorString(array('required' => false));
 
         $this->widgetSchema->setNameFormat('selection_operateur[%s]');
     }
@@ -39,5 +44,6 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         if ($values['initial_type'] === 'RENFORCE') {
             $lot->initial_type .= '_renforce';
         }
+        $lot->details = $values['details'];
     }
 }

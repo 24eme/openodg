@@ -134,24 +134,13 @@ class degustationActions extends sfActions {
             $this->degustation->save(false);
         }
 
-        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation);
         $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true]);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
         }
 
-        $this->formOperateurs->bind($request->getParameter($this->formOperateurs->getName()));
         $this->formLots->bind($request->getParameter($this->formLots->getName()));
-
-        if ($request->getParameter($this->formOperateurs->getName())) {
-            if (! $this->formOperateurs->isValid()) {
-                return sfView::SUCCESS;
-            } else {
-                $this->formOperateurs->save();
-                return $this->redirect('degustation_selection_operateurs', $this->degustation);
-            }
-        }
 
         if ($request->getParameter($this->formLots->getName())) {
             if(! $this->formLots->isValid()) {
@@ -162,6 +151,25 @@ class degustationActions extends sfActions {
         }
 
         return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_LOTS), $this->degustation);
+    }
+
+    public function executeOperateurAdd(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation);
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        $this->formOperateurs->bind($request->getParameter($this->formOperateurs->getName()));
+        if ($request->getParameter($this->formOperateurs->getName())) {
+            if (! $this->formOperateurs->isValid()) {
+                return sfView::SUCCESS;
+            } else {
+                $this->formOperateurs->save();
+                return $this->redirect('degustation_selection_operateurs', $this->degustation);
+            }
+        }
+
     }
 
     public function executePreleve(sfWebRequest $request) {
