@@ -88,6 +88,7 @@
                       <?php else: ?>
                         <li class="disabled"><a href=""><span class="glyphicon glyphicon-repeat"></span> Créér un avoir</a></li>
                       <?php endif; ?>
+                      <li><a href="<?php echo url_for('facturation_email', array("id" => $facture->_id)) ?>" onclick="return confirm('confirmez-vous l\'envoi de la facture par e-mail ?')"><span class="glyphicon glyphicon-envelope"></span> Envoyer la facture par e-mail</a></li>
                   </ul>
                   </span>
                 </td>
