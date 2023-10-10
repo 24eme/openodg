@@ -48,6 +48,11 @@ class PMCLotForm extends TransactionLotForm
     {
         $produits = [];
 
+        if(!$this->getObject()->getDocument()->getDRev())  {
+
+            return $produits;
+        }
+
         foreach ($this->getObject()->getDocument()->getDRev()->getProduits() as $produit) {
             $produitConfig = $produit->getConfig();
             if ($produitConfig->isActif() === false) {

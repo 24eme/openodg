@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Mise en Circulation du <?php echo format_date( $pmc->date); ?>
+    <h2>Déclaration de Mise en Circulation du <?php echo $pmc->getDateFr(); ?>
     <?php if($pmc->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($pmc->validation && $pmc->validation !== true): ?> reçue le <?php echo format_date($pmc->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($pmc->validation): ?>
