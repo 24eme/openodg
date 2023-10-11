@@ -25,20 +25,23 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
           if(!isset($this->etablissements[$lot->declarant_identifiant])) {
               $this->etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
           }
-          $this->lots[$lot->getLogementCodePostal().'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
+          $this->lots[$this->secteur][$lot->getLogementCodePostal().'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
       }
       ksort($this->lots);
     }
 
     public function create() {
-      @$this->printable_document->addPage(
-        $this->getPartial('degustation/ficheLotsAPrelevesPdf',
-          array(
-            'degustation' => $this->degustation,
-            'etablissements' => $this->etablissements,
-            'lots' => $this->lots
-          )
-        ));
+        foreach ($this->lots as $secteur => $lots) {
+            @$this->printable_document->addPage(
+                $this->getPartial('degustation/ficheLotsAPrelevesPdf',
+                array(
+                    'degustation' => $this->degustation,
+                    'etablissements' => $this->etablissements,
+                    'secteur' => $secteur,
+                    'lots' => $lots
+                )
+            ));
+        }
     }
 
     protected function getHeaderTitle() {
@@ -51,7 +54,14 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
 
     protected function getHeaderSubtitle() {
         $nbOperateurs = count($this->etablissements);
-        $nbLots = count($this->lots);
+        $nbLots = 0;
+        foreach ($this->lots as $secteur => $lotsecteur) {
+            foreach($lotsecteur as $key_lots => $lotsDossier) {
+                foreach ($lotsDossier as $numDossier => $lots) {
+                    $nbLots += count($lots);
+                }
+            }
+        }
         $prelevement = ($nbOperateurs > 1)? "$nbOperateurs opérateurs" : "$nbOperateurs opérateur";
         $prelevement .= ($nbLots > 1)? " pour $nbLots lots à prélever" : " pour $nbLots lot à prélever";
         $header_subtitle = sprintf("Dégustation du %s, %s", $this->degustation->getDateFormat('d/m/Y'), $this->degustation->lieu);
