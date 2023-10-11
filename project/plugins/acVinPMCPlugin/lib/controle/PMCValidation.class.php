@@ -161,7 +161,7 @@ class PMCValidation extends DocumentValidation
             return $t;
         }, 0);
 
-        if ($volumeTotal != $volumeOrigine) {
+        if ($volumeTotal > $volumeOrigine) {
             $this->addPoint(self::TYPE_ERROR, 'volume_coherent', "Le volume revendiqué est de {$volumeTotal} hl alors que l'original est de {$volumeOrigine} hl", $this->generateUrl('pmc_lots', array("id" => $this->document->_id)));
         }
     }
