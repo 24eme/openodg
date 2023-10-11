@@ -64,7 +64,7 @@
                  <th class="bg-white" colspan="6"style="width:67%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(trié par n° de dossier et n° d'anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
-                <th class="bg-white" style="width:7%;"><?php echo tdStart() ?><strong><small>N°Lot ODG</small></strong></th>
+                <th class="bg-white" style="width:7%;"><?php echo tdStart() ?><strong><small>N°Lot</small></strong></th>
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N°Anon</small></strong></th>
                 <th class="bg-white" style="width:11%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
                 <th class="bg-white" style="width:9%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>
