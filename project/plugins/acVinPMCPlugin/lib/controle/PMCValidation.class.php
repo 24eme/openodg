@@ -27,11 +27,19 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'date_degust_proche', "La date souhaité de dégustation est dans moins de 5 semaines et risque de ne pas être validée");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_inexistant', "Vous devez créer le chai logeant le vin");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', "Vous devez affecter un secteur au chai logeant le vin");
+
+        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+            $this->addControle(self::TYPE_ERROR, 'volume_coherent', "Le volume doit rester le même");
+        }
     }
 
     public function controle()
     {
         $this->controleLotsGenerique('pmc_lots');
+
+        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+            $this->controlePMCNC();
+        }
     }
 
 
@@ -39,8 +47,6 @@ class PMCValidation extends DocumentValidation
         if(!$this->document->exist('lots')){
             return;
         }
-
-        $totalVolumePMC = [];
 
         $regions = array();
         foreach ($this->document->lots as $key => $lot) {
@@ -87,15 +93,6 @@ class PMCValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_ENGAGEMENT, '8515', "Lot ".$lot->getProduitLibelle()." ( ".$lot->volume." hl )", $this->generateUrl($routeName, ["id" => $this->document->_id]));
             }
 
-            if (isset($totalVolumePMC[$lot->produit_hash]) === false) { $totalVolumePMC[$lot->produit_hash] = []; }
-            if (isset($totalVolumePMC[$lot->produit_hash][$lot->millesime]) === false) { $totalVolumePMC[$lot->produit_hash][$lot->millesime] = 0; }
-
-            if($lot->exist('engagement_8515') && $lot->engagement_8515) {
-                $totalVolumePMC[$lot->produit_hash][$lot->millesime] += $lot->volume * 0.85;
-            } else {
-                $totalVolumePMC[$lot->produit_hash][$lot->millesime] += $lot->volume;
-            }
-
             $volume = sprintf("%01.02f",$lot->getVolume());
 
             if(!$this->document->isValideeOdg() && !$lot->numero_logement_operateur){
@@ -126,20 +123,6 @@ class PMCValidation extends DocumentValidation
             }
         }
 
-        $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant,[ConfigurationClient::getInstance()->getPreviousCampagne($this->document->campagne), $this->document->campagne]);
-        if(!$this->document->isValideeOdg()) {
-            foreach ($totalVolumePMC as $hash => $millesimes) {
-                $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
-                foreach ($millesimes as $millesime => $volume) {
-                    $volumeDejaCommercialise = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['Lot'];
-                    $volumeDRev = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['DRev'];
-
-                    if (round($volumeDejaCommercialise + $volume, 2) > round($volumeDRev, 2)) {
-                        $this->addPoint(self::TYPE_ERROR, 'volume_depasse', $produit->getLibelleComplet().'  '.$millesime." - ".($volumeDejaCommercialise + $volume)  . " hl déclaré en circulation pour ".$volumeDRev." hl revendiqué" , $this->generateUrl($routeName, array("id" => $this->document->_id)));
-                    }
-                }
-            }
-        }
         if (DRevConfiguration::getInstance()->hasLogementChais() && sfContext::getInstance()->getUser()->isAdmin()) {
             if (!$this->document->chais->nom && !$this->document->chais->adresse && !$this->document->chais->commune && ! $this->document->chais->code_postal) {
                 $this->addPoint(self::TYPE_ERROR, 'logement_chai_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));
@@ -158,4 +141,23 @@ class PMCValidation extends DocumentValidation
 
     }
 
+    protected function controlePMCNC()
+    {
+        if(!$this->document->exist('lots')){
+            return;
+        }
+
+        $lotOrigine = $this->document->lots[0];
+        $docProvenance = DeclarationClient::getInstance()->find($lotOrigine->id_document_provenance);
+        $volumeOrigine = $docProvenance->getLot($lotOrigine->unique_id)->volume;
+
+        $volumeTotal = array_reduce($this->document->lots->toArray(), function ($t, $lot) {
+            $t += round($lot['volume'], 2);
+            return $t;
+        }, 0);
+
+        if ($volumeTotal != $volumeOrigine) {
+            $this->addPoint(self::TYPE_ERROR, 'volume_coherent', "Le volume revendiqué est de {$volumeTotal} hl alors que l'original est de {$volumeOrigine} hl", $this->generateUrl('pmc_lots', array("id" => $this->document->_id)));
+        }
+    }
 }

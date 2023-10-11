@@ -53,27 +53,30 @@ class PMCLotForm extends TransactionLotForm
             return $produits;
         }
 
-        foreach ($this->getObject()->getDocument()->getDRev()->getProduits() as $produit) {
-            $produitConfig = $produit->getConfig();
-            if ($produitConfig->isActif() === false) {
-                continue;
-            }
-
-            if ($filter_hash && $filter_hash !== $produit->getProduitHash()) {
-                continue;
-            }
-
-            if ($this->getObject()->getDocument()->exist('region') && $this->getObject()->getDocument()->region != "") {
-                $filtered_produits = array_filter(RegionConfiguration::getInstance()->getOdgProduits($this->getObject()->getDocument()->region), function ($v) use ($produitConfig) {
-                    return strpos($produitConfig->getHash(), $v) !== false;
-                });
-
-                if (count($filtered_produits) < 1) {
+        $pre_produits = array();
+        foreach($this->getObject()->getDocument()->getHabilitation()->getProduits() as $appellation) {
+            $appellationConfig = $appellation->getConfig();
+            foreach($appellationConfig->getProduitsAll() as $produitConfig) {
+                if ($produitConfig->isActif() === false) {
                     continue;
                 }
-            }
 
-            $produits[$produit->getProduitHash()] = $produit->getLibelleComplet();
+                if ($filter_hash && $filter_hash !== $produitConfig->getProduitHash()) {
+                    continue;
+                }
+
+                if ($this->getObject()->getDocument()->exist('region') && $this->getObject()->getDocument()->region != "") {
+                    $filtered_produits = array_filter(RegionConfiguration::getInstance()->getOdgProduits($this->getObject()->getDocument()->region), function ($v) use ($produitConfig) {
+                        return strpos($produitConfig->getHash(), $v) !== false;
+                    });
+
+                    if (count($filtered_produits) < 1) {
+                        continue;
+                    }
+                }
+
+                $produits[$produitConfig->getHash()] = $produitConfig->getLibelleComplet();
+            }
         }
 
         if ($filter_hash) {

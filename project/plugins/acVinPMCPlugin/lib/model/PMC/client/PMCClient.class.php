@@ -27,7 +27,7 @@ class PMCClient extends acCouchdbClient
             $periode = ConfigurationClient::getInstance()->getCampagneVinicole(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
         }
 
-        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode), $identifiant);
+        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(get_called_class()::TYPE_MODEL, ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode), $identifiant);
 
         foreach ($docs->rows as $doc) {
             if ($doc->key[4] == DeclarationTousView::STATUT_BROUILLON) {

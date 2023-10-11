@@ -947,6 +947,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	}
     }
 
+    public function canHaveVCI() {
+        foreach ($this->getProduits() as $produit) {
+            if ($produit->getConfig()->canHaveVCI()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function updateFromDRev($drev) {
         foreach ($drev->getProduits() as $produit) {
         	if (!$produit->getConfig()->isActif()) {
