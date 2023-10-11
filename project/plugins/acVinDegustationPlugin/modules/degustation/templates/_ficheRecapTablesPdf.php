@@ -49,6 +49,14 @@ th {
                 <td style="width:30%"><br/></td>
               </tr>
           <?php endforeach; ?>
+        <?php $t = count($degustation->getDegustateursConfirmesTableOrFreeTable($numTab)); ?>
+        <?php for ($i = $t; $i<5; $i++): ?>
+        <tr>
+            <td class="text-center" style="width:35%; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
+            <td class="text-center" style="width:35%; margin-left: 1em;"><br/></td>
+            <td style="width:30%"><br/></td>
+        </tr>
+        <?php endfor; ?>
         </tbody>
       </table>
       <div></div>
