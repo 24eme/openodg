@@ -59,3 +59,34 @@ body {
     padding-left: 0;
     padding-bottom: 0;
 }
+
+.nav-step {
+    counter-reset: steps;
+    font-size: 15px;
+    border: 1px solid #dbd3c8 !important;
+    background-color: #f8f3e8;
+}
+
+.nav-step ul.navbar-nav li a::before {
+    display: inline-block;
+    border: 2px solid;
+    box-sizing: content-box;
+    border-radius: 50%;
+    counter-increment: steps;
+    content: counter(steps);
+    margin-right: 8px;
+    line-height: 20px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.nav-step ul.navbar-nav li {
+    background-color: #fff;
+    border-right: 1px solid #dbd3c8;
+}
+
+.nav-step ul.navbar-nav li:first-child {
+    border-left: 1px solid #dbd3c8;
+}

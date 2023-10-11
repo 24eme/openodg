@@ -81,7 +81,7 @@
 </form>
 
 <div style="margin-top: 0px;" class="page-header no-border">
-    <h2>Les dernières dégustations</h2>
+    <h2 style="margin-top: 0px;">Les dernières dégustations</h2>
 </div>
 
 <?php include_partial('degustation/liste', ['degustations' => $degustations]) ?>
