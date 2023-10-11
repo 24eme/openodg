@@ -8,7 +8,7 @@ class LotCommissionForm extends acCouchdbObjectForm
         $this->setValidator('date_commission', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
         $degustations = self::getDegustationChoices();
-        if(!($this->getObject()->exist('date_commission') || !$this->getObject()->date_commission) && count($degustations) > 0) {
+        if((!$this->getObject()->exist('date_commission') || !$this->getObject()->date_commission) && count($degustations) > 0) {
             $this->setDefault('date_commission', array_key_first($degustations));
             $this->setWidget('degustation',new bsWidgetFormChoice( array('choices' => $degustations), array('required' => true)));
             $this->setValidator('degustation', new sfValidatorPass(array('required' => false)));
@@ -34,7 +34,7 @@ class LotCommissionForm extends acCouchdbObjectForm
 
     public static function getDegustationChoices() {
         $degustations = array();
-        $history = DegustationClient::getInstance()->getHistory(10)->getDatas();
+        $history = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_DOCUMENT, Organisme::getCurrentRegion());
         ksort($history);
         foreach ($history as $degustation_id => $degustation) {
             if($degustation->date < date('Y-m-d')) {
