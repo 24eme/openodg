@@ -47,14 +47,18 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         if($region) {
             $docsByRegion = [];
             foreach($docs as $doc) {
-                if(isset($doc->region) && $doc->region == $region) {
+                if(!$doc instanceof Degustation && isset($doc->region) && $doc->region == $region) {
                     $docsByRegion[] = $doc;
+                    continue;
+                }
+                if($doc instanceof Degustation && $doc->region == $region) {
+                    $docsByRegion[] = $doc;
+                    continue;
                 }
                 if(count($docsByRegion) >= $limit) {
                     break;
                 }
             }
-
             return $docsByRegion;
         }
 
