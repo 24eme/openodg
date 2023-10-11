@@ -48,12 +48,6 @@ class PMCLotForm extends TransactionLotForm
     {
         $produits = [];
 
-        if(!$this->getObject()->getDocument()->getDRev())  {
-
-            return $produits;
-        }
-
-        $pre_produits = array();
         foreach($this->getObject()->getDocument()->getHabilitation()->getProduits() as $appellation) {
             $appellationConfig = $appellation->getConfig();
             foreach($appellationConfig->getProduitsAll() as $produitConfig) {
@@ -61,7 +55,7 @@ class PMCLotForm extends TransactionLotForm
                     continue;
                 }
 
-                if ($filter_hash && $filter_hash !== $produitConfig->getProduitHash()) {
+                if ($filter_hash && $filter_hash !== $produitConfig->getHash()) {
                     continue;
                 }
 

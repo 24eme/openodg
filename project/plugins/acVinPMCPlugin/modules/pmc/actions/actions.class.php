@@ -284,6 +284,11 @@ class pmcActions extends sfActions {
             $this->pmc->save();
         }
 
+        if ($this->getUser()->hasPMCAdmin() && $this->pmc->getType() === PMCNCClient::TYPE_MODEL) {
+            $this->pmc->validateOdg();
+            $this->pmc->save();
+        }
+
         //Email::getInstance()->sendPMCValidation($this->pmc);
 
         return $this->redirect('pmc_confirmation', $this->pmc);
