@@ -64,6 +64,7 @@ EOF;
 
         $this->initProduitsCepages();
 
+        $nb = 0;
         $ligne = 0;
         foreach(file($arguments['csv_drev']) as $line) {
             $ligne++;
@@ -116,11 +117,18 @@ EOF;
             }
             $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             $drev->save();
+            $nb++;
+
+            if($nb > 500) {
+                sleep(120);
+                $nb = 0;
+            }
 
             echo $drev."\n";
         }
 
         $ligne = 0;
+        $nb = 0;
         foreach(file($arguments['csv_vci']) as $line) {
             $ligne++;
             $line = str_replace("\n", "", $line);
@@ -176,6 +184,11 @@ EOF;
             }
             $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             $drev->save();
+            $nb++;
+            if($nb > 500) {
+                sleep(120);
+                $nb = 0;
+            }
             echo $drev."\n";
         }
     }

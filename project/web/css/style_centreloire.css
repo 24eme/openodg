@@ -24,7 +24,16 @@ body {
 }
 
 #header .header-top {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#header .container {
+    background: #ffffff9e;
+}
+
+#header .header-top .container {
+    background: #fff;
 }
 
 #content {
@@ -44,4 +53,9 @@ body {
 #content {
     padding-bottom: 15px;
     min-height: 650px;
+}
+
+.breadcrumb {
+    padding-left: 0;
+    padding-bottom: 0;
 }
