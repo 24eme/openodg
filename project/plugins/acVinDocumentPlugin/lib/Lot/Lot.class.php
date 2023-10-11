@@ -883,6 +883,10 @@ abstract class Lot extends acCouchdbDocumentTree
             $mouvement->add('region', 'OIVC');
         }
 
+        if (strpos($this->initial_type, 'Transaction') === 0) {
+            $mouvement->add('region', 'OIVC');
+        }
+
         return $mouvement;
     }
 
