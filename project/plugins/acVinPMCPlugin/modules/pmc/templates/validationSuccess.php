@@ -6,10 +6,10 @@
 <div class="page-header no-border" style="position:relative;">
     <h2>Validation de votre déclaration</h2>
     <?php if(isset($form["date"])): ?>
-    <div class="form-group" style="position:absolute; right: 0; top: 0;">
+    <div class="form-group">
         <?php echo $form["date"]->renderError() ?>
-        <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
-        <div class="col-xs-6">
+        <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-sm-10 control-label")); ?>
+        <div class="col-sm-2 pull-right">
             <div class="input-group date-picker">
                 <?php echo $form["date"]->render(array("class" => "form-control")); ?>
                 <div class="input-group-addon">

@@ -14,7 +14,8 @@ function(doc) {
         doc.type != "Tirage" &&
         doc.type != "Transaction" &&
         doc.type != "TravauxMarc" &&
-        doc.type != "PMC"
+        doc.type != "PMC" &&
+        doc.type != "PMCNC"
     ) {
         return;
     }

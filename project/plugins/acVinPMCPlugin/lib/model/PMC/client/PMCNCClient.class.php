@@ -26,8 +26,8 @@ class PMCNCClient extends PMCClient
         return $doc;
     }
 
-    public function createPMCNC($lot, $papier = false) {
-        $pmcNc = PMCNCClient::getInstance()->createDoc($lot->declarant_identifiant, $lot->campagne, date('YmdHis'), $papier);
+    public function createPMCNC($lot, $campagne, $papier = false) {
+        $pmcNc = PMCNCClient::getInstance()->createDoc($lot->declarant_identifiant, $campagne, date('YmdHis'), $papier);
         $lotDef = PMCLot::freeInstance(new PMCNC());
 
         foreach($lot->getFields() as $key => $value) {
