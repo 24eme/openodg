@@ -27,11 +27,19 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'date_degust_proche', "La date souhaité de dégustation est dans moins de 5 semaines et risque de ne pas être validée");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_inexistant', "Vous devez créer le chai logeant le vin");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', "Vous devez affecter un secteur au chai logeant le vin");
+
+        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+            $this->addControle(self::TYPE_ERROR, 'volume_coherent', "Le volume doit rester le même");
+        }
     }
 
     public function controle()
     {
         $this->controleLotsGenerique('pmc_lots');
+
+        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+            $this->controlePMCNC();
+        }
     }
 
 
@@ -158,4 +166,23 @@ class PMCValidation extends DocumentValidation
 
     }
 
+    protected function controlePMCNC()
+    {
+        if(!$this->document->exist('lots')){
+            return;
+        }
+
+        $lotOrigine = $this->document->lots[0];
+        $docProvenance = DeclarationClient::getInstance()->find($lotOrigine->id_document_provenance);
+        $volumeOrigine = $docProvenance->getLot($lotOrigine->unique_id)->volume;
+
+        $volumeTotal = array_reduce($this->document->lots->toArray(), function ($t, $lot) {
+            $t += round($lot['volume'], 2);
+            return $t;
+        }, 0);
+
+        if ($volumeTotal != $volumeOrigine) {
+            $this->addPoint(self::TYPE_ERROR, 'volume_coherent', "Le volume revendiqué est de {$volumeTotal} hl alors que l'original est de {$volumeOrigine} hl", $this->generateUrl('pmc_lots', array("id" => $this->document->_id)));
+        }
+    }
 }
