@@ -40,13 +40,23 @@ th {
           </tr>
         </thead>
         <tbody>
-          <?php for( $i = 0; $i<5; $i++): ?>
+        <?php foreach ($degustation->getDegustateursConfirmesTableOrFreeTable($numTab) as $id_compte => $degustateur): ?>
+            <?php if (! $degustateur->exist("numero_table") || $degustateur->numero_table == null): continue; endif; ?>
+            <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
               <tr>
-                <td style="width:35%; text-align:left; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
-                <td style="width:35%; text-align:left; margin-left: 1em;"><br/></td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"><?php echo $compte->getNom() ?>&nbsp;<br/>&nbsp;</td>
+                <td class="text-center" style="width:35%; margin-left: 1em;"><?php echo $compte->getPrenom() ?><br/></td>
                 <td style="width:30%"><br/></td>
               </tr>
-          <?php endfor; ?>
+          <?php endforeach; ?>
+        <?php $t = count($degustation->getDegustateursConfirmesTableOrFreeTable($numTab)); ?>
+        <?php for ($i = $t; $i<5; $i++): ?>
+        <tr>
+            <td class="text-center" style="width:35%; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
+            <td class="text-center" style="width:35%; margin-left: 1em;"><br/></td>
+            <td style="width:30%"><br/></td>
+        </tr>
+        <?php endfor; ?>
         </tbody>
       </table>
       <div></div>
