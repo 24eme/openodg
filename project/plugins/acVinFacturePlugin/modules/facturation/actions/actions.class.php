@@ -5,12 +5,13 @@ class facturationActions extends sfActions
 
     public function executeIndex(sfWebRequest $request)
     {
+        $region = (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null;
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(array(
             GenerationClient::TYPE_DOCUMENT_FACTURES,
             GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE,
             GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA,
             GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE
-        ), 10);
+        ), 10, $region);
 
         $this->form = new LoginForm();
 
@@ -61,8 +62,8 @@ class facturationActions extends sfActions
     {
         $this->mouvements = [];
         $etablissements = [];
-
-        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente();
+        $region = (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
+        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente($region);
 
         foreach ($mouvements_en_attente as $m) {
             if (empty($m->key[MouvementFactureView::KEY_ETB_ID])) {

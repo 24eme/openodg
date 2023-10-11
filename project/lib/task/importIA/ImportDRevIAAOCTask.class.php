@@ -64,6 +64,7 @@ EOF;
 
         $this->initProduitsCepages();
 
+        $nb = 0;
         $ligne = 0;
         foreach(file($arguments['csv_drev']) as $line) {
             $ligne++;
@@ -99,7 +100,11 @@ EOF;
                 $drev = new DRev();
                 $drev->initDoc($etablissement->identifiant, $millesime);
                 $drev->storeDeclarant();
-                $drev->resetAndImportFromDocumentDouanier();
+                try {
+                    $drev->resetAndImportFromDocumentDouanier();
+                } catch(Exception $e) {
+                    continue;
+                }
             }
 
             $drevProduit = $drev->addProduit($produit->getHash(), $data[self::CSV_MENTION_VALORISANTE]);
@@ -107,14 +112,23 @@ EOF;
             $drevProduit->superficie_revendique = $superficie;
             $drevProduit->update();
 
-            $drev->validate($periode."-12-10");
+            if(!$drev->isValidee()) {
+                $drev->validate($periode."-12-10");
+            }
             $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             $drev->save();
+            $nb++;
+
+            if($nb > 500) {
+                sleep(120);
+                $nb = 0;
+            }
 
             echo $drev."\n";
         }
 
         $ligne = 0;
+        $nb = 0;
         foreach(file($arguments['csv_vci']) as $line) {
             $ligne++;
             $line = str_replace("\n", "", $line);
@@ -165,9 +179,16 @@ EOF;
                 echo "WARNING;Le stock final calculé n'est pas identique à celui du csv;$line\n";
                 continue;
             }
-            $drev->validate($periode."-12-10");
+            if(!$drev->isValidee()) {
+                $drev->validate($periode."-12-10");
+            }
             $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             $drev->save();
+            $nb++;
+            if($nb > 500) {
+                sleep(120);
+                $nb = 0;
+            }
             echo $drev."\n";
         }
     }

@@ -6,7 +6,7 @@ class degustationActions extends sfActions {
         $this->form = new DegustationCreationForm();
         $this->formCreationTournee = new TourneeCreationForm();
 
-        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables($this->getUser()->getRegion()));
+        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables(Organisme::getCurrentRegion()));
         $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, $this->getUser()->getRegion());
         $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, $this->getUser()->getRegion());
 
@@ -85,9 +85,7 @@ class degustationActions extends sfActions {
 
     public function executePrelevables(sfWebRequest $request)
     {
-        $this->lotsPrelevables = [];
-
-        $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevables());
+        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(Organisme::getCurrentRegion());
 
         if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
             $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
@@ -134,24 +132,13 @@ class degustationActions extends sfActions {
             $this->degustation->save(false);
         }
 
-        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation);
         $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true]);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
         }
 
-        $this->formOperateurs->bind($request->getParameter($this->formOperateurs->getName()));
         $this->formLots->bind($request->getParameter($this->formLots->getName()));
-
-        if ($request->getParameter($this->formOperateurs->getName())) {
-            if (! $this->formOperateurs->isValid()) {
-                return sfView::SUCCESS;
-            } else {
-                $this->formOperateurs->save();
-                return $this->redirect('degustation_selection_operateurs', $this->degustation);
-            }
-        }
 
         if ($request->getParameter($this->formLots->getName())) {
             if(! $this->formLots->isValid()) {
@@ -162,6 +149,25 @@ class degustationActions extends sfActions {
         }
 
         return $this->redirect(DegustationEtapes::getInstance()->getNextLink(DegustationEtapes::ETAPE_LOTS), $this->degustation);
+    }
+
+    public function executeOperateurAdd(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation);
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        $this->formOperateurs->bind($request->getParameter($this->formOperateurs->getName()));
+        if ($request->getParameter($this->formOperateurs->getName())) {
+            if (! $this->formOperateurs->isValid()) {
+                return sfView::SUCCESS;
+            } else {
+                $this->formOperateurs->save();
+                return $this->redirect('degustation_selection_operateurs', $this->degustation);
+            }
+        }
+
     }
 
     public function executePreleve(sfWebRequest $request) {

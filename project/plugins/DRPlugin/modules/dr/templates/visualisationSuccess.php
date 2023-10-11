@@ -152,7 +152,7 @@ endif;
                 <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
                     onclick="return confirm('Êtes vous sûr de vouloir dévalider cette DR');"
                 >
-                    <span class="glyphicon glyphicon-remove-sign"> Dévalider</span>
+                    <span class="glyphicon glyphicon-remove-sign"></span> Dévalider
                 </a>
             <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
                 <a href="#" class="btn btn-default disabled">
