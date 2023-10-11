@@ -25,7 +25,7 @@ class PMCValidationForm extends acCouchdbForm
             }
         }
 
-        if($this->isAdmin()){
+        if($this->isAdmin() && !$this->getDocument()->isValideeODG()){
             $formDegustable = new BaseForm();
             foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
                 foreach ($lots as $lot) {

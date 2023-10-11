@@ -24,6 +24,7 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'depassement_8515', "Vous devez présenter un papier");
         $this->addControle(self::TYPE_ENGAGEMENT, '8515', "Vous devrez justifier votre assemblage 85/15");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
+        $this->addControle(self::TYPE_ERROR, 'date_degust_anterieure', "La date souhaité de dégustation ne peut pas être dans le passé");
         $this->addControle(self::TYPE_WARNING, 'date_degust_proche', "La date souhaité de dégustation est dans moins de 5 semaines et risque de ne pas être validée");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_inexistant', "Vous devez créer le chai logeant le vin");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', "Vous devez affecter un secteur au chai logeant le vin");
@@ -117,6 +118,10 @@ class PMCValidation extends DocumentValidation
             }
             $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
             $nb_days_from_degust = (int) $date_degust->diff(new DateTimeImmutable($this->document->date))->format('%a');
+            if(date('Y-m-d') > $lot->date_degustation_voulue){
+              $this->addPoint(self::TYPE_ERROR, 'date_degust_anterieure', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+              continue;
+            }
             if(!$this->document->isValideeOdg() && date('Y-m-d') < $lot->date_degustation_voulue && $nb_days_from_degust <= 45){
               $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Lot prélevable à partir du (" . $date_degust->format('d/m/Y') . ")", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;

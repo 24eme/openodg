@@ -101,4 +101,7 @@ class PMC extends BasePMC
         return DRevClient::getInstance()->find('DREV-'.$this->identifiant.'-'.$this->getPeriode());
     }
 
+    public function getHabilitation() {
+        return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
+    }
 }

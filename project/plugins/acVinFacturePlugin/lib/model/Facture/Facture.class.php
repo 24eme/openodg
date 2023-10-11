@@ -492,7 +492,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function hasNonPaiement() {
-        return $this->getMontantPaiement() <= $this->total_ttc;
+        return $this->getMontantPaiement() < $this->total_ttc;
     }
 
     public function getCodeComptableClient() {
