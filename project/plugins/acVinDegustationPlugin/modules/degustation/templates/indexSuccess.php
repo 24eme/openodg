@@ -1,11 +1,7 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
 <?php if(isset($formEtablissement)): ?>
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
-    </div>
-</div>
+    <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
 <?php endif; ?>
 
 <?php if(DegustationConfiguration::getInstance()->isTourneeAutonome()): ?>
@@ -23,7 +19,7 @@
 <?php include_partial('degustation/listeTournees', ['tournees' => $tournees]) ?>
 <?php endif; ?>
 
-<div style="margin-top: 40px;" class="page-header no-border">
+<div class="page-header no-border">
     <h2>Création d'une dégustation</h2>
 </div>
 <form action="<?php echo url_for('degustation') ?>" method="post" class="form-horizontal">
@@ -85,7 +81,7 @@
 </form>
 
 <div style="margin-top: 0px;" class="page-header no-border">
-    <h2>Les dernières dégustations</h2>
+    <h2 style="margin-top: 0px;">Les dernières dégustations</h2>
 </div>
 
 <?php include_partial('degustation/liste', ['degustations' => $degustations]) ?>
