@@ -127,20 +127,6 @@
                    "callback": "getQuantiteVolumeRevendiqueRecolte",
                    "callback_parameters": [
                    ]
-               },
-               "02_volumeRevendiqueVci": {
-                   "modele": "CotisationVariable",
-                   "prix": 0.22,
-                   "tva": 0,
-                   "unite": "hl",
-                   "libelle": "volume revendiqué vci",
-                   "complement_libelle": "",
-                   "docs": [
-                       "DRev"
-                   ],
-                   "callback": "getQuantiteVolumeRevendiqueVci",
-                   "callback_parameters": [
-                   ]
                }
            }
        }

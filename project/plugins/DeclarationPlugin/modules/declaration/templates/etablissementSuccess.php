@@ -53,6 +53,7 @@
     <?php if(class_exists("ParcellaireManquant") && in_array('parcellaireManquant', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
+    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && (!class_exists("DRevConfiguration") || !DRevConfiguration::getInstance()->isRevendicationParLots())): ?>
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
@@ -104,7 +105,6 @@
     <?php if(class_exists("Tirage")): ?>
     <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
-    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
 </div>
 <?php if(in_array('facturation', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="page-header">
