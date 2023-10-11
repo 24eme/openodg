@@ -63,8 +63,8 @@ body {
 .nav-step {
     counter-reset: steps;
     font-size: 15px;
-    border: 1px solid #dbd3c8 !important;
-    background-color: #f8f3e8;
+    border-bottom: 1px solid #dbd3c8 !important;
+    background-color: #fff;
 }
 
 .nav-step ul.navbar-nav li a::before {
@@ -83,7 +83,7 @@ body {
 }
 
 .nav-step ul.navbar-nav li {
-    background-color: #fff;
+    border-top: 1px solid #dbd3c8;
     border-right: 1px solid #dbd3c8;
 }
 
