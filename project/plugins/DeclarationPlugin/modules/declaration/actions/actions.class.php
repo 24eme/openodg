@@ -125,7 +125,7 @@ class declarationActions extends sfActions {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
         }
 
-        if ($doc_type == "PMC" ) {
+        if ($doc_type == "PMC" || $doc_type == "PMCNC") {
             return $this->redirect("pmc_visualisation", array("id" => $doc_id));
         }
 
