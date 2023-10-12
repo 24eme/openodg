@@ -3,6 +3,7 @@
 class ImportCommissionA0CIATask extends ImportLotsIATask
 {
     const CSV_ID= 1;
+    const CSV_RESPONSABLE = 3;
     const CSV_DATE_COMMISSION = 7;
     const CSV_CAMPAGNE = 11;
     const CSV_LIEU_NOM = 9;
@@ -104,6 +105,11 @@ EOF;
           $campagne = trim($data[self::CSV_CAMPAGNE]);
 
           $newDegustation = new Degustation();
+
+          if(strpos($data[self::CSV_RESPONSABLE], 'AULAT') !== false) {
+              $newDegustation->region = "OIVC";
+          }
+
           $newDegustation->numero_archive = sprintf("%05d", preg_replace("/^.*-/", "", $data[self::CSV_ID]));
           $newDegustation->date=$date;
           $newDegustation->lieu = trim($data[self::CSV_LIEU_NOM])." — ".trim($data[self::CSV_LIEU_ADRESSE])." ".trim($data[self::CSV_LIEU_CODE_POSTAL])." ".trim($data[self::CSV_LIEU_COMMUNE]);

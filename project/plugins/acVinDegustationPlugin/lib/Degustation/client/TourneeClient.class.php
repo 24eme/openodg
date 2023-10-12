@@ -38,6 +38,19 @@ class TourneeClient extends DegustationClient {
         return $docs;
     }
 
+    public function findOrCreate($date, $region = null) {
+        $newTournee = $this->createDoc($date, $region);
+
+        $tournee = $this->find($newTournee->_id);
+
+        if(!$tournee) {
+
+            return $newTournee;
+        }
+
+        return $tournee;
+    }
+
     public function createDoc($date, $region = null) {
         $degustation = new Tournee();
         $degustation->date = $date;
