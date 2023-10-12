@@ -117,33 +117,6 @@ class pmcActions extends sfActions {
         return $this->redirect('pmc_lots', $this->pmc);
     }
 
-    public function executeChoixRegion(sfWebRequest $request)
-    {
-        $this->pmc = $this->getRoute()->getPMC();
-        $this->secure(PMCSecurity::EDITION, $this->pmc);
-
-        if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_REGION))) {
-            $this->pmc->save();
-        }
-
-        $this->form = new PMCRegionForm($this->pmc);
-
-        if (! $request->isMethod(sfWebRequest::POST)) {
-            return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (! $this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-
-        $this->form->save();
-
-        return $this->redirect(PMCEtapes::getInstance()->getNextLink(PMCEtapes::ETAPE_REGION), $this->pmc);
-    }
-
     public function executeLots(sfWebRequest $request)
     {
         $this->pmc = $this->getRoute()->getPMC();
