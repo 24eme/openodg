@@ -17,9 +17,9 @@
               <tr>
                 <?php if($pmc->isValidee()): ?>
                   <th class="col-xs-1"> Numéro Lot ODG</th>
-                  <th class="col-xs-1"> Numéro Lot Opérateur</th>
+                  <th class="col-xs-1"> Identifiant Lot Opérateur</th>
                 <?php else: ?>
-                  <th class="col-xs-1"> Numéro Lot Opérateur</th>
+                  <th class="col-xs-1"> Identifiant Lot Opérateur</th>
                 <?php endif; ?>
                 <th class="text-center col-xs-3">Produit (millesime)</th>
                 <th class="text-center col-xs-1">Volume</th>
