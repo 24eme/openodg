@@ -385,8 +385,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $this->fillDocToSaveFromLots();
         }
         $saved = parent::save($saveDependants);
-
-        $this->saveDocumentsDependants();
+        if ($saveDependants) {
+            $this->saveDocumentsDependants();
+        }
 
         return $saved;
     }
