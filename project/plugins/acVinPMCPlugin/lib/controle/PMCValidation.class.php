@@ -29,7 +29,7 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'logement_chai_inexistant', "Vous devez créer le chai logeant le vin");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', "Vous devez affecter un secteur au chai logeant le vin");
 
-        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+        if ($this->document->isNonConformite()) {
             $this->addControle(self::TYPE_ERROR, 'volume_coherent', "Le volume doit rester le même");
         }
     }
@@ -38,7 +38,7 @@ class PMCValidation extends DocumentValidation
     {
         $this->controleLotsGenerique('pmc_lots');
 
-        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+        if ($this->document->isNonConformite()) {
             $this->controlePMCNC();
         }
     }
@@ -139,20 +139,23 @@ class PMCValidation extends DocumentValidation
             }
         }
 
-        $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant,[ConfigurationClient::getInstance()->getPreviousCampagne($this->document->campagne), $this->document->campagne]);
-        if(!$this->document->isValideeOdg()) {
-            foreach ($totalVolumePMC as $hash => $millesimes) {
-                $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
-                foreach ($millesimes as $millesime => $volume) {
-                    $volumeDejaCommercialise = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['Lot'];
-                    $volumeDRev = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['DRev'];
+        if ($this->document->isNonConformite() === false) {
+            $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant,[ConfigurationClient::getInstance()->getPreviousCampagne($this->document->campagne), $this->document->campagne]);
+            if(!$this->document->isValideeOdg()) {
+                foreach ($totalVolumePMC as $hash => $millesimes) {
+                    $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);
+                    foreach ($millesimes as $millesime => $volume) {
+                        $volumeDejaCommercialise = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['Lot'];
+                        $volumeDRev = @$syntheseLots[$produit->getAppellation()->getLibelle()][$millesime][$produit->getCouleur()->getLibelle()]['DRev'];
 
-                    if (round($volumeDejaCommercialise + $volume, 2) > round($volumeDRev, 2)) {
-                        $this->addPoint(self::TYPE_ERROR, 'volume_depasse', $produit->getLibelleComplet().'  '.$millesime." - ".($volumeDejaCommercialise + $volume)  . " hl déclaré en circulation pour ".$volumeDRev." hl revendiqué" , $this->generateUrl($routeName, array("id" => $this->document->_id)));
+                        if (round($volumeDejaCommercialise + $volume, 2) > round($volumeDRev, 2)) {
+                            $this->addPoint(self::TYPE_ERROR, 'volume_depasse', $produit->getLibelleComplet().'  '.$millesime." - ".($volumeDejaCommercialise + $volume)  . " hl déclaré en circulation pour ".$volumeDRev." hl revendiqué" , $this->generateUrl($routeName, array("id" => $this->document->_id)));
+                        }
                     }
                 }
             }
         }
+
         if (DRevConfiguration::getInstance()->hasLogementChais() && sfContext::getInstance()->getUser()->isAdmin()) {
             if (!$this->document->chais->nom && !$this->document->chais->adresse && !$this->document->chais->commune && ! $this->document->chais->code_postal) {
                 $this->addPoint(self::TYPE_ERROR, 'logement_chai_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));

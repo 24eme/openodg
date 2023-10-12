@@ -49,6 +49,11 @@ class PMC extends BasePMC
         return Lot::STATUT_CONDITIONNE;
     }
 
+    public function isNonConformite()
+    {
+        return $this->getType() === PMCNCCLient::TYPE_MODEL;
+    }
+
     public function getMaster()
     {
         return $this;
