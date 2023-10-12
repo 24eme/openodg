@@ -193,6 +193,8 @@
 \textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
 <?php endif; ?>
 
+\textbf{Paiement à réception de facture. Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé. En cas de retard de paiement, sera exigible, conformément à l'article L 441-6 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur. En cas de retard de paiement, une indemnité forfaitaire de 40€ sera perçue pour frais de recouvrement (décret n°2012-1115 du 2/10/2012).}
+
 <?php if ($facture->exist('message_communication') && $facture->message_communication): ?>
 \textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\
 <?php endif; ?>

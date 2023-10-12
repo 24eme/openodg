@@ -35,8 +35,8 @@
 
 <table border="1" cellpadding=0 cellspacing=0 style="text-align: center;">
   <tr>
-    <th style="width: 25%">N° Dos / N° Lot ODG</th>
-    <th style="width: 15%">N°Lot OP</th>
+    <th style="width: 25%">N° Dos / N° Lot</th>
+    <th style="width: 15%">N°Lgt OP</th>
     <th style="width: 50%">Produit</th>
     <th style="width: 10%">Volume<br/>(hl)</th>
   </tr>
@@ -86,7 +86,7 @@
 <?php if ($lot->isSecondPassage() || $lot->conformite != Lot::CONFORMITE_NONCONFORME_MINEUR): ?>
 <p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner OBLIGATOIREMENT à l'ODG et à l'OI.</strong></p>
 <?php else: ?>
-<p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner à l'ODG.</strong></p>
+<p><strong>Décision de l'opérateur : à <i>remplir</i> par l'opérateur et à retourner.</strong></p>
 <?php endif ?>
 
 
