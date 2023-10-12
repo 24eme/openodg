@@ -39,6 +39,7 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         $lot_origine->remove('numero_table');
         $lot_origine->remove('position');
         $lot_origine->remove('leurre');
+        $lot_origine->remove('prelevement_heure');
         $this->lots[0] = clone $lot_origine;
         $this->lots[0]->id_document_provenance = $lot_origine->id_document;
         $this->lots[0]->id_document = $this->_id;
