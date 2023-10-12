@@ -76,7 +76,7 @@
                  <th colspan="6" class="bg-white" style="width:56%;"><?php echo tdStart() ?><strong>Liste des lots</strong> <small>(Trié par table et n° anonymat)</small></th>
               </tr>
               <tr style="line-height:13px;">
-                <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Lot ODG</small></strong></th>
+                <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Lot</small></strong></th>
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Dos</small></strong></th>
                 <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Cuve</small></strong></th>
                 <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>

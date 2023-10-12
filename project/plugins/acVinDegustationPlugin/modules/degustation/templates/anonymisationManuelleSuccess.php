@@ -22,7 +22,7 @@
       <th class="col-xs-3 text-center">Produit (millesime)<br/><span class="text-muted">(<?php echo $tri; ?> - <a data-toggle="modal" data-target="#popupTableTriForm" type="button" href="#">changer</a>)</span></th>
       <th class="col-xs-1 text-center">Volume</th>
       <th class="col-xs-1 text-center">Lgmt</th>
-      <th class="col-xs-2 text-center">Num. ODG</th>
+      <th class="col-xs-2 text-center">Num. Lot</th>
       <th class="col-xs-2 text-center">Anonymat</th>
     </tr>
   </thead>

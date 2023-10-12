@@ -80,7 +80,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return $syndicats;
 	}
 
-	public function getProduits($region = null)
+	public function getProduits($region = null, $with_details = true)
     {
 		if($region) {
 
@@ -89,11 +89,14 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         $produits = array();
         foreach($this as $items) {
-			foreach($items as $item) {
-	            $produits[$item->getHash()] = $item;
-			}
+            if ($with_details) {
+			    foreach($items as $item) {
+	                $produits[$item->getHash()] = $item;
+			    }
+            }else{
+                $produits[$items->getHash()] = $items;
+            }
         }
-
         return $produits;
     }
 

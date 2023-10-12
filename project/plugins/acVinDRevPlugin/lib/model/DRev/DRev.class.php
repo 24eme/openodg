@@ -54,17 +54,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return substr($this->campagne, 0, 4);
     }
 
-    public function getProduits($region = null) {
+    public function getProduits($region = null, $with_details = true) {
         if (!$this->exist('declaration') || !count($this->get('declaration'))) {
             $this->updateDeclaration();
         }
-        return $this->declaration->getProduits($region);
+        return $this->declaration->getProduits($region, $with_details);
     }
 
     public function getRegions()
     {
         $regions = [];
-        foreach ($this->getProduits() as $p) {
+        foreach ($this->getProduits(null, false) as $hash => $p) {
             $regions[] = $p->getRegion();
         }
 
