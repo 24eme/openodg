@@ -11,7 +11,7 @@
 echo $form->renderHiddenFields();
 echo $form->renderGlobalErrors();
 ?>
-    <div class="row">
+    <div class="row" style="margin-top: 20px;">
     <div class="col-xs-3">
         <div class="panel panel-default">
         <div class="panel-heading">
