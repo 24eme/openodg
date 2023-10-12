@@ -150,7 +150,7 @@ endif;
         <?php if ($sf_user->isAdmin()): ?>
             <?php if($dr->exist('validation_odg') && $dr->validation_odg): ?>
                 <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
-                    onclick="return confirm('Êtes vous sûr de vouloir dévalider cette DR');"
+                    onclick="return confirm('Êtes vous sûr de vouloir dévalider cette <?php echo $dr->getType() ?>');"
                 >
                     <span class="glyphicon glyphicon-remove-sign"></span> Dévalider
                 </a>
