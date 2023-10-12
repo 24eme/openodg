@@ -51,6 +51,8 @@ echo $form->renderGlobalErrors();
                 </li>
                 <li role="separator" class="divider"></li>
                 <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des étiquettes</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur pour labo</a></li>
             </ul>
         </div>
         <h2 style="margin-top: 0; margin-bottom: 20px;">Tournée <?php echo $secteur ?></h2>
