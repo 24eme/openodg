@@ -30,6 +30,7 @@ TravauxMarc:
             adresse: { }
             commune: { }
             code_postal: { }
+      region: { required: false }
       validation: { }
       validation_odg: { }
       papier: { required: false, type: integer }

@@ -226,9 +226,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
     public function getRegions() {
         $regions = [];
         foreach ($this->getLots() as $lot) {
-            $regions[] = $lot->getRegion();
+            if ($lot->produit_hash) {
+                $regions[] = $lot->getRegion();
+            }
         }
-
         return array_values(array_unique($regions));
     }
 
@@ -349,6 +350,11 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
             $this->archiver();
             if ($this->isValideeOdg()) {
                 $this->generateMouvementsLots();
+            }
+
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
             }
 
             $saved = parent::save();
