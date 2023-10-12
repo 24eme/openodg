@@ -161,6 +161,16 @@ degustation_notifications_etape:
   requirements:
     sf_method: [get]
 
+degustation_cloture:
+  url: /degustation/:id/cloture
+  param: { module: degustation, action: cloture }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_export_csv:
   url: /degustation/:id/export_csv
   param: { module: degustation, action: exportCsv }

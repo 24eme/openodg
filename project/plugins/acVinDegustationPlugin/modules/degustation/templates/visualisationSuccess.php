@@ -1,7 +1,6 @@
 <?php use_helper('Lot'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_VISUALISATION)); ?>
 
 <div class="page-header no-border">
   <h2>
@@ -16,14 +15,14 @@
   </h2>
 </div>
 
-<h4>Lots prélevés (<?php echo count($lots->getRawValue()) ?>)</h4>
+<h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th class="col-xs-3">Opérateur</th>
             <th>Prov.</th>
             <th>Nº Lot</th>
-            <th>Nº logement</th>
+            <th>Identifiant<br/>opérateur lot</th>
             <th class="col-xs-3">Produit</th>
             <th>Volume</th>
             <th>Date de prélèvement</th>
@@ -66,4 +65,3 @@
     <?php endforeach ?>
     </tbody>
 </table>
-

@@ -478,6 +478,10 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
 
+        if (!DegustationConfiguration::getInstance()->hasNotification()) {
+            return $this->redirect($this->getRouteEtape(DegustationEtapes::ETAPE_VISUALISATION), $this->degustation);
+        }
+
         $this->mail_to_identifiant = $request->getParameter('mail_to_identifiant');
 
         if (!$this->degustation->areAllLotsSaisis()) {
@@ -488,6 +492,15 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_NOTIFICATIONS))) {
             $this->degustation->save();
         }
+    }
+
+    public function executeCloture(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsNotAnonymized();
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VISUALISATION))) {
+            $this->degustation->save();
+        }
+        return $this->redirect('degustation_visualisation', $this->degustation);
     }
 
     public function executeExportCsv(sfWebRequest $request) {
