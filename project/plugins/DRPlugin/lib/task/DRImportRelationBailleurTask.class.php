@@ -28,7 +28,12 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $dr = DRClient::getInstance()->find($arguments['doc_id']);
-        print_r($dr->getBailleurs());
+        $etablissement_source = EtablissementClient::getInstance()->findAny($dr->getDeclarant()->cvi);
+        $etablissement_dst = $dr->getBailleurs();
+        foreach ($etablissement_dst as $etablissement) {
+            if ($etablissement['relation_exist'] === false)
+                $etablissement_source->addLiaison("BAILLEUR", EtablissementClient::getInstance()->find($etablissement['etablissement_id']), true);
+        }
+        $etablissement_source->save();
     }
-
 }
