@@ -19,8 +19,8 @@ class CourrierClient extends acCouchdbClient {
         if (!$date) {
             $date = date('Y-m-d');
         }
-        $courrier = new Courrier();
-        $courrier->initDoc($identifiant, $date, $type, $lot);
+        $courrier = new Courrier($lot, $type);
+        $courrier->initDoc($identifiant, null, $date);
         $courrier->storeDeclarant();
         return $courrier;
     }

@@ -305,6 +305,9 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       }
 
       public function isAdresseLogementDifferente() {
+          if (!$this->exist('chais')) {
+              return false;
+          }
           if(!$this->chais->nom && !$this->chais->adresse && !$this->chais->commune && !$this->chais->code_postal) {
               return false;
           }

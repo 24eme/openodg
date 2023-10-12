@@ -10,7 +10,16 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
     protected $piece_document = null;
     protected $etablissement = null;
 
-    public function __construct() {
+    private $arg_courrier_type = null;
+    private $arg_lot_origine = null;
+
+    public function __construct(Lot $lot_origine = null, $courrier_type = null) {
+        if ($lot_origine) {
+            $this->arg_lot_origine = $lot_origine;
+        }
+        if ($courrier_type) {
+            $this->arg_courrier_type = $courrier_type;
+        }
         parent::__construct();
         $this->initDocuments();
     }
@@ -25,29 +34,34 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         $this->piece_document = new PieceDocument($this);
     }
 
-    public function initDoc($identifiant, $date, $type, $lot_origine) {
+    public function initDoc($identifiant, $campagne, $date = null) {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+
         $this->identifiant = $identifiant;
         $this->date = $date;
 
-        $this->courrier_type = $type;
-        $this->courrier_titre = CourrierClient::getInstance()->getTitre($type);
+        $this->courrier_type = $this->arg_courrier_type;
+        $this->courrier_titre = CourrierClient::getInstance()->getTitre($this->courrier_type);
 
         $etablissement = $this->getEtablissementObject();
         $this->constructId();
         $this->lots->add(0);
-        $lot_origine->remove('numero_anonymat');
-        $lot_origine->remove('numero_table');
-        $lot_origine->remove('position');
-        $lot_origine->remove('leurre');
-        $lot_origine->remove('prelevement_heure');
-        $this->lots[0] = clone $lot_origine;
-        $this->lots[0]->id_document_provenance = $lot_origine->id_document;
+        $this->arg_lot_origine->remove('numero_anonymat');
+        $this->arg_lot_origine->remove('numero_table');
+        $this->arg_lot_origine->remove('position');
+        $this->arg_lot_origine->remove('leurre');
+        $this->arg_lot_origine->remove('prelevement_heure');
+        $this->lots[0] = clone $this->arg_lot_origine;
+        $this->lots[0]->id_document_provenance = $this->arg_lot_origine->id_document;
         $this->lots[0]->id_document = $this->_id;
-        $this->lots[0]->document_ordre = sprintf('%02d', $lot_origine->document_ordre + 1);
+        $this->lots[0]->document_ordre = sprintf('%02d', $this->arg_lot_origine->document_ordre + 1);
+
         $this->numero_dossier = $this->lots[0]->numero_dossier;
         $this->numero_archive = $this->lots[0]->numero_archive;
         $this->add('region');
-        $this->region = $this->lots[0]->region;
+        $this->region = Organisme::getOIRegion();
     }
 
 
@@ -102,7 +116,19 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
     public function save($saveDependants = true) {
         $this->generateMouvementsLots();
         $this->generatePieces();
-        return parent::save();
+        $ret = parent::save($saveDependants);
+        if ($saveDependants) {
+            $this->saveDocumentsDependants();
+        }
+        return $ret;
+    }
+
+    public function getMother() {
+        return ($this->lots[0]->id_document_provenance) ? DeclarationClient::getInstance()->find($this->lots[0]->id_document_provenance) : null ;
+    }
+
+    public function getSecteur() {
+        return null;
     }
 
     /**** PIECES ****/
