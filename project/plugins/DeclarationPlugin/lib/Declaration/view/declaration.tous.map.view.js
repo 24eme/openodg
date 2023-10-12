@@ -137,6 +137,10 @@ function(doc) {
      if (doc.statut_odg) {
        statut = doc.statut_odg;
      }
+     region = "";
+     if (doc.region) {
+         region = doc.region;
+     }
 
     var type = doc.type;
 
@@ -170,7 +174,11 @@ function(doc) {
                 if(doc.declaration[key][detailKey].statut_odg){
                    statutProduit = doc.declaration[key][detailKey].statut_odg;
                  }
-                emit([type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                emit(['', type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                if (region) {
+                     emit([region, type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                }
+
                   nb_emits = nb_emits + 1;
               }
            }
@@ -186,12 +194,18 @@ function(doc) {
          }
       }
       for(produitHash in produitsHash) {
-          emit([type, campagne, doc.identifiant, mode, statut, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+          emit(['', type, campagne, doc.identifiant, mode, statut, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+          if (region) {
+              emit([region, type, campagne, doc.identifiant, mode, statut, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+          }
           nb_emits = nb_emits + 1;
       }
     }
 
     if(!nb_emits){
-        emit([type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        emit(['', type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        if (region) {
+            emit([region, type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        }
     }
 }

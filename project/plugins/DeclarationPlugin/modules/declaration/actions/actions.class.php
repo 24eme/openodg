@@ -224,9 +224,10 @@ class declarationActions extends sfActions {
         );
         $campagne_view = acCouchdbManager::getClient()
                  ->group(true)
-                 ->group_level(2);
+                 ->group_level(DeclarationTousView::GROUP_LEVEL_CAMPAGNE);
          if (isset($this->query['Type'])) {
-             $campagne_view = $campagne_view->startkey(array($this->query['Type'], ''))->endkey(array($this->query['Type'], 'zzzzzz'));
+             $campagne_view = $campagne_view->startkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, $this->query['Type'], ''))
+                                            ->endkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, $this->query['Type'], 'zzzzzz'));
          }
         $rows_campagne = $campagne_view->getView('declaration', 'tous')->rows;
         foreach($rows_campagne as $row) {
@@ -263,11 +264,11 @@ class declarationActions extends sfActions {
             $view = acCouchdbManager::getClient()
                     ->reduce(false);
             if ($this->query['Campagne_min'] == $this->query['Campagne_max']){
-                $view = $view->startkey(array($type, $this->query['Campagne_min'], ''));
-                $view = $view->endkey(array($type, $this->query['Campagne_max'], 'zzzzzzz'));
+                $view = $view->startkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, $type, $this->query['Campagne_min'], ''));
+                $view = $view->endkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, $type, $this->query['Campagne_max'], 'zzzzzzz'));
             }else{
-                $view = $view->startkey(array($type, $this->query['Campagne_min']));
-                $view = $view->endkey(array($type, $this->query['Campagne_max']."XXX"));
+                $view = $view->startkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, $type, $this->query['Campagne_min']));
+                $view = $view->endkey(array(DeclarationTousView::FILTER_KEY_DEFAULT_REGION, $type, $this->query['Campagne_max']."XXX"));
             }
 
             $rows = array_merge($rows, $view->getView('declaration', 'tous')->rows);
