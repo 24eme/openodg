@@ -29,7 +29,7 @@ class PMCValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'logement_chai_inexistant', "Vous devez créer le chai logeant le vin");
         $this->addControle(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', "Vous devez affecter un secteur au chai logeant le vin");
 
-        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+        if ($this->document->isNonConformite()) {
             $this->addControle(self::TYPE_ERROR, 'volume_coherent', "Le volume doit rester le même");
         }
     }
@@ -38,7 +38,7 @@ class PMCValidation extends DocumentValidation
     {
         $this->controleLotsGenerique('pmc_lots');
 
-        if ($this->document->getType() === PMCNCCLient::TYPE_MODEL) {
+        if ($this->document->isNonConformite()) {
             $this->controlePMCNC();
         }
     }
