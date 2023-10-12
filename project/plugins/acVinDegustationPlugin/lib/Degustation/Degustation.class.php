@@ -94,6 +94,28 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$this->piece_document->generatePieces();
 	}
 
+    public function isValidated() {
+        return $this->exist('validation') && $this->validation;
+    }
+
+    public function isValidatedOI() {
+        return $this->exist('validation_oi') && $this->validation_oi;
+    }
+
+    public function validate($date = null) {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+        $this->add('validation', $date);
+    }
+
+    public function validateOI($date = null) {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+        $this->add('validation_oi', $date);
+    }
+
     public function save($saveDependants = true) {
         $this->generateMouvementsLots();
 
@@ -102,6 +124,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $this->generateMouvementsFactures();
         }
         $this->generateMouvementsFacturesOnNextSave = false;
+
+        if ($this->etape == DegustationEtapes::ETAPE_VISUALISATION && RegionConfiguration::getInstance()->hasOdgProduits()) {
+            if (strpos($this->region, '|') === false) {
+                $this->region = $this->region.'|'.Organisme::getOIRegion();
+            }
+            if (!$this->isValidated()) {
+                $this->validate();
+            }
+        }
 
         $saved = parent::save();
 

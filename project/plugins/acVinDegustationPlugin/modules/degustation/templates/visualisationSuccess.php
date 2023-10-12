@@ -1,4 +1,5 @@
 <?php use_helper('Lot'); ?>
+<?php use_helper('Float'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
@@ -41,9 +42,9 @@
             <td><?php echo $lot->declarant_nom ?></td>
             <td class="text-center"><?php echo $lot->getTypeProvenance() ?></td>
             <td class="text-center"><a href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>"><?php echo $lot->numero_archive; ?></a></td>
-            <td class="text-center"><?php echo $lot->numero_logement_operateur; ?></td>
+            <td class="text-center"><span title="<?php echo $lot->numero_logement_operateur; ?>" style="display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;"><?php echo $lot->numero_logement_operateur; ?></span></td>
             <td><?php echo showOnlyProduit($lot); ?></td>
-            <td class="text-right"><?php echo $lot->volume ?> <small class="text-muted">hl</small></td>
+            <td class="text-right"><?php echoFloatFr($lot->volume) ?>&nbsp;<small class="text-muted">hl</small></td>
             <td class='text-center'>
                 <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->getPreleve())->format('d/m/Y'); ?>
             </td>

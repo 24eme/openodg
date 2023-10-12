@@ -747,11 +747,24 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     	throw new sfException("Impossible de determiner le type de parcellaire");
     }
 
+    public function getRegions() {
+        $regions = array();
+        foreach($this->getProduits() as $produit) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getProduitHash());
+        }
+        return array_filter(array_unique($regions));
+
+    }
+
     protected function doSave() {
     	$this->piece_document->generatePieces();
     }
 
     public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
         $this->getDateDepot();
 
         return parent::save();
