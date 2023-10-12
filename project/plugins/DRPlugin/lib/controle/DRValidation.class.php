@@ -78,6 +78,10 @@ class DRValidation extends DocumentValidation
     public function controleDocuments()
     {
         if (class_exists(ParcellaireManquant::class)) {
+            if ($this->document->getType() !== DRClient::TYPE_MODEL) {
+                return false;
+            }
+
             $PM = ParcellaireManquantClient::getInstance()->find(
                 ParcellaireManquantClient::getInstance()->buildId($this->document->getIdentifiant(), $this->document->getPeriode())
             );
