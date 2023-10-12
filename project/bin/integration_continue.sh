@@ -32,7 +32,7 @@ fi
 mkdir -p $XMLTESTDIR 2> /dev/null
 
 BRANCH=$(cat ../.git/HEAD | sed -r 's|^ref: refs/heads/||')
-LASTCOMMIT=$(cat $WORKINGDIR"/../.git/refs/heads/"$BRANCH)
+LASTCOMMIT=$(cat ../.git/packed-refs | grep "refs/heads/$BRANCH" | cut -d " " -f 1)
 DATE=$(date +%Y%m%d%H%M%S)
 BRANCH=$(echo $BRANCH | tr '/' '-')
 AUTHOR=$(git show $LASTCOMMIT | head -n 5 | grep "^Author:" | sed 's/.*: //' | sed 's/ <.*//' | sed 's/[^a-z]//ig')

@@ -58,16 +58,6 @@ pmc_exploitation:
   requirements:
     sf_method: [get, post]
 
-pmc_region:
-  url: /pmc/choix-region/:id
-  param: { module: pmc, action: choixRegion }
-  class: PMCRoute
-  options:
-    model: PMC
-    type:  object
-  requirements:
-    sf_method: [get, post]
-
 pmc_lots:
   url: /pmc/lots/:id/:appellation
   param: { module: pmc, action: lots, appellation: 0 }
