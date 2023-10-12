@@ -498,6 +498,7 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsNotAnonymized();
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VISUALISATION))) {
+            $this->degustation->validate();
             $this->degustation->save();
         }
         return $this->redirect('degustation_visualisation', $this->degustation);

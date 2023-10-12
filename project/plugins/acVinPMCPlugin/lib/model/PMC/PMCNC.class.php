@@ -38,4 +38,8 @@ class PMCNC extends PMC
 
         return false;
     }
+
+    public function getRegions() {
+        return array(Organisme::getOIRegion());
+    }
 }
