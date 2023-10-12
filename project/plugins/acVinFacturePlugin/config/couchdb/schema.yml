@@ -283,7 +283,7 @@ TemplateFacture:
                               reference: { required: false }
                               callback: { required: false }
                               callback_parameters:
-                                type: array_collection
+                                type: collection
                                 required: false
                                 definition:
                                   fields:
