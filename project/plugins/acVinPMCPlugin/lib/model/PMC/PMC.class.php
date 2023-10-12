@@ -104,4 +104,8 @@ class PMC extends BasePMC
     public function getHabilitation() {
         return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
     }
+
+    public function addLot($imported = false, $auto_millesime = true) {
+        return parent::addLot($imported, false);
+    }
 }

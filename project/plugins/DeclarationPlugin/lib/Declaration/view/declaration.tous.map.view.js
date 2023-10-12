@@ -6,6 +6,7 @@ function(doc) {
         doc.type != "DRev" &&
         doc.type != "DR" &&
         doc.type != "DRevMarc" &&
+        doc.type != "ParcellaireManquant" &&
         doc.type != "ParcellaireAffectation" &&
         doc.type != "ParcellaireIntentionAffectation" &&
         doc.type != "ParcellaireIrrigable" &&

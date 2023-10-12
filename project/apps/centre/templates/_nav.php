@@ -67,7 +67,7 @@
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
                 <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                    <?php if(sfConfig::get('app_nav_stats_'.sfConfig::get('sf_app'))): ?>
+                    <?php if(sfConfig::get('app_nav_stats_'.Organisme::getCurrentOrganisme())): ?>
                     <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-stats"></span><span class="caret"></span></a>
                       <ul class="dropdown-menu">

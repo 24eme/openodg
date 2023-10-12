@@ -93,10 +93,8 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     protected function getHeaderSubtitle() {
         $nbOperateurs = count($this->etablissements);
         $nbLots = count($this->lots);
-        $prelevement = ($nbOperateurs > 1)? "$nbOperateurs opérateurs" : "$nbOperateurs opérateur";
-        $prelevement .= ($nbLots > 1)? " pour $nbLots lots à prélever" : " pour $nbLots lot à prélever";
         $header_subtitle = sprintf("Dégustation du %s, %s", $this->degustation->getDateFormat('d/m/Y'), $this->degustation->lieu);
-        $header_subtitle .= sprintf("\n$prelevement");
+        $header_subtitle .= sprintf("\n");
         return $header_subtitle;
     }
 
