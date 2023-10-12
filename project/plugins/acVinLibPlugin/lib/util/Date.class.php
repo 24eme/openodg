@@ -68,6 +68,10 @@ class Date {
             return date('d/m/Y', mktime(0, 0, 0, $mois, $jours, $annee));
         }
 
+        if ($date && ($date_formated = DateTimeImmutable::createFromFormat('YmdHis', $date))) {
+            return $date_formated->format('d/m/Y');
+        }
+
         return $date;
     }
 

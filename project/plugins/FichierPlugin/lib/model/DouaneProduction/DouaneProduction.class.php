@@ -676,7 +676,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
     public static function getBailleursFromCsv($etablissement, $csv, $configuration, $cave_particuliere_only = false) {
-        $etablissementBailleurs = array();
+        $etablissementBailleursRelations = array();
         foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
             if(!$etablissementBailleur->ppm) {
                 continue;
@@ -684,10 +684,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if(!$etablissementBailleur->exist('liaisons_operateurs/METAYER_'.$etablissement->_id)) {
                 continue;
             }
-            $etablissementBailleurs[$etablissementBailleur->ppm] = $etablissementBailleur;
+            $etablissementBailleursRelations[$etablissementBailleur->ppm] = $etablissementBailleur;
         }
 
 
+        $etablissementBailleurCache = $etablissementBailleursRelations;
         $bailleurs = array();
         foreach($csv as $line) {
             $produitConfig = $configuration->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
@@ -705,7 +706,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
 
-            if(!trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
+            $ppm = $line[DRCsvFile::CSV_BAILLEUR_PPM];
+
+            if(!trim($ppm)) {
                 continue;
             }
 
@@ -713,9 +716,24 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
 
-            $etablissement_id = isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : null;
-            $id = ($etablissement_id) ? $etablissement_id : $line[DRCsvFile::CSV_BAILLEUR_PPM];
-            $bailleurs[$id]  = array('raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM], 'etablissement_id' => $etablissement_id, 'ppm' => $line[DRCsvFile::CSV_BAILLEUR_PPM]);
+            $etablissement_id = null;
+            $id = $ppm;
+            if(isset($etablissementBailleurCache[$ppm])) {
+                $etablissement_id = $etablissementBailleurCache[$ppm]->_id;
+            }
+            if (!$etablissement_id && $etablissement_bailleur = EtablissementClient::getInstance()->findByPPM($ppm)) {
+                $etablissement_id = $etablissement_bailleur->_id;
+                $etablissementBailleurCache[$ppm] = $etablissement_bailleur;
+            }
+            if($etablissement_id) {
+                $id = $etablissement_id;
+            }
+            $bailleurs[$id]  = array(
+                'raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM],
+                'etablissement_id' => $etablissement_id,
+                'ppm' => $ppm,
+                'relation_exist' => isset($etablissementBailleursRelations[$ppm])
+            );
         }
         return $bailleurs;
     }
