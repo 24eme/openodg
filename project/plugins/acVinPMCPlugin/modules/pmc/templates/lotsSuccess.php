@@ -83,7 +83,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot / Cuve", array('class' => "col-sm-5 control-label")); ?>
+                      <?php echo $lot['numero_logement_operateur']->renderLabel("Lot / Cuve", array('class' => "col-sm-5 control-label")); ?>
                       <div class="col-sm-6">
                             <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>

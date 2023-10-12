@@ -35,6 +35,11 @@ class LotCommissionForm extends acCouchdbObjectForm
     public static function getDegustationChoices() {
         $degustations = array();
         $history = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_DOCUMENT, Organisme::getCurrentRegion());
+
+        if (is_array($history) === false) {
+            $history = $history->getDatas();
+        }
+
         ksort($history);
         foreach ($history as $degustation_id => $degustation) {
             if($degustation->date < date('Y-m-d')) {

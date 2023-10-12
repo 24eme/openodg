@@ -33,7 +33,7 @@ class TemplateFactureCotisation extends BaseTemplateFactureCotisation {
 
 		return $this->exist('required') && $this->get('required');
 	}
-	
+
 	public function isDisabled() {
 
 		return $this->exist('disabled') && $this->get('disabled');
