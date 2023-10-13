@@ -144,7 +144,7 @@ EOF;
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
-        $lot->volume = ($dataAugmented['volume']) ? $dataAugmented['volume'] : 1;
+        $lot->volume = ($dataAugmented['volume']) ? $dataAugmented['volume'] : null;
         $lot->numero_logement_operateur = $dataAugmented['numero_logement_operateur'];
         $lot->affectable = true;
         $lot->setIsPreleve($dataAugmented['date_prelevement']);
