@@ -28,15 +28,15 @@
             <th>Volume</th>
             <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL): ?>
                 <th>Conformité</th>
+                <th>État</th>
             <?php endif ?>
-            <th></th>
         </tr>
     </thead>
     <tbody>
     <?php if (count($lots) < 1): ?>
         <tr><td colspan=4 class='text-center'>Aucun lot prélevé</td></tr>
     <?php endif ?>
-    <?php foreach ($lots as $lot): ?>
+    <?php foreach ($lots as $k => $lot): ?>
         <tr>
             <td>
                 <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->getPreleve())->format('d/m/Y'); ?>
@@ -58,8 +58,8 @@
                         <span class="glyphicon glyphicon-<?= ($lot->isManquement()) ? 'remove' : 'ok' ?>"></span>
                     </span>
                 </td>
+                <td><?php  echo showLotStatusCartouche($mvts[$k]->value->statut, null, preg_match("/ème dégustation/", $mvts[$k]->value->libelle));  ?></td>
             <?php endif ?>
-            <td class="text-right hidden-print"><a class="btn btn-xs btn-default btn-historique" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
         </tr>
     <?php endforeach ?>
     </tbody>
