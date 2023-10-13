@@ -1018,7 +1018,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffectable() {
 
-        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && ($this->volume);
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable;
     }
 
     public function isAffecte() {
