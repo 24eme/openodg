@@ -119,7 +119,7 @@ pmc_confirmation:
     sf_method: [get, post]
 
 pmcnc_visualisation:
-  url: /pmc/visualisation/:id
+  url: /pmcnc/visualisation/:id
   param: { module: pmc, action: visualisation }
   class: PMCRoute
   options:
@@ -133,7 +133,7 @@ pmc_visualisation:
   param: { module: pmc, action: visualisation }
   class: PMCRoute
   options:
-    model:    PMC
+    model:    PMCNC
     type:     object
   requirements:
     sf_method: [get, post]

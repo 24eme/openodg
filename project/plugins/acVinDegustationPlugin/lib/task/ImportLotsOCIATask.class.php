@@ -67,6 +67,11 @@ EOF;
               continue;
             }
 
+            if(!$data[self::CSV_DATE_PRELEVEMENT]) {
+                echo "Warning;pas de date;$line\n";
+                continue;
+            }
+
             $numeroLot = null;
             if(isset($data[self::CSV_NUM_LOT])) {
                 $numeroLot = trim($data[self::CSV_NUM_LOT]);
@@ -98,6 +103,14 @@ EOF;
 
             if($typeControle == "ALR") {
                 $this->importAleatoire($data, $dataAugmented, 'Degustation:aleatoire_renforce');
+            }
+
+            if($typeControle == "SUP") {
+                $this->importAleatoire($data, $dataAugmented, 'Degustation:supplementaire');
+            }
+
+            if($typeControle == "NCI") {
+                $this->importPMCNC($data, $dataAugmented);
             }
         }
     }
@@ -151,6 +164,32 @@ EOF;
         $tournee->etape = DegustationEtapes::ETAPE_VISUALISATION;
         $tournee->save();
         echo $tournee->_id."\n";
+    }
+
+    protected function importPMCNC($data, $dataAugmented) {
+        $etablissement = $dataAugmented['etablissement'];
+        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
+        $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, str_replace("-", "", $dataAugmented['date_prelevement'])."000000");
+        $pmcnc->numero_archive = $dataAugmented['numero_dossier'];
+        $pmcnc->save();
+        $lot = $pmcnc->addLot();
+        $lot->id_document_provenance = $pmcnc->_id;
+        $lot->date = $dataAugmented['date_prelevement'];
+        $lot->numero_dossier = $dataAugmented['numero_dossier'];
+        $lot->numero_archive = $dataAugmented['numero_archive'];
+        $lot->produit_hash = $dataAugmented['produit']->getHash();
+        $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
+        $lot->millesime = $dataAugmented['millesime'];
+        $lot->document_ordre = "02";
+        $lot->volume = $dataAugmented['volume'];
+        $lot->numero_logement_operateur = $dataAugmented['numero_logement_operateur'];
+        $lot->affectable = true;
+        $pmcnc->save();
+        $pmcnc->validate($dataAugmented['date_prelevement']);
+        $pmcnc->validateOdg($dataAugmented['date_prelevement']);
+        $pmcnc->save();
+
+        echo $pmcnc->_id."\n";
     }
 
     protected function alias($produit) {
