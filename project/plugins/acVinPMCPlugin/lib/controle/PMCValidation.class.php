@@ -181,6 +181,11 @@ class PMCValidation extends DocumentValidation
         }
 
         $lotOrigine = $this->document->lots[0];
+
+        if(!$lotOrigine->id_document_provenance) {
+            return;
+        }
+
         $docProvenance = DeclarationClient::getInstance()->find($lotOrigine->id_document_provenance);
         $volumeOrigine = $docProvenance->getLot($lotOrigine->unique_id)->volume;
 

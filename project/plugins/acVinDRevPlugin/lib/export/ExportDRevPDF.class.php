@@ -4,10 +4,11 @@ class ExportDRevPDF extends ExportPDF {
 
     protected $drev = null;
     protected $regions = array();
+    protected $infos = [];
 
     public function __construct($drev, $region = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->drev = $drev;
-        if(!$region && RegionConfiguration::getInstance()->hasOdgProduits() && !DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
+        if(! $region && RegionConfiguration::getInstance()->hasOdgProduits() && ! DrevConfiguration::getInstance()->hasPDFUniqueRegion()) {
             $this->regions = $this->drev->declaration->getSyndicats();
         }
 
@@ -18,6 +19,19 @@ class ExportDRevPDF extends ExportPDF {
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
+
+        if ($this->getRegion()) {
+            $this->infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
+
+            if (isset($this->infos['nom']) === false) {
+                $infoOrga = Organisme::getInstance($this->getRegion());
+                $this->infos['nom'] = $infoOrga->getNom();
+                $this->infos['adresse'] = implode(', ', [$infoOrga->getAdresse(), $infoOrga->getCodePostal(), $infoOrga->getCommune()]);
+                $this->infos['telephone'] = $infoOrga->getTelephone();
+                $this->infos['email'] = $infoOrga->getEmail();
+            }
+        }
+
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
@@ -87,10 +101,8 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getHeaderTitle() {
         $titre = sprintf("Déclaration de Revendication %s", $this->drev->campagne);
-        $region = $this->getRegion();
-        if($region) {
-            $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
-            $titre .= " (".$infos['nom'].")";
+        if($this->getRegion()) {
+            $titre .= " (".$this->infos['nom'].")";
         }
 
         if ($this->drev->_rev === null) {
@@ -102,12 +114,18 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getFooterText() {
         if(!$this->getRegion()) {
-            return sprintf("<span style='color:#ff0000;'>%s - %s - %s - %s - %s - %s</span>", Organisme::getInstance()->getNom(), Organisme::getInstance()->getAdresse(), Organisme::getInstance()->getCodePostal(), Organisme::getInstance()->getCommune(), Organisme::getInstance()->getTelephone(), Organisme::getInstance()->getEmail());
+            return sprintf(
+                "<span style='color:#ff0000;'>%s - %s - %s - %s - %s - %s</span>",
+                Organisme::getInstance()->getNom(),
+                Organisme::getInstance()->getAdresse(),
+                Organisme::getInstance()->getCodePostal(),
+                Organisme::getInstance()->getCommune(),
+                Organisme::getInstance()->getTelephone(),
+                Organisme::getInstance()->getEmail()
+            );
         }
 
-        $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
-
-        return sprintf("%s - %s", (isset($infos) && $infos['nom']) ? $infos['nom'] : null, (isset($infos) && isset($infos['adresse'])) ? $infos['adresse'] : null);
+        return sprintf("%s - %s", $this->infos['nom'], $this->infos['adresse']);
     }
 
     protected function getHeaderSubtitle() {

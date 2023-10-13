@@ -38,7 +38,7 @@ class PMCClient extends acCouchdbClient
     }
 
     public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
+        $docid = get_called_class()::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
         $doc = $this->find($docid);
         return $doc;
     }

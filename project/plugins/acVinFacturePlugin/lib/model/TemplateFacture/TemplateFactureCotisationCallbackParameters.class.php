@@ -11,7 +11,6 @@ class TemplateFactureCotisationCallbackParameters
         'deja',
         'famille',
         'round_methode',
-        'round_precision',
         'region'
     ];
 
@@ -31,6 +30,17 @@ class TemplateFactureCotisationCallbackParameters
             throw new sfException(
                 sprintf("Types non autorisés dans la configuration : %s", implode(', ', $diff))
             );
+        }
+
+        if (isset($this->parameters['round_methode'])) {
+            if (in_array($this->parameters['round_methode'], ['ceil', 'floor']) === false) {
+                throw new sfException(
+                    sprintf(
+                        "Méthode d'arrondi non supportée : %s. Méthodes supportées : [%s]",
+                        $this->parameters['round_methode'], implode(', ', ['ceil', 'floor'])
+                    )
+                );
+            }
         }
     }
 

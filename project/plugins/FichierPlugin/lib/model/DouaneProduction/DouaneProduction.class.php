@@ -484,10 +484,8 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             $value = $value + VarManipulator::floatize($donnee->valeur);
         }
 
-        if (isset($produitFilter['round_methode']) || isset($produitFilter['round_precision'])) {
-            $precision = isset($produitFilter['round_precision']) ? $produitFilter['round_precision'] : 0;
-            $methode = isset($produitFilter['round_methode']) ? constant($produitFilter['round_methode']) : PHP_ROUND_HALF_UP;
-            $value = round($value, $precision, $methode);
+        if (isset($produitFilter['round_methode'])) {
+            $value = $produitFilter['round_methode']($value);
         }
 
         return $value;
