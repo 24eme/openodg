@@ -30,6 +30,7 @@
                 <th>Conformité</th>
                 <th>État</th>
             <?php endif ?>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -60,6 +61,7 @@
                 </td>
                 <td><?php  echo showLotStatusCartouche($mvts[$k]->value, null, preg_match("/ème dégustation/", $mvts[$k]->value->libelle));  ?></td>
             <?php endif ?>
+            <td class="text-right hidden-print"><a class="btn btn-xs btn-default btn-historique" href="<?php echo url_for('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]) ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></td>
         </tr>
     <?php endforeach ?>
     </tbody>
