@@ -12,6 +12,7 @@ class VIP2C
 
     public static function getContratsAPIURL($cvi, $millesime)
     {
+        $millesime = explode('-', $millesime)[0];
         $api_link = sfConfig::get('app_api_contrats_link');
         $secret = sfConfig::get('app_api_contrats_secret');
         if (!$api_link || !$secret) {
@@ -28,8 +29,9 @@ class VIP2C
         return $api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5;
     }
 
-    public static function getContratsFromAPI($cvi, $millesime)
+    public static function getContratsFromAPI($cvi, $millesime, $hash_produit = null)
     {
+        $millesime = explode('-', $millesime)[0];
         $url = self::getContratsAPIURL($cvi, $millesime);
         if (!$url) {
             return array();
@@ -37,7 +39,15 @@ class VIP2C
         $content = file_get_contents($url);
 
         $result = json_decode($content,true);
-
+        $todelete = array();
+        foreach($result as $contratid => $data) {
+            if ($hash_produit && strpos($data['produit'], $hash_produit) === false) {
+                $todelete[] = $contratid;
+            }
+        }
+        foreach($todelete as $contratid) {
+            unset($result[$contratid]);
+        }
         return($result);
     }
 

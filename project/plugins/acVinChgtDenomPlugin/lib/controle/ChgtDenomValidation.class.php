@@ -26,7 +26,7 @@ class ChgtDenomValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
         if (VIP2C::hasVolumeSeuil() && $this->document->campagne >= VIP2C::getConfigCampagneVolumeSeuil()) {
-            $this->contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->changement_millesime);
+            $this->contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->changement_millesime, $this->document->changement_produit_hash);
 
             if($this->contrats){
                 foreach($this->contrats as $contrat_id => $contrat_info){
