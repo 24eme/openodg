@@ -777,6 +777,10 @@ abstract class Lot extends acCouchdbDocumentTree
         return '';
     }
 
+    public function getDocumentProvenance() {
+        return DeclarationClient::getInstance()->find($this->id_document_provenance);
+    }
+
     abstract public function getMouvementFreeInstance();
 
     public function getLibelle()
