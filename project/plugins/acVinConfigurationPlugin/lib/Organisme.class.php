@@ -33,7 +33,7 @@ class Organisme
     }
 
     public static function getInstance($region = null, $type = self::DEFAULT_TYPE) {
-        $region = strtoupper(self::getCurrentOrganisme());
+        $region = ($region) ?: strtoupper(self::getCurrentOrganisme());
 
         if (in_array($type, ['degustation', 'facture']) === false) {
             $type = self::DEFAULT_TYPE;

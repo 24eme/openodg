@@ -1,6 +1,7 @@
 all:
   configuration:
     societe:
+      visualisation_teledeclaration: true
       droits:
           "degustateur:porteur_de_memoire": "Dégustateur : Porteur de memoire"
           "degustateur:technicien": "Dégustateur : Technicien"
