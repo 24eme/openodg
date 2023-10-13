@@ -114,7 +114,7 @@ class MouvementLotHistoryView extends acCouchdbView
             }
 
             $syntheseLots[$produit][$millesime][$couleur]["Lot"] += $mouvementLot->value->volume;
-            $syntheseLots[$produit][$millesime][$couleur][$mouvementLot->value->initial_type] += $mouvementLot->value->volume;
+            @$syntheseLots[$produit][$millesime][$couleur][$mouvementLot->value->initial_type] += $mouvementLot->value->volume;
         };
 
         return $syntheseLots;
