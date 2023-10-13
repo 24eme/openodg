@@ -28,7 +28,7 @@
           </div>
           <br/>
 
-        <p>Sélectionnez l'ensemble des <?php echo strtolower($college_libelle).'s'; ?> en vue de leurs participations à la dégustation</p>
+        <p>Sélectionnez l'ensemble des <?php echo strtolower($college_libelle); ?> en vue de leurs participations à la dégustation</p>
 
         <div class="row">
         <div class="col-xs-12">

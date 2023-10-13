@@ -128,10 +128,7 @@ php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --applicatio
 echo "Habilitations"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/habilitations.csv
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
-php symfony import:habilitation-ia $DATA_DIR/habilitations.csv $DATA_DIR/historique_DI.csv --application="$ODG" --trace
+php symfony import:habilitation-ia $DATA_DIR/habilitations.csv --application="$ODG" --trace
 
 echo "Contacts"
 

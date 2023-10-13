@@ -1,5 +1,24 @@
 <?php include_partial('degustation/breadcrumb'); ?>
 
+<?php if(isset($formEtablissement)): ?>
+    <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
+<?php endif; ?>
+
+<?php if(DegustationConfiguration::getInstance()->isTourneeAutonome()): ?>
+<div style="margin-top: 0px;" class="page-header no-border">
+    <form action="<?php echo url_for('degustation_create_tournee'); ?>" method="post">
+        <div class="input-group pull-right col-xs-4 date-picker" role="group">
+            <?php echo $formCreationTournee['date']->render(['class' => 'form-control']) ?>
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-primary pull-right">Créer une tournée</a>
+            </div>
+        </div>
+    </form>
+    <h2>Tournées</h2>
+</div>
+<?php include_partial('degustation/listeTournees', ['tournees' => $tournees]) ?>
+<?php endif; ?>
+
 <div class="page-header no-border">
     <h2>Création d'une dégustation</h2>
 </div>
@@ -61,16 +80,8 @@
     </div>
 </form>
 
-<?php if(isset($formEtablissement)): ?>
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $formEtablissement, 'action' => url_for('degustation_etablissement_selection'))); ?>
-    </div>
-</div>
-<?php endif; ?>
-
-<div class="page-header no-border">
-    <h2>Les dernières dégustations</h2>
+<div style="margin-top: 0px;" class="page-header no-border">
+    <h2 style="margin-top: 0px;">Les dernières dégustations</h2>
 </div>
 
 <?php include_partial('degustation/liste', ['degustations' => $degustations]) ?>
@@ -85,6 +96,6 @@
 <p><strong><?php echo count($lotsElevages); ?><?php if(count($lotsElevages)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement en élevage<?php if(count($lotsElevages)>1):?>s<?php endif; ?> : <a href="<?php echo url_for('degustation_elevages')?>">Voir la liste</a></p>
 
 <div class="page-header no-border">
-    <h2>Manquements</h2>
+    <h2>Non conformités</h2>
 </div>
-<p><strong><?php echo count($lotsManquements); ?><?php if(count($lotsManquements)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement non conforme<?php if(count($lotsManquements)>1):?>s<?php endif; ?> <a href="<?php echo url_for('degustation_manquements')?>">Voir la liste</a></p>
+<p><strong><?php echo count($lotsManquements); ?><?php if(count($lotsManquements)>1):?> lots sont<?php else: ?> lot est<?php endif; ?></strong> actuellement non conforme<?php if(count($lotsManquements)>1):?>s<?php endif; ?> <a href="<?php echo url_for('degustation_nonconformites')?>">Voir la liste</a></p>

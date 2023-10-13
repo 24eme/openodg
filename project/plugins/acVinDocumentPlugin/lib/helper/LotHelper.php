@@ -68,7 +68,7 @@ function getUrlEtapeFromMvtLot($mvtLot)
 
     switch ($mvtLot->value->statut) {
         case Lot::STATUT_MANQUEMENT_EN_ATTENTE:
-            return url_for('degustation_manquements');
+            return url_for('degustation_nonconformites');
 
         case Lot::STATUT_NONCONFORME :
         case Lot::STATUT_CONFORME :
@@ -163,4 +163,10 @@ function showSummerizedLotPublicStatusCartouche($mvt_value) {
 
 function substrUtf8($str, $offset, $length) {
   return utf8_encode(substr(utf8_decode($str), $offset, $length));
+}
+
+function clarifieTypeDocumentLibelle($type) {
+    $result = str_replace('Transaction', 'VracExport', $type);
+    $result = str_replace('TRANSACTION', 'VRAC_EXPORT', $result);
+    return $result;
 }

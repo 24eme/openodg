@@ -1,10 +1,11 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('PointsAides');?>
+<?php use_helper('Declaration') ?>
 
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php include_partial('transaction/step', array('step' => TransactionEtapes::ETAPE_LOTS, 'transaction' => $transaction, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Vrac export des Lots IGP</h2></div>
+    <div class="page-header"><h2>Vrac export des Lots <?php echo getLibelleHashRevendicableParLots(sfConfig::get('app_hash_revendicable_par_lots', 'IGP')) ?></h2></div>
 
 
 
@@ -63,6 +64,7 @@
                             </div>
                         </div>
                     </div>
+                    <?php if (isset($lot['cepage_0'])): ?>
                     <div class="col-md-6">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
                         <div class="form-group">
@@ -78,12 +80,13 @@
                             </div>
                         </div>
                     </div>
+                <?php endif; ?>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro de logement", array('class' => "col-sm-3 control-label")); ?>
-                      <div class="col-sm-3">
+                      <div class="col-sm-5">
                             <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>
                       <div class="col-sm-6 text-danger">
@@ -91,14 +94,14 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-6">
-                      <div class="form-group">
-                          <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
-                          <div class="col-sm-2">
-                              <div class="input-group">
-                                  <?php echo $lot['millesime']->render(); ?>
-                              </div>
-                          </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <?php echo $lot['millesime']->render(array('class' => "form-control text-right", 'maxlength' => "4")); ?>
+                                </div>
+                            </div>
                       </div>
                   </div>
                 </div>
@@ -149,6 +152,7 @@
                 </div>
             </div>
         </div>
+        <?php if (isset($lot['cepage_0'])): ?>
         <div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $lot['volume']->renderId() ?>" id="<?php echo $lot->renderId() ?>_cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -186,7 +190,7 @@
                               </div>
                           </div>
                       </div>
-                      <?php endfor; ?>
+                  <?php endfor; ?>
                       <div class="form-group ligne_volume_total">
                         <div class="col-sm-4"></div>
                         <div class="col-sm-4 text-right">
@@ -207,6 +211,7 @@
               </div>
             </div>
         </div>
+        <?php endif; ?>
     <?php endforeach; ?>
     <div class="text-right">
         <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>

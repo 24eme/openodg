@@ -87,8 +87,21 @@ EOF;
             $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $dateCommission = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_COMMISSION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($dateDeclaration);
+            $region = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, str_replace("-", "", $dateDeclaration)."0000".sprintf("%02d", array_search($region, RegionConfiguration::getInstance()->getOdgRegions())));
 
-            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dateDeclaration);
+            if(isset($etablissement->chais)) {
+                foreach($etablissement->chais as $chai) {
+                    if($chai->adresse == $pmc->declarant->adresse && $chai->commune == $pmc->declarant->commune && $chai->code_postal == $pmc->declarant->code_postal) {
+                        $pmc->chais->nom = $chai->nom;
+                        $pmc->chais->adresse = $chai->adresse;
+                        $pmc->chais->commune = $chai->commune;
+                        $pmc->chais->code_postal = $chai->code_postal;
+                        $pmc->chais->secteur = $chai->secteur;
+                        break;
+                    }
+                }
+            }
 
             $lot = $pmc->addLot();
             $lot->produit_hash = $produit->getHash();
@@ -100,14 +113,19 @@ EOF;
             $lot->date_commission = $dateCommission;
             $lot->affectable = true;
 
-            $pmc->validate($dateDeclaration);
-            $pmc->validateOdg($dateDeclaration);
+            try {
+                $pmc->validate($dateDeclaration);
+                $pmc->validateOdg($dateDeclaration);
+            } catch(Exception $e) {
+                sleep(60);
+                $pmc->validate($dateDeclaration);
+                $pmc->validateOdg($dateDeclaration);
+            }
             $pmc->save();
         }
     }
 
     protected function alias($produit) {
-        $produit = preg_replace('/(Pouilly Fumé|Quincy|Pouilly sur Loire) blanc/', '\1', $produit);
 
         return $produit;
     }

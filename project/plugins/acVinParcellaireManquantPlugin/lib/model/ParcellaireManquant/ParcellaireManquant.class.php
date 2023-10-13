@@ -266,6 +266,22 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         $this->piece_document->generatePieces();
     }
 
+    public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
+        return parent::save();
+    }
+
+    public function getRegions() {
+        $regions = array();
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
   /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {
@@ -301,7 +317,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles irrigables '.$complement,
+            'libelle' => 'Identification des parcelles manquantes '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null

@@ -32,10 +32,12 @@
   </div>
   <h2>Historique des lots de <?php echo $etablissement->getNom(); ?> (<?php echo $campagne; ?>)</h2>
 </div>
+
+<h3>Synthèse de la commercialisation</h3>
+
+<?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $etablissement->identifiant, 'campagnes' => [$campagne], 'region' => $sf_user->getRegion()]) ?>
+
 <?php if (count($mouvements)): ?>
-
-    <?php include_partial('degustation/syntheseCommercialise', ['syntheseLots' => $syntheseLots]) ?>
-
       <table class="table table-condensed table-striped">
         <thead>
           <th class="col-sm-1">Date</th>
@@ -56,7 +58,7 @@
                 <tr>
                   <td><?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?></td>
                   <td class="hidden-print"><?php echo $mouvement->value->campagne;  ?></td>
-                  <td class="hidden-print"><?php echo $mouvement->value->initial_type;  ?></td>
+                  <td class="hidden-print"><?php echo clarifieTypeDocumentLibelle($mouvement->value->initial_type);  ?></td>
                   <td class="text-center"><?php echo $mouvement->value->numero_dossier;  ?> /
                   <?php echo $mouvement->value->numero_archive;  ?></td>
                   <td><?php  echo str_replace(array("(", ")"), array("<span class='text-muted'> - ", "</span>"), $mouvement->value->libelle);  ?></td>

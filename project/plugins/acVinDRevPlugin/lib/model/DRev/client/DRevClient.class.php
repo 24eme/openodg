@@ -31,7 +31,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public static function getDenominationsAuto() {
         $denom = array(
-            self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
+            self::DENOMINATION_CONVENTIONNEL => "Conventionnel ou en conversion",
             self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
             self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
         );
@@ -244,6 +244,9 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
                 $match = $match && $this->matchFilterConformite($lot, $filter);
+            } elseif (strpos($filter, 'region') !== false) {
+                $region = str_replace('/region/', '', $filter);
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->getProduitHash());
             } elseif($filter) {
                 if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
                     $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);

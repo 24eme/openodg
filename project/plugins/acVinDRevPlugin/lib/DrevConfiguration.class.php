@@ -36,7 +36,7 @@ class DRevConfiguration {
         return isset($this->configuration['import_with_mentions_complementaire']) && boolval($this->configuration['import_with_mentions_complementaire']);
     }
 
-    public function hasMentionsCompletaire() {
+    public function hasMentionsComplementaire() {
 
         return isset($this->configuration['mentions_complementaire']) && boolval($this->configuration['mentions_complementaire']);
     }
@@ -121,6 +121,10 @@ class DRevConfiguration {
 
     public function hasLogementAdresse() {
         return isset($this->configuration['logement_adresse']) && boolval($this->configuration['logement_adresse']);
+    }
+
+    public function hasLogementChais() {
+        return isset($this->configuration['logement_chais']) && boolval($this->configuration['logement_chais']);
     }
 
     public function isRevendicationParLots() {

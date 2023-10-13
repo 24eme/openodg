@@ -11,9 +11,20 @@ class PMCLotForm extends TransactionLotForm
         $this->setWidget('engagement_8515', new sfWidgetFormInputCheckbox());
         $this->setValidator('engagement_8515', new sfValidatorBoolean());
 
-        for($i = 0; $i < self::NBCEPAGES; $i++) {
-            unset($this['cepage_'.$i]);
-            unset($this['repartition_'.$i]);
+        if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
+            $this->setWidget('produit_hash', new bsWidgetFormChoice([
+                'choices' => $this->getProduits($this->getObject()->getProduitHash())
+            ]));
+            $this->setValidator('produit_hash', new sfValidatorChoice([
+                'required' => false,
+                'choices' => array_keys($this->getProduits($this->getObject()->getProduitHash()))
+            ]));
+
+            $this->setWidget('millesime', new bsWidgetFormInput());
+            $this->setValidator('millesime', new sfValidatorChoice([
+                'required' => false,
+                'choices' => [$this->getObject()->millesime => $this->getObject()->millesime]
+            ]));
         }
 
         $this->widgetSchema->setNameFormat('[%s]');
@@ -33,16 +44,37 @@ class PMCLotForm extends TransactionLotForm
         }
     }
 
-    public function getProduits()
+    public function getProduits($filter_hash = null)
     {
         $produits = [];
 
-        foreach ($this->getObject()->getDocument()->getConfigProduits() as $produit) {
-            if ($produit->isActif() === false) {
-                continue;
-            }
+        foreach($this->getObject()->getDocument()->getHabilitation()->getProduits() as $appellation) {
+            $appellationConfig = $appellation->getConfig();
+            foreach($appellationConfig->getProduitsAll() as $produitConfig) {
+                if ($produitConfig->isActif() === false) {
+                    continue;
+                }
 
-            $produits[$produit->getHash()] = $produit->getLibelleComplet();
+                if ($filter_hash && $filter_hash !== $produitConfig->getHash()) {
+                    continue;
+                }
+
+                if ($this->getObject()->getDocument()->exist('region') && $this->getObject()->getDocument()->region != "") {
+                    $filtered_produits = array_filter(RegionConfiguration::getInstance()->getOdgProduits($this->getObject()->getDocument()->region), function ($v) use ($produitConfig) {
+                        return strpos($produitConfig->getHash(), $v) !== false;
+                    });
+
+                    if (count($filtered_produits) < 1) {
+                        continue;
+                    }
+                }
+
+                $produits[$produitConfig->getHash()] = $produitConfig->getLibelleComplet();
+            }
+        }
+
+        if ($filter_hash) {
+            return $produits;
         }
 
         return array_merge(['' => ''], $produits);

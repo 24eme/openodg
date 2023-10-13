@@ -7,12 +7,14 @@ class DegustationEtapes extends Etapes {
     const ETAPE_CONVOCATIONS = 'CONVOCATIONS';
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
     const ETAPE_TOURNEES = 'TOURNEES';
+    const ETAPE_PRELEVEMENT_MANUEL = 'PRELEVEMENT_MANUEL';
     const ETAPE_ANONYMISATION_MANUELLE = 'ANONYMISATION_MANUELLE';
     const ETAPE_TABLES = 'TABLES';
     const ETAPE_ANONYMATS = 'ANONYMATS';
     const ETAPE_COMMISSION = 'COMMISSION';
     const ETAPE_RESULTATS = 'RESULTATS';
     const ETAPE_NOTIFICATIONS = 'NOTIFICATIONS';
+    const ETAPE_VISUALISATION = 'VISUALISATION';
 
     private static $_instance = null;
 
@@ -28,6 +30,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_COMMISSION => 7,
         self::ETAPE_RESULTATS => 8,
         self::ETAPE_NOTIFICATIONS => 9,
+        self::ETAPE_VISUALISATION => 10,
     );
 
     public static $libelles = array(
@@ -41,7 +44,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_COMMISSION => 'Commission',
         self::ETAPE_RESULTATS => 'Résultats',
-        self::ETAPE_NOTIFICATIONS => 'Notifications'
+        self::ETAPE_NOTIFICATIONS => 'Notifications',
+        self::ETAPE_VISUALISATION => 'Visualisation',
     );
 
     public static $libelles_short = array(
@@ -55,7 +59,8 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_ANONYMATS => 'Anonymats',
         self::ETAPE_COMMISSION => 'Commission',
         self::ETAPE_RESULTATS => 'Résultats',
-        self::ETAPE_NOTIFICATIONS => 'Notifications'
+        self::ETAPE_NOTIFICATIONS => 'Notifications',
+        self::ETAPE_VISUALISATION => 'Visualisation',
     );
 
     public static $links = array(
@@ -63,19 +68,32 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_DEGUSTATEURS => 'degustation_selection_degustateurs',
         self::ETAPE_CONVOCATIONS => 'degustation_convocations',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
-        self::ETAPE_PRELEVEMENTS => 'degustation_prelevements_etape',
+        self::ETAPE_PRELEVEMENT_MANUEL => 'degustation_prelevements_manuel_etape',
+        self::ETAPE_PRELEVEMENTS => 'degustation_preleve',
         self::ETAPE_ANONYMISATION_MANUELLE => 'degustation_anonymats_etape',
         self::ETAPE_TABLES => 'degustation_tables_etape',
         self::ETAPE_ANONYMATS => 'degustation_anonymats_etape',
         self::ETAPE_COMMISSION => 'degustation_commission_etape',
         self::ETAPE_RESULTATS => 'degustation_resultats_etape',
-        self::ETAPE_NOTIFICATIONS => 'degustation_notifications_etape'
+        self::ETAPE_NOTIFICATIONS => 'degustation_notifications_etape',
+        self::ETAPE_VISUALISATION => 'degustation_visualisation',
     );
 
 
-    public static function getInstance() {
+    public static function getInstance(Degustation $degustation = null) {
         if (is_null(self::$_instance)) {
-            self::$_instance = new DegustationEtapes();
+            if (is_null($degustation)) {
+                throw new Exception("Degustation ne doit pas être nul lors de la 1ere instanciation");
+            }
+
+            switch (get_class($degustation)) {
+                case "Tournee":
+                    self::$_instance = new TourneeDegustationEtapes();
+                    break;
+                case "Degustation":
+                default:
+                    self::$_instance = new DegustationEtapes();
+            }
         }
         return self::$_instance;
     }
@@ -97,9 +115,17 @@ class DegustationEtapes extends Etapes {
     {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             unset($items[self::ETAPE_ANONYMATS]);
+            //unset($items[self::ETAPE_PRELEVEMENTS]);
+            unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
         } else {
             unset($items[self::ETAPE_TOURNEES]);
+            //unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
             unset($items[self::ETAPE_ANONYMISATION_MANUELLE]);
+        }
+
+        if(DegustationConfiguration::getInstance()->isDegustationAutonome()) {
+            unset($items[self::ETAPE_TOURNEES]);
+            unset($items[self::ETAPE_PRELEVEMENTS]);
         }
 
         return $items;
@@ -108,7 +134,6 @@ class DegustationEtapes extends Etapes {
     public function isEtapeDisabled($etape, $doc)
     {
         if(DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
-
             return false;
         }
 

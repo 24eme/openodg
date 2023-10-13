@@ -6,18 +6,20 @@ class pmcActions extends sfActions {
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $isAdmin = $this->getUser()->isAdmin();
+
         if (!$isAdmin) {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_PMC, $etablissement);
         }
-        $date = $request->getParameter("date", date('YmdHis'));
-        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
 
-        if (PMCClient::getInstance()->findBrouillon($this->etablissement->identifiant, $campagne)) {
+        $date = $request->getParameter("date", date('YmdHis'));
+        $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
+
+        if (PMCClient::getInstance()->findBrouillon($this->etablissement->identifiant, $periode)) {
             $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation non terminée");
-            return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $campagne));
+            return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'periode' => $periode));
         }
 
-        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $campagne, $date, $isAdmin);
+        $pmc = PMCClient::getInstance()->createDoc($etablissement->identifiant, $periode, $date, $isAdmin);
         $pmc->save();
 
         return $this->redirect('pmc_edit', $pmc);
@@ -251,6 +253,11 @@ class pmcActions extends sfActions {
         }
 
         if(PMCConfiguration::getInstance()->hasValidationOdgAuto() && !$this->validation->hasPoints()) {
+            $this->pmc->validateOdg();
+            $this->pmc->save();
+        }
+
+        if ($this->getUser()->hasPMCAdmin() && $this->pmc->getType() === PMCNCClient::TYPE_MODEL) {
             $this->pmc->validateOdg();
             $this->pmc->save();
         }

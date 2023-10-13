@@ -379,7 +379,43 @@ class LotsClient
             }
 
             $syntheseLots[$produit][$millesime][$couleur] += $mouvementLot->value->volume;
-        };
+        }
+
+        return $syntheseLots;
+    }
+
+    public function getSyntheseLotsRegion($identifiant, $campagnes, $region = null)
+    {
+        if(!is_array($campagnes)) {
+            $campagnes = [$campagnes];
+        }
+        $mouvements = [];
+        foreach($campagnes as $campagne) {
+            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows);
+        }
+
+        if ($region) {
+            $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
+        }
+
+        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+
+        foreach($campagnes as $campagne) {
+            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);
+
+            if($drev) {
+                foreach($drev->declaration->getProduitsWithoutLots() as $produit) {
+                    if($region && $produit->getRegion() != $region) {
+                        continue;
+                    }
+                    @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_issu_recolte;
+                    if($produit->volume_revendique_issu_vci) {
+                        @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode - 1][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_issu_vci;
+                        @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode - 1][$produit->getConfig()->getCouleur()->getLibelle()]["DREVVCI"] += $produit->volume_revendique_issu_vci;
+                    }
+                }
+            }
+        }
 
         return $syntheseLots;
     }
@@ -397,5 +433,9 @@ class LotsClient
         }
 
         return $this->mouvements_declarant;
+    }
+
+    public function saisieMentionCepageActive() {
+        return sfConfig::get('app_donnees_viticoles_lot_saisie_mention_cepage_active', true);
     }
 }

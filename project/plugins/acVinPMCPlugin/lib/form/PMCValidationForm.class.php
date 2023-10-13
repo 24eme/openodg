@@ -25,7 +25,7 @@ class PMCValidationForm extends acCouchdbForm
             }
         }
 
-        if($this->isAdmin()){
+        if($this->isAdmin() && !$this->getDocument()->isValideeODG()){
             $formDegustable = new BaseForm();
             foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
                 foreach ($lots as $lot) {
@@ -37,7 +37,7 @@ class PMCValidationForm extends acCouchdbForm
         }
 
         if(!$this->getDocument()->validation && $this->getDocument()->isPapier()) {
-            $this->setWidget('date', new sfWidgetFormInput());
+            $this->setWidget('date', new sfWidgetFormInput([], ["required" => "required"]));
             $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
             $this->getWidget('date')->setLabel("Date de réception du document");
             $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");

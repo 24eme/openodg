@@ -13,7 +13,7 @@ class habilitationActions extends sfActions {
         }
 
         $this->regionParam = $request->getParameter('region');
-        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getTeledeclarationDrevRegion())){
+        if(!$this->regionParam && $this->getUser() && ($region = $this->getUser()->getRegion())){
             $params = array();
             $params['region'] = $region;
             return $this->redirect('habilitation_demande', $params);

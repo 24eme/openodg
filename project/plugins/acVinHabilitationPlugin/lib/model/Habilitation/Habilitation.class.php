@@ -303,6 +303,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         if (!$this->addProduit($hash_produit)->exist('activites')) {
             return false;
         }
+        if (!$this->addProduit($hash_produit)->activites->exist($activite)) {
+            return false;
+        }
         return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
     }
 

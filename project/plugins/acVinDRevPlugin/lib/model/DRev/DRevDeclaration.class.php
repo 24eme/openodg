@@ -80,7 +80,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 		return $syndicats;
 	}
 
-	public function getProduits($region = null)
+	public function getProduits($region = null, $with_details = true)
     {
 		if($region) {
 
@@ -89,11 +89,14 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         $produits = array();
         foreach($this as $items) {
-			foreach($items as $item) {
-	            $produits[$item->getHash()] = $item;
-			}
+            if ($with_details) {
+			    foreach($items as $item) {
+	                $produits[$item->getHash()] = $item;
+			    }
+            }else{
+                $produits[$items->getHash()] = $items;
+            }
         }
-
         return $produits;
     }
 
@@ -228,23 +231,32 @@ class DRevDeclaration extends BaseDRevDeclaration
         return $total;
     }
 
+    public function getProduitsFilteredBy(TemplateFactureCotisationCallbackParameters $parameters)
+    {
+        $produits = [];
+
+        foreach ($this->getProduits() as $hash => $p) {
+            if (RegionConfiguration::getInstance()->isHashProduitInRegion($parameters->getParameters('region'), $hash)) {
+                $produits[] = $p;
+            }
+        }
+
+        return $produits;
+    }
+
 	public function getTotalVolumeRevendique($produitFilter = null)
     {
     	$total = 0;
 
-		$produitFilterMatch = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
-		$produitExclude = (bool) $produitExclude;
-		$regexpFilter = "#(".implode("|", explode(",", $produitFilterMatch)).")#";
-      foreach($this->getProduits() as $key => $item) {
-				if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $key)) {
-						continue;
-				}
-				if($produitFilter && $produitExclude && preg_match($regexpFilter, $key)) {
-						continue;
-				}
+        foreach($this->getProduits() as $key => $item) {
+            if (DRevClient::getInstance()->matchFilter($item, $produitFilter) === false) {
+                continue;
+            }
+
             $total += $item->getTotalVolumeRevendique();
-      }
-			return $total;
+        }
+
+        return $total;
     }
 
 	public function getTotalSuperficieVinifiee()

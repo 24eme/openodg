@@ -9,8 +9,6 @@ ODG=$1
 
 . bin/config_$ODG.inc
 
-EXPORT=$2
-
 DATA_DIR=$WORKINGDIR/import/igp/imports/$ODG
 mkdir -p $DATA_DIR 2> /dev/null
 
@@ -67,13 +65,21 @@ xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
-echo "Import des chais"
+echo "Habilitations"
 
-cat $DATA_DIR/07_chais/*.html | tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/(^|;)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | grep -Ev "^ ?;" | grep -Ev "^(Zone|ODG|Libelle|Raison Sociale|Nom)" | sed 's/^RaisonSociale/00RaisonSociale/' | sort | uniq > $DATA_DIR/chais.csv
+#xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+# xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
+# sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
+php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv --application="$ODG"
 
 echo "Import des zones"
 
 ls $DATA_DIR/07_chais/zones/ | while read file; do cat "$DATA_DIR/07_chais/zones/$file" | tr "\n" " " | tr -d "\r" |  sed -r 's/[ ]+/ /g' | sed 's/&nbsp;//g' | sed 's/&amp;//g' | sed 's/&#194;/Â/g' | sed 's/&#200;/È/g' | sed 's/&#224;/à/g' | sed 's/&#226;/â/g' | sed 's/&#231;/ç/g' | sed 's/&#232;/è/g' | sed 's/&#233;/é/g' | sed 's/&#234;/ê/g' | sed 's/&#244;/ê/g' | sed "s/&#39;/'/g" | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/^[ \t]+//' | sed -r 's/ ?; ?/;/g' | grep -A 999999999 "RaisonSociale;" | sed "s/^/$(echo $file | sed 's/.html//');/" | grep -v ";;;;$"; done | less > $DATA_DIR/zones.csv
+
+echo "Import des chais"
+
+cat $DATA_DIR/07_chais/*.html | tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/(^|;)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | grep -Ev "^ ?;" | grep -Ev "^(Zone|ODG|Libelle|Raison Sociale|Nom)" | sed 's/^RaisonSociale/00RaisonSociale/' | sort | uniq > $DATA_DIR/chais.csv
+php symfony import:chais $DATA_DIR/chais.csv $DATA_DIR/zones.csv --application="$ODG" --trace
 
 echo "Import des Interlocuteurs"
 
@@ -81,11 +87,38 @@ xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $
 sed -i 's/Choisir Ville//' $DATA_DIR/membres.csv
 php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" --trace
 
+echo "Import DRev"
+
+for annee in 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --dateimport="$annee-12-10" --application="$ODG"; done
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev.csv
+echo -n > $DATA_DIR/vci.csv
+ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
+    MILLESIME=$(echo -n $vci_file | sed -r 's|^.*/vci_||' | sed 's/\.xlsx//')
+    xlsx2csv -l '\r\n' -d ";" $vci_file | tr -d "\n" | tr "\r" "\n" | sed "s/^/$MILLESIME;/" >> $DATA_DIR/vci.csv
+done;
+
+bash bin/updateviews.sh
+
+php symfony import:drev-ia $DATA_DIR/drev.csv $DATA_DIR/vci.csv --application="$ODG" --trace
+
 echo "Import lots PMC"
+
+bash bin/updateviews.sh
+
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_pmc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_pmc.csv
 php symfony import:pmc-ia $DATA_DIR/lots_pmc.csv --application="$ODG" --trace
 
+echo "Import lots de contrôles"
+
+bash bin/updateviews.sh
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
+php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" --trace
+
 echo "Import des commissions"
+
+bash bin/updateviews.sh
 
 ls $DATA_DIR/04_controles_produits/commissions/*.html | while read file; do
     PRELIGNE=$(cat $file | tr "\n" " " |  sed -r 's/[ ]+/ /g' | sed 's/&nbsp;//g' | sed 's/&amp;//g' | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/^[ \t]+//' | sed -r 's/ ?; ?/;/g' | grep -E "^(Code|Date|Année|Adresse|Ville)"  | tr -d "\n")
@@ -95,67 +128,6 @@ ls $DATA_DIR/04_controles_produits/commissions/*.html | while read file; do
     echo $file
     php symfony import:commissions-aoc-ia "$file.csv" --application=centre
 done
-
-echo "Import Lots"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 14,14 -k 24,24 -k 34,38 > $DATA_DIR/lots.csv # tri identifiant, campagne, type
-sed -i 's/Choisir Ville//' $DATA_DIR/lots.csv
-sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots.csv
-sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots.csv
-
-php symfony import:lots-ia $DATA_DIR/lots.csv --application="$ODG" --trace
-
-echo "Identification des Lots Primeur"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_primeur.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 3,4 -k 14,14 -k 24,24 -k 34,38 > $DATA_DIR/lots_primeur.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/lots_primeur.csv
-sed -i 's/;"200;1+CF80;1";/;"200 1+CF80 1";/' $DATA_DIR/lots_primeur.csv
-sed -i 's/;"4+CF100;3";/;"4+CF100 3";/' $DATA_DIR/lots_primeur.csv
-
-php symfony import:lots-primeur-ia $DATA_DIR/lots_primeur.csv --application="$ODG" --trace
-
-echo "Import des Changements de denomination"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_changements.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"}{print substr($33, 7, 4) substr($33, 4, 2) substr($33, 1, 2) sprintf("%05d", $1) sprintf("%05d", $2) ";" $23 ";" $29 ";" $30}' | sort | uniq | sort -t ";" -k 1,1 | grep -E "^[0-9]+" > $DATA_DIR/lots_changements.csv
-
-cat $DATA_DIR/changement_denomination.xls | tr -d "\n" | tr -d "\r" | sed "s|</s:Row>|\n|g" | sed -r 's|<s:Data s:Type="[a-Z]+"[ /]*>|;|g' | sed -r 's/<[^<>]*>//g' | sed -r 's/[ ]+/ /g' | sed 's/ ;/;/g' | sed 's/^;//' | sed 's/;CVI;/CVI;/' | awk -F ";" 'BEGIN { OFS=";"}{print substr($10, 7, 4) substr($10, 4, 2) substr($10, 1, 2) sprintf("%05d", $2) sprintf("%05d", $3) ";" $0}' | sort -t ";" -k 1,1 > $DATA_DIR/changement_denomination.csv
-
-join -t ";" -1 1 -2 1 -a 1 $DATA_DIR/changement_denomination.csv $DATA_DIR/lots_changements.csv > $DATA_DIR/changement_denomination_millesime.csv
-
-php symfony import:chgt-denom-ia $DATA_DIR/changement_denomination_millesime.csv --application="$ODG" --trace
-
-echo "Import des Degustations - Commissions"
-
-sed -i 's/\xC2\xA0//g' $DATA_DIR/commissions.csv
-php symfony import:commissions-ia $DATA_DIR/commissions.csv --application="$ODG" --trace
-
-echo "Import des Degustations - Non conformité"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/gestion_nc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/gestion_nc.csv
-sed -i 's/4+CF100;3/4+CF100,3/' $DATA_DIR/gestion_nc.csv
-sed -i 's/Event ; Oxydé/Event , Oxydé/' $DATA_DIR/gestion_nc.csv
-sed -i 's/Maigre ; Oxydé ; /Maigre , Oxydé/' $DATA_DIR/gestion_nc.csv
-sed -i 's/Oxydé ; Event ; Usé/Oxydé , Event , Usé/' $DATA_DIR/gestion_nc.csv
-sed -i 's/Pas net ; pharmaceutique (camphre), oxydatif/Pas net , pharmaceutique (camphre), oxydatif/' $DATA_DIR/gestion_nc.csv
-php symfony import:degustations-non-conformite-ia $DATA_DIR/gestion_nc.csv --application="$ODG" --trace
-
-echo "Import des déclassements"
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/declassements.xlsx | tr -d "\n" | tr "\r" "\n" | sort -t ";" -k 17.7,17.13 -k 17.4,17.5 -k 17.1,17.3 > $DATA_DIR/declassements.csv
-php symfony import:declassement-ia $DATA_DIR/declassements.csv --application="$ODG" --trace
-
-echo "Apporteurs de raisins"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/apporteurs_de_raisins.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { acheteur=$4; $4=""; $3=";Producteur de raisin"; print $0 ";;" acheteur }' | sort | uniq > $DATA_DIR/apporteurs_de_raisins.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/apporteurs_de_raisins.csv
-php symfony import:operateur-ia $DATA_DIR/apporteurs_de_raisins.csv --application="$ODG" --trace
-
-echo "Habilitations"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/habilitations.csv
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
-php symfony import:habilitation-ia $DATA_DIR/habilitations.csv $DATA_DIR/historique_DI.csv --application="$ODG" --trace
 
 echo "Contacts"
 
@@ -168,3 +140,5 @@ echo "Mise en reputes conforme des lots en attente"
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_AFFECTABLE_ENATTENTE | awk -F '"' '{if ( $9 < "2020-2021" ) print "php symfony lot:change-statut --application='$ODG' "$4" "$10"-"$12"-"$14" false"}' | bash
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/facture | awk -F '"' '{print $4}' | sort -u | grep '[A-Z]' | while read id ; do php symfony declaration:regenerate-mouvements --onlydeletemouvements=true --application=$ODG $id ; done
+
+php symfony parcellaire:update-aire --application="$ODG" --trace

@@ -133,6 +133,14 @@ EOF;
 
             $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
 
+            if(strpos($data[self::CSV_TYPE_DECLARATION], 'NV') !== false) {
+                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            }
+
+            if(in_array($data[self::CSV_RAISON_SOCIALE], ["CAVES DE POUILLY/LOIRE", "Cave des Vins de Sancerre"])) {
+                $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            }
+
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
             if(isset($data[self::CSV_STATUT]) && $data[self::CSV_STATUT] == "SUSPENDU") {
                 $etablissement->statut = EtablissementClient::STATUT_SUSPENDU;
@@ -163,7 +171,7 @@ EOF;
                 $ppm = trim($data[self::CSV_PPM]);
             }
             $etablissement->cvi = $cvi;
-            $etablissement->ppm = $ppm;
+            $etablissement->ppm = strtoupper($ppm);
             $etablissement->num_interne = trim($data[self::CSV_CODE_INTERNE]);
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);

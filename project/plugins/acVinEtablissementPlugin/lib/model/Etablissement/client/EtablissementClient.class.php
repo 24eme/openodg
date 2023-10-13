@@ -59,6 +59,7 @@ class EtablissementClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
     const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
     const CHAI_ATTRIBUT_STOCKAGE_VRAC = "STOCKAGE_VRAC";
+    const CHAI_ATTRIBUT_STOCKAGE_VCI = "STOCKAGE_VCI";
     const CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE = "STOCKAGE_VIN_CONDITIONNE";
     const CHAI_ATTRIBUT_DGC = "DGC";
     const CHAI_ATTRIBUT_APPORT = "APPORT";
@@ -93,6 +94,7 @@ class EtablissementClient extends acCouchdbClient {
 
     public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VRAC => 'Stockage Vin en Vrac',
+                                                  self::CHAI_ATTRIBUT_STOCKAGE_VCI => 'Stockage de VCI',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE => 'Stockage Vin Conditionné',
                                                   self::CHAI_ATTRIBUT_DGC => 'Dénomination Géographique complémentaire',
                                                   self::CHAI_ATTRIBUT_APPORT => 'Apport',
@@ -324,8 +326,8 @@ class EtablissementClient extends acCouchdbClient {
         return array(self::REGION_CVO => self::REGION_CVO);
     }
 
-    public static function getRegions() {
-    	return sfConfig::get('app_donnees_viticoles_regions', array());
+    public static function getSecteurs() {
+    	return sfConfig::get('app_donnees_viticoles_secteurs', array());
     }
 
     public static function getNaturesInao() {

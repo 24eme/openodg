@@ -9,19 +9,31 @@ class Organisme
     private $type = null;
 
     public static function getCurrentRegion() {
+        if(sfConfig::get('app_region')) {
+            return strtoupper(sfConfig::get('app_region'));
+        }
 
-        return strtoupper(self::getCurrentOrganisme());
+        if (sfContext::hasInstance() && sfContext::getInstance()->getUser()->getRegion()) {
+            return strtoupper(sfContext::getInstance()->getUser()->getRegion());
+        }
+
+        return null;
+    }
+
+    public static function getOIRegion() {
+        return 'OIVC';
     }
 
     public static function getCurrentOrganisme() {
-
+        $region = self::getCurrentRegion();
+        if ($region) {
+            return $region;
+        }
         return sfConfig::get('sf_app');
     }
 
     public static function getInstance($region = null, $type = self::DEFAULT_TYPE) {
-        if(is_null($region)) {
-            $region = self::getCurrentRegion();
-        }
+        $region = strtoupper(self::getCurrentOrganisme());
 
         if (in_array($type, ['degustation', 'facture']) === false) {
             $type = self::DEFAULT_TYPE;
@@ -144,6 +156,14 @@ class Organisme
     public function getUrl() {
 
         return $this->getInfo('url');
+    }
+
+    public function getLogoPath() {
+        return sfConfig::get('sf_web_dir')."/".$this->getLogoWebPath();
+    }
+
+    public function getLogoWebPath() {
+        return 'images/logo_'.strtolower($this->region).'.png';
     }
 
     public function getLogoPdfPath() {

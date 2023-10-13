@@ -16,6 +16,7 @@ class DRValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'rendement_ligne_manquante', "Il manque une ligne dans le produit");
         $this->addControle(self::TYPE_WARNING, 'rendement_declaration', "Le rendement n'est pas respecté");
         if (class_exists(ParcellaireManquant::class)) {
+            $this->addControle(self::TYPE_WARNING, 'pied_mort_present', "Déclaration de pied mort présente");
             $this->addControle(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort");
         }
     }
@@ -25,6 +26,7 @@ class DRValidation extends DocumentValidation
         if (!DRConfiguration::getInstance()->hasValidationDR()) {
             return ;
         }
+        $this->document->generateDonnees();
         foreach ($this->document->getProduits() as $produit) {
             $this->controleRendement($produit);
         }
@@ -76,12 +78,18 @@ class DRValidation extends DocumentValidation
     public function controleDocuments()
     {
         if (class_exists(ParcellaireManquant::class)) {
+            if ($this->document->getType() !== DRClient::TYPE_MODEL) {
+                return false;
+            }
+
             $PM = ParcellaireManquantClient::getInstance()->find(
                 ParcellaireManquantClient::getInstance()->buildId($this->document->getIdentifiant(), $this->document->getPeriode())
             );
-            var_dump($PM->periode, $this->document->campagne);
+
             if ($PM === null || $PM->periode !== $this->document->campagne) {
                 $this->addPoint(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort pour cette campagne");
+            } else {
+                $this->addPoint(self::TYPE_WARNING, 'pied_mort_present', "Il ne faut pas oublier de vérifier les rendements");
             }
         }
     }

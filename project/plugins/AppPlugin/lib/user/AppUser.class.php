@@ -202,13 +202,15 @@ class AppUser extends sfBasicSecurityUser {
         return $this->hasCredential(self::CREDENTIAL_STALKER);
     }
 
-    public function getTeledeclarationDrevRegion() {
+
+    public function getRegion() {
       if($this->hasDrevAdmin() && $this->getCompte() && ($region = $this->getCompte()->getRegion()) && RegionConfiguration::getInstance()->getOdgRegions()){
         if(in_array($region, RegionConfiguration::getInstance()->getOdgRegions())){
                     return $region;
         }
       }
-      return null;
+
+      return sfConfig::get('app_region', null);
     }
 
     public function getTeledeclarationConditionnementRegion() {

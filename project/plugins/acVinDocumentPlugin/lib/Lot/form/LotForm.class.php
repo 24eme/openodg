@@ -2,7 +2,7 @@
 class LotForm extends acCouchdbObjectForm
 {
     const NBCEPAGES = 5;
-    private $all_produits;
+    protected $all_produits = false;
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
@@ -25,7 +25,6 @@ class LotForm extends acCouchdbObjectForm
     }
 
     public function configure() {
-        $this->all_produits = false;
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
 
@@ -79,7 +78,7 @@ class LotForm extends acCouchdbObjectForm
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if(!$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
+            if(! isset($values['cepage_'.$i], $values['repartition_hl_'.$i]) || !$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
                 continue;
             }
 

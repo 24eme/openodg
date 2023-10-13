@@ -12,6 +12,8 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
+    <?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'campagnes' => [ConfigurationClient::getInstance()->getPreviousCampagne($pmc->campagne), $pmc->campagne], 'region' => $sf_user->getRegion()]) ?>
+
     <?php foreach($pmc->lots as $lot): ?>
       <?php if(!$lot->hasBeenEdited()){ continue; } ?>
       <div class="panel panel-default" style="border-color:rgba(130, 147, 69, 0.4);">
@@ -81,8 +83,8 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <?php echo $lot['numero_logement_operateur']->renderLabel("Numéro lot", array('class' => "col-sm-5 control-label")); ?>
-                      <div class="col-sm-3">
+                      <?php echo $lot['numero_logement_operateur']->renderLabel("Identifiant Lot / Cuve", array('class' => "col-sm-5 control-label")); ?>
+                      <div class="col-sm-6">
                             <?php echo $lot['numero_logement_operateur']->render(); ?>
                       </div>
                       <div class="col-sm-6 text-danger">
@@ -93,9 +95,9 @@
                   <div class="col-md-6">
                       <div class="form-group">
                           <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
-                          <div class="col-sm-2">
+                          <div class="col-sm-3">
                               <div class="input-group">
-                                  <?php echo $lot['millesime']->render(); ?>
+                                  <?php echo $lot['millesime']->render(array('class' => "form-control text-right", 'maxlength' => "4")); ?>
                               </div>
                           </div>
                           <div class="col-sm-6 text-danger">
@@ -107,7 +109,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <?php echo $lot['date_degustation_voulue']->renderLabel("Date dégustation souhaitée", array('class' => "col-sm-5 control-label")); ?>
+                            <?php echo $lot['date_degustation_voulue']->renderLabel("Lot prélevable à partir du", array('class' => "col-sm-5 control-label")); ?>
                             <div class="col-sm-5">
                                 <div class="input-group date-picker">
                                     <?php echo $lot['date_degustation_voulue']->render(array("class" => "form-control", 'placeholder' => "Date")); ?>

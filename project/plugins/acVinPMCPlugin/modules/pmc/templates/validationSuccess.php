@@ -1,32 +1,29 @@
 <?php include_partial('pmc/breadcrumb', array('pmc' => $pmc )); ?>
 <?php include_partial('pmc/step', array('step' => 'validation', 'pmc' => $pmc)) ?>
 
-<div class="page-header no-border">
-    <h2>Validation de votre déclaration</h2>
-</div>
-
 <form role="form" class="form-horizontal" action="<?php echo url_for('pmc_validation', $pmc) ?>#engagements" method="post" id="validation-form">
-    <?php echo $form->renderHiddenFields(); ?>
-    <?php echo $form->renderGlobalErrors(); ?>
 
+<div class="page-header no-border" style="position:relative;">
+    <h2>Validation de votre déclaration</h2>
     <?php if(isset($form["date"])): ?>
-    <div class="row">
-        <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>
-                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
-            <?php endif; ?>
-            <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-xs-6 control-label")); ?>
-            <div class="col-xs-6">
-                <div class="input-group date-picker">
-                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </div>
+    <div class="form-group">
+        <?php echo $form["date"]->renderError() ?>
+        <?php echo $form["date"]->renderLabel("Date de réception du document :", array("class" => "col-sm-10 control-label")); ?>
+        <div class="col-sm-2 pull-right">
+            <div class="input-group date-picker">
+                <?php echo $form["date"]->render(array("class" => "form-control")); ?>
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
                 </div>
             </div>
         </div>
     </div>
     <?php endif; ?>
+
+</div>
+
+    <?php echo $form->renderHiddenFields(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
 
     <?php if($validation->hasPoints()): ?>
         <?php include_partial('pmc/pointsAttentions', array('pmc' => $pmc, 'validation' => $validation)); ?>

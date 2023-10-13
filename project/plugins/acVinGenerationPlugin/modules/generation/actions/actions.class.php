@@ -42,7 +42,8 @@ class generationActions extends sfActions {
 
   public function executeList(sfWebRequest $request) {
       $this->type = $request['type_document'];
-      $this->historyGeneration = GenerationClient::getInstance()->findHistoryWithType($this->type);
+      $region = (RegionConfiguration::hasOdgProduits()) ? Organisme::getCurrentOrganismes() : null;
+      $this->historyGeneration = GenerationClient::getInstance()->findHistoryWithType($this->type, 100, $region);
   }
 
   public function executeReload(sfWebRequest $request) {

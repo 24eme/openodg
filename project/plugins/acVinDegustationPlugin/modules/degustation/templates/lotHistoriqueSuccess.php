@@ -35,7 +35,7 @@
               <tr<?php if ($lot->unique_id !== $mouvement->value->lot_unique_id) { echo ' style="opacity:0.5"'; } ?>>
                   <td>
                       <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
-                      <?php echo $mouvement->value->document_type;  ?>
+                      <?php echo clarifieTypeDocumentLibelle($mouvement->value->document_type);  ?>
                       </a>
                   </td>
                 <td class="<?php echo $class; ?>">
@@ -63,7 +63,7 @@
                       </button>
                       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                   <?php if ($mouvement->value->statut == Lot::STATUT_MANQUEMENT_EN_ATTENTE): ?>
-                      <li><a class="dropdown-item" href="<?php echo url_for('degustation_redeguster', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id, 'back' => 'degustation_manquements')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
+                      <li><a class="dropdown-item" href="<?php echo url_for('degustation_redeguster', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id, 'back' => 'degustation_nonconformites')) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
                       <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
                       <li><a class="dropdown-item" href="<?php echo url_for('degustation_recours_oc', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  onclick="return confirm('Confirmez vous le recours à l\'OC ?')">Recours OC</a></li>
                       <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_conforme_appel', array('id' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  onclick="return confirm('Confirmez vous la mise en conformité de ce lot en appel ?')" >Conforme en appel</a></li>
@@ -90,6 +90,9 @@
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous le retrait de la dégustation de ce lot pour qu\' il soit affectable à un autre moment ?')">Retirer de la dégustation</a></li>
                 <?php endif; ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_modification', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Modifier les informations du lot</a></li>
+                <?php if (class_exists('Courrier') && ($sf_user->hasCredential(AppUser::CREDENTIAL_OI) || $sf_user->isAdmin())): ?>
+                    <li><a class="dropdown-item" href="<?php echo url_for('courrier_lot_creation', array('identifiant' => $lot->declarant_identifiant, 'lot_unique_id' => $mouvement->value->lot_unique_id)) ?>">Créer un courrier</a></li>
+                <?php endif; ?>
                 </ul>
                 </div>
               </td>

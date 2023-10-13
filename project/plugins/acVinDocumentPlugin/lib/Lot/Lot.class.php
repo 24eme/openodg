@@ -21,6 +21,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CONFORME_APPEL = "12_CONFORME_APPEL";
     const STATUT_NONCONFORME_LEVEE = "15_NONCONFORME_LEVEE";
     const STATUT_ANNULE = "03_ANNULE";
+    const STATUT_PRELEVE_EN_ATTENTE = "03_PRELEVE_EN_ATTENTE";
 
     const STATUT_CHANGE = "CHANGE";
 
@@ -49,6 +50,8 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_ANALYTIQUE = "NONCONFORME_ANALYTIQUE";
     const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
+
+    const STATUT_NOTIFICATION_COURRIER = "20_NOTIFICATION_COURRIER";
 
     const SPECIFICITE_UNDEFINED = "UNDEFINED";
     const SPECIFICITE_PRIMEUR = "Primeur";
@@ -79,7 +82,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_ELEVAGE_EN_ATTENTE => 'En élevage',
         self::STATUT_ELEVE => 'Fin de l\'élevage',
 
-        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Manquement en attente',
+        self::STATUT_MANQUEMENT_EN_ATTENTE => 'Non conformité en attente',
 
         self::STATUT_REVENDIQUE => 'Revendiqué',
         self::STATUT_ENLEVE => 'Enlevé',
@@ -87,6 +90,8 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
+
+        self::STATUT_NOTIFICATION_COURRIER => 'Courrier de notification',
     );
 
     public static $statut2label = array(
@@ -112,7 +117,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Non conformité grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non conformité analytique",
-      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoléptique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoleptique",
     );
 
     public static $shortLibellesConformites = array(
@@ -122,7 +127,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Typ. cép.",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Analytique",
-      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Organoléptique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Organoleptique",
     );
 
     public static $nonConformites = array(
@@ -170,10 +175,10 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getEtablissement(){
-        if(!$this->identifiant){
+        if(!$this->exist('declarant_identifiant') || !$this->declarant_identifiant){
             return null;
         }
-        return EtablissementClient::getInstance()->find($this->identifiant);
+        return EtablissementClient::getInstance()->find($this->declarant_identifiant);
     }
 
     public function getDefaults() {
@@ -289,6 +294,9 @@ abstract class Lot extends acCouchdbDocumentTree
         if ($type == DegustationClient::DEGUSTATION_TRI_PRODUIT) {
             return $this->_get('produit_hash').$this->_get('details');
         }
+        if ($type == DegustationClient::DEGUSTATION_TRI_OPERATEUR) {
+            return $this->_get('declarant_nom');
+        }
         throw new sfException('unknown type of value : '.$type);
     }
 
@@ -398,6 +406,10 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isPreleve(){
         return $this->preleve !== null;
+    }
+
+    public function isDiffere(){
+        return ($this->isPreleve() && $this->statut == self::STATUT_PRELEVE_EN_ATTENTE);
     }
 
     public function isLeurre()
@@ -759,8 +771,14 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         if ($this->id_document_provenance) {
             return substr(strtok($this->id_document_provenance, '-'), 0, 4);
+        } elseif ($this->initial_type) {
+            return $this->initial_type;
         }
         return '';
+    }
+
+    public function getDocumentProvenance() {
+        return DeclarationClient::getInstance()->find($this->id_document_provenance);
     }
 
     abstract public function getMouvementFreeInstance();
@@ -841,11 +859,15 @@ abstract class Lot extends acCouchdbDocumentTree
         }else{
             $mouvement->numero_archive = substr($this->numero_archive, 0, -1);
         }
-        $mouvement->date_commission = $this->date_commission;
+        if (isset($this->date_commission)) {
+            $mouvement->date_commission = $this->date_commission;
+        }
         $mouvement->libelle = $this->getLibelle();
         $mouvement->detail = $detail;
         $mouvement->volume = $this->volume;
-        $mouvement->version = $this->getVersion();
+        if (isset($this->version)) {
+            $mouvement->version = $this->getVersion();
+        }
         $mouvement->document_ordre = $this->getDocumentOrdre();
         $mouvement->document_type = $this->getDocumentType();
         $mouvement->document_id = $this->getDocument()->_id;
@@ -861,6 +883,18 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         if ($this->exist('date_notification')) {
             $mouvement->date_notification = $this->date_notification;
+        }
+
+        if ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
+            $mouvement->add('region', $r);
+        }
+
+        if (strpos($this->initial_type, 'Degustation:') === 0) {
+            $mouvement->add('region', 'OIVC');
+        }
+
+        if (strpos($this->initial_type, 'Transaction') === 0) {
+            $mouvement->add('region', 'OIVC');
         }
 
         return $mouvement;
@@ -994,7 +1028,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffectable() {
 
-        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && ($this->volume);
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable;
     }
 
     public function isAffecte() {
@@ -1003,7 +1037,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isChange() {
 
-        return ($this->id_document_affectation) && preg_match('/^CHGTDENOM/', $this->id_document_affectation);
+        return ($this->id_document_affectation) && preg_match('/^CHGTDENOM|PMC/', $this->id_document_affectation);
     }
 
     public function getDestinationShort()
@@ -1153,4 +1187,8 @@ abstract class Lot extends acCouchdbDocumentTree
 		}
 		return $hab->isHabiliteFor($this->getProduitHash(), $activite);
 	}
+
+    public function getRegion() {
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getProduitHash());
+    }
 }

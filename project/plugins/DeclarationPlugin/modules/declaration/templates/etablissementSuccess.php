@@ -1,8 +1,8 @@
 <ol class="breadcrumb">
 
   <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
-  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php if ($sf_user->getRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getRegion(); ?></a></li>
   <?php endif; ?>
  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
   <li class="active"><a href=""><?php echo $periode ?>-<?php echo $periode +1 ?></a></li>
@@ -50,14 +50,15 @@
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
 <div class="row">
+    <?php if(class_exists("ParcellaireManquant") && in_array('parcellaireManquant', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php endif; ?>
+    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && (!class_exists("DRevConfiguration") || !DRevConfiguration::getInstance()->isRevendicationParLots())): ?>
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
         <?php include_component('drev', 'monEspaceIGP', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
-    <?php endif; ?>
-    <?php if(class_exists("ParcellaireManquant") && in_array('parcellaireManquant', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
     <?php if(class_exists("TravauxMarc")): ?>
     <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
@@ -65,11 +66,14 @@
     <?php if(class_exists("DRevMarc")): ?>
     <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
-    <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
-    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
-    <?php endif; ?>
     <?php if(class_exists("PMC") && in_array('pmc', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('pmc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
+    <?php if(class_exists("PMC") && in_array('pmcNc', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('pmcNc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
+    <?php if(class_exists("Conditionnement") && in_array('conditionnement', sfConfig::get('sf_enabled_modules'))): ?>
+    <?php include_component('conditionnement', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
     <?php endif; ?>
     <?php if(class_exists("Transaction") && in_array('transaction', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('transaction', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode, 'campagne' => $campagne)); ?>
@@ -101,7 +105,6 @@
     <?php if(class_exists("Tirage")): ?>
     <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
-    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
 </div>
 <?php if(in_array('facturation', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="page-header">

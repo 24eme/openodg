@@ -141,7 +141,11 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                     <td><strong><?php echo Anonymization::hideIfNeeded($chai->nom); ?></strong><br /><?php echo Anonymization::hideIfNeeded($chai->adresse); ?><br />
                                     <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                     <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
-                                    <td><?php if($chai->partage): ?>Partagé<br /><?php endif; ?><?php if($chai->archive): ?>Archivé<?php endif; ?></td>
+                                    <td>
+                                        <?php if($chai->secteur): ?>Secteur <?php echo $chai->secteur ?><br /><?php endif; ?>
+                                        <?php if($chai->partage): ?>Partagé<br /><?php endif; ?>
+                                        <?php if($chai->archive): ?>Archivé<?php endif; ?>
+                                    </td>
                                     <?php if($modifiable): ?>
                                     <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                     <?php endif; ?>

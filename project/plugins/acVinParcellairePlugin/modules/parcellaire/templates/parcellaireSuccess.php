@@ -134,7 +134,7 @@ $list_idu = [];
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
-                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) {
+                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuilleEnabled() && !$detail->hasTroisiemeFeuille()) {
                                     $cepage .= ' - jeunes vignes';
                                 }
                             ?>
@@ -258,11 +258,12 @@ $list_idu = [];
 <?php
 
     foreach($synthese as $produit_libelle => $sous_synthese):
-        foreach($sous_synthese as $cepage_libelle => $s): ?>
+        foreach($sous_synthese as $totalcepage => $cepages):
+        foreach($cepages as $cepage_libelle => $s): ?>
         <tr>
-            <?php if ($cepage_libelle == 'Total'): ?>
-                <th><?php echo $produit_libelle ; ?></th>
-                <th><?php echo $cepage_libelle ; ?></th>
+            <?php if ($cepage_libelle == 'Total' || strpos($produit_libelle, 'XXXX') !== false): ?>
+                <th><?php echo str_replace('XXXX', '', $produit_libelle); ?></th>
+                <th><?php echo str_replace('XXXX', '', $cepage_libelle); ?></th>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
                 <th class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></th>
                 <?php else: ?>
@@ -270,7 +271,7 @@ $list_idu = [];
                 <?php endif; ?>
             <?php else: ?>
                 <td><?php echo $produit_libelle ; ?></td>
-                <td><?php echo $cepage_libelle ; ?></td>
+                <th><?php echo str_replace('XXXX', '', $cepage_libelle); ?></th>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
                 <td class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></td>
                 <?php else: ?>
@@ -279,6 +280,7 @@ $list_idu = [];
             <?php endif; ?>
         </tr>
 <?php
+            endforeach;
         endforeach;
     endforeach;
 ?>

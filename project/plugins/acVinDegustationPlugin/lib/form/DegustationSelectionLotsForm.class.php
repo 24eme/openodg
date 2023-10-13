@@ -4,6 +4,8 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
     private $lots = [];
     private $leurres = [];
+    private $lotsOperateurs = [];
+    private $filter_empty = false;
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
     protected $object = null;
@@ -12,12 +14,13 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
         $id = $object->_id;
         $this->object = $object;
         $this->date_degustation = $object->getDateFormat('Ymd');
+        $this->filter_empty = isset($options['filter_empty']) && $options['filter_empty'];
 
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }
 
     public function configure() {
-        $this->lots = $this->object->getLotsFromProvenance();
+        $this->lots = $this->object->getLotsFromProvenance($this->filter_empty);
         uasort($this->lots, array("DegustationClient", "sortLotByDate"));
 
         foreach ($this->object->getLots() as $lot) {
@@ -26,7 +29,17 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
             }
         }
 
-        foreach (DegustationClient::getInstance()->getLotsPrelevables() as $key => $item) {
+        if ($this->filter_empty) {
+            $this->lotsOperateurs = array_filter($this->object->getLots()->toArray(), function ($v) {
+                return $v->id_document_provenance === null;
+            });
+        }
+        if(DegustationConfiguration::getInstance()->isTourneeAutonome() && $this->getObject()->getType() == DegustationClient::TYPE_MODEL) {
+            $lotsDispo = DegustationClient::getInstance()->getLotsDegustables($this->getObject()->getRegion());
+        } else {
+            $lotsDispo = DegustationClient::getInstance()->getLotsPrelevables($this->getObject()->getRegion());
+        }
+        foreach ($lotsDispo as $key => $item) {
             if (array_key_exists($item->unique_id, $this->lots)) {
                 continue;
             }
@@ -47,6 +60,14 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
                 if($doc->exist("date_degustation_voulue") && DateTime::createFromFormat('Y-m-d', $doc->date_degustation_voulue)){
                     $this->dates_degust_drevs[$lot->id_document] = DateTime::createFromFormat('Y-m-d', $doc->date_degustation_voulue)->format('Ymd');
                 }
+            }
+        }
+
+        if ($this->filter_empty) {
+            foreach ($this->lotsOperateurs as $key => $lot) {
+                $key = $lot->getUniqueId() ?: $key;
+                $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
+                $this->dates_degust_drevs[$lot->id_document] = date('Ymd');
             }
         }
 
@@ -83,8 +104,9 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
           if ($lot->isLeurre()) {
               continue;
           }
-          $defaults['lots'][$lot->getUniqueId()] = array('preleve' => 1);
-          $lots_preleves[] = $lot->getUniqueId();
+          $uniqueID = $lot->getUniqueId() ?: str_replace('/lots/', '', $lot->getHash());
+          $defaults['lots'][$uniqueID] = array('preleve' => 1);
+          $lots_preleves[] = $uniqueID;
           $nbLots++;
         }
 
@@ -120,6 +142,18 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
     public function getLot($key)
     {
+        if ($this->filter_empty) {
+            if (array_key_exists($key, $this->lotsOperateurs)) {
+                return $this->lotsOperateurs[$key];
+            }
+
+            foreach ($this->lotsOperateurs as $k => $lot) {
+                if ($lot->unique_id === $key) {
+                    return $lot;
+                }
+            }
+        }
+
         return $this->lots[$key];
     }
 }

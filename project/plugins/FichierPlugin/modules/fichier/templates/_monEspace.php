@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!$sf_user->hasDrevAdmin()): ?>
+<?php if (!$sf_user->hasDrevAdmin() && DRConfiguration::getInstance()->hasVisuTeledeclaration() === false): ?>
     <?php return; ?>
 <?php endif; ?>
 <?php if (class_exists("DRClient") && ($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR  || $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && in_array('dr', sfConfig::get('sf_enabled_modules'))): ?>

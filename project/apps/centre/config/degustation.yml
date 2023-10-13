@@ -1,6 +1,7 @@
 all:
   configuration:
     degustation:
+      nb_etiquettes: 4
       anonymisation_manuelle: true
       conformite:
         - CONFORME

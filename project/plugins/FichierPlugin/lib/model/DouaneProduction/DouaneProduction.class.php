@@ -35,8 +35,16 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $this->declarant_document = new DeclarantDocument($this);
     }
 
+    public function getRegions()
+    {
+        return [];
+    }
 
     public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
         if(DRevConfiguration::getInstance()->isRevendicationParLots()){
             if(!$this->exist('donnees') || !count($this->donnees)) {
                    $this->generateDonnees();
@@ -405,17 +413,45 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return eval("return $calcul;");
     }
 
+    public function matchFilter($produit, $produitFilter)
+    {
+        $match = true;
+        $etablissements = [];
 
-    public function matchFilterProduit($produitHash, $produitFilter) {
+        foreach ($produitFilter as $type => $filter) {
+            if ($type === 'appellations') {
+                $match = $match && $this->matchFilterProduit($produit, $filter);
+            } elseif ($type === 'millesime') {
+                $match = $match && $this->matchFilterMillesime($produit, $filter);
+            } elseif ($type === 'deja') {
+                // On gère que l'option (NOT)? /deja/CONFORME pour le moment
+                // Pas NONCONFORME
+                $match = $match && $this->matchFilterConformite($produit, $filter);
+            } elseif ($type === 'region') {
+                $region = $filter;
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
+            } elseif($type === 'famille') {
+                if (array_key_exists($produit->declarant_identifiant, $etablissements) === false) {
+                    $etablissements[$produit->declarant_identifiant] = EtablissementClient::getInstance()->find($produit->declarant_identifiant);
+                }
+
+                $match = $match && $this->matchFilterFamille($etablissements[$produit->declarant_identifiant]->famille, $filter);
+            }
+        }
+
+        return $match;
+    }
+
+    public function matchFilterProduit($produit, $produitFilter) {
         $produitFilter = preg_replace("/^NOT /", "", $produitFilter, -1, $produitExclude);
         $produitExclude = (bool) $produitExclude;
         $regexpFilter = "#(".implode("|", explode(",", $produitFilter)).")#";
 
-        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produitHash)) {
+        if($produitFilter && !$produitExclude && !preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
-        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produitHash)) {
+        if($produitFilter && $produitExclude && preg_match($regexpFilter, $produit->produit)) {
 
             return false;
         }
@@ -436,7 +472,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if ($famille_exclue && $donnee->colonne_famille == $famille_exclue) {
                 continue;
             }
-            if($produitFilter && !$this->matchFilterProduit($donnee->produit, $produitFilter)) {
+            if($produitFilter && !$this->matchFilter($donnee, $produitFilter)) {
                 continue;
             }
             if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
@@ -446,6 +482,12 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
             $value = $value + VarManipulator::floatize($donnee->valeur);
+        }
+
+        if (isset($produitFilter['round_methode']) || isset($produitFilter['round_precision'])) {
+            $precision = isset($produitFilter['round_precision']) ? $produitFilter['round_precision'] : 0;
+            $methode = isset($produitFilter['round_methode']) ? constant($produitFilter['round_methode']) : PHP_ROUND_HALF_UP;
+            $value = round($value, $precision, $methode);
         }
 
         return $value;
@@ -543,6 +585,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
             $produit = $entry->produit;
+            if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
+                $produit .= ' '.$entry->complement;
+            }
             $categorie = $entry->categorie;
             if (in_array($categorie, $donnees['lignes']) === false) {
                 continue;
@@ -551,6 +596,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if (array_key_exists($produit, $donnees['produits']) === false) {
                 $donnees['produits'][$produit]['lignes'] = [];
                 $donnees['produits'][$produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
+                if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
+                    $donnees['produits'][$produit]['libelle'] .= ' - '.$entry->complement;
+                }
                 $donnees['produits'][$produit]['hash'] = $entry->produit;
             }
 
@@ -575,7 +623,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             }
         }
 
-        ksort($donnees['produits'], SORT_NUMERIC);
+        ksort($donnees['produits']);
         foreach ($donnees['produits'] as &$array) {
             ksort($array['lignes'], SORT_STRING);
         }
@@ -638,7 +686,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
     public static function getBailleursFromCsv($etablissement, $csv, $configuration, $cave_particuliere_only = false) {
-        $etablissementBailleurs = array();
+        $etablissementBailleursRelations = array();
         foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_BAILLEUR) as $etablissementBailleur) {
             if(!$etablissementBailleur->ppm) {
                 continue;
@@ -646,10 +694,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             if(!$etablissementBailleur->exist('liaisons_operateurs/METAYER_'.$etablissement->_id)) {
                 continue;
             }
-            $etablissementBailleurs[$etablissementBailleur->ppm] = $etablissementBailleur;
+            $etablissementBailleursRelations[$etablissementBailleur->ppm] = $etablissementBailleur;
         }
 
 
+        $etablissementBailleurCache = $etablissementBailleursRelations;
         $bailleurs = array();
         foreach($csv as $line) {
             $produitConfig = $configuration->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
@@ -667,7 +716,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
 
-            if(!trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
+            $ppm = $line[DRCsvFile::CSV_BAILLEUR_PPM];
+
+            if(!trim($ppm)) {
                 continue;
             }
 
@@ -675,9 +726,24 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
 
-            $etablissement_id = isset($etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]) ? $etablissementBailleurs[$line[DRCsvFile::CSV_BAILLEUR_PPM]]->_id : null;
-            $id = ($etablissement_id) ? $etablissement_id : $line[DRCsvFile::CSV_BAILLEUR_PPM];
-            $bailleurs[$id]  = array('raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM], 'etablissement_id' => $etablissement_id, 'ppm' => $line[DRCsvFile::CSV_BAILLEUR_PPM]);
+            $etablissement_id = null;
+            $id = $ppm;
+            if(isset($etablissementBailleurCache[$ppm])) {
+                $etablissement_id = $etablissementBailleurCache[$ppm]->_id;
+            }
+            if (!$etablissement_id && $etablissement_bailleur = EtablissementClient::getInstance()->findByPPM($ppm)) {
+                $etablissement_id = $etablissement_bailleur->_id;
+                $etablissementBailleurCache[$ppm] = $etablissement_bailleur;
+            }
+            if($etablissement_id) {
+                $id = $etablissement_id;
+            }
+            $bailleurs[$id]  = array(
+                'raison_sociale' => $line[DRCsvFile::CSV_BAILLEUR_NOM],
+                'etablissement_id' => $etablissement_id,
+                'ppm' => $ppm,
+                'relation_exist' => isset($etablissementBailleursRelations[$ppm])
+            );
         }
         return $bailleurs;
     }

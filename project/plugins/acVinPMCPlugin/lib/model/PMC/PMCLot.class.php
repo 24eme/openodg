@@ -34,12 +34,17 @@ class PMCLot extends BasePMCLot
 
     public function getDocumentType() {
 
-        return PMCClient::TYPE_MODEL;
+        return $this->getDocument()->getType();
     }
 
     public function getDocumentOrdre() {
-        $this->_set('document_ordre', '01');
-        return "01";
+        if ($this->id_document_provenance === null) {
+            $this->_set('document_ordre', "01");
+        } else {
+            $this->_set('document_ordre', "03");
+        }
+
+        return $this->_get('document_ordre');
     }
 
     public function getMouvementFreeInstance() {
