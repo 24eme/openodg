@@ -49,7 +49,6 @@ EOF;
 
         $document = null;
         $ligne = 0;
-        $nb = 0;
         foreach(file($arguments['csv']) as $line) {
             $ligne++;
             $line = str_replace("\n", "", $line);
@@ -114,16 +113,15 @@ EOF;
             $lot->date_commission = $dateCommission;
             $lot->affectable = true;
 
-            $pmc->validate($dateDeclaration);
-            $pmc->validateOdg($dateDeclaration);
-            $pmc->save();
-
-            $nb++;
-
-            if($nb > 500) {
-                sleep(120);
-                $nb = 0;
+            try {
+                $pmc->validate($dateDeclaration);
+                $pmc->validateOdg($dateDeclaration);
+            } catch(Exception $e) {
+                sleep(60);
+                $pmc->validate($dateDeclaration);
+                $pmc->validateOdg($dateDeclaration);
             }
+            $pmc->save();
         }
     }
 

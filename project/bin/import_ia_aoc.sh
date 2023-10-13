@@ -89,6 +89,8 @@ php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" -
 
 echo "Import DRev"
 
+for annee in 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --dateimport="$annee-12-10" --application="$ODG"; done
+
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev.csv
 echo -n > $DATA_DIR/vci.csv
 ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
@@ -96,15 +98,27 @@ ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
     xlsx2csv -l '\r\n' -d ";" $vci_file | tr -d "\n" | tr "\r" "\n" | sed "s/^/$MILLESIME;/" >> $DATA_DIR/vci.csv
 done;
 
-for annee in 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --dateimport="$annee-12-10" --application="$ODG"; done
+bash bin/updateviews.sh
 
 php symfony import:drev-ia $DATA_DIR/drev.csv $DATA_DIR/vci.csv --application="$ODG" --trace
 
 echo "Import lots PMC"
+
+bash bin/updateviews.sh
+
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_pmc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_pmc.csv
 php symfony import:pmc-ia $DATA_DIR/lots_pmc.csv --application="$ODG" --trace
 
+echo "Import lots de contrôles"
+
+bash bin/updateviews.sh
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
+php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" --trace
+
 echo "Import des commissions"
+
+bash bin/updateviews.sh
 
 ls $DATA_DIR/04_controles_produits/commissions/*.html | while read file; do
     PRELIGNE=$(cat $file | tr "\n" " " |  sed -r 's/[ ]+/ /g' | sed 's/&nbsp;//g' | sed 's/&amp;//g' | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/^[ \t]+//' | sed -r 's/ ?; ?/;/g' | grep -E "^(Code|Date|Année|Adresse|Ville)"  | tr -d "\n")
