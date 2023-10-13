@@ -2,7 +2,7 @@ all:
   configuration:
     drev:
       validation_odg: 'region'
-      pdf_unique_region: true
+      pdf_unique_region: false
       logement_adresse: false
       logement_chais: true
       denomination_auto: false
