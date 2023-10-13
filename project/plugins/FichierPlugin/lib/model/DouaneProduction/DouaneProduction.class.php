@@ -35,6 +35,10 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $this->declarant_document = new DeclarantDocument($this);
     }
 
+    public function getRegions()
+    {
+        return [];
+    }
 
     public function save() {
         $regions = $this->getRegions();
