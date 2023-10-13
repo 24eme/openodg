@@ -69,6 +69,7 @@ ParcellaireAffectation:
                               affectation: { type: integer }
                               date_affectation: {  }
                               affectee: { type: integer }
+      region: { required: false }
       observations: {  }
       pieces:
         type: array_collection

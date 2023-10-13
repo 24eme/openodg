@@ -173,6 +173,7 @@ ChgtDenom:
                         declarant_nom: {  }
                         statut: {}
                         region: { required: false }
+      region: { required: false }
       documents:
         required: false
         class: DRevDocuments

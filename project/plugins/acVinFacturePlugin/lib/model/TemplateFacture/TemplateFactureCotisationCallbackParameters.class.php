@@ -10,6 +10,8 @@ class TemplateFactureCotisationCallbackParameters
         'millesime',
         'deja',
         'famille',
+        'round_methode',
+        'round_precision',
         'region'
     ];
 

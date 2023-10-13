@@ -35,8 +35,16 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $this->declarant_document = new DeclarantDocument($this);
     }
 
+    public function getRegions()
+    {
+        return [];
+    }
 
     public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
         if(DRevConfiguration::getInstance()->isRevendicationParLots()){
             if(!$this->exist('donnees') || !count($this->donnees)) {
                    $this->generateDonnees();
@@ -474,6 +482,12 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
             $value = $value + VarManipulator::floatize($donnee->valeur);
+        }
+
+        if (isset($produitFilter['round_methode']) || isset($produitFilter['round_precision'])) {
+            $precision = isset($produitFilter['round_precision']) ? $produitFilter['round_precision'] : 0;
+            $methode = isset($produitFilter['round_methode']) ? constant($produitFilter['round_methode']) : PHP_ROUND_HALF_UP;
+            $value = round($value, $precision, $methode);
         }
 
         return $value;

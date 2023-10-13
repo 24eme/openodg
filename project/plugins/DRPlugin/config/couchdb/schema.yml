@@ -47,6 +47,7 @@ DR:
             fax: { }
             email: { }
             famille: { }
+      region: { required: false }
       mouvements:
         type: collection
         definition:

@@ -20,6 +20,10 @@ class Organisme
         return null;
     }
 
+    public static function getOIRegion() {
+        return 'OIVC';
+    }
+
     public static function getCurrentOrganisme() {
         $region = self::getCurrentRegion();
         if ($region) {

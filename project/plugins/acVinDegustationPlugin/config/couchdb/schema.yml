@@ -14,7 +14,9 @@ Degustation:
       tri : { }
       provenance: { required: false }
       numero_archive: {  }
-      region: { required: false }
+      region: {  }
+      validation: { required: false }
+      validation_oi: { required: false }
       lots:
         type: array_collection
         definition:

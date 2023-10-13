@@ -17,13 +17,6 @@ class declarationActions extends sfActions {
            return $this->redirect('declaration', $params);
         }
       }
-      if($this->regionParam){
-        $regionRadixProduits = RegionConfiguration::getInstance()->getOdgProduits($this->regionParam);
-        if($regionRadixProduits){
-          $request->setParameter('produits-filtre',$regionRadixProduits);
-        }
-      }
-
 
         $this->buildSearch($request);
         $nbResultatsParPage = 15;
@@ -211,7 +204,6 @@ class declarationActions extends sfActions {
 
     protected function buildSearch(sfWebRequest $request) {
 
-        $hasProduitsFilter = (class_exists("RegionConfiguration") && RegionConfiguration::getInstance()->hasOdgProduits());
         $this->query = $request->getParameter('query', array());
         if (!$this->query){
             $this->query = array();
@@ -224,9 +216,16 @@ class declarationActions extends sfActions {
         );
         $campagne_view = acCouchdbManager::getClient()
                  ->group(true)
-                 ->group_level(2);
+                 ->group_level(DeclarationTousView::GROUP_LEVEL_CAMPAGNE);
+
+        $region = DeclarationTousView::FILTER_KEY_DEFAULT_REGION;
+        if ( class_exists("RegionConfiguration") && RegionConfiguration::getInstance()->hasOdgProduits() && $this->regionParam) {
+            $region = $this->regionParam;
+        }
+
          if (isset($this->query['Type'])) {
-             $campagne_view = $campagne_view->startkey(array($this->query['Type'], ''))->endkey(array($this->query['Type'], 'zzzzzz'));
+             $campagne_view = $campagne_view->startkey(array($region, $this->query['Type'], ''))
+                                            ->endkey(array($region, $this->query['Type'], 'zzzzzz'));
          }
         $rows_campagne = $campagne_view->getView('declaration', 'tous')->rows;
         foreach($rows_campagne as $row) {
@@ -263,11 +262,11 @@ class declarationActions extends sfActions {
             $view = acCouchdbManager::getClient()
                     ->reduce(false);
             if ($this->query['Campagne_min'] == $this->query['Campagne_max']){
-                $view = $view->startkey(array($type, $this->query['Campagne_min'], ''));
-                $view = $view->endkey(array($type, $this->query['Campagne_max'], 'zzzzzzz'));
+                $view = $view->startkey(array($region, $type, $this->query['Campagne_min'], ''));
+                $view = $view->endkey(array($region, $type, $this->query['Campagne_max'], 'zzzzzzz'));
             }else{
-                $view = $view->startkey(array($type, $this->query['Campagne_min']));
-                $view = $view->endkey(array($type, $this->query['Campagne_max']."XXX"));
+                $view = $view->startkey(array($region, $type, $this->query['Campagne_min']));
+                $view = $view->endkey(array($region, $type, $this->query['Campagne_max']."XXX"));
             }
 
             $rows = array_merge($rows, $view->getView('declaration', 'tous')->rows);
@@ -282,12 +281,15 @@ class declarationActions extends sfActions {
         $this->facets['Type'] = array();
         $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
 
+        $this->produitsFiltre = $request->getParameter('produits-filtre', null);
+        $hasProduitsFilter = false;
+        if ($this->produitsFiltre) {
+            $hasProduitsFilter = true;
+        }
         if($hasProduitsFilter){
           $this->facets = array_merge($this->facets, array("Produit" => array()));
           $facetToRowKey = array_merge($facetToRowKey,array("Produit" => DeclarationTousView::KEY_PRODUIT));
         }
-
-        $this->produitsFiltre = $request->getParameter('produits-filtre', null);
 
         $this->docs = array();
         $nbDocs = 0;

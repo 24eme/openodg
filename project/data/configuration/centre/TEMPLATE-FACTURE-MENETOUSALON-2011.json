@@ -47,8 +47,9 @@
                        "DRev"
                    ],
                    "callback": "getQuantiteSuperficeRecolte",
-                   "callback_parameters": [
-                   ]
+                   "callback_parameters": {
+                       "round_methode": "PHP_ROUND_HALF_UP"
+                   }
                },
                "01_volumeRevendiqueRecolte": {
                    "modele": "CotisationVariable",

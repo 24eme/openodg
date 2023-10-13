@@ -94,6 +94,28 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		$this->piece_document->generatePieces();
 	}
 
+    public function isValidated() {
+        return $this->exist('validation') && $this->validation;
+    }
+
+    public function isValidatedOI() {
+        return $this->exist('validation_oi') && $this->validation_oi;
+    }
+
+    public function validate($date = null) {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+        $this->add('validation', $date);
+    }
+
+    public function validateOI($date = null) {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+        $this->add('validation_oi', $date);
+    }
+
     public function save($saveDependants = true) {
         $this->generateMouvementsLots();
 
@@ -102,6 +124,18 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $this->generateMouvementsFactures();
         }
         $this->generateMouvementsFacturesOnNextSave = false;
+
+        if ($this->etape == DegustationEtapes::ETAPE_VISUALISATION && RegionConfiguration::getInstance()->hasOdgProduits()) {
+            if (strpos($this->region, '|') === false) {
+                $this->region = $this->region.'|'.Organisme::getOIRegion();
+            }
+            if (!$this->isValidated()) {
+                $this->validate();
+            }
+            if ($this->isValidated() && !$this->hasMouvementsEnAttente()) {
+                $this->validateOI();
+            }
+        }
 
         $saved = parent::save();
 
@@ -339,7 +373,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, ($lot->getNombrePassage() + 1).'me passage'));
 			}elseif($lot->isAffectable()) {
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, ($lot->getNombrePassage() + 1).'me passage'));
-			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
+			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC)) && !$lot->id_document_affectation) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
@@ -1488,6 +1522,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $secteurs[$secteur][$lot->getAdresseLogement()][] = $lot;
             }
             return $secteurs;
+        }
+
+        public function hasMouvementsEnAttente() {
+            foreach($this->mouvements_lots as $id => $mouvements) {
+                foreach($mouvements as $mouvement) {
+                    if (strpos($mouvement->statut, Lot::STATUT_MANQUEMENT_EN_ATTENTE) !== false) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public function hasLotsSansSecteurs()
