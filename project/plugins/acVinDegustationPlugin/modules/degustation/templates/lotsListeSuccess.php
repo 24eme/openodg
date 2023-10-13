@@ -51,7 +51,7 @@
           <th class="col-sm-1 text-center">Document</th>
           <?php endif; ?>
           <th class="col-sm-2">Dernière&nbsp;étape</th>
-          <th class="col-sm-1 text-right hidden-print">Detail</th>
+          <th class="col-sm-1 text-right hidden-print"></th>
         </thead>
         <tbody>
           <?php foreach($mouvements as $lotKey => $mouvement): ?>
