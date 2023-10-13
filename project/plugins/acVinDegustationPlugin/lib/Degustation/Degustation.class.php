@@ -21,7 +21,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 	public function getRegion() {
 		if(!$this->exist('region')) {
 
-			return null;
+			return '';
 		}
 
 		return $this->_get('region');
@@ -29,7 +29,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getRegions()
     {
-		return [];
+		return explode('|', $this->getRegion());
     }
 
     public function getDateFormat($format = 'Y-m-d') {
@@ -126,7 +126,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $this->generateMouvementsFacturesOnNextSave = false;
 
         if ($this->etape == DegustationEtapes::ETAPE_VISUALISATION && RegionConfiguration::getInstance()->hasOdgProduits()) {
-            if (strpos($this->region, '|') === false) {
+            if ( (strpos($this->region, '|') === false) && ($this->region != Organisme::getOIRegion()) ) {
                 $this->region = $this->region.'|'.Organisme::getOIRegion();
             }
             if (!$this->isValidated()) {

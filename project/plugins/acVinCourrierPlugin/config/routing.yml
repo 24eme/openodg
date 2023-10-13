@@ -11,9 +11,3 @@ courrier_lot_creation:
 courrier_visualisation:
   url: /courrier/:id/visualisation
   param: { module: courrier, action: visualisation }
-  class: DeclarationDeclarantRoute
-  options:
-    model:    EtablissementRoute
-    type:     object
-  requirements:
-    sf_method: [get]

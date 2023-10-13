@@ -30,4 +30,17 @@ class courrierActions extends sfActions
         $this->form->save();
         return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
     }
+
+    function executeVisualisation(sfWebRequest $request) {
+        $courrier = CourrierClient::getInstance()->find($request->getParameter('id'));
+        $this->document = new ExportDegustationCourrierPDF($courrier, $request->getParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+        $this->document->generate();
+        $this->document->addHeaders($this->getResponse());
+        return $this->renderText($this->document->output());
+
+    }
 }
