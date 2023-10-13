@@ -303,7 +303,7 @@ $list_idu = [];
 <?php if($sf_user->hasTeledeclaration()): ?>
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaire->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
 </div>
 <?php endif;?>
