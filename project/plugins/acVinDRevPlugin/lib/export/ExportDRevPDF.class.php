@@ -19,7 +19,6 @@ class ExportDRevPDF extends ExportPDF {
         if (!$filename) {
             $filename = $this->getFileName(true);
         }
-        parent::__construct($type, $use_cache, $file_dir, $filename);
 
         if ($this->getRegion()) {
             $this->infos = RegionConfiguration::getInstance()->getOdgRegionInfos($this->getRegion());
@@ -27,11 +26,13 @@ class ExportDRevPDF extends ExportPDF {
             if (isset($this->infos['nom']) === false) {
                 $infoOrga = Organisme::getInstance($this->getRegion());
                 $this->infos['nom'] = $infoOrga->getNom();
-                $this->infos['adresse'] = $infoOrga->getAdresse();
+                $this->infos['adresse'] = implode(', ', [$infoOrga->getAdresse(), $infoOrga->getCodePostal(), $infoOrga->getCommune()]);
                 $this->infos['telephone'] = $infoOrga->getTelephone();
                 $this->infos['email'] = $infoOrga->getEmail();
             }
         }
+
+        parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
     public function create() {
