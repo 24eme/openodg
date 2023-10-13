@@ -266,6 +266,23 @@ class EtablissementClient extends acCouchdbClient {
         return parent::find('ETABLISSEMENT-' . $identifiant, $hydrate);
     }
 
+    public function findByRaisonSociale($raison_sociale)
+    {
+        $e = EtablissementAllView::getInstance()->findByInterproAndStatut(null, EtablissementClient::STATUT_ACTIF, $raison_sociale, 10000);
+        $json = array();
+        foreach($e as $key => $etablissement) {
+            $text = EtablissementAllView::getInstance()->makeLibelle($etablissement);
+            if (Search::matchTerm($raison_sociale, $text)) {
+                $json[EtablissementClient::getInstance()->getId($etablissement->id)] = $text;
+            }
+
+            if (count($json) >= 2) {
+                break;
+            }
+        }
+        return array_keys($json)[0];
+    }
+
     public function matchFamille($f) {
         if (preg_match('/producteur/i', $f)) {
 

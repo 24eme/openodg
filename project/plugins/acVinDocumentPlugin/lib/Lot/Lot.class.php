@@ -175,10 +175,10 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getEtablissement(){
-        if(!$this->identifiant){
+        if(!$this->exist('declarant_identifiant') || !$this->declarant_identifiant){
             return null;
         }
-        return EtablissementClient::getInstance()->find($this->identifiant);
+        return EtablissementClient::getInstance()->find($this->declarant_identifiant);
     }
 
     public function getDefaults() {
@@ -775,6 +775,10 @@ abstract class Lot extends acCouchdbDocumentTree
             return $this->initial_type;
         }
         return '';
+    }
+
+    public function getDocumentProvenance() {
+        return DeclarationClient::getInstance()->find($this->id_document_provenance);
     }
 
     abstract public function getMouvementFreeInstance();

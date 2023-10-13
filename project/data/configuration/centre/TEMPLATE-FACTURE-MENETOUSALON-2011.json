@@ -48,7 +48,7 @@
                    ],
                    "callback": "getQuantiteSuperficeRecolte",
                    "callback_parameters": {
-                       "round_methode": "PHP_ROUND_HALF_UP"
+                       "round_methode": "ceil"
                    }
                },
                "01_volumeRevendiqueRecolte": {
