@@ -289,8 +289,8 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
+    <div class="row" style="min-height: 370px;">
+        <div class="col-xs-12 text-center">
             <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
         </div>
     </div>
