@@ -28,11 +28,17 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $dr = DRClient::getInstance()->find($arguments['doc_id']);
-        $etablissement_source = EtablissementClient::getInstance()->findAny($dr->getDeclarant()->cvi);
+        $etablissement_source = $dr->getEtablissementObject();
         $etablissement_dst = $dr->getBailleurs();
         foreach ($etablissement_dst as $etablissement) {
-            if ($etablissement['relation_exist'] === false)
-                $etablissement_source->addLiaison("BAILLEUR", EtablissementClient::getInstance()->find($etablissement['etablissement_id']), true);
+            $etablissement_id = $etablissement['etablissement_id'];
+            if ($etablissement_id == null) {
+                $etab = EtablissementClient::getInstance()->find(EtablissementClient::getInstance()->findByRaisonSociale($etablissement['raison_sociale']));
+                $etab->ppm = $etablissement['ppm'];
+                $etablissement_id = $etab->_id;
+                $etab->save();
+            }
+            $etablissement_source->addLiaison("BAILLEUR", EtablissementClient::getInstance()->find($etablissement_id), true);
         }
         $etablissement_source->save();
     }
