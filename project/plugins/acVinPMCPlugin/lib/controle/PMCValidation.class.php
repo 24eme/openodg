@@ -140,7 +140,7 @@ class PMCValidation extends DocumentValidation
         }
 
         if ($this->document->isNonConformite() === false) {
-            $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant,[ConfigurationClient::getInstance()->getPreviousCampagne($this->document->campagne), $this->document->campagne]);
+            $syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, array(ConfigurationClient::getInstance()->getPreviousCampagne($this->document->campagne), $this->document->campagne));
             if(!$this->document->isValideeOdg()) {
                 foreach ($totalVolumePMC as $hash => $millesimes) {
                     $produit = ConfigurationClient::getInstance()->getCurrent()->get($hash);

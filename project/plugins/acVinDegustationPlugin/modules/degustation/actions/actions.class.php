@@ -920,11 +920,7 @@ class degustationActions extends sfActions {
 
         uasort($this->mouvements, function($a, $b) { if($a->value->date ==  $b->value->date) { return $a->value->numero_archive < $b->value->numero_archive; } return $a->value->date < $b->value->date; });
 
-        if ($region) {
-            $this->syntheseLots = LotsClient::getInstance()->getSyntheseLotsRegion($identifiant, $this->campagne, $region);
-        }else{
-            $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, $this->campagne, $this->getUser()->isAdmin());
-        }
+        $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($identifiant, array($this->campagne), $region);
     }
 
     public function executeNonconformites(sfWebRequest $request) {

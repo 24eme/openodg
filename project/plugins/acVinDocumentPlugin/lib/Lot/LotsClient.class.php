@@ -350,41 +350,7 @@ class LotsClient
         }
     }
 
-    public function getSyntheseLots($identifiant, $campagne, $isadmin)
-    {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
-
-        $syntheseLots = [];
-        foreach ($mouvements as $mouvementLot) {
-            # Démo: https://regex101.com/r/J9XQnv/4
-            preg_match('/([\w -]+)(?: (\w+))? (\d{4})/uU', $mouvementLot->value->libelle, $matches);
-            $libelle = $matches[0];
-            $produit = $matches[1];
-            $couleur = $matches[2];
-            $millesime = $matches[3];
-
-            if (array_key_exists($produit, $syntheseLots) === false) {
-                $syntheseLots[$produit] = [];
-                ksort($syntheseLots);
-            }
-
-            if (array_key_exists($millesime, $syntheseLots[$produit]) === false) {
-                $syntheseLots[$produit][$millesime] = [];
-                ksort($syntheseLots[$produit]);
-            }
-
-            if (array_key_exists($couleur, $syntheseLots[$produit][$millesime]) === false) {
-                $syntheseLots[$produit][$millesime][$couleur] = 0;
-                ksort($syntheseLots[$produit][$millesime]);
-            }
-
-            $syntheseLots[$produit][$millesime][$couleur] += $mouvementLot->value->volume;
-        }
-
-        return $syntheseLots;
-    }
-
-    public function getSyntheseLotsRegion($identifiant, $campagnes, $region = null)
+    public function getSyntheseLots($identifiant, $campagnes, $region = null)
     {
         if(!is_array($campagnes)) {
             $campagnes = [$campagnes];
