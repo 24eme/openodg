@@ -64,6 +64,9 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         $this->region = Organisme::getOIRegion();
     }
 
+    public function getDegustation() {
+        return $this->getMother();
+    }
 
     public function constructId() {
         $id = 'COURRIER-' . $this->identifiant . '-' . $this->date.'-'.$this->courrier_type;
@@ -193,11 +196,26 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_NOTIFICATION_COURRIER, $this->courrier_titre));
     }
 
-    public function getLot($lot_unique_id) {
-        if ($this->lots[0]->unique_id != $lot_unique_id) {
+    public function getLot($lot_unique_id = null) {
+        if ($lot_unique_id && ($this->lots[0]->unique_id != $lot_unique_id) ) {
             throw new sfException('Lot '.$lot_unique_id.' pas dans le courrier '.$this->_id);
         }
         return $this->lots[0];
+    }
+
+    public function getPDFTemplateNameForPageId($i) {
+        return CourrierClient::getInstance()->getPDFTemplateNameForPageId($this->courrier_type, $i);
+    }
+
+    public function getNbPages() {
+        return CourrierClient::getInstance()->getNbPages($this->courrier_type);
+    }
+
+    public function getDateFormat($format = 'Y-m-d') {
+        if (!$this->date) {
+            return date($format);
+        }
+        return date ($format, strtotime($this->date));
     }
 
 }
