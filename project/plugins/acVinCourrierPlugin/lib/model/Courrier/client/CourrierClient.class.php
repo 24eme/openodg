@@ -28,7 +28,7 @@ class CourrierClient extends acCouchdbClient {
 
     public static $courrier_templates_pages = array(
             self::COURRIER_NC_Passage1 => ['degustationNonConformitePDF_page1', 'degustationNonConformitePDF_page2'],
-            self::COURRIER_AVIS13 => [''],
+            self::COURRIER_AVIS13 => ['courrierAvisC13ManquementControleVinPDF'],
             self::COURRIER_AVIS14 => [''],
             self::COURRIER_AVIS15 => [''],
             self::COURRIER_AVIS16 => [''],
