@@ -62,53 +62,7 @@ var browser;
       console.log("===================");
     }
 
-    await page.goto(baseURL+"/Tournee/ParamZonePrelev.aspx");
-
-    if(process.env.DEBUG){
-      console.log("PAGE A SCRAPPER: OK");
-      console.log("===================");
-    }
-
-    await page.click('#btnAjout');
-    await page.waitForSelector('#btnAjout');
-
-    if(process.env.DEBUG){
-      console.log("CLICK AJOUTER DES SITES : OK");
-      console.log("===================");
-    }
-
-    const odg_array = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('#ddlODG option')).map(element=>element.value)
-    );
-
-    for(var odg of odg_array){
-      if(process.env.DEBUG){
-        console.log("ODG : "+ odg+"\n");
-      }
-
-      await page.select('select#ddlODG', odg);
-      await page.click('#btnRechercher');
-
-      if(process.env.DEBUG){
-        console.log("CLICK SUR RECHERCHER : OK");
-        console.log("===================");
-      }
-
-      await page.waitForSelector("#gvSiteStockAdd");
-
-      fs.writeFileSync(process.env.DOSSIER+"/07_chais/"+odg+".html",await page.content());
-
-      if(process.env.DEBUG){
-        console.log("Enregistre la page HTML des stock de l'opérateur OK");
-        console.log("===================");
-      }
-    }
-    if(process.env.DEBUG){
-      console.log("FIN");
-      console.log("===================");
-    }
-
-    for (let i = 0; i < 2000; i++) {
+    for (let i = 0; i < 3000; i++) {
       await page.goto(baseURL+"/commission/VisuCommission.aspx?IdCommission="+i);
       fs.writeFileSync(process.env.DOSSIER+"/04_controles_produits/commissions/commission_"+i+".html",await page.content());
     }

@@ -51,6 +51,7 @@ class importOperateurIAAOCCsvTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csv_commentaire', sfCommandArgument::OPTIONAL, "Fichier csv contenant les commentaires"),
         ));
 
         $this->addOptions(array(
@@ -72,10 +73,21 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $commentaires = [];
+        if(isset($arguments['csv_commentaire'])) {
+            foreach(file($arguments['csv_commentaire']) as $line) {
+                $data = str_getcsv($line, ";");
+                if(!isset($commentaires[trim($data[0])])) {
+                    $commentaires[trim($data[0])] = null;
+                }
+                $commentaires[trim($data[0])] .= $data[1]." (par ".$data[2]." le $data[3])\n";
+            }
+        }
+
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
 
-            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_IDENTIFIANT]));
+            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_CODE_INTERNE]));
 
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
             if($societe && isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
@@ -175,6 +187,9 @@ EOF;
             $etablissement->num_interne = trim($data[self::CSV_CODE_INTERNE]);
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);
+            if(isset($commentaires[trim($data[self::CSV_CODE_INTERNE])])) {
+                $etablissement->commentaire = $commentaires[trim($data[self::CSV_CODE_INTERNE])];
+            }
             $etablissement->save();
 
             if(isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {

@@ -59,9 +59,12 @@ echo "Import des Opérateurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs.csv
-php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv --application="$ODG" --trace
+echo "IdentifiantInterne;Commentaire;Auteur;Date" > $DATA_DIR/operateurs_commentaires.csv
+ls $DATA_DIR/01_operateurs/fiches/*_commentaires.html | while read file; do ID=$(echo $file | sed -r 's|.+/||' | cut -d "_" -f 1); echo $ID; cat $file |  tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's#</td>#|#g' | sed 's#</th>#-#g' | sed 's/<[^>]*>//g' | sed -r 's/(^|#)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | sed 's/&gt;/>/g' | sed 's/;/./g' | grep -Ev "^ ?;" | grep -vE "^Commentaire-Auteur-Date" | grep -v "^ |" | sed "s/^/$ID|/"; done | sed 's/|/;/g' | grep ";" | cut -d ";" -f 1,2,3,4 >> $DATA_DIR/operateurs_commentaires.csv
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv
+php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv $DATA_DIR/operateurs_commentaires.csv --application="$ODG" --trace
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv/operateurs_inactifs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
