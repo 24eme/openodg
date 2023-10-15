@@ -787,6 +787,11 @@ class degustationActions extends sfActions {
         $this->lots = $this->degustation->getLotsPreleves();
         uasort($this->lots, function ($a, $b) { return $a->declarant_nom > $b->declarant_nom; });
 
+        $this->mvts = array_map(function ($lot) {
+            $m = LotsClient::getInstance()->getHistory($lot->declarant_identifiant, $lot->unique_id);
+            return end($m);
+        }, $this->lots);
+
         if ($this->degustation->etape == TourneeDegustationEtapes::ETAPE_VISUALISATION) {
 
             return sfView::SUCCESS;

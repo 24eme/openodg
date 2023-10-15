@@ -58,8 +58,8 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         $this->lots[0]->id_document = $this->_id;
         $this->lots[0]->document_ordre = sprintf('%02d', $this->arg_lot_origine->document_ordre + 1);
 
-        $this->numero_dossier = $this->lots[0]->numero_dossier;
-        $this->numero_archive = $this->lots[0]->numero_archive;
+        $this->numero_dossier = $this->getNumeroDossier();
+        $this->numero_archive = $this->getNumeroArchive();
         $this->add('region');
         $this->region = Organisme::getOIRegion();
     }
@@ -216,6 +216,16 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
             return date($format);
         }
         return date ($format, strtotime($this->date));
+    }
+
+    public function getNumeroDossier()
+    {
+        return "A definir";
+    }
+
+    public function getNumeroArchive()
+    {
+        return "A definir";
     }
 
 }
