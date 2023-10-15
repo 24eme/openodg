@@ -22,8 +22,7 @@ class importOperateurIAAOCCsvTask extends sfBaseTask
   const CSV_TYPE_DECLARATION = 18;
   const CSV_PPM = 20;
   const CSV_CODE_INTERNE = 21;
-  const CSV_STATUT = 22;
-  const CSV_ACHETEUR = 23;
+  const CSV_STATUT = 23;
 
   protected $date;
   protected $convert_statut;
@@ -87,12 +86,13 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
 
-            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_CODE_INTERNE]));
-
-            $societe = SocieteClient::getInstance()->find($newSociete->_id);
-            if($societe && isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
-                $this->importLiaison(EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant."01"), $data[self::CSV_ACHETEUR]);
+            if(!$data[self::CSV_CODE_INTERNE]) {
+                echo "pas de numéro interne ".$line."\n";
+                continue;
             }
+
+            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_CODE_INTERNE]));
+            $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
             if($societe) {
                 continue;
@@ -191,22 +191,7 @@ EOF;
                 $etablissement->commentaire = $commentaires[trim($data[self::CSV_CODE_INTERNE])];
             }
             $etablissement->save();
-
-            if(isset($data[self::CSV_ACHETEUR]) && $data[self::CSV_ACHETEUR]) {
-                $this->importLiaison($etablissement, $data[self::CSV_ACHETEUR]);
-            }
         }
-    }
-
-    protected function importLiaison($etablissement, $acheteur) {
-        $etablissementAcheteur = $this->identifyEtablissement($acheteur);
-        if(!$etablissementAcheteur) {
-            echo "Établissement cooperative non identifié :".$acheteur."\n";
-            return;
-        }
-
-        $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE, $etablissementAcheteur->_id);
-        $etablissement->save();
     }
 
     protected function identifyEtablissement($raisonSociale, $cvi = null, $codePostal = null, $hydrate = acCouchdbClient::HYDRATE_JSON) {

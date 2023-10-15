@@ -64,7 +64,7 @@ ls $DATA_DIR/01_operateurs/fiches/*_commentaires.html | while read file; do ID=$
 
 php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv $DATA_DIR/operateurs_commentaires.csv --application="$ODG" --trace
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" | awk -F ";" 'BEGIN { OFS=";"} { $3=$3 ";;"; $21="SUSPENDU"; print $0 }' > $DATA_DIR/operateurs_inactifs.csv/operateurs_inactifs.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs_inactifs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
 php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
 
@@ -128,8 +128,12 @@ ls $DATA_DIR/04_controles_produits/commissions/*.html | while read file; do
 
     cat $file | tr "\n" " " |  sed -r 's/[ ]+/ /g' | sed 's/&nbsp;//g' | sed 's/&amp;//g' | sed 's/<table> <tbody><tr>//g' | sed 's|</tr> </tbody></table>||g' | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/^[ \t]+//' | sed -r 's/ ?; ?/;/g' | grep -A 999999999 "Echantillon;" | sed 's/N&#176;/N /g' | sed -r "s|^|$PRELIGNE|" > $file.csv
 
-    echo $file
-    php symfony import:commissions-aoc-ia "$file.csv" --application=centre
+    if test -s $file.csv; then
+        php symfony import:commissions-aoc-ia "$file.csv" --application=centre
+    else
+        rm $file;
+        rm $file.csv;
+    fi
 done
 
 echo "Contacts"

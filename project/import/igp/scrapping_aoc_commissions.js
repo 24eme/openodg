@@ -62,9 +62,9 @@ var browser;
       console.log("===================");
     }
 
-    for (let i = 0; i < 3000; i++) {
+    for (let i = 0; i < 2000; i++) {
       await page.goto(baseURL+"/commission/VisuCommission.aspx?IdCommission="+i);
-      fs.writeFileSync(process.env.DOSSIER+"/04_controles_produits/commissions/commission_"+i+".html",await page.content());
+      fs.writeFileSync(process.env.DOSSIER+"/04_controles_produits/commissions/commission_"+i.toString().padStart(5, '0')+".html",await page.content());
     }
 
     await browser.close();

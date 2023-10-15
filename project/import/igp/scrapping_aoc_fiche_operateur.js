@@ -75,6 +75,17 @@ var browser;
       } catch (error) {
       }
 
+      if(!finded) {
+        await page.goto(baseURL+"/operateur/ListeOpCessation.aspx?IDENT="+nb);
+        await page.type("#tbCodeInterne", nb);
+        await page.click("#btnRecherche");
+        try {
+          await page.waitForSelector("input.icon_modif", {timeout: 1000});
+          finded = true;
+        } catch (error) {
+        }
+      }
+
       if(finded) {
         console.log("finded "+nb);
         await page.click("input.icon_modif");
