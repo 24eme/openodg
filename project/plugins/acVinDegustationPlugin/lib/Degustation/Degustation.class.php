@@ -29,6 +29,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getRegions()
     {
+        if (DegustationConfiguration::getInstance()->hasStaticRegion()) {
+            return [DegustationConfiguration::getInstance()->getStaticRegion()];
+        }
+
 		return explode('|', $this->getRegion());
     }
 
