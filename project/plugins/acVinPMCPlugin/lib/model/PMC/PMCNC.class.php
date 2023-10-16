@@ -46,4 +46,14 @@ class PMCNC extends PMC
     public function getLotOrigine() {
         return $this->lots[0]->getLotOrigine();
     }
+
+    public function getMother() {
+        if (!isset($this->lots[0])) {
+            return null;
+        }
+        if (!$this->lots[0]->getLotProvenance()) {
+            return null;
+        }
+        return $this->lots[0]->getLotProvenance()->getDocument();
+    }
 }
