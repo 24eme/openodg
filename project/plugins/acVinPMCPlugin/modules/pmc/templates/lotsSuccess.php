@@ -52,9 +52,8 @@
                         <?php endif; ?>
                     </div>
                     <div class="col-md-5">
-                    <?php if (isset($lot['engagement_8515'])): ?>
                       <div class="form-group">
-                            <div class="col-md-9 checkbox checkboxlots">
+                            <div class="col-md-8 checkbox checkboxlots">
                             <?php if (isset($lot['specificite'])): ?>
                                 <label>
                                     <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
@@ -64,15 +63,20 @@
                                 </label>
                             <?php endif; ?>
                             </div>
-                        <div class="col-md-3 checkbox">
+                        <?php if (isset($lot['engagement_8515'])): ?>
+                        <div class="col-md-4 checkbox">
                             <?php echo $lot['engagement_8515']->render(); ?>
                             <?php echo $lot['engagement_8515']->renderLabel("Est en 85/15"); ?>
                         </div>
                         <div class="col-sm-12 text-danger">
                           <?php echo $lot['engagement_8515']->renderError(); ?>
                         </div>
+                    <?php elseif(true || $pmc->getLotOrigine()->exist('engagement_8515') && $pmc->getLotOrigine()->engagement_8515): ?>
+                            <div class="col-md-4 checkbox">
+                                <p>☑ Est en 85/15</p>
+                            </div>
+                        <?php endif; ?>
                       </div>
-                    <?php endif; ?>
                     </div>
                     <div class="col-md-1">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
