@@ -93,4 +93,14 @@ class DegustationConfiguration {
     public function isDegustationAutonome() {
         return $this->configuration['tournee_autonome'];
     }
+
+    public function hasStaticRegion() {
+        return isset($this->configuration['static_region']) && boolval($this->configuration['static_region']);
+    }
+
+    public function getStaticRegion() {
+        if($this->hasStaticRegion()){
+          return $this->configuration['static_region'];
+        }
+    }
 }

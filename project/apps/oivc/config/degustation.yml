@@ -13,3 +13,4 @@ all:
       typicite_cepage: false
       tournee_autonome: true
       has_notification: true
+      static_region: OIVC
