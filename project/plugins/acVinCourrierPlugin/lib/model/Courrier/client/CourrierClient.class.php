@@ -30,7 +30,7 @@ class CourrierClient extends acCouchdbClient {
             self::COURRIER_NC_Passage1 => ['degustationNonConformitePDF_page1', 'degustationNonConformitePDF_page2'],
             self::COURRIER_AVIS13 => ['courrierAvisC13ManquementControleVinPDF'],
             self::COURRIER_AVIS14 => [''],
-            self::COURRIER_AVIS15 => [''],
+            self::COURRIER_AVIS15 => ['courrierLeveeC15ManquementControleVin'],
             self::COURRIER_AVIS16 => [''],
             self::COURRIER_AVIS17 => [''],
             self::COURRIER_AVIS18 => [''],

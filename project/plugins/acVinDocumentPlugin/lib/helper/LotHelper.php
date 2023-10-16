@@ -20,7 +20,8 @@ function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
 }
 
 function showProduitCepagesLot($lot, $show_always_specificite = true, $tagSmall = 'small')
-{   $text = "";
+{
+    $text = "";
     $text .= showOnlyProduit($lot, $show_always_specificite, $tagSmall);
     $text .= showOnlyCepages($lot, null, $tagSmall);
     return $text;

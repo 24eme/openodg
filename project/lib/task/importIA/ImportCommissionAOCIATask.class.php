@@ -241,6 +241,8 @@ EOF;
             $degustation->etape = DegustationEtapes::ETAPE_LOTS;
         } else {
             $degustation->etape = DegustationEtapes::ETAPE_VISUALISATION;
+            $degustation->add("validation", explode(" ", $degustation->date)[0]);
+            $degustation->add("validation_oi", $degustation->validation);
         }
         $degustation->save();
     }

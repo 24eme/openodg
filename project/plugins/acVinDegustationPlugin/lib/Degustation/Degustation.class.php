@@ -1600,7 +1600,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
         public function getTemplateFacture($region = null) {
 
-            return TemplateFactureClient::getInstance()->findByCampagne($this->campagne, $region);
+            return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
         }
 
         public function getMouvementsFactures() {
@@ -1889,5 +1889,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getBigDocumentSize() {
 
             return -1;
+        }
+
+        public function getPeriode() {
+            return substr($this->campagne, 0, 4);
         }
 }
