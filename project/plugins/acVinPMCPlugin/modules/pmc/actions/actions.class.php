@@ -132,7 +132,7 @@ class pmcActions extends sfActions {
             $this->pmc->save();
         }
 
-        if (count($this->pmc->getLots()) == 0 || current(array_reverse($this->pmc->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        if (count($this->pmc->getLots()) == 0 || $request->getParameter('submit') == "add") {
             $this->pmc->addLot();
         }
         $this->form = new PMCLotsForm($this->pmc);

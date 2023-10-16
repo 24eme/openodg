@@ -42,4 +42,8 @@ class PMCNC extends PMC
     public function getRegions() {
         return array(Organisme::getOIRegion());
     }
+
+    public function getLotOrigine() {
+        return $this->lots[0]->getLotOrigine();
+    }
 }

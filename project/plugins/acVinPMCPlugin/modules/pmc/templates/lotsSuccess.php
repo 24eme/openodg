@@ -4,7 +4,7 @@
 <?php include_partial('pmc/breadcrumb', array('pmc' => $pmc )); ?>
 <?php include_partial('pmc/step', array('step' => ConditionnementEtapes::ETAPE_LOTS, 'pmc' => $pmc, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Mise en circulation des Lots</h2></div>
+    <div class="page-header"><h2>Mise en circulation de Lots</h2></div>
 
     <?php echo include_partial('global/flash'); ?>
     <form role="form" action="<?php echo url_for("pmc_lots", $pmc) ?>" method="post" id="form_pmc_lots" class="form-horizontal">
@@ -12,7 +12,14 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
+    <?php if ($pmc->type == PMCNCClient::TYPE_MODEL): ?>
+    <h2>Votre lot non conforme</h2>
+    <?php include_partial('chgtdenom/infoLotOrigine', array('lot' => $pmc->getLotOrigine(), 'opacity' => false)); ?>
+    <h2>Ce que vous souhaitez faire recontroler : </h2>
+    <p>Merci de confirmer ou corriger les informations du lot à recontroler</p>
+    <?php else: ?>
     <?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'campagnes' => [ConfigurationClient::getInstance()->getPreviousCampagne($pmc->campagne), $pmc->campagne], 'region' => $sf_user->getRegion()]) ?>
+    <?php endif; ?>
 
     <?php foreach($form['lots'] as $key => $lot): ?>
         <?php $lotItem = $pmc->lots->get($key); ?>
@@ -23,6 +30,7 @@
             <div class="panel-body" style="padding-bottom: 0;">
               <div class="row">
                     <div class="col-md-6">
+                        <?php if (isset($lot['produit_hash'])): ?>
                         <div class="form-group">
                             <?php echo $lot['produit_hash']->renderLabel("Produit", array('class' => "col-sm-5 control-label")); ?>
                             <div class="col-sm-7">
@@ -32,8 +40,19 @@
                             <?php echo $lot['produit_hash']->renderError(); ?>
                             </div>
                         </div>
+                        <?php else: ?>
+                        <div class="form-group">
+                            <label class="col-sm-5 pt-3 text-right">
+                                Produit
+                            </label>
+                            <div class="col-sm-7 pt-3">
+                                <p><?php echo $pmc->getLotOrigine()->getProduitLibelle(); ?></p>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                     </div>
                     <div class="col-md-5">
+                    <?php if (isset($lot['engagement_8515'])): ?>
                       <div class="form-group">
                         <div class="col-md-offset-3 checkbox">
                             <?php echo $lot['engagement_8515']->render(); ?>
@@ -43,6 +62,7 @@
                           <?php echo $lot['engagement_8515']->renderError(); ?>
                         </div>
                       </div>
+                    <?php endif; ?>
                     </div>
                     <div class="col-md-1">
                       <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
@@ -61,6 +81,7 @@
                     </div>
                   </div>
                   <div class="col-md-6">
+                      <?php if (isset($lot['millesime'])): ?>
                       <div class="form-group">
                           <?php echo $lot['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
                           <div class="col-sm-3">
@@ -72,6 +93,16 @@
                               <?php echo $lot['millesime']->renderError(); ?>
                           </div>
                       </div>
+                    <?php else: ?>
+                      <div class="form-group">
+                          <label class="col-sm-4 pt-3 text-right">
+                              Millesime
+                          </label>
+                          <div class="col-sm-3 pt-3">
+                              <p><?php echo $pmc->getLotOrigine()->getMillesime(); ?></p>
+                          </div>
+                      </div>
+                      <?php endif; ?>
                     </div>
                 </div>
                 <div class="row">
@@ -126,7 +157,11 @@
         </div>
     <?php endforeach; ?>
     <div class="text-right">
-        <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
+        <?php if ($pmc->type == PMCNCClient::TYPE_MODEL): ?>
+            <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Diviser le lot</button>
+        <?php else: ?>
+            <button type="submit" name="submit" value="add" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un lot</button>
+        <?php endif; ?>
     </div>
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-4">
