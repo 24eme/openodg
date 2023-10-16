@@ -280,6 +280,12 @@ class FactureClient extends acCouchdbClient {
                         $mouvementsBySoc[$identifiant] = $mouvements;
                         continue;
                       }
+
+                      if(isset($parameters['region']) && $parameters['region'] && $parameters['region'] != $mouvement->value->region) {
+                        unset($mouvements[$key]);
+                        $mouvementsBySoc[$identifiant] = $mouvements;
+                        continue;
+                      }
               }
           }
       }
