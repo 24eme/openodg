@@ -69,4 +69,11 @@ class Transaction extends BaseTransaction
         return $this->declaration->getProduits($region);
     }
 
+    public function getRegions() {
+        if (TransactionConfiguration::getInstance()->hasStaticRegion()) {
+            return array(TransactionConfiguration::getInstance()->getStaticRegion());
+        }
+        return array();
+    }
+
 }
