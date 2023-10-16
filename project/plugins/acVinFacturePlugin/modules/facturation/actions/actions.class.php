@@ -480,12 +480,15 @@ class facturationActions extends sfActions
     }
 
     public function executeLibre(sfWebRequest $request) {
-        $this->facturationsLibre = MouvementsFactureClient::getInstance()->startkey('MOUVEMENTSFACTURE-0000000000')->endkey('MOUVEMENTSFACTURE-9999999999')->execute()->getDatas();
+        $facturationsLibre = MouvementsFactureClient::getInstance()->startkey('MOUVEMENTSFACTURE-0000000000')->endkey('MOUVEMENTSFACTURE-9999999999')->execute()->getDatas();
+        $region = $this->getCurrentRegion();
+        $this->facturationsLibre = array_filter($facturationsLibre, function($item) use($region) { return ($item->region == $region); } );
         krsort($this->facturationsLibre);
     }
 
     public function executeCreationLibre(sfWebRequest $request) {
             $this->factureMouvements = MouvementsFactureClient::getInstance()->createMouvementsFacture();
+            $this->factureMouvements->region = $this->getCurrentRegion();
             $this->factureMouvements->save();
             $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
     }
