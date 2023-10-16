@@ -29,6 +29,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function getRegions()
     {
+        if (DegustationConfiguration::getInstance()->hasStaticRegion()) {
+            return [DegustationConfiguration::getInstance()->getStaticRegion()];
+        }
+
 		return explode('|', $this->getRegion());
     }
 
@@ -1349,10 +1353,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     continue;
                 }
 
-                if (in_array($lot->initial_type, ['Degustation:aleatoire', 'Degustation:aleatoire_renforce'])) {
-                    continue;
-                }
-
+                $lot->getUniqueId(); // on génère les numéros dossier / archives pour les lots aléatoire
 				$lots[$lot->campagne.$lot->numero_dossier.$lot->declarant_identifiant.$lot->unique_id] = $lot;
 			}
 			$lotsSorted = $lots;
@@ -1371,7 +1372,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				}
 
 				if(!array_key_exists($lot->produit_hash,$produits)){
-					$produits[$lot->produit_hash] = $lot->getConfig()->getCouleur()->getLibelle();
+                    $produits[$lot->produit_hash] = $lot->getConfig() ? $lot->getConfig()->getCouleur()->getLibelle() : $lot->details;
 				}
 
 				$infosLot = new stdClass();

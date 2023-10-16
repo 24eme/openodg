@@ -4,11 +4,11 @@
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation)); ?>
 
-<section class='container'>
+<section>
 
 <h2>Sélectionnez l'ensemble des lots à prélever pour la dégustation</h2>
 
-<form action="<?php echo url_for("degustation_selection_operateurs_add", $degustation) ?>" method="post">
+<form action="<?php echo url_for("degustation_selection_operateurs_add", $degustation) ?>" method="post" class="form-horizontal">
     <?php echo $formOperateurs->renderHiddenFields(); ?>
 
     <div class="bg-danger">
@@ -37,11 +37,14 @@
     </div>
 
 
-<div class="col-xs-6">
-    <a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
-</div>
-<div class="col-xs-5 text-right">
-    <input class="btn btn-primary" type="submit" value="Ajouter l'opérateur" />
-</div>
+    <div class="row">
+        <div class="col-xs-6">
+            <a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
+        </div>
+        <div class="col-xs-6 text-right">
+            <input class="btn btn-primary" type="submit" value="Ajouter l'opérateur" />
+        </div>
+    </div>
 </form>
+
 </section>

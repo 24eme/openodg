@@ -16,7 +16,7 @@
             $lot = $form->getLot($key);
     ?>
       <tr class="vertical-center cursor-pointer" data-adherent="<?php echo $lot->declarant_identifiant ?>">
-        <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->id_document])->format('d/m/Y') ?></td>
+        <td><?php echo DateTime::createFromFormat('Ymd', $dates[$lot->unique_id])->format('d/m/Y') ?></td>
         <td><?php echo $lot->declarant_nom; ?></td>
         <td>
         <?php if ($lot instanceof stdClass): ?>

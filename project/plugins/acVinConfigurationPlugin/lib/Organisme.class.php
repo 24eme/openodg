@@ -29,11 +29,11 @@ class Organisme
         if ($region) {
             return $region;
         }
-        return sfConfig::get('sf_app');
+        return strtoupper(sfConfig::get('sf_app'));
     }
 
     public static function getInstance($region = null, $type = self::DEFAULT_TYPE) {
-        $region = ($region) ?: strtoupper(self::getCurrentOrganisme());
+        $region = ($region) ?: self::getCurrentOrganisme();
 
         if (in_array($type, ['degustation', 'facture']) === false) {
             $type = self::DEFAULT_TYPE;

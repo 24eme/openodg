@@ -29,12 +29,12 @@ class CourrierClient extends acCouchdbClient {
     public static $courrier_templates_pages = array(
             self::COURRIER_NC_Passage1 => ['degustationNonConformitePDF_page1', 'degustationNonConformitePDF_page2'],
             self::COURRIER_AVIS13 => ['courrierAvisC13ManquementControleVinPDF'],
-            self::COURRIER_AVIS14 => [''],
-            self::COURRIER_AVIS15 => ['courrierLeveeC15ManquementControleVin'],
-            self::COURRIER_AVIS16 => [''],
-            self::COURRIER_AVIS17 => [''],
-            self::COURRIER_AVIS18 => [''],
-            self::COURRIER_AVIS19 => [''],
+            self::COURRIER_AVIS14 => ['courrierAvisC14ConformiteControleVinPDF'],
+            self::COURRIER_AVIS15 => ['courrierLeveeC15ManquementControleVinPDF'],
+            self::COURRIER_AVIS16 => ['courrierAvisC16ManquementSuiteRecoursPDF'],
+            self::COURRIER_AVIS17 => ['courrierLeveeC17ManquementControleVinPDF'],
+            self::COURRIER_AVIS18 => ['courrierAvisC18ManquementSuiteNouveauControleVinPDF'],
+            self::COURRIER_AVIS19 => ['courrierAvisC19ManquementSuiteRecoursPDF'],
     );
 
 	/**
