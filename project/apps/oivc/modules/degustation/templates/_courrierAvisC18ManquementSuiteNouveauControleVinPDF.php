@@ -2,13 +2,13 @@
 <?php use_helper('Lot'); ?>
 
 <style>
-    table {
-        font-size: 12px;
-    }
+table {
+    font-size: 12px;
+}
 
-    th {
-        font-weight: bold;
-    }
+th {
+    font-weight: bold;
+}
 </style>
 
 <table style="width:1100px;padding-left:400px;" >
@@ -23,28 +23,42 @@
 <br/>
 <br/><br/>
 
-<table style="text-align: center"><tr><td><strong>Objet : Avis de manquement controle vin</strong></td></tr></table>
+<table style="text-align: center"><tr><td><strong>Objet : Avis de manquement suite a nouveau controle vin</strong></td></tr></table>
 <br/><br/>
 
 
 <table>
     <tr><td>Madame, Monsieur,</td></tr>
     <br/>
-    <tr><td>Le lot : </td></tr>
+    <tr><td>Suite au nouvel examen analytique et/ou organoleptique d'un lot de votre cave :</td></tr>
     <br/>
     <tr><td>AOC, couleur, millésime : <strong><?php echo showProduitCepagesLot($lot, false) ?></strong></td></tr>
     <br/>
     <tr><td>Volume : <?php echo $lot->volume ?> hl</td></tr>
     <tr><td>Cols : 0</td></tr>
     <br/>
-    <tr><td>Représenté par l'échantillon témoin pour lequel vous avez demandé un recours, n'a relevé aucun manquement qu cahier des charges de l'Appellation revendiquée.</td></tr>
-    <br/>
-    <tr><td>En conséquence, la circulation du lot concerné est autorisée à réception du présent courrier.</td></tr>
-    <br/>
-    <tr><td>Vous trouverez ci-joint une copie du rapport d'inspection corresponsant.</td></tr>
-    <br/>
-    <br/>
-    <tr><td>Nous vous adressons, Madame, Monsieur, nos sincères salutations.</td></tr>
+    <tr><td>un manquement a été détecté : défaut <strong><?php echo $lot->getShortLibelleConformite() ?></strong></td></tr>
+</table>
+
+<br/>
+<br/>
+
+<table>
+    <tr><td>Ce lot doit donc rester bloqué.</td></tr>
+</table>
+<br/>
+<br/>
+<table>
+    <tr><td>Vous trouverez ci-joint le rapport d'inspection et la fiche de manquement correspondante.</td></tr>
+<br/>
+<br/>
+<tr><td>Vous pouvez nous faire parvenir sous 10 jours maximum à partir de la date d'envoi vos éventuelles observations et demande de recours sur papier libre.</td></tr>
+<br/>
+<br/>
+<tr><td>Conformément au Plan d'Inspection de l'Appellation, le dossier est transmis à l'INAO.</td></tr>
+<br/>
+<br/>
+<tr><td>Veuillez recevoir, Madame, Monsieur, nos sincères salutations.</td></tr>
 </table>
 
 <br/><br/>
