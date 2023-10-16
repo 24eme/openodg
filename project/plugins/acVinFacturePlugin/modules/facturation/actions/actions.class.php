@@ -5,13 +5,12 @@ class facturationActions extends sfActions
 
     public function executeIndex(sfWebRequest $request)
     {
-        $region = (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null;
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(array(
             GenerationClient::TYPE_DOCUMENT_FACTURES,
             GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE,
             GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA,
             GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE
-        ), 10, $region);
+        ), 10, $this->getCurrentRegion());
 
         $this->form = new LoginForm();
 
@@ -42,7 +41,7 @@ class facturationActions extends sfActions
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
-              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
+              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee(), $this->getCurrentRegion()));
               $generation->save();
 
               return $this->redirect('generation_view', ['id' => $generation->_id]);
@@ -62,8 +61,8 @@ class facturationActions extends sfActions
     {
         $this->mouvements = [];
         $etablissements = [];
-        $region = (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
-        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente($region);
+
+        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente($this->getCurrentRegion());
 
         foreach ($mouvements_en_attente as $m) {
             if (empty($m->key[MouvementFactureView::KEY_ETB_ID])) {
@@ -151,7 +150,7 @@ class facturationActions extends sfActions
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne, null, sfConfig::get('app_region', null));
 
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
-            $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, sfConfig::get('app_region'));
+            $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $this->getCurrentRegion());
 
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
 
@@ -442,7 +441,7 @@ class facturationActions extends sfActions
     }
 
     public function executeRedirectTemplate(sfWebRequest $request) {
-        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne(null, Organisme::getCurrentRegion());
+        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne(null, $this->getCurrentRegion());
         return $this->redirect('facturation_template', array('id' => $template));
     }
 
@@ -480,12 +479,15 @@ class facturationActions extends sfActions
     }
 
     public function executeLibre(sfWebRequest $request) {
-        $this->facturationsLibre = MouvementsFactureClient::getInstance()->startkey('MOUVEMENTSFACTURE-0000000000')->endkey('MOUVEMENTSFACTURE-9999999999')->execute()->getDatas();
+        $facturationsLibre = MouvementsFactureClient::getInstance()->startkey('MOUVEMENTSFACTURE-0000000000')->endkey('MOUVEMENTSFACTURE-9999999999')->execute()->getDatas();
+        $region = $this->getCurrentRegion();
+        $this->facturationsLibre = array_filter($facturationsLibre, function($item) use($region) { return ($item->region == $region); } );
         krsort($this->facturationsLibre);
     }
 
     public function executeCreationLibre(sfWebRequest $request) {
             $this->factureMouvements = MouvementsFactureClient::getInstance()->createMouvementsFacture();
+            $this->factureMouvements->region = $this->getCurrentRegion();
             $this->factureMouvements->save();
             $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
     }
@@ -561,5 +563,9 @@ class facturationActions extends sfActions
 
          $this->getUser()->setFlash("notice", "La facture a bien été transmise à l'adresse ".$facture->getSociete()->getEmailCompta());
          $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
+    }
+
+    public function getCurrentRegion() {
+        return (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
     }
 }
