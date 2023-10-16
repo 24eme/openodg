@@ -565,4 +565,8 @@ class facturationActions extends sfActions
          $this->getUser()->setFlash("notice", "La facture a bien été transmise à l'adresse ".$facture->getSociete()->getEmailCompta());
          $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
     }
+
+    public function getCurrentRegion() {
+        return (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
+    }
 }
