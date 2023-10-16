@@ -11,10 +11,10 @@ class pmcActions extends sfActions {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_PMC, $etablissement);
         }
 
-        $date = $request->getParameter("date", date('YmdHis'));
+        $date = $request->getParameter("date");
         $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
 
-        if (PMCClient::getInstance()->findBrouillon($this->etablissement->identifiant, $periode)) {
+        if (PMCClient::getInstance()->findBrouillon($etablissement->identifiant, $periode)) {
             $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation non terminée");
             return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'periode' => $periode));
         }
