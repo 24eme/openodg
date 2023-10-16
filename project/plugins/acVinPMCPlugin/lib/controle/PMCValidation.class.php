@@ -133,7 +133,7 @@ class PMCValidation extends DocumentValidation
               $this->addPoint(self::TYPE_ERROR, 'date_degust_anterieure', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
-            if(!$this->document->isValideeOdg() && date('Y-m-d') < $lot->date_degustation_voulue && $nb_days_from_degust <= 45){
+            if(!$this->document->isValideeOdg() && $nb_days_from_degust <= 45){
               $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Lot prélevable à partir du (" . $date_degust->format('d/m/Y') . ")", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
