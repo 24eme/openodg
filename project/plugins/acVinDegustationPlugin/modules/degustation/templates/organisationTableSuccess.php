@@ -74,7 +74,7 @@
                         if (isset($form[$name])):
                     ?>
                         <tr class="vertical-center cursor-pointer">
-                            <td class="text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>">
+                            <td class="edit text-center<?php if ($lot->leurre === true): ?> bg-warning<?php endif ?>">
                             <?php if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()): ?>
                                 <?php echo $lot->getNumeroAnonymat() ?>
                             <?php else: ?>
