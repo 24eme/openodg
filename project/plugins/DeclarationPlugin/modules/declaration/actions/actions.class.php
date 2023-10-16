@@ -130,6 +130,10 @@ class declarationActions extends sfActions {
             return $this->redirect('dr_visualisation', ['id' => $doc_id]);
         }
 
+        if($doc_type == "PARCELLAIREMANQUANT") {
+            return $this->redirect('parcellairemanquant_visualisation', array('id' => $doc_id));
+        }
+
         // Doc sans page de visu
         if($doc_type == "PARCELLAIREIRRIGUE") {
 
