@@ -310,10 +310,17 @@ class FactureClient extends acCouchdbClient {
       $cpt = 0;
 
       foreach ($mouvements as $societeID => $mouvementsSoc) {
+          $compte = null;
           if(class_exists("Societe")) {
-              $compte = SocieteClient::getInstance()->find($societeID)->getMasterCompte();
-          } else {
+              if ($societe = SocieteClient::getInstance()->find($societeID)) {
+                  $compte = $societe->getMasterCompte();
+              }
+          }
+          if (!$compte) {
               $compte = CompteClient::getInstance()->findByIdentifiant($societeID);
+          }
+          if (!$compte) {
+              continue;
           }
 
           $f = $this->createDocFromView($mouvementsSoc, $compte, $date_facturation, $message_communication, $region, $template);
