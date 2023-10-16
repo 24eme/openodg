@@ -21,7 +21,7 @@
                 <?php else: ?>
                   <th class="col-xs-1"> Identifiant Lot Opérateur</th>
                 <?php endif; ?>
-                <th class="text-center col-xs-3">Produit (millesime)</th>
+                <th class="text-center col-xs-3">Produit - millesime - mention</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-1">Lot prélevable à partir du</th>
                 <?php if ($sf_user->isAdmin()): ?>

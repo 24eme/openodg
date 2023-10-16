@@ -13,12 +13,17 @@ class PMCLotForm extends TransactionLotForm
 
         if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
             unset($this->widgetSchema['produit_hash']);
-            unset($this->validators['produit_hash']);
+            unset($this->validatorSchema['produit_hash']);
             unset($this->widgetSchema['millesime']);
-            unset($this->validators['millesime']);
+            unset($this->validatorSchema['millesime']);
             unset($this->widgetSchema['engagement_8515']);
-            unset($this->validators['engagement_8515']);
+            unset($this->validatorSchema['engagement_8515']);
         }
+
+        unset($this->widgetSchema['specificite']);
+        unset($this->validatorSchema['specificite']);
+        $this->setWidget('specificite', new bsWidgetFormInput(array(), array()));
+        $this->setValidator('specificite', new sfValidatorString(array('required' => false)));
 
         $this->widgetSchema->setNameFormat('[%s]');
     }

@@ -54,7 +54,17 @@
                     <div class="col-md-5">
                     <?php if (isset($lot['engagement_8515'])): ?>
                       <div class="form-group">
-                        <div class="col-md-offset-3 checkbox">
+                            <div class="col-md-9 checkbox checkboxlots">
+                            <?php if (isset($lot['specificite'])): ?>
+                                <label>
+                                    <input type="checkbox" <?php echo (count($lotItem->cepages->toArray(true, false)))? 'checked="checked"' : '' ?>
+                                        id="lien_<?php echo $lot->renderId() ?>_specificite" data-toggle="modal"
+                                        data-target="#<?php echo $lot->renderId() ?>_specificite" />
+                                    <span class="checkboxtext_<?php echo $lot->renderId() ?>_specificite"><?php echo ($lotItem->specificite) ? "Mention : ".$lotItem->specificite." <a>(Changer)</a>" :  "Sans mention valorisante <a>(Changer)</a>" ?></span>
+                                </label>
+                            <?php endif; ?>
+                            </div>
+                        <div class="col-md-3 checkbox">
                             <?php echo $lot['engagement_8515']->render(); ?>
                             <?php echo $lot['engagement_8515']->renderLabel("Est en 85/15"); ?>
                         </div>
@@ -137,22 +147,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
-                      <div class="col-md-6">
-                          <div class="form-group">
-                              <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
-                              <div class="col-sm-4">
-                                    <?php echo $lot['specificite']->render(); ?>
-                              </div>
-                              <div class="col-sm-5"></div>
-                              <div class="col-sm-6 text-danger">
-                                    <?php echo $lot['specificite']->renderError(); ?>
-                              </div>
-                          </div>
-                      </div>
-                    <?php endif ?>
+                <?php if (isset($lot['specificite'])): ?>
+                <div class="modal fade modal_lot_specificite" id="<?php echo $lot->renderId() ?>_specificite" role="dialog" aria-labelledby="Mention valorisante" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel">Mention valorisantes</h4>
+                                <h5>Déclarer une mentions valorisante qui figurera sur l'étiquette.</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group ">
+                                    <div class="col-sm-12">
+                                        <?php echo $lot['specificite']->renderLabel("Mention valorisante", array('class' => "col-sm-4 control-label")); ?>
+                                        <div class="col-sm-8">
+                                            <?php echo $lot['specificite']->render(); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="btn btn-success btn pull-right" data-dismiss="modal">Valider</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     <?php endforeach; ?>
