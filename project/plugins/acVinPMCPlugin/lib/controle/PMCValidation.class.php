@@ -124,7 +124,7 @@ class PMCValidation extends DocumentValidation
               continue;
             }
             if(!$lot->date_degustation_voulue){
-                $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+                $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date à laquelle le lot peut être prélevé", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
             }
             $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
