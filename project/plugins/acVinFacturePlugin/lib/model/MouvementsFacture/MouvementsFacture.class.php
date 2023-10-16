@@ -101,11 +101,10 @@ class MouvementsFacture extends BaseMouvementsFacture implements InterfaceMouvem
     public function getStartIndexForSaisieForm() {
         $index = 0;
         foreach($this->getSortedMvts() as $mvt) {
-          if ($mvt->facture && $index < $mvt->vrac_numero) {
-            $index = $mvt->vrac_numero;
+          if ($mvt->facture) {
+            $index++;
           }
         }
-        $index++;
         return $index;
     }
 

@@ -4,14 +4,25 @@ class PMC extends BasePMC
 {
     public function constructId() {
         if (!$this->date) {
-            $this->date = date("YmdHis");
+            $this->date = date("Y-m-d H:i:s");
         }
-        $idDate = str_replace('-', '', $this->date);
+        $idDate = preg_replace('/[^0-9]/', '', $this->date);
         if (strlen($idDate) < 8) {
             throw new sfException("Mauvais format de date pour la construction de l'id");
         }
         $id = 'PMC-' . $this->identifiant . '-' . $idDate;
         $this->set('_id', $id);
+    }
+
+    public function initDoc($identifiant, $campagne, $date = null) {
+        $this->identifiant = $identifiant;
+        $this->date = $date;
+        if (!$this->date) {
+            $this->date = date("Y-m-d H:i:s");
+        }
+        $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($campagne);
+        $etablissement = $this->getEtablissementObject();
+        $this->constructId();
     }
 
     public function getAllPieces() {
@@ -33,7 +44,7 @@ class PMC extends BasePMC
 
     public function getDateFr() {
 
-        return preg_replace("/^([0-9]{4})([0-9]{2})([0-9]{2})$/", '\3/\2/\1', substr($this->date, 0, 8));
+        return preg_replace("/^([0-9]{4})-([0-9]{2})-([0-9]{2})/", '\3/\2/\1', substr($this->date, 0, 10));
     }
 
     public function generateUrlPiece($source = null) {

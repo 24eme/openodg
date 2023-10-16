@@ -170,6 +170,7 @@ MouvementsFacture:
       date: {  }
       identifiant: {  }
       libelle: {  }
+      region: {}
       valide:
         type: collection
         definition:

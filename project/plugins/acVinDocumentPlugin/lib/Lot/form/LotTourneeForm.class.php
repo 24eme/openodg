@@ -12,6 +12,10 @@ class LotTourneeForm extends LotModificationForm
         }
 
         unset($this['elevage']);
+
+        $this->setWidget('quantite', new bsWidgetFormInputInteger());
+        $this->setValidator('quantite', new sfValidatorInteger(['min' => 1]));
+        $this->widgetSchema->setLabel('quantite', 'Cols');
     }
 
     public function getDestinationsType()

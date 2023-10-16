@@ -124,7 +124,7 @@ class PMCValidation extends DocumentValidation
               continue;
             }
             if(!$lot->date_degustation_voulue){
-                $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date de dégustation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+                $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date à laquelle le lot peut être prélevé", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
             }
             $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
@@ -133,8 +133,8 @@ class PMCValidation extends DocumentValidation
               $this->addPoint(self::TYPE_ERROR, 'date_degust_anterieure', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
-            if(!$this->document->isValideeOdg() && date('Y-m-d') < $lot->date_degustation_voulue && $nb_days_from_degust <= 45){
-              $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Lot prélevable à partir du (" . $date_degust->format('d/m/Y') . ")", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+            if(!$this->document->isValideeOdg() && $nb_days_from_degust <= 45){
+              $this->addPoint(self::TYPE_WARNING, 'date_degust_proche', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Lot prélevable à partir du " . $date_degust->format('d/m/Y') . " ($nb_days_from_degust jours)", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
         }

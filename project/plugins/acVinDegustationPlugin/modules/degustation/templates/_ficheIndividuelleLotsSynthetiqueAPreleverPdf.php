@@ -27,8 +27,8 @@ th {
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Produit</strong></th>
           <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Cuve</strong></th>
           <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>N° Lot</strong></th>
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Observation</strong></th>
-          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Signature</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Observation</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date & Signature</strong></th>
         </tr>
     <?php endif;?>
          <tr style="line-height:17px;">

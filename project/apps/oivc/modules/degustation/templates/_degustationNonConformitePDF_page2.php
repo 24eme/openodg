@@ -50,18 +50,18 @@
 <br/>
 
 <table border="1">
-    <tr><td colspan="6">PARTIE RÉSERVÉE À L'OIVC</td></tr>
-    <tr><td colspan="6">RÉSULTAT DU CONTRÔLE</td></tr>
+    <tr><td colspan="5">PARTIE RÉSERVÉE À L'OIVC</td></tr>
+    <tr><td colspan="5">RÉSULTAT DU CONTRÔLE</td></tr>
     <tr style="text-align: center">
-        <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement</td> <td>Code manquement</td>
+        <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement / Code manquement</td>
     </tr>
     <tr>
-        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td></td> <td></td> <td></td> <td></td>
+        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td><?php echo echoCheck(null, false); ?></td> <td><?php echo echoCheck(null, true); ?></td> <td></td>
     </tr>
     <tr>
-        <td>Examen organoleptique<br/></td> <td></td> <td></td> <td></td> <td></td> <td></td>
+        <td>Examen organoleptique<br/></td> <td><?php echo $degustation->getDate(); ?></td> <td><?php echo echoCheck(null, true); ?></td> <td><?php echo echoCheck(null, false); ?></td> <td></td>
     </tr>
-    <tr><td colspan="6">Date transmission INAO :</td></tr>
+    <tr><td colspan="5">Date transmission INAO :</td></tr>
 </table>
 
 <br/><br/>

@@ -32,13 +32,15 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
     protected function updateDefaultsFromObject() {
       parent::updateDefaultsFromObject();
       $lastMouvement = $this->getObject()->getDocument()->getLastMouvement();
-      if ($this->getObject()->getKey() == 'nouveau' && $lastMouvement) {
-        $this->setDefault('identifiant', $lastMouvement->identifiant);
-        $this->setDefault('identifiant_analytique', $lastMouvement->identifiant_analytique);
-        $this->setDefault('type_libelle', $this->getObject()->getDocument()->libelle);
-        if (!FactureConfiguration::getInstance()->getSuggestionsFacturationLibre()) {
-            $this->setDefault('detail_libelle', $lastMouvement->detail_libelle);
-        }
+      if ($this->getObject()->getKey() == 'nouveau') {
+          $this->setDefault('type_libelle', $this->getObject()->getDocument()->libelle);
+          if ($lastMouvement) {
+              $this->setDefault('identifiant', $lastMouvement->identifiant);
+              $this->setDefault('identifiant_analytique', $lastMouvement->identifiant_analytique);
+              if (!FactureConfiguration::getInstance()->getSuggestionsFacturationLibre()) {
+                  $this->setDefault('detail_libelle', $lastMouvement->detail_libelle);
+              }
+          }
       }
     }
 

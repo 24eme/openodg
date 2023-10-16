@@ -12,20 +12,18 @@ class PMCLotForm extends TransactionLotForm
         $this->setValidator('engagement_8515', new sfValidatorBoolean());
 
         if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
-            $this->setWidget('produit_hash', new bsWidgetFormChoice([
-                'choices' => $this->getProduits($this->getObject()->getProduitHash())
-            ]));
-            $this->setValidator('produit_hash', new sfValidatorChoice([
-                'required' => false,
-                'choices' => array_keys($this->getProduits($this->getObject()->getProduitHash()))
-            ]));
-
-            $this->setWidget('millesime', new bsWidgetFormInput());
-            $this->setValidator('millesime', new sfValidatorChoice([
-                'required' => false,
-                'choices' => [$this->getObject()->millesime => $this->getObject()->millesime]
-            ]));
+            unset($this->widgetSchema['produit_hash']);
+            unset($this->validatorSchema['produit_hash']);
+            unset($this->widgetSchema['millesime']);
+            unset($this->validatorSchema['millesime']);
+            unset($this->widgetSchema['engagement_8515']);
+            unset($this->validatorSchema['engagement_8515']);
         }
+
+        unset($this->widgetSchema['specificite']);
+        unset($this->validatorSchema['specificite']);
+        $this->setWidget('specificite', new bsWidgetFormInput(array(), array()));
+        $this->setValidator('specificite', new sfValidatorString(array('required' => false)));
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
@@ -37,6 +35,11 @@ class PMCLotForm extends TransactionLotForm
     }
 
     public function doUpdateObject($values) {
+        if ($this->getObject()->getDocument()->getType() === PMCNCClient::TYPE_MODEL) {
+            $values['produit_hash'] = $this->getObject()->getDocument()->getLotOrigine()->produit_hash;
+            $values['produit_libelle'] = $this->getObject()->getDocument()->getLotOrigine()->produit_libelle;
+            $values['millesime'] = $this->getObject()->getDocument()->getLotOrigine()->millesime;
+        }
         parent::doUpdateObject($values);
 
         if (!empty($values['date_degustation_voulue'])) {

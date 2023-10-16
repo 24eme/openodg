@@ -11,10 +11,10 @@ class pmcActions extends sfActions {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_PMC, $etablissement);
         }
 
-        $date = $request->getParameter("date", date('YmdHis'));
+        $date = $request->getParameter("date");
         $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
 
-        if (PMCClient::getInstance()->findBrouillon($this->etablissement->identifiant, $periode)) {
+        if (PMCClient::getInstance()->findBrouillon($etablissement->identifiant, $periode)) {
             $this->getUser()->setFlash("warning", "Il existe déjà une déclaration de mise en circulation non terminée");
             return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'periode' => $periode));
         }
@@ -132,7 +132,7 @@ class pmcActions extends sfActions {
             $this->pmc->save();
         }
 
-        if (count($this->pmc->getLots()) == 0 || current(array_reverse($this->pmc->getLots()->toArray()))->produit_hash != null || $request->getParameter('submit') == "add") {
+        if (count($this->pmc->getLots()) == 0 || $request->getParameter('submit') == "add") {
             $this->pmc->addLot();
         }
         $this->form = new PMCLotsForm($this->pmc);
@@ -193,16 +193,15 @@ class pmcActions extends sfActions {
 
         if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_VALIDATION))) {
             $this->pmc->save();
+            return $this->redirect('pmc_validation', $this->pmc);
         }
 
         $this->pmc->cleanDoc();
 
         $this->validation = new PMCValidation($this->pmc);
-
         $this->form = new PMCValidationForm($this->pmc, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(PMCValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-
             return sfView::SUCCESS;
         }
 

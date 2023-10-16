@@ -94,6 +94,17 @@
                     </div>
                 </div>
             </div>
+            <?php if (isset($form['quantite'])): ?>
+            <div class="col-md-6">
+                <?php echo $form['quantite']->renderError(null, array('class' => "col-sm-4 control-label")) ?>
+                <div class="form-group<?php if ($form['quantite']->getError()): ?> has-error<?php endif ?>">
+                    <?php echo $form['quantite']->renderLabel(null, array('class' => "col-sm-4 control-label")); ?>
+                    <div class="col-sm-5">
+                        <?php echo $form['quantite']->render(array('placeholder' => "Nombre de cols")); ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif ?>
         </div>
         <?php if (isset($form['elevage'])): ?>
         <div class="row mb-3">
