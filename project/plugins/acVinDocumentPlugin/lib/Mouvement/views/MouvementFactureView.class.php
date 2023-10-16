@@ -46,7 +46,7 @@ class MouvementFactureView extends acCouchdbView
                             ->endkey([0, 1, []])
                             ->reduce(false)
                             ->getView($this->design, $this->view)->rows as $r) {
-            if ($region && $r->value->region == $region ) {
+            if ($region && $r->value->region != $region ) {
                 continue;
             }
             $rows[] = $r;
