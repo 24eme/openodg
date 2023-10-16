@@ -15,7 +15,9 @@
             <td style="overflow-wrap:break-word;text-align: left; height: 4px; line-height: 1px; overflow: hidden;" colspan="2">&nbsp;</td>
       </tr>
       <tr>
-        <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(KeyInflector::unaccent($lotInfo->lot->getConfig()->getCertification()->libelle." ".$lotInfo->lot->produit_libelle)), 50, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
+        <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 28.5px; line-height: 14px; overflow: hidden; vertical-align: middle;"><strong>&nbsp;&nbsp;<?php echo truncate_text(strtoupper(
+            KeyInflector::unaccent(($lotInfo->lot->getConfig() ? $lotInfo->lot->getConfig()->getCertification()->libelle : $lotInfo->lot->details)." ".$lotInfo->lot->produit_libelle)
+        ), 50, '…', 'middle') .' '.  $lotInfo->lot->millesime;  ?></strong>
         </td>
       </tr>
       <?php if(DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
