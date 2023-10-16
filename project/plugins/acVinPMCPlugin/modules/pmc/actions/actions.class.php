@@ -193,16 +193,15 @@ class pmcActions extends sfActions {
 
         if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_VALIDATION))) {
             $this->pmc->save();
+            return $this->redirect('pmc_validation', $this->pmc);
         }
 
         $this->pmc->cleanDoc();
 
         $this->validation = new PMCValidation($this->pmc);
-
         $this->form = new PMCValidationForm($this->pmc, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getPoints(PMCValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-
             return sfView::SUCCESS;
         }
 
