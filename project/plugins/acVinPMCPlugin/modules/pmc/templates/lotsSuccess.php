@@ -18,7 +18,7 @@
     <h2>Ce que vous souhaitez faire recontroler : </h2>
     <p>Merci de confirmer ou corriger les informations du lot à recontroler</p>
     <?php else: ?>
-    <?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'campagnes' => [ConfigurationClient::getInstance()->getPreviousCampagne($pmc->campagne), $pmc->campagne], 'region' => $sf_user->getRegion()]) ?>
+    <p>Merci de saisir les informations relatives aux lots issus de la revendication dont vous souhaitez déclarer une première commercialisation :</p>
     <?php endif; ?>
 
     <?php foreach($form['lots'] as $key => $lot): ?>

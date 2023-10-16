@@ -4,7 +4,7 @@
 <?php use_javascript('hamza_style.js'); ?>
 
         <?php if($pmc->exist('lots')): ?>
-          <h3 id="table_title">Déclaration des lots</h3>
+          <h3 id="table_title">Lots de Première :</h3>
           <?php
           $lots = $pmc->getLotsByCouleur();
           ?>
