@@ -10,10 +10,10 @@ class PMCNC extends PMC
 
     public function constructId() {
         if (! $this->date) {
-            $this->date = date("YmdHis");
+            $this->date = date("Y-m-d H:i:s");
         }
 
-        $idDate = str_replace('-', '', $this->date);
+        $idDate = preg_replace('/[^0-9]/', '', $this->date);
 
         if (strlen($idDate) < 8) {
             throw new sfException("Mauvais format de date pour la construction de l'id");
