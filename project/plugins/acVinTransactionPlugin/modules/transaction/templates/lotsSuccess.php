@@ -95,7 +95,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <?php if(DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>
+                    <?php if(isset($lot['specificite'])): ?>
                       <div class="col-md-6">
                           <div class="form-group">
                               <?php echo $lot['specificite']->renderLabel("Spécificité", array('class' => "col-sm-3 control-label")); ?>
@@ -153,7 +153,7 @@
                                 <div class="input-group-addon">%</div>
                               </div>
                               <div class="input-group input-group-hl" >
-                                <?php echo $lot['repartition_'.$i]->render(); ?>
+                                <?php echo $lot['repartition_hl_'.$i]->render(); ?>
                                 <div class="input-group-addon">hl</div>
                               </div>
                           </div>
