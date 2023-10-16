@@ -1,0 +1,4 @@
+all:
+  configuration:
+    transaction:
+      static_region: OIVC
