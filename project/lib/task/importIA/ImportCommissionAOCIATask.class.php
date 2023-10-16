@@ -42,6 +42,7 @@ class ImportCommissionA0CIATask extends ImportLotsIATask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('region', null, sfCommandOption::PARAMETER_REQUIRED, 'Force region', null),
         ));
 
         $this->namespace = 'import';
@@ -75,7 +76,9 @@ EOF;
             continue;
           }
 
-          //print_r($data);
+          if($data[self::CSV_NUMERO_ECHANTILLON] == 'Factice') {
+              continue;
+          }
 
           $degustation_date = $this->formatDate(trim($data[self::CSV_DATE_COMMISSION]));
 
@@ -106,8 +109,8 @@ EOF;
 
           $newDegustation = new Degustation();
 
-          if(strpos($data[self::CSV_RESPONSABLE], 'AULAT') !== false) {
-              $newDegustation->region = "OIVC";
+          if($options['region']) {
+              $newDegustation->region = $options['region'];
           }
 
           $newDegustation->numero_archive = sprintf("%05d", preg_replace("/^.*-/", "", $data[self::CSV_ID]));
@@ -173,7 +176,8 @@ EOF;
               }
           }
 
-          $etablissement = $this->identifyEtablissement(preg_replace("/[ ]*[0-9]+$/", "", $data[self::CSV_OPERATEUR]), preg_replace("/^.*([0-9]+)$/", '\1', $data[self::CSV_OPERATEUR]));
+          $etablissement = $this->identifyEtablissement(preg_replace("/[ ]*[0-9]+$/", "", $data[self::CSV_OPERATEUR]), preg_replace("/^.* ([0-9]+)$/", '\1', $data[self::CSV_OPERATEUR]));
+
           if (!$etablissement) {
                echo "WARNING;établissement non trouvé ".$data[self::CSV_OPERATEUR].";pas d'import;$line\n";
                continue;
@@ -187,18 +191,44 @@ EOF;
           $numeroEchantillon = sprintf("%05d", trim($data[self::CSV_NUMERO_ECHANTILLON]));
 
           /*$lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONAFFECTABLE));*/
+           $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' =>  $data[self::CSV_MILLESIME], 'numero_logement_operateur' => $numeroCuve, 'statut' => Lot::STATUT_AFFECTABLE), false);
+           $lot = null;
+           if(count($lots) == 1) {
+              $lot = $lots[0];
+           }
 
-              $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE), false);
-              $lot = null;
-              if(count($lots) == 1) {
-                  $lot = $lots[0];
-              }
+           if(!$lot) {
+               $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE), false);
+               $lot = null;
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
+
+           if(!$lot) {
+               foreach($lots as $key => $lot) {
+                   if($numeroCuve && !preg_match("|^".$numeroCuve." |", $lot->numero_logement_operateur)) {
+                       unset($lots[$key]);
+                   }
+               }
+               $lots =  array_values($lots);
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
+
+           if(!$lot && $numeroCuve) {
+               $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'numero_logement_operateur' => $numeroCuve, 'statut' => Lot::STATUT_AFFECTABLE), false);
+               $lot = null;
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
 
           if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
               continue;
           }
-
 
           $date_lot_securite =  date("Y-m-d",strtotime($lot->date." -6 months"));
           if ($date_lot_securite > $date) {
@@ -207,6 +237,8 @@ EOF;
           }
 
           $lot = $degustation->addLot($lot, false);
+
+          $lot->volume = $volume;
 
           $lot->preleve = preg_replace('/ .*/', '', $date);
 

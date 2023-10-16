@@ -204,6 +204,7 @@ EOF;
             $CSV_HABILITATION_CVI = '';
         }
         $CSV_HABILITATION_RS = KeyInflector::slugify(trim($raisonSociale));
+        $CSV_HABILITATION_RS_WITHOUT_INTITULE = KeyInflector::slugify(trim(CompteGenerique::extractIntitule(trim($raisonSociale))[1]));
         $key_raisonsociale_cvi_codepostal = KeyInflector::slugify($CSV_HABILITATION_RS.$CSV_HABILITATION_CVI.str_replace(' ', '', $codePostal));
 
         if(isset($this->etablissementsCache[$key_raisonsociale_cvi_codepostal])) {
@@ -246,6 +247,19 @@ EOF;
                 return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
             }
             if (KeyInflector::slugify($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE]) == $CSV_HABILITATION_RS) {
+                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
+
+                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
+            }
+
+            $currentNomWithoutIntitule = KeyInflector::slugify(trim(CompteGenerique::extractIntitule($etab->value[EtablissementAllView::VALUE_RAISON_SOCIALE])[1]));
+            if ($currentNomWithoutIntitule == $CSV_HABILITATION_RS_WITHOUT_INTITULE) {
+                $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
+
+                return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];
+            }
+            $currentNomWithoutIntitulInverse = implode("-", array_reverse(explode("-", $currentNomWithoutIntitule)));
+            if ($currentNomWithoutIntitulInverse == $CSV_HABILITATION_RS_WITHOUT_INTITULE) {
                 $this->etablissementsCache[$key_raisonsociale_cvi_codepostal] = EtablissementClient::getInstance()->find($etab->id, $hydrate);
 
                 return $this->etablissementsCache[$key_raisonsociale_cvi_codepostal];

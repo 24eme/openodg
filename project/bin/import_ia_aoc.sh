@@ -59,6 +59,8 @@ echo "Habilitations"
 # sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
 php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv --application="$ODG"
 
+ls $DATA_DIR/01_operateurs/habilitations_inao/ | while read file; do xls2csv -c ";" "$DATA_DIR/01_operateurs/habilitations_inao/$file"; done > $DATA_DIR/habilitations_inao.csv
+
 echo "Import des zones"
 
 ls $DATA_DIR/07_chais/zones/ | while read file; do cat "$DATA_DIR/07_chais/zones/$file" | tr "\n" " " | tr -d "\r" |  sed -r 's/[ ]+/ /g' | sed 's/&nbsp;//g' | sed 's/&amp;//g' | sed 's/&#194;/Â/g' | sed 's/&#200;/È/g' | sed 's/&#224;/à/g' | sed 's/&#226;/â/g' | sed 's/&#231;/ç/g' | sed 's/&#232;/è/g' | sed 's/&#233;/é/g' | sed 's/&#234;/ê/g' | sed 's/&#244;/ê/g' | sed "s/&#39;/'/g" | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/^[ \t]+//' | sed -r 's/ ?; ?/;/g' | grep -A 999999999 "RaisonSociale;" | sed "s/^/$(echo $file | sed 's/.html//');/" | grep -v ";;;;$"; done | less > $DATA_DIR/zones.csv
@@ -96,15 +98,6 @@ bash bin/updateviews.sh
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_pmc.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_pmc.csv
 php symfony import:pmc-ia $DATA_DIR/lots_pmc.csv --application="$ODG" --trace
 
-echo "Import lots de contrôles"
-
-bash bin/updateviews.sh
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
-php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" --trace
-
-echo "Import des commissions"
-
 bash bin/updateviews.sh
 
 ls $DATA_DIR/04_controles_produits/commissions/*.html | while read file; do
@@ -112,13 +105,30 @@ ls $DATA_DIR/04_controles_produits/commissions/*.html | while read file; do
 
     cat $file | tr "\n" " " |  sed -r 's/[ ]+/ /g' | sed 's/&nbsp;//g' | sed 's/&amp;//g' | sed 's/<table> <tbody><tr>//g' | sed 's|</tr> </tbody></table>||g' | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/^[ \t]+//' | sed -r 's/ ?; ?/;/g' | grep -A 999999999 "Echantillon;" | sed 's/N&#176;/N /g' | sed -r "s|^|$PRELIGNE|" > $file.csv
 
-    if test -s $file.csv; then
-        php symfony import:commissions-aoc-ia "$file.csv" --application=centre
-    else
+    if ! test -s $file.csv; then
         rm $file;
         rm $file.csv;
     fi
 done
+
+cat $DATA_DIR/04_controles_produits/commissions/commission_*.html.csv | grep -vE ";(PAULAT Sophie|ANTOINE Christelle);" | grep -v "WWW-INNOV-AGRO-FR" | grep -v "AOC-COUL-MILL" > $DATA_DIR/commissions_syndicat.csv
+
+echo "Import des commissions syndicats"
+
+php symfony import:commissions-aoc-ia $DATA_DIR/commissions_syndicat.csv --application=centre
+
+echo "Import lots de contrôles"
+
+bash bin/updateviews.sh
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
+php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" --region="oivc" --trace
+
+echo "Import des commissions de contrôles"
+
+cat $DATA_DIR/04_controles_produits/commissions/commission_*.html.csv | grep -E ";(PAULAT Sophie|ANTOINE Christelle);" | grep -v "WWW-INNOV-AGRO-FR" | grep -v "AOC-COUL-MILL" > $DATA_DIR/commissions_controle.csv
+
+php symfony import:commissions-aoc-ia $DATA_DIR/commissions_controle.csv --application=centre
 
 echo "Contacts"
 
