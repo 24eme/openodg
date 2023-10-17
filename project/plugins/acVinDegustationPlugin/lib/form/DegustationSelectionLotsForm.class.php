@@ -6,6 +6,7 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
     private $leurres = [];
     private $lotsOperateurs = [];
     private $filter_empty = false;
+    private $auto_select_lots = true;
     protected $date_degustation = null;
     protected $dates_degust_drevs = array();
     protected $object = null;
@@ -15,6 +16,10 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
         $this->object = $object;
         $this->date_degustation = $object->getDateFormat('Ymd');
         $this->filter_empty = isset($options['filter_empty']) && $options['filter_empty'];
+
+        if (isset($options['auto_select_lots'])) {
+            $this->auto_select_lots = $options['auto_select_lots'];
+        }
 
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }
@@ -117,7 +122,7 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
           $nbLots++;
         }
 
-        if (!count($lots_preleves)){
+        if (!count($lots_preleves) && $this->auto_select_lots){
 
             foreach ($this->lots as $key => $lot) {
                 if (in_array($lot->unique_id, $lots_preleves)) {

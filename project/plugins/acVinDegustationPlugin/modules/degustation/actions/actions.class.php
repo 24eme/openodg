@@ -132,7 +132,7 @@ class degustationActions extends sfActions {
             $this->degustation->save(false);
         }
 
-        $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true]);
+        $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true, 'auto_select_lots' => false]);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
