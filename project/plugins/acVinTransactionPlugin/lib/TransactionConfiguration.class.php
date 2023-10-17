@@ -107,4 +107,14 @@ class TransactionConfiguration {
           return $this->configuration['static_region'];
         }
     }
+
+    public function hasStaticOrigineType() {
+        return isset($this->configuration['static_region']) && boolval($this->configuration['static_region']);
+    }
+
+    public function getStaticOrigineType() {
+        if($this->hasStaticOrigineType()){
+          return $this->configuration['static_origine_type'];
+        }
+    }
 }
