@@ -32,6 +32,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_CHANGE_DEST = "01_CHANGE_DEST";
 
     const STATUT_REVENDIQUE = "01_REVENDIQUE";
+    const STATUT_DECLARE = "01_DECLARE";
     const STATUT_ENLEVE = "01_ENLEVE";
     const STATUT_CONDITIONNE = "01_CONDITIONNE";
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
@@ -85,6 +86,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_MANQUEMENT_EN_ATTENTE => 'Non conformité en attente',
 
         self::STATUT_REVENDIQUE => 'Revendiqué',
+        self::STATUT_DECLARE => 'Déclaré',
         self::STATUT_ENLEVE => 'Enlevé',
         self::STATUT_CONDITIONNE => 'Conditionné',
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
@@ -96,6 +98,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public static $statut2label = array(
             Lot::STATUT_REVENDIQUE => "success",
+            Lot::STATUT_DECLARE => "success",
             Lot::STATUT_CONFORME => "success",
             Lot::STATUT_PRELEVE => "success",
             Lot::STATUT_NONCONFORME => "danger",

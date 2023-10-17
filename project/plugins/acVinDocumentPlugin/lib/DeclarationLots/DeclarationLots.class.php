@@ -572,7 +572,11 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               }
 
               if ($lot->document_ordre == "01") {
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+                  if ($lot->getDocument()->type == DRevClient::TYPE_MODEL) {
+                      $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+                  }else{
+                      $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_DECLARE));
+                  }
               }
 
               if ($lot->elevage === true) {
