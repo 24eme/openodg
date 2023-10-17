@@ -3,9 +3,7 @@ all:
     degustation:
       nb_etiquettes: 4
       anonymisation_manuelle: false
-      avis:
-        favorable: "Fav."
-        defavorable: "Def."
+      anonymisation_prefix: OI_
       conformite:
         - CONFORME
         - NONCONFORME_ANALYTIQUE
