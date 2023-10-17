@@ -316,10 +316,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
 
       public function constructAdresseLogement(){
-          $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+          $completeAdresse = sprintf("%s — %s — %s %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
           if($this->isAdresseLogementDifferente()){
-              $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+              $completeAdresse = sprintf("%s — %s — %s %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
           }
 
           return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
@@ -572,7 +572,11 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               }
 
               if ($lot->document_ordre == "01") {
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+                  if ($lot->getDocument()->type == DRevClient::TYPE_MODEL) {
+                      $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_REVENDIQUE));
+                  }else{
+                      $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_DECLARE));
+                  }
               }
 
               if ($lot->elevage === true) {

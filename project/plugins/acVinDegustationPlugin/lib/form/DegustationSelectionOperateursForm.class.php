@@ -18,9 +18,9 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => true)));
         $this->validatorSchema['identifiant']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
 
-        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => ['ALEATOIRE' => 'Aléatoire', 'RENFORCE' => 'Aléatoire renforcé', 'SUPPLEMENTAIRE' => 'Supplémentaire']], []));
+        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => TourneeClient::$lotTourneeChoices], []));
         $this->widgetSchema->setLabel('initial_type', 'Type de contrôle');
-        $this->setValidator('initial_type', new sfValidatorChoice(['choices' => ['ALEATOIRE', 'RENFORCE',  'SUPPLEMENTAIRE']]));
+        $this->setValidator('initial_type', new sfValidatorChoice(['choices' => array_keys(TourneeClient::$lotTourneeChoices)]));
         $this->validatorSchema['initial_type']->setMessage('required', 'Le choix d\'un type est obligatoire');
 
         $this->widgetSchema['details'] = new bsWidgetFormInput();
@@ -40,10 +40,7 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $lot->declarant_nom = $etablissement->getNom();
         $lot->adresse_logement = sprintf('%s, %s %s', $etablissement->getAdresse(), $etablissement->getCodePostal(), $etablissement->getCommune());
         $lot->affectable = false;
-        $lot->initial_type = 'Degustation:aleatoire';
-        if ($values['initial_type'] === 'RENFORCE') {
-            $lot->initial_type .= '_renforce';
-        }
+        $lot->initial_type = $values['initial_type'];
         $lot->details = $values['details'];
     }
 }
