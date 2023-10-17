@@ -39,6 +39,12 @@ class PMCConfiguration {
       if(!$this->hasOdgProduits()){
         return array();
       }
+      if ($r = Organisme::getInstance()->getCurrentRegion()) {
+          $regions = RegionConfiguration::getInstance()->getOdgProduits($r);
+          if ($regions) {
+              return $regions;
+          }
+      }
       return array_keys($this->configuration['odg']);
     }
 

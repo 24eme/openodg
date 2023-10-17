@@ -2,7 +2,7 @@
   <li class="active"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
 </ol>
 
-<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
+<?php if (($sf_user->hasFactureAdmin()) && class_exists("EtablissementChoiceForm")): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
 <?php else: ?>
 <div class="row row-margin">

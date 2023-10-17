@@ -1,13 +1,13 @@
 all:
-  credentials: [[ADMIN, teledeclaration_drev_admin]]
+  credentials: [[ADMIN, ADMIN_ODG, teledeclaration_drev_admin]]
 index:
-  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation, stalker]]
+  credentials: [[ADMIN, ADMIN_ODG, teledeclaration_drev_admin, habilitation, stalker]]
 etablissementSelection:
-  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation, stalker]]
+  credentials: [[ADMIN, ADMIN_ODG, teledeclaration_drev_admin, habilitation, stalker]]
 upload:
-  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation]]
+  credentials: [[ADMIN, ADMIN_ODG, teledeclaration_drev_admin, habilitation]]
 csvgenerate:
-  credentials: [[ADMIN, teledeclaration_drev_admin, habilitation, stalker]]
+  credentials: [[ADMIN, ADMIN_ODG, teledeclaration_drev_admin, habilitation, stalker]]
 get:
   credentials: []
 piecesHistorique:

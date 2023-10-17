@@ -73,7 +73,7 @@
                 <td><?php echo $d->getStatutLibelle() ?></td>
                 <td class="text-center">
                     <?php if($habilitation->isLastOne()): ?>
-                    <?php if($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
+                    <?php if($sf_user->hasHabilitation() && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
                         <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
                     <?php else: ?>
                         <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir</a></td>
