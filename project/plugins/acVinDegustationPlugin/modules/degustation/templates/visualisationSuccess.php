@@ -6,12 +6,12 @@
 <div class="page-header no-border">
   <h2>
     <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL): ?>
-        Dégustation
+        Dégustation du
+        <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?>
     <?php else: ?>
-        Tournée
+        Tournée du
+        <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?>
     <?php endif; ?>
-    du
-    <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?>
     <small><?php echo $degustation->getLieuNom(); ?></small>
   </h2>
 </div>
