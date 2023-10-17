@@ -122,13 +122,13 @@ echo "Import lots de contrôles"
 bash bin/updateviews.sh
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
-php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" --region="oivc" --trace
+php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" --trace
 
 echo "Import des commissions de contrôles"
 
 cat $DATA_DIR/04_controles_produits/commissions/commission_*.html.csv | grep -E ";(PAULAT Sophie|ANTOINE Christelle);" | grep -v "WWW-INNOV-AGRO-FR" | grep -v "AOC-COUL-MILL" > $DATA_DIR/commissions_controle.csv
 
-php symfony import:commissions-aoc-ia $DATA_DIR/commissions_controle.csv --application=centre
+php symfony import:commissions-aoc-ia $DATA_DIR/commissions_controle.csv --region="oivc" --application=centre
 
 echo "Contacts"
 
