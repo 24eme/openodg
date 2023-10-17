@@ -391,7 +391,7 @@ class degustationActions extends sfActions {
                         return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $second_secteur));
                     }
             }
-            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->degustation->getLotsBySecteur()))));
+            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->lots))));
         }
 
         $this->form = new DegustationTourneesForm($this->degustation, $this->secteur);
