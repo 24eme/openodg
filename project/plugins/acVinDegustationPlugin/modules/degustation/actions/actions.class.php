@@ -955,6 +955,10 @@ class degustationActions extends sfActions {
     }
 
     public function executeRecoursOc(sfWebRequest $request) {
+        if (RegionConfiguration::getInstance()->hasOC() && Organisme::getInstance()->isOC() === false) {
+            throw new sfException('Vous ne pouvez pas faire de recours OC');
+        }
+
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
         $doc = DegustationClient::getInstance()->find($docid);
