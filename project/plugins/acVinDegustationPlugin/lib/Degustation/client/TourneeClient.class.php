@@ -5,6 +5,15 @@ class TourneeClient extends DegustationClient {
     const TYPE_MODEL = "Tournee";
     const TYPE_COUCHDB = "TOURNEE";
 
+    const TYPE_TOURNEE_LOT_ALEATOIRE = 'ALEATOIRE';
+    const TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE = 'RENFORCE';
+    const TYPE_TOURNEE_LOT_SUPPLEMENTAIRE = 'SUPPLEMETAIRE';
+    public static $lotTourneeChoices = array(
+        TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE => "Aléatoire",
+        TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE => "Aléatoire renforcé",
+        TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE => "Supplémentaire",
+    );
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient("Tournee");

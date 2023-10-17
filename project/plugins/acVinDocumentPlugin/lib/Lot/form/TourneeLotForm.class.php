@@ -1,6 +1,6 @@
 <?php
 
-class LotTourneeForm extends LotModificationForm
+class TourneeLotForm extends LotModificationForm
 {
     public function configure()
     {
@@ -14,12 +14,12 @@ class LotTourneeForm extends LotModificationForm
         unset($this['elevage']);
 
         $this->setWidget('quantite', new bsWidgetFormInputInteger());
-        $this->setValidator('quantite', new sfValidatorInteger(['min' => 1]));
+        $this->setValidator('quantite', new sfValidatorInteger(['min' => 1, 'required' => false]));
         $this->widgetSchema->setLabel('quantite', 'Cols');
     }
 
     public function getDestinationsType()
     {
-        return array_merge(parent::getDestinationsType(), ['CONDITIONNEMENT_PILE' => 'Conditionné sur pile']);
+        return ['' => '', 'CONDITIONNEMENT_ENCOURS' => 'En cours de conditionnement', 'CONDITIONNE' =>  'Conditionné sur pile', 'EN_VRAC' => 'En vrac', 'CONDITIONNE_CONSERVATOIRE' => 'Conditionné conservatoire'];
     }
 }

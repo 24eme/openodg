@@ -88,7 +88,7 @@ class degustationActions extends sfActions {
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(Organisme::getCurrentRegion());
 
         if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
-            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
+            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevesDegustables($this->getUser()->getRegion()));
         }
     }
 
@@ -132,7 +132,7 @@ class degustationActions extends sfActions {
             $this->degustation->save(false);
         }
 
-        $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true]);
+        $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true, 'auto_select_lots' => false]);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -391,7 +391,7 @@ class degustationActions extends sfActions {
                         return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $second_secteur));
                     }
             }
-            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->degustation->getLotsBySecteur()))));
+            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->lots))));
         }
 
         $this->form = new DegustationTourneesForm($this->degustation, $this->secteur);
@@ -414,7 +414,7 @@ class degustationActions extends sfActions {
     public function executeSaisieEtape(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->form = new DegustationLotsForm($this->degustation);
+        $this->form = new TourneeLotsForm($this->degustation);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;

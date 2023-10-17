@@ -52,7 +52,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
               $etablissement = $this->etablissements[$lot->adresse_logement.$lot->declarant_identifiant];
               $adresseLogement = $lot->adresse_logement;
               if(boolval($adresseLogement) === false){
-                  $adresseLogement = sprintf("%s — %s — %s — %s",$etablissement->nom, $etablissement->getAdresse(), $etablissement->code_postal, $etablissement->commune);
+                  $adresseLogement = sprintf("%s — %s — %s %s",$etablissement->nom, $etablissement->getAdresse(), $etablissement->code_postal, $etablissement->commune);
               }
               @$this->printable_document->addPage(
                 $this->getPartial('degustation/ficheIndividuelleLotsAPreleverPdf',
