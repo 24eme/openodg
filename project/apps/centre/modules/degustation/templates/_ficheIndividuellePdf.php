@@ -50,8 +50,8 @@
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>NS *</small></strong></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>S *</small></strong></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>NS *</small></strong></th>
-         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
+         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
+         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
          <th class="empty bg-white"  style="width:35%;">Motifs</th>
        </tr>
    <?php endif;?>

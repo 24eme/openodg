@@ -4,9 +4,6 @@ all:
       nb_etiquettes: 4
       anonymisation_manuelle: false
       anonymisation_prefix: OI_
-      avis:
-        favorable: "Fav."
-        defavorable: "Def."
       conformite:
         - CONFORME
         - NONCONFORME_ANALYTIQUE
