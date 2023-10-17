@@ -1,4 +1,1 @@
-all:
-  configuration:
-    transaction:
-      static_region: OIVC
+../../centre/config/transaction.yml
