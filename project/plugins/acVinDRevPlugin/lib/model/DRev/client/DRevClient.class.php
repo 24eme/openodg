@@ -228,23 +228,19 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public function matchFilter($lot, $produitFilter)
     {
-        $filters = [];
-        if ($produitFilter) {
-            $filters = explode(" AND ", $produitFilter);
-        }
         $etablissements = [];
         $match = true;
 
-        foreach ($filters as $filter) {
-            if (strpos($filter, 'appellations') !== false) {
+        foreach ($produitFilter as $type => $filter) {
+            if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($lot, $filter);
-            } elseif (strpos($filter, 'millesime') !== false) {
+            } elseif ($type === 'millesime') {
                 $match = $match && $this->matchFilterMillesime($lot, $filter);
-            } elseif (strpos($filter, 'deja') !== false) {
+            } elseif ($type === 'deja') {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
                 $match = $match && $this->matchFilterConformite($lot, $filter);
-            } elseif (strpos($filter, 'region') !== false) {
+            } elseif ($type === 'region') {
                 $region = str_replace('/region/', '', $filter);
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->getProduitHash());
             } elseif($filter) {
