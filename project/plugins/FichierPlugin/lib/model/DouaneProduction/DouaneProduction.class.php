@@ -399,11 +399,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return strtolower($this->type);
     }
 
-    public function calcul($formule, $produitFilter = null) {
+    public function calcul($formule, TemplateFactureCotisationCallbackParameters $produitFilter) {
         $calcul = $formule;
         $numLignes = preg_split('|[\-+*\/() ]+|', $formule, -1, PREG_SPLIT_NO_EMPTY);
         foreach($numLignes as $numLigne) {
-            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter);
+            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter->getParameters());
         }
 
         foreach($datas as $numLigne => $value) {
@@ -765,7 +765,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return $this->getTiers();
     }
 
-    public function getTiers($include_non_reconnu = false, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
+    public function getTiers($include_non_reconnu = false, $relation_voulue = null, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
         $cvis = array();
         foreach($this->getCsv() as $data) {
             $cvi = $data[DouaneCsvFile::CSV_TIERS_CVI];
@@ -774,6 +774,17 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 continue;
             }
             if(isset($cvis[$cvi])) {
+                continue;
+            }
+            if ($relation_voulue != null &&
+                    $relation_voulue == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR &&
+                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "06" ||
+                            $data[DouaneCsvFile::CSV_LIGNE_CODE] === "07"))) {
+                continue;
+            }
+            if ($relation_voulue != null &&
+                    $relation_voulue == EtablissementFamilles::FAMILLE_COOPERATIVE &&
+                        (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "09"))) {
                 continue;
             }
             $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, true, acCouchdbClient::HYDRATE_JSON);

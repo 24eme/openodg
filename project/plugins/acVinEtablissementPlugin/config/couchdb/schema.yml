@@ -5,7 +5,7 @@ Etablissement:
        _id: {  }
        _rev: {  }
        type: {  }
-       cooperative: {}
+       cooperative: { required: false } #deprecie
        interpro: {  }
        identifiant: {  }
        id_societe: {  }

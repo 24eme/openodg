@@ -1702,10 +1702,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvement;
         }
 
-        public function getRedegustationForfait($cotisation,$filters = null){
+        public function getRedegustationForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesRedegustationForfait($cotisation,$filters);
         }
-	    public function buildMouvementsFacturesRedegustationForfait($cotisation,$filters = null){
+	    public function buildMouvementsFacturesRedegustationForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLots() as $lot) {
@@ -1716,7 +1716,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
             return $mouvements;
 	    }
-		public function buildMouvementsFacturesRedegustationDejaConformeForfait($cotisation,$filters = null){
+		public function buildMouvementsFacturesRedegustationDejaConformeForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLots() as $lot) {
@@ -1728,7 +1728,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
 	    }
 
-        public function getFacturationLotRedeguste($cotisation,$filters = null){
+        public function getFacturationLotRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesLotRedeguste($cotisation, $filters);
         }
 
@@ -1744,14 +1744,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $mvt_degust;
 		}
 
-        public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
+        public function buildMouvementsFacturesLotRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsDegustables() as $lot) {
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-				if ($filters && DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+				if ($filters && DRevClient::getInstance()->matchFilter($lot, $filters->getParameters()) === false) {
 					continue;
 				}
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
@@ -1765,11 +1765,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getFacturationVolumeRedeguste($cotisation,$filters = null){
             return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
         }
-        public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
+        public function buildMouvementsFacturesVolumeRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesVolume($cotisation, $filters, true);
 		}
 
-        public function buildMouvementsFacturesVolumeDeguste($cotisation, $filters = null){
+        public function buildMouvementsFacturesVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
 
@@ -1847,7 +1847,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function getForfaitConditionnement($cotisation, $filters = null){
+        public function getForfaitConditionnement($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesForfaitConditionnement($cotisation, $filters);
         }
 		public function buildMouvementsFacturesForfaitConditionnement($cotisation, $filters = null){

@@ -27,9 +27,9 @@
                    ],
                    "date": "%periode+1%-07-31",
                    "callback": "getVolumeRevendiqueLots",
-                   "callback_parameters": [
-                       "/millesime/precedent"
-                   ]
+                   "callback_parameters": {
+                       "millesime": "/millesime/precedent"
+                   }
                },
                "volumeRevendiqueMillesimeCourant": {
                    "modele": "CotisationVariable",
@@ -43,9 +43,9 @@
                    ],
                    "date": "%periode+1%-07-31",
                    "callback": "getVolumeRevendiqueLots",
-                   "callback_parameters": [
-                       "/millesime/courant"
-                   ]
+                   "callback_parameters": {
+                       "millesime": "/millesime/courant"
+                   }
                }
            }
        },
@@ -67,9 +67,10 @@
                    ],
                    "date": "%periode+1%-07-31",
                    "callback": "getVolumeRevendiqueLots",
-                   "callback_parameters": [
-                       "/millesime/precedent AND /appellations/MED"
-                   ]
+                   "callback_parameters": {
+                       "millesime": "/millesime/precedent",
+                       "appellations": "/appellations/MED"
+                   }
                },
                "volumeRevendiqueMillesimeCourant": {
                    "modele": "CotisationVariable",
@@ -83,9 +84,10 @@
                    ],
                    "date": "%periode+1%-07-31",
                    "callback": "getVolumeRevendiqueLots",
-                   "callback_parameters": [
-                       "/millesime/courant AND /appellations/MED"
-                   ]
+                   "callback_parameters": {
+                       "millesime": "/millesime/courant",
+                       "appellations": "/appellations/MED"
+                   }
                }
            }
        },
@@ -107,9 +109,9 @@
                     ],
                     "date": "%periode+1%-07-31",
                     "callback": "getVolumeFacturable",
-                    "callback_parameters": [
-                    "/appellations/MED"
-                    ]
+                    "callback_parameters": {
+                        "appellations": "/appellations/MED"
+                    }
                 }
            }
        }

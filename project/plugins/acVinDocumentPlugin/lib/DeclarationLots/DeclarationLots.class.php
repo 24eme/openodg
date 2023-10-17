@@ -504,10 +504,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
           return $this->exist('lecture_seule') && $this->get('lecture_seule');
       }
 
-      public function getVolumeRevendiqueLots($produitFilter = null){
+      public function getVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter){
         $total = 0;
         foreach($this->lots as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter->getParameters()) === false) {
                 continue;
             }
 
