@@ -24,6 +24,16 @@ class RegionConfiguration {
         $this->load();
     }
 
+    public function hasOC()
+    {
+        return isset($this->configuration['oc']) && boolval($this->configuration['oc']);
+    }
+
+    public function getOC()
+    {
+        return $this->hasOC() ? $this->configuration['oc'] : false;
+    }
+
     public function hasOdgProduits() {
       return isset($this->configuration['odg']) && count($this->configuration['odg']);
     }

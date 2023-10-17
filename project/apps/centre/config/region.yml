@@ -1,6 +1,7 @@
 all:
   configuration:
     region:
+      oc: OIVC
       odg:
         SANCERRE:
          #  nom: "Conservatoire AOC Beaumes Venise"
