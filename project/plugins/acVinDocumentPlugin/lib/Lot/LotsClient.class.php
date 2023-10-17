@@ -6,6 +6,7 @@ class LotsClient
     protected $mouvements_declarant = [];
 
     const INITIAL_TYPE_CHANGE = "Changé";
+    const INITIAL_TYPE_NC = "NC";
 
     public static function getInstance() {
         if(is_null(self::$self)) {
