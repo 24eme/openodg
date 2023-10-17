@@ -55,17 +55,17 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
             $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
 
             if ($lot->date_commission) {
-                $this->dates_degust_drevs[$lot->unique_id] = DateTimeImmutable::createFromFormat('Y-m-d', $lot->date_commission)->format('Ymd');
+                $this->dates_degust_drevs[$lot->unique_id] = $lot->date_commission;
             }
 
-            if (! $this->dates_degust_drevs[$lot->unique_id]) {
-                $lot_origine = LotsClient::findByUniqueId($lot->declarant_identifiant, $lot->unique_id);
-                if ($lot_origine && $lot_origine->exist('date_degustation_voulue')) {
-                    $this->dates_degust_drevs[$lot->unique_id] = DateTimeImmutable::createFromFormat('Y-m-d', $lot_origine->date_degustation_voulue)->format('Ymd');
-                } elseif ($lot_origine && ($doc = $lot_origine->getDocument()) && $doc->exist('date_degustation_voulue')) {
-                    $this->dates_degust_drevs[$lot->unique_id] = DateTimeImmutable::createFromFormat('Y-m-d', $doc->date_degustation_voulue)->format('Ymd');
+            if (!isset($this->dates_degust_drevs[$lot->unique_id]) || ! $this->dates_degust_drevs[$lot->unique_id]) {
+                $lot_origine = LotsClient::getInstance()->findByUniqueId($lot->declarant_identifiant, $lot->unique_id);
+                if ($lot_origine && $lot_origine->exist('date_degustation_voulue') && $lot_origine->date_degustation_voulue) {
+                    $this->dates_degust_drevs[$lot->unique_id] = $lot_origine->date_degustation_voulue;
+                } elseif ($lot_origine && ($doc = $lot_origine->getDocument()) && $doc->exist('date_degustation_voulue') && $doc->date_degustation_voulue) {
+                    $this->dates_degust_drevs[$lot->unique_id] = $doc->date_degustation_voulue;
                 } else {
-                    $this->dates_degust_drevs[$lot->unique_id] = date('Ymd');
+                    $this->dates_degust_drevs[$lot->unique_id] = date('Y-m-d');
                 }
             }
         }
@@ -74,7 +74,7 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
             foreach ($this->lotsOperateurs as $key => $lot) {
                 $key = $lot->getUniqueId() ?: $key;
                 $formLots->embedForm($key, new DegustationPrelevementLotForm(null, ['lot' => $lot]));
-                $this->dates_degust_drevs[$lot->unique_id] = date('Ymd');
+                $this->dates_degust_drevs[$lot->unique_id] = date('Y-m-d');
             }
         }
 
