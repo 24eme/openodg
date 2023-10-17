@@ -1523,9 +1523,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalTotalSuperficie();
 	}
 
-	public function getVolumeFacturable($produitFilter = null)
+	public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
 	{
-		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
+		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter->getParameters());
         foreach($this->getDeletedLots() as $lot) {
             $volume -= $lot->volume;
         }
@@ -1549,13 +1549,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
-    public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
+    public function getVolumeRevendiqueNumeroDossier(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
 
         return $this->getVolumeRevendiqueNumeroDossierDiff($produitFilter);
     }
 
-    public function getVolumeRevendiqueNumeroDossierDiff($produitFilter = null)
+    public function getVolumeRevendiqueNumeroDossierDiff(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         $lots = [];
         $lotsmodifsvolumes = [];
@@ -1611,13 +1611,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return array_unique(array_column($this->lots->toArray(true, false), 'numero_dossier'));
     }
 
-    public function hasVolumeRevendiqueLots($produitFilter = null) {
+    public function hasVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter) {
 
         return $this->getVolumeRevendiqueLots($produitFilter) > 0;
     }
 
-    public function getVolumeRevendiqueLots($produitFilter = null){
-        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
+    public function getVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter){
+        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter->getParameters());
     }
 
     private function getInternalVolumeRevendique($lots, $produitFilter) {
@@ -1632,20 +1632,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $total;
     }
 
-    public function getVolumeVininifieFromDocumentDouanier($produitFilter = null) {
+    public function getVolumeVininifieFromDocumentDouanier(TemplateFactureCotisationCallbackParameters $produitFilter) {
         $docDouanier = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
         $type = $docDouanier->type;
         if (!$type) {
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter, null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter->getParameters(), null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
-            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, null, $produitFilter);
+            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, null, $produitFilter->getParameters());
         }
         if ($type == SV12CsvFile::CSV_TYPE_SV12) {
-            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL, null, $produitFilter);
+            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL, null, $produitFilter->getParameters());
         }
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
@@ -1666,7 +1666,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $sv11->getTotalValeur("10");
     }
 
-    public function getSuperficieHorsApportCoopFromDocumentProduction($produitFilter = null) {
+    public function getSuperficieHorsApportCoopFromDocumentProduction(TemplateFactureCotisationCallbackParameters $produitFilter) {
         $docDouanier = $this->getDocumentDouanierOlderThanMe();
         if (!$docDouanier) {
             return ;
@@ -1676,23 +1676,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, $produitFilter, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, $produitFilter->getParameters(), DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
-            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter);
+            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter->getParameters());
         }
         if ($type == SV12CsvFile::CSV_TYPE_SV12) {
-            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter);
+            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter->getParameters());
         }
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
 
-    public function getNbApporteursPlusOneFromDouane($produitFilter = null) {
+    public function getNbApporteursPlusOneFromDouane(TemplateFactureCotisationCallbackParameters $produitFilter) {
         $douane = $this->getDR();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
             return 0;
         }
-        $apporteurs = $douane->getNbApporteurs($produitFilter);
+        $apporteurs = $douane->getNbApporteurs($produitFilter->getParameters('appellations'));
         if (!$apporteurs) {
             return 0;
         }
@@ -1702,7 +1702,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $apporteurs + 1;
     }
 
-    public function getVolumeLotsFacturables($produitFilter = null){
+    public function getVolumeLotsFacturables(TemplateFactureCotisationCallbackParameters $produitFilter){
 
         return $this->getVolumeRevendiqueLots($produitFilter);
     }
@@ -1753,7 +1753,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $volume;
     }
 
-    public function getQuantiteSuperficieRevendique($produitFilter = null)
+    public function getQuantiteSuperficieRevendique()
 	{
 		return $this->declaration->getTotalTotalSuperficie();
 	}
@@ -1778,13 +1778,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null, $parameters->getParameters());
     }
 
-    public function getQuantiteVolumeVendue($produitFilter = null) {
+    public function getQuantiteVolumeVendue(TemplateFactureCotisationCallbackParameters $produitFilter) {
         $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
         if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
 
         }
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6);
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6, null, $parameters->getParameters());
     }
 
     /**** MOUVEMENTS ****/
@@ -1911,7 +1911,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     /**** FCT de FACTURATION ****/
 
-    public function isDeclarantFamille($familleFilter = null){
+    public function isDeclarantFamille(TemplateFactureCotisationCallbackParameters $familleFilter){
         if(!$familleFilter){
 
             return false;
@@ -1920,6 +1920,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             return false;
         }
+
+        $familleFilter = $familleFilter->getParameters('famille');
+
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
 		$exclude = (bool) $exclude;
         $regexpFilter = "#^(".implode("|", explode(",", $familleFilterMatch)).")$#";

@@ -399,11 +399,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return strtolower($this->type);
     }
 
-    public function calcul($formule, $produitFilter = null) {
+    public function calcul($formule, TemplateFactureCotisationCallbackParameters $produitFilter) {
         $calcul = $formule;
         $numLignes = preg_split('|[\-+*\/() ]+|', $formule, -1, PREG_SPLIT_NO_EMPTY);
         foreach($numLignes as $numLigne) {
-            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter);
+            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter->getParameters());
         }
 
         foreach($datas as $numLigne => $value) {

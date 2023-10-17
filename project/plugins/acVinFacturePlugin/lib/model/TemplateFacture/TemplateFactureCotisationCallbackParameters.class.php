@@ -11,6 +11,7 @@ class TemplateFactureCotisationCallbackParameters
         'deja',
         'famille',
         'round_methode',
+        'origine',
         'region'
     ];
 
