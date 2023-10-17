@@ -11,6 +11,7 @@ all:
           produits:
             - "TRANQ/appellations/SCR"
           habilitation_produits: "/Sancerre/"
+          facture_exercice: 'recolte'
         POUILLY:
           # nom: "Syndicat de l’AOC Cairanne"
           # adresse: "6 place des Vignerons, 84290 CAIRANNE"
