@@ -106,4 +106,12 @@ class RegionConfiguration {
 
         return array_key_first($regions);
     }
+
+
+    public function getOdgConfigurationItem($odgName, $configurationItem) {
+        if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName][$configurationItem]) ){
+          return null;
+        }
+        return $this->configuration['odg'][$odgName][$configurationItem];
+    }
 }

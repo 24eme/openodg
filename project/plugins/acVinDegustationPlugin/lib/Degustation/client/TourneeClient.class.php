@@ -7,9 +7,11 @@ class TourneeClient extends DegustationClient {
 
     const TYPE_TOURNEE_LOT_ALEATOIRE = 'ALEA';
     const TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE = 'RENF';
+    const TYPE_TOURNEE_LOT_SUPPLEMENTAIRE = 'SUPPL';
     public static $lotTourneeChoices = array(
         TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE => "Aléatoire",
         TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE => "Aléatoire renforcé",
+        TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE => "Supplémentaire",
     );
 
     public static function getInstance()
