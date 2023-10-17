@@ -414,7 +414,7 @@ class degustationActions extends sfActions {
     public function executeSaisieEtape(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->form = new DegustationLotsForm($this->degustation);
+        $this->form = new TourneeLotsForm($this->degustation);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
