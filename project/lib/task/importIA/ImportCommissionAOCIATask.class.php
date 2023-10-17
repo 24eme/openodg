@@ -261,7 +261,7 @@ EOF;
              $lot->conformite = Lot::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE;
           } else {
              $lot->statut = Lot::STATUT_CONFORME;
-             $lot->conformite = Lot::STATUT_CONFORME;
+             $lot->conformite = Lot::CONFORMITE_CONFORME;
           }
         }
 
