@@ -99,15 +99,15 @@ EOF;
             }
 
             if($typeControle == "ALE") {
-                $this->importAleatoire($data, $dataAugmented, 'RENFORCE');
+                $this->importAleatoire($data, $dataAugmented, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE);
             }
 
             if($typeControle == "ALR") {
-                $this->importAleatoire($data, $dataAugmented, 'RENFORCE');
+                $this->importAleatoire($data, $dataAugmented, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE);
             }
 
             if($typeControle == "SUP") {
-                $this->importAleatoire($data, $dataAugmented, 'SUPPLEMENTAIRE');
+                $this->importAleatoire($data, $dataAugmented, TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE);
             }
 
             if(in_array($typeControle, ["NCI","NCO"])) {
