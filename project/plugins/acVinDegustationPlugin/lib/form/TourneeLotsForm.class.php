@@ -1,6 +1,6 @@
 <?php
 
-class DegustationLotsForm extends acCouchdbForm
+class TourneeLotsForm extends acCouchdbForm
 {
     public function configure()
     {
@@ -16,7 +16,7 @@ class DegustationLotsForm extends acCouchdbForm
                 continue;
             }
 
-            $formLots->embedForm($lot->getKey(), new LotTourneeForm($lot));
+            $formLots->embedForm($lot->getKey(), new TourneeLotForm($lot));
         }
 
         $this->embedForm('lots', $formLots);

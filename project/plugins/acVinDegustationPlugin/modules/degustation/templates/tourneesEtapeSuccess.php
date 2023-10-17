@@ -12,6 +12,7 @@ echo $form->renderHiddenFields();
 echo $form->renderGlobalErrors();
 ?>
     <div class="row" style="margin-top: 20px;">
+    <?php if ($degustation == DegustationClient::TYPE_MODEL) : ?>
     <div class="col-xs-3">
         <div class="panel panel-default">
         <div class="panel-heading">
@@ -33,6 +34,9 @@ echo $form->renderGlobalErrors();
         </div>
     </div>
     <div class="col-xs-9">
+    <?php else: ?>
+    <div class="col-xs-12">
+    <?php endif; ?>
         <div class="btn-group pull-right">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
                 Télécharger les PDF <span class="caret"></span>
@@ -63,7 +67,9 @@ echo $form->renderGlobalErrors();
             <th class="col-xs-4 text-left">Adresse du logement</th>
             <th class="col-xs-1 text-left">Nombre de lots</th>
             <th class="col-xs-2 text-left">Heure</th>
+            <?php if ($degustation == DegustationClient::TYPE_MODEL) : ?>
             <th class="col-xs-2 text-center">Secteur</th>
+            <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -77,7 +83,9 @@ echo $form->renderGlobalErrors();
                 <td class="text-left"><?php echo $firstlot->getLogementAdresse(); ?><br /><?php echo $firstlot->getLogementCommune(); ?> (<?php echo $firstlot->getLogementCodePostal(); ?>)</td>
                 <td class="text-center"><?php echo $form->getNbLots($logementKey); ?></td>
                 <td class="text-center"><?php echo $subForm['heure']->render(); ?></td>
+                <?php if ($degustation == DegustationClient::TYPE_MODEL) : ?>
                 <td class="text-center"><?php echo $subForm['logement']->render(); ?></td>
+                <?php endif; ?>
             </tr>
             <?php endforeach; ?>
         </tbody>

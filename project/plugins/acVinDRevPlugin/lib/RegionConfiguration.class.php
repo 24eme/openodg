@@ -24,6 +24,16 @@ class RegionConfiguration {
         $this->load();
     }
 
+    public function hasOC()
+    {
+        return isset($this->configuration['oc']) && boolval($this->configuration['oc']);
+    }
+
+    public function getOC()
+    {
+        return $this->hasOC() ? $this->configuration['oc'] : false;
+    }
+
     public function hasOdgProduits() {
       return isset($this->configuration['odg']) && count($this->configuration['odg']);
     }
@@ -105,5 +115,13 @@ class RegionConfiguration {
         }
 
         return array_key_first($regions);
+    }
+
+
+    public function getOdgConfigurationItem($odgName, $configurationItem) {
+        if(!isset($this->configuration['odg']) || !array_key_exists($odgName,$this->configuration['odg']) || !isset($this->configuration['odg'][$odgName][$configurationItem]) ){
+          return null;
+        }
+        return $this->configuration['odg'][$odgName][$configurationItem];
     }
 }

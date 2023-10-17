@@ -82,8 +82,17 @@ class FactureConfiguration {
     }
 
     public function getExercice() {
-
-        return ($this->configuration['exercice']) ?: '';
+        $exercice = ($this->configuration['exercice']) ?: '';
+        try {
+            $hasOdg = RegionConfiguration::getInstance()->hasOdgProduits();
+            $conf = RegionConfiguration::getInstance()->getOdgConfigurationItem(Organisme::getCurrentOrganisme(), 'facture_exercice');
+            if ($hasOdg && $conf) {
+                $exercice = $conf;
+            }
+        } catch(Exception $e) {
+            unset($e);
+        }
+        return $exercice;
     }
 
     public function isListeDernierExercice() {

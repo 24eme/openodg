@@ -50,6 +50,12 @@ class Organisme
         $this->type = $type;
     }
 
+    public function isOC()
+    {
+        $oc = RegionConfiguration::getInstance()->getOC();
+        return Organisme::getCurrentOrganisme() === $oc;
+    }
+
     public function getInfos() {
         $infos = (sfConfig::has('app_'.$this->type.'_emetteur'))
                     ? sfConfig::get('app_'.$this->type.'_emetteur')

@@ -9,6 +9,7 @@ class MouvementLotView extends acCouchdbView
     const KEY_DOCUMENT_ORDRE = 4;
     const KEY_DOC_ID = 5;
     const KEY_DETAIL = 6;
+    const KEY_REGION = 7;
 
     public static function getInstance() {
 
@@ -120,14 +121,14 @@ class MouvementLotView extends acCouchdbView
         $mouvements = MouvementLotView::getInstance()->getByIdentifiant($identifiant, $statut);
 
         if (isset($query["numero_logement_operateur"])) {
-            $query["numero_logement_operateur_slug"] = KeyInflector::slugify(str_replace(" ", "", $query["numero_logement_operateur"]));
+            $query["numero_logement_operateur_slug"] = KeyInflector::slugify(str_replace(" ", "", preg_replace("/[\-,+]*/", "", $query["numero_logement_operateur"])));
             unset($query["numero_logement_operateur"]);
         }
 
         $res_mouvements = array();
         foreach ($mouvements->rows as $mouvement) {
 
-            $mouvement->value->numero_logement_operateur_slug = KeyInflector::slugify(str_replace(" ", "",$mouvement->value->numero_logement_operateur));
+            $mouvement->value->numero_logement_operateur_slug = KeyInflector::slugify(str_replace(" ", "",preg_replace("/[\-,+]*/", "", $mouvement->value->numero_logement_operateur)));
 
             $match = true;
             foreach($query as $key => $value) {
@@ -140,6 +141,8 @@ class MouvementLotView extends acCouchdbView
             if(!$match) {
                 continue;
             }
+
+            unset($mouvement->value->numero_logement_operateur_slug);
 
             $res_mouvements[] = $mouvement->value;
         }

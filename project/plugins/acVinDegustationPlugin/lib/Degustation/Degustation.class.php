@@ -324,7 +324,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE, null, $lot->nonconformite_levee));
                 case Lot::STATUT_RECOURS_OC:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC, null, $lot->recours_oc));
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, null, $lot->recours_oc));
                     $statut = Lot::STATUT_NONCONFORME;
                 case Lot::STATUT_CONFORME:
                 case Lot::STATUT_NONCONFORME:
@@ -1622,8 +1621,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			  if(!$cotisation->getConfigCallback()){
 				  continue;
 			  }
-              $parameters = array_merge(array($cotisation),$cotisation->getConfigCallbackParameters());
-              $mvts = call_user_func_array(array($this, $cotisation->getConfigCallback()), $parameters);
+              $mvts = call_user_func_array(array($this, $cotisation->getConfigCallback()), [
+                  $cotisation,
+                  $cotisation->getConfigCallbackParameters()
+              ]);
               foreach ($mvts as $identifiant => $mvtsArray) {
                   foreach ($mvtsArray as $key => $value) {
                       $mouvements[$identifiant][$key] = $value;
@@ -1825,12 +1826,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function buildMouvementsNbLotsDegustes($cotisation, $filters = null){
+        public function buildMouvementsNbLotsDegustes($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $nblots_operateurs = [];
             foreach ($this->getLotsDegustables() as $lot) {
-                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+                if (DRevClient::getInstance()->matchFilter($lot, $filters->getParameters()) === false) {
                     continue;
                 }
                 $nblots_operateurs[$lot->declarant_identifiant] += 1;

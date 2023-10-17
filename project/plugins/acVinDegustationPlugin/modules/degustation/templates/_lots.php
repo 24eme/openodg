@@ -15,7 +15,7 @@
       <td class="text-center">
           <?php echo $lot->numero_dossier;  ?> /
           <?php echo $lot->numero_archive;  ?> /
-          <?php echo substr(clarifieTypeDocumentLibelle($lot->id_document), 0, 4); ?>
+          <?php echo $lot->initial_type; ?>
       </td>
       <td><?php echo Anonymization::hideIfNeeded($lot->declarant_nom); ?></td>
       <td class="text-right"><?php echo $lot->volume; ?>&nbsp;hl</td>

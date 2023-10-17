@@ -100,7 +100,10 @@ EOF;
                 $drev->initDoc($etablissement->identifiant, $millesime);
                 $drev->storeDeclarant();
                 try {
-                    //$drev->resetAndImportFromDocumentDouanier();
+                    $drev->resetAndImportFromDocumentDouanier();
+                    foreach($drev->getProduits() as $p) {
+                        $p->superficie_revendique = null;
+                    }
                 } catch(Exception $e) {
                     continue;
                 }

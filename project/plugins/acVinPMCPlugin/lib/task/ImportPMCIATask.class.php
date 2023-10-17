@@ -79,6 +79,12 @@ EOF;
                 $logement = trim($data[self::CSV_LOGEMENT]);
             }
             $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
+
+            if(!$volume) {
+                echo "WARNING;pas de volume;pas d'import;$line\n";
+                continue;
+            }
+
             $moisPresentation = $data[self::CSV_MOIS_PRESENTATION];
             $moisListe = ["janvier" => "01", "février" => "02", "mars" => "03", "avril" => "04", "mai" => "05", "juin" => "06", "juillet" => "07", "août" => "08", "septembre" => "09", "octobre" => "10", "novembre" => "11", "décembre" => "12"];
             $datePresentation = "01/".str_replace(array_keys($moisListe), array_values($moisListe), str_replace(" ", "/", $moisPresentation));
@@ -108,7 +114,7 @@ EOF;
             $lot->produit_libelle = $produit->getLibelleFormat();
             $lot->millesime = $millesime;
             $lot->volume = $volume;
-            $lot->numero_logement_operateur = trim($logement.' '.$numeroLot);
+            $lot->numero_logement_operateur = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
             $lot->date_degustation_voulue = $datePresentation;
             $lot->date_commission = $dateCommission;
             $lot->affectable = true;

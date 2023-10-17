@@ -57,7 +57,7 @@ class PMC extends BasePMC
 
     public function getStatutRevendique() {
 
-        return Lot::STATUT_CONDITIONNE;
+        return Lot::STATUT_DECLARE;
     }
 
     public function isNonConformite()

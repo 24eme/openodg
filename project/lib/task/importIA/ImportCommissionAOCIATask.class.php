@@ -203,7 +203,6 @@ EOF;
 
            if(!$lot) {
                $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE), false);
-               $lot = null;
                if(count($lots) == 1) {
                    $lot = $lots[0];
                }
@@ -223,7 +222,6 @@ EOF;
 
            if(!$lot && $numeroCuve) {
                $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'numero_logement_operateur' => $numeroCuve, 'statut' => Lot::STATUT_AFFECTABLE), false);
-               $lot = null;
                if(count($lots) == 1) {
                    $lot = $lots[0];
                }
@@ -261,7 +259,7 @@ EOF;
              $lot->conformite = Lot::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE;
           } else {
              $lot->statut = Lot::STATUT_CONFORME;
-             $lot->conformite = Lot::STATUT_CONFORME;
+             $lot->conformite = Lot::CONFORMITE_CONFORME;
           }
         }
 
