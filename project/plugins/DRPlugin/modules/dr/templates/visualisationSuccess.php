@@ -43,7 +43,7 @@
         <tr>
             <th class="text-center col-xs-5 clearfix">Produits
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
-                <small class="pull-right text-muted">Rdmt L5|L15</small>
+                <small class="pull-right text-muted">Rdmt L5-L16|L15</small>
 <?php else: ?>
                 <small class="pull-right text-muted">Rdmt L15</small>
 <?php endif; ?>
@@ -64,16 +64,16 @@
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                         <span title="Rendement L5" style="cursor: help">
                             <?php if ($produit['lignes']['05']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round(intval($produit['lignes']['05']['val']) / $produit['lignes']['04']['val'], 2) ?>
-                            <?php else: echo 0 ?>
+                                <?php echoFloatFr(round( ($produit['lignes']['05']['val'] * 1 - $produit['lignes']['16']['val'] * 1) / $produit['lignes']['04']['val'], 2)); ?>
+                            <?php else: echoFloatFr(0) ?>
                             <?php endif ?>
                         </span> hl/ha
                         |
 <?php endif ?>
                         <span title="Rendement L15" style="cursor: help">
                             <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ?>
-                            <?php else: echo 0 ?>
+                                <?php echoFloatFr( round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ) ;?>
+                            <?php else: echoFloatFr(0); ?>
                             <?php endif ?>
                         </span> hl/ha
                     </small>
