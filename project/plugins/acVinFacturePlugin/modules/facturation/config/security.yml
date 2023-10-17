@@ -1,5 +1,5 @@
 all:
-  credentials: [ADMIN]
+  credentials: [[ADMIN_ODG, ADMIN]]
 
 latex:
   credentials: []

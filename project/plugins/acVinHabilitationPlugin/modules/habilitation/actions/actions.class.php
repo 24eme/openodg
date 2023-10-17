@@ -131,7 +131,7 @@ class habilitationActions extends sfActions {
   }
 
     public function executeDeclarant(sfWebRequest $request) {
-        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
@@ -143,7 +143,7 @@ class habilitationActions extends sfActions {
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
-        } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        } elseif($this->getUser()->hasHabilitation()) {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
 
@@ -199,7 +199,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
@@ -219,7 +219,7 @@ class habilitationActions extends sfActions {
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
-        } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        } elseif($this->getUser()->hasHabilitation()) {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
 
@@ -430,7 +430,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
@@ -671,7 +671,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeCertipaqDiff(sfWebRequest $request) {
-        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasHabilitation()) {
 
             throw new sfError403Exception();
         }
@@ -683,7 +683,7 @@ class habilitationActions extends sfActions {
 
         if($this->getUser()->isAdmin()) {
             $this->filtre = $request->getParameter('filtre');
-        } elseif($this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        } elseif($this->getUser()->hasHabilitation()) {
             $this->filtre = $this->getUser()->getCompte()->getDroitValue('habilitation');
         }
         $this->error = '';

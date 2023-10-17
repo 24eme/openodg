@@ -140,7 +140,7 @@ class societeActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
             return $this->forwardSecure();
         }
 
@@ -154,7 +154,7 @@ class societeActions extends sfCredentialActions {
           $compte->save();
         }
 
-        $this->modifiable = $this->getUser()->hasCredential('contacts');
+        $this->modifiable = $this->getUser()->hasContact();
     }
 
     public function executeAnnulation(sfWebRequest $request) {
@@ -201,7 +201,7 @@ class societeActions extends sfCredentialActions {
     }
 
     public function executeMandatSepaSwitchSigne(sfWebRequest $request) {
-          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
+          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
               return $this->forwardSecure();
           }
           $societe = $this->getRoute()->getSociete();
@@ -212,7 +212,7 @@ class societeActions extends sfCredentialActions {
     }
 
     public function executeMandatSepaSwitchActif(sfWebRequest $request) {
-          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
+          if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
               return $this->forwardSecure();
           }
           $societe = $this->getRoute()->getSociete();
