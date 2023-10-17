@@ -316,10 +316,10 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
 
 
       public function constructAdresseLogement(){
-          $completeAdresse = sprintf("%s — %s — %s — %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+          $completeAdresse = sprintf("%s — %s — %s %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
 
           if($this->isAdresseLogementDifferente()){
-              $completeAdresse = sprintf("%s — %s — %s — %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
+              $completeAdresse = sprintf("%s — %s — %s %s",$this->chais->nom,$this->chais->adresse,$this->chais->code_postal,$this->chais->commune);
           }
 
           return trim($completeAdresse);//trim(preg_replace('/\s+/', ' ', $completeAdresse));
