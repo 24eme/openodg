@@ -35,7 +35,7 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
             });
         }
         if(DegustationConfiguration::getInstance()->isTourneeAutonome() && $this->getObject()->getType() == DegustationClient::TYPE_MODEL) {
-            $lotsDispo = DegustationClient::getInstance()->getLotsDegustables($this->getObject()->getRegion());
+            $lotsDispo = DegustationClient::getInstance()->getLotsPrelevesDegustables($this->getObject()->getRegion());
         } else {
             $lotsDispo = DegustationClient::getInstance()->getLotsPrelevables($this->getObject()->getRegion());
         }

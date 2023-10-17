@@ -88,7 +88,7 @@ class degustationActions extends sfActions {
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(Organisme::getCurrentRegion());
 
         if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
-            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
+            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevesDegustables($this->getUser()->getRegion()));
         }
     }
 
