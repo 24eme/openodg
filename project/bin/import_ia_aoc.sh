@@ -111,7 +111,7 @@ ls $DATA_DIR/04_controles_produits/commissions/*.html | while read file; do
     fi
 done
 
-cat $DATA_DIR/04_controles_produits/commissions/commission_*.html.csv | grep -vE ";(PAULAT Sophie|ANTOINE Christelle);" | grep -v "WWW-INNOV-AGRO-FR" | grep -v "AOC-COUL-MILL" > $DATA_DIR/commissions_syndicat.csv
+cat $DATA_DIR/04_controles_produits/commissions/commission_*.html.csv | grep -vE ";(PAULAT Sophie|ANTOINE Christelle);" | grep -v "www.innov-agro.fr" | grep -v "AOC/Coul./Mill." > $DATA_DIR/commissions_syndicat.csv
 
 echo "Import des commissions syndicats"
 
@@ -126,9 +126,9 @@ php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" -
 
 echo "Import des commissions de contrôles"
 
-cat $DATA_DIR/04_controles_produits/commissions/commission_*.html.csv | grep -E ";(PAULAT Sophie|ANTOINE Christelle);" | grep -v "WWW-INNOV-AGRO-FR" | grep -v "AOC-COUL-MILL" > $DATA_DIR/commissions_controle.csv
+cat $DATA_DIR/04_controles_produits/commissions/commission_*.html.csv | grep -E ";(PAULAT Sophie|ANTOINE Christelle);" | grep -v "www.innov-agro.fr" | grep -v "AOC/Coul./Mill." > $DATA_DIR/commissions_controle.csv
 
-php symfony import:commissions-aoc-ia $DATA_DIR/commissions_controle.csv --region="oivc" --application=centre
+php symfony import:commissions-aoc-ia $DATA_DIR/commissions_controle.csv --region="OIVC" --application=centre
 
 echo "Contacts"
 

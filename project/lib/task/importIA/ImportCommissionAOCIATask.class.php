@@ -80,6 +80,10 @@ EOF;
               continue;
           }
 
+          if(trim($data[self::CSV_OPERATEUR]) == 'Leurre') {
+              continue;
+          }
+
           $degustation_date = $this->formatDate(trim($data[self::CSV_DATE_COMMISSION]));
 
           if(!$degustation_date) {
