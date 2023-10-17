@@ -18,9 +18,9 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => true)));
         $this->validatorSchema['identifiant']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
 
-        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => ['ALEATOIRE' => 'Aléatoire', 'RENFORCE' => 'Aléatoire renforcé']], []));
+        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => ['ALEATOIRE' => 'Aléatoire', 'RENFORCE' => 'Aléatoire renforcé', 'SUPPLEMENTAIRE' => 'Supplémentaire']], []));
         $this->widgetSchema->setLabel('initial_type', 'Type de contrôle');
-        $this->setValidator('initial_type', new sfValidatorChoice(['choices' => ['ALEATOIRE', 'RENFORCE']]));
+        $this->setValidator('initial_type', new sfValidatorChoice(['choices' => ['ALEATOIRE', 'RENFORCE',  'SUPPLEMENTAIRE']]));
         $this->validatorSchema['initial_type']->setMessage('required', 'Le choix d\'un type est obligatoire');
 
         $this->widgetSchema['details'] = new bsWidgetFormInput();
