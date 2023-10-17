@@ -9,6 +9,7 @@ class MouvementLotView extends acCouchdbView
     const KEY_DOCUMENT_ORDRE = 4;
     const KEY_DOC_ID = 5;
     const KEY_DETAIL = 6;
+    const KEY_REGION = 7;
 
     public static function getInstance() {
 

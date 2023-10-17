@@ -888,18 +888,25 @@ abstract class Lot extends acCouchdbDocumentTree
             $mouvement->date_notification = $this->date_notification;
         }
 
-        if ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
-            $mouvement->add('region', $r);
-        }
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            if ($this->getDocument()->exist('region') && $this->getDocument()->region) {
+                $regions = explode('|', $this->getDocument()->region);
+                $mouvement->add('region', end($regions));
+            }elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
+                $mouvement->add('region', $r);
+            }
 
-        if (strpos($this->initial_type, 'Degustation:') === 0) {
-            $mouvement->add('region', 'OIVC');
-        }
+            if (strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) === 0 || strpos($this->initial_type, TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) === 0) {
+                $mouvement->add('region', Organisme::getOIRegion());
+            }
 
-        if (strpos($this->initial_type, 'Transaction') === 0) {
-            $mouvement->add('region', 'OIVC');
+            if (strpos($this->initial_type, TransactionClient::TYPE_MODEL) === 0) {
+                $mouvement->add('region', Organisme::getOIRegion());
+            }
+            if (strpos($this->initial_type, PMCNCClient::TYPE_MODEL) === 0) {
+                $mouvement->add('region', Organisme::getOIRegion());
+            }
         }
-
         return $mouvement;
     }
 
