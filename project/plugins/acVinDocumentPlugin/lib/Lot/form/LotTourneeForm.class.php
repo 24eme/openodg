@@ -20,6 +20,6 @@ class LotTourneeForm extends LotModificationForm
 
     public function getDestinationsType()
     {
-        return array_merge(parent::getDestinationsType(), ['CONDITIONNEMENT_PILE' => 'Conditionné sur pile']);
+        return ['' => '', 'CONDITIONNEMENT_ENCOURS' => 'En cours de conditionnement', 'CONDITIONNE' =>  'Conditionné sur pile', 'EN_VRAC' => 'En vrac', 'CONDITIONNE_CONSERVATOIRE' => 'Conditionné conservatoire'];
     }
 }
