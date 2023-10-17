@@ -8,6 +8,7 @@ class ImportLotsOCIATask extends importOperateurIACsvTask
   const CSV_PRODUIT = 6;
   const CSV_MILLESIME = 7;
   const CSV_DATE_PRELEVEMENT = 9;
+  const CSV_TYPE_DECLARATION = 10;
   const CSV_LOGEMENT = 11;
   const CSV_VOLUME = 12;
   const CSV_NUM_LOT = 13;
@@ -87,7 +88,7 @@ EOF;
             $dataAugmented['produit'] = $this->produits[$produitKey];
             $dataAugmented['millesime'] = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : null;
             $dataAugmented['volume'] = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
-            $dataAugmented['numero_logement_operateur'] = trim($logement.' '.$numeroLot);
+            $dataAugmented['numero_logement_operateur'] = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
             $dataAugmented['numero_dossier'] = sprintf("%05d", explode("-", $data[self::CSV_NUMERO_ECHANTILLON])[0]);
             $dataAugmented['numero_archive'] = sprintf("%05d", explode("-", $data[self::CSV_NUMERO_ECHANTILLON])[1]);
 
@@ -98,18 +99,18 @@ EOF;
             }
 
             if($typeControle == "ALE") {
-                $this->importAleatoire($data, $dataAugmented, 'Degustation:aleatoire');
+                $this->importAleatoire($data, $dataAugmented, 'RENFORCE');
             }
 
             if($typeControle == "ALR") {
-                $this->importAleatoire($data, $dataAugmented, 'Degustation:aleatoire_renforce');
+                $this->importAleatoire($data, $dataAugmented, 'RENFORCE');
             }
 
             if($typeControle == "SUP") {
-                $this->importAleatoire($data, $dataAugmented, 'Degustation:supplementaire');
+                $this->importAleatoire($data, $dataAugmented, 'SUPPLEMENTAIRE');
             }
 
-            if($typeControle == "NCI") {
+            if(in_array($typeControle, ["NCI","NCO"])) {
                 $this->importPMCNC($data, $dataAugmented);
             }
         }
@@ -123,8 +124,6 @@ EOF;
         $transaction->save();
         $lot = $transaction->addLot();
         $lot->date = $dataAugmented['date_prelevement'];
-        $lot->numero_dossier = $dataAugmented['numero_dossier'];
-        $lot->numero_archive = $dataAugmented['numero_archive'];
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
@@ -152,8 +151,6 @@ EOF;
         $lot->declarant_nom = $etablissement->nom;
         $lot->initial_type = $initial_type;
         $lot->date = $dataAugmented['date_prelevement'];
-        $lot->numero_dossier = $dataAugmented['numero_dossier'];
-        $lot->numero_archive = $dataAugmented['numero_archive'];
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
@@ -169,22 +166,71 @@ EOF;
     protected function importPMCNC($data, $dataAugmented) {
         $etablissement = $dataAugmented['etablissement'];
         $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
+
+        $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $dataAugmented['volume'], 'produit_hash' => $dataAugmented['produit']->getHash(), 'millesime' =>  $dataAugmented['millesime'], 'numero_logement_operateur' => $dataAugmented['numero_logement_operateur'], 'initial_type' => "PMC", 'statut' => Lot::STATUT_NONCONFORME), false);
+
+        $lotOrigine = null;
+        if(count($lots) == 1) {
+            $lotOrigine = $lots[0];
+        }
+
+        if(!$lotOrigine) {
+            $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $dataAugmented['volume'], 'produit_hash' => $dataAugmented['produit']->getHash(), 'millesime' =>  $dataAugmented['millesime'], 'initial_type' => "PMC", 'statut' => Lot::STATUT_NONCONFORME), false);
+
+            if(count($lots) == 1) {
+                $lotOrigine = $lots[0];
+            }
+        }
+
+        if(!$lotOrigine) {
+            foreach($lots as $key => $lot) {
+                if($dataAugmented['numero_logement_operateur'] && !preg_match("|^".$dataAugmented['numero_logement_operateur']." |", $lot->numero_logement_operateur)) {
+                    unset($lots[$key]);
+                }
+            }
+            $lots =  array_values($lots);
+            if(count($lots) == 1) {
+                $lotOrigine = $lots[0];
+            }
+        }
+
+        if(!$lotOrigine && $dataAugmented['numero_logement_operateur']) {
+            $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('produit_hash' => $dataAugmented['produit']->getHash(), 'millesime' =>  $dataAugmented['millesime'], 'numero_logement_operateur' => $dataAugmented['numero_logement_operateur'], 'initial_type' => "PMC", 'statut' => Lot::STATUT_NONCONFORME), false);
+            if(count($lots) == 1) {
+                $lotOrigine = $lots[0];
+            }
+        }
         $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, str_replace("-", "", $dataAugmented['date_prelevement'])."000000");
-        $pmcnc->numero_archive = $dataAugmented['numero_dossier'];
         $pmcnc->save();
-        $lot = $pmcnc->addLot();
-        $lot->id_document_provenance = $pmcnc->_id;
+
+        if($lotOrigine) {
+            $lotOrigineObject = LotsClient::getInstance()->findByUniqueId($lotOrigine->declarant_identifiant, $lotOrigine->unique_id, $lotOrigine->document_ordre);
+
+            $lotDef = PMCLot::freeInstance(new PMCNC());
+            foreach($lotOrigineObject->getFields() as $key => $value) {
+                if ($lotDef->getDefinition()->exist($key)) {
+                    continue;
+                }
+                unset($lotOrigine->{$key});
+            }
+            $lot = $pmcnc->lots->add(null, $lotOrigine);
+        } else {
+            $lot = $pmcnc->addLot();
+            $lot->id_document_provenance = $pmcnc->_id;
+            $lot->document_ordre = "01";
+        }
+        $lot->id_document = $pmcnc->_id;
+        $lot->updateDocumentDependances();
         $lot->date = $dataAugmented['date_prelevement'];
-        $lot->numero_dossier = $dataAugmented['numero_dossier'];
-        $lot->numero_archive = $dataAugmented['numero_archive'];
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
-        $lot->document_ordre = "02";
+        $lot->document_ordre = "03";
         $lot->volume = $dataAugmented['volume'];
         $lot->numero_logement_operateur = $dataAugmented['numero_logement_operateur'];
         $lot->affectable = true;
         $pmcnc->save();
+        $lot->updateDocumentDependances();
         $pmcnc->validate($dataAugmented['date_prelevement']);
         $pmcnc->validateOdg($dataAugmented['date_prelevement']);
         $pmcnc->save();

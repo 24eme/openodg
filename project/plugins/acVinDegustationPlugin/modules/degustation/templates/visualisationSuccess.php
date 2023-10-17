@@ -17,7 +17,7 @@
 </div>
 
 <h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
-<table class="table table-condensed table-striped">
+<table class="table table-condensed table-bordered table-striped">
     <thead>
         <tr>
             <th title="Date de prélèvement">Date<br/>de prlv</th>
