@@ -31,6 +31,10 @@ class TemplateFactureClient extends acCouchdbClient {
             $campagne_start = date('Y');
         }
 
+        if (strlen($campagne_start) > 4) {
+            $campagne_start = substr($campagne_start, 0, 4);
+        }
+
         if (strpos($template, '%region%') !== false) {
             if ($region === null) {
                 throw new sfException("Le template nécessite une région");
