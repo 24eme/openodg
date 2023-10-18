@@ -45,7 +45,7 @@ class PMCLot extends BasePMCLot
     }
 
     public function getDocumentOrdre() {
-        if ($this->id_document_provenance === null) {
+        if ($this->getDocument()->getType() === PMCClient::TYPE_MODEL) {
             $this->_set('document_ordre', "01");
         } else {
             $this->_set('document_ordre', $this->getDocumentOrdreCalcule());
