@@ -1,6 +1,9 @@
 all:
   credentials: [[ADMIN_ODG, ADMIN]]
 
+libre:
+  credentials: [ADMIN]
+
 latex:
   credentials: []
 
