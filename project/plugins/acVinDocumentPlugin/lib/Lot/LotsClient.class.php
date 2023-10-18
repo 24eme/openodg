@@ -198,6 +198,7 @@ class LotsClient
             DRevClient::TYPE_MODEL => "01",
             ConditionnementClient::TYPE_MODEL => "01",
             TransactionClient::TYPE_MODEL => "01",
+            TourneeClient::TYPE_MODEL => "01",
             DegustationClient::TYPE_MODEL => "02",
             ChgtDenomClient::TYPE_MODEL => "02",
             PMCClient::TYPE_MODEL => "01",
@@ -367,7 +368,12 @@ class LotsClient
             $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
         }
 
-        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+        $millesimes = array();
+        foreach ($campagnes as $c) {
+            $millesimes[] = substr($c, 0, 4);
+        }
+
+        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements, $millesimes);
 
         foreach($campagnes as $campagne) {
             $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);

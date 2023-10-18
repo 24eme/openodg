@@ -93,7 +93,7 @@ class MouvementLotHistoryView extends acCouchdbView
         return false;
     }
 
-    public function buildSyntheseLots($mouvements)
+    public function buildSyntheseLots($mouvements, $millesimes = array())
     {
         $syntheseLots = [];
         foreach ($mouvements as $mouvementLot) {
@@ -106,6 +106,10 @@ class MouvementLotHistoryView extends acCouchdbView
             $produit = $matches[1];
             $couleur = $matches[2];
             $millesime = $matches[3];
+
+            if (!in_array($millesime, $millesimes)) {
+                continue;
+            }
 
             if (array_key_exists($produit, $syntheseLots) === false) {
                 $syntheseLots[$produit] = [];

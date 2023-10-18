@@ -3,10 +3,6 @@
 
 <form role="form" class="form-horizontal" action="<?php echo url_for('pmc_validation', $pmc) ?>#engagements" method="post" id="validation-form">
 
-<?php if ($pmc->type == PMCClient::TYPE_MODEL): ?>
-<h2>Synthèse des produits par millesimes</h2>
-<?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'campagnes' => [ConfigurationClient::getInstance()->getPreviousCampagne($pmc->campagne), $pmc->campagne], 'region' => $sf_user->getRegion(), 'restant' => true]) ?>
-<?php endif; ?>
 <div class="page-header no-border" style="position:relative;">
     <h2>Validation de votre déclaration</h2>
     <?php if(isset($form["date"])): ?>
