@@ -91,6 +91,16 @@ degustation_ajout_lot_saisie:
   requirements:
     sf_method: [get,post]
 
+degustation_organisation_etape:
+  url: /degustation/:id/organisation
+  param: { module: degustation, action: organisationEtape }
+  class: DegustationRoute
+  options:
+    model:    Degustation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_tournees_etape:
   url: /degustation/:id/tournees
   param: { module: degustation, action: tourneesEtape }

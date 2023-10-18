@@ -148,6 +148,10 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHisto
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/facture | awk -F '"' '{print $4}' | sort -u | grep '[A-Z]' | while read id ; do php symfony declaration:regenerate-mouvements --onlydeletemouvements=true --application=$ODG $id ; done
 
+echo "Mise a jour des relations en fonction des documents de production"
+
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous?reduce=false | grep 'DR-\|SV11-\|SV12-' | cut -d '"' -f 4 | while read id; do php symfony production:import-relation $id --application=centre --noscrapping=1; done
+
 echo "Mise à jour des tags de compte"
 
 bash bin/update_comptes_tags.sh
