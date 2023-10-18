@@ -367,11 +367,11 @@ class degustationActions extends sfActions {
      * @param sfWebRequest $request
      * @return string
      */
-    public function executeTourneesEtape(sfWebRequest $request) {
+    public function executeOrganisationEtape(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ORGANISATION))) {
             $this->degustation->save(false);
         }
 
@@ -388,10 +388,10 @@ class degustationActions extends sfActions {
                             continue;
                         }
                         $second_secteur = $region;
-                        return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $second_secteur));
+                        return $this->redirect('degustation_organisation_etape', array('sf_subject' => $this->degustation, 'secteur' => $second_secteur));
                     }
             }
-            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->lots))));
+            return $this->redirect('degustation_organisation_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->lots))));
         }
 
         $this->form = new DegustationTourneesForm($this->degustation, $this->secteur);
@@ -408,7 +408,14 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $this->secteur));
+        return $this->redirect('degustation_organisation_etape', array('sf_subject' => $this->degustation, 'secteur' => $this->secteur));
+    }
+
+    public function executeTourneesEtape(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsAnonymized();
+        return sfView::SUCCESS;
     }
 
     public function executeSaisieEtape(sfWebRequest $request)
