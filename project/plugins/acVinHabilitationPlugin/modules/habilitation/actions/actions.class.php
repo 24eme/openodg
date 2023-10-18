@@ -227,7 +227,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeAjout(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
@@ -264,7 +264,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeEdition(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
@@ -301,7 +301,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeGlobale(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         if($this->getUser()->isAdmin()) {
@@ -335,7 +335,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeCreation(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         if($this->getUser()->isAdmin()) {
@@ -375,7 +375,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeEdition(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
@@ -435,7 +435,7 @@ class habilitationActions extends sfActions {
             throw new sfError403Exception();
         }
 
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
@@ -447,7 +447,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeDemandeSuppressionDerniere(sfWebRequest $request) {
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
 
