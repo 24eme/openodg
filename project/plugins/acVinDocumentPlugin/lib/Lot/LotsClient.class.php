@@ -368,12 +368,7 @@ class LotsClient
             $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
         }
 
-        $millesimes = array();
-        foreach ($campagnes as $c) {
-            $millesimes[] = substr($c, 0, 4);
-        }
-
-        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements, $millesimes);
+        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
 
         foreach($campagnes as $campagne) {
             $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);

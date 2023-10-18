@@ -39,7 +39,7 @@
             foreach ($form['mouvements'] as $k => $mvtForm) {
               $kExploded = explode('_', $k);
               $object = ($kExploded[1] != 'nouveau')? $form->getObject()->mouvements->get($kExploded[1])->get($kExploded[2]) : null;
-              include_partial('itemMouvementFacture', array('mvtForm' => $mvtForm, 'object' => $object, 'suggestions' => $form->getSuggestionsFacturationLibre()));
+              include_partial('itemMouvementFacture', array('mvtForm' => $mvtForm, 'object' => $object));
             }
             ?>
         </div>

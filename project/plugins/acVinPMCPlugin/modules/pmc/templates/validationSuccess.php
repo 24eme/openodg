@@ -3,6 +3,7 @@
 
 <form role="form" class="form-horizontal" action="<?php echo url_for('pmc_validation', $pmc) ?>#engagements" method="post" id="validation-form">
 
+<?php if ($pmc->type == PMCClient::TYPE_MODEL): ?>
 <div class="page-header no-border" style="position:relative;">
     <h2>Validation de votre déclaration</h2>
     <?php if(isset($form["date"])): ?>

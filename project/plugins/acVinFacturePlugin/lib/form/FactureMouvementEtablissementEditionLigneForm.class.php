@@ -15,7 +15,10 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
         $this->setWidget('identifiant', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration'), $this->isreadonly));
         $this->setWidget("identifiant_analytique", new sfWidgetFormChoice(array('choices' => $this->getIdentifiantsAnalytiques()), $this->isreadonly));
         $this->setWidget("type_libelle", new bsWidgetFormInput(array(), $this->isreadonly));
-        $this->setWidget("detail_libelle", new bsWidgetFormInput(array(), $this->isreadonly));
+        $this->setWidget("detail_libelle", new bsWidgetFormInput(array(), array_merge(
+            $this->isreadonly, ['list' => 'suggestions']
+        )));
+        $this->setWidget('suggestions', new sfWidgetDatalist(['choices' => $this->getSuggestionsFacturationLibre()]));
         $this->setWidget("quantite", new bsWidgetFormInputFloat(array(), $this->isreadonly));
         $this->setWidget("prix_unitaire", new bsWidgetFormInputFloat(array(), $this->isreadonly));
 
@@ -37,7 +40,7 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
           if ($lastMouvement) {
               $this->setDefault('identifiant', $lastMouvement->identifiant);
               $this->setDefault('identifiant_analytique', $lastMouvement->identifiant_analytique);
-              if (!FactureConfiguration::getInstance()->getSuggestionsFacturationLibre()) {
+              if (!$this->getSuggestionsFacturationLibre()) {
                   $this->setDefault('detail_libelle', $lastMouvement->detail_libelle);
               }
           }
@@ -52,4 +55,7 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
         return ComptabiliteClient::getInstance()->findCompta()->getAllIdentifiantsAnalytiquesArrayForCompta();
     }
 
+    public function getSuggestionsFacturationLibre() {
+        return FactureConfiguration::getInstance()->getSuggestionsFacturationLibre();
+    }
 }

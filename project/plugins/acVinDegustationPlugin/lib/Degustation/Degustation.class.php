@@ -347,10 +347,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
                 case Lot::STATUT_PRELEVE:
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
+                    if (strpos($lot->id_document_provenance, 'TOURNEE') === false) {
+                        $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
+                    }else{
+                        break;
+                    }
 
                 case Lot::STATUT_ANNULE:
                 case Lot::STATUT_AFFECTE_DEST:
+                    if (strpos($lot->id_document, 'TOURNEE') !== false) {
+                        break;
+                    }
                     $nbPassage = $lot->getNombrePassage();
 					$detail = sprintf("%dme passage", $nbPassage);
 					if ($nbPassage == 1) {
@@ -365,7 +372,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANNULE));
             }
             if($lot->isPreleve()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
+                if (strpos($lot->id_document_provenance, 'TOURNEE') === false) {
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
+                }
             }
 			if ($lot->isChange()) {
 				continue;
