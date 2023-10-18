@@ -37,7 +37,20 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
 
     public function getRegions()
     {
-        return [];
+        if (!RegionConfiguration::getInstance()->hasOdgProduits()) {
+            throw new sfException('regions');
+            return [];
+        }
+        $regions = array();
+        foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+            foreach($this->getProduits() as $produit_hash => $p) {
+                if (RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit_hash)) {
+                    $regions[] = $region;
+                    break 2;
+                }
+            }
+        }
+        return $regions;
     }
 
     public function save() {
@@ -348,7 +361,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         }
 
         $this->add('donnees');
-        $item = $this->donnees->add();
+        $item = $this->get('donnees')->add();
         $item->produit = $hash;
         $item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
         $item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
@@ -399,11 +412,11 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return strtolower($this->type);
     }
 
-    public function calcul($formule, $produitFilter = null) {
+    public function calcul($formule, TemplateFactureCotisationCallbackParameters $produitFilter) {
         $calcul = $formule;
         $numLignes = preg_split('|[\-+*\/() ]+|', $formule, -1, PREG_SPLIT_NO_EMPTY);
         foreach($numLignes as $numLigne) {
-            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter);
+            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter->getParameters());
         }
 
         foreach($datas as $numLigne => $value) {

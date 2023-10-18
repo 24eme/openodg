@@ -71,6 +71,11 @@ class DegustationConfiguration {
         return $this->configuration['anonymisation_manuelle'] === true;
     }
 
+    public function getPrefixAnonymat()
+    {
+        return isset($this->configuration['anonymisation_prefix']) ? $this->configuration['anonymisation_prefix'] : '';
+    }
+
     public function hasTypiciteCepage()
     {
         return $this->configuration['typicite_cepage'] === true;

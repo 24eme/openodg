@@ -142,7 +142,7 @@ facturation_regenerate:
     sf_method: [get]
 
 facturation_declarant:
-  url: /facturation/declarant/:id
+  url: /facturation/declarant/:identifiant
   param: { module: facturation, action: declarant }
   class: FacturationDeclarantRoute
   options:

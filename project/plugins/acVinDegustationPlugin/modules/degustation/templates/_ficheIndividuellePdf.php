@@ -53,13 +53,13 @@
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>Gustatif<br><?php if($notation): ?>/24<?php endif ?></small></strong></th>
          <th style="width:5%;"><?php echo tdStart() ?><strong><small>TOTAL<br><?php if($notation): ?>/48<?php endif ?></small></strong></th>
          <?php if (DegustationConfiguration::getInstance()->hasTypiciteCepage()) : ?>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
          <?php else: ?>
-         <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['favorable'] ?></small></strong></th>
-         <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small><?php echo DegustationConfiguration::getInstance()->getAvis()['defavorable'] ?></small></strong></th>
+         <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>C</small></strong></th>
+         <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>NC</small></strong></th>
          <?php endif ?>
          <th class="empty bg-white"></th>
        </tr>

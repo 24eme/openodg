@@ -91,10 +91,10 @@ EOF;
             $datePresentation = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($datePresentation), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
             $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-            $dateCommission = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_COMMISSION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            $dateCommission = (isset($data[self::CSV_DATE_COMMISSION]) && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_COMMISSION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($dateDeclaration);
             $region = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
-            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, str_replace("-", "", $dateDeclaration)."0000".sprintf("%02d", array_search($region, RegionConfiguration::getInstance()->getOdgRegions())));
+            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dateDeclaration." 00:00:".sprintf("%02d", array_search($region, RegionConfiguration::getInstance()->getOdgRegions())));
 
             if(isset($etablissement->chais)) {
                 foreach($etablissement->chais as $chai) {
@@ -117,7 +117,7 @@ EOF;
             $lot->numero_logement_operateur = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
             $lot->date_degustation_voulue = $datePresentation;
             $lot->date_commission = $dateCommission;
-            $lot->affectable = true;
+            $lot->affectable = !is_null($lot->date_commission);
 
             try {
                 $pmc->validate($dateDeclaration);

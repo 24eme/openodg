@@ -66,7 +66,8 @@ class DegustationLot extends BaseDegustationLot {
 
     public function anonymize($index)
     {
-        $this->numero_anonymat = sprintf("%s%02d", $this->getNumeroTableStr(), $index + 1);
+        $prefix = DegustationConfiguration::getInstance()->getPrefixAnonymat();
+        $this->numero_anonymat = sprintf("%s%s%02d", $prefix, $this->getNumeroTableStr(), $index + 1);
         $this->statut = Lot::STATUT_ANONYMISE;
     }
 

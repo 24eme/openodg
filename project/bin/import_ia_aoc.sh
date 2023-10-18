@@ -54,7 +54,7 @@ php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv --applicat
 
 echo "Habilitations"
 
-#xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 # xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
 # sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
 php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv --application="$ODG"
@@ -136,10 +136,18 @@ xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > 
 sed -i 's/Choisir Ville//' $DATA_DIR/contacts.csv
 php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
 
+echo "Parcellaire"
+
+php symfony parcellaire:update-aire --application="$ODG" --trace
+
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application=centre --noscrapping=1; done
+
 echo "Mise en reputes conforme des lots en attente"
 
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_AFFECTABLE_ENATTENTE | awk -F '"' '{if ( $9 < "2020-2021" ) print "php symfony lot:change-statut --application='$ODG' "$4" "$10"-"$12"-"$14" false"}' | bash
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_MANQUEMENT_EN_ATTENTE | grep '"initial_type":"PMC"' | grep '"document_ordre":"02"' | awk -F '"' '{ print "php symfony lot:lever-convormite --application='$ODG' "$8" "$10"-"$12"-"$14" \"PMCNC non trouvé lors de la reprise historique\"" }'
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/facture | awk -F '"' '{print $4}' | sort -u | grep '[A-Z]' | while read id ; do php symfony declaration:regenerate-mouvements --onlydeletemouvements=true --application=$ODG $id ; done
 
-php symfony parcellaire:update-aire --application="$ODG" --trace
+echo "Mise à jour des tags de compte"
+
+bash bin/update_comptes_tags.sh

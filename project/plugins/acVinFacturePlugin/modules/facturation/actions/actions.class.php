@@ -358,7 +358,7 @@ class facturationActions extends sfActions
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
 
-        if(!$this->getUser()->isAdmin()) {
+        if(!$this->getUser()->hasFactureAdmin()) {
             $this->facture->setTelechargee();
             $this->facture->save();
         }
@@ -456,7 +456,7 @@ class facturationActions extends sfActions
     }
 
     protected function forwardCompteSecure(){
-      if(!class_exists("Societe") && !$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) { // Pour l'AVA
+      if(!class_exists("Societe") && !$this->getUser()->hasFactureAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) { // Pour l'AVA
 
           return $this->forwardSecure();
       }
@@ -465,7 +465,7 @@ class facturationActions extends sfActions
           return;
       }
 
-      if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
+      if(!$this->getUser()->hasFactureAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
           return $this->forwardSecure();
      }
     }
