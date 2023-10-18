@@ -144,6 +144,6 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/facture 
 
 php symfony parcellaire:update-aire --application="$ODG" --trace
 
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application=centre --noscrapping; done
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application=centre --noscrapping=1; done
 
 bash bin/update_comptes_tags.sh

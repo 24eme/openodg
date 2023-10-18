@@ -1,5 +1,7 @@
 <?php
 
+/**** AVA ****/
+
 class TourneeClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Tournee";
