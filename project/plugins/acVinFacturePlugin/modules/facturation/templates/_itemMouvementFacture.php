@@ -18,12 +18,8 @@
             </div>
             <div class="col-xs-3 <?php if($mvtForm["detail_libelle"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
                 <?php echo $mvtForm['detail_libelle']->renderError(); ?>
-                <?php echo $mvtForm['detail_libelle']->render(array('class' => 'form-control input-md select2-libelle', 'list' => "suggestions")); ?>
-                <datalist id="suggestions">
-                    <?php foreach($suggestions as $suggestion): ?>
-                    <option value="<?php echo $suggestion ?>">
-                    <?php endforeach; ?>
-                </datalist>
+                <?php echo $mvtForm['detail_libelle']->render(array('class' => 'form-control input-md select2-libelle')); ?>
+                <?php echo $mvtForm['suggestions']->render(); ?>
             </div>
             <div class="col-xs-1 <?php if($mvtForm["prix_unitaire"]->hasError()): ?>text-danger<?php endif; ?>" style="padding-left: 0;">
                 <?php echo $mvtForm['prix_unitaire']->renderError(); ?>
