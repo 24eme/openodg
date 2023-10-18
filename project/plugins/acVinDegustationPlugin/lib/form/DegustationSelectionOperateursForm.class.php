@@ -23,7 +23,7 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $this->setValidator('initial_type', new sfValidatorChoice(['choices' => array_keys(TourneeClient::$lotTourneeChoices)]));
         $this->validatorSchema['initial_type']->setMessage('required', 'Le choix d\'un type est obligatoire');
 
-        $this->widgetSchema['details'] = new bsWidgetFormInput();
+        $this->widgetSchema['details'] = new bsWidgetFormInput([], ['list' => 'liste-appellations']);
         $this->widgetSchema['details']->setLabel("Appellation à controler");
         $this->validatorSchema['details'] = new sfValidatorString(array('required' => false));
 
@@ -42,5 +42,32 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $lot->affectable = false;
         $lot->initial_type = $values['initial_type'];
         $lot->details = $values['details'];
+    }
+
+    private function getListeAppellations()
+    {
+        return array_unique(array_map(function ($p) {
+                return $p->getAppellation()->getLibelle();
+            }, $this->getObject()->getConfiguration()->getProduits())
+        );
+    }
+
+    public function renderDatalist()
+    {
+        $options = $this->getListeAppellations();
+
+        $dom = new DOMDocument;
+        $datalist = $dom->createElement('datalist');
+        $datalist->setAttribute('id', 'liste-appellations');
+        $dom->appendChild($datalist);
+
+        foreach ($options as $option) {
+            $o = $dom->createElement('option');
+            $o->setAttribute('value', $option);
+
+            $datalist->appendChild($o);
+        }
+
+        return $dom->saveHTML();
     }
 }
