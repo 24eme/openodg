@@ -1,6 +1,6 @@
 <?php
 
-class DRImportRelationBailleurTask extends sfBaseTask
+class ProductionImportRelationTask extends sfBaseTask
 {
 
     protected function configure()
@@ -15,9 +15,9 @@ class DRImportRelationBailleurTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace = 'dr';
-        $this->name = 'import-relation-bailleur';
-        $this->briefDescription = "Importe les relations bailleurs / metayer à partir d'une dr";
+        $this->namespace = 'production';
+        $this->name = 'import-relation';
+        $this->briefDescription = "Importe les relations à partir d'un document de production";
         $this->detailedDescription = <<<EOF
 EOF;
     }
