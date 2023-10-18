@@ -7,6 +7,11 @@
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>
 
+<?php if ($pmc->type == PMCClient::TYPE_MODEL): ?>
+<h2>Synthèse des produits par millesimes</h2>
+<?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'campagnes' => [ConfigurationClient::getInstance()->getPreviousCampagne($pmc->campagne), $pmc->campagne], 'region' => $sf_user->getRegion(), 'restant' => true]) ?>
+<?php endif; ?>
+
 <div class="page-header no-border">
     <h2>Déclaration de Mise en Circulation du <?php echo $pmc->getDateFr(); ?>
     <?php if($pmc->isPapier()): ?>
@@ -43,13 +48,6 @@
 <?php if(isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('pmc/pointsAttentions', array('pmc' => $pmc, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
-
-<?php if ($pmc->type == PMCClient::TYPE_MODEL): ?>
-<h2>Synthèse des produits par millesimes</h2>
-<?php include_component('degustation', 'syntheseCommercialise', ['identifiant' => $pmc->identifiant, 'millesimes' => $pmc->getMillesimes(), 'region' => $sf_user->getRegion(), 'restant' => true]) ?>
-<?php endif; ?>
-
-<hr/>
 
 <?php include_partial('pmc/recap', array('pmc' => $pmc, 'form' => $form, 'dr' => $dr)); ?>
 

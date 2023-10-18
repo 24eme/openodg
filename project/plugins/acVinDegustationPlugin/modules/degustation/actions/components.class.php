@@ -24,12 +24,6 @@ class degustationComponents extends sfComponents {
     }
 
     public function executeSyntheseCommercialise(sfWebRequest $request) {
-        if (isset($this->millesimes)) {
-            $this->campagnes = array();
-            foreach($this->millesimes as $m) {
-                $this->campagnes[] = sprintf('%d-%d', $m, $m + 1);
-            }
-        }
         $this->syntheseLots = LotsClient::getInstance()->getSyntheseLots($this->identifiant, $this->campagnes, $this->region);
     }
 }
