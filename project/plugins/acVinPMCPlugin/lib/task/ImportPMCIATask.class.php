@@ -94,7 +94,7 @@ EOF;
             $dateCommission = (isset($data[self::CSV_DATE_COMMISSION]) && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_COMMISSION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($dateDeclaration);
             $region = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
-            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, str_replace("-", "", $dateDeclaration)."0000".sprintf("%02d", array_search($region, RegionConfiguration::getInstance()->getOdgRegions())));
+            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dateDeclaration." 00:00:".sprintf("%02d", array_search($region, RegionConfiguration::getInstance()->getOdgRegions())));
 
             if(isset($etablissement->chais)) {
                 foreach($etablissement->chais as $chai) {

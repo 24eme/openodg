@@ -201,7 +201,7 @@ EOF;
                 $lotOrigine = $lots[0];
             }
         }
-        $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, str_replace("-", "", $dataAugmented['date_prelevement'])."000000");
+        $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_prelevement']." 00:00:00");
         $pmcnc->save();
 
         if($lotOrigine) {
