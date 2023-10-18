@@ -37,28 +37,6 @@ echo $form->renderGlobalErrors();
     <?php else: ?>
     <div class="col-xs-12">
     <?php endif; ?>
-        <div class="btn-group pull-right">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
-                Télécharger les PDF <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de prélèvements</a></li>
-                <li role="separator" class="divider"></li>
-                <li>
-                    <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
-                        <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'anonymat4labo' => true, 'secteur' => $secteur]) ?>"><span class="glyphicon glyphicon-th"></span>&nbsp;Étiquettes de prélèvement (avec anonymat labo)</a>
-                    <?php else : ?>
-                        <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['sf_subject' => $degustation, 'secteur' => $secteur]) ?>"><span class="glyphicon glyphicon-th"></span>&nbsp;Étiquettes de prélèvement</a>
-                    <?php endif ?>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des étiquettes</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>?labo=1<?php // cosmetique ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur pour labo</a></li>
-            </ul>
-        </div>
         <h2 style="margin-top: 0; margin-bottom: 20px;">Tournée <?php echo $secteur ?></h2>
         <table class="table table-bordered table-striped table-condensed">
         <thead>

@@ -415,6 +415,30 @@ class degustationActions extends sfActions {
     {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_TOURNEES))) {
+            $this->degustation->save(false);
+        }
+
+        $this->secteur = $request->getParameter('secteur');
+
+        $this->afficher_tous_les_secteurs = $request->getParameter('afficher_tous_les_secteurs', false);
+
+        $this->lots = $this->degustation->getLotsBySecteur();
+
+        if(!$this->secteur) {
+            if (!$this->degustation->hasLotsSansSecteurs()) {
+                    foreach (array_keys($this->lots) as $region) {
+                        if (!count($this->lots[$region])) {
+                            continue;
+                        }
+                        $second_secteur = $region;
+                        return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $second_secteur));
+                    }
+            }
+            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->lots))));
+        }
+
         return sfView::SUCCESS;
     }
 
