@@ -2,11 +2,9 @@
 
 class DegustationSelectionOperateursForm extends acCouchdbObjectForm
 {
-    public  $datalists;
     private $operateurs = [];
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
-        $this->datalists = new DatalistForm();
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }
 
@@ -29,7 +27,7 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm
         $this->widgetSchema['details']->setLabel("Appellation à controler");
         $this->validatorSchema['details'] = new sfValidatorString(array('required' => false));
 
-        $this->datalists->addDatalist('liste-appellations', $this->getListeAppellations());
+        $this->setWidget('liste-appellations', new sfWidgetDatalist(['choices' => $this->getListeAppellations()]));
 
         $this->widgetSchema->setNameFormat('selection_operateur[%s]');
     }
