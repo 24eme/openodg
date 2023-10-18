@@ -22,7 +22,7 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
                   }
               }
           }
-          throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (region)");
+          throw new sfError403RegionException($compteUser);
       }
       if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin()
             && $myUser->getCompte()->identifiant != $this->getCompte()->getSociete()->getMasterCompte()->identifiant)
