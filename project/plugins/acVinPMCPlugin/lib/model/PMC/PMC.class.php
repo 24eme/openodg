@@ -113,15 +113,21 @@ class PMC extends BasePMC
         return $this->declaration->getProduits($region);
     }
 
-    public function getDRev() {
-        return DRevClient::getInstance()->find('DREV-'.$this->identifiant.'-'.$this->getPeriode());
-    }
-
     public function getHabilitation() {
         return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
     }
 
     public function addLot($imported = false, $auto_millesime = true) {
         return parent::addLot($imported, false);
+    }
+
+    public function getMillesimes() {
+        $millesimes = array();
+        foreach($this->getLots() as $lot) {
+            if (intval($lot->millesime) == $lot->millesime) {
+                $millesimes[$lot->millesime] = $lot->millesime;
+            }
+        }
+        return array_keys($millesimes);
     }
 }
