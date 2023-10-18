@@ -1,10 +1,12 @@
 <?php
 
-class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
-
+class DegustationSelectionOperateursForm extends acCouchdbObjectForm
+{
+    public  $datalists;
     private $operateurs = [];
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        $this->datalists = new DatalistForm();
         parent::__construct($object, $options = array(), $CSRFSecret = null);
     }
 
@@ -26,6 +28,8 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $this->widgetSchema['details'] = new bsWidgetFormInput([], ['list' => 'liste-appellations']);
         $this->widgetSchema['details']->setLabel("Appellation à controler");
         $this->validatorSchema['details'] = new sfValidatorString(array('required' => false));
+
+        $this->datalists->addDatalist('liste-appellations', $this->getListeAppellations());
 
         $this->widgetSchema->setNameFormat('selection_operateur[%s]');
     }
@@ -50,24 +54,5 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
                 return $p->getAppellation()->getLibelle();
             }, $this->getObject()->getConfiguration()->getProduits())
         );
-    }
-
-    public function renderDatalist()
-    {
-        $options = $this->getListeAppellations();
-
-        $dom = new DOMDocument;
-        $datalist = $dom->createElement('datalist');
-        $datalist->setAttribute('id', 'liste-appellations');
-        $dom->appendChild($datalist);
-
-        foreach ($options as $option) {
-            $o = $dom->createElement('option');
-            $o->setAttribute('value', $option);
-
-            $datalist->appendChild($o);
-        }
-
-        return $dom->saveHTML();
     }
 }
