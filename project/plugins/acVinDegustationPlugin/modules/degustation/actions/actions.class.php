@@ -69,7 +69,7 @@ class degustationActions extends sfActions {
     public function executeListeDeclarant(sfWebRequest $request)
     {
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
-        $this->etablissement = $request->getParameter('identifiant');
+        $this->etablissement = $request->getRoute()->getEtablissement();
         $this->degustations = [];
 
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->etablissement, $this->campagne)->rows;
@@ -903,8 +903,8 @@ class degustationActions extends sfActions {
 
     public function executeLotsListe(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $identifiant = $request->getParameter('identifiant');
         $this->forward404Unless($this->etablissement);
+        $identifiant = $this->etablissement->identifiant;
 
         if(class_exists("EtablissementChoiceForm")) {
             $this->formEtablissement = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
