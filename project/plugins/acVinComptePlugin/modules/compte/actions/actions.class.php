@@ -63,7 +63,7 @@ class compteActions extends sfCredentialActions {
             throw new sfError403Exception();
         }
 
-        $this->compte = $this->getRoute()->getCompte();
+        $this->compte = $this->getRoute()->getCompte(array('allow_admin_odg' => true));
         $this->societe = $this->compte->getSociete();
         $this->formAjoutGroupe = new CompteGroupeAjoutForm('INTERPRO-declaration');
         $this->applyRights();

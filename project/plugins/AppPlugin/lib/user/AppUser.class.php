@@ -218,7 +218,7 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function isStalker() {
-        return $this->hasCredential(self::CREDENTIAL_STALKER);
+        return $this->hasCredential(self::CREDENTIAL_STALKER) || $this->isAdmin() || $this->isAdminODG();
     }
 
 

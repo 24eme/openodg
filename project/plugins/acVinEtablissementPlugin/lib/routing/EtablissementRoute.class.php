@@ -24,7 +24,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         if(!$allowed && ( $myUser->hasDrevAdmin() || $myUser->hasAdminODG()) ) {
             $region = $compteUser->region;
             if(!$region || (!DrevConfiguration::getInstance()->hasHabilitationINAO() && !HabilitationClient::getInstance()->isRegionInHabilitation($this->etablissement->identifiant, $region))) {
-                throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (region)");
+                throw new sfError403RegionException($compteUser);
             }
             $allowed = true;
         }

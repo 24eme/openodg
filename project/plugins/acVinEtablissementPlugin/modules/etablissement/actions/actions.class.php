@@ -41,7 +41,7 @@ class etablissementActions extends sfCredentialActions {
             return $this->forwardSecure();
         }
 
-        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
         $this->societe = $this->etablissement->getSociete();
         $this->applyRights();
         $this->compte = $this->etablissement->getMasterCompte();
