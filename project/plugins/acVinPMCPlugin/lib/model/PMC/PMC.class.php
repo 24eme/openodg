@@ -81,16 +81,7 @@ class PMC extends BasePMC
     }
 
     public function save($saveDependants = true) {
-        $m = $this->getMillesimes();
-        if ($m) {
-            $main_millesime = max($m);
-            if ($main_millesime) {
-                $this->campagne = sprintf('%d-%d', $main_millesime, $main_millesime + 1);
-            }
-            foreach($this->lots as $l) {
-                $l->campagne = $this->campagne;
-            }
-        }
+
         return $this->saveDeclaration($saveDependants);
     }
 
