@@ -198,8 +198,10 @@ class DegustationLot extends BaseDegustationLot {
     }
 
     public function getDocumentOrdre() {
-        if ($this->id_document_provenance === null) {
+        if ($this->getDocument()->getType() == TourneeClient::TYPE_MODEL && in_array($this->initial_type, array_keys(TourneeClient::$lotTourneeChoices))) {
             $this->_set('document_ordre', "01");
+        } else {
+            $this->_set('document_ordre', $this->getDocumentOrdreCalcule());
         }
 
         return $this->_get('document_ordre');
