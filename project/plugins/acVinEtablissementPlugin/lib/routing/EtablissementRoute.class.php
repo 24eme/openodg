@@ -18,7 +18,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
-        if($myUser->hasDrevAdmin() && !$myUser->isAdmin()) {
+        if($myUser->hasDrevAdmin() && !$myUser->isAdmin() && (isset($parameters['allow_admin_odg']) && $parameters['allow_admin_odg'] && !$myUser->isAdminODG())) {
             $region = $compteUser->region;
             if(!$region || (!DrevConfiguration::getInstance()->hasHabilitationINAO() && !HabilitationClient::getInstance()->isRegionInHabilitation($this->etablissement->identifiant, $region))) {
                 throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (region)");
@@ -40,10 +40,10 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         return array("identifiant" => $object->getIdentifiant());
     }
 
-    public function getEtablissement() {
+    public function getEtablissement($parameters = null) {
 
 	    if (!$this->etablissement) {
-            $this->getObject();
+            $this->getObject($parameters);
       	}
 
 	    return $this->etablissement;
