@@ -142,7 +142,6 @@ EOF;
         $etablissement = $dataAugmented['etablissement'];
         $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
         $tournee = TourneeClient::getInstance()->findOrCreate($dataAugmented['date_prelevement'], "OIVC");
-        $tournee->numero_archive = $dataAugmented['numero_dossier'];
         $tournee->save();
 
         $lot = $tournee->add('lots')->add();
@@ -158,6 +157,8 @@ EOF;
         $lot->numero_logement_operateur = $dataAugmented['numero_logement_operateur'];
         $lot->affectable = true;
         $lot->setIsPreleve($dataAugmented['date_prelevement']);
+        $tournee->save();
+        $tournee->archiverLot($tournee->numero_archive);
         $tournee->etape = DegustationEtapes::ETAPE_VISUALISATION;
         $tournee->save();
         echo $tournee->_id."\n";

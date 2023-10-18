@@ -1834,7 +1834,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if (DRevClient::getInstance()->matchFilter($lot, $filters->getParameters()) === false) {
                     continue;
                 }
-                $nblots_operateurs[$lot->declarant_identifiant] += 1;
+                @$nblots_operateurs[$lot->declarant_identifiant] += 1;
             }
             foreach ($nblots_operateurs as $operateur => $quantite) {
                 $mvtFacture = DegustationMouvementFactures::freeInstance($this);

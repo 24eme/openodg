@@ -10,6 +10,7 @@ class importHabilitationIAAOCCsvTask extends importOperateurIACsvTask
   const CSV_HABILITATION_SIRET = 12;
   const CSV_HABILITATION_NEGOCIANT = 15;
   const CSV_HABILITATION_CAVE_COOPERATIVE = 16;
+  const CSV_HABILITATION_CAVE_PARTICULIERE = 17;
   const CSV_HABILITATION_PRODUIT = 18;
   const CSV_HABILITATION_ACTIVITES = 19;
   const CSV_HABILITATION_STATUT = 20;
@@ -121,12 +122,25 @@ EOF;
             $etablissement = EtablissementClient::getInstance()->find($eta->_id);
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($eta->identifiant);
             $theoriticalFamille = $habilitation->getTheoriticalFamille();
+            $activites = $habilitation->getActivitesHabilites();
+            if(!count($activites)) {
+                $activites = $habilitation->getActivitesWrongHabilitation();
+            }
             if($theoriticalFamille) {
                 $etablissement->famille = $habilitation->getTheoriticalFamille();
-            } elseif($data[self::CSV_HABILITATION_CAVE_COOPERATIVE]) {
+            } elseif($data[self::CSV_HABILITATION_CAVE_COOPERATIVE] == "oui") {
                 $etablissement->famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
-            } elseif($data[self::CSV_HABILITATION_NEGOCIANT]) {
+            } elseif($data[self::CSV_HABILITATION_NEGOCIANT] == "oui") {
                 $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            } elseif($data[self::CSV_HABILITATION_CAVE_PARTICULIERE] == "oui") {
+                $etablissement->famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+            } elseif(in_array(HabilitationClient::ACTIVITE_CONDITIONNEUR, $activites) && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites)) {
+                $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            } elseif(in_array(HabilitationClient::ACTIVITE_CONDITIONNEUR, $activites)) {
+                $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
+            } else {
+                $etablissement->famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+                echo $etablissement->_id."\n";
             }
 
             $etablissement->save();
