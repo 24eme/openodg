@@ -57,9 +57,9 @@ echo "Habilitations"
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 # xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
 # sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
-php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv --application="$ODG"
+#ls $DATA_DIR/01_operateurs/habilitations_inao/ | while read file; do xls2csv -c ";" "$DATA_DIR/01_operateurs/habilitations_inao/$file"; done > $DATA_DIR/habilitations_inao.csv
+php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv $DATA_DIR/habilitations_inao.csv --application="$ODG"
 
-ls $DATA_DIR/01_operateurs/habilitations_inao/ | while read file; do xls2csv -c ";" "$DATA_DIR/01_operateurs/habilitations_inao/$file"; done > $DATA_DIR/habilitations_inao.csv
 
 echo "Import des zones"
 

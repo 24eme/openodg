@@ -15,14 +15,25 @@ class importHabilitationIAAOCCsvTask extends importOperateurIACsvTask
   const CSV_HABILITATION_ACTIVITES = 19;
   const CSV_HABILITATION_STATUT = 20;
 
+  const CSV_INAO_PRODUIT = 0;
+  const CSV_INAO_ACTIVITE = 1;
+  const CSV_INAO_RAISON_SOCIALE = 2;
+  const CSV_INAO_CVI = 6;
+  const CSV_INAO_CODE_POSTAL = 8;
+  const CSV_INAO_DATE_HABILITATION = 13;
+  const CSV_INAO_CODE_HABILITATION = 14;
+  const CSV_INAO_DATE_DECISION = 15;
+
   protected $date;
   protected $convert_statut;
   protected $convert_activites;
+  protected $inao;
 
     protected function configure()
     {
         $this->addArguments(array(
             new sfCommandArgument('fichier_habilitations', sfCommandArgument::REQUIRED, "Fichier csv pour l'import des habilitations"),
+            new sfCommandArgument('fichier_habilitations_inao', sfCommandArgument::REQUIRED, "Fichier csv pour l'import des habilitations"),
         ));
 
         $this->addOptions(array(
@@ -63,6 +74,29 @@ EOF;
         $this->convert_products['Pouilly sur Loire'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PSL';
         $this->convert_products['Pouilly Fumé'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PFM';
         $this->convert_products['Sancerre'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/SCR';
+
+        $this->convert_produits_inao = [];
+        $this->convert_produits_inao['A93'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/MTS';
+        $this->convert_produits_inao['A101'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PFM';
+        $this->convert_produits_inao['A102'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PSL';
+        $this->convert_produits_inao['A104'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/QCY';
+        $this->convert_produits_inao['A105'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/RLY';
+        $this->convert_produits_inao['A109'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/SCR';
+        $this->convert_produits_inao['A125'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/CDG';
+        $this->convert_produits_inao['A836'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/CHM';
+
+        $this->convert_activites_inao = [];
+        $this->convert_activites_inao['VINIFICATEUR'] = HabilitationClient::ACTIVITE_VINIFICATEUR;
+        $this->convert_activites_inao['VENTE EN VRAC'] = HabilitationClient::ACTIVITE_VINIFICATEUR;
+        $this->convert_activites_inao['VINIFICATEUR - VCI'] = HabilitationClient::ACTIVITE_VINIFICATEUR;
+        $this->convert_activites_inao['PRODUCTEUR DE MOUTS - VCI'] = HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS;
+        $this->convert_activites_inao['PRODUCTEUR DE MOUTS'] = HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS;
+        $this->convert_activites_inao['PRODUCTEUR DE MOUT'] = HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS;
+        $this->convert_activites_inao['CONDITIONNEUR'] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
+        $this->convert_activites_inao['PRODUCTEUR DE RAISINS'] = HabilitationClient::ACTIVITE_PRODUCTEUR;
+        $this->convert_activites_inao['ELEVEUR'] = HabilitationClient::ACTIVITE_ELEVEUR;
+        $this->convert_activites_inao['NEGOCIANT'] = HabilitationClient::ACTIVITE_NEGOCIANT;
+        $this->convert_activites_inao['DEFAULT'] = 'DEFAULT';
     }
 
     protected function execute($arguments = array(), $options = array())
@@ -70,6 +104,31 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+
+        $this->inao = [];
+
+        foreach(file($arguments['fichier_habilitations_inao']) as $line) {
+
+            $line = str_replace("\n", "", $line);
+            $data = str_getcsv($line, ';');
+
+            $eta = $this->identifyEtablissement(null, $data[self::CSV_INAO_CVI], $data[self::CSV_INAO_CODE_POSTAL]);
+            if (!$eta) {
+                $eta = $this->identifyEtablissement($data[self::CSV_INAO_RAISON_SOCIALE], $data[self::CSV_INAO_CVI], $data[self::CSV_INAO_CODE_POSTAL]);
+            }
+            if (!$eta) {
+                continue;
+            }
+            if(!isset($this->convert_activites_inao[$data[self::CSV_INAO_ACTIVITE]])) {
+                continue;
+            }
+            $dateHabilitation = preg_replace("#^([0-9]{2})/([0-9]{2})/([0-9]{4})$#", '\3-\2-\1', trim($data[self::CSV_INAO_DATE_HABILITATION]));
+
+            if(!isset($this->inao[$eta->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]])) {
+                @$this->inao[$eta->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]]['DEFAULT'] = $dateHabilitation;
+            }
+            @$this->inao[$eta->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]][$this->convert_activites_inao[$data[self::CSV_INAO_ACTIVITE]]] = $dateHabilitation;
+        }
 
         $datas = array();
         foreach(file($arguments['fichier_habilitations']) as $line) {
@@ -80,7 +139,7 @@ EOF;
              }
              $eta = $this->identifyEtablissement($data[self::CSV_HABILITATION_RAISON_SOCIALE], $data[self::CSV_HABILITATION_CVI], $data[self::CSV_HABILITATION_CODE_POSTAL]);
              if (!$eta) {
-                 echo "WARNING: établissement non trouvé ".$line." : pas d'import\n";
+                 //echo "WARNING: établissement non trouvé ".$line." : pas d'import\n";
                  continue;
              }
 
@@ -91,33 +150,14 @@ EOF;
                  continue;
              }
 
-             $date = '2000-08-01';
-             if (isset($cvi2di[$data[self::CSV_HABILITATION_CVI]]) &&
-                    isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]]) &&
-                    isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]]['DATEDECISION'])
-                ) {
-                    $date = $cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]]['DATEDECISION'];
-             }
-
             $statut = $this->convert_statut[trim($data[self::CSV_HABILITATION_STATUT])];
 
-            if (!$produitKey) {
+            if (!$statut) {
                 echo "WARNING: statut non trouvé ".$line." : pas d'import\n";
                 continue;
             }
 
-            if (($statut == HabilitationClient::STATUT_HABILITE) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]]) && isset($cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]])) {
-                $di = $cvi2di[$data[self::CSV_HABILITATION_CVI]][$data[self::CSV_HABILITATION_PRODUIT]];
-                if (isset($di['DATEDEMANDE'])) {
-                    $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, HabilitationClient::STATUT_DEMANDE_HABILITATION, $di['DATEDEMANDE']);
-                }
-                if (isset($di['NOTIFIEEOC'])) {
-                    $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, HabilitationClient::STATUT_ATTENTE_HABILITATION, $di['NOTIFIEEOC']);
-                }
-                $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, HabilitationClient::STATUT_HABILITE, $date);
-            }else{
-                $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, $statut, $date);
-            }
+            $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, $statut);
 
             $etablissement = EtablissementClient::getInstance()->find($eta->_id);
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($eta->identifiant);
@@ -147,20 +187,29 @@ EOF;
         }
     }
 
-    protected function updateHabilitationStatut($identifiant,$produitKey,$data,$statut,$date){
-        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
-        $produit = $habilitation->addProduit($produitKey);
-        if (!$produit) {
-            echo "WARNING: produit $produitKey (".$data[self::CSV_HABILITATION_PRODUIT].") non trouvé : ligne non importée\n";
-            return;
-        }
-        $hab_activites = $produit->add('activites');
+    protected function updateHabilitationStatut($identifiant,$produitKey,$data,$statut){
+        $date = '2000-08-01';
         foreach (explode(",",$data[self::CSV_HABILITATION_ACTIVITES]) as $act) {
-            if ($activite = $this->convert_activites[trim($act)]) {
-                $hab_activites->add($activite)->updateHabilitation($statut, null, $date);
+            $activite = $this->convert_activites[trim($act)];
+            if (!$activite) {
+                continue;
             }
+            if(isset($this->inao[$identifiant][$produitKey][$activite])) {
+                $date = $this->inao[$identifiant][$produitKey][$activite];
+            } elseif(isset($this->inao[$identifiant][$produitKey]['DEFAULT'])) {
+                $date = $this->inao[$identifiant][$produitKey]['DEFAULT'];
+            }
+
+            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+            $produit = $habilitation->addProduit($produitKey);
+            if (!$produit) {
+                echo "WARNING: produit $produitKey (".$data[self::CSV_HABILITATION_PRODUIT].") non trouvé : ligne non importée\n";
+                return;
+            }
+
+            $produit->add('activites')->add($activite)->updateHabilitation($statut, null);
+            $habilitation->save(true);
+            echo "SUCCESS: ".$habilitation->_id."\n";
         }
-        $habilitation->save(true);
-        echo "SUCCESS: ".$habilitation->_id."\n";
     }
 }
