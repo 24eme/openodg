@@ -105,18 +105,17 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $this->inao = [];
+        $inao = [];
 
         foreach(file($arguments['fichier_habilitations_inao']) as $line) {
-
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line, ';');
 
-            $eta = $this->identifyEtablissement(null, $data[self::CSV_INAO_CVI], $data[self::CSV_INAO_CODE_POSTAL]);
-            if (!$eta) {
-                $eta = $this->identifyEtablissement($data[self::CSV_INAO_RAISON_SOCIALE], $data[self::CSV_INAO_CVI], $data[self::CSV_INAO_CODE_POSTAL]);
+            $etablissement = $this->identifyEtablissement(null, $data[self::CSV_INAO_CVI], $data[self::CSV_INAO_CODE_POSTAL]);
+            if (!$etablissement) {
+                $etablissement = $this->identifyEtablissement($data[self::CSV_INAO_RAISON_SOCIALE], $data[self::CSV_INAO_CVI], $data[self::CSV_INAO_CODE_POSTAL]);
             }
-            if (!$eta) {
+            if (!$etablissement) {
                 continue;
             }
             if(!isset($this->convert_activites_inao[$data[self::CSV_INAO_ACTIVITE]])) {
@@ -124,22 +123,24 @@ EOF;
             }
             $dateHabilitation = preg_replace("#^([0-9]{2})/([0-9]{2})/([0-9]{4})$#", '\3-\2-\1', trim($data[self::CSV_INAO_DATE_HABILITATION]));
 
-            if(!isset($this->inao[$eta->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]])) {
-                @$this->inao[$eta->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]]['DEFAULT'] = $dateHabilitation;
+            if(!isset($inao[$etablissement->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]])) {
+                @$inao[$etablissement->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]]['DEFAULT'] = $dateHabilitation;
             }
-            @$this->inao[$eta->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]][$this->convert_activites_inao[$data[self::CSV_INAO_ACTIVITE]]] = $dateHabilitation;
+            @$inao[$etablissement->identifiant][$this->convert_produits_inao[$data[self::CSV_INAO_PRODUIT]]][$this->convert_activites_inao[$data[self::CSV_INAO_ACTIVITE]]] = $dateHabilitation;
         }
 
-        $datas = array();
+        $habilitations = [];
         foreach(file($arguments['fichier_habilitations']) as $line) {
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line, ';');
              if (!$data) {
                continue;
              }
-             $eta = $this->identifyEtablissement($data[self::CSV_HABILITATION_RAISON_SOCIALE], $data[self::CSV_HABILITATION_CVI], $data[self::CSV_HABILITATION_CODE_POSTAL]);
-             if (!$eta) {
-                 //echo "WARNING: établissement non trouvé ".$line." : pas d'import\n";
+             $etablissement = $this->identifyEtablissement(null, $data[self::CSV_HABILITATION_CVI], $data[self::CSV_HABILITATION_CODE_POSTAL]);
+             if (!$etablissement) {
+                 $etablissement = $this->identifyEtablissement($data[self::CSV_HABILITATION_RAISON_SOCIALE], $data[self::CSV_HABILITATION_CVI], $data[self::CSV_HABILITATION_CODE_POSTAL]);
+             }
+             if (!$etablissement) {
                  continue;
              }
 
@@ -157,9 +158,24 @@ EOF;
                 continue;
             }
 
-            $this->updateHabilitationStatut($eta->identifiant, $produitKey, $data, $statut);
+            $activite = @$this->convert_activites[trim($data[self::CSV_HABILITATION_ACTIVITES])];
 
-            $etablissement = EtablissementClient::getInstance()->find($eta->_id);
+            if (!$activite) {
+                echo "WARNING: activite ".$data[self::CSV_HABILITATION_ACTIVITES]." non trouvé ".$line." : pas d'import\n";
+                continue;
+            }
+
+            $date = '2000-08-01';
+
+            if(isset($inao[$etablissement->identifiant][$produitKey][$activite])) {
+                $date = $inao[$etablissement->identifiant][$produitKey][$activite];
+            } elseif(isset($inao[$etablissement->identifiant][$produitKey]['DEFAULT'])) {
+                $date = $inao[$etablissement->identifiant][$produitKey]['DEFAULT'];
+            }
+
+            $habilitations[$date.$etablissement->identifiant.$produitKey.$activite.$statut.uniqid()] = ["identifiant" => $etablissement->identifiant, "produit_hash" => $produitKey, "activite" => $activite, "statut" => $statut, "date" => $date];
+
+            /*$etablissement = EtablissementClient::getInstance()->find($eta->_id);
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($eta->identifiant);
             if(!$habilitation) {
                 continue;
@@ -186,33 +202,21 @@ EOF;
                 echo $etablissement->_id."\n";
             }
 
-            $etablissement->save();
+            $etablissement->save();*/
         }
-    }
 
-    protected function updateHabilitationStatut($identifiant,$produitKey,$data,$statut){
-        $date = '2000-08-01';
-        foreach (explode(",",$data[self::CSV_HABILITATION_ACTIVITES]) as $act) {
-            $activite = $this->convert_activites[trim($act)];
-            if (!$activite) {
-                continue;
-            }
-            if(isset($this->inao[$identifiant][$produitKey][$activite])) {
-                $date = $this->inao[$identifiant][$produitKey][$activite];
-            } elseif(isset($this->inao[$identifiant][$produitKey]['DEFAULT'])) {
-                $date = $this->inao[$identifiant][$produitKey]['DEFAULT'];
-            }
+        ksort($habilitations);
 
-            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
-            $produit = $habilitation->addProduit($produitKey);
+        foreach($habilitations as $dataHabilitation) {
+            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($dataHabilitation['identifiant'], $dataHabilitation['date']);
+            $produit = $habilitation->addProduit($dataHabilitation['produit_hash']);
             if (!$produit) {
-                echo "WARNING: produit $produitKey (".$data[self::CSV_HABILITATION_PRODUIT].") non trouvé : ligne non importée\n";
+                echo "WARNING: produit ".$dataHabilitation['produit_hash']." n'a pas pu être ajouté : ligne non importée\n";
                 return;
             }
 
-            $produit->add('activites')->add($activite)->updateHabilitation($statut, null);
+            $produit->add('activites')->add($dataHabilitation['activite'])->updateHabilitation($dataHabilitation['statut'], null);
             $habilitation->save(true);
-            echo "SUCCESS: ".$habilitation->_id."\n";
         }
     }
 }
