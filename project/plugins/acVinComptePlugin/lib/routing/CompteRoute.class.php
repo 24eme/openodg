@@ -14,10 +14,10 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
       }
       if ($myUser->isAdminODG() && $this->getSociete()) {
           $compteUser = $myUser->getCompte();
-          $region = $compteUser->region;
+          $region = Organisme::getInstance()->getCurrentRegion();
           if ($region) {
               foreach($this->getSociete()->getEtablissementsObj() as $e) {
-                  if (HabilitationClient::getInstance()->isRegionInHabilitation($e->identifiant, $region)) {
+                  if (HabilitationClient::getInstance()->isRegionInHabilitation($e->etablissement->identifiant, $region)) {
                       return $this->compte;
                   }
               }
@@ -43,7 +43,7 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
     }
 
     public function getSociete() {
-      if (!$this->societe) {
+        if (!isset($this->societe) || !$this->societe) {
            $this->societe = $this->getCompte()->getSociete();
       }
       return $this->societe;

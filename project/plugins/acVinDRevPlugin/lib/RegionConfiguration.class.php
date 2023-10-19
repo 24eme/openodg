@@ -95,7 +95,7 @@ class RegionConfiguration {
     {
         return array_filter($mouvements, function($mouvement) use ($region) {
             if (property_exists($mouvement->value, 'region') === false) { return false; }
-            return $mouvement->value->region === $region;
+            return strpos($mouvement->value->region, $region) !== false;
         });
     }
 
