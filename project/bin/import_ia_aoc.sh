@@ -147,6 +147,10 @@ php symfony parcellaire:update-aire --application="$ODG" --trace
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application=centre --noscrapping=1; done
 
+echo "Import Parcellaire manquant"
+
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/02_recoltes/pieds_manquants/pieds_manquants_2022.xlsx | tr -d "\n" | tr "\r" "\n" | sed 's/^/2022;/' > $DATA_DIR/pieds_manquants.csv
+
 echo "Mise en reputes conforme des lots en attente"
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_MANQUEMENT_EN_ATTENTE | grep '"initial_type":"PMC"' | grep '"document_ordre":"02"' | awk -F '"' '{ print "php symfony lot:lever-convormite --application='$ODG' "$8" "$10"-"$12"-"$14" \"PMCNC non trouvé lors de la reprise historique\"" }' | bash
