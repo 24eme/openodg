@@ -5,10 +5,9 @@
 <div class="row">
     <div class="col-xs-12 pt-2" style="min-height: 250px;">
         <p>
-        Vous n'êtes pas autorisé à accéder à cette page
-        <?php
-        if ($sf_user->getCompte() && (method_exists($sf_user->getCompte(), "getRegion") || $sf_user->getCompte()->exist('region')) && $sf_user->getCompte()->getRegion()) {
-            echo " : l'opérateur ne semble pas <a href='".url_for('habilitation_declarant', array('identifiant' => $identifiant))."'>habilité</a> pour vos appellations ".$sf_user->getCompte()->getRegion();
+        Vous n'êtes pas autorisé à accéder à cette page<?php
+        if (Organisme::getInstance()->getCurrentRegion() && isset($_ENV["Forward403Region"])) {
+            echo " : l'opérateur ne semble pas <a href='".url_for('habilitation_declarant', array('identifiant' => $identifiant))."'>habilité</a> pour vos appellations ".Organisme::getInstance()->getCurrentRegion();
         }
         ?>.
        </p>
