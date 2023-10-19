@@ -80,7 +80,7 @@
                 </td>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
                 <td class="text-right" title="Ligne L<?= $l ?>">
-                  <?= ($p['val'] === '—') ? '—' : echoFloat($p['val']) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
+                  <?= ($p['val'] === null) ? '—' : echoFloat($p['val']) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
                 </td>
                 <?php endforeach ?>
             </tr>
