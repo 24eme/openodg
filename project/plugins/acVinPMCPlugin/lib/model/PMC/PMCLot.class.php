@@ -29,7 +29,7 @@ class PMCLot extends BasePMCLot
         if ($this->getDocument()->type == PMCClient::TYPE_MODEL) {
             $initial_type = PMCClient::TYPE_MODEL;
         }else{
-            if ($this->id_document_provenance && $this->getLotProvenance()) {
+            if ($this->id_document_provenance && $this->getLotProvenance() && isset($this->getLotProvenance()->initial_type)) {
                 $initial_type =  $this->getLotProvenance()->initial_type.':'.LotsClient::INITIAL_TYPE_NC;
             }else{
                 $initial_type = PMCNCClient::TYPE_MODEL;
@@ -45,7 +45,7 @@ class PMCLot extends BasePMCLot
     }
 
     public function getDocumentOrdre() {
-        if ($this->id_document_provenance === null) {
+        if ($this->getDocument()->getType() === PMCClient::TYPE_MODEL) {
             $this->_set('document_ordre', "01");
         } else {
             $this->_set('document_ordre', $this->getDocumentOrdreCalcule());

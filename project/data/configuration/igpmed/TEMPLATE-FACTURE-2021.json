@@ -48,9 +48,9 @@
             "ChgtDenom"
           ],
           "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "/appellations/MED"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/MED"
+          }
         }
       }
     }

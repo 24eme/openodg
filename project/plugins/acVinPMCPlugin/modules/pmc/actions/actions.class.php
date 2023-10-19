@@ -5,7 +5,7 @@ class pmcActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $isAdmin = $this->getUser()->isAdmin();
+        $isAdmin = $this->getUser()->isAdminODG();
 
         if (!$isAdmin) {
             $this->secureEtablissement(EtablissementSecurity::DECLARANT_PMC, $etablissement);
@@ -50,7 +50,7 @@ class pmcActions extends sfActions {
 
     public function executeDevalidation(sfWebRequest $request) {
         $pmc = $this->getRoute()->getPMC();
-        if (!$this->getUser()->isAdmin()) {
+        if (!$this->getUser()->isAdminODG()) {
           $this->secure(PMCSecurity::DEVALIDATION , $pmc);
         }
 
@@ -121,7 +121,7 @@ class pmcActions extends sfActions {
     {
         $this->pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::EDITION, $this->pmc);
-        $this->isAdmin = $this->getUser()->isAdmin();
+        $this->isAdmin = $this->getUser()->isAdminODG();
 
         $has = false;
         if(count($this->pmc->getLots())){
@@ -185,7 +185,7 @@ class pmcActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::EDITION, $this->pmc);
-        $this->isAdmin = $this->getUser()->isAdmin();
+        $this->isAdmin = $this->getUser()->isAdminODG();
 
         if ($this->pmc->validation) {
             return $this->redirect('pmc_visualisation', $this->pmc);
@@ -303,7 +303,7 @@ class pmcActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::VISUALISATION, $this->pmc);
-        $this->isAdmin = $this->getUser()->isAdmin();
+        $this->isAdmin = $this->getUser()->isAdminODG();
 
         $this->service = $request->getParameter('service');
 

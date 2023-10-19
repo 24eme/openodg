@@ -198,6 +198,7 @@ class LotsClient
             DRevClient::TYPE_MODEL => "01",
             ConditionnementClient::TYPE_MODEL => "01",
             TransactionClient::TYPE_MODEL => "01",
+            TourneeClient::TYPE_MODEL => "01",
             DegustationClient::TYPE_MODEL => "02",
             ChgtDenomClient::TYPE_MODEL => "02",
             PMCClient::TYPE_MODEL => "01",

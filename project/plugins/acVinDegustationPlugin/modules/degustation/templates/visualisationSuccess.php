@@ -6,18 +6,18 @@
 <div class="page-header no-border">
   <h2>
     <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL): ?>
-        Dégustation
+        Dégustation du
+        <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?>
     <?php else: ?>
-        Tournée
+        Tournée du
+        <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")); ?>
     <?php endif; ?>
-    du
-    <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR"))." à ".format_date($degustation->date, "H")."h".format_date($degustation->date, "mm") ?>
     <small><?php echo $degustation->getLieuNom(); ?></small>
   </h2>
 </div>
 
 <h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
-<table class="table table-condensed table-striped">
+<table class="table table-condensed table-bordered table-striped">
     <thead>
         <tr>
             <th title="Date de prélèvement">Date<br/>de prlv</th>

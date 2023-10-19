@@ -49,7 +49,7 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('archive', 'Archivé :');
         $this->setValidator('archive', new sfValidatorString(array('required' => false)));
 
-        $this->setWidget('secteur', new bsWidgetFormChoice(array('choices' => $secteurs)));
+        $this->setWidget('secteur', new bsWidgetFormChoice(array('choices' => array_merge(["" => ""], $secteurs))));
         $this->widgetSchema->setLabel('secteur', 'Secteur de tournée :');
         $this->setValidator('secteur', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($secteurs))));
 

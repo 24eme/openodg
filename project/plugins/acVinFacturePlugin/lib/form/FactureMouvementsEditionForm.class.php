@@ -95,9 +95,4 @@ class FactureMouvementsEditionForm extends acCouchdbObjectForm {
         $this->widgetSchema[$name] = $form->getWidgetSchema();
         $this->validatorSchema[$name] = $form->getValidatorSchema();
     }
-
-    public function getSuggestionsFacturationLibre() {
-        return FactureConfiguration::getInstance()->getSuggestionsFacturationLibre();
-    }
-
 }

@@ -156,6 +156,7 @@ Degustation:
                         categorie: {  }
                         type: {  }
                         campagne: {  }
+                        region: { required: false }
       degustateurs:
         type: collection
         definition:

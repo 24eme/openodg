@@ -57,7 +57,7 @@ class PMC extends BasePMC
 
     public function getStatutRevendique() {
 
-        return Lot::STATUT_CONDITIONNE;
+        return Lot::STATUT_DECLARE;
     }
 
     public function isNonConformite()
@@ -101,7 +101,7 @@ class PMC extends BasePMC
         return false;
     }
 
-    public function getVolumeLotsFacturables($produitFilter = null){
+    public function getVolumeLotsFacturables(TemplateFactureCotisationCallbackParameters $produitFilter){
 
         return $this->getVolumeRevendiqueLots($produitFilter);
     }
@@ -113,15 +113,21 @@ class PMC extends BasePMC
         return $this->declaration->getProduits($region);
     }
 
-    public function getDRev() {
-        return DRevClient::getInstance()->find('DREV-'.$this->identifiant.'-'.$this->getPeriode());
-    }
-
     public function getHabilitation() {
         return HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->getDate());
     }
 
     public function addLot($imported = false, $auto_millesime = true) {
         return parent::addLot($imported, false);
+    }
+
+    public function getMillesimes() {
+        $millesimes = array();
+        foreach($this->getLots() as $lot) {
+            if (intval($lot->millesime) == $lot->millesime) {
+                $millesimes[$lot->millesime] = $lot->millesime;
+            }
+        }
+        return array_keys($millesimes);
     }
 }

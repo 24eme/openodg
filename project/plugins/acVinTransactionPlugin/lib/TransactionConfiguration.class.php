@@ -28,10 +28,25 @@ class TransactionConfiguration {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
 
+    public function hasOdgProduits() {
+        if (!class_exists('RegionConfiguration')) {
+            return false;
+        }
+        return RegionConfiguration::getInstance()->hasOdgProduits();
+    }
+
     public function getOdgRegions(){
       if(!$this->hasOdgProduits()){
         return array();
       }
+
+      if ($r = Organisme::getInstance()->getCurrentRegion()) {
+          $regions = RegionConfiguration::getInstance()->getOdgProduits($r);
+          if ($regions) {
+              return $regions;
+          }
+      }
+
       return array_keys($this->configuration['odg']);
     }
 
@@ -105,6 +120,16 @@ class TransactionConfiguration {
     public function getStaticRegion() {
         if($this->hasStaticRegion()){
           return $this->configuration['static_region'];
+        }
+    }
+
+    public function hasStaticOrigineType() {
+        return isset($this->configuration['static_region']) && boolval($this->configuration['static_region']);
+    }
+
+    public function getStaticOrigineType() {
+        if($this->hasStaticOrigineType()){
+          return $this->configuration['static_origine_type'];
         }
     }
 }

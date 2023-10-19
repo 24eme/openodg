@@ -4,7 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[top=1cm, bottom=1.5cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
+\usepackage[top=1cm, bottom=2cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
@@ -32,8 +32,6 @@
 \def\LOGO{<?php echo Organisme::getInstance($facture->region)->getLogoPath() ?>}
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>Avoir<?php else:?>Facture<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_odg; ?>}
-\def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
-\def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
 \def\EMETTEURADRESSE{<?php echo str_replace(['–', '\\"'], ['\\\\', ''], $facture->emetteur->adresse); ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
@@ -43,7 +41,6 @@
 \def\EMETTEURIBAN{<?php echo Organisme::getInstance($facture->region)->getIban()." ( ".Organisme::getInstance($facture->region)->getBic()." )" ?>}
 \def\EMETTEURTVAINTRACOM{<?php echo Organisme::getInstance($facture->region)->getNoTvaIntracommunautaire() ?>}
 \def\EMETTEURSIRET{<?php echo Organisme::getInstance($facture->region)->getSiret() ?>}
-\def\FACTUREDATE{<?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCVI{<?php echo $facture->getCvi(); ?>}
 \def\FACTUREDECLARANTIDENTIFIANT{<?php echo $facture->identifiant; ?>}
@@ -64,7 +61,20 @@
 
 }
 \cfoot{\small{
-    \EMETTEURCONTACT~~Email~:~\EMETTEUREMAIL \\
+    \textbf{\EMETTEURLIBELLE}~-~\EMETTEURADRESSE~-~\EMETTEURCP~\EMETTEURVILLE \\
+    <?php if(Organisme::getInstance($facture->region)->getNoTvaIntracommunautaire()): ?>
+    ~N°~TVA~:~\EMETTEURTVAINTRACOM~/
+    <?php endif; ?>
+    ~SIRET~:~\EMETTEURSIRET
+    <?php if(Organisme::getInstance($facture->region)->getIban()): ?>
+     ~/~IBAN~:~\EMETTEURIBAN
+    <?php endif; ?>
+
+    \\
+
+    \EMETTEURCONTACT ~/~ \EMETTEUREMAIL
+
+    \\
 }}
 
 \begin{document}
@@ -72,17 +82,6 @@
 \begin{minipage}{0.5\textwidth}
 	\vspace{-0.8cm}
 	\includegraphics[width=4cm]{\LOGO} \\
-	\textbf{\EMETTEURLIBELLE} \\ \\
-	\EMETTEURADRESSE \\
-	\EMETTEURCP~\EMETTEURVILLE \\ \\
-    \small{
-    <?php if(Organisme::getInstance($facture->region)->getNoTvaIntracommunautaire()): ?>
-	N°~TVA~:~\EMETTEURTVAINTRACOM \\
-    <?php endif; ?>
-    SIRET~:~\EMETTEURSIRET \\
-    <?php if(Organisme::getInstance($facture->region)->getIban()): ?>
-    IBAN~:~\EMETTEURIBAN
-    <?php endif; ?>
     }
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
@@ -190,10 +189,10 @@
 \\\vspace{6mm}
 
 <?php if (isset($exoneration) && $exoneration === true): ?>
-\textbf{ * : Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts}
+\textbf{ * }: Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts
 <?php endif; ?>
 
-\textbf{Paiement à réception de facture. Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé. En cas de retard de paiement, sera exigible, conformément à l'article L 441-6 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur. En cas de retard de paiement, une indemnité forfaitaire de 40€ sera perçue pour frais de recouvrement (décret n°2012-1115 du 2/10/2012).}
+Paiement à réception de facture. Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé. En cas de retard de paiement, sera exigible, conformément à l'article L 441-6 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur. En cas de retard de paiement, une indemnité forfaitaire de 40€ sera perçue pour frais de recouvrement (décret n°2012-1115 du 2/10/2012).
 
 <?php if ($facture->exist('message_communication') && $facture->message_communication): ?>
 \textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\

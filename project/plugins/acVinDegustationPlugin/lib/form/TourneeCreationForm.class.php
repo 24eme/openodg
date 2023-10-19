@@ -12,7 +12,7 @@ class TourneeCreationForm extends BaseForm
     public function save() {
         $values = $this->getValues();
         $tournee = TourneeClient::getInstance()->createDoc($values['date']." 00:00:00", sfContext::getInstance()->getUser()->getRegion());
-
+        $tournee->region = Organisme::getInstance()->getOIRegion();
         $tournee->save();
 
         return $tournee;

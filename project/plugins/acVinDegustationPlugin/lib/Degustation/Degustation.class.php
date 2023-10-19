@@ -309,7 +309,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lot->updateSpecificiteWithDegustationNumber();
 			$statut = $lot->statut;
 			if ($statut == Lot::STATUT_NONCONFORME_LEVEE) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE));
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE, $lot->observation, $lot->nonconformite_levee));
 				$statut = Lot::STATUT_NONCONFORME;
 			}
             if ($lot->conforme_appel) {
@@ -320,11 +320,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             switch($statut) {
                 case Lot::STATUT_CONFORME_APPEL:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_CONFORME_APPEL, null, $lot->conforme_appel));
-				case Lot::STATUT_NONCONFORME_LEVEE:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONCONFORME_LEVEE, null, $lot->nonconformite_levee));
                 case Lot::STATUT_RECOURS_OC:
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_RECOURS_OC, null, $lot->recours_oc));
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, null, $lot->recours_oc));
                     $statut = Lot::STATUT_NONCONFORME;
                 case Lot::STATUT_CONFORME:
                 case Lot::STATUT_NONCONFORME:
@@ -350,10 +347,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
                 case Lot::STATUT_PRELEVE:
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
+                    if (strpos($lot->id_document_provenance, 'TOURNEE') === false) {
+                        $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
+                    }else{
+                        break;
+                    }
 
                 case Lot::STATUT_ANNULE:
                 case Lot::STATUT_AFFECTE_DEST:
+                    if (strpos($lot->id_document, 'TOURNEE') !== false) {
+                        break;
+                    }
                     $nbPassage = $lot->getNombrePassage();
 					$detail = sprintf("%dme passage", $nbPassage);
 					if ($nbPassage == 1) {
@@ -368,7 +372,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANNULE));
             }
             if($lot->isPreleve()) {
-                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
+                if (strpos($lot->id_document_provenance, 'TOURNEE') === false) {
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
+                }
             }
 			if ($lot->isChange()) {
 				continue;
@@ -1622,8 +1628,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			  if(!$cotisation->getConfigCallback()){
 				  continue;
 			  }
-              $parameters = array_merge(array($cotisation),$cotisation->getConfigCallbackParameters());
-              $mvts = call_user_func_array(array($this, $cotisation->getConfigCallback()), $parameters);
+              $mvts = call_user_func_array(array($this, $cotisation->getConfigCallback()), [
+                  $cotisation,
+                  $cotisation->getConfigCallbackParameters()
+              ]);
               foreach ($mvts as $identifiant => $mvtsArray) {
                   foreach ($mvtsArray as $key => $value) {
                       $mouvements[$identifiant][$key] = $value;
@@ -1701,10 +1709,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvement;
         }
 
-        public function getRedegustationForfait($cotisation,$filters = null){
+        public function getRedegustationForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesRedegustationForfait($cotisation,$filters);
         }
-	    public function buildMouvementsFacturesRedegustationForfait($cotisation,$filters = null){
+	    public function buildMouvementsFacturesRedegustationForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLots() as $lot) {
@@ -1715,7 +1723,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
             return $mouvements;
 	    }
-		public function buildMouvementsFacturesRedegustationDejaConformeForfait($cotisation,$filters = null){
+		public function buildMouvementsFacturesRedegustationDejaConformeForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
 			foreach ($this->getLots() as $lot) {
@@ -1727,7 +1735,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
 	    }
 
-        public function getFacturationLotRedeguste($cotisation,$filters = null){
+        public function getFacturationLotRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesLotRedeguste($cotisation, $filters);
         }
 
@@ -1743,14 +1751,14 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $mvt_degust;
 		}
 
-        public function buildMouvementsFacturesLotRedeguste($cotisation,$filters = null){
+        public function buildMouvementsFacturesLotRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             foreach ($this->getLotsDegustables() as $lot) {
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-				if ($filters && DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+				if ($filters && DRevClient::getInstance()->matchFilter($lot, $filters->getParameters()) === false) {
 					continue;
 				}
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
@@ -1764,11 +1772,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		public function getFacturationVolumeRedeguste($cotisation,$filters = null){
             return $this->buildMouvementsFacturesVolumeRedeguste($cotisation, $filters);
         }
-        public function buildMouvementsFacturesVolumeRedeguste($cotisation,$filters = null){
+        public function buildMouvementsFacturesVolumeRedeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesVolume($cotisation, $filters, true);
 		}
 
-        public function buildMouvementsFacturesVolumeDeguste($cotisation, $filters = null){
+        public function buildMouvementsFacturesVolumeDeguste($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesVolume($cotisation, $filters);
         }
 
@@ -1825,15 +1833,15 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function buildMouvementsNbLotsDegustes($cotisation, $filters = null){
+        public function buildMouvementsNbLotsDegustes($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
             $nblots_operateurs = [];
             foreach ($this->getLotsDegustables() as $lot) {
-                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+                if (DRevClient::getInstance()->matchFilter($lot, $filters->getParameters()) === false) {
                     continue;
                 }
-                $nblots_operateurs[$lot->declarant_identifiant] += 1;
+                @$nblots_operateurs[$lot->declarant_identifiant] += 1;
             }
             foreach ($nblots_operateurs as $operateur => $quantite) {
                 $mvtFacture = DegustationMouvementFactures::freeInstance($this);
@@ -1846,7 +1854,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvements;
         }
 
-        public function getForfaitConditionnement($cotisation, $filters = null){
+        public function getForfaitConditionnement($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesForfaitConditionnement($cotisation, $filters);
         }
 		public function buildMouvementsFacturesForfaitConditionnement($cotisation, $filters = null){

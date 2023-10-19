@@ -6,6 +6,7 @@ class DegustationEtapes extends Etapes {
     const ETAPE_DEGUSTATEURS = 'DEGUSTATEURS';
     const ETAPE_CONVOCATIONS = 'CONVOCATIONS';
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
+    const ETAPE_ORGANISATION = 'ORGANISATION';
     const ETAPE_TOURNEES = 'TOURNEES';
     const ETAPE_PRELEVEMENT_MANUEL = 'PRELEVEMENT_MANUEL';
     const ETAPE_ANONYMISATION_MANUELLE = 'ANONYMISATION_MANUELLE';
@@ -22,21 +23,23 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_LOTS => 1,
         self::ETAPE_DEGUSTATEURS => 2,
         self::ETAPE_CONVOCATIONS => 3,
-        self::ETAPE_TOURNEES => 3.5,
-        self::ETAPE_PRELEVEMENTS => 4,
-        self::ETAPE_ANONYMISATION_MANUELLE => 4.5,
-        self::ETAPE_TABLES => 5,
-        self::ETAPE_ANONYMATS => 6,
-        self::ETAPE_COMMISSION => 7,
-        self::ETAPE_RESULTATS => 8,
-        self::ETAPE_NOTIFICATIONS => 9,
-        self::ETAPE_VISUALISATION => 10,
+        self::ETAPE_ORGANISATION => 3.5,
+        self::ETAPE_TOURNEES => 4,
+        self::ETAPE_PRELEVEMENTS => 5,
+        self::ETAPE_ANONYMISATION_MANUELLE => 5,
+        self::ETAPE_TABLES => 6,
+        self::ETAPE_ANONYMATS => 7,
+        self::ETAPE_COMMISSION => 8,
+        self::ETAPE_RESULTATS => 9,
+        self::ETAPE_NOTIFICATIONS => 10,
+        self::ETAPE_VISUALISATION => 11,
     );
 
     public static $libelles = array(
         self::ETAPE_LOTS => 'Lots',
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_CONVOCATIONS => 'Convocations',
+        self::ETAPE_ORGANISATION => 'Organisation',
         self::ETAPE_TOURNEES => 'Tournées',
         self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
@@ -52,6 +55,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_LOTS => 'Lots',
         self::ETAPE_DEGUSTATEURS => 'Dégustateurs',
         self::ETAPE_CONVOCATIONS => 'Convocations',
+        self::ETAPE_ORGANISATION => 'Organisation',
         self::ETAPE_TOURNEES => 'Tournées',
         self::ETAPE_PRELEVEMENTS => 'Prélévements',
         self::ETAPE_ANONYMISATION_MANUELLE => 'Anonymats',
@@ -67,6 +71,7 @@ class DegustationEtapes extends Etapes {
         self::ETAPE_LOTS => 'degustation_selection_lots',
         self::ETAPE_DEGUSTATEURS => 'degustation_selection_degustateurs',
         self::ETAPE_CONVOCATIONS => 'degustation_convocations',
+        self::ETAPE_ORGANISATION => 'degustation_organisation_etape',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
         self::ETAPE_PRELEVEMENT_MANUEL => 'degustation_prelevements_manuel_etape',
         self::ETAPE_PRELEVEMENTS => 'degustation_preleve',
@@ -118,13 +123,13 @@ class DegustationEtapes extends Etapes {
             //unset($items[self::ETAPE_PRELEVEMENTS]);
             unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
         } else {
-            unset($items[self::ETAPE_TOURNEES]);
+            unset($items[self::ETAPE_ORGANISATION]);
             //unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
             unset($items[self::ETAPE_ANONYMISATION_MANUELLE]);
         }
 
         if(DegustationConfiguration::getInstance()->isDegustationAutonome()) {
-            unset($items[self::ETAPE_TOURNEES]);
+            unset($items[self::ETAPE_ORGANISATION]);
             unset($items[self::ETAPE_PRELEVEMENTS]);
         }
 

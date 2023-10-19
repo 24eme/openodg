@@ -26,9 +26,9 @@
                        "DRev"
                    ],
                    "callback": "isDeclarantFamille",
-                   "callback_parameters": [
-                       "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
-                   ]
+                   "callback_parameters": {
+                       "famille": "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+                   }
                }
            }
        },
@@ -48,9 +48,9 @@
                        "DRev"
                    ],
                    "callback": "isDeclarantFamille",
-                   "callback_parameters": [
-                       "NEGOCIANT_VINIFICATEUR,COOPERATIVE"
-                   ]
+                   "callback_parameters": {
+                       "famille": "NEGOCIANT_VINIFICATEUR,COOPERATIVE"
+                   }
                }
            }
        },
@@ -214,9 +214,9 @@
                        "DRev"
                    ],
                    "callback": "getVolumeRevendiqueNumeroDossier",
-                   "callback_parameters": [
-                       "/appellations/MED"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED"
+                   }
                }
            }
        },
@@ -365,9 +365,9 @@
                        "ChgtDenom"
                    ],
                    "callback": "getVolumeFacturable",
-                   "callback_parameters": [
-                       "/appellations/MED"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED"
+                   }
                }
            }
        },

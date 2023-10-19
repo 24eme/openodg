@@ -33,6 +33,7 @@
         <?php echo $formOperateurs['details']->renderLabel(null, ['class' => 'col-sm-3 control-label']) ?>
         <div class="col-sm-9">
             <?php echo $formOperateurs['details']->render() ?>
+            <?php echo $formOperateurs['liste-appellations']->render(); ?>
         </div>
     </div>
 

@@ -54,12 +54,12 @@ php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv --applicat
 
 echo "Habilitations"
 
-#xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
 # xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
 # sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
-php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv --application="$ODG"
+#ls $DATA_DIR/01_operateurs/habilitations_inao/ | while read file; do xls2csv -c ";" "$DATA_DIR/01_operateurs/habilitations_inao/$file"; done > $DATA_DIR/habilitations_inao.csv
+php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv $DATA_DIR/habilitations_inao.csv --application="$ODG"
 
-ls $DATA_DIR/01_operateurs/habilitations_inao/ | while read file; do xls2csv -c ";" "$DATA_DIR/01_operateurs/habilitations_inao/$file"; done > $DATA_DIR/habilitations_inao.csv
 
 echo "Import des zones"
 
@@ -70,11 +70,16 @@ echo "Import des chais"
 cat $DATA_DIR/07_chais/*.html | tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/(^|;)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | grep -Ev "^ ?;" | grep -Ev "^(Zone|ODG|Libelle|Raison Sociale|Nom)" | sed 's/^RaisonSociale/00RaisonSociale/' | sort | uniq > $DATA_DIR/chais.csv
 php symfony import:chais $DATA_DIR/chais.csv $DATA_DIR/zones.csv --application="$ODG" --trace
 
+echo "Import des responsables"
+
+ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do cat $file | grep "_tbResp" | grep "value" | sed 's/.*value="//' |  sed 's/".*//' | tr -d "\n"; echo $file | sed -r 's|.*/|;|' | sed 's/_identite.html//'; done | awk -F ";" '{ print ";" $1 ";;" sprintf("%06d", $2) ";;;;;;;;;;;;;;Responsable"  }' | grep -Ev "^;;;" > $DATA_DIR/membres_responsable.csv
+php symfony import:interlocuteur-ia $DATA_DIR/membres_responsable.csv --nocreatesociete=1 --application="$ODG"
+
 echo "Import des Interlocuteurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/membres.csv
-php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" --trace
+php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG"
 
 echo "Import DRev"
 
@@ -136,10 +141,22 @@ xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > 
 sed -i 's/Choisir Ville//' $DATA_DIR/contacts.csv
 php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
 
+echo "Parcellaire"
+
+php symfony parcellaire:update-aire --application="$ODG" --trace
+
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application=centre --noscrapping=1; done
+
 echo "Mise en reputes conforme des lots en attente"
 
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_AFFECTABLE_ENATTENTE | awk -F '"' '{if ( $9 < "2020-2021" ) print "php symfony lot:change-statut --application='$ODG' "$4" "$10"-"$12"-"$14" false"}' | bash
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_MANQUEMENT_EN_ATTENTE | grep '"initial_type":"PMC"' | grep '"document_ordre":"02"' | awk -F '"' '{ print "php symfony lot:lever-convormite --application='$ODG' "$8" "$10"-"$12"-"$14" \"PMCNC non trouvé lors de la reprise historique\"" }' | bash
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/facture | awk -F '"' '{print $4}' | sort -u | grep '[A-Z]' | while read id ; do php symfony declaration:regenerate-mouvements --onlydeletemouvements=true --application=$ODG $id ; done
 
-php symfony parcellaire:update-aire --application="$ODG" --trace
+echo "Mise a jour des relations en fonction des documents de production"
+
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous?reduce=false | grep 'DR-\|SV11-\|SV12-' | cut -d '"' -f 4 | while read id; do php symfony production:import-relation $id --application=centre --noscrapping=1; done
+
+echo "Mise à jour des tags de compte"
+
+bash bin/update_comptes_tags.sh

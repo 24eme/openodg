@@ -1,6 +1,6 @@
 <?php
 
-class changeStatutLotTask extends sfBaseTask
+class LotChangeStatutTask extends sfBaseTask
 {
 
     protected function configure()

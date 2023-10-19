@@ -69,7 +69,7 @@ class degustationActions extends sfActions {
     public function executeListeDeclarant(sfWebRequest $request)
     {
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent());
-        $this->etablissement = $request->getParameter('identifiant');
+        $this->etablissement = $request->getRoute()->getEtablissement();
         $this->degustations = [];
 
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->etablissement, $this->campagne)->rows;
@@ -88,7 +88,7 @@ class degustationActions extends sfActions {
         $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(Organisme::getCurrentRegion());
 
         if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
-            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsDegustables($this->getUser()->getRegion()));
+            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevesDegustables($this->getUser()->getRegion()));
         }
     }
 
@@ -132,7 +132,7 @@ class degustationActions extends sfActions {
             $this->degustation->save(false);
         }
 
-        $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true]);
+        $this->formLots = new DegustationSelectionLotsForm($this->degustation, ['filter_empty' => true, 'auto_select_lots' => false]);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -367,7 +367,52 @@ class degustationActions extends sfActions {
      * @param sfWebRequest $request
      * @return string
      */
-    public function executeTourneesEtape(sfWebRequest $request) {
+    public function executeOrganisationEtape(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsAnonymized();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_ORGANISATION))) {
+            $this->degustation->save(false);
+        }
+
+        $this->secteur = $request->getParameter('secteur');
+
+        $this->afficher_tous_les_secteurs = $request->getParameter('afficher_tous_les_secteurs', false);
+
+        $this->lots = $this->degustation->getLotsBySecteur();
+
+        if(!$this->secteur) {
+            if (!$this->degustation->hasLotsSansSecteurs()) {
+                    foreach (array_keys($this->lots) as $region) {
+                        if (!count($this->lots[$region])) {
+                            continue;
+                        }
+                        $second_secteur = $region;
+                        return $this->redirect('degustation_organisation_etape', array('sf_subject' => $this->degustation, 'secteur' => $second_secteur));
+                    }
+            }
+            return $this->redirect('degustation_organisation_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->lots))));
+        }
+
+        $this->form = new DegustationTourneesForm($this->degustation, $this->secteur);
+
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (! $this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('degustation_organisation_etape', array('sf_subject' => $this->degustation, 'secteur' => $this->secteur));
+    }
+
+    public function executeTourneesEtape(sfWebRequest $request)
+    {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->redirectIfIsAnonymized();
 
@@ -391,30 +436,16 @@ class degustationActions extends sfActions {
                         return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $second_secteur));
                     }
             }
-            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->degustation->getLotsBySecteur()))));
+            return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => current(array_keys($this->lots))));
         }
 
-        $this->form = new DegustationTourneesForm($this->degustation, $this->secteur);
-
-        if (! $request->isMethod(sfWebRequest::POST)) {
-            return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (! $this->form->isValid()) {
-            return sfView::SUCCESS;
-        }
-
-        $this->form->save();
-
-        return $this->redirect('degustation_tournees_etape', array('sf_subject' => $this->degustation, 'secteur' => $this->secteur));
+        return sfView::SUCCESS;
     }
 
     public function executeSaisieEtape(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->form = new DegustationLotsForm($this->degustation);
+        $this->form = new TourneeLotsForm($this->degustation);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -903,8 +934,8 @@ class degustationActions extends sfActions {
 
     public function executeLotsListe(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $identifiant = $request->getParameter('identifiant');
         $this->forward404Unless($this->etablissement);
+        $identifiant = $this->etablissement->identifiant;
 
         if(class_exists("EtablissementChoiceForm")) {
             $this->formEtablissement = new EtablissementChoiceForm(sfConfig::get('app_interpro', 'INTERPRO-declaration'), array('identifiant' => $this->etablissement->identifiant), true);
@@ -955,6 +986,10 @@ class degustationActions extends sfActions {
     }
 
     public function executeRecoursOc(sfWebRequest $request) {
+        if (RegionConfiguration::getInstance()->hasOC() && Organisme::getInstance()->isOC() === false) {
+            throw new sfException('Vous ne pouvez pas faire de recours OC');
+        }
+
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
         $doc = DegustationClient::getInstance()->find($docid);

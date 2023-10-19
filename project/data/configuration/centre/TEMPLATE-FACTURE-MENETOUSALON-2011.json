@@ -130,6 +130,28 @@
                    ]
                }
            }
+       },
+       "03_degustation": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "",
+            "code_comptable": "70620000",
+            "details": {
+                "00_lotsPreleves": {
+                    "modele": "Cotisation",
+                    "prix": 33,
+                    "tva": 0,
+                    "unite": "",
+                    "libelle": "Echantillon prélevé pour contrôle produit AOC",
+                    "complement_libelle": "",
+                    "docs": [
+                        "Degustation"
+                    ],
+                    "callback": "buildMouvementsNbLotsDegustes",
+                    "callback_parameters": [
+                    ]
+                }
+            }
        }
    }
 }

@@ -63,9 +63,11 @@ class PMCValidation extends DocumentValidation
             $this->addPoint(self::TYPE_FATAL, 'produits_multi_region', null, $this->generateUrl($routeName, array("id" => $this->document->_id)));
         }
 
-        $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, substr($this->document->campagne, 0, 4)]));
-        if ($drev === null || ! $drev->validation_odg) {
-            $this->addPoint(self::TYPE_FATAL, 'revendication_manquante', "Déclaration de Revendication", true);
+        foreach($this->document->getMillesimes() as $millesime) {
+            $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, $millesime]));
+            if ($drev === null || ! $drev->validation_odg) {
+                $this->addPoint(self::TYPE_FATAL, 'revendication_manquante', "Déclaration de Revendication ".$millesime, true);
+            }
         }
 
         foreach ($this->document->lots as $key => $lot) {
@@ -129,7 +131,7 @@ class PMCValidation extends DocumentValidation
             }
             $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
             $nb_days_from_degust = (int) $date_degust->diff(new DateTimeImmutable($this->document->date))->format('%a');
-            if(date('Y-m-d') > $lot->date_degustation_voulue){
+            if(!$this->document->validation_odg && date('Y-m-d') > $lot->date_degustation_voulue){
               $this->addPoint(self::TYPE_ERROR, 'date_degust_anterieure', $lot->getProduitLibelle(). " ( ".$volume." hl )", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }

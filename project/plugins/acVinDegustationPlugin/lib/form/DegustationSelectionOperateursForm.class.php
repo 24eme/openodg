@@ -1,7 +1,7 @@
 <?php
 
-class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
-
+class DegustationSelectionOperateursForm extends acCouchdbObjectForm
+{
     private $operateurs = [];
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
@@ -18,14 +18,16 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $this->setValidator('identifiant', new ValidatorEtablissement(array('required' => true)));
         $this->validatorSchema['identifiant']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
 
-        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => ['ALEATOIRE' => 'Aléatoire', 'RENFORCE' => 'Aléatoire renforcé']], []));
+        $this->setWidget('initial_type', new bsWidgetFormChoice(['choices' => TourneeClient::$lotTourneeChoices], []));
         $this->widgetSchema->setLabel('initial_type', 'Type de contrôle');
-        $this->setValidator('initial_type', new sfValidatorChoice(['choices' => ['ALEATOIRE', 'RENFORCE']]));
+        $this->setValidator('initial_type', new sfValidatorChoice(['choices' => array_keys(TourneeClient::$lotTourneeChoices)]));
         $this->validatorSchema['initial_type']->setMessage('required', 'Le choix d\'un type est obligatoire');
 
-        $this->widgetSchema['details'] = new bsWidgetFormInput();
+        $this->widgetSchema['details'] = new bsWidgetFormInput([], ['list' => 'liste-appellations']);
         $this->widgetSchema['details']->setLabel("Appellation à controler");
         $this->validatorSchema['details'] = new sfValidatorString(array('required' => false));
+
+        $this->setWidget('liste-appellations', new sfWidgetDatalist(['choices' => $this->getListeAppellations()]));
 
         $this->widgetSchema->setNameFormat('selection_operateur[%s]');
     }
@@ -40,10 +42,15 @@ class DegustationSelectionOperateursForm extends acCouchdbObjectForm {
         $lot->declarant_nom = $etablissement->getNom();
         $lot->adresse_logement = sprintf('%s, %s %s', $etablissement->getAdresse(), $etablissement->getCodePostal(), $etablissement->getCommune());
         $lot->affectable = false;
-        $lot->initial_type = 'Degustation:aleatoire';
-        if ($values['initial_type'] === 'RENFORCE') {
-            $lot->initial_type .= '_renforce';
-        }
+        $lot->initial_type = $values['initial_type'];
         $lot->details = $values['details'];
+    }
+
+    private function getListeAppellations()
+    {
+        return array_unique(array_map(function ($p) {
+                return $p->getAppellation()->getLibelle();
+            }, $this->getObject()->getConfiguration()->getProduits())
+        );
     }
 }

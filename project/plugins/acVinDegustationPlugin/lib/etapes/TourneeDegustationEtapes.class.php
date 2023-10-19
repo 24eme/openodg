@@ -3,6 +3,7 @@
 class TourneeDegustationEtapes extends DegustationEtapes
 {
     const ETAPE_LOTS = 'LOTS';
+    const ETAPE_ORGANISATION = 'ORGANISATION';
     const ETAPE_TOURNEES = 'TOURNEES';
     const ETAPE_SAISIE = 'SAISIE';
     const ETAPE_PRELEVEMENTS = 'PRELEVEMENTS';
@@ -12,14 +13,16 @@ class TourneeDegustationEtapes extends DegustationEtapes
 
     public static $etapes = [
         self::ETAPE_LOTS => 1,
-        self::ETAPE_TOURNEES => 2,
-        self::ETAPE_SAISIE => 3,
-        self::ETAPE_PRELEVEMENTS => 4,
-        self::ETAPE_VISUALISATION => 5
+        self::ETAPE_ORGANISATION => 2,
+        self::ETAPE_TOURNEES => 3,
+        self::ETAPE_SAISIE => 4,
+        self::ETAPE_PRELEVEMENTS => 5,
+        self::ETAPE_VISUALISATION => 6
     ];
 
     public static $libelles = [
         self::ETAPE_LOTS => 'Lots',
+        self::ETAPE_ORGANISATION => 'Organisation',
         self::ETAPE_TOURNEES => 'Tournées',
         self::ETAPE_SAISIE => 'Saisie',
         self::ETAPE_PRELEVEMENTS => 'Prélèvements',
@@ -28,6 +31,7 @@ class TourneeDegustationEtapes extends DegustationEtapes
 
     public static $libelles_short = [
         self::ETAPE_LOTS => 'Lots',
+        self::ETAPE_ORGANISATION => 'Organisation',
         self::ETAPE_TOURNEES => 'Tournées',
         self::ETAPE_SAISIE => 'Saisie',
         self::ETAPE_PRELEVEMENTS => 'Prélèvements',
@@ -36,6 +40,7 @@ class TourneeDegustationEtapes extends DegustationEtapes
 
     public static $links = [
         self::ETAPE_LOTS => 'degustation_selection_operateurs',
+        self::ETAPE_ORGANISATION => 'degustation_organisation_etape',
         self::ETAPE_TOURNEES => 'degustation_tournees_etape',
         self::ETAPE_SAISIE => 'degustation_saisie_etape',
         self::ETAPE_PRELEVEMENTS => 'degustation_preleve',
