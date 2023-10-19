@@ -100,7 +100,7 @@ EOF;
                 continue;
             }
 
-            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, preg_replace("/^ENT/", "", $data[self::CSV_CODE_INTERNE]));
+            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, $data[self::CSV_CODE_INTERNE]);
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
             if($societe) {
@@ -195,7 +195,6 @@ EOF;
             }
             $etablissement->cvi = $cvi;
             $etablissement->ppm = strtoupper($ppm);
-            $etablissement->num_interne = trim($data[self::CSV_CODE_INTERNE]);
             $societe->pushAdresseTo($etablissement);
             $societe->pushContactTo($etablissement);
             if(isset($commentaires[trim($data[self::CSV_CODE_INTERNE])])) {
