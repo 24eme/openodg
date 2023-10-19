@@ -70,11 +70,16 @@ echo "Import des chais"
 cat $DATA_DIR/07_chais/*.html | tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/(^|;)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | grep -Ev "^ ?;" | grep -Ev "^(Zone|ODG|Libelle|Raison Sociale|Nom)" | sed 's/^RaisonSociale/00RaisonSociale/' | sort | uniq > $DATA_DIR/chais.csv
 php symfony import:chais $DATA_DIR/chais.csv $DATA_DIR/zones.csv --application="$ODG" --trace
 
+echo "Import des responsables"
+
+ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do cat $file | grep "_tbResp" | grep "value" | sed 's/.*value="//' |  sed 's/".*//' | tr -d "\n"; echo $file | sed -r 's|.*/|;|' | sed 's/_identite.html//'; done | awk -F ";" '{ print ";" $1 ";;" sprintf("%06d01", $2) ";;;;;;;;;;;;;;Responsable"  }' | grep -Ev "^;;;" > $DATA_DIR/membres_responsable.csv
+php symfony import:interlocuteur-ia $DATA_DIR/membres_responsable.csv --nocreatesociete=1 --application="$ODG"
+
 echo "Import des Interlocuteurs"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/membres.csv
-php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG" --trace
+php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG"
 
 echo "Import DRev"
 
