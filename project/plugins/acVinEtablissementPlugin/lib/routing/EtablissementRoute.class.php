@@ -29,6 +29,11 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             $allowed = true;
         }
         if (!$allowed) {
+            if ($myUser->hasTeledeclaration()) {
+                $allowed = ($compteUser->identifiant == $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant);
+            }
+        }
+        if (!$allowed) {
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
         $module = sfContext::getInstance()->getRequest()->getParameterHolder()->get('module');
