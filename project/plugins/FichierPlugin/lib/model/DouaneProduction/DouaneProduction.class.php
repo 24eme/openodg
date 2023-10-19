@@ -431,6 +431,10 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $match = true;
         $etablissements = [];
 
+        if ($produitFilter === null) {
+            $produitFilter = [];
+        }
+
         foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($produit, $filter);
