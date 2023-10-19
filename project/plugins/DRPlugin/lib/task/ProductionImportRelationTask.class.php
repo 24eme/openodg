@@ -61,7 +61,12 @@ EOF;
         foreach ($etablissements_bailleur as $etablissement) {
             $etablissement_id = $etablissement['etablissement_id'];
             if ($etablissement_id == null) {
-                $etab = EtablissementClient::getInstance()->find(EtablissementClient::getInstance()->findByRaisonSociale($etablissement['raison_sociale']));
+                $etab_target = EtablissementClient::getInstance()->findByRaisonSociale($etablissement['raison_sociale']);
+                if (!$etab_target) {
+                    echo "Erreur bailleur non reconnu: [".$etablissement['raison_sociale']."] n'existe pas.".PHP_EOL;
+                    continue;
+                }
+                $etab = EtablissementClient::getInstance()->find($etab_target);
                 $etab->ppm = $etablissement['ppm'];
                 $etablissement_id = $etab->_id;
                 $etab->save();

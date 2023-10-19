@@ -289,7 +289,12 @@ class EtablissementClient extends acCouchdbClient {
                 break;
             }
         }
-        return array_keys($json)[0];
+        if (array_key_exists(0, $json)) {
+            return array_keys($json)[0];
+        }
+        else {
+            return null;
+        }
     }
 
     public function matchFamille($f) {
