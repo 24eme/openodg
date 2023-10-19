@@ -11,7 +11,6 @@ all:
           produits:
             - "TRANQ/appellations/SCR"
           habilitation_produits: "/Sancerre/"
-          facture_exercice: 'recolte'
         POUILLY:
           # nom: "Syndicat de l’AOC Cairanne"
           # adresse: "6 place des Vignerons, 84290 CAIRANNE"
@@ -29,6 +28,7 @@ all:
           produits:
             - "TRANQ/appellations/MTS"
           habilitation_produits: "/Menetou-Salon/"
+          facture_exercice: 'viticole'
         QUINCY:
           # nom: "Syndicat des Vignerons de Châteauneuf-du-Pape"
           # adresse: "25 avenue Général De Gaulle, 84231 Châteauneuf-du-Pape"

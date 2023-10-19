@@ -28,7 +28,6 @@ class TourneeLotsForm extends acCouchdbForm
         foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
             if (! $embedForm->getObject()->preleve) {
                 $embedForm->getObject()->setIsPreleve(date('Y-m-d'));
-                $embedForm->getObject()->document_ordre = "01";
             }
             $embedForm->doUpdateObject($values['lots'][$key]);
         }

@@ -17,6 +17,7 @@ class importInterlocuteurIACsvTask extends sfBaseTask
   const CSV_FAX = 12;
   const CSV_PORTABLE = 13;
   const CSV_EMAIL = 14;
+  const CSV_FONCTION = 17;
 
   protected $date;
   protected $convert_statut;
@@ -33,6 +34,7 @@ class importInterlocuteurIACsvTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('nocreatesociete', null, sfCommandOption::PARAMETER_REQUIRED, 'Ne créé pas de nouvelle société', false),
         ));
 
         $this->namespace = 'import';
@@ -74,6 +76,12 @@ EOF;
             if($resultat && count($resultat) >= 1 && $raisonSociale) {
                 $societe = SocieteClient::getInstance()->find(key($resultat));
             }
+
+            if(!$societe && $options['nocreatesociete']) {
+                echo "Société pas trouvée : $raisonSociale\n";
+                continue;
+            }
+
             if(!$societe) {
                 $societe = SocieteClient::getInstance()->createSociete($raisonSociale, SocieteClient::TYPE_OPERATEUR);
                 if (isset($data[self::CSV_ADRESSE_1])){
@@ -158,6 +166,11 @@ EOF;
                 $competence = "degustateur_competence_".preg_replace('/[\(\) ]/', '_', $competence);
                 $compte->tags->add("manuel")->add(null, $competence);
             }
+
+            if(isset($data[self::CSV_FONCTION]) && $data[self::CSV_FONCTION]) {
+                $compte->fonction = $data[self::CSV_FONCTION];
+            }
+
             $compte->save();
         }
     }
