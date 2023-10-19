@@ -14,7 +14,7 @@
            "libelle": "Cotisation récolte %millesime%",
            "code_comptable": "70620000",
            "details": {
-               "00_volumeRecolte": {
+               "00_volumeRecolte_%millesime%": {
                    "modele": "CotisationVariable",
                    "prix": 5,
                    "tva": 0,
