@@ -93,6 +93,8 @@ var browser;
         let newPagePromise = new Promise(x => page.once('popup', x));
         let newPage = await newPagePromise;           // declare new tab /window,
 
+        await page.waitForTimeout(1500);
+
         fs.writeFileSync(process.env.DOSSIER+"/01_operateurs/fiches/"+nb+"_identite.html",await newPage.content());
 
         await newPage.goto(baseURL+"/operateur/Commentaire.aspx");
