@@ -68,7 +68,7 @@ class TemplateFactureCotisationCallbackParameters
         }
 
         if ($type) {
-            return $this->parameters[$type];
+            return @$this->parameters[$type];
         }
 
         return $this->parameters;
