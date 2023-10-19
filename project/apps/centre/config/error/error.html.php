@@ -21,12 +21,12 @@
         <link rel="icon" type="image/x-icon" href="/favico_centre.ico" />
         <link rel="icon" type="image/png" href="/favico_centre.png" />
 
+        <link href="<?php echo public_path("/components/opensans/opensans.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link rel="stylesheet" type="text/css" media="all" href="/css/compile_default.css" />
 <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
 <link rel="stylesheet" type="text/css" media="all" href="/css/../components/vins/vins.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />
 
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
         <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
