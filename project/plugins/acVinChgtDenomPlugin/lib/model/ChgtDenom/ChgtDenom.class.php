@@ -866,7 +866,7 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
                 $match = $match && $isMillesimeCourant;
             } elseif ($type === 'origine') {
                 $match = $match && $this->origineFilter($filter);
-            } else {
+            } elseif ($type === 'famille') {
                 // filtre sur famille
                 $match = $match && $this->isDeclarantFamille($filter);
             }
