@@ -161,6 +161,9 @@ EOF;
 
             $etablissement = EtablissementClient::getInstance()->find($eta->_id);
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($eta->identifiant);
+            if(!$habilitation) {
+                continue;
+            }
             $theoriticalFamille = $habilitation->getTheoriticalFamille();
             $activites = $habilitation->getActivitesHabilites();
             if(!count($activites)) {
