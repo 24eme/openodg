@@ -376,7 +376,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function getTauxTva() {
-        if($this->exist('taux_tva') && $this->_get('taux_tva')){
+        if($this->exist('taux_tva') && !is_null($this->_get('taux_tva'))){
             return round($this->_get('taux_tva'),2);
         }
         $config_tva = sfConfig::get('app_tva_taux');
