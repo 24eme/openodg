@@ -121,12 +121,11 @@
       });
     });
 
-    $('.mouvements_facture_delete_row .btn_supprimer_ligne_template').click(function ()
+    $('.mouvements_facture_delete_row .btn_supprimer_ligne_template').click(function (e)
     {
-        var element = $(this).parent().parent().parent().parent();
-        if (element.parent().children('.mvt_ligne').size() > 1) {
-            $(element).remove();
-
+        const row = e.target.closest('.form-group.line.mvt_ligne')
+        if (row) {
+          row.remove()
         }
         return false;
     });
