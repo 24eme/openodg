@@ -161,6 +161,17 @@ echo "Mise a jour des relations en fonction des documents de production"
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DR-\|SV11-\|SV12-' | grep '\-2022' | while read id; do php symfony production:import-relation $id --application=centre; done
 
+echo "Import des factures"
+
+php symfony import:factures-ia --application="$ODG" --trace --region=CHATEAUMEILLANT $DATA_DIR/08_facture/ChateauMeillant.csv
+php symfony import:factures-ia --application="$ODG" --trace --region=GIENNOIS $DATA_DIR/08_facture/Giennois.csv
+php symfony import:factures-ia --application="$ODG" --trace --region=MENETOUSALON $DATA_DIR/08_facture/Menetousalon.csv
+php symfony import:factures-ia --application="$ODG" --trace --region=OIVC $DATA_DIR/08_facture/OIVC.csv
+php symfony import:factures-ia --application="$ODG" --trace --region=POUILLY $DATA_DIR/08_facture/Pouilly.csv
+php symfony import:factures-ia --application="$ODG" --trace --region=QUINCY $DATA_DIR/08_facture/Quincy.csv
+php symfony import:factures-ia --application="$ODG" --trace --region=REUILLY $DATA_DIR/08_facture/Reuilly.csv
+php symfony import:factures-ia --application="$ODG" --trace --region=SANCERRE $DATA_DIR/08_facture/Sancerre.csv
+
 echo "Mise à jour des tags de compte"
 
 bash bin/update_comptes_tags.sh
