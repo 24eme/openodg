@@ -51,6 +51,7 @@ class importOperateurIAAOCCsvTask extends sfBaseTask
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
             new sfCommandArgument('csv_commentaire', sfCommandArgument::OPTIONAL, "Fichier csv contenant les commentaires"),
+            new sfCommandArgument('csv_categorie', sfCommandArgument::OPTIONAL, "Fichier csv contenant les catégories/familles"),
         ));
 
         $this->addOptions(array(
@@ -80,6 +81,14 @@ EOF;
                     $commentaires[trim($data[0])] = null;
                 }
                 $commentaires[trim($data[0])] .= $data[1]." (par ".$data[2]." le $data[3])\n";
+            }
+        }
+
+        $categories = [];
+        if(isset($arguments['csv_categorie'])) {
+            foreach(file($arguments['csv_categorie']) as $line) {
+                $data = str_getcsv($line, ";");
+                $categories[trim($data[1])] = $data[0];
             }
         }
 
@@ -143,14 +152,16 @@ EOF;
                 continue;
             }
 
-            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+            $categorie = @$categories[trim($data[self::CSV_CODE_INTERNE])];
 
-            if(strpos($data[self::CSV_TYPE_DECLARATION], 'NV') !== false) {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            }
-
-            if(in_array($data[self::CSV_RAISON_SOCIALE], ["CAVES DE POUILLY/LOIRE", "Cave des Vins de Sancerre"])) {
+            if(strpos($categorie, "Cave Coopérative Viticole") !== false) {
                 $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            } elseif(strpos($categorie, "Négociant") !== false) {
+                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            } elseif(strpos($categorie, "Cave Particulière") !== false) {
+                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+            } else {
+                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
             }
 
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
