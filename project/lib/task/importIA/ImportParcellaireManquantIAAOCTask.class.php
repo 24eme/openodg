@@ -2,24 +2,29 @@
 
 class ImportParcellaireManquantIAAOCTask extends importOperateurIACsvTask
 {
-  const CSV_RAISON_SOCIALE = 0;
-  const CSV_CVI = 6;
-  const CSV_VOLUME = 7;
-  const CSV_SUPERFICIE = 8;
-  const CSV_PRODUIT = 9;
-  const CSV_MENTION_VALORISANTE = 10;
-  const CSV_AOC = 12;
-  const CSV_MILLESIME = 11;
-  const CSV_MOIS_PRESENTATION = 7;
-  const CSV_DATE_DECLARATION = 8;
-  const CSV_DATE_COMMISSION = 9;
-  const CSV_LOGEMENT = 10;
-  const CSV_NUM_LOT = 11;
+  const CSV_ANNEE_DECLARATION = 0;
+  const CSV_NOM_COMMUNE = 1;
+  const CSV_RAISON_SOCIALE = 2;
+  const CSV_CVI = 3;
+  const CSV_SECTION = 4;
+  const CSV_NUM_PARCELLE = 5;
+  const CSV_ODG = 6;
+  const CSV_PRODUIT = 7;
+  const CSV_CEPAGE = 8;
+  const CSV_SURFACE = 9;
+  const CSV_SURFACE_HA = 10;
+  const CSV_SURFACE_A = 11;
+  const CSV_SURFACE_CA = 12;
+  const CSV_DENSITE = 13;
+  const CSV_RATIO_PIED_MANQUANT = 14;
+
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv de la drev")
+            new sfCommandArgument('identifiant', sfCommandArgument::REQUIRED, "Identifiant etablissement"),
+            new sfCommandArgument('periode', sfCommandArgument::REQUIRED, "Annee de la declaration de pieds manquants"),
+            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv de la declaration de pieds manquants")
         ));
 
         $this->addOptions(array(
@@ -42,74 +47,43 @@ EOF;
 
         $this->initProduitsCepages();
 
-        $ligne = 0;
+        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($arguments['identifiant']);
+        if (!$etablissement) {
+            echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
+            exit;
+        }
+
+        $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
+        if (!$parcellaireTotal) {
+            echo "Parcellaire non trouve pour ".$etablissement->identifiant." de raison sociale ".$etablissement->raison_sociale. ".\n";
+            return ;
+        }
+
+        $parcellesToSave = array();
         foreach(file($arguments['csv']) as $line) {
-            $ligne++;
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line, ';');
             if (!$data) {
               continue;
             }
-            print_r($data);
-            continue;
-
-            $etablissement = $this->identifyEtablissement($data[self::CSV_RAISON_SOCIALE], $data[self::CSV_CVI], null);
-            if (!$etablissement) {
-               echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
-               continue;
-            }
-
-            if(strpos($data[self::CSV_PRODUIT], " (VCI)") !== false) {
-                continue;
-            }
-
-            $produitKey = $this->clearProduitKey(KeyInflector::slugify($this->alias($data[self::CSV_PRODUIT])));
-            if (!isset($this->produits[$produitKey])) {
-              echo "WARNING;produit non trouvé ".$data[self::CSV_PRODUIT]." ($produitKey);pas d'import;$line\n";
-              continue;
-            }
-            $produit = $this->produits[$produitKey];
-            $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : null;
-            $periode = $millesime."";
-            $volume = round(str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1, 2);
-            $superficie = round(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])) * 1, 4);
-
-            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndPeriode($etablissement->identifiant, $periode);
-            if(!$drev) {
-                $drev = new DRev();
-                $drev->initDoc($etablissement->identifiant, $millesime);
-                $drev->storeDeclarant();
-                try {
-                    $drev->resetAndImportFromDocumentDouanier();
-                    foreach($drev->getProduits() as $p) {
-                        $p->superficie_revendique = null;
-                    }
-                } catch(Exception $e) {
-                    continue;
+            $found = false;
+            if ($data[self::CSV_CVI] == $parcellaireTotal['declarant']->cvi) {
+                foreach($parcellaireTotal->getParcelles() as $parcelle) {
+                    if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
+                            $parcelle->numero_parcelle == $data[self::CSV_NUM_PARCELLE]) {
+                        $parcellesToSave[] = $parcelle->getHash();
+                        $found = true;
+                        break;
                 }
             }
-
-            $drevProduit = $drev->addProduit($produit->getHash(), $data[self::CSV_MENTION_VALORISANTE]);
-            $drevProduit->volume_revendique_issu_recolte = $volume;
-            $drevProduit->superficie_revendique = $superficie;
-            $drevProduit->update();
-
-            try {
-                if(!$drev->isValidee()) {
-                    $drev->validate($periode."-12-10");
+                if (!$found) {
+                    echo "Parcelle ". $data[self::CSV_SECTION]." ".$data[self::CSV_NUM_PARCELLE].' non trouvee pour '.$data[self::CSV_CVI]."\n";
                 }
-                $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
-            } catch(Exception $e) {
-                sleep(60);
-                if(!$drev->isValidee()) {
-                    $drev->validate($periode."-12-10");
-                }
-                $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             }
-            $drev->save();
-
-            echo $drev."\n";
         }
+        $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['periode']);
+        $manquant->addParcellesFromParcellaire($parcellesToSave);
+        $manquant->save();
     }
 
     protected function alias($produit) {
