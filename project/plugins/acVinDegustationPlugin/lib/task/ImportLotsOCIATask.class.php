@@ -110,8 +110,12 @@ EOF;
                 $this->importAleatoire($data, $dataAugmented, TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE);
             }
 
-            if(in_array($typeControle, ["NCI","NCO"])) {
+            if($typeControle == "NCI") {
                 $this->importPMCNC($data, $dataAugmented);
+            }
+
+            if($typeControle == "NCO") {
+                // Rien besoin de faire l'import des dégustations suffit
             }
         }
     }
