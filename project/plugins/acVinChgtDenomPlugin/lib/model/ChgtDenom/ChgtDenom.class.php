@@ -851,6 +851,10 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
             $chgtdenom = $this;
         }
 
+        if ($produitFilter === null) {
+            $produitFilter = [];
+        }
+
         $match = true;
 
         foreach ($produitFilter as $type => $filter) {

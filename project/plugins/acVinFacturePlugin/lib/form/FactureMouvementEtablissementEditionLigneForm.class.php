@@ -40,9 +40,9 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
           if ($lastMouvement) {
               $this->setDefault('identifiant', $lastMouvement->identifiant);
               $this->setDefault('identifiant_analytique', $lastMouvement->identifiant_analytique);
-              if (!$this->getSuggestionsFacturationLibre()) {
-                  $this->setDefault('detail_libelle', $lastMouvement->detail_libelle);
-              }
+              $this->setDefault('detail_libelle', $lastMouvement->detail_libelle);
+              $this->setDefault('quantite', $lastMouvement->quantite);
+              $this->setDefault('prix_unitaire', $lastMouvement->prix_unitaire);
           }
       }
     }

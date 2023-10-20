@@ -231,6 +231,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         $etablissements = [];
         $match = true;
 
+        if ($produitFilter === null) {
+            $produitFilter = [];
+        }
+
         foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($lot, $filter);

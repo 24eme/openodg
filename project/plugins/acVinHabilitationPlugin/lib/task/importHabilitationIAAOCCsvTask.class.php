@@ -130,6 +130,7 @@ EOF;
         }
 
         $habilitations = [];
+        $familles = [];
         foreach(file($arguments['fichier_habilitations']) as $line) {
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line, ';');
@@ -175,38 +176,12 @@ EOF;
 
             $habilitations[$date.$etablissement->identifiant.$produitKey.$activite.$statut.uniqid()] = ["identifiant" => $etablissement->identifiant, "produit_hash" => $produitKey, "activite" => $activite, "statut" => $statut, "date" => $date];
 
-            /*$etablissement = EtablissementClient::getInstance()->find($eta->_id);
-            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($eta->identifiant);
-            if(!$habilitation) {
-                continue;
-            }
-            $theoriticalFamille = $habilitation->getTheoriticalFamille();
-            $activites = $habilitation->getActivitesHabilites();
-            if(!count($activites)) {
-                $activites = $habilitation->getActivitesWrongHabilitation();
-            }
-            if($theoriticalFamille) {
-                $etablissement->famille = $habilitation->getTheoriticalFamille();
-            } elseif($data[self::CSV_HABILITATION_CAVE_COOPERATIVE] == "oui") {
-                $etablissement->famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
-            } elseif($data[self::CSV_HABILITATION_NEGOCIANT] == "oui") {
-                $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            } elseif($data[self::CSV_HABILITATION_CAVE_PARTICULIERE] == "oui") {
-                $etablissement->famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-            } elseif(in_array(HabilitationClient::ACTIVITE_CONDITIONNEUR, $activites) && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites)) {
-                $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            } elseif(in_array(HabilitationClient::ACTIVITE_CONDITIONNEUR, $activites)) {
-                $etablissement->famille = EtablissementFamilles::FAMILLE_NEGOCIANT;
-            } else {
-                $etablissement->famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-                echo $etablissement->_id."\n";
-            }
-
-            $etablissement->save();*/
+            $familles[$etablissement->identifiant] = $etablissement->famille;
         }
 
         ksort($habilitations);
 
+        $theoriticalFamilles = [];
         foreach($habilitations as $dataHabilitation) {
             $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($dataHabilitation['identifiant'], $dataHabilitation['date']);
             $produit = $habilitation->addProduit($dataHabilitation['produit_hash']);
@@ -217,6 +192,20 @@ EOF;
 
             $produit->add('activites')->add($dataHabilitation['activite'])->updateHabilitation($dataHabilitation['statut'], null);
             $habilitation->save(true);
+
+            if($habilitation->getTheoriticalFamille()) {
+                $theoriticalFamilles[$dataHabilitation['identifiant']] = $habilitation->getTheoriticalFamille();
+            }
+        }
+
+        foreach ($theoriticalFamilles as $identifiant => $theoriticalFamille) {
+            if($familles[$identifiant] == $theoriticalFamille) {
+                continue;
+            }
+            echo "La famille théorique issue des habilitations est différente de celle de l'établissement ".$identifiant." : ".$familles[$identifiant]." devient ".$theoriticalFamille."\n";
+            $etablissement = EtablissementClient::getInstance()->find($identifiant);
+            $etablissement->famille = $theoriticalFamille;
+            $etablissement->save();
         }
     }
 }

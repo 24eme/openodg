@@ -45,16 +45,17 @@ xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" 
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs.csv
 echo "IdentifiantInterne;Commentaire;Auteur;Date" > $DATA_DIR/operateurs_commentaires.csv
 ls $DATA_DIR/01_operateurs/fiches/*_commentaires.html | while read file; do ID=$(echo $file | sed -r 's|.+/||' | cut -d "_" -f 1); echo $ID; cat $file |  tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's#</td>#|#g' | sed 's#</th>#-#g' | sed 's/<[^>]*>//g' | sed -r 's/(^|#)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | sed 's/&gt;/>/g' | sed 's/;/./g' | grep -Ev "^ ?;" | grep -vE "^Commentaire-Auteur-Date" | grep -v "^ |" | sed "s/^/$ID|/"; done | sed 's/|/;/g' | grep ";" | cut -d ";" -f 1,2,3,4 >> $DATA_DIR/operateurs_commentaires.csv
+ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do cat $file | grep "cblProfil" | grep 'type="checkbox"' | sed "s|<td>|\n|g" | grep 'checked="checked"' | sed 's|.*">||' | sed 's/<.*//' | tr -d "\n"; echo $file | sed -r 's|.*/|;|' | sed 's/_identite.html//'; done > $DATA_DIR/operateurs_categorie.csv
 
-php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv $DATA_DIR/operateurs_commentaires.csv --application="$ODG" --trace
+php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs_inactifs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
-php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv --application="$ODG" --trace
+php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
 
 echo "Habilitations"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/habilitations.csv
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" | grep -v "(F);" > $DATA_DIR/habilitations.csv
 # xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
 # sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
 #ls $DATA_DIR/01_operateurs/habilitations_inao/ | while read file; do xls2csv -c ";" "$DATA_DIR/01_operateurs/habilitations_inao/$file"; done > $DATA_DIR/habilitations_inao.csv
