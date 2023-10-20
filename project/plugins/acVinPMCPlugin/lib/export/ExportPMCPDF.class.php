@@ -76,10 +76,12 @@ class ExportPMCPDF extends ExportPDF
             } else {
                 $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date_validation->format('d/m/Y'));
 
-                if($date_validation_odg !== false) {
-                    $header_subtitle .= ", validée par l'ODG le ".$date_validation_odg->format('d/m/Y');
-                } else {
-                    $header_subtitle .= ", en attente de l'approbation par l'ODG";
+                if ($this->declaration->isNonConformite() === false) {
+                    if($date_validation_odg !== false) {
+                        $header_subtitle .= ", validée par l'ODG le ".$date_validation_odg->format('d/m/Y');
+                    } else {
+                        $header_subtitle .= ", en attente de l'approbation par l'ODG";
+                    }
                 }
             }
         }
