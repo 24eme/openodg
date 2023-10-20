@@ -12,6 +12,7 @@ class TemplateFactureCotisationCallbackParameters
         'famille',
         'round_methode',
         'origine',
+        'precision',
         'region'
     ];
 
@@ -67,7 +68,7 @@ class TemplateFactureCotisationCallbackParameters
         }
 
         if ($type) {
-            return $this->parameters[$type];
+            return @$this->parameters[$type];
         }
 
         return $this->parameters;

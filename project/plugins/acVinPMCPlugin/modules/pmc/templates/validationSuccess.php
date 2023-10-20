@@ -20,8 +20,8 @@
         </div>
     </div>
     <?php endif; ?>
-
 </div>
+<?php endif ?>
 
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -51,4 +51,4 @@
         </div>
     </div>
 </form>
-<?php include_partial('pmc/popupConfirmationValidation', array('approuver' => true)); ?>
+<?php include_partial('pmc/popupConfirmationValidation', array('approuver' => true, 'pmc' => $pmc)); ?>

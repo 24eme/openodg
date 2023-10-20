@@ -51,7 +51,6 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
     public function replaceLibelle($cles, $to_replace, $by)
     {
         foreach ($cles as &$cle) {
-            echo $this->$cle . ': '.str_replace($to_replace, $by, $this->$cle).PHP_EOL;
             $this->$cle = str_replace($to_replace, $by, $this->$cle);
         }
     }

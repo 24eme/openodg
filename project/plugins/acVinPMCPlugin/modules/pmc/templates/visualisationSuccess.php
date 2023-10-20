@@ -8,7 +8,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Mise en Circulation du <?php echo $pmc->getDateFr(); ?>
+    <h2>Déclaration de Mise en Circulation <?php echo ($pmc->isNonConformite()) ? PMCNCClient::SUFFIX : '' ?> du <?php echo $pmc->getDateFr(); ?>
     <?php if($pmc->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($pmc->validation && $pmc->validation !== true): ?> reçue le <?php echo format_date($pmc->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($pmc->validation): ?>
@@ -36,7 +36,7 @@
 
 <?php if($pmc->validation && !$pmc->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-warning">
-        Cette déclaration est en <strong>attente de validation</strong> par l'ODG
+        Cette déclaration est en <strong>attente de validation</strong><?php if (! $pmc->isNonConformite()): ?> par l'ODG <?php endif ?>
     </div>
 <?php endif; ?>
 

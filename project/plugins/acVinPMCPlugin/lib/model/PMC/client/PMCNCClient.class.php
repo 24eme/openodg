@@ -5,6 +5,8 @@ class PMCNCClient extends PMCClient
     const TYPE_MODEL = "PMCNC";
     const TYPE_COUCHDB = "PMCNC";
 
+    const SUFFIX = " suite à non conformité";
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient("PMCNC");

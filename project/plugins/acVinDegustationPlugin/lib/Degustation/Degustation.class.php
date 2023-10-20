@@ -848,6 +848,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $lots;
         }
 
+        public function hasLotsSansProvenance()
+        {
+            return count(array_filter($this->getLots()->toArray(), function ($lot) {
+                return ! $lot->getLotProvenance();
+            })) > 0;
+        }
+
 		public function getLotsByTable($numero_table){
 			$lots = array();
 			foreach ($this->getLotsDegustables() as $lot) {

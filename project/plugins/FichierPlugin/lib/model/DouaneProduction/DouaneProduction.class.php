@@ -431,6 +431,10 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $match = true;
         $etablissements = [];
 
+        if ($produitFilter === null) {
+            $produitFilter = [];
+        }
+
         foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($produit, $filter);
@@ -628,7 +632,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             $missing = array_diff($donnees['lignes'], array_keys($value['lignes']));
             if (count($missing)) {
                 foreach ($missing as $k => $m) {
-                    $value['lignes'][$m] = ['val' => '—'];
+                    $value['lignes'][$m] = ['val' => null];
                     $value['lignes'][$m]['unit'] = (in_array($m, ['04', '04b'])) ? 'ha' : 'hl';
                 }
             }

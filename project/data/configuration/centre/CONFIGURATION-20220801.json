@@ -171,15 +171,6 @@
                                                                    }
                                                                }
                                                            }
-                                                       },
-                                                       "attributs": {
-                                                           "rendement": 55,
-                                                           "rendement_dr_l5": 55,
-                                                           "rendement_dr_l15": 55,
-                                                           "rendement_conseille": 55,
-                                                           "rendement_dr": null,
-                                                           "rendement_vci": null,
-                                                           "rendement_vci_total": null
                                                        }
                                                    },
                                                    "rose": {
@@ -224,15 +215,6 @@
                                                                    }
                                                                }
                                                            }
-                                                       },
-                                                       "attributs": {
-                                                           "rendement": 55,
-                                                           "rendement_dr_l5": 55,
-                                                           "rendement_dr_l15": 55,
-                                                           "rendement_conseille": 55,
-                                                           "rendement_dr": null,
-                                                           "rendement_vci": null,
-                                                           "rendement_vci_total": null
                                                        }
                                                    }
                                                }
@@ -241,9 +223,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": null,
-                                   "rendement_dr_l5": null,
-                                   "rendement_dr_l15": null,
+                                   "rendement": 55,
+                                   "rendement_dr_l5": 60,
+                                   "rendement_dr_l15": 55,
                                    "rendement_conseille": null,
                                    "rendement_dr": null,
                                    "rendement_vci": null,
@@ -1078,9 +1060,9 @@
                                                        },
                                                        "attributs": {
                                                            "rendement": 65,
-                                                           "rendement_dr_l5": 65,
+                                                           "rendement_dr_l5": 75,
                                                            "rendement_dr_l15": 65,
-                                                           "rendement_conseille": 65,
+                                                           "rendement_conseille": null,
                                                            "rendement_dr": null,
                                                            "rendement_vci": 7,
                                                            "rendement_vci_total": 19.5
@@ -1221,9 +1203,9 @@
                                                        },
                                                        "attributs": {
                                                            "rendement": 65,
-                                                           "rendement_dr_l5": 65,
+                                                           "rendement_dr_l5": 75,
                                                            "rendement_dr_l15": 65,
-                                                           "rendement_conseille": 65,
+                                                           "rendement_conseille": null,
                                                            "rendement_dr": null,
                                                            "rendement_vci": 4,
                                                            "rendement_vci_total": 19.5
@@ -1274,9 +1256,9 @@
                                                        },
                                                        "attributs": {
                                                            "rendement": 59,
-                                                           "rendement_dr_l5": 59,
+                                                           "rendement_dr_l5": 69,
                                                            "rendement_dr_l15": 59,
-                                                           "rendement_conseille": 59,
+                                                           "rendement_conseille": null,
                                                            "rendement_dr": null,
                                                            "rendement_vci": null,
                                                            "rendement_vci_total": null
@@ -1327,9 +1309,9 @@
                                                        },
                                                        "attributs": {
                                                            "rendement": 63,
-                                                           "rendement_dr_l5": 63,
+                                                           "rendement_dr_l5": 69,
                                                            "rendement_dr_l15": 63,
-                                                           "rendement_conseille": 63,
+                                                           "rendement_conseille": null,
                                                            "rendement_dr": null,
                                                            "rendement_vci": null,
                                                            "rendement_vci_total": null
