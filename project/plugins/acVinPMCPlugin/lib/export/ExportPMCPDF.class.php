@@ -4,10 +4,12 @@ class ExportPMCPDF extends ExportPDF
 {
     protected $declaration = null;
     protected $etablissement = null;
+    protected $nc = null;
 
     public function __construct($declaration, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->declaration = $declaration;
         $this->etablissement = $declaration->getEtablissementObject();
+        $this->nc = $declaration->isNonConformite();
         $app = strtoupper(sfConfig::get('sf_app'));
 
         if (!$filename) {
@@ -54,7 +56,8 @@ class ExportPMCPDF extends ExportPDF
 
     protected function getHeaderTitle() {
         $date = new DateTimeImmutable($this->declaration->date);
-        $titre = sprintf("Déclaration de Mise en Circulation du %s", $date->format('d/m/Y'));
+        $suffix = $this->nc ? PMCNCClient::SUFFIX : '';
+        $titre = sprintf("Déclaration de Mise en Circulation %s du %s", $suffix, $date->format('d/m/Y'));
         return $titre;
     }
 
