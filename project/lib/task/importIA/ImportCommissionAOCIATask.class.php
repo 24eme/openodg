@@ -84,7 +84,7 @@ EOF;
               continue;
           }
 
-          if (!trim($data[self::CSV_RESULTAT_ORGANO])) {
+          if (!trim($data[self::CSV_RESULTAT_ORGANO]) && !trim($data[self::CSV_RESULTAT_LABO])) {
               continue;
           }
 
