@@ -287,7 +287,7 @@ class fichierActions extends sfActions
 			}catch(sfException $e ) {
 				$this->getUser()->setFlash('error', $e->getMessage());
 			}
-			return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
+			return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant, 'campagne' => $this->periode.'-'.($this->periode + 1)));
 		}
 
 	}

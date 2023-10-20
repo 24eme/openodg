@@ -890,8 +890,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
         if (RegionConfiguration::getInstance()->hasOdgProduits()) {
             if ($this->getDocument()->exist('region') && $this->getDocument()->region) {
-                $regions = explode('|', $this->getDocument()->region);
-                $mouvement->add('region', end($regions));
+                $mouvement->add('region', $this->getDocument()->region);
             }elseif ($r = RegionConfiguration::getInstance()->getOdgRegion($this->produit_hash)) {
                 $mouvement->add('region', $r);
             }

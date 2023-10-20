@@ -950,7 +950,7 @@ class degustationActions extends sfActions {
         $this->campagne = $request->getParameter('campagne', $this->campagnes[0]);
         $this->mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $this->campagne)->rows;
 
-        if ($region = $this->getUser()->getRegion()) {
+        if ($region = Organisme::getInstance()->getCurrentRegion()) {
             $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $region);
         }
 
