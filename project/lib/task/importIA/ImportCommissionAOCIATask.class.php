@@ -84,6 +84,10 @@ EOF;
               continue;
           }
 
+          if (!trim($data[self::CSV_RESULTAT_ORGANO]) && !trim($data[self::CSV_RESULTAT_LABO])) {
+              continue;
+          }
+
           $degustation_date = $this->formatDate(trim($data[self::CSV_DATE_COMMISSION]));
 
           if(!$degustation_date) {
