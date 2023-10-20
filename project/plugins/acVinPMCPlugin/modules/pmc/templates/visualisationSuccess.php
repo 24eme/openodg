@@ -36,7 +36,7 @@
 
 <?php if($pmc->validation && !$pmc->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-warning">
-        Cette déclaration est en <strong>attente de validation</strong> par l'ODG
+        Cette déclaration est en <strong>attente de validation</strong><?php if (! $pmc->isNonConformite()): ?> par l'ODG <?php endif ?>
     </div>
 <?php endif; ?>
 
