@@ -25,8 +25,9 @@
                        "DRev"
                    ],
                    "callback": "getQuantiteSuperficeRecolte",
-                   "callback_parameters": [
-                   ]
+                   "callback_parameters": {
+                       "precision": 4
+                   }
                }
            }
        },
