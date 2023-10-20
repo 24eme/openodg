@@ -445,6 +445,11 @@ class degustationActions extends sfActions {
     public function executeSaisieEtape(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if ($this->degustation->hasLotsSansProvenance() === false) {
+            return $this->redirect(DegustationEtapes::getInstance()->getNextLink(TourneeDegustationEtapes::ETAPE_SAISIE), $this->degustation);
+        }
+
         $this->form = new TourneeLotsForm($this->degustation);
 
         if (! $request->isMethod(sfWebRequest::POST)) {
