@@ -152,6 +152,9 @@ echo "Import Parcellaire manquant"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/02_recoltes/pieds_manquants/pieds_manquants_2022.xlsx | tr -d "\n" | tr "\r" "\n" | sed 's/^/2022;/' > $DATA_DIR/pieds_manquants.csv
 
+echo "Import des declarations de pieds manquants"
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DREV-' | grep '\-2022' | awk -F '-' '{print "php symfony import:parcellairemanquant-ia-aoc "$2" "$3" ~/pieds_manquants.csv --application=centre"}' | sort -u | bash
+
 echo "Mise en reputes conforme des lots en attente"
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_MANQUEMENT_EN_ATTENTE | grep '"initial_type":"PMC"' | grep '"document_ordre":"02"' | awk -F '"' '{ print "php symfony lot:lever-convormite --application='$ODG' "$8" "$10"-"$12"-"$14" \"PMCNC non trouvé lors de la reprise historique\"" }' | bash
