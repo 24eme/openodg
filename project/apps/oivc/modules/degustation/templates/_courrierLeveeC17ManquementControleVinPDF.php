@@ -35,7 +35,7 @@
     <tr><td>AOC, couleur, millésime : <strong><?php echo showProduitCepagesLot($lot, false) ?></strong></td></tr>
     <br/>
     <tr><td>Volume : <?php echo $lot->volume ?> hl</td></tr>
-    <tr><td>Cols : 0</td></tr>
+    <tr><td>Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?></td></tr>
     <br/>
     <tr><td>a été prélevé pour un nouvel examen analytique et organoleptique. Celui-ci n'a relevé aucun manquement au cahier des charges de l'Appellation revendiquée.</td></tr>
     <br/>

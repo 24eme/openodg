@@ -14,14 +14,23 @@ class ImportLotsOCIATask extends importOperateurIACsvTask
   const CSV_NUM_LOT = 13;
   const CSV_TYPE_CONTROLE = 14;
 
+  const CSV_SYNTHESE_PRODUIT = 11;
+  const CSV_SYNTHESE_MILLESIME = 12;
+  const CSV_SYNTHESE_NUM_LOT = 13;
+  const CSV_SYNTHESE_LOGEMENT = 14;
+  const CSV_SYNTHESE_VOLUME = 15;
+  const CSV_SYNTHESE_DATE_DECLARATION = 21;
+
   protected $date;
   protected $produits;
   protected $cepages;
+  protected $synthese;
 
     protected function configure()
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csvsynthese', sfCommandArgument::OPTIONAL, "Fichier csv de la synthèse des lots pour complément d'info pour l'import"),
         ));
 
         $this->addOptions(array(
@@ -43,6 +52,8 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $this->initProduitsCepages();
+
+        $this->initSynthese($arguments['csvsynthese']);
 
         $document = null;
         $ligne = 0;
@@ -85,12 +96,21 @@ EOF;
             $dataAugmented = [];
             $dataAugmented['etablissement'] = $etablissement;
             $dataAugmented['date_prelevement'] = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_PRELEVEMENT]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            $dataAugmented['date_declaration'] = $dataAugmented['date_prelevement'];
             $dataAugmented['produit'] = $this->produits[$produitKey];
             $dataAugmented['millesime'] = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : null;
             $dataAugmented['volume'] = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
             $dataAugmented['numero_logement_operateur'] = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
             $dataAugmented['numero_dossier'] = sprintf("%05d", explode("-", $data[self::CSV_NUMERO_ECHANTILLON])[0]);
             $dataAugmented['numero_archive'] = sprintf("%05d", explode("-", $data[self::CSV_NUMERO_ECHANTILLON])[1]);
+            if ($this->synthese) {
+                $syntheseKey = $this->makeSyntheseKey($dataAugmented['produit'], $dataAugmented['millesime'], $dataAugmented['volume'], $dataAugmented['numero_logement_operateur']);
+                if (isset($this->synthese[$syntheseKey])) {
+                    if (isset($this->synthese[$syntheseKey][self::CSV_SYNTHESE_DATE_DECLARATION]) && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($this->synthese[$syntheseKey][self::CSV_SYNTHESE_DATE_DECLARATION]), $m)) {
+                        $dataAugmented['date_declaration'] = $m[3].'-'.$m[2].'-'.$m[1];
+                    }
+                }
+            }
 
             $typeControle = $data[self::CSV_TYPE_CONTROLE];
 
@@ -120,14 +140,57 @@ EOF;
         }
     }
 
+    protected function initSynthese($filename) {
+        $this->synthese = [];
+        if (!$filename) {
+            return;
+        }
+        if (!file_exists($filename)) {
+            return;
+        }
+        foreach(file($filename) as $line) {
+            $line = str_replace("\n", "", $line);
+            $data = str_getcsv($line, ';');
+            if (!$data) {
+              continue;
+            }
+            $produitKey = $this->clearProduitKey(KeyInflector::slugify($this->alias($data[self::CSV_SYNTHESE_PRODUIT])));
+            $produit = $this->produits[$produitKey];
+            $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_SYNTHESE_MILLESIME]))? trim($data[self::CSV_SYNTHESE_MILLESIME])*1 : null;
+            $volume = str_replace(',','.',trim($data[self::CSV_SYNTHESE_VOLUME]));
+            if (is_numeric($volume)) {
+                $volume = $volume *1;
+            }
+            $numeroLot = null;
+            if(isset($data[self::CSV_SYNTHESE_NUM_LOT])) {
+                $numeroLot = trim($data[self::CSV_SYNTHESE_NUM_LOT]);
+            }
+            $logement = null;
+            if(isset($data[self::CSV_SYNTHESE_LOGEMENT])) {
+                $logement = trim($data[self::CSV_SYNTHESE_LOGEMENT]);
+            }
+            $logementOperateur = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
+
+            $syntheseKey = $this->makeSyntheseKey($produit, $millesime, $volume, $logementOperateur);
+            $this->synthese[$syntheseKey] =$data;
+        }
+    }
+
+    protected function makeSyntheseKey($produit, $millesime, $volume, $logementOperateur) {
+        $produitLibelle = '';
+        if ($produit && is_object($produit)) {
+            $produitLibelle = $produit->getLibelleFormat();
+        }
+        return KeyInflector::slugify($produitLibelle.'-'.$millesime.'-'.$volume.'-'.$logementOperateur);
+    }
+
     protected function importVracExport($data, $dataAugmented) {
         $etablissement = $dataAugmented['etablissement'];
-        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
-        $transaction = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_prelevement']);
-        $transaction->numero_archive = $dataAugmented['numero_dossier'];
+        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_declaration']);
+        $transaction = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_declaration']);
         $transaction->save();
         $lot = $transaction->addLot();
-        $lot->date = $dataAugmented['date_prelevement'];
+        $lot->date = $dataAugmented['date_declaration'];
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
@@ -135,8 +198,8 @@ EOF;
         $lot->numero_logement_operateur = $dataAugmented['numero_logement_operateur'];
         $lot->affectable = true;
         $transaction->save();
-        $transaction->validate($dataAugmented['date_prelevement']);
-        $transaction->validateOdg($dataAugmented['date_prelevement']);
+        $transaction->validate($dataAugmented['date_declaration']);
+        $transaction->validateOdg($dataAugmented['date_declaration']);
         $transaction->save();
 
         echo $transaction->_id."\n";
@@ -170,7 +233,7 @@ EOF;
 
     protected function importPMCNC($data, $dataAugmented) {
         $etablissement = $dataAugmented['etablissement'];
-        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
+        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_declaration']);
 
         $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $dataAugmented['volume'], 'produit_hash' => $dataAugmented['produit']->getHash(), 'millesime' =>  $dataAugmented['millesime'], 'numero_logement_operateur' => $dataAugmented['numero_logement_operateur'], 'initial_type' => "PMC", 'statut' => Lot::STATUT_NONCONFORME), false);
 
@@ -205,7 +268,7 @@ EOF;
                 $lotOrigine = $lots[0];
             }
         }
-        $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_prelevement']." 00:00:00");
+        $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_declaration']." 00:00:00");
         $pmcnc->save();
 
         if($lotOrigine) {
@@ -226,7 +289,7 @@ EOF;
         }
         $lot->id_document = $pmcnc->_id;
         $lot->updateDocumentDependances();
-        $lot->date = $dataAugmented['date_prelevement'];
+        $lot->date = $dataAugmented['date_declaration'];
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
@@ -236,8 +299,8 @@ EOF;
         $lot->affectable = true;
         $pmcnc->save();
         $lot->updateDocumentDependances();
-        $pmcnc->validate($dataAugmented['date_prelevement']);
-        $pmcnc->validateOdg($dataAugmented['date_prelevement']);
+        $pmcnc->validate($dataAugmented['date_declaration']);
+        $pmcnc->validateOdg($dataAugmented['date_declaration']);
         $pmcnc->save();
 
         echo $pmcnc->_id."\n";

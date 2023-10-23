@@ -141,7 +141,8 @@ echo "Import lots de contrôles"
 bash bin/updateviews.sh
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
-php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv --application="$ODG" --trace
+xls2csv -c ";" $DATA_DIR/lots_synthese.xls > $DATA_DIR/lots_synthese.csv
+php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv $DATA_DIR/lots_synthese.csv --application="$ODG" --trace
 
 echo "Import des commissions de contrôles"
 
@@ -164,6 +165,9 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?
 echo "Import Parcellaire manquant"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/02_recoltes/pieds_manquants/pieds_manquants_2022.xlsx | tr -d "\n" | tr "\r" "\n" | sed 's/^/2022;/' > $DATA_DIR/pieds_manquants.csv
+
+echo "Import des declarations de pieds manquants"
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DREV-' | grep '\-2022' | awk -F '-' '{print "php symfony import:parcellairemanquant-ia-aoc "$2" "$3" ~/pieds_manquants.csv --application=centre"}' | sort -u | bash
 
 echo "Mise en reputes conforme des lots en attente"
 

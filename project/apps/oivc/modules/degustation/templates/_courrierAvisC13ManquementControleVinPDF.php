@@ -36,7 +36,7 @@
     <tr><td><strong>AOC <?php echo showProduitCepagesLot($lot, false) ?></strong></td></tr>
     <tr><td></td></tr>
     <tr><td>Volume : <?php echo $lot->volume ?> hl</td></tr>
-    <tr><td>Cols : 0</td></tr>
+    <tr><td>Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?></td></tr>
     <tr><td></td></tr>
     <tr><td>un manquement a été détecté : défaut <strong><?php echo $lot->getShortLibelleConformite() ?></strong></td></tr>
     <tr><td>avec pour motif : <?php echo $lot->getMotif() ?></td></tr>

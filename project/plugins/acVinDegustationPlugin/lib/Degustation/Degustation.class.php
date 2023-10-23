@@ -929,18 +929,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $this->generateMouvementsFacturesOnNextSave = true;
 		}
 
-		public function desanonymize(){
-			for($table = 1; true ; $table++) {
-				$lots = $this->getLotsByTable($table);
-				if (!count($lots)) {
-					break;
-				}
-				foreach ($lots as $k => $lot){
-					if ($lot->numero_anonymat){
-						$lot->numero_anonymat = null;
-					}
-				}
-			}
+        public function desanonymize()
+        {
+            foreach ($this->getLots() as $k => $lot){
+                if ($lot->numero_anonymat){
+                    $lot->numero_anonymat = null;
+                }
+            }
 
             if(!$this->isFactures()){
                 $this->clearMouvementsFactures();

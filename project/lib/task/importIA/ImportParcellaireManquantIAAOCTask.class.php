@@ -49,17 +49,14 @@ EOF;
 
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($arguments['identifiant']);
         if (!$etablissement) {
-            echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
             exit;
         }
 
         $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
         if (!$parcellaireTotal) {
-            echo "Parcellaire non trouve pour ".$etablissement->identifiant." de raison sociale ".$etablissement->raison_sociale. ".\n";
-            return ;
+            $parcellaireTotal = new Parcellaire;
         }
-
-        $parcellesToSave = array();
+        $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['periode']);
         foreach(file($arguments['csv']) as $line) {
             $line = str_replace("\n", "", $line);
             $data = str_getcsv($line, ';');
@@ -69,20 +66,37 @@ EOF;
             $found = false;
             if ($data[self::CSV_CVI] == $parcellaireTotal['declarant']->cvi) {
                 foreach($parcellaireTotal->getParcelles() as $parcelle) {
-                    if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
-                            $parcelle->numero_parcelle == $data[self::CSV_NUM_PARCELLE]) {
-                        $parcellesToSave[] = $parcelle->getHash();
-                        $found = true;
-                        break;
+                if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
+                        $parcelle->numero_parcelle == $data[self::CSV_NUM_PARCELLE]) {
+                    $found = true;
+                    break;
                 }
             }
                 if (!$found) {
-                    echo "Parcelle ". $data[self::CSV_SECTION]." ".$data[self::CSV_NUM_PARCELLE].' non trouvee pour '.$data[self::CSV_CVI]."\n";
+                    $produitKey = $this->clearProduitKey(KeyInflector::slugify($this->alias($data[self::CSV_PRODUIT])));
+                    if (!isset($this->produits[$produitKey])) {
+                      echo "WARNING;produit non trouvé ".$data[self::CSV_PRODUIT]." ($produitKey);pas d'import;$line\n";
+                      continue;
+                    }
+                    $produit = $this->produits[$produitKey];
+                    $parcelle = $parcellaireTotal->addParcelle($produit->getHash(), $data[self::CSV_CEPAGE], null, null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
                 }
+
+                $manquantParcelle = $manquant->addParcelleFromParcellaireParcelle($parcelle);
+                $manquantParcelle->densite = (float)$data[self::CSV_DENSITE];
+                $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE] / 10000);
+                $manquantParcelle->pourcentage = $data[self::CSV_RATIO_PIED_MANQUANT];
             }
         }
-        $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['periode']);
-        $manquant->addParcellesFromParcellaire($parcellesToSave);
+        try {
+            if(!$manquant->isValidee()) {
+                $manquant->validate($arguments['periode']."-12-10");
+            }
+        } catch(Exception $e) {
+            if(!$manquant->isValidee()) {
+                $manquant->validate($arguments['periode']."-12-10");
+            }
+        }
         $manquant->save();
     }
 
