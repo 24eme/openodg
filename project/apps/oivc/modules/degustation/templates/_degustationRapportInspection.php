@@ -89,10 +89,10 @@
         <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement / Code manquement</td> <td>Niveau de gravité</td>
     </tr>
     <tr>
-        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td><?php echo echoCheck(null, false); ?></td> <td><?php echo echoCheck(null, true); ?></td> <td></td> <td></td>
+        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
     </tr>
     <tr>
-        <td>Examen organoleptique<br/></td> <td><?php echo $degustation->getDate(); ?></td> <td><?php echo echoCheck(null, true); ?></td> <td><?php echo echoCheck(null, false); ?></td> <td></td> <td></td>
+        <td>Examen organoleptique<br/></td> <td><?php echo $degustation->getDate(); ?></td> <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
     </tr>
     <tr><td colspan="6">Date transmission INAO :</td></tr>
 </table>
