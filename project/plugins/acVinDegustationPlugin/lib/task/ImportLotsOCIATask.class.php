@@ -96,6 +96,7 @@ EOF;
             $dataAugmented = [];
             $dataAugmented['etablissement'] = $etablissement;
             $dataAugmented['date_prelevement'] = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_PRELEVEMENT]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            $dataAugmented['date_declaration'] = $dataAugmented['date_prelevement'];
             $dataAugmented['produit'] = $this->produits[$produitKey];
             $dataAugmented['millesime'] = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_MILLESIME]))? trim($data[self::CSV_MILLESIME])*1 : null;
             $dataAugmented['volume'] = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
@@ -106,7 +107,7 @@ EOF;
                 $syntheseKey = $this->makeSyntheseKey($dataAugmented['produit'], $dataAugmented['millesime'], $dataAugmented['volume'], $dataAugmented['numero_logement_operateur']);
                 if (isset($this->synthese[$syntheseKey])) {
                     if (isset($this->synthese[$syntheseKey][self::CSV_SYNTHESE_DATE_DECLARATION]) && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($this->synthese[$syntheseKey][self::CSV_SYNTHESE_DATE_DECLARATION]), $m)) {
-                        $dataAugmented['date_prelevement'] = $m[3].'-'.$m[2].'-'.$m[1];
+                        $dataAugmented['date_declaration'] = $m[3].'-'.$m[2].'-'.$m[1];
                     }
                 }
             }
