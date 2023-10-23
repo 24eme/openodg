@@ -109,8 +109,6 @@
 
 <br/><br/>
 <br/><br/>
-<br/><br/>
-<br/><br/>
 
 <p><small>Les points de contrôles n'ayant pas pu être vus par rapport au travail initialement prévu sont notés dans la ligne observations.<br/>
 Les méthodes d'inspection utilisées sont décrites dans le Plan d'Inspection de l'AOC concernée.<br/>
