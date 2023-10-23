@@ -14,14 +14,23 @@ class ImportLotsOCIATask extends importOperateurIACsvTask
   const CSV_NUM_LOT = 13;
   const CSV_TYPE_CONTROLE = 14;
 
+  const CSV_SYNTHESE_PRODUIT = 11;
+  const CSV_SYNTHESE_MILLESIME = 12;
+  const CSV_SYNTHESE_NUM_LOT = 13;
+  const CSV_SYNTHESE_LOGEMENT = 14;
+  const CSV_SYNTHESE_VOLUME = 15;
+  const CSV_SYNTHESE_DATE_DECLARATION = 21;
+
   protected $date;
   protected $produits;
   protected $cepages;
+  protected $synthese;
 
     protected function configure()
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('csvsynthese', sfCommandArgument::OPTIONAL, "Fichier csv de la synthèse des lots pour complément d'info pour l'import"),
         ));
 
         $this->addOptions(array(
@@ -43,6 +52,8 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $this->initProduitsCepages();
+
+        $this->initSynthese($arguments['csvsynthese']);
 
         $document = null;
         $ligne = 0;
@@ -118,6 +129,50 @@ EOF;
                 // Rien besoin de faire l'import des dégustations suffit
             }
         }
+    }
+
+    protected function initSynthese($filename) {
+        $this->synthese = [];
+        if (!$filename) {
+            return;
+        }
+        if (!file_exists($filename)) {
+            return;
+        }
+        foreach(file($filename) as $line) {
+            $line = str_replace("\n", "", $line);
+            $data = str_getcsv($line, ';');
+            if (!$data) {
+              continue;
+            }
+            $produitKey = $this->clearProduitKey(KeyInflector::slugify($this->alias($data[self::CSV_SYNTHESE_PRODUIT])));
+            $produit = $this->produits[$produitKey];
+            $millesime = preg_match('/^[0-9]{4}$/', trim($data[self::CSV_SYNTHESE_MILLESIME]))? trim($data[self::CSV_SYNTHESE_MILLESIME])*1 : null;
+            $volume = str_replace(',','.',trim($data[self::CSV_SYNTHESE_VOLUME]));
+            if (is_numeric($volume)) {
+                $volume = $volume *1;
+            }
+            $numeroLot = null;
+            if(isset($data[self::CSV_SYNTHESE_NUM_LOT])) {
+                $numeroLot = trim($data[self::CSV_SYNTHESE_NUM_LOT]);
+            }
+            $logement = null;
+            if(isset($data[self::CSV_SYNTHESE_LOGEMENT])) {
+                $logement = trim($data[self::CSV_SYNTHESE_LOGEMENT]);
+            }
+            $logementOperateur = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
+
+            $syntheseKey = $this->makeSyntheseKey($produit, $millesime, $volume, $logementOperateur);
+            $this->synthese[$syntheseKey] =$data;
+        }
+    }
+
+    protected function makeSyntheseKey($produit, $millesime, $volume, $logementOperateur) {
+        $produitLibelle = '';
+        if ($produit && is_object($produit)) {
+            $produitLibelle = $produit->getLibelleFormat();
+        }
+        return KeyInflector::slugify($produitLibelle.'-'.$millesime.'-'.$volume.'-'.$logementOperateur);
     }
 
     protected function importVracExport($data, $dataAugmented) {
