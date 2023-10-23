@@ -172,6 +172,9 @@ EOF;
                 $date = $inao[$etablissement->identifiant][$produitKey][$activite];
             } elseif(isset($inao[$etablissement->identifiant][$produitKey]['DEFAULT'])) {
                 $date = $inao[$etablissement->identifiant][$produitKey]['DEFAULT'];
+                echo "activité non trouvé dans le fichier INAO la date des autres activités a été utilisée;".$etablissement->nom.";".$etablissement->cvi.";".$activite."\n";
+            } elseif(!isset($inao[$etablissement->identifiant]) && $etablissement->statut != "SUSPENDU") {
+                echo "etablissement non trouvé dans le fichier INAO la date par défaut du 01/08/2000 a été utilisée;".$etablissement->nom.";".$etablissement->cvi."\n";
             }
 
             $habilitations[$date.$etablissement->identifiant.$produitKey.$activite.$statut.uniqid()] = ["identifiant" => $etablissement->identifiant, "produit_hash" => $produitKey, "activite" => $activite, "statut" => $statut, "date" => $date];

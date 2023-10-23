@@ -76,11 +76,24 @@ echo "Import des responsables"
 ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do cat $file | grep "_tbResp" | grep "value" | sed 's/.*value="//' |  sed 's/".*//' | tr -d "\n"; echo $file | sed -r 's|.*/|;|' | sed 's/_identite.html//'; done | awk -F ";" '{ print ";" $1 ";;" sprintf("%06d", $2) ";;;;;;;;;;;;;;Responsable"  }' | grep -Ev "^;;;" > $DATA_DIR/membres_responsable.csv
 php symfony import:interlocuteur-ia $DATA_DIR/membres_responsable.csv --nocreatesociete=1 --application="$ODG"
 
-echo "Import des Interlocuteurs"
+echo "Import des contacts"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/membres.csv
-php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG"
+echo -n > $DATA_DIR/contacts.csv
+ls $DATA_DIR/01_operateurs/contacts/*.xlsx | while read file; do
+    xlsx2csv -l '\r\n' -d ";" "$file" | tr -d "\n" | tr "\r" "\n" >> $DATA_DIR/contacts.csv;
+done
+
+cat $DATA_DIR/contacts.csv | awk -F ";" '{ if($1 == $7) { $7 = "" } if(($6 && $7) || $8) { print $6 ";" $7 ";" $8 ";" $1 ";;;;" $2 ";" $3 ";" $4 ";" $5 ";" $10 ";;" $11 ";" $12 ";;;" $9 }}' | sort | uniq > $DATA_DIR/contacts_formates.csv
+
+php symfony import:interlocuteur-ia $DATA_DIR/contacts_formates.csv --nocreatesociete=1 --application="$ODG"
+
+echo "Import des dégustateurs"
+
+ls $DATA_DIR/04_controles_produits/jures/*.xlsx | while read file; do
+    REGION=$(echo -n $file | sed -r 's|^.*/jures_||' | sed -r 's/\.xlsx//');
+    xlsx2csv -l '\r\n' -d ";" "$file" | tr -d "\n" | tr "\r" "\n" > $file.csv;
+    php symfony import:interlocuteur-ia $file.csv --application="$ODG" --region=$REGION
+done
 
 echo "Import DRev"
 
