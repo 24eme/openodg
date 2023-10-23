@@ -141,7 +141,7 @@ echo "Import lots de contrôles"
 bash bin/updateviews.sh
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
-xls2csv -c ";" $DATA_DIR/lots_synthese.xls > $DATA_DIR/lots_synthese.csv
+#xls2csv -c ";" $DATA_DIR/lots_synthese.xls > $DATA_DIR/lots_synthese.csv
 php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv $DATA_DIR/lots_synthese.csv --application="$ODG" --trace
 
 echo "Import des commissions de contrôles"
