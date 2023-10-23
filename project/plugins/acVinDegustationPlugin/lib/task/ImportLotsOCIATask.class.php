@@ -186,11 +186,11 @@ EOF;
 
     protected function importVracExport($data, $dataAugmented) {
         $etablissement = $dataAugmented['etablissement'];
-        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
-        $transaction = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_prelevement']);
+        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_declaration']);
+        $transaction = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_declaration']);
         $transaction->save();
         $lot = $transaction->addLot();
-        $lot->date = $dataAugmented['date_prelevement'];
+        $lot->date = $dataAugmented['date_declaration'];
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
@@ -198,8 +198,8 @@ EOF;
         $lot->numero_logement_operateur = $dataAugmented['numero_logement_operateur'];
         $lot->affectable = true;
         $transaction->save();
-        $transaction->validate($dataAugmented['date_prelevement']);
-        $transaction->validateOdg($dataAugmented['date_prelevement']);
+        $transaction->validate($dataAugmented['date_declaration']);
+        $transaction->validateOdg($dataAugmented['date_declaration']);
         $transaction->save();
 
         echo $transaction->_id."\n";
@@ -233,7 +233,7 @@ EOF;
 
     protected function importPMCNC($data, $dataAugmented) {
         $etablissement = $dataAugmented['etablissement'];
-        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
+        $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_declaration']);
 
         $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $dataAugmented['volume'], 'produit_hash' => $dataAugmented['produit']->getHash(), 'millesime' =>  $dataAugmented['millesime'], 'numero_logement_operateur' => $dataAugmented['numero_logement_operateur'], 'initial_type' => "PMC", 'statut' => Lot::STATUT_NONCONFORME), false);
 
@@ -268,7 +268,7 @@ EOF;
                 $lotOrigine = $lots[0];
             }
         }
-        $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_prelevement']." 00:00:00");
+        $pmcnc = PMCNCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_declaration']." 00:00:00");
         $pmcnc->save();
 
         if($lotOrigine) {
@@ -289,7 +289,7 @@ EOF;
         }
         $lot->id_document = $pmcnc->_id;
         $lot->updateDocumentDependances();
-        $lot->date = $dataAugmented['date_prelevement'];
+        $lot->date = $dataAugmented['date_declaration'];
         $lot->produit_hash = $dataAugmented['produit']->getHash();
         $lot->produit_libelle = $dataAugmented['produit']->getLibelleFormat();
         $lot->millesime = $dataAugmented['millesime'];
@@ -299,8 +299,8 @@ EOF;
         $lot->affectable = true;
         $pmcnc->save();
         $lot->updateDocumentDependances();
-        $pmcnc->validate($dataAugmented['date_prelevement']);
-        $pmcnc->validateOdg($dataAugmented['date_prelevement']);
+        $pmcnc->validate($dataAugmented['date_declaration']);
+        $pmcnc->validateOdg($dataAugmented['date_declaration']);
         $pmcnc->save();
 
         echo $pmcnc->_id."\n";
