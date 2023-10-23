@@ -187,7 +187,6 @@ EOF;
         $etablissement = $dataAugmented['etablissement'];
         $campagne = ConfigurationClient::getInstance()->buildCampagne($dataAugmented['date_prelevement']);
         $transaction = TransactionClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dataAugmented['date_prelevement']);
-        $transaction->numero_archive = $dataAugmented['numero_dossier'];
         $transaction->save();
         $lot = $transaction->addLot();
         $lot->date = $dataAugmented['date_prelevement'];
