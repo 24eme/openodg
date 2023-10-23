@@ -63,7 +63,7 @@ EOF;
             if ($etablissement_id == null) {
                 $etab_target = EtablissementClient::getInstance()->findByRaisonSociale($etablissement['raison_sociale']);
                 if (!$etab_target) {
-                    echo "Erreur bailleur non reconnu: [".$etablissement['raison_sociale']."] n'existe pas.".PHP_EOL;
+                    echo "Erreur bailleur non reconnu: [".$etablissement['raison_sociale']."] n'existe pas. PPM = [".$etablissement['ppm']."]".PHP_EOL;
                     continue;
                 }
                 $etab = EtablissementClient::getInstance()->find($etab_target);

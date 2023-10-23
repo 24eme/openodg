@@ -55,6 +55,10 @@ EOF;
                echo "WARNING;établissement non trouvé ".$data[self::CSV_FACTURE_RAISON_SOCIALE].";pas d'import;$line\n";
                continue;
             }
+            if ($data[self::CSV_FACTURE_MONTANT_HT]) {
+                echo "WARNING;MONTANT HT vide ou à 0;".$data[self::CSV_FACTURE_RAISON_SOCIALE].";pas d'import;$line\n";
+                continue;
+            }
             $date = strtok($data[self::CSV_FACTURE_DATE_FACTURE], '/');
             $date = strtok('/').'-'.$date;
             $date = strtok('/').'-'.$date;
