@@ -70,7 +70,7 @@
                 <tr>
                     <td>N° lot : <?php echo $lot->numero_logement_operateur ?></td>
                     <td>N° Cuve si vrac : </td>
-                    <td>Nb Cols : </td>
+                    <td>Nb Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : null ?></td>
                 </tr>
             </table>
         </td></tr>
