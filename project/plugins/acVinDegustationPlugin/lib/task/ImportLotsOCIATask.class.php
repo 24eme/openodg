@@ -102,6 +102,14 @@ EOF;
             $dataAugmented['numero_logement_operateur'] = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
             $dataAugmented['numero_dossier'] = sprintf("%05d", explode("-", $data[self::CSV_NUMERO_ECHANTILLON])[0]);
             $dataAugmented['numero_archive'] = sprintf("%05d", explode("-", $data[self::CSV_NUMERO_ECHANTILLON])[1]);
+            if ($this->synthese) {
+                $syntheseKey = $this->makeSyntheseKey($dataAugmented['produit'], $dataAugmented['millesime'], $dataAugmented['volume'], $dataAugmented['numero_logement_operateur']);
+                if (isset($this->synthese[$syntheseKey])) {
+                    if (isset($this->synthese[$syntheseKey][self::CSV_SYNTHESE_DATE_DECLARATION]) && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($this->synthese[$syntheseKey][self::CSV_SYNTHESE_DATE_DECLARATION]), $m)) {
+                        $dataAugmented['date_prelevement'] = $m[3].'-'.$m[2].'-'.$m[1];
+                    }
+                }
+            }
 
             $typeControle = $data[self::CSV_TYPE_CONTROLE];
 
