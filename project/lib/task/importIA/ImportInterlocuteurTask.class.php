@@ -206,7 +206,7 @@ EOF;
             if ($data[self::CSV_COMPETENCES]) {
                 $competence = trim($data[self::CSV_COMPETENCES]);
                 $competence = "degustateur_competence_".preg_replace('/[\(\) ]/', '_', $competence);
-                $compte->tags->add("manuel")->add(null, $competence.($region ? "_".$region:null));
+                $compte->tags->add("manuel")->add(null, $competence);
             }
 
             $manuels = $compte->tags->add('manuel')->toArray(true, false);
