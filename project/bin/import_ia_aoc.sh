@@ -76,11 +76,24 @@ echo "Import des responsables"
 ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do cat $file | grep "_tbResp" | grep "value" | sed 's/.*value="//' |  sed 's/".*//' | tr -d "\n"; echo $file | sed -r 's|.*/|;|' | sed 's/_identite.html//'; done | awk -F ";" '{ print ";" $1 ";;" sprintf("%06d", $2) ";;;;;;;;;;;;;;Responsable"  }' | grep -Ev "^;;;" > $DATA_DIR/membres_responsable.csv
 php symfony import:interlocuteur-ia $DATA_DIR/membres_responsable.csv --nocreatesociete=1 --application="$ODG"
 
-echo "Import des Interlocuteurs"
+echo "Import des contacts"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/membres.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/membres.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/membres.csv
-php symfony import:interlocuteur-ia $DATA_DIR/membres.csv --application="$ODG"
+echo -n > $DATA_DIR/contacts.csv
+ls $DATA_DIR/01_operateurs/contacts/*.xlsx | while read file; do
+    xlsx2csv -l '\r\n' -d ";" "$file" | tr -d "\n" | tr "\r" "\n" >> $DATA_DIR/contacts.csv;
+done
+
+cat $DATA_DIR/contacts.csv | awk -F ";" '{ if($1 == $7) { $7 = "" } if(($6 && $7) || $8) { print $6 ";" $7 ";" $8 ";" $1 ";;;;" $2 ";" $3 ";" $4 ";" $5 ";" $10 ";;" $11 ";" $12 ";;;" $9 }}' | sort | uniq > $DATA_DIR/contacts_formates.csv
+
+php symfony import:interlocuteur-ia $DATA_DIR/contacts_formates.csv --nocreatesociete=1 --application="$ODG"
+
+echo "Import des dégustateurs"
+
+ls $DATA_DIR/04_controles_produits/jures/*.xlsx | while read file; do
+    REGION=$(echo -n $file | sed -r 's|^.*/jures_||' | sed -r 's/\.xlsx//');
+    xlsx2csv -l '\r\n' -d ";" "$file" | tr -d "\n" | tr "\r" "\n" > $file.csv;
+    php symfony import:interlocuteur-ia $file.csv --application="$ODG" --region=$REGION
+done
 
 echo "Import DRev"
 
@@ -128,7 +141,7 @@ echo "Import lots de contrôles"
 bash bin/updateviews.sh
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/lots_controle.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/lots_controle.csv
-xls2csv -c ";" $DATA_DIR/lots_synthese.xls > $DATA_DIR/lots_synthese.csv
+#xls2csv -c ";" $DATA_DIR/lots_synthese.xls > $DATA_DIR/lots_synthese.csv
 php symfony import:lots-oc-ia $DATA_DIR/lots_controle.csv $DATA_DIR/lots_synthese.csv --application="$ODG" --trace
 
 echo "Import des commissions de contrôles"
@@ -153,9 +166,12 @@ echo "Import Parcellaire manquant"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/02_recoltes/pieds_manquants/pieds_manquants_2022.xlsx | tr -d "\n" | tr "\r" "\n" | sed 's/^/2022;/' > $DATA_DIR/pieds_manquants.csv
 
+echo "Import des declarations de pieds manquants"
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DREV-' | grep '\-2022' | awk -F '-' '{print "php symfony import:parcellairemanquant-ia-aoc "$2" "$3" ~/pieds_manquants.csv --application=centre"}' | sort -u | bash
+
 echo "Mise en reputes conforme des lots en attente"
 
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_MANQUEMENT_EN_ATTENTE | grep '"initial_type":"PMC"' | grep '"document_ordre":"02"' | awk -F '"' '{ print "php symfony lot:lever-convormite --application='$ODG' "$8" "$10"-"$12"-"$14" \"PMCNC non trouvé lors de la reprise historique\"" }' | bash
+#curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/lotHistory?reduce=false | grep 09_MANQUEMENT_EN_ATTENTE | grep '"initial_type":"PMC"' | grep '"document_ordre":"02"' | awk -F '"' '{ print "php symfony lot:lever-convormite --application='$ODG' "$8" "$10"-"$12"-"$14" \"PMCNC non trouvé lors de la reprise historique\"" }' | bash
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/mouvement/_view/facture | awk -F '"' '{print $4}' | sort -u | grep '[A-Z]' | while read id ; do php symfony declaration:regenerate-mouvements --onlydeletemouvements=true --application=$ODG $id ; done
 
