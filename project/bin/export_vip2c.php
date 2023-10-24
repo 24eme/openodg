@@ -34,7 +34,7 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
         continue;
     }
 
-    if ($line[1] !== "2023-2024") {
+    if (!in_array($line[1], ["2022-2023", "2023-2024"])) {
         continue;
     }
 
@@ -60,7 +60,7 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
 }
 
 while (($line = fgetcsv($lots, 1000, ';')) !== false) {
-    if ($line[6] !== "2023-2024") {
+    if (!in_array($line[6], ["2022-2023", "2023-2024"])) {
         continue;
     }
 
