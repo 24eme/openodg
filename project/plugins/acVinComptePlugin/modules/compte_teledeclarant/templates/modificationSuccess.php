@@ -1,9 +1,9 @@
 <?php
 $email_teledecl = null;
 if($compte->getSociete()->isTransaction()){
-   $email_teledecl = $compte->getSociete()->getEtablissementPrincipal()->getEmailTeledeclaration();
+   $email_teledecl = $compte->getSociete()->getEtablissementPrincipal()->getTeledeclarationEmail();
 }else{
-    $email_teledecl = $compte->getSociete()->getEmailTeledeclaration();
+    $email_teledecl = $compte->getSociete()->getTeledeclarationEmail();
 }
 
 ?>

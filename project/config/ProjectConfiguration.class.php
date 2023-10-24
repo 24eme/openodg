@@ -1,7 +1,10 @@
 <?php
-
+umask(0002);
 require_once dirname(__FILE__).'/../lib/vendor/symfony/lib/autoload/sfCoreAutoload.class.php';
 sfCoreAutoload::register();
+
+$git_head = rtrim(str_replace('ref: ', '', file_get_contents(dirname(__FILE__).'/../../.git/HEAD')));
+$_ENV['GIT_LAST_COMMIT'] = file_get_contents(dirname(__FILE__).'/../../.git/'.$git_head);
 
 class ProjectConfiguration extends sfProjectConfiguration
 {

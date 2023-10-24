@@ -480,9 +480,9 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         return $this->getEmail();
     }
 
-    public function getEmailTeledeclaration() {
-        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return Anonymization::hideIfNeeded($this->teledeclaration_email);
+    public function getTeledeclarationEmail() {
+        if ($this->exist('teledeclaration_email') && $this->_get('teledeclaration_email')) {
+            return Anonymization::hideIfNeeded($this->_get('teledeclaration_email'));
         }
         if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
@@ -509,12 +509,15 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         if ($c && $c1) {
             return $c . "\n" . $c1;
         }
-        if ($c) {
-            return $c;
-        }
         if ($c1) {
             return $c1;
         }
+        return $c;
+    }
+
+    public function getCommentaires() {
+        $lines = explode("\n", str_replace(' - ', "\n", $this->getCommentaire()));
+        return array_filter($lines, fn($value) => (rtrim($value)));
     }
 
     public function addCommentaire($s) {

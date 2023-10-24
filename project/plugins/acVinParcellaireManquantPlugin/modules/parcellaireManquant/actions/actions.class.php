@@ -43,7 +43,7 @@ class parcellaireManquantActions extends sfActions {
     	$parcellaireManquant->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => ($parcellaireManquant->periode - 1).'-'.$parcellaireManquant->periode));
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireManquant->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -128,20 +128,20 @@ class parcellaireManquantActions extends sfActions {
             return $this->redirect('declaration_etablissement', $this->parcellaireManquant->getEtablissementObject());
         }
 
-    	return $this->redirect('parcellairemanquant_irrigations', $this->parcellaireManquant);
+    	return $this->redirect('parcellairemanquant_manquants', $this->parcellaireManquant);
     }
 
-    public function executeIrrigations(sfWebRequest $request) {
+    public function executeManquants(sfWebRequest $request) {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireManquant);
 
-    	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_IRRIGATIONS))) {
+    	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_SAISIEINFOS))) {
     		$this->parcellaireManquant->save();
     	}
 
     	$this->etablissement = $this->parcellaireManquant->getEtablissementObject();
 
-    	$this->form = new ParcellaireManquantProduitsForm($this->parcellaireManquant);
+    	$this->form = new ParcellaireManquantInfosForm($this->parcellaireManquant);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
 

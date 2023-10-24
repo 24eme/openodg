@@ -50,7 +50,7 @@
                       href="<?php echo url_for('compte_search', array('tags' => implode(',', array($type_tag . ':' . $t)))); ?>">
                       <?php echo ucfirst(str_replace('_', ' ', $t)) ?>
                     </a>
-                    <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', array('q' => "doc.identifiant:".$compte->identifiant, 'tag' => $t)) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
+                    <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', array('q' => "doc.identifiant:".$compte->identifiant, 'tag' => $t, 'retour'=>url_for('compte_visualisation', $compte))) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
                 </div>
             <?php endforeach; ?>
             <?php else: ?>

@@ -114,10 +114,16 @@ function pictoDegustable($lot) {
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
 
-function showLotStatusCartouche($statut, $detail = null, $secondPassage = false) {
+function showLotStatusCartouche($lot_ou_mvt_value) {
+    $statut = $lot_ou_mvt_value->statut;
+    $detail = null;
+    if(isset($lot_ou_mvt_value->detail)) {
+        $detail = $lot_ou_mvt_value->detail;
+    }
     if (!isset(Lot::$libellesStatuts[$statut]) && !$detail) {
         return ;
     }
+    $secondPassage = isset($lot_ou_mvt_value->libelle) && preg_match("/ème dégustation/", $lot_ou_mvt_value->libelle);
     $labelClass = isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
     $text = '';
     if($secondPassage) {
@@ -141,6 +147,18 @@ function showLotStatusCartouche($statut, $detail = null, $secondPassage = false)
         $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
     }
     return $text;
+}
+
+function showLotPublicStatusCartouche($mvt_value) {
+    if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'>En attente de contrôle</span>";
+    }
+    return showLotStatusCartouche($mvt_value);
+}
+function showSummerizedLotPublicStatusCartouche($mvt_value) {
+    if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"L'opérateur voit ici EN ATTENTE DE CONTROLE, la notification n'ayant pas été envoyée. L'accès à l'historique ne leur est pas permis.\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'><span class='glyphicon glyphicon-eye-close'></span></span>";
+    }
 }
 
 function substrUtf8($str, $offset, $length) {

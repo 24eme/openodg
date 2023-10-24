@@ -18,9 +18,12 @@ class TemplateFactureCotisation extends BaseTemplateFactureCotisation {
 		return new $modele($this, $document);
 	}
 
-	public function isForType($type) {
+	public function isForType($types) {
+		if(!is_array($types)) {
+			$types = [$types];
+		}
 		foreach($this->details as $detail) {
-			if($detail->isForType($type)) {
+			if($detail->isForType($types)) {
 
 				return true;
 			}

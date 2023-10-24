@@ -2,7 +2,8 @@ all:
   configuration:
     drev:
       validation_odg: 'admin'
-      pdf_unique_region: true
+      pdf_unique_region: false
       logement_adresse: false
       denomination_auto: true
+      denomination_biodynamie: true
       engagement_pdf: true

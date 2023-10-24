@@ -500,6 +500,16 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         return true;
     }
 
+    public function hasAlternativeLogins() {
+        if (!$this->exist('alternative_logins')) {
+            return false;
+        }
+        $a = $this->_get('alternative_logins');
+        if (count($a) == 1 && !$a[0]) {
+            return false;
+        }
+        return (count($a));
+    }
     /*** FIN ARCHIVAGE ***/
 
 }

@@ -194,6 +194,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', 'teledeclaration_active');
             }
         }
+        if ($this->exist('region') && $this->region) {
+            $this->addTag('automatique', 'region_'.$this->region);
+        }
 
         $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
 
@@ -807,5 +810,30 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         }
 
         return $tags;
+    }
+
+    public function getTeledeclarationEmail() {
+        $email = '';
+        if ($this->isEtablissementContact()) {
+            $email = $this->getEtablissement()->getTeledeclarationEmail();
+        }elseif ($this->isSocieteContact()) {
+            $email = $this->getSociete()->getTeledeclarationEmail();
+        }
+        if ($email && ! in_array($email, $this->getEmails())) {
+            return $email;
+        }
+        return null;
+    }
+
+
+    public function hasAlternativeLogins() {
+        if (!$this->exist('alternative_logins')) {
+            return false;
+        }
+        $a = $this->_get('alternative_logins');
+        if (count($a) == 1 && !$a[0]) {
+            return false;
+        }
+        return (count($a));
     }
 }

@@ -68,6 +68,7 @@
                     <li class="<?php if($route instanceof InterfaceDocumentsRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('pieces_historique', $etablissement); ?>">Documents</a></li>
                     <?php if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()): ?>
                     <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('habilitation_declarant', $etablissement); ?>">Habilitations</a></li>
+                    <li class="<?php if($route instanceof InterfaceParcellaireRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement  && !$route instanceof InterfaceParcellaireRoute): ?><?php echo url_for('parcellaire_declarant', $etablissement); ?><?php else: ?><?php echo url_for('parcellaire'); ?><?php endif; ?>">Parcellaire</a></li>
                     <li class="<?php if($route instanceof InterfaceCompteRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('compte_visualisation', $compte); ?>">Contacts</a></li>
                     <?php endif; ?>
                 </ul>
@@ -101,7 +102,7 @@
                   </ul>
                 </li>
                 <?php endif; ?>
-                <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte && !$sf_user->isUsurpationCompte()) : ?>
+                <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $compte && $route instanceof InterfaceUsurpationRoute && !$sf_user->isUsurpationCompte()) : ?>
                      <li><a tabindex="-1" href="<?php echo url_for('auth_usurpation', array('identifiant' => $compte->identifiant)) ?>" title="Connexion mode déclarant"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
                 <?php endif; ?>
                 <?php if ($sf_user->isUsurpationCompte()): ?>

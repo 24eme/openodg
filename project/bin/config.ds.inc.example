@@ -1,0 +1,3 @@
+TMP_FILE_LIST_CVI=/chemin/fichier_temporaire_liste_cvi
+PATH_PRODOUANE=/chemin/prodouane_scrapy
+EXPORT_FOLDER=/chemin/dossier_export

@@ -832,6 +832,24 @@ class drevActions extends sfActions {
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
+
+    public function executeVip2c(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
+        $vip2c = array();
+        $vip2c['declarvins_api_url'] = VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->campagne);
+        $vip2c['declarvins_api_contrats'] = VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->campagne);
+        $vip2c['volumes'] = array();
+        foreach ($drev->getProduitsHashWithVolumeSeuil() as $produit_hash) {
+            $vip2c['volumes'][$produit_hash] = array();
+            $vip2c['volumes'][$produit_hash]['revendique'] = $drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash());
+            $vip2c['volumes'][$produit_hash]['seuil'] = $drev->getVolumeRevendiqueSeuil($produit_hash);
+        }
+        header('Content-type: text/json');
+        echo json_encode($vip2c);
+        exit;
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
@@ -1029,6 +1047,11 @@ class drevActions extends sfActions {
     }
 
     protected function secure($droits, $doc) {
+        if ($droits == DRevSecurity::EDITION) {
+            if ($doc && $doc->validation) {
+                return $this->forwardSecure();
+            }
+        }
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
             return $this->forwardSecure();
@@ -1063,7 +1086,7 @@ class drevActions extends sfActions {
 
     public function executeDeclarvapi(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        print_r([$drev->getContratsAPIURL(), $drev->getContratsFromAPI()]);
+        print_r([VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->getDefaultMillesime()), VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->getDefaultMillesime())]);
         exit;
     }
 

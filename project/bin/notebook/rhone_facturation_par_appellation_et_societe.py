@@ -67,7 +67,7 @@ id_bail = id_bail.rename(columns={'Login': "ID_BAIL",'PPM':"BAILLEURE_PPM"})
 
 #renommage des colonnes
 drev_cru_with_dr['AOC'] = drev_cru_with_dr['Appellation']
-drev_cru_with_dr['DREV_SURF'] = drev_cru_with_dr['Superficie revendiqué']
+drev_cru_with_dr['DREV_SURF'] = drev_cru_with_dr['Superficie revendiquée']
 drev_cru_with_dr['DREV_VOL'] = drev_cru_with_dr['Volume revendiqué net total']
 
 

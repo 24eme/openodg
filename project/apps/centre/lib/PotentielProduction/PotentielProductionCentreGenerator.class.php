@@ -11,7 +11,7 @@ class PotentielProductionCentreGenerator extends PotentielProductionGenerator
             parent::__construct($identifiant_or_etablissement);
             $this->identificationParcellaire = ParcellaireAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
             if (!$this->identificationParcellaire) {
-                $this->identificationParcellaire = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->etablissement->identifiant);
+                $this->identificationParcellaire = ParcellaireIntentionClient::getInstance()->getLast($this->etablissement->identifiant);
             }
             $cdp = $this->aggSuperficesByCepages($this->parcellaire->getParcelles(), $this->getCepages());
             if ($this->etablissement->isViticulteur() && $cdp['TOTAL'] < 1.5) {
