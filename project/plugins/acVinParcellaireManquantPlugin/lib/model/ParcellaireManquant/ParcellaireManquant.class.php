@@ -138,30 +138,8 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       	foreach ($hashes as $hash) {
       		$hash = str_replace('/declaration/', '', $hash);
     	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-    	  		$detail = $parcellaire->get($hash);
-    	  		$produit = $detail->getProduit();
-    	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
-    	  		$item->libelle = $produit->libelle;
-    	  		$subitem = $item->detail->add($detail->getKey());
-
-    	  		$subitem->superficie = $detail->superficie;
-    	  		$subitem->commune = $detail->commune;
-                $subitem->code_commune = $detail->code_commune;
-                $subitem->prefix = $detail->prefix;
-    	  		$subitem->section = $detail->section;
-    	  		$subitem->numero_parcelle = $detail->numero_parcelle;
-                $subitem->idu = $detail->idu;
-    	  		$subitem->lieu = $detail->lieu;
-    	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->active = 1;
-                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
-
-                $subitem->remove('vtsgn');
-                if($detail->exist('vtsgn')) {
-                    $subitem->add('vtsgn', (int)$detail->vtsgn);
-                }
-    	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-    	  	}
+    	  		$this->addParcelleFromParcellaireParcelle($parcellaire->get($hash));
+            }
       	}
       	$remove = array();
       	foreach ($this->declaration as $key => $value) {
@@ -172,6 +150,38 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       	foreach ($remove as $r) {
       		$this->declaration->remove($r);
       	}
+    }
+
+    public function addParcelleFromParcellaireParcelle($detail) {
+        $produit = $detail->getProduit();
+        $item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
+        $item->libelle = $produit->libelle;
+        $subitem = $item->detail->add($detail->getKey());
+
+            $subitem->superficie = $detail->superficie;
+            $subitem->commune = $detail->commune;
+            $subitem->code_commune = $detail->code_commune;
+            $subitem->prefix = $detail->prefix;
+            $subitem->section = $detail->section;
+            $subitem->numero_parcelle = $detail->numero_parcelle;
+            $subitem->idu = $detail->idu;
+            $subitem->lieu = $detail->lieu;
+            $subitem->cepage = $detail->cepage;
+            $subitem->active = 1;
+            if ($detail->ecart_pieds && $detail->ecart_rang) {
+                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
+        } else {
+            $subitem->densite = 0;
+        }
+
+            $subitem->remove('vtsgn');
+            if($detail->exist('vtsgn')) {
+                $subitem->add('vtsgn', (int)$detail->vtsgn);
+            }
+            $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
+
+
+        return $subitem;
     }
 
     public function getParcellesByIdu() {
@@ -239,6 +249,11 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         if($siret = $this->getEtablissementObject()->siret){
             return $siret;
         }
+    }
+
+    public function isValidee() {
+
+        return $this->validation;
     }
 
   public function validate($date = null) {

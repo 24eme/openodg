@@ -117,7 +117,7 @@ EOF;
             $lot->numero_logement_operateur = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
             $lot->date_degustation_voulue = $datePresentation;
             $lot->date_commission = $dateCommission;
-            $lot->affectable = !is_null($lot->date_commission);
+            $lot->affectable = true;
 
             try {
                 $pmc->validate($dateDeclaration);

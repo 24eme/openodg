@@ -67,6 +67,7 @@ Courrier:
                   declarant_nom: { }
                   millesime: { }
                   volume: { type: float }
+                  quantite: { required: false }
                   destination_type: { }
                   destination_date: { }
                   produit_hash: { }

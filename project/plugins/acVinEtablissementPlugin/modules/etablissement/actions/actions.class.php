@@ -46,10 +46,26 @@ class etablissementActions extends sfCredentialActions {
         $this->applyRights();
         $this->compte = $this->etablissement->getMasterCompte();
         if((!$this->compte->lat && !$this->compte->lon) || !$this->compte->hasLatLonChais()){
+            $this->needUpdateLatLon = true;
+        }
+        $this->modifiable = $this->getUser()->hasContact();
+    }
+
+    public function executeUpdateCoordonneesLatLon(sfWebRequest $request)
+    {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
+            return $this->forwardSecure();
+        }
+
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
+        $this->societe = $this->etablissement->getSociete();
+        $this->compte = $this->etablissement->getMasterCompte();
+        if((!$this->compte->lat && !$this->compte->lon) || !$this->compte->hasLatLonChais()){
           $this->compte->updateCoordonneesLongLat(true);
           $this->compte->save();
         }
-        $this->modifiable = $this->getUser()->hasContact();
+
+        return $this->redirect('etablissement_visualisation', ['identifiant' => $this->etablissement->identifiant]);
     }
 
      public function executeSwitchStatus(sfWebRequest $request) {
