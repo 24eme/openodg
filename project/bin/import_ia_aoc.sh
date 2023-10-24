@@ -166,7 +166,7 @@ echo "Import des declarations de pieds manquants"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/02_recoltes/pieds_manquants/pieds_manquants_2022.xlsx | tr -d "\n" | tr "\r" "\n" | sed 's/^/2022;/' > $DATA_DIR/pieds_manquants.csv
 
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DR-' | grep '\-2022' | awk -F '-' '{print "php symfony import:parcellairemanquant-ia-aoc --application=centre "$2" "$3""}' | sort -u | sed "s|$| $DATA_DIR/pieds_manquants.csv|"
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DR-' | grep '\-2022' | awk -F '-' '{print "php symfony import:parcellairemanquant-ia-aoc --application=centre "$2" "$3""}' | sort -u | sed "s|$| $DATA_DIR/pieds_manquants.csv|" | bash
 
 echo "Mise en reputes conforme des lots en attente"
 
