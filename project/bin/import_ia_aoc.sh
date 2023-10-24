@@ -162,12 +162,11 @@ php symfony parcellaire:update-aire --application="$ODG" --trace
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application=centre --noscrapping=1; done
 
-echo "Import Parcellaire manquant"
+echo "Import des declarations de pieds manquants"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/02_recoltes/pieds_manquants/pieds_manquants_2022.xlsx | tr -d "\n" | tr "\r" "\n" | sed 's/^/2022;/' > $DATA_DIR/pieds_manquants.csv
 
-echo "Import des declarations de pieds manquants"
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DREV-' | grep '\-2022' | awk -F '-' '{print "php symfony import:parcellairemanquant-ia-aoc "$2" "$3" ~/pieds_manquants.csv --application=centre"}' | sort -u | bash
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DR-' | grep '\-2022' | awk -F '-' '{print "php symfony import:parcellairemanquant-ia-aoc --application=centre "$2" "$3""}' | sort -u | sed "s|$| $DATA_DIR/pieds_manquants.csv|"
 
 echo "Mise en reputes conforme des lots en attente"
 
