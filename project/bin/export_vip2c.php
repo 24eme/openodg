@@ -30,6 +30,9 @@ $etablissements = array_combine($ids, $etablissements);
 $operateurs = [];
 
 while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
+    if (!isset($line[47])) {
+        print_r(['ERROR', $line]);
+    }
     if (! (strpos($line[47], '/MED/') !== false && strpos($line[47], '/rose/') !== false)) {
         continue;
     }
