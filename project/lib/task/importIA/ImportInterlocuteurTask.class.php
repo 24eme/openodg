@@ -80,6 +80,20 @@ EOF;
                 $societe = SocieteClient::getInstance()->find(key($resultat));
             }
 
+            if(!$societe) {
+                $resultat = SocieteClient::matchSociete($societes, trim(CompteGenerique::extractIntitule(trim($raisonSociale))[1]), 1);
+                if($resultat && count($resultat) >= 1 && $raisonSociale) {
+                    $societe = SocieteClient::getInstance()->find(key($resultat));
+                }
+            }
+
+            if(!$societe) {
+                $resultat = SocieteClient::matchSociete($societes, trim(implode(" ", array_reverse(explode(" ", CompteGenerique::extractIntitule(trim($raisonSociale))[1])))), 1);
+                if($resultat && count($resultat) >= 1 && $raisonSociale) {
+                    $societe = SocieteClient::getInstance()->find(key($resultat));
+                }
+            }
+
             if(!$societe && $options['nocreatesociete']) {
                 echo "Société pas trouvée : $raisonSociale\n";
                 continue;
