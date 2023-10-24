@@ -107,7 +107,7 @@ foreach ($operateurs as $id => &$operateur) {
     }
 
     if (array_key_exists($operateur['cvi'], $vip2c)) {
-        $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi']][11]));
+        $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi']][7]));
     }
 }
 
