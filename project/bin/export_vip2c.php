@@ -175,6 +175,7 @@ array_walk($operateurs, function (&$operateur, $key) {
 $f = fopen('php://output', "w");
 fputcsv($f, ['Organisme', 'Identifiant', 'CVI', 'Millésime', 'Hash Produit', 'Revendiqué', 'Date dernière revendication', 'Commercialisé', 'Date dernière commercialisation', 'VIP2C', 'Dépassement', 'Lot le plus récent'], ';');
 foreach ($operateurs as $operateur) {
+    unset($operateur['hash']);
     fputcsv($f, $operateur, ';');
 }
 fclose($f);
