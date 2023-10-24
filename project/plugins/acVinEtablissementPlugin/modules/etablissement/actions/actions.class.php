@@ -48,7 +48,7 @@ class etablissementActions extends sfCredentialActions {
         if((!$this->compte->lat && !$this->compte->lon) || !$this->compte->hasLatLonChais()){
             $this->needUpdateLatLon = true;
         }
-        $this->modifiable = $this->getUser()->hasContact();
+        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
     public function executeUpdateCoordonneesLatLon(sfWebRequest $request)
