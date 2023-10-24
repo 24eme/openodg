@@ -34,7 +34,11 @@ array_walk($vip2c, function (&$item, $key) {
 $cvis = array_column($vip2c, 3);
 $millesimes = array_unique(array_column($vip2c, 0));
 $produits = array_unique(array_column($vip2c, 6));
-$vip2c = array_combine($cvis, $vip2c);
+$result = [];
+foreach($vip2c as $values) {
+    $result[$values[3].'_'.$values[0].'_'.$values[6]] = $values;
+}
+$vip2c = $result;
 
 // Récup CVI
 array_walk($etablissements, function (&$item, $key) {
@@ -65,7 +69,8 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
         $operateurs[$key]['identifiant'] = $line[2];
         $operateurs[$key]['cvi'] = $line[4];
         $operateurs[$key]['millesime'] = $line[25];
-        $operateurs[$key]['produit'] = $line[23];
+        $operateurs[$key]['produit'] = utf8_encode($line[23]);
+        $operateurs[$key]['hash'] = $hash;
         $operateurs[$key]['volume_revendique'] = 0;
         $operateurs[$key]['date_last_revendique'] = $line[13];
         $operateurs[$key]['volume_commercialise'] = 0;
@@ -113,7 +118,8 @@ while (($line = fgetcsv($lots, 1000, ';')) !== false) {
         $operateurs[$key]['identifiant'] = $line[1];
         $operateurs[$key]['cvi'] = null;
         $operateurs[$key]['millesime'] = $line[21];
-        $operateurs[$key]['produit'] = $line[19];
+        $operateurs[$key]['produit'] = utf8_encode($line[19]);
+        $operateurs[$key]['hash'] = $hash;
         $operateurs[$key]['volume_revendique'] = 0;
         $operateurs[$key]['date_last_revendique'] = null;
         $operateurs[$key]['volume_commercialise'] = 0;
@@ -136,8 +142,8 @@ foreach ($operateurs as $id => &$operateur) {
         $operateur['cvi'] = $etablissements[substr($id, 0, strpos($id, '_'))][8];
     }
 
-    if (array_key_exists($operateur['cvi'], $vip2c)) {
-        $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi']][7]));
+    if (array_key_exists($operateur['cvi'].'_'.$operateur['millesime'].'_'.$operateur['hash'], $vip2c)) {
+        $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi'].'_'.$operateur['millesime'].'_'.$operateur['hash']][7]));
     }
 }
 
