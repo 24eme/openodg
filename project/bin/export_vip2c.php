@@ -11,7 +11,7 @@ $file_etablissement = $argv[3];
 $drev_lots = fopen($file_drev_lots, 'r');
 $lots = fopen($file_lots, 'r');
 $etablissements = file($file_etablissement);
-$vip2c = file('data/configuration/VIP2C2022.csv');
+$vip2c = file('data/configuration/VIP2C.csv');
 
 // Récup VIP2C
 array_walk($vip2c, function (&$item, $key) {
