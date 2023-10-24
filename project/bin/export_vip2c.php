@@ -11,7 +11,7 @@ $file_etablissement = $argv[3];
 $drev_lots = fopen($file_drev_lots, 'r');
 $lots = fopen($file_lots, 'r');
 $etablissements = file($file_etablissement);
-$vip2c = file('data/configuration/VIP2C2022.csv');
+$vip2c = file('data/configuration/VIP2C.csv');
 
 // Récup VIP2C
 array_walk($vip2c, function (&$item, $key) {
@@ -30,11 +30,14 @@ $etablissements = array_combine($ids, $etablissements);
 $operateurs = [];
 
 while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
+    if (!isset($line[47])) {
+        print_r(['ERROR', $line]);
+    }
     if (! (strpos($line[47], '/MED/') !== false && strpos($line[47], '/rose/') !== false)) {
         continue;
     }
 
-    if ($line[1] !== "2022-2023") {
+    if (!in_array($line[1], ["2022-2023", "2023-2024"])) {
         continue;
     }
 
@@ -60,7 +63,7 @@ while (($line = fgetcsv($drev_lots, 1000, ';')) !== false) {
 }
 
 while (($line = fgetcsv($lots, 1000, ';')) !== false) {
-    if ($line[6] !== "2022-2023") {
+    if (!in_array($line[6], ["2022-2023", "2023-2024"])) {
         continue;
     }
 
@@ -107,7 +110,7 @@ foreach ($operateurs as $id => &$operateur) {
     }
 
     if (array_key_exists($operateur['cvi'], $vip2c)) {
-        $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi']][11]));
+        $operateur['vip2c'] += (int) str_replace(',', '', trim($vip2c[$operateur['cvi']][7]));
     }
 }
 
