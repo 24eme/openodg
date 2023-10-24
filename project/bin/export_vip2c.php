@@ -1,5 +1,19 @@
 <?php
 
+function getHashProduit($line, $startAt) {
+    $cert = getHashValue($line[$startAt]);
+    $gen = getHashValue($line[$startAt+1]);
+    $app = getHashValue($line[$startAt+2]);
+    $men = getHashValue($line[$startAt+3]);
+    $lieu = getHashValue($line[$startAt+4]);
+    $coul = getHashValue($line[$startAt+5]);
+    $cep = getHashValue($line[$startAt+6]);
+    return "certifications/$cert/genres/$gen/appellations/$app/mentions/$men/lieux/$lieu/couleurs/$coul/cepages/$cep";
+}
+function getHashValue($value) {
+    return (trim($value))? trim($value) : 'DEFAUT';
+}
+
 if ($argc !== 4) {
     die('Missing parameters. Usage: '.$argv[0].' drev_lots.csv lots.csv etablissements.csv'.PHP_EOL);
 }
