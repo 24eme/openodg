@@ -90,3 +90,11 @@ body {
 .nav-step ul.navbar-nav li:first-child {
     border-left: 1px solid #dbd3c8;
 }
+
+.list-group-item.active-bordered {
+    border-left: 6px solid #b5441e !important;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #b5441e;
+}
