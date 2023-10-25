@@ -68,6 +68,8 @@ ls $DATA_DIR/07_chais/zones/ | while read file; do cat "$DATA_DIR/07_chais/zones
 
 echo "Import des chais"
 
+ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do NUM=$(echo -n $file | sed -r 's|.*/||' | sed 's/_identite.html//'); cat $file | tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/(^|;)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | grep -A 20 "Activité chai" | grep -Ev "^(Nouvelle adresse|Contrôle produit|Standard;Aléatoire)" | grep -Ev "^(Nom de site|Type|Adresse\*|CP\*):" | grep -v "^;$"  | grep -v "^;;$" | grep -v "^$" | sed -r 's/[ ]+/ /g' | sed 's/[ ]*;[ ]*/;/g' | grep -Ev "^Activité chai;" | grep -v ";Nouvelle adresse" | grep -vE "^;[0-9/]*;;;;;;;;" | sed -r "s|^|$NUM;|"; done > $DATA_DIR/01_operateurs/fiches_chais.csv
+
 cat $DATA_DIR/07_chais/*.html | tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's|</td>|;|g' | sed 's|</th>|;|g' | sed 's/<[^>]*>//g' | sed -r 's/(^|;)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | grep -Ev "^ ?;" | grep -Ev "^(Zone|ODG|Libelle|Raison Sociale|Nom)" | sed 's/^RaisonSociale/00RaisonSociale/' | sort | uniq > $DATA_DIR/chais.csv
 php symfony import:chais $DATA_DIR/chais.csv $DATA_DIR/zones.csv --application="$ODG" --trace
 

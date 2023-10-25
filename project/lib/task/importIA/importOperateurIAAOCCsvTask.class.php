@@ -96,7 +96,7 @@ EOF;
             $data = str_getcsv($line, ";");
 
             if(!$data[self::CSV_CODE_INTERNE]) {
-                echo "pas de numéro interne ".$line."\n";
+                echo "pas de numéro interne ".$line;
                 continue;
             }
 
