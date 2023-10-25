@@ -49,12 +49,13 @@ EOF;
 
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($arguments['identifiant']);
         if (!$etablissement) {
+            echo "Error: Etablissement ".$arguments['identifiant']." non trouvé\n";
             exit;
         }
 
         $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
         if (!$parcellaireTotal) {
-            $parcellaireTotal = new Parcellaire;
+            $parcellaireTotal = new Parcellaire();
         }
         $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['periode']);
         foreach(file($arguments['csv']) as $line) {
@@ -92,12 +93,14 @@ EOF;
             if(!$manquant->isValidee()) {
                 $manquant->validate($arguments['periode']."-12-10");
             }
+            $manquant->save();
         } catch(Exception $e) {
+            sleep(60);
             if(!$manquant->isValidee()) {
                 $manquant->validate($arguments['periode']."-12-10");
             }
+            $manquant->save();
         }
-        $manquant->save();
     }
 
     protected function alias($produit) {
