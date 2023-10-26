@@ -131,7 +131,10 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
             if(!isset($lot->value->preleve) || !$lot->value->preleve) {
                 continue;
             }
-            if($region && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
+            if($region && $region != Organisme::getInstance()->getOIRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
+                continue;
+            }
+            if ($region == Organisme::getInstance()->getOIRegion() && strpos($lot->region, $region) === false) {
                 continue;
             }
             if (!$lot->value) {
