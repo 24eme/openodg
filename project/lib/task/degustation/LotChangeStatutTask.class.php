@@ -40,11 +40,11 @@ EOF;
         $doc = acCouchdbManager::getClient()->find($arguments['doc_id']);
         $lot = $doc->getLot($arguments['lot_unique_id']);
         $lot->affectable = $affecte;
-        if (isset($arguments['statut']) && $arguments['statut']) {
+        if (isset($options['statut']) && $options['statut']) {
             $lot->statut = $arguments['statut'];
         }
-        if ($arguments['elevage'] != '-1') {
-            if ($arguments['elevage'] == 1 || strtolower($arguments['elevage']) == "true") {
+        if ($options['elevage'] != '-1') {
+            if ($options['elevage'] == 1 || strtolower($options['elevage']) == "true") {
                 $lot->elevage = true;
             }else{
                 $lot->elevage = false;

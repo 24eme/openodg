@@ -2,7 +2,7 @@
 
 class sfError403RegionException extends sfError403Exception {
 
-    public function __construct(Compte $user) {
+    public function __construct() {
         putenv("Forward403Region=".Organisme::getInstance()->getCurrentRegion());
         if (Organisme::getInstance()->getCurrentRegion()) {
             return parent::__construct("L'opérateur n'est pas habilité pour l'un de vos produits ".Organisme::getInstance()->getCurrentRegion());
