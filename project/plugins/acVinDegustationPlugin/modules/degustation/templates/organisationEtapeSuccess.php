@@ -12,7 +12,7 @@ echo $form->renderHiddenFields();
 echo $form->renderGlobalErrors();
 ?>
     <div class="row" style="margin-top: 20px;">
-    <?php if ($degustation == DegustationClient::TYPE_MODEL) : ?>
+    <?php if ($degustation->type == DegustationClient::TYPE_MODEL) : ?>
     <div class="col-xs-3">
         <div class="panel panel-default">
         <div class="panel-heading">
@@ -45,7 +45,7 @@ echo $form->renderGlobalErrors();
             <th class="col-xs-4 text-left">Adresse du logement</th>
             <th class="col-xs-1 text-left">Nombre de lots</th>
             <th class="col-xs-2 text-left">Heure</th>
-            <?php if ($degustation == DegustationClient::TYPE_MODEL) : ?>
+            <?php if ($degustation->type == DegustationClient::TYPE_MODEL) : ?>
             <th class="col-xs-2 text-center">Secteur</th>
             <?php endif; ?>
             </tr>
@@ -61,7 +61,7 @@ echo $form->renderGlobalErrors();
                 <td class="text-left"><?php echo $firstlot->getLogementAdresse(); ?><br /><?php echo $firstlot->getLogementCommune(); ?> (<?php echo $firstlot->getLogementCodePostal(); ?>)</td>
                 <td class="text-center"><?php echo $form->getNbLots($logementKey); ?></td>
                 <td class="text-center"><?php echo $subForm['heure']->render(); ?></td>
-                <?php if ($degustation == DegustationClient::TYPE_MODEL) : ?>
+                <?php if ($degustation->type == DegustationClient::TYPE_MODEL) : ?>
                 <td class="text-center"><?php echo $subForm['logement']->render(); ?></td>
                 <?php endif; ?>
             </tr>
