@@ -1,4 +1,4 @@
-<table class="table table-condensed table-striped">
+<table class="table table-condensed table-bordered table-striped">
 <thead>
     <th class="col-xs-1">Date</th>
     <th class="col-xs-2 text-center">N°Dos. / Archive / Prov.</th>
