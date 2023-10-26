@@ -135,7 +135,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
             if($region && $region != Organisme::getInstance()->getOIRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
                 continue;
             }
-            if ($region == Organisme::getInstance()->getOIRegion() && strpos($lot->region, $region) === false) {
+            if ($region == Organisme::getInstance()->getOIRegion() && strpos($lot->value->id_document, TourneeClient::TYPE_COUCHDB) === false) {
                 continue;
             }
             if (!$lot->value) {
