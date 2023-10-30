@@ -420,13 +420,12 @@ class DRevValidation extends DeclarationLotsValidation
         $volumeTotalSeuilDeclare = $this->document->summerizeProduitsLotsByCouleur()[$produit]['volume_lots'];
         $volumeCommercialisableLibre = $this->document->getVolumeCommercialisableLibre($hash_produit);
         $volumeMaxAutorise = $this->document->getVolumeRevendiqueSeuil($hash_produit);
-
         if(($volumeCommercialisableLibre < $volumeTotalSeuilDeclare) && ($volumeTotalSeuilDeclare < $volumeMaxAutorise)) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$hash_produit,  $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
         } elseif($volumeMaxAutorise < $volumeTotalSeuilDeclare) {
             if($this->document->hasDestinationConditionnement()){
                 $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT,'');
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT, '', null, $hash_produit);
             }
             if($this->document->hasDestionationVrac()){
                 $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $hash_produit);
@@ -437,7 +436,7 @@ class DRevValidation extends DeclarationLotsValidation
                 else{
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                     foreach($contrats as $k=>$v){
-                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,'');
+                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,'', null, $hash_produit);
                     }
                 }
                 if($contrats && count($contrats)>1){
