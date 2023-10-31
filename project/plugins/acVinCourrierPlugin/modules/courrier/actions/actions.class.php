@@ -33,6 +33,22 @@ class courrierActions extends sfActions
 
     function executeVisualisation(sfWebRequest $request) {
         $courrier = CourrierClient::getInstance()->find($request->getParameter('id'));
+        if ($courrier->exist('_attachments')) {
+            foreach($courrier->_attachments as $id => $a) {
+                if (!strpos($a->content_type, 'pdf')) {
+                    continue;
+                }
+                $file_content = file_get_contents($courrier->getAttachmentUri($id));
+                $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+                $this->getResponse()->setHttpHeader('Content-disposition', 'attachment; filename="' . basename($id) . '"');
+                $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+                $this->getResponse()->setHttpHeader('Content-Length', strlen($file_content));
+                $this->getResponse()->setHttpHeader('Pragma', '');
+                $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+                $this->getResponse()->setHttpHeader('Expires', '0');
+                return $this->renderText($file_content);
+            }
+        }
         $this->document = new ExportDegustationCourrierPDF($courrier, $request->getParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
         if ($request->getParameter('force')) {
