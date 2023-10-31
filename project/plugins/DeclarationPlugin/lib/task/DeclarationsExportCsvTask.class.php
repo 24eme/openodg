@@ -82,6 +82,8 @@ EOF;
                 }catch(InvalidArgumentException $e) {
                     sleep(60);
                     continue;
+                }catch(sfException $e){
+                    echo "ERROR;$id;".$e->getMessage()."\n";
                 }
 
                 $tobeexported = false;
