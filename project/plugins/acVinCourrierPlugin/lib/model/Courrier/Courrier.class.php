@@ -69,7 +69,7 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
     }
 
     public function constructId() {
-        $id = 'COURRIER-' . $this->identifiant . '-' . $this->date.'-'.$this->courrier_type;
+        $id = 'COURRIER-' . $this->identifiant . '-' . str_replace('-', '', $this->date).'-'.str_replace('_', '', $this->courrier_type);
         $this->set('_id', $id);
     }
 
