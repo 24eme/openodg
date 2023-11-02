@@ -89,7 +89,7 @@ class DRValidation extends DocumentValidation
             if ($PM === null || $PM->periode !== $this->document->campagne) {
                 $this->addPoint(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort pour cette campagne");
             } else {
-                $this->addPoint(self::TYPE_WARNING, 'pied_mort_present', "Il ne faut pas oublier de vérifier les rendements");
+                $this->addPoint(self::TYPE_WARNING, 'pied_mort_present', "N'oubliez pas de vérifier que les rendements prennent en compte les informations déclarées");
             }
         }
     }
