@@ -41,7 +41,10 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                if ($e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
                    $this->getContext()->getUser()->signInOrigin($e->getSociete()->getMasterCompte()->identifiant);
                } else {
-                   throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
+                   if (acCas::getConfig('sf_environment') == 'dev') {
+                       throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
+                   }
+                   return $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                }
            } else {
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());
