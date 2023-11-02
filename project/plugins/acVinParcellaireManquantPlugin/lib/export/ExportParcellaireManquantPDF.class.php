@@ -84,6 +84,13 @@ class ExportParcellaireManquantPDF extends ExportPDF {
         }
     }
 
+    protected function getLogo() {
+        foreach($this->parcellaireManquant->getRegions()  as $r) {
+            return 'logo_'.strtolower($r).'.jpg';
+        }
+        return 'logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg';
+    }
+
     protected function getHeaderTitle() {
         return sprintf("Déclaration de pieds manquants %s", $this->parcellaireManquant->campagne);
     }
