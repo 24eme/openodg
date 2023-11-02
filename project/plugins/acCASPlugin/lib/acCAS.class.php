@@ -25,6 +25,9 @@ class acCAS extends phpCAS {
     public static function processAuth() {
         self::initCasInfo();
         $multidomains = sfConfig::get('app_cas_multidomains', array());
+        if (!isset($multidomains['viticonnect'])) {
+            $multidomains['viticonnect'] = array( 'domain' => 'viticonnect.net', 'port' => '443', 'path' => 'cas', 'url' => 'https://viticonnect.net/cas' );
+        }
         if (isset($_GET['ticket']) && count($multidomains) && ($postfix = preg_replace('/.*-/', '', $_GET['ticket'])) && isset($multidomains[$postfix])) {
           $_SESSION['app_cas_domain'] = $multidomains[$postfix]['domain'];
           $_SESSION['app_cas_port'] = $multidomains[$postfix]['port'];
