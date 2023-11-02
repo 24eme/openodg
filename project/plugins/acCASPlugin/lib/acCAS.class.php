@@ -15,7 +15,7 @@ class acCAS extends phpCAS {
     private static function initCasInfo() {
       $postfix = '';
       if (isset($_GET['cas_postfix'])) {
-        $postfix = $_GET['cas_postfix']);
+        $postfix = $_GET['cas_postfix'];
       }
       if (isset($_GET['ticket'])) {
         $postfix = preg_replace('/.*-/', '', $_GET['ticket']);
