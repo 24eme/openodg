@@ -1,7 +1,6 @@
 <?php
 
 require_once(dirname(__FILE__).'/vendor/phpCAS/CAS.php');
-define("PHPCAS_LANG_DEFAULT", PHPCAS_LANG_FRENCH);
 
 class acCAS extends phpCAS {
 
