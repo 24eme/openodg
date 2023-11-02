@@ -234,6 +234,9 @@ class parcellaireManquantActions extends sfActions {
     }
 
     protected function secure($droits, $doc) {
+        if ($this->getUser()->isAdminODG()) {
+            return ;
+        }
     	if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
     		return $this->forwardSecure();
