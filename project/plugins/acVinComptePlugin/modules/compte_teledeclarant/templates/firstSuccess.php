@@ -1,59 +1,37 @@
-<!-- #principal -->
-<div id="principal" class="clearfix">
-  <form action="" method="post" class="ui-tabs" name ="firstConnection">
-  <div class="row">
-    <div class="col-xs-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-        <h2 class="titre_principal">Premiere connexion</h2>
-</div>
-<div class="panel-body">
-        <p class="titre_section">Afin d'accèder à la plateforme de télédéclaration, veuillez remplir les champs suivants :</p>
-        <br/>
-        <div id="nouvelle_declaration" class="row" >
-            <div class="bloc_form bloc_form_condensed">
-
-                <!-- #nouvelle_declaration -->
-                <div class="col-xs-12">
-                <?php echo $form->renderHiddenFields(); ?>
-                <?php echo $form->renderGlobalErrors(); ?>
-</div>
-                <div class="col-xs-12">
-                    <?php echo $form['login']->renderError() ?>
-                  </div>
-                    <div class="col-xs-12">
-                      <div class="row">
-                        <div class="col-xs-offset-2 col-xs-4">
-                    <?php echo $form['login']->renderLabel() ?>
-                      </div>
-                      <div class="col-xs-4">
-                    <?php echo $form['login']->render() ?>
-                      </div>
+<div id="principal" class="clearfix" style="margin-top: 20px;">
+    <form action="" method="post" class="form-horizontal" name ="firstConnection">
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 style="margin-top: 10px;">Première connexion</h2>
                     </div>
-                  </div>
-                <div class="col-xs-12">
-                    <?php echo $form['mdp']->renderError() ?>
-                  </div>
-                  <div class="col-xs-12">
-                    <div class="row">
-                      <div class="col-xs-offset-2 col-xs-4">
-                    <?php echo $form['mdp']->renderLabel() ?>
-                  </div>
-                  <div class="col-xs-4">
-                    <?php echo $form['mdp']->render() ?>
-                  </div>
-                  </div>
-                  </div>
+                    <div class="panel-body">
+                        <p>Afin d'accèder à la plateforme de télédéclaration, veuillez remplir les champs suivants :</p>
+                        <div id="nouvelle_declaration" style="margin-top: 30px;">
+                            <?php echo $form->renderHiddenFields(); ?>
+                            <?php echo $form->renderGlobalErrors(); ?>
+                            <div class="form-group">
+                                <?php echo $form['login']->renderError() ?>
+                                <?php echo $form['login']->renderLabel(null, ['class' => 'control-label col-sm-4']) ?>
+                                <div class="col-sm-4">
+                                    <?php echo $form['login']->render() ?>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <?php echo $form['mdp']->renderError() ?>
+                                <?php echo $form['mdp']->renderLabel(null, ['class' => 'control-label col-sm-4']) ?>
+                                <div class="col-sm-4">
+                                    <?php echo $form['mdp']->render() ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="btn btn-success" type="submit">Valider</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row" >
-        <div class="col-xs-12 text-right">
-            <button class="btn btn-success" type="submit">Valider</button>
-        </div>
-            </div>
-          </div>
-</div>
-</div>
-</div>
     </form>
 </div>
