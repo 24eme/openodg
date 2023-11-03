@@ -11,6 +11,7 @@ all:
           produits:
             - "TRANQ/appellations/SCR"
           habilitation_produits: "/Sancerre/"
+          facture_block_missing: true
         POUILLY:
           # nom: "Syndicat de l’AOC Cairanne"
           # adresse: "6 place des Vignerons, 84290 CAIRANNE"
@@ -20,6 +21,7 @@ all:
             - "TRANQ/appellations/PFM"
             - "TRANQ/appellations/PSL"
           habilitation_produits:  "/Pouilly/"
+          facture_block_missing: true
         MENETOUSALON:
           # nom: "Comité des Vignerons de Vinsobres"
           # adresse: "8 rue Gironde, 26110 Vinsobres"

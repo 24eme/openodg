@@ -8,7 +8,7 @@ class PMCValidationForm extends acCouchdbForm
 
     public function isAdmin() {
 
-        return $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
+        return ($this->getOption('isAdmin'));
     }
 
     public function configure() {

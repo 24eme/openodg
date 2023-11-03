@@ -30,7 +30,7 @@
         <?php include_partial('pmc/pointsAttentions', array('pmc' => $pmc, 'validation' => $validation)); ?>
     <?php endif; ?>
 
-    <?php if($sf_user->isAdmin()): ?>
+    <?php if($sf_user->hasPMCAdmin()): ?>
       <?php include_partial('pmc/recap', array('pmc' => $pmc, 'form' => $form)); ?>
     <?php else:?>
       <?php include_partial('pmc/recap', array('pmc' => $pmc)); ?>

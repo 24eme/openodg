@@ -198,23 +198,23 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function hasDrevAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG) ||  $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_DREV_ADMIN) || $this->isAdminODG();
     }
 
     public function hasChgtDenomAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_CHGTDENOM_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_CHGTDENOM_ADMIN) || $this->isAdminODG();
     }
 
     public function hasConditionnementAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_CONDITIONNEMENT_ADMIN) || $this->isAdminODG();
     }
 
     public function hasPMCAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_PMC_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_PMC_ADMIN) || $this->isAdminODG();
     }
 
     public function hasTransactionAdmin() {
-        return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG) || $this->isAdmin();
+        return $this->hasCredential(self::CREDENTIAL_TRANSACTION_ADMIN) || $this->isAdminODG();
     }
 
     public function isStalker() {
