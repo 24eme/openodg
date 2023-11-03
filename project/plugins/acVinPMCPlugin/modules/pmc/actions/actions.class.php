@@ -185,8 +185,7 @@ class pmcActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->pmc = $this->getRoute()->getPMC();
         $this->secure(PMCSecurity::EDITION, $this->pmc);
-        $this->isAdmin = $this->getUser()->isAdminODG();
-
+        $this->isAdmin = $this->getUser()->hasPMCAdmin();
         if ($this->pmc->validation) {
             return $this->redirect('pmc_visualisation', $this->pmc);
         }
