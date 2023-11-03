@@ -95,6 +95,14 @@ class FactureConfiguration {
         return $exercice;
     }
 
+    public function hasFactureBlockMissing() {
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            return (RegionConfiguration::getInstance()->getOdgConfigurationItem(Organisme::getCurrentOrganisme(), 'facture_block_missing'));
+        }
+
+        return isset($this->configuration['block_missing']) && ($this->configuration['block_missing']);
+    }
+
     public function isListeDernierExercice() {
 
         return boolval($this->configuration['liste_dernier_exercice']);
