@@ -44,14 +44,7 @@ class CompteSendmailTask extends sfBaseTask
 
     $regions = HabilitationClient::getInstance()->getRegionsHabilites($compte->getSociete()->getEtablissementPrincipal()->getIdentifiant());
 
-    $replyTo = [];
-    foreach($regions as $region) {
-        $replyTo[] = Organisme::getInstance($region)->getEmail();
-    }
-    $replyTo = array_unique($replyTo);
-
     $message->setSubject($this->parseTemplate($arguments['subject'], $compte));
-    $message->setReplyTo($replyTo);
     $message->setBody($this->parseTemplate(file_get_contents($arguments['body_template']), $compte));
     $message->setTo($email);
 
