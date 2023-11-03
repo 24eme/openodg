@@ -34,7 +34,7 @@
     </div>
 <?php endif; ?>
 
-<?php if($pmc->validation && !$pmc->validation_odg && $sf_user->isAdmin()): ?>
+<?php if($pmc->validation && !$pmc->validation_odg && $sf_user->isAdminODG()): ?>
     <div class="alert alert-warning">
         Cette déclaration est en <strong>attente de validation</strong><?php if (! $pmc->isNonConformite()): ?> par l'ODG <?php endif ?>
     </div>
@@ -70,16 +70,16 @@
 
     <div class="col-xs-4 text-right">
         <div class="btn-group">
-        <?php if ($pmc->validation && !$pmc->validation_odg && $sf_user->isAdmin() && !$pmc->hasLotsUtilises()): ?>
+        <?php if ($pmc->validation && !$pmc->validation_odg && $sf_user->isAdminODG() && !$pmc->hasLotsUtilises()): ?>
             <a class="btn btn-default" href="<?php echo url_for('pmc_devalidation', $pmc) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-        <?php elseif ($pmc->validation_odg && $sf_user->isAdmin() && !$pmc->hasLotsUtilises()): ?>
+        <?php elseif ($pmc->validation_odg && $sf_user->isAdminODG() && !$pmc->hasLotsUtilises()): ?>
             <a class="btn btn-default btn-sm" href="<?php echo url_for('pmc_devalidation', $pmc) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
         <?php elseif ($pmc->validation_odg && $pmc->hasLotsUtilises()): ?>
             <button type="button" disabled="disabled" title="Les lots de ce documents ont été dégusté, la dévalidation n'est pas possible" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</button>
         <?php endif; ?>
         <?php if(!$pmc->validation): ?>
                 <a href="<?php echo url_for("pmc_edit", $pmc) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$pmc->validation_odg && ( $sf_user->isAdmin() ||
+        <?php elseif(!$pmc->validation_odg && ( $sf_user->isAdminODG() ||
                                                  ($sf_user->hasPMCAdmin() && PMCConfiguration::getInstance()->hasValidationOdgRegion() && !$pmc->isValidateOdgByRegion($regionParam))
                                                )): ?>
         <?php $params = array("sf_subject" => $pmc, "service" => isset($service) ? $service : null); if($regionParam): $params=array_merge($params,array('region' => $regionParam)); endif; ?>

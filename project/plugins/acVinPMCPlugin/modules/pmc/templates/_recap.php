@@ -24,7 +24,7 @@
                 <th class="text-center col-xs-3">Produit - millesime - mention</th>
                 <th class="text-center col-xs-1">Volume</th>
                 <th class="text-center col-xs-1">Lot prélevable à partir du</th>
-                <?php if ($sf_user->isAdmin()): ?>
+                <?php if ($sf_user->isAdminODG()): ?>
                   <th class="text-center col-xs-2">Date de dégustation</th>
                 <?php endif;?>
               </tr>
@@ -51,7 +51,7 @@
                         </td>
                         <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->date_degustation_voulue)? $lot->getDateDegustationVoulueFr() : ''; ?></td>
-                        <?php if ($sf_user->isAdmin()): ?>
+                        <?php if ($sf_user->isAdminODG()): ?>
                         <td class="text-center">
                             <?php if(isset($form['lots'][$lot->getKey()])): ?>
                                 <?php $formItem = $form['lots'][$lot->getKey()]; ?>
@@ -101,11 +101,10 @@
                   <td class="text-right">Total : </td>
                   <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
                   <td></td>
-                  <?php if ($sf_user->isAdmin()): ?>
+                  <?php if ($sf_user->isAdminODG()): ?>
                     <td></td>
                   <?php endif; ?>
                 </tr>
               </tbody>
             </table>
           <?php endif; ?>
-

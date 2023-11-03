@@ -203,6 +203,7 @@ class LotsClient
             ChgtDenomClient::TYPE_MODEL => "02",
             PMCClient::TYPE_MODEL => "01",
             PMCNCClient::TYPE_MODEL => "02",
+            CourrierClient::TYPE_MODEL => "03",
         );
 
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
