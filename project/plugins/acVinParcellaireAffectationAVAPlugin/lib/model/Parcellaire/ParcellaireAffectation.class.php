@@ -272,7 +272,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->initOrUpdateProduitsFromAire();
 
         if($reprise) {
-            $this->updateFromLastParcellaire();
+            $this->updateFromLastAffectation();
         }
     }
 
@@ -283,12 +283,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->initOrUpdateProduitsCremantsFromCVI();
 
         if($reprise) {
-            $this->updateFromLastParcellaire();
+            $this->updateFromLastAffectation();
         }
     }
 
-    public function updateFromLastParcellaire() {
-        $prevParcellaire = $this->getParcellaireLastCampagne();
+    public function updateFromLastAffectation() {
+        $prevParcellaire = $this->getAffectationLastCampagne();
         if(!$prevParcellaire) {
             return;
         }
@@ -334,7 +334,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $this->parcelles_idu;
     }
 
-    public function getParcellaireLastCampagne($type = null) {
+    public function getAffectationLastCampagne($type = null) {
         if ($type === null) {
             $type = $this->getTypeParcellaire();
         }
