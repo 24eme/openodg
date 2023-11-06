@@ -1,7 +1,7 @@
 <?php
 use_helper("Date");
 use_helper("Float");
-$last = $parcellaire->getParcellaireLastCampagne();
+$last = $parcellaire->getAffectationLastCampagne();
 $lastParcellesKeysByAppellations = null;
 if ($last) {
     $lastParcellesKeysByAppellations = $last->getAllParcellesKeysByAppellations()->getRawValue();
