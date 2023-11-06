@@ -56,6 +56,10 @@ class SVMouvementCIVACsvFile extends CIVACsvFile
         $hashProduit = $line[self::CSV_HASH_PRODUIT];
         $hashProduit = preg_replace("/(mentions.VT|mentions.SGN)/", "mention", $hashProduit);
         $hashProduit = preg_replace('|/DEFAUT$|', '', $hashProduit);
+        if(strpos($hashProduit, "CREMANT") !== false) {
+            $hashProduit = preg_replace('|/cepages/RS$|', '/cepages/BLRS', $hashProduit);
+            $hashProduit = preg_replace('|/cepages/BL$|', '/cepages/BLRS', $hashProduit);
+        }
         return '/declaration'.HashMapper::inverse($hashProduit);
     }
 
