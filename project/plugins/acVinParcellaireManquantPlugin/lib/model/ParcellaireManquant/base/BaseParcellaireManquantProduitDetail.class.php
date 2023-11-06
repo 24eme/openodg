@@ -16,8 +16,8 @@
  * @property integer $active
  * @property integer $vtsgn
  * @property string $campagne_plantation
- * @property string $materiel
- * @property string $ressource
+ * @property int $densite
+ * @property float $pourcentage
 
  * @method float getSuperficie()
  * @method float setSuperficie()
@@ -43,11 +43,6 @@
  * @method integer setVtsgn()
  * @method string getCampagnePlantation()
  * @method string setCampagnePlantation()
- * @method string getMateriel()
- * @method string setMateriel()
- * @method string getRessource()
- * @method string setRessource()
-
  */
 
 abstract class BaseParcellaireManquantProduitDetail extends acCouchdbDocumentTree {

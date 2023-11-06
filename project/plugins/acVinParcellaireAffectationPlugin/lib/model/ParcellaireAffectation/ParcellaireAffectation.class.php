@@ -88,7 +88,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
-        if($this->findParcelle($parcelle)) {
+        if($this->findParcelle($parcelle, true)) {
             continue;
         }
         $item = $this->declaration->add($hash);
@@ -122,9 +122,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return $this->parcelles_idu;
   }
 
-  public function findParcelle($parcelle) {
+  public function findParcelle($parcelle, $with_cepage_match = false) {
 
-      return ParcellaireClient::findParcelle($this, $parcelle, 0.5);
+      return ParcellaireClient::findParcelle($this, $parcelle, 0.5, $with_cepage_match);
   }
 
   public function getConfiguration() {

@@ -23,6 +23,8 @@ class ExportDegustationAllNotificationsPDF extends ExportDeclarationLotsPDF {
 
             if ($lot->conformite == Lot::CONFORMITE_CONFORME) {
                 $lots[$lot->declarant_identifiant]['conforme'][] = $lot;
+            } elseif ($lot->statut == Lot::STATUT_NONCONFORME_LEVEE) {
+                    $lots[$lot->declarant_identifiant]['conforme'][] = $lot;
             } elseif ($lot->statut == Lot::STATUT_NONCONFORME) {
                 $lots[$lot->declarant_identifiant]['nonconforme'][] = $lot;
             }

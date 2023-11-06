@@ -19,7 +19,7 @@ class DRevDocuments extends BaseDRevDocuments
 		self::DOC_DR => 'Déclaration de Récolte',
 		self::DOC_SV11 => 'SV11',
 		self::DOC_SV12 => 'SV12',
-		self::DOC_SV => 'SV11 / SV12',
+		self::DOC_SV => 'Déclaration de Production',
 		self::DOC_PRESSOIR => 'Carnet de Pressoir'
 	);
 	

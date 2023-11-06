@@ -20,14 +20,14 @@ function sprintFloatFr($float, $format = "%01.02f", $milliSeparate = false)
     return formatFloatFr($float, null, null, $format, $milliSeparate);
 }
 
-function echoFloat($number, $milliSeparate = false)
+function echoFloat($number, int $nbDecimales = 2, bool $milliSeparate = true)
 {
-    echo formatFloat($number, null, null, null, $milliSeparate);
+    echo formatFloat($number, $nbDecimales, null, null, $milliSeparate);
 }
 
-function echoFloatFr($number, $milliSeparate = false)
+function echoFloatFr($number, int $nbDecimales = 2, bool $milliSeparate = true)
 {
-    echo formatFloatFr($number, null, null, null, $milliSeparate);
+    echo formatFloatFr($number, $nbDecimales, null, null, $milliSeparate);
 }
 
 function echoLongFloat($number, $milliSeparate = false)
