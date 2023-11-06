@@ -154,8 +154,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
-        $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
-        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
+        $parcellaire = $this->getParcellaire();
+        foreach ($parcellaire->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
                 if (!$CVIParcelle->hasTroisiemeFeuille()) {
                     continue;
@@ -745,6 +745,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     		}
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
+    }
+
+    public function getParcellaire() {
+        return ParcellaireClient::getInstance()->getLast($this->identifiant);
     }
 
     protected function doSave() {
