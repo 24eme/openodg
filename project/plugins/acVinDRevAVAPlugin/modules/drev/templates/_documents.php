@@ -14,6 +14,12 @@
                 <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank">Télécharger</a></td>
             </tr>
         <?php endif; ?>
+        <?php if($drev->hasSV()): ?>
+            <tr>
+                <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle(DRevDocuments::DOC_SV) ?></td>
+                <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank">Télécharger</a></td>
+            </tr>
+        <?php endif; ?>
     	<?php if (isset($form) && !$drev->validation_odg): ?>
     		<?php foreach ($form->getEmbeddedForms() as $key => $documentForm): ?>
 	        <tr>
@@ -29,7 +35,8 @@
 	        </tr>
     		<?php endforeach; ?>
     	<?php else: ?>
-	        <?php foreach($drev->getOrAdd('documents') as $document): ?>
+	        <?php foreach($drev->getOrAdd('documents') as $type => $document): ?>
+            <?php if(in_array($type, [DRevDocuments::DOC_DR, DRevDocuments::DOC_SV]) && $drev->hasDROrSV()): continue; endif; ?>
 	        <tr>
 	            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle($document->getKey()) ?></td>
 	            <td class="text-center"><span class="<?php if($document->statut == DRevDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif; ?>"><?php echo DRevDocuments::getStatutLibelle($document->statut) ?></span></td>
