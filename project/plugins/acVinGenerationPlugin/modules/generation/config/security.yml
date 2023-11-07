@@ -1,2 +1,2 @@
 all:
-  credentials: [ADMIN,ADMIN_ODG]
+  credentials: [[ADMIN_ODG, ADMIN]]
