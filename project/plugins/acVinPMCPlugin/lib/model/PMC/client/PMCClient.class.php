@@ -30,7 +30,7 @@ class PMCClient extends acCouchdbClient
         $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(get_called_class()::TYPE_MODEL, ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode), $identifiant);
 
         foreach ($docs->rows as $doc) {
-            if ($doc->key[4] == DeclarationTousView::STATUT_BROUILLON) {
+            if ($doc->key[DeclarationTousView::KEY_STATUT] == DeclarationTousView::STATUT_BROUILLON) {
                 return $this->find($doc->id);
             }
         }
