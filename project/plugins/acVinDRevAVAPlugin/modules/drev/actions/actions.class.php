@@ -679,7 +679,7 @@ class drevActions extends sfActions {
         foreach ($this->validation->getEngagements() as $engagement) {
             $document = $documents->add($engagement->getCode());
             $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDR()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
-            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_SV && !$this->drev->hasSV()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_SV && $this->drev->hasSV()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
         }
 
         if($this->form->getValue("commentaire")) {
@@ -853,7 +853,15 @@ class drevActions extends sfActions {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);
 
-        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+        $type = null;
+
+        if($drev->hasDR()) {
+            $type = "DR";
+        } elseif($drev->hasSV()) {
+            $type = "SV";
+        }
+
+        $file = file_get_contents($drev->getAttachmentUri($type.".pdf"));
 
         if(!$file) {
 

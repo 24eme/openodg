@@ -154,8 +154,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
             $parcellesActives[$parcelle->getHash()] = $parcelle->getHash();
         }
-        $parcellaire = ParcellaireClient::getInstance()->getLast($this->identifiant);
-        foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
+        $parcellaire = $this->getParcellaire();
+        foreach ($parcellaire->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
                 if (!$CVIParcelle->hasTroisiemeFeuille()) {
                     continue;
@@ -272,7 +272,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->initOrUpdateProduitsFromAire();
 
         if($reprise) {
-            $this->updateFromLastParcellaire();
+            $this->updateFromLastAffectation();
         }
     }
 
@@ -283,12 +283,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->initOrUpdateProduitsCremantsFromCVI();
 
         if($reprise) {
-            $this->updateFromLastParcellaire();
+            $this->updateFromLastAffectation();
         }
     }
 
-    public function updateFromLastParcellaire() {
-        $prevParcellaire = $this->getParcellaireLastCampagne();
+    public function updateFromLastAffectation() {
+        $prevParcellaire = $this->getAffectationLastCampagne();
         if(!$prevParcellaire) {
             return;
         }
@@ -334,7 +334,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $this->parcelles_idu;
     }
 
-    public function getParcellaireLastCampagne($type = null) {
+    public function getAffectationLastCampagne($type = null) {
         if ($type === null) {
             $type = $this->getTypeParcellaire();
         }
@@ -745,6 +745,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     		}
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
+    }
+
+    public function getParcellaire() {
+        return ParcellaireClient::getInstance()->getLast($this->identifiant);
     }
 
     protected function doSave() {
