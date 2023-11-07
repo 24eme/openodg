@@ -18,7 +18,7 @@
     Télédéclaration<?php if($drev->getDateDepot()): ?> signée le <?php echo format_date($drev->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->validation_odg): ?> et approuvée le <?php echo format_date($drev->validation_odg, "dd/MM", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
     <?php if ($sf_user->hasDrevAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'InnovAgro le ".format_date($drev->envoi_oi, 'dd/MM') ; } ?>
-    <?php if (false && $sf_user->isAdmin() && $drev->validation_odg): // Si cette ligne est toujours là en 2024, à supprimer ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a>&nbsp;<small><a href="<?php  echo url_for('drev_export_xml', $drev) ?>" class=""><span class="glyphicon glyphicon-console"/></a></small><?php endif; ?>
+    <?php if (false && $sf_user->isAdminODG() && $drev->validation_odg): // Si cette ligne est toujours là en 2024, à supprimer ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a>&nbsp;<small><a href="<?php  echo url_for('drev_export_xml', $drev) ?>" class=""><span class="glyphicon glyphicon-console"/></a></small><?php endif; ?>
     </small>
     </h2>
 </div>
@@ -42,13 +42,13 @@
     </div>
 <?php endif; ?>
 
-<?php if($drev->validation && !$drev->validation_odg && $sf_user->isAdmin()): ?>
+<?php if($drev->validation && !$drev->validation_odg && $sf_user->isAdminODG()): ?>
     <div class="alert alert-warning">
         Cette déclaration est en <strong>attente de validation</strong> par l'ODG
     </div>
 <?php endif; ?>
 
-<?php if ($sf_user->isAdmin() && $drev->isMiseEnAttenteOdg()): ?>
+<?php if ($sf_user->isAdminODG() && $drev->isMiseEnAttenteOdg()): ?>
     <div class="alert alert-info">
         Cette déclaration a été <strong>mise en attente</strong> par l'ODG (<a href="<?php echo url_for("drev_enattente_admin", $params); ?>">annuler la mise en attente</a>)
     </div>
@@ -161,7 +161,7 @@
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION) && !$drev->hasLotsUtilises()):
                 if (!$drev->validation_odg): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
-            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdmin() &&  !$drev->hasLotsUtilises() && $drev->isMaster()): ?>
+            <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdminODG() &&  !$drev->hasLotsUtilises() && $drev->isMaster()): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
             <?php elseif ($drev->isFactures()): ?>
                 <span class="text-muted">DRev facturée</span>
@@ -170,7 +170,7 @@
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_delete", $drev) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER la saisie de ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer</a>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && ( $sf_user->isAdmin() && !DrevConfiguration::getInstance()->hasValidationOdgRegion() || ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam)))): ?>
+        <?php elseif(!$drev->validation_odg && ( $sf_user->isAdminODG() && !DrevConfiguration::getInstance()->hasValidationOdgRegion() || ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam)))): ?>
         <?php if (!$drev->isMiseEnAttenteOdg()): ?>
                 <a href="<?php echo url_for("drev_enattente_admin", $params); ?>" class="btn btn-default"><span class="glyphicon glyphicon-hourglass"></span>&nbsp;Mettre en attente</a>
         <?php endif; ?>
@@ -181,6 +181,6 @@
 </div>
 
 <?php include_partial('drev/popupConfirmationValidation', array('approuver' => false)); ?>
-<?php if (!$sf_user->isAdmin() && MandatSepaConfiguration::getInstance()->isActive() && !$drev->getEtablissementObject()->getSociete()->hasMandatSepa()): ?>
+<?php if (!$sf_user->isAdminODG() && MandatSepaConfiguration::getInstance()->isActive() && !$drev->getEtablissementObject()->getSociete()->hasMandatSepa()): ?>
 <?php include_partial('mandatsepa/popupPropositionInscriptionPrelevement'); ?>
 <?php endif; ?>
