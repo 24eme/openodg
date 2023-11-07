@@ -61,11 +61,13 @@
 
 
     <div class="col-xs-4 text-center">
-        <div class="btn-group">
+        <?php if($pmc->validation): ?>
             <a href="<?php echo url_for("pmc_export_pdf", $pmc) ?>" class="btn btn-default">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;PDF
             </a>
-        </div>
+        <?php else: ?>
+            <a class="btn btn-default" href="<?php echo url_for('pmc_delete', $pmc) ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette déclaration ?')" ><span class="glyphicon glyphicon-trash"></span>&nbsp;Supprimer le brouillon</a>
+        <?php endif; ?>
     </div>
 
     <div class="col-xs-4 text-right">
