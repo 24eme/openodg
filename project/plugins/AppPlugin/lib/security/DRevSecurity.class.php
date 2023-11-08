@@ -12,7 +12,7 @@ class DRevSecurity extends DocumentSecurity implements SecurityInterface {
 
     public function isAdmin() {
 
-	return $this->user->hasDrevAdmin() || parent::isAdminODG();
+	       return $this->user->hasDrevAdmin() || $this->user->isAdminODG();
     }
 
     public function isAuthorized($droits) {
