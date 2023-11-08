@@ -121,7 +121,7 @@ class facturationActions extends sfActions
             if(FactureConfiguration::getInstance()->isListeDernierExercice() && !$request->getParameter('campagne')) {
                 foreach(FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_JSON, null, 1) as $facture) {
 
-                    return $this->redirect('facturation_declarant', array('id' => $this->compte->_id, 'campagne' => $facture->campagne));
+                    return $this->redirect('facturation_declarant', array('identifiant' => $this->compte->identifiant, 'campagne' => $facture->campagne));
                 }
             }
 
@@ -185,7 +185,7 @@ class facturationActions extends sfActions
                 $generation->save();
             }
 
-            return $this->redirect('facturation_declarant', array('identifiant' => $this->compte->_id));
+            return $this->redirect('facturation_declarant', array('identifiant' => $this->compte->identifiant));
 
         }
 
@@ -243,7 +243,7 @@ class facturationActions extends sfActions
           throw sfException('wrong date format '+$date);
       }
       $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture, $date);
-      return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
+      return $this->redirect('facturation_declarant', array("identifiant" => $this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
     }
 
     public function executeAvaAvoirForm(sfWebRequest $request) {
@@ -280,7 +280,7 @@ class facturationActions extends sfActions
             return $this->redirect('facturation_ava_edition', $this->facture);
         }
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant));
     }
 
     public function executePaiement(sfWebRequest $request) {
@@ -308,7 +308,7 @@ class facturationActions extends sfActions
 
         $this->getUser()->setFlash("notice", "Le paiement a bien été ajouté");
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant));
     }
 
     public function executePaiements(sfWebRequest $request) {
@@ -338,10 +338,10 @@ class facturationActions extends sfActions
 
         if(FactureConfiguration::getInstance()->isListeDernierExercice()) {
 
-            return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant, "campagne" => $this->facture->campagne));
+            return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant, "campagne" => $this->facture->campagne));
         }
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant));
     }
 
     public function executeLatex(sfWebRequest $request) {
@@ -537,12 +537,12 @@ class facturationActions extends sfActions
 
         if (!$facture) {
             $this->getUser()->setFlash("error", "Facture non envoyée par email car celle-ci n'a pas pu être récupérée.");
-            $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
+            $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
         }
 
         if(!$facture->getSociete()->getEmailCompta()) {
             $this->getUser()->setFlash("error", "Facture non envoyée par email car il n'existe aucune adresse e-mail associée à la société ".$facture->getSociete()->raison_sociale);
-            $this->redirect('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant));
+            $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
         }
 
         $message = Email::getInstance()->getMessageFacture($facture);
