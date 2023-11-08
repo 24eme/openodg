@@ -51,7 +51,7 @@ class CourrierClient extends acCouchdbClient {
     public function createDoc($identifiant, $type, $lot, $date = null)
     {
         if (!$date) {
-            $date = date('Y-m-d');
+            $date = date('Y-m-d h:m:s');
         }
         $courrier = new Courrier($lot, $type);
         $courrier->initDoc($identifiant, null, $date);
