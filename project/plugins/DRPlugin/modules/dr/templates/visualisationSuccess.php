@@ -133,7 +133,7 @@ endif;
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?= ($service) ?: url_for('declaration_etablissement', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne]) ?>"
+        <a href="<?= (isset($service) && $service) ?: url_for('declaration_etablissement', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne]) ?>"
             class="btn btn-default"
         >
             <i class="glyphicon glyphicon-chevron-left"></i> Retour
