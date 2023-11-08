@@ -149,6 +149,9 @@ EOF;
             print("LOG : courrier ".$c->_id." created\n");
 
         }
+        if (!$c) {
+            echo "ERROR: echantillon pas trouvé dans le CSV\n";
+        }
     }
 
     protected function alias($produit) {
