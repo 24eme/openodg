@@ -38,7 +38,7 @@ class ArchivageAllView extends acCouchdbView
 
         foreach($rows as $row) {
 
-            return $row->key[self::KEYS_NUMERO_ARCHIVE];
+            return ($row->key[self::KEYS_NUMERO_ARCHIVE] == (int)$row->key[self::KEYS_NUMERO_ARCHIVE])? $row->key[self::KEYS_NUMERO_ARCHIVE] : $fourchette_basse;
         }
 
         return $this->getLastNumeroArchiveByTypeAndCampagne($type, $campagne, $fourchette_basse, $fourchette_haute, $format);
