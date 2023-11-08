@@ -16,25 +16,7 @@ class GenerationFactureMail extends GenerationAbstract {
             return;
         }
 
-        $message = Swift_Message::newInstance()
-         ->setFrom(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')))
-         ->setTo($facture->getSociete()->getEmailCompta())
-         ->setSubject(self::getSujet($facture->getNumeroOdg()))
-         ->setBody($this->getPartial("facturation/email", array('id' => $id)));
-
-         if(Organisme::getInstance()->getEmailFacturation()) {
-            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
-         }
-
-        return $message;
-    }
-
-    public static function getPartial($templateName, $vars = null) {
-        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
-
-        $vars = null !== $vars ? $vars : array();
-
-        return get_partial($templateName, $vars);
+        return Email::getInstance()->getMessageFacture($facture);
     }
 
     public static function getSujet($numero) {

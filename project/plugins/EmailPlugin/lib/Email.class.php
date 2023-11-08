@@ -585,6 +585,18 @@ class Email {
         return $this->getMailer()->send($message);
     }
 
+    public function getMessageFacture($facture) {
+        $message = $this->newMailInstance()
+         ->setTo($facture->getSociete()->getEmailCompta())
+         ->setSubject(GenerationFactureMail::getSujet($facture->getNumeroOdg()))
+         ->setBody($this->getPartial("facturation/email", array('id' => $facture->_id)));
+
+         if(Organisme::getInstance()->getEmailFacturation()) {
+            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
+         }
+
+         return $message;
+    }
 
     protected function getMailer() {
         return $this->_context->getMailer();
