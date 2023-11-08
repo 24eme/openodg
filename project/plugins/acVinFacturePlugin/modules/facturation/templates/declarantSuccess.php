@@ -49,11 +49,11 @@
                 <th class="col-xs-4 text-right">Montant TTC Facture</th>
                 <th class="col-xs-2 text-right">Montant payé</th>
                 <?php if($sf_user->hasFactureAdmin()): ?>
-                <th style="witdth: 0;"></th>
+                <th style="width: 0;"></th>
                 <?php endif; ?>
-                <th style="witdth: 0;"></th>
+                <th style="width: 0;"></th>
                 <?php if($sf_user->hasFactureAdmin()): ?>
-                <th style="witdth: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
+                <th style="width: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
                 <?php endif; ?>
             </tr>
         </thead>
@@ -61,7 +61,7 @@
             <?php foreach ($factures as $facture) : ?>
             <tr>
                 <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
-                <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
+                <td>N°&nbsp;<?php echo $facture->numero_odg ?></td>
                 <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
                 <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
                 <td class="text-right">
@@ -94,7 +94,7 @@
                 </td>
                <?php endif; ?>
                 <td class="text-right">
-                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class=""><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="" style="white-space: nowrap;"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                 </td>
                 <?php if($sf_user->hasFactureAdmin()): ?>
                     <td><?php if($facture->isTelechargee()): ?><span style="opacity: 0.8;" data-toggle="tooltip" title="La facture a été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-open text-primary"></span><?php else: ?><span style="opacity: 0.2;" data-toggle="tooltip" title="La facture n'a pas encore été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-close text-primary"></span><?php endif; ?></td>
