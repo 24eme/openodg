@@ -149,7 +149,7 @@ EOF;
             print("LOG : courrier ".$c->_id." created\n");
 
         }
-        if (!$nb) {
+        if (!$c) {
             echo "ERROR: echantillon pas trouvé dans le CSV\n";
         }
     }
