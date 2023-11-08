@@ -32,7 +32,8 @@ class facturationActions extends sfActions
             $this->formSociete->bind($request->getParameter($this->formSociete->getName()));
             if($this->formSociete->isValid()) {
                 $soc = SocieteClient::getInstance()->find($this->formSociete->getValue('identifiant'));
-                return $this->redirect('facturation_declarant', array('id' => $soc->getMasterCompte()->_id));
+
+                return $this->redirect('facturation_declarant', array('identifiant' => $soc->getMasterCompte()->_id));
             }
         }
 
