@@ -514,6 +514,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->numero_odg = null;
       $avoir->versement_comptable = 0;
       $avoir->versement_comptable_paiement = 0;
+      $avoir->remove('date_telechargement');
       $avoir->remove('paiements');
       $avoir->add('paiements');
       $avoir->save();
