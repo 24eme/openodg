@@ -355,6 +355,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function addPrelevementAutomatique()
     {
+      if (!MandatSepaConfiguration::getInstance()->isActive()) {
+        return false;
+      }
       $paiement = $this->add('paiements')->add();
       $paiement->montant =  $this->total_ttc;
       $paiement->type_reglement = FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO;
