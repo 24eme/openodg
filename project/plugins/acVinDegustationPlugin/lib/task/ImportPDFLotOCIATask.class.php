@@ -30,9 +30,11 @@ class ImportPDFLotOCIATask extends importOperateurIACsvTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
-            new sfCommandArgument('pdf', sfCommandArgument::OPTIONAL, "Fichier pdf"),
-            new sfCommandArgument('echantillon', sfCommandArgument::OPTIONAL, "Numéro échantillon du CSV"),
-            new sfCommandArgument('date', sfCommandArgument::OPTIONAL, "Date du courrier format iso"),
+            new sfCommandArgument('pdf', sfCommandArgument::REQUIRED, "Fichier pdf"),
+            new sfCommandArgument('echantillon', sfCommandArgument::REQUIRED, "Numéro échantillon du CSV"),
+            new sfCommandArgument('date', sfCommandArgument::REQUIRED, "Date du courrier format iso"),
+            new sfCommandArgument('identifiant', sfCommandArgument::OPTIONAL, "Identifiant de l'opérateur"),
+            new sfCommandArgument('unique_id', sfCommandArgument::OPTIONAL, "unique id du lot"),
         ));
 
         $this->addOptions(array(
@@ -97,6 +99,9 @@ EOF;
                 $logement = trim($data[self::CSV_LOGEMENT]);
             }
 
+            if ($arguments['identifiant'] && $arguments['unique_id']) {
+                $mvts = MouvementLotView::getInstance()->getMouvementsByStatutIdentifiantAndUniqueId(null, $arguments['identifiant'], $arguments['unique_id']);
+            }else{
             $dataAugmented = [];
             $dataAugmented['etablissement'] = $etablissement;
             $dataAugmented['date_prelevement'] = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_PRELEVEMENT]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
@@ -109,6 +114,7 @@ EOF;
             $dataAugmented['numero_archive'] = sprintf("%05d", explode("-", $data[self::CSV_NUMERO_ECHANTILLON])[1]);
 
             $mvts = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $dataAugmented['volume'], 'produit_hash' => $dataAugmented['produit']->getHash(), 'millesime' =>  $dataAugmented['millesime'], 'numero_logement_operateur' => $dataAugmented['numero_logement_operateur']), false);
+            }
             $lots = array();
             foreach($mvts as $m) {
                 if ($m->date > $arguments['date']) {

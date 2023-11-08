@@ -36,9 +36,12 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
 
     public function initDoc($identifiant, $campagne, $date = null) {
         if (!$date) {
-            $date = date('Y-m-d');
+            $date = date('Y-m-d h:m:s');
         }
-
+        print_r([$date, strlen($date)]);
+        if (strlen($date) == 10) {
+            $date .= ' 00:00:00';
+        }
         $this->identifiant = $identifiant;
         $this->date = $date;
 
@@ -69,7 +72,10 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
     }
 
     public function constructId() {
-        $id = 'COURRIER-' . $this->identifiant . '-' . str_replace('-', '', $this->date).'-'.str_replace('_', '', $this->courrier_type);
+        if (strlen($this->date) == 10) {
+            $this->date .= '000000';
+        }
+        $id = 'COURRIER-' . $this->identifiant . '-' . str_replace(['-', ' ', ':'], '', $this->date).'-'.str_replace('_', '', $this->courrier_type);
         $this->set('_id', $id);
     }
 
