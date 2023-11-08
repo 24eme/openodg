@@ -38,7 +38,6 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         if (!$date) {
             $date = date('Y-m-d h:m:s');
         }
-        print_r([$date, strlen($date)]);
         if (strlen($date) == 10) {
             $date .= ' 00:00:00';
         }
