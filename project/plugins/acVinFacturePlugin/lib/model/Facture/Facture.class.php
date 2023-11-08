@@ -397,9 +397,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         $this->updateVersementSepa();
 
-        parent::save();
+        $saved = parent::save();
 
         $this->saveDocumentsOrigine();
+
+        return $saved;
     }
 
     public function saveDocumentsOrigine() {
