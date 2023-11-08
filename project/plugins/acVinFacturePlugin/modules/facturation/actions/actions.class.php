@@ -184,7 +184,7 @@ class facturationActions extends sfActions
                 $generation->save();
             }
 
-            return $this->redirect('facturation_declarant', array('id' => $this->compte->_id));
+            return $this->redirect('facturation_declarant', array('identifiant' => $this->compte->_id));
 
         }
 
