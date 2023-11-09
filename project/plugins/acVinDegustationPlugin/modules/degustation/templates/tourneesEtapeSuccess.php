@@ -19,7 +19,7 @@
           <ul style="list-style-type:none; padding-bottom: 10px;">
               <?php foreach($secteurs as $secteur): ?>
               <li>
-                  <a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $secteur ?></a>
+                  <a href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><?php echo $secteur ?></a>
               </li>
               <?php endforeach ?>
           </ul>
@@ -29,7 +29,7 @@
           <ul style="list-style-type:none; padding-bottom: 10px;">
               <?php foreach($secteurs as $secteur): ?>
               <li>
-                  <a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $secteur ?></a>
+                  <a href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur)) ?>"><?php echo $secteur ?></a>
               </li>
               <?php endforeach ?>
           </ul>
@@ -45,7 +45,7 @@
           <ul style="list-style-type:none; padding-bottom: 10px;">
               <?php foreach($secteurs as $secteur): ?>
               <li>
-                  <a href="<?php echo url_for('degustation_etiquette_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur, 'anonymat4labo' => DegustationConfiguration::getInstance()->hasAnonymat4labo())) ?>"><span class="glyphicon glyphicon-th"></span>&nbsp;<?php echo $secteur ?></a>
+                  <a href="<?php echo url_for('degustation_etiquette_pdf', array('sf_subject' => $degustation, 'secteur' => $secteur, 'anonymat4labo' => DegustationConfiguration::getInstance()->hasAnonymat4labo())) ?>"><?php echo $secteur ?></a>
               </li>
               <?php endforeach ?>
           </ul>
