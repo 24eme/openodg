@@ -15,7 +15,7 @@ class Tournee extends Degustation
 
         $this->campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($date->format('Y-m-d'));
     }
-    public function getLotsBySecteur() {
+    public function getLotsBySecteur($withAllSecteurs = true) {
         $sans_secteurs = array(DegustationClient::DEGUSTATION_SANS_SECTEUR => array());
         foreach(parent::getLotsBySecteur() as $secteur => $llots) {
             $sans_secteurs[DegustationClient::DEGUSTATION_SANS_SECTEUR] = array_merge($sans_secteurs[DegustationClient::DEGUSTATION_SANS_SECTEUR], $llots);
