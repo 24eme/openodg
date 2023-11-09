@@ -79,7 +79,6 @@ class DRValidation extends DocumentValidation
             $PM = ParcellaireManquantClient::getInstance()->find(
                 ParcellaireManquantClient::getInstance()->buildId($this->document->getIdentifiant(), $this->document->getPeriode())
             );
-            var_dump($PM->periode, $this->document->campagne);
             if ($PM === null || $PM->periode !== $this->document->campagne) {
                 $this->addPoint(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort pour cette campagne");
             }

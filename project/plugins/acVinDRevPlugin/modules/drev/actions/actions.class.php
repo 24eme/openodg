@@ -684,7 +684,11 @@ class drevActions extends sfActions {
                 if(!$this->form->getValue("engagement_".$engagement->getCode())) {
                     continue;
                 }
-                $document = $documents->add($engagement->getCode());
+                $key = $engagement->getCode();
+                if ($addInfo = $engagement->getAdditionalInfo()) {
+                    $key .= '_'.$addInfo;
+                }
+                $document = $documents->add($key);
                 $document->libelle = $engagement->getMessage();
                 if($engagement->getInfo()) {
                     $document->libelle .= " : ".$engagement->getInfo();

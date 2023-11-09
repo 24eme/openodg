@@ -59,7 +59,7 @@ if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user
                     <li class="<?php if($route instanceof InterfaceFacturationRoute): ?>active<?php endif; ?>"><a href="<?php if($compte  && !$route instanceof InterfaceFacturationRoute): ?><?php echo url_for('facturation_declarant', $compte); ?><?php endif; ?>">Facturation</a></li>
                     <?php if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()): ?>
                     <li class="<?php if($route instanceof InterfaceHabilitationRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('habilitation_declarant', $etablissement); ?>">Habilitations</a></li>
-                    <li class="<?php if($route instanceof InterfaceCompteRoute &&  !$route instanceof FacturationDeclarantRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('compte_visualisation', $compte); ?>">Contacts</a></li>
+                    <li class="<?php if($route instanceof InterfaceCompteRoute &&  !$route instanceof FacturationDeclarantRoute): ?>active<?php endif; ?>"><a href="<?php echo url_for('compte_visualisation', $compte ?: $etablissement); ?>">Contacts</a></li>
                     <?php endif; ?>
                     <li class="<?php if(preg_match('/compte/', $route->getParameters()['module'])): ?>active<?php endif; ?>"><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte">Mon compte</a></li>
                 </ul>

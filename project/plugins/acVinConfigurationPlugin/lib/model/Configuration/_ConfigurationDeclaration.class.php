@@ -719,7 +719,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function getAttribut($name, $default = null) {
         if (!$this->exist('attributs') || !$this->attributs->exist($name)) {
 
-            return $default;
+            return $this->getParentNode()->getAttribut($name, $default);
         }
 
 
