@@ -68,10 +68,14 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV12));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VCI));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_MUTAGE_DECLARATION));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
+
+        $produits_manquants = $this->getManquants();
+        foreach($produits_manquants as $pourcentage => $produits) {
+            foreach($produits as $libelle => $p) {
+                $this->addControle(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF")), DRevDocuments::getEngagementLibelle(constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF")) );
+                $this->addControle(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")), DRevDocuments::getEngagementLibelle(constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")) );
+            }
+        }
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC));
@@ -182,11 +186,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, '');
     }
 
-    protected function controleEngagementParcelleManquante()
-    {
-        if($this->document->isPapier()) {
-            return;
-        }
+    private function getManquants() {
         $produits_manquants = array();
         foreach($this->document->getProduits() as $produit) {
             $pourcentage = $produit->getConfig()->getAttribut('engagement_parcelles_manquantes');
@@ -196,16 +196,26 @@ class DRevValidation extends DeclarationLotsValidation
             if (!constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF") || !constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")) {
                 throw new sfException("engagement_parcelles_manquantes $pourcentage pour ".$produit->getLibelle()." (".$produit->getConfig()->getDocument()->_id.") ne correspond pas à une constante connue (DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP)");
             }
-            @$produits_manquants[$pourcentage][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
+            @$produits_manquants[$pourcentage][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit;
         }
+        return $produits_manquants;
+    }
 
-        if(!count($produits_manquants)) {
+    protected function controleEngagementParcelleManquante()
+    {
+        if($this->document->isPapier()) {
             return;
         }
 
+        $produits_manquants = $this->getManquants();
+        if(!count($produits_manquants)) {
+            return;
+        }
         foreach($produits_manquants as $pourcentage => $produits) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF"), implode(", ", $produits));
-            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP"), implode(", ", $produits));
+            foreach($produits as $libelle => $p) {
+                $this->addPoint(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF")), $libelle);
+                $this->addPoint(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")), $libelle);
+            }
         }
     }
     protected function controleEngagementSv()
