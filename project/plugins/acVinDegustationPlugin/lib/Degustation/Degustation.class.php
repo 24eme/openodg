@@ -1510,15 +1510,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			return $etablissements;
 		}
 
-        public function getLotsBySecteur() {
+        public function getLotsBySecteur($withAllSecteurs = true) {
 
             $secteurs = [];
-            $secteurs[DegustationClient::DEGUSTATION_SANS_SECTEUR] = [];
+            if ($withAllSecteurs) {
+                $secteurs[DegustationClient::DEGUSTATION_SANS_SECTEUR] = [];
 
-            foreach (EtablissementClient::getInstance()->getSecteurs() as $secteur) {
-                if ($secteur) {
-                        $secteurs[$secteur] = [];
-                    }
+                foreach (EtablissementClient::getInstance()->getSecteurs() as $secteur) {
+                    if ($secteur) {
+                            $secteurs[$secteur] = [];
+                        }
+                }
             }
 
             foreach($this->getLotsPrelevables() as $lot) {

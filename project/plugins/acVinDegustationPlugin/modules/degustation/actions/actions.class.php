@@ -93,7 +93,7 @@ class degustationActions extends sfActions {
         $this->infosDegustation = $this->degustation->getInfosDegustation();
         $this->redirectIfIsAnonymized();
 
-        if ($this->degustation->getNbLotsPreleves()) {
+        if (!DegustationConfiguration::getInstance()->isTourneeAutonome() && $this->degustation->getNbLotsPreleves()) {
             return sfView::ALERT;
         }
 

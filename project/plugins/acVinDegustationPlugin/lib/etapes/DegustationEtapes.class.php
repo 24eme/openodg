@@ -120,16 +120,15 @@ class DegustationEtapes extends Etapes {
     {
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             unset($items[self::ETAPE_ANONYMATS]);
-            //unset($items[self::ETAPE_PRELEVEMENTS]);
             unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
         } else {
             unset($items[self::ETAPE_ORGANISATION]);
-            //unset($items[self::ETAPE_PRELEVEMENT_MANUEL]);
             unset($items[self::ETAPE_ANONYMISATION_MANUELLE]);
         }
 
         if(DegustationConfiguration::getInstance()->isDegustationAutonome()) {
             unset($items[self::ETAPE_ORGANISATION]);
+            unset($items[self::ETAPE_TOURNEES]);
             unset($items[self::ETAPE_PRELEVEMENTS]);
         }
 
