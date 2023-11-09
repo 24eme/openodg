@@ -6,12 +6,12 @@ class degustationActions extends sfActions {
         $this->form = new DegustationCreationForm();
         $this->formCreationTournee = new TourneeCreationForm();
 
-        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables(Organisme::getCurrentRegion()));
-        $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, $this->getUser()->getRegion());
-        $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, $this->getUser()->getRegion());
+        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables(Organisme::getInstance()->getCurrentRegion(), DegustationConfiguration::getInstance()->isTourneeAutonome() && Organisme::getInstance()->isOC()));
+        $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, Organisme::getInstance()->getCurrentRegion());
+        $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, (Organisme::getInstance()->isOC()) ? null : Organisme::getInstance()->getCurrentRegion());
 
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, Organisme::getCurrentRegion());
-        $this->tournees = TourneeClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, $this->getUser()->getRegion());
+        $this->tournees = TourneeClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, Organisme::getInstance()->getCurrentRegion());
 
         if(class_exists("EtablissementChoiceForm")) {
             $this->formEtablissement = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
@@ -85,11 +85,7 @@ class degustationActions extends sfActions {
 
     public function executePrelevables(sfWebRequest $request)
     {
-        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(Organisme::getCurrentRegion());
-
-        if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
-            $this->lotsPrelevables = array_merge($this->lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevesDegustables($this->getUser()->getRegion()));
-        }
+        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(Organisme::getInstance()->getCurrentRegion(), DegustationConfiguration::getInstance()->isTourneeAutonome() && Organisme::getInstance()->isOC());
     }
 
     public function executeSelectionLots(sfWebRequest $request) {
@@ -967,7 +963,7 @@ class degustationActions extends sfActions {
     public function executeNonconformites(sfWebRequest $request) {
       $this->chgtDenoms = [];
       $this->campagne = $request->getParameter('campagne', null);
-      $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne, $this->getUser()->getRegion());
+      $this->manquements = DegustationClient::getInstance()->getManquements($this->campagne, (Organisme::getInstance()->isOC()) ? null : Organisme::getInstance()->getCurrentRegion());
     }
 
     public function executeElevages(sfWebRequest $request) {

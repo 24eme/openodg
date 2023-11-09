@@ -97,7 +97,18 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $lot;
     }
 
-	public function getLotsPrelevables($region = null) {
+    public function getLotsPrelevables($region, $include_tournee_oc) {
+        $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevablesDegustation($region);
+
+        if($include_tournee_oc) {
+            $lotsPrelevables = array_merge($lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevesDegustables($region));
+        }
+
+        return $lotsPrelevables;
+
+    }
+
+	public function getLotsPrelevablesDegustation($region) {
 	    $lots = array();
         $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows;
 	    foreach ($rows as $lot) {

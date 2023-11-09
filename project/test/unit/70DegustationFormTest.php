@@ -135,7 +135,7 @@ $t->is($drev->lots[1]->date_commission, $drev->date_commission, "Date de la comm
 $t->ok(!$drev->hasLotsUtilises(), "La drev n'a pas de lot utilisée");
 
 $t->comment($drev->_id);
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(null, false);
 $lotPrelevable = current($lotsPrelevables);
 $t->is(count($lotsPrelevables), 2, 'on a deux mouvements de lot prélevable');
 $t->is($lotPrelevable->id_document_provenance, null, "L'id du document de provenance est null vu que le lot est un lot DRev");
@@ -160,7 +160,7 @@ $transaction->validate();
 $transaction->validateOdg();
 $transaction->save();
 $t->comment($transaction->_id);
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(null, false);
 $t->is(count($lotsPrelevables), 3, 'on a un 3ème lot prélevable');
 
 $t->is($transaction->lots[0]->adresse_logement,$addrCompleteLgtTrans, "Dans la transaction on a l'addresse de logement (depuis le chai)");
@@ -281,7 +281,7 @@ $t->ok($degustation->lots[2]->getMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT), "Il
 $t->ok($degustation->lots[2]->getMouvement(Lot::STATUT_AFFECTE_DEST), "Il a un mouvement affecté destination");
 $t->ok(!$degustation->lots[2]->getMouvement(Lot::STATUT_AFFECTABLE), "Il a un mouvement n'est plus affectable");
 
-$t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 0, "Il n'y a plus de mouvement prélevable");
+$t->is(count(DegustationClient::getInstance()->getLotsPrelevables(null, false)), 0, "Il n'y a plus de mouvement prélevable");
 
 $t->comment('on ajoute un leurre, on revient pour décocher un lot, le leurre ne doit pas avoir disparu');
 $degustation->addLeurre($degustation->lots[0]->produit_hash, null, date('Y'), 1);
@@ -315,7 +315,7 @@ $t->is($degustation->lots[0]->document_ordre, '02', "Le document ordre du seul l
 $t->is(MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($degustation->lots[0]), 1, "Le lot qui reste dans la dégut a bien une affectation source");
 $t->is($degustation->lots[1]->isLeurre(), true, "Le lot 2 est un leurre");
 
-$t->is(count(DegustationClient::getInstance()->getLotsPrelevables()), 2, "Il y a 2 mouvements prélevables (1 de la transaction, l'autre de la drev)");
+$t->is(count(DegustationClient::getInstance()->getLotsPrelevables(null, false)), 2, "Il y a 2 mouvements prélevables (1 de la transaction, l'autre de la drev)");
 
 $drev = DRevClient::getInstance()->find($iddrev);
 $transaction = TransactionClient::getInstance()->find($transaction->_id);
