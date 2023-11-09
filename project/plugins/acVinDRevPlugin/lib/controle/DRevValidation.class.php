@@ -76,6 +76,9 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addControle(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")), DRevDocuments::getEngagementLibelle(constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")) );
             }
         }
+        $this->addControle(self::TYPE_ERROR, 'MANQUANTES_declaration_missing', "Déclaration de pieds morts manquante");
+
+
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC));
@@ -215,6 +218,21 @@ class DRevValidation extends DeclarationLotsValidation
             foreach($produits as $libelle => $p) {
                 $this->addPoint(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF")), $libelle);
                 $this->addPoint(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")), $libelle);
+            }
+        }
+        if ($this->document->exist('documents')) {
+            $manquant_needed = false;
+            foreach($this->document->documents as $key => $eng) {
+                if (strpos($key, '_SUP')) {
+                    $manquant_needed = true;
+                    break;
+                }
+            }
+            if ($manquant_needed) {
+                $m = ParcellaireManquantClient::getInstance()->find(str_replace('DREV-', 'PARCELLAIREMANQUANT-', $this->document->_id));
+                if (!$m || !$m->validation) {
+                    $this->addPoint(self::TYPE_ERROR, 'MANQUANTES_declaration_missing', $this->document->campagne);
+                }
             }
         }
     }
