@@ -2,7 +2,7 @@ all:
   credentials: [[ADMIN_ODG, ADMIN]]
 
 libre:
-  credentials: [ADMIN]
+  credentials: [[ADMIN_ODG, ADMIN]]
 
 latex:
   credentials: []
