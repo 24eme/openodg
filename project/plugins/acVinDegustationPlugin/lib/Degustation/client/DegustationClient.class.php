@@ -97,24 +97,14 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $lot;
     }
 
-    public function getLotsPrelevables($region, $include_tournee_oc) {
-        $lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevablesDegustation($region);
-
-        if($include_tournee_oc) {
-            $lotsPrelevables = array_merge($lotsPrelevables, DegustationClient::getInstance()->getLotsPrelevesDegustables($region));
-        }
-
-        return $lotsPrelevables;
-
-    }
-
-	public function getLotsPrelevablesDegustation($region) {
+    public function getLotsEnAttente($region) {
 	    $lots = array();
-        $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows;
+        $statut = Lot::STATUT_AFFECTABLE;
+        if(DegustationConfiguration::getInstance()->isTourneeAutonome() && get_called_class() != "TourneeClient") {
+            $statut = Lot::STATUT_AFFECTABLE_PRELEVE;
+        }
+        $rows = MouvementLotView::getInstance()->getByStatut($statut)->rows;
 	    foreach ($rows as $lot) {
-            if(isset($lot->value->preleve) && $lot->value->preleve) {
-                continue;
-            }
             if($region && $region !== Organisme::getInstance()->getOIRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
                 continue;
             }
@@ -138,33 +128,6 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         ksort($lots);
         return $lots;
 	}
-
-    public function getLotsPrelevesDegustables($region = null) {
-        $lots = array();
-        $rows = MouvementLotView::getInstance()->getByStatut(Lot::STATUT_AFFECTABLE)->rows;
-        foreach ($rows as $lot) {
-            if(!isset($lot->value->preleve) || !$lot->value->preleve) {
-                continue;
-            }
-            if($region && $region != Organisme::getInstance()->getOIRegion() && !RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->value->produit_hash)) {
-                continue;
-            }
-            if ($region == Organisme::getInstance()->getOIRegion() && strpos($lot->value->id_document, TourneeClient::TYPE_COUCHDB) === false) {
-                continue;
-            }
-            if (!$lot->value) {
-                throw new sfException("Lot ne devrait pas être vide : ".print_r($lot, true));
-            }
-            $lots[$lot->value->unique_id] = $this->cleanLotForDegustation($lot->value);
-            $lots[$lot->value->unique_id]->type_document = substr(strtok($lot->id, '-'), 0, 4);
-            $nb_passage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lot->value) + 1;
-            if ($nb_passage > 1) {
-                $lots[$lot->value->unique_id]->specificite = Lot::generateTextePassage($lots[$lot->value->unique_id], $nb_passage);
-            }
-        }
-        ksort($lots);
-        return $lots;
-    }
 
     public static function sortLotByDate($lot1, $lot2) {
 

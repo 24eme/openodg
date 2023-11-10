@@ -594,7 +594,8 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
               }
 
               if($lot->isAffecte()) {
-                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
+                  $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC,  Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
+
                   continue;
               }
               if ($lot->isAffectable()) {

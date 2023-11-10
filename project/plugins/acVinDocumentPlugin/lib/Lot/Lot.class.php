@@ -38,6 +38,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const STATUT_REVENDICATION_SUPPRIMEE = "01_REVENDICATION_SUPPRIMEE";
     const STATUT_NONAFFECTABLE = "09_NON_AFFECTABLE";
     const STATUT_AFFECTABLE = "09_AFFECTABLE_ENATTENTE";
+    const STATUT_AFFECTABLE_PRELEVE = "09_AFFECTABLE_PRELEVE_ENATTENTE";
 
     const STATUT_CHANGE_SRC = "99_CHANGE_SRC";
     const STATUT_CHANGEABLE = "00_CHANGEABLE";
@@ -92,6 +93,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_REVENDICATION_SUPPRIMEE => 'Revendication supprimée',
         self::STATUT_NONAFFECTABLE => 'Réputé conforme',
         self::STATUT_AFFECTABLE => 'Affectable',
+        self::STATUT_AFFECTABLE_PRELEVE => 'Affectable prelevé',
 
         self::STATUT_NOTIFICATION_COURRIER => 'Courrier de notification',
     );
@@ -503,15 +505,19 @@ abstract class Lot extends acCouchdbDocumentTree
             return $this->nbPassage;
         }
 
-        $lotProvenance = $this->getLotProvenance();
-        if (!$lotProvenance) {
-            $this->nbPassage = 0;
-            return $this->nbPassage;
-        }
-
-        $this->nbPassage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($lotProvenance) + 1;
+        $this->nbPassage = MouvementLotView::getInstance()->getNombreAffecteSourceAvantMoi($this);
 
         return $this->nbPassage;
+    }
+
+    public static function generateTextePassageMouvement($nb)
+    {
+        $detail = sprintf("%dme passage", $nb);
+        if ($nb == 1) {
+            $nb = "1er passage";
+        }
+
+        return $detail;
     }
 
     public static function generateTextePassage($lot, $nb)
@@ -1037,11 +1043,11 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffectable() {
 
-        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable;
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && !preg_match('/^(TOURNEE)/', $this->id_document_affectation);
     }
 
     public function isAffecte() {
-        return ($this->id_document_affectation) && preg_match('/^DEGUST/', $this->id_document_affectation);
+        return ($this->id_document_affectation) && preg_match('/^(DEGUSTATION)/', $this->id_document_affectation);
     }
 
     public function isChange() {

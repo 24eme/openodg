@@ -348,21 +348,10 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
                     if (strpos($lot->id_document_provenance, 'TOURNEE') === false) {
                         $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
-                    }else{
-                        break;
                     }
-
                 case Lot::STATUT_ANNULE:
                 case Lot::STATUT_AFFECTE_DEST:
-                    if (strpos($lot->id_document, 'TOURNEE') !== false) {
-                        break;
-                    }
-                    $nbPassage = $lot->getNombrePassage();
-					$detail = sprintf("%dme passage", $nbPassage);
-					if ($nbPassage == 1) {
-						$detail = "1er passage";
-					}
-                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_DEST, $detail));
+                    $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_DEST, Lot::generateTextePassageMouvement($lot->getNombrePassage())));
 
                 default:
                     break;
@@ -379,9 +368,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				continue;
 			}
 			if ($lot->isAffecte()) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, ($lot->getNombrePassage() + 1).'me passage'));
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
 			}elseif($lot->isAffectable()) {
-				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, ($lot->getNombrePassage() + 1).'me passage'));
+				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
 			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC)) && !$lot->id_document_affectation) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
@@ -493,7 +482,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         $lot->numero_table = null;
         $lot->recours_oc = null;
 		$lot->email_envoye = null;
-        if(!$lot->preleve) {
+        if(!$lot->preleve || $this->type == TourneeClient::TYPE_MODEL) {
             $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot->preleve = null;
         }

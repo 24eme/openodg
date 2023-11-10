@@ -28,7 +28,7 @@ degustation_liste_declarant:
 
 degustation_prelevables:
   url: /degustation/prelevables
-  param: { module: degustation, action: prelevables }
+  param: { module: degustation, action: attente }
   requirements:
     sf_method: [get]
   class: DegustationGeneralRoute

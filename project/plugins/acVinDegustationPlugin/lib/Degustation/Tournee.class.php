@@ -22,4 +22,39 @@ class Tournee extends Degustation
         }
         return $sans_secteurs;
     }
+
+    public function generateMouvementsLots()
+    {
+        $this->clearMouvementsLots();
+
+        foreach ($this->lots as $lot) {
+            if ($lot->isLeurre()) {
+                continue;
+            }
+            $lot->updateDocumentDependances();
+            $lot->updateSpecificiteWithDegustationNumber();
+            $statut = $lot->statut;
+            switch($statut) {
+                case Lot::STATUT_PRELEVE:
+                case Lot::STATUT_ATTENTE_PRELEVEMENT:
+                        $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
+                default:
+                    break;
+            }
+            if($lot->isAnnule()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANNULE));
+            }
+            if($lot->isPreleve()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
+            }
+            if ($lot->isChange()) {
+                continue;
+            }
+            if ($lot->isAffecte()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
+            }elseif($lot->isAffectable()) {
+                $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE_PRELEVE, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
+            }
+        }
+    }
 }

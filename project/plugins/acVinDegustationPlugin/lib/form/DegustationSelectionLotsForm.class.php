@@ -39,10 +39,10 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
                 return $v->id_document_provenance === null;
             });
         }
-        if(DegustationConfiguration::getInstance()->isTourneeAutonome() && $this->getObject()->getType() == DegustationClient::TYPE_MODEL) {
-            $lotsDispo = DegustationClient::getInstance()->getLotsPrelevesDegustables($this->getObject()->getRegion());
-        } else {
-            $lotsDispo = DegustationClient::getInstance()->getLotsPrelevables($this->getObject()->getRegion(), DegustationConfiguration::getInstance()->isTourneeAutonome() && Organisme::getInstance()->isOC());
+        if($this->getObject()->getType() == DegustationClient::TYPE_MODEL) {
+            $lotsDispo = DegustationClient::getInstance()->getLotsEnAttente($this->getObject()->getRegion());
+        } elseif($this->getObject()->getType() == TourneeClient::TYPE_MODEL) {
+            $lotsDispo = TourneeClient::getInstance()->getLotsEnAttente($this->getObject()->getRegion());
         }
         foreach ($lotsDispo as $item) {
             if (array_key_exists($item->unique_id, $this->lots)) {

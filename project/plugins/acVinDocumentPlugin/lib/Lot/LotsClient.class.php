@@ -198,12 +198,12 @@ class LotsClient
             DRevClient::TYPE_MODEL => "01",
             ConditionnementClient::TYPE_MODEL => "01",
             TransactionClient::TYPE_MODEL => "01",
-            TourneeClient::TYPE_MODEL => "01",
-            DegustationClient::TYPE_MODEL => "02",
-            ChgtDenomClient::TYPE_MODEL => "02",
             PMCClient::TYPE_MODEL => "01",
-            PMCNCClient::TYPE_MODEL => "02",
-            CourrierClient::TYPE_MODEL => "03",
+            TourneeClient::TYPE_MODEL => "02",
+            DegustationClient::TYPE_MODEL => "03",
+            CourrierClient::TYPE_MODEL => "04",
+            PMCNCClient::TYPE_MODEL => "05",
+            ChgtDenomClient::TYPE_MODEL => "05",
         );
 
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
@@ -213,7 +213,7 @@ class LotsClient
             if(in_array($mouvement->id, $documents)) {
                 continue;
             }
-            $documents[$typePriorites[$mouvement->value->document_type].$mouvement->value->date.$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
+            $documents[$mouvement->value->date.$typePriorites[$mouvement->value->document_type].$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
         }
 
         ksort($documents);

@@ -58,46 +58,23 @@ class MouvementLotView extends acCouchdbView
         return $mvt;
     }
 
-    public function getAffecteSourceAvantMoi($lot)
-    {
-        if((get_class($lot) == 'stdClass' && isset($lot->leurre) && $lot->leurre) || (get_class($lot) != 'stdClass' && $lot->isLeurre())) {
-            return array();
-        }
-        $mouvements = $this->client
-                           ->startkey([
-                               Lot::STATUT_AFFECTE_SRC,
-                               $lot->declarant_identifiant,
-                               $lot->campagne,
-                               $lot->unique_id,
-                           ])
-                           ->endkey([
-                               Lot::STATUT_AFFECTE_SRC,
-                               $lot->declarant_identifiant,
-                               $lot->campagne,
-                               $lot->unique_id,
-                               array()
-                           ])
-                           ->getView($this->design, $this->view);
-         $mvts_rows = array();
-         $document_id = null;
-         if (get_class($lot) != 'stdClass') {
-             $document_id = $lot->getDocument()->_id;
-         }elseif (isset($lot->document_id)) {
-             $document_id = $lot->document_id;
-         }
-         foreach($mouvements->rows as $r) {
-             if ($document_id && ($r->id == $document_id)) {
-                 break;
-             }
-             $mvts_rows[] = $r;
-         }
-         return $mvts_rows;
-     }
-
     public function getNombreAffecteSourceAvantMoi($lot)
     {
-        return count($this->getAffecteSourceAvantMoi($lot));
-    }
+        $history = LotsClient::getInstance()->getHistory($lot->declarant_identifiant, $lot->unique_id);
+        $nb = 0;
+        foreach($history as $h) {
+            if(!in_array($h->value->statut, [Lot::STATUT_AFFECTE_SRC, Lot::STATUT_AFFECTABLE, Lot::STATUT_AFFECTABLE_PRELEVE])) {
+                continue;
+            }
+            if ($h->value->document_ordre >= $lot->document_ordre) {
+                continue;
+            }
+            $nb++;
+         }
+
+         return $nb;
+     }
+
 
     public function find($identifiant, $query, $first = true) {
         $mvts = $this->getMouvements($identifiant, $query);

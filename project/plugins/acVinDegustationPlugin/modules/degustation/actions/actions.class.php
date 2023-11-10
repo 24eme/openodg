@@ -6,7 +6,7 @@ class degustationActions extends sfActions {
         $this->form = new DegustationCreationForm();
         $this->formCreationTournee = new TourneeCreationForm();
 
-        $this->lotsPrelevables = array_merge(DegustationClient::getInstance()->getLotsPrelevables(Organisme::getInstance()->getCurrentRegion(), DegustationConfiguration::getInstance()->isTourneeAutonome() && Organisme::getInstance()->isOC()));
+        $this->lotsEnAttenteDegustation = DegustationClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion());
         $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, Organisme::getInstance()->getCurrentRegion());
         $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, (Organisme::getInstance()->isOC()) ? null : Organisme::getInstance()->getCurrentRegion());
 
@@ -83,9 +83,13 @@ class degustationActions extends sfActions {
         }
     }
 
-    public function executePrelevables(sfWebRequest $request)
+    public function executeAttente(sfWebRequest $request)
     {
-        $this->lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables(Organisme::getInstance()->getCurrentRegion(), DegustationConfiguration::getInstance()->isTourneeAutonome() && Organisme::getInstance()->isOC());
+        if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
+            $this->lotsTournee = TourneeClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion());
+        }
+
+        $this->lotsDegustation = DegustationClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion());
     }
 
     public function executeSelectionLots(sfWebRequest $request) {
