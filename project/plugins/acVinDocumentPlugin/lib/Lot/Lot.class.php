@@ -514,7 +514,7 @@ abstract class Lot extends acCouchdbDocumentTree
     {
         $detail = sprintf("%dme passage", $nb);
         if ($nb == 1) {
-            $nb = "1er passage";
+            $detail = "1er passage";
         }
 
         return $detail;
