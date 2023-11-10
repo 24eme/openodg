@@ -22,7 +22,7 @@
                   Nombre de lots en attente de prélevemnt :
               </div>
               <div class="col-sm-3 col-xs-3">
-              <strong><?php echo count(TourneeClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion())); ?></strong> <a href="<?= url_for('degustation_prelevables') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
+              <strong><?php echo count(TourneeClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion())); ?></strong> <a href="<?= url_for('degustation_attente', ['active' => 'tournee']) ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
               </div>
             </div>
             <div class="form-group <?php if($formCreationTournee["date"]->getError()): ?>has-error<?php endif; ?>">
@@ -73,7 +73,7 @@
                   Nombre de lots ne faisant l'objet d'aucune dégustation :
               </div>
               <div class="col-sm-3 col-xs-3">
-              <strong><?php echo count($lotsEnAttenteDegustation); ?></strong> <a href="<?= url_for('degustation_prelevables') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
+              <strong><?php echo count($lotsEnAttenteDegustation); ?></strong> <a href="<?= url_for('degustation_attente') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
               </div>
             </div>
             <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?> <?php if($form["time"]->getError()): ?>has-error<?php endif; ?>">

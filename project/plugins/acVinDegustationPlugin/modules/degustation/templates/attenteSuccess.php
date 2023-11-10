@@ -8,20 +8,15 @@
     <h2>Lots en attente</h2>
 </div>
 
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#degustation" aria-controls="degustation" role="tab" data-toggle="tab"> Lots<?php if(isset($lotsTournees)): ?> prélevés <?php endif; ?> en attente de dégustation <span class="badge"><?= count($lotsDegustation) ?></span></a></li>
+<ul class="nav nav-tabs" style="margin-bottom: 15px;">
     <?php if(isset($lotsTournee)): ?>
-    <li role="presentation"><a href="#tournee" aria-controls="tournee" role="tab" data-toggle="tab">Lots en attente de tournée de prélevement <span class="badge"><?= count($lotsTournee) ?></span></a></li>
+    <li class="<?php if($active == "tournee"): ?>active<?php endif; ?>"><a href="<?= url_for('degustation_attente', ['active' => 'tournee']) ?>">Lots en attente de tournée de prélevement <span class="badge"><?= count($lotsTournee) ?></span></a></li>
     <?php endif; ?>
- </ul>
+    <li class="<?php if($active != "tournee"): ?>active<?php endif; ?>"><a href="<?= url_for('degustation_attente', ['active' => 'degustation']) ?>"> Lots<?php if(isset($lotsTournees)): ?> prélevés <?php endif; ?> en attente de dégustation <span class="badge"><?= count($lotsDegustation) ?></span></a></li>
+</ul>
 
-<div class="tab-content" style="padding-top: 15px;">
-    <div role="tabpanel" class="tab-pane active" id="degustation">
-        <?php include_partial('degustation/lots', array('lots' => $lotsDegustation)); ?>
-    </div>
-    <?php if(isset($lotsTournee)): ?>
-    <div role="tabpanel" class="tab-pane" id="tournee">
-        <?php include_partial('degustation/lots', array('lots' => $lotsTournee)); ?>
-    </div>
-    <?php endif; ?>
-</div>
+<?php if($active == "tournee"): ?>
+    <?php include_partial('degustation/lots', array('lots' => $lotsTournee)); ?>
+<?php else: ?>
+    <?php include_partial('degustation/lots', array('lots' => $lotsDegustation)); ?>
+<?php endif; ?>
