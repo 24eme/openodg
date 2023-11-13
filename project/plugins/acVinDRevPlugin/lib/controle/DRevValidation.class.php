@@ -68,10 +68,17 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_SV12));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VCI));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_MUTAGE_DECLARATION));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF));
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP));
+
+        $produits_manquants = $this->getManquants();
+        foreach($produits_manquants as $pourcentage => $produits) {
+            foreach($produits as $libelle => $p) {
+                $this->addControle(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF")), DRevDocuments::getEngagementLibelle(constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF")) );
+                $this->addControle(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")), DRevDocuments::getEngagementLibelle(constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")) );
+            }
+        }
+        $this->addControle(self::TYPE_ERROR, 'MANQUANTES_declaration_missing', "Déclaration de pieds morts manquante");
+
+
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DEPASSEMENT_CONSEIL, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_DEPASSEMENT_CONSEIL));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT));
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC));
@@ -79,13 +86,6 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
 
-        $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit_hash);
-
-        if($contrats){
-            foreach($contrats as $k=>$v){
-                $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
-            }
-        }
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
 
         /* Lots */
@@ -100,6 +100,15 @@ class DRevValidation extends DeclarationLotsValidation
             $this->addControle(self::TYPE_ERROR, 'vip2c_pas_de_contrats_'.$produit_hash,"Depuis le millésime ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation or Declarvins nous informe que vous n'avez pas de contrat de vrac non soldé. Veuillez prendre contact avec Intervins Sud Est - 04 90 42 90 04.");
             $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_commerciable_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous êtes sur le point de dépasser les ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous a été attribués. Au delà, vous devrez avoir une preuve de commercialisation pour pouvoir revendiquer vos volumes.");
             $this->addControle(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$produit_hash,"A partir de la campagne ".VIP2C::getConfigCampagneVolumeSeuil().", la filière a mis en place le Volume Individuel de Production Commercialisable Certifiée (VIP2C). Vous avez dépassé les  ".$this->document->getVolumeRevendiqueSeuil($produit_hash)." hl qui vous ont été attribués. Pour pouvoir revendiquer ces lots, vous devez apporter une preuve de leur commercialisation.");
+
+            $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit_hash);
+
+            if($contrats){
+                foreach($contrats as $k=>$v){
+                    $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                }
+            }
+
         }
     }
 
@@ -109,6 +118,12 @@ class DRevValidation extends DeclarationLotsValidation
         foreach ($this->document->getProduitsWithoutLots() as $hash => $produit) {
           $this->controleRevendication($produit);
           $this->controleVci($produit);
+        }
+        //Point de vigilence sur habilitation
+        if (!DRevConfiguration::getInstance()->hasHabilitationINAO()) {
+            foreach($this->document->getNonHabilitationODG() as $hash => $produit) {
+                $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
         }
         $this->controleRecoltes();
 
@@ -180,11 +195,7 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_MUTAGE_DECLARATION, '');
     }
 
-    protected function controleEngagementParcelleManquante()
-    {
-        if($this->document->isPapier()) {
-            return;
-        }
+    private function getManquants() {
         $produits_manquants = array();
         foreach($this->document->getProduits() as $produit) {
             $pourcentage = $produit->getConfig()->getAttribut('engagement_parcelles_manquantes');
@@ -194,16 +205,41 @@ class DRevValidation extends DeclarationLotsValidation
             if (!constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF") || !constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")) {
                 throw new sfException("engagement_parcelles_manquantes $pourcentage pour ".$produit->getLibelle()." (".$produit->getConfig()->getDocument()->_id.") ne correspond pas à une constante connue (DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP)");
             }
-            @$produits_manquants[$pourcentage][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit->getConfig()->getAppellation()->getLibelleComplet();
+            @$produits_manquants[$pourcentage][$produit->getConfig()->getAppellation()->getLibelleComplet()] = $produit;
         }
+        return $produits_manquants;
+    }
 
-        if(!count($produits_manquants)) {
+    protected function controleEngagementParcelleManquante()
+    {
+        if($this->document->isPapier()) {
             return;
         }
 
+        $produits_manquants = $this->getManquants();
+        if(!count($produits_manquants)) {
+            return;
+        }
         foreach($produits_manquants as $pourcentage => $produits) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF"), implode(", ", $produits));
-            $this->addPoint(self::TYPE_ENGAGEMENT, constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP"), implode(", ", $produits));
+            foreach($produits as $libelle => $p) {
+                $this->addPoint(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_INF")), $libelle);
+                $this->addPoint(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")), $libelle);
+            }
+        }
+        if ($this->document->exist('documents')) {
+            $manquant_needed = false;
+            foreach($this->document->documents as $key => $eng) {
+                if (strpos($key, '_SUP')) {
+                    $manquant_needed = true;
+                    break;
+                }
+            }
+            if ($manquant_needed) {
+                $m = ParcellaireManquantClient::getInstance()->find(str_replace('DREV-', 'PARCELLAIREMANQUANT-', $this->document->_id));
+                if (!$m || !$m->validation) {
+                    $this->addPoint(self::TYPE_ERROR, 'MANQUANTES_declaration_missing', $this->document->campagne);
+                }
+            }
         }
     }
     protected function controleEngagementSv()
@@ -269,10 +305,6 @@ class DRevValidation extends DeclarationLotsValidation
                 }
             }
         }
-        if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-        }
-
         if ($this->document->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/volume_sur_place')) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/recolte_nette')) {

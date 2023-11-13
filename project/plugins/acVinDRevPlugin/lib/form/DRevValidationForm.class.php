@@ -85,7 +85,50 @@ class DRevValidationForm extends acCouchdbForm
             $this->embedForm('lots', $formDegustable);
         }
 
+        $this->validatorSchema->setPostValidator(
+            new sfValidatorCallback(array('callback' => array($this, 'checkEngagements')))
+        );
         $this->widgetSchema->setNameFormat('validation[%s]');
+    }
+
+    public function checkEngagements($validator, $values)
+    {
+        $checked = [];
+
+        foreach ($values as $key => $value) {
+            if (strpos($key, 'engagement_') === false) {
+                continue;
+            }
+
+            if (strpos($key, '_OU_') !== false) {
+                $checked_oukey = preg_replace('/_OU_.*/', '_OU_', $key);
+                if (array_key_exists($checked_oukey, $checked) === false) {
+                    $checked[$checked_oukey] = 0;
+                }
+
+                if($value === true) { $checked[$checked_oukey]++; }
+            }
+
+            if (strpos($key, '_OUEX_') !== false) {
+                $checked_ouexkey = preg_replace('/_OUEX_.*/', '_OUEX_', $key);
+                if (array_key_exists($checked_ouexkey, $checked) === false) {
+                    $checked[$checked_ouexkey] = 0;
+                }
+
+                if($value === true) { $checked[$checked_ouexkey]++; }
+            }
+        }
+
+        foreach($checked as $key => $val)
+        if (strpos($key, '_OU_') !== false && $val < 1) {
+            throw new sfValidatorError($validator, 'Il faut sélectionner au moins un engagement');
+        }
+
+        if (strpos($key, '_OUEX_') !== false && $val != 1) {
+            throw new sfValidatorError($validator, 'Il ne faut sélectionner qu\'un engagement');
+        }
+
+        return $values;
     }
 
     public function save() {
