@@ -119,6 +119,12 @@ class DRevValidation extends DeclarationLotsValidation
           $this->controleRevendication($produit);
           $this->controleVci($produit);
         }
+        //Point de vigilence sur habilitation
+        if (!DRevConfiguration::getInstance()->hasHabilitationINAO()) {
+            foreach($this->document->getNonHabilitationODG() as $hash => $produit) {
+                $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+            }
+        }
         $this->controleRecoltes();
 
         foreach ($this->document->getProduits() as $hash => $produit) {
@@ -299,10 +305,6 @@ class DRevValidation extends DeclarationLotsValidation
                 }
             }
         }
-        if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$produit->isHabilite()) {
-            $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-        }
-
         if ($this->document->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/volume_sur_place')) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getCepage()->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->getSommeProduitsCepage('recolte/recolte_nette')) {
