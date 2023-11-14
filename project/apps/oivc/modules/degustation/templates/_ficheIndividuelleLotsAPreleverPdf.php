@@ -99,13 +99,14 @@ p, div {
     <?php if ($table_header): $table_header = false; ?>
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
-         <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier/Lot</small></th>
-         <th style="width: 24%"><?php echo tdStart() ?><small>Produit / Cépage / Millésime</small></th>
-         <th style="width: 16%"><?php echo tdStart() ?><small>N°Logement Opérateur</small></th>
-         <th style="width: 10%"><?php echo tdStart() ?><small>Nature du contrôle</small></th>
-         <th style="width: 10%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
-         <th style="width: 10%"><?php echo tdStart() ?><small>Nb de cols</small></th>
-         <th style="width: 22%"><?php echo tdStart() ?><small>Observations</small></th>
+         <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier / Lot</small></th>
+         <th style="width: 22%"><?php echo tdStart() ?><small>Produit / Cépage / Millésime</small></th>
+         <th style="width: 14%"><?php echo tdStart() ?><small>N°Logement Opérateur</small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>Type contrôle</small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>Destination<br /><small>(sur conservatoire)</small></small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>Nb de cols</small></th>
+         <th style="width: 20%"><?php echo tdStart() ?><small>Observations</small></th>
        </tr>
    <?php endif;?>
      <?php $nbLignes = 1; ?>
@@ -118,6 +119,7 @@ p, div {
      <td style="text-align:left;"><?php echo tdStart() ?><span style="font-size: 11px;"><?php echo showProduitCepagesLot($lot, true, 'span'); ?></span></td>
      <td><?php echo tdStart() ?><small><?php echo $lot->numero_logement_operateur ?></small></td>
      <td><?php echo tdStart() ?><small><?php echo $lot->initial_type ?></small></td>
+     <td><?php echo tdStart() ?></td>
      <td><?php echo tdStart() ?><small><?php echoFloat($lot->volume); ?></small></td>
      <td><?php echo tdStart() ?></td>
      <td><?php echo tdStart() ?></td>
