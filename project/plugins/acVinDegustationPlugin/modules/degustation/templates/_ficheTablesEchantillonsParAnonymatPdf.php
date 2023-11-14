@@ -78,9 +78,9 @@
               <tr style="line-height:13px;">
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Dos</small></strong></th>
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Lot</small></strong></th>
-                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>ID Lot Op</small></strong></th>
+                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Id Lot Opérateur</small></strong></th>
                 <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>
-                <th class="bg-white" style="width:30%;"><?php echo tdStart() ?><strong><small>Produit millesime cépage</small></strong></th>
+                <th class="bg-white" style="width:30%;"><?php echo tdStart() ?><strong><small>Produit millésime cépage</small></strong></th>
               </tr>
           <?php endif; ?>
           <tr class="<?php echo $class; ?>" >
