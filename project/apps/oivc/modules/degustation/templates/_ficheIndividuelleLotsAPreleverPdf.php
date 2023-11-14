@@ -100,31 +100,29 @@ p, div {
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
          <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier/Lot</small></th>
-         <th style="width: 32%"><?php echo tdStart() ?><small>Produit/Cépage/Millésime</small></th>
-         <th style="width: 8%"><?php echo tdStart() ?><small>N°Logement<br/>Opérateur</small></th>
-         <th style="width: 20%"><?php echo tdStart() ?><small>Passage / spécificité / Destination</small></th>
-         <th style="width: 5%"><?php echo tdStart() ?><small>Volume<br/>(hl)</small></th>
-         <th style="width: 5%"><?php echo tdStart() ?><small>Nb de cols</small></th>
+         <th style="width: 24%"><?php echo tdStart() ?><small>Produit / Cépage / Millésime</small></th>
+         <th style="width: 16%"><?php echo tdStart() ?><small>N°Logement Opérateur</small></th>
+         <th style="width: 10%"><?php echo tdStart() ?><small>Nature du contrôle</small></th>
+         <th style="width: 10%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
+         <th style="width: 10%"><?php echo tdStart() ?><small>Nb de cols</small></th>
          <th style="width: 22%"><?php echo tdStart() ?><small>Observations</small></th>
        </tr>
    <?php endif;?>
-   <tr style="line-height:17px;">
-     <td><?php echo tdStart() ?><small><?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></small></td>
+     <?php $nbLignes = 1; ?>
+     <?php if(!$lot->volume || !$lot->exist('quantite')): ?>
+        <?php $nbLignes = 5 ?>
+     <?php endif; ?>
+    <?php for($i = 0; $i < $nbLignes; $i): ?>
+    <tr style="line-height:17px;">
+     <td><?php echo tdStart() ?><?php if($lot->numero_archive): ?><small><?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></small><?php endif; ?></td>
      <td style="text-align:left;"><?php echo tdStart() ?><span style="font-size: 11px;"><?php echo showProduitCepagesLot($lot, true, 'span'); ?></span></td>
-    <td><?php echo tdStart() ?>
-      <small><?php echo $lot->numero_logement_operateur ?></small>
-    </td>
-    <td><?php echo tdStart() ?>
-      <small><?php echo $lot->isSecondPassage() ? $lot->getTextPassage(false) : $lot->getTextPassage(false)." $lot->specificite"; ?>
-        <?php echo ($lot->getDestinationShort()) ? ' - '.$lot->getDestinationShort() : ''; ?>
-      </small>
-    </td>
-    <td><?php echo tdStart() ?>
-      <small><?php echoFloat($lot->volume); ?></small>
-    </td>
-    <td><?php echo tdStart() ?></td>
-    <td><?php echo tdStart() ?></td>
-   </tr>
-   <?php $i++; ?>
+     <td><?php echo tdStart() ?><small><?php echo $lot->numero_logement_operateur ?></small></td>
+     <td><?php echo tdStart() ?><small><?php echo $lot->initial_type ?></small></td>
+     <td><?php echo tdStart() ?><small><?php echoFloat($lot->volume); ?></small></td>
+     <td><?php echo tdStart() ?></td>
+     <td><?php echo tdStart() ?></td>
+    </tr>
+    <?php $i++; ?>
+    <?php endfor; ?>
   <?php endforeach; ?>
   </table>
