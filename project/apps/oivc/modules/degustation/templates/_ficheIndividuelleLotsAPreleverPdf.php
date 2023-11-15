@@ -64,10 +64,6 @@ p, div {
         <p>
           <span><strong>Téléphone :</strong> <?php echo $lot->getLogementTelephone() ?> <?php echo ($lot->getLogementPortable()) ? ' / '.$lot->getLogementPortable() : ''; ?></span>
         </p>
-        <p>
-            <strong>Laboratoire :</strong> <?php echo $etablissement->getLaboLibelle(); ?>
-            <br />
-        </p>
     </td>
   </tr>
 </table>
@@ -75,14 +71,10 @@ p, div {
 <br />
 <table class="table" cellspacing=0 cellpadding=0 style="border-collapse:collapse;" scope="colgroup">
   <tr>
-    <th border="1px" class="border" style="width: 12%; text-align: center;"><strong>Date</strong></th>
-    <th border="1px" class="border" style="width: 12%; text-align: center;"><strong>Heure</strong></th>
-    <th border="1px" class="border" style="width: 38%; text-align: center;"><strong>Nom et signature préleveur</strong></th>
-    <th border="1px" class="border" style="width: 38%; text-align: center;"><strong>Nom et signature personne présente</strong></th>
+    <th border="1px" class="border" style="width: 50%; text-align: center;"><strong>Nom et signature préleveur</strong></th>
+    <th border="1px" class="border" style="width: 50%; text-align: center;"><strong>Nom et signature personne présente</strong></th>
   </tr>
   <tr>
-    <td border="1px" class="border"><br/><br/></td>
-    <td border="1px" class="border"></td>
     <td border="1px" class="border"></td>
     <td border="1px" class="border"></td>
   </tr>
@@ -103,7 +95,7 @@ p, div {
          <th style="width: 22%"><?php echo tdStart() ?><small>Produit / Cépage / Millésime</small></th>
          <th style="width: 14%"><?php echo tdStart() ?><small>N°Logement Opérateur</small></th>
          <th style="width: 9%"><?php echo tdStart() ?><small>Type contrôle</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Destination<br /><small>(sur conservatoire)</small></small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>Type de Prélevement<br /><small>(CONDIT|VRAC|CONSERV|TEMOIN)</small></th>
          <th style="width: 9%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
          <th style="width: 9%"><?php echo tdStart() ?><small>Nb de cols</small></th>
          <th style="width: 20%"><?php echo tdStart() ?><small>Observations</small></th>
