@@ -91,11 +91,11 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getHeaderSubtitle() {
-        $nbOperateurs = count($this->etablissements);
-        $nbLots = count($this->lots);
-        $header_subtitle = sprintf("Dégustation du %s, %s", $this->degustation->getDateFormat('d/m/Y'), $this->degustation->lieu);
-        $header_subtitle .= sprintf("\n");
-        return $header_subtitle;
+        if($this->degustation->type == TourneeClient::TYPE_MODEL) {
+
+            return sprintf("\nTournée du %s\n\n", $this->degustation->getDateFormat('d/m/Y'));
+        }
+        return sprintf("\nDégustation du %s, %s\n\n", $this->degustation->getDateFormat('d/m/Y'), $this->degustation->lieu);
     }
 
     protected function getConfig() {
@@ -111,7 +111,7 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getFooterText() {
-        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", Organisme::getInstance(null, 'degustation')->getNom(), Organisme::getInstance(null, 'degustation')->getAdresse(), Organisme::getInstance(null, 'degustation')->getCodePostal(), Organisme::getInstance(null, 'degustation')->getCommune(), Organisme::getInstance(null, 'degustation')->getTelephone(), Organisme::getInstance(null, 'degustation')->getEmail());
+        return sprintf("<br/>%s     %s - %s - %s<br/>%s    %s", Organisme::getInstance($this->degustation->region, 'degustation')->getNom(), Organisme::getInstance($this->degustation->region, 'degustation')->getAdresse(), Organisme::getInstance($this->degustation->region, 'degustation')->getCodePostal(), Organisme::getInstance($this->degustation->region, 'degustation')->getCommune(), Organisme::getInstance($this->degustation->region, 'degustation')->getTelephone(), Organisme::getInstance($this->degustation->region, 'degustation')->getEmail());
     }
 
 }
