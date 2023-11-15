@@ -42,37 +42,36 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
             throw new sfException("Problème avec la société (ou l'établissement) concernant ".$this->doc->id);
         }
         $ligne_base = sprintf("%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->campagne, $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->doc->declarant->siret, $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $this->doc->declarant->email);
-        $checkCommune = $this->doc->declaration->getParcellesByCommune();
-        if (!$checkCommune) {
-            $csv = sprintf("Aucune parcelle trouvée.\n%s;Parcellaire Manquant;\n", $ligne_base);
+        $isempty = true;
+        foreach ($this->doc->declaration->getParcellesByCommune() as $commune => $parcelles) {
+        	foreach ($parcelles as $parcelle) {
+                $isempty = false;
+            	$configProduit = $parcelle->getProduit()->getConfig();
+
+            	$inao = $configProduit->getCodeDouane();
+
+            	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
+            	$csv .= sprintf("%s;Parcellaire Manquant;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+                DeclarationExportCsv::getProduitKeysCsv($configProduit),
+                $inao,$libelle_complet,
+            	$this->protectStr($parcelle->idu),
+            	$parcelle->code_commune,
+            	$this->protectStr($parcelle->commune),
+            	$this->protectStr($parcelle->lieu),
+            	$parcelle->section,
+            	$parcelle->numero_parcelle,
+            	$this->protectStr($parcelle->cepage),
+            	$this->protectStr($parcelle->campagne_plantation),
+            	$this->formatFloat($parcelle->superficie),
+            	$parcelle->densite,
+            	$this->formatFloat($parcelle->pourcentage),
+            	$this->protectStr($this->doc->signataire),
+            	$this->doc->validation,
+            	$mode);
+        	}
         }
-        else {
-            foreach ($this->doc->declaration->getParcellesByCommune() as $commune => $parcelles) {
-            	foreach ($parcelles as $parcelle) {
-                	$configProduit = $parcelle->getProduit()->getConfig();
-
-                	$inao = $configProduit->getCodeDouane();
-
-                	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-                	$csv .= sprintf("%s;Parcellaire Manquant;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
-                    DeclarationExportCsv::getProduitKeysCsv($configProduit),
-                    $inao,$libelle_complet,
-                	$this->protectStr($parcelle->idu),
-                	$parcelle->code_commune,
-                	$this->protectStr($parcelle->commune),
-                	$this->protectStr($parcelle->lieu),
-                	$parcelle->section,
-                	$parcelle->numero_parcelle,
-                	$this->protectStr($parcelle->cepage),
-                	$this->protectStr($parcelle->campagne_plantation),
-                	$this->formatFloat($parcelle->superficie),
-                	$parcelle->densite,
-                	$this->formatFloat($parcelle->pourcentage),
-                	$this->protectStr($this->doc->signataire),
-                	$this->doc->validation,
-                	$mode);
-            	}
-            }
+        if ($isempty === true) {
+            $csv = sprintf("%s;Parcellaire Manquant;;;;;;;;;;;;;;;;;;;;;;%s;%s\n", $ligne_base, $this->doc->validation, $mode);
         }
 
         return $csv;
