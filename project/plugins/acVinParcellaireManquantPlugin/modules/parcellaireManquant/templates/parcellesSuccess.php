@@ -9,7 +9,7 @@
             <p><span class="glyphicon glyphicon-info-sign"></span></p>
         </div>
         <div style="display: inline-block; vertical-align: middle">
-            Il n'est pas nécessaire d'indiquer les parcelles avec moins de 20% de pieds manquants.<br/>Si vous n'avez aucune parcelle concernée, vous pouvez aller directement à la <a href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>">validation</a>.
+            Il n'est pas nécessaire d'indiquer les parcelles avec moins de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants.<br/>Si vous n'avez aucune parcelle concernée, vous pouvez aller directement à la <a href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>">validation</a>.
         </div>
     </div>
 </div>
@@ -35,7 +35,7 @@
                 <th class="col-xs-1 text-center">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
 
-                <th class="col-xs-2 text-center">Pieds morts ou manquants ? <span class="text-muted">(si&nbsp;+&nbsp;de&nbsp;20%)</span></th>
+                <th class="col-xs-2 text-center">Pieds morts ou manquants ? <span class="text-muted">(si&nbsp;+&nbsp;de&nbsp;<?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>%)</span></th>
             </tr>
 		</thead>
 		<tbody>

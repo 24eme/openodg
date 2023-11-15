@@ -60,13 +60,13 @@ class DRevDocuments extends BaseDRevDocuments
 		DRevDocuments::DOC_VCI => 'Je m\'engage à transmettre le justificatif de destruction de VCI',
 		DRevDocuments::DOC_MUTAGE_DECLARATION => "Je m'engage à transmettre la déclaration de mutage à mon ODG",
 		DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_INF => "Je n'ai aucune parcelle avec un % de manquants > à 15%",
-		DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP => "Je m'engage à transmettre à mon ODG la liste de mes parcelles avec un % de manquants > à 15%",
+		DRevDocuments::DOC_PARCELLES_MANQUANTES_15_OUEX_SUP => "Je m'engage à télédéclarer de mes parcelles de manquants > à 15%",
 		DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_INF => "Je n'ai aucune parcelle avec un % de manquants > à 20%",
-		DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP => "Je m'engage à transmettre à mon ODG la liste de mes parcelles avec un % de manquants > à 20%",
+		DRevDocuments::DOC_PARCELLES_MANQUANTES_20_OUEX_SUP => "Je m'engage à télédéclarer de mes parcelles de manquants > à 20%",
 		DRevDocuments::DOC_DEPASSEMENT_CONSEIL => "Je dispose de la dérogation qui m'autorise à dépasser le rendement conseil",
 		DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT => "Je m'engage à contacter le syndicat quand le vin sera prêt",
-        DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT => "<strong>J'atteste d'un conditionnement,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C) de Méditerranée Rosé, je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots de Méditerranée Rosé de cette revendication.",
-        DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC => "<strong>J'ai un contrat de commercialisation (vrac),</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C) de Méditerranée Rosé, je certifie que les lots de cette revendication sont commercialisés via le Contrat Declarvins n° ",
+        DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT => "<strong>J'atteste de conditionnements,</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je m'engage à fournir à Intervins Sud Est <strong>une copie du registre de conditionnement</strong> pour les lots en dépassement sur cette revendication.",
+        DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC => "<strong>J'ai un contrat de commercialisation (vrac),</strong> en revendiquant au-delà de mon Volume Individuel de Production Commercialisable Certifiée (VIP2C), je certifie que les lots de cette revendication sont commercialisés via le Contrat Declarvins n° ",
         DRevDocuments::DOC_VSI_DESTRUCTION => 'Je m\'engage à détruire un millésime anterieur de la même AOC et de la même couleur que le produit où j\'ai déclaré du VSI avant le 31 juillet qui suit la récolte et à transmettre l\'exemplaire 3 de la liasse VSI signé par le distillateur à l\'ODG',
     );
 
