@@ -22,7 +22,7 @@
                 	?>
                     <?php echo $engagement->getRawValue()->getMessage() ?>
                     <?php if ($engagement->getCode() == DRevDocuments::DOC_DR && $drev->hasDR()): ?>- <a href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank"><small>Télécharger ma DR</small></a><?php endif; ?>
-                    <?php if ($engagement->getCode() == DRevDocuments::DOC_SV && $drev->hasSV()): ?>- <a href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank"><small>Télécharger mon document de production</small></a><?php endif; ?>
+                    <?php if ($engagement->getCode() == DRevDocuments::DOC_SV && $drev->hasSV()): ?>- <a href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank"><small>Télécharger ma déclaration de production</small></a><?php endif; ?>
                 </label>
             </div>
             </div>
