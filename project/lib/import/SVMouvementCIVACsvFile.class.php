@@ -55,7 +55,7 @@ class SVMouvementCIVACsvFile extends CIVACsvFile
     public static function getHashProduitByLine(array $line) {
         $hashProduit = $line[self::CSV_HASH_PRODUIT];
         $hashProduit = preg_replace("/(mentions.VT|mentions.SGN)/", "mention", $hashProduit);
-        $hashProduit = preg_replace('|/DEFAUT$|', '', $hashProduit);
+        $hashProduit = preg_replace('|/[^/]*$|', '', $hashProduit);
         if(strpos($hashProduit, "CREMANT") !== false) {
             $hashProduit = preg_replace('|/cepages/RS$|', '/cepages/BLRS', $hashProduit);
             $hashProduit = preg_replace('|/cepages/BL$|', '/cepages/BLRS', $hashProduit);
