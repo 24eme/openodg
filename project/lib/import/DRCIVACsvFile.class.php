@@ -158,7 +158,7 @@ class DRCIVACsvFile extends CIVACsvFile
               continue;
           }
 
-          $hashProduit = DRCIVACsvFile::getHashProduitByLine($line);
+          $hash = DRCIVACsvFile::getHashProduitByLine($line);
 
           if (!$drev->getConfiguration()->exist($hash)) {
               continue;
