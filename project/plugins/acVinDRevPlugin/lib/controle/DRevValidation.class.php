@@ -226,7 +226,7 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_ENGAGEMENT, str_replace('MANQUANTES_', 'MANQUANTES'.str_replace('/', "_", $p->getConfig()->getAppellation()->getHash().'_'), constant("DRevDocuments::DOC_PARCELLES_MANQUANTES_".$pourcentage."_OUEX_SUP")), $libelle);
             }
         }
-        if ($this->document->exist('documents')) {
+        if (ParcellaireConfiguration::getInstance()->isManquantMandatory() && $this->document->exist('documents')) {
             $manquant_needed = false;
             foreach($this->document->documents as $key => $eng) {
                 if (strpos($key, '_SUP')) {

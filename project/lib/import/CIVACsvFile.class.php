@@ -5,10 +5,10 @@ abstract class CIVACsvFile {
     abstract public function updateDRevCepage(DRev $drev);
     abstract public function updateDRevProduitDetail(DRev $drev);
 
-    private $file = null;
-    private $separator = null;
-    private $csvdata = null;
-    private $ignore = null;
+    protected $file = null;
+    protected $separator = null;
+    protected $csvdata = null;
+    protected $ignore = null;
 
     public function getFileName() {
         return $this->file;
