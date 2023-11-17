@@ -1242,6 +1242,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$region) {
           return false;
       }
+
+      if(!count($this->getProduits($region))) {
+           return false;
+      }
+
       foreach ($this->getProduits($region) as $hash => $produit) {
         if(!$produit->isValidateOdg()){
           return false;
