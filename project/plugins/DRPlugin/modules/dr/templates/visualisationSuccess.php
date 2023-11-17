@@ -147,7 +147,7 @@ endif;
     </div>
 <div class="col-xs-4 text-right">
 <?php if(DRConfiguration::getInstance()->hasValidationDR()): ?>
-        <?php if ($sf_user->isAdmin()): ?>
+        <?php if ($sf_user->isAdminODG()): ?>
             <?php if($dr->exist('validation_odg') && $dr->validation_odg): ?>
                 <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
                     onclick="return confirm('Êtes vous sûr de vouloir dévalider cette <?php echo $dr->getType() ?>');"
@@ -168,7 +168,7 @@ endif;
             <?php endif ?>
         <?php endif ?>
 <?php endif; ?>
-<?php if ($sf_user->isAdmin() && $dr->isDeletable()): ?>
+<?php if ($sf_user->isAdminODG() && $dr->isDeletable()): ?>
     <a href="<?= url_for('dr_suppression', ['id' => $dr->_id]) ?>" class="btn text-danger" onclick="return confirm('Etes vous sur de vouloir supprimer ce document ?');">
         Supprimer la <?php echo $dr->type ; ?>
     </a>
