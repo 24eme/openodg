@@ -13,7 +13,20 @@
         font-weight: bold;
     }
 </style>
-
+<table>
+    <tr>
+        <td width="50%"><img src="file://<?php echo sfConfig::get('sf_web_dir').'/images/pdf/'; ?>logo_oivc.jpg" height="50"/></td>
+        <td width="50%" style="text-align: right;"><img src="file://<?php echo sfConfig::get('sf_web_dir').'/images/pdf/'; ?>oivc_cofrac.png"  height="50"/></td>
+    </tr>
+</table>
+<table border="1">
+<tbody>
+    <tr>
+        <td>FUVC-OIVC<br/>MANUEL QUALITE / CHAPITRE 07<br/>ANNEXE 07.9 RAPPORT D INSPECTION CONTROLE PRODUIT/ 0621 / REV G</td>
+    </tr>
+</tbody>
+</table>
+<br/><br/>
 <table style="text-align: center"><tr><td><strong>Rapport d'Inspection Contrôle Produit N° <?php echo $lot->unique_id ?></strong></td></tr></table>
 
 <br/><br/>

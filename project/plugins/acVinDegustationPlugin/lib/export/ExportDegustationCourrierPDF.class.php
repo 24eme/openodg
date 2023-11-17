@@ -20,6 +20,10 @@ class ExportDegustationCourrierPDF extends ExportDeclarationLotsPDF
         parent::__construct($this->degustation, $type, $use_cache, $file_dir, $filename);
     }
 
+    public function getConfig() {
+        return new ExportCourrierPDFConfig();
+    }
+
     public function create()
     {
         for($i = 0 ; $i < $this->courrier->getNbPages() ; $i++) {
