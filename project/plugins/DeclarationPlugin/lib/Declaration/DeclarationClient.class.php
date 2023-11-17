@@ -119,6 +119,11 @@ class DeclarationClient
             return 'ExportParcellaireIntentionAffectationCSV';
         }
 
+        if(class_exists("ParcellaireManquantClient") && $type == ParcellaireManquantClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireManquantCSV';
+        }
+
         if(class_exists("DegustationClient") && $type == DegustationClient::TYPE_MODEL) {
 
             return 'ExportDegustationCSV';

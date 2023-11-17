@@ -26,8 +26,8 @@ degustation_liste_declarant:
     sf_method: [get]
   class: DegustationGeneralRoute
 
-degustation_prelevables:
-  url: /degustation/prelevables
+degustation_attente:
+  url: /degustation/attente
   param: { module: degustation, action: attente }
   requirements:
     sf_method: [get]

@@ -85,6 +85,7 @@ class degustationActions extends sfActions {
 
     public function executeAttente(sfWebRequest $request)
     {
+        $this->active = $request->getParameter('active', "degustation");
         if(DegustationConfiguration::getInstance()->isTourneeAutonome()) {
             $this->lotsTournee = TourneeClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion());
         }

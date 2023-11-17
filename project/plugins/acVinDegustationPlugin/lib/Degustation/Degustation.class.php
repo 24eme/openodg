@@ -36,6 +36,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 		return explode('|', $this->getRegion());
     }
 
+    public function getRegionsFromProduits()
+    {
+		$regions = [];
+		foreach($this->lots as $lot) {
+			$regions[] = RegionConfiguration::getInstance()->getOdgRegion($lot->produit_hash);
+		}
+
+        return array_unique($regions);
+	}
+
     public function getDateFormat($format = 'Y-m-d') {
         if (!$this->date) {
             return date($format);
@@ -486,12 +496,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot->preleve = null;
         }
-        if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) ||
-                isset($lotOrig->document_ordre)) {
+        if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) || isset($lotOrig->document_ordre)) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );
-            if ($lot->getDocumentType() === DegustationClient::TYPE_MODEL && $lot->document_ordre < 2) {
-                throw new sfException("On ne peut ajouter un lot qui n'a pas de numéro d'ordre : ".$lotOrig->unique_id);
-            }
         }
         if($update) {
             $lot->updateSpecificiteWithDegustationNumber();
@@ -1172,8 +1178,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function listeDegustateurs($college, $adresse_only = false)
         {
             $degustateurs = [];
-            $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college);
 
+            $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
+            foreach($regions as $region) {
+                $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.'_'.strtolower($region));
+            }
             if (count($comptes_degustateurs) > 0) {
                 foreach ($comptes_degustateurs as $compte) {
                     $degustateur = CompteClient::getInstance()->find($compte->id);

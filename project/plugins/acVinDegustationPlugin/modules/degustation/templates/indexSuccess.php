@@ -22,15 +22,15 @@
                   Nombre de lots en attente de prélevemnt :
               </div>
               <div class="col-sm-3 col-xs-3">
-              <strong><?php echo count(TourneeClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion())); ?></strong> <a href="<?= url_for('degustation_prelevables') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
+              <strong><?php echo count(TourneeClient::getInstance()->getLotsEnAttente(Organisme::getInstance()->getCurrentRegion())); ?></strong> <a href="<?= url_for('degustation_attente', ['active' => 'tournee']) ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
               </div>
             </div>
-            <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?>">
-                <?php echo $form["date"]->renderError(); ?>
-                <?php echo $form["date"]->renderLabel("Date de la tournée", array("class" => "col-xs-4 control-label")); ?>
+            <div class="form-group <?php if($formCreationTournee["date"]->getError()): ?>has-error<?php endif; ?>">
+                <?php echo $formCreationTournee["date"]->renderError(); ?>
+                <?php echo $formCreationTournee["date"]->renderLabel("Date de la tournée", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-sm-5 col-xs-5">
                     <div class="input-group date-picker">
-                        <?php echo $form["date"]->render(array("class" => "form-control")); ?>
+                        <?php echo $formCreationTournee["date"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>
                         </div>
@@ -73,7 +73,7 @@
                   Nombre de lots ne faisant l'objet d'aucune dégustation :
               </div>
               <div class="col-sm-3 col-xs-3">
-              <strong><?php echo count($lotsEnAttenteDegustation); ?></strong> <a href="<?= url_for('degustation_prelevables') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
+              <strong><?php echo count($lotsEnAttenteDegustation); ?></strong> <a href="<?= url_for('degustation_attente') ?>" class="pull-right"><i class="glyphicon glyphicon-eye-open"></i> Voir les lots</a>
               </div>
             </div>
             <div class="form-group <?php if($form["date"]->getError()): ?>has-error<?php endif; ?> <?php if($form["time"]->getError()): ?>has-error<?php endif; ?>">
