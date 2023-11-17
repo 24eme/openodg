@@ -17,15 +17,11 @@
     <tr><td><?php echo $etablissement->adresse ?></td></tr>
     <tr><td><?php echo $etablissement->code_postal .' '.$etablissement->commune ?></td></tr>
 </table>
-<br/>
-
-<br/>
-<br/>
 <br/><br/>
-
-<table style="text-align: center"><tr><td><strong>Objet : Avis de conformité controle vin</strong></td></tr></table>
 <br/><br/>
-
+<strong>Objet : Avis de conformité controle vin</strong>
+<br/><br/>
+<br/><br/>
 
 <table>
     <tr><td>Madame, Monsieur,</td></tr>

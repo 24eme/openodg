@@ -20,7 +20,7 @@
 
 <table border="1">
     <tbody>
-        <tr><td>OPÉRATEUR</td></tr>
+        <tr style="background-color: #CCCCCC;"><td><strong>OPÉRATEUR</strong></td></tr>
         <tr><td>Nom ou raison sociale de l'opérateur<br/>
                 <?php echo $etablissement->getRaisonSociale() ?><br/>
                 N° CVI : <?php echo $etablissement->getCvi() ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i> N° SIRET de l'opérateur : <?php echo formatSIRET($etablissement->getSiret()) ?>
@@ -31,7 +31,7 @@
                 Adresse du site de prélèvement<br/>
                 <?php echo $lot->getAdresseLogement() ?>
         </td></tr>
-        <tr><td>PRÉLÈVEMENT N° ÉCHANTILLON : </td></tr>
+        <tr style="background-color: #CCCCCC;"><td><strong>PRÉLÈVEMENT N° ÉCHANTILLON :</strong></td></tr>
         <tr><td>
             <table>
                 <tr>
@@ -59,7 +59,7 @@
         <tr><td>Agent de l'OIVC<br/>
                 Nom : <?php echo $courrier->getExtra('agent_nom'); ?>
         </td></tr>
-        <tr><td>DESCRIPTION DU LOT</td></tr>
+        <tr style="background-color: #CCCCCC;"><td><strong>DESCRIPTION DU LOT :</strong></td></tr>
         <tr><td>
             <table cellspacing="0">
                 <tr>
