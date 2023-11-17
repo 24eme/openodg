@@ -140,6 +140,12 @@ Courrier:
                         declarant_nom: {  }
                         statut: {}
                         region: { require: false }
+      extras:
+        type: collection
+        required: false
+        definition:
+          fields:
+            '*': { }
       pieces:
         type: array_collection
         definition:

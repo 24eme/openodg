@@ -233,4 +233,18 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         return "A definir";
     }
 
+    public function getExtraDateFormat($k, $format = 'd/m/Y') {
+        if (!$this->extras->exist($k)) {
+            return;
+        }
+        return date($format, strtotime($this->extras->get($k)));
+    }
+
+    public function getExtra($k) {
+        if ($this->extras->exist($k)) {
+            return $this->extras->get($k);
+        }
+        return '';
+    }
+
 }

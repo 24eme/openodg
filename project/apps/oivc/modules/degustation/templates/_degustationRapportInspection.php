@@ -54,10 +54,10 @@
         <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->preleve)->format('d/m/Y') ?></td></tr>
         <tr><td>Au moment du prélèvement, le vin est : </td></tr>
         <tr><td>Opérateur ou son représentant présent au cours du prélèvement<br/>
-                Nom : XXXXX<i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i>Fonction : YYYYYY
+                Nom : <?php echo $courrier->getExtra('representant_nom'); ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i>Fonction : <?php echo $courrier->getExtra('representant_fonction'); ?>
         </td></tr>
         <tr><td>Agent de l'OIVC<br/>
-                Nom : XXXXX
+                Nom : <?php echo $courrier->getExtra('agent_nom'); ?>
         </td></tr>
         <tr><td>DESCRIPTION DU LOT</td></tr>
         <tr><td>
@@ -89,10 +89,12 @@
         <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement / Code manquement</td> <td>Niveau de gravité</td>
     </tr>
     <tr>
-        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
+        <td>Examen analytique<br/>(sous traitance)</td> <td><?php echo $courrier->getExtraDateFormat('analytique_date', 'd/m/Y'); ?></td> <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
     </tr>
     <tr>
-        <td>Examen organoleptique<br/></td> <td><?php echo $degustation->getDate(); ?></td> <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
+        <td>Examen organoleptique<br/></td>
+        <td><?php echo $degustation->getDateFormat('d/m/Y'); ?></td>
+        <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
     </tr>
     <tr><td colspan="6">Date transmission INAO :</td></tr>
 </table>
