@@ -3,7 +3,7 @@ all:
     degustation:
       nb_etiquettes: 4
       anonymisation_manuelle: false
-      anonymisation_prefix: OI_
+      anonymisation_prefix: O
       conformite:
         - CONFORME
         - NONCONFORME_ANALYTIQUE
