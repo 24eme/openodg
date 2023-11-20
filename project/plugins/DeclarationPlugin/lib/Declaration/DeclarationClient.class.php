@@ -129,6 +129,11 @@ class DeclarationClient
             return 'ExportDegustationCSV';
         }
 
+        if (class_exists('CourrierClient') && $type = CourrierClient::TYPE_MODEL) {
+
+            return 'ExportCourrierCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
