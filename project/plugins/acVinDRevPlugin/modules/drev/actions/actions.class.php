@@ -130,7 +130,7 @@ class drevActions extends sfActions {
         try {
             $imported = $this->drev->resetAndImportFromDocumentDouanier();
         } catch (Exception $e) {
-            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
                 $message .= "<br/> Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non que celui organisé par produit).";
             }
@@ -204,7 +204,7 @@ class drevActions extends sfActions {
             }
         } catch(Exception $e) {
 
-            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendues.';
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
 
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
                 $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non celui organisé par produit).";
