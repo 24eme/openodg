@@ -85,6 +85,8 @@ cat $EXPORTDIR/declarations_cepages_lots.csv.part | awk -F ';' 'BEGIN{OFS=";"}  
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmc_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv.part
 
 if [ -z $IS_NO_VINIF ]; then
   grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
@@ -99,6 +101,14 @@ rm $EXPORTDIR/conditionnement_lots.csv.part
 grep "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transaction_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/transaction_lots.csv.part > $EXPORTDIR/transaction_lots.csv
 rm $EXPORTDIR/transaction_lots.csv.part
+
+grep "^PMCNC" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmcnc_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmcnc_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv
+rm $EXPORTDIR/pmcnc_lots.csv.part
+
+grep "^PMC;" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmc_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmc_lots.csv.part > $EXPORTDIR/pmc_lots.csv
+rm $EXPORTDIR/pmc_lots.csv.part
 
 rm $EXPORTDIR/declarations_lots.csv.part
 
