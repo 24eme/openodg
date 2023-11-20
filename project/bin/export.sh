@@ -85,6 +85,8 @@ cat $EXPORTDIR/declarations_cepages_lots.csv.part | awk -F ';' 'BEGIN{OFS=";"}  
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/drev_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/conditionnement_lots.csv.part
 head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/transaction_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmc_lots.csv.part
+head -1 $EXPORTDIR/declarations_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv.part
 
 if [ -z $IS_NO_VINIF ]; then
   grep "^DRev" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/drev_lots.csv.part
@@ -99,6 +101,14 @@ rm $EXPORTDIR/conditionnement_lots.csv.part
 grep "^Transaction" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/transaction_lots.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/transaction_lots.csv.part > $EXPORTDIR/transaction_lots.csv
 rm $EXPORTDIR/transaction_lots.csv.part
+
+grep "^PMCNC" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmcnc_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmcnc_lots.csv.part > $EXPORTDIR/pmcnc_lots.csv
+rm $EXPORTDIR/pmcnc_lots.csv.part
+
+grep "^PMC;" $EXPORTDIR/declarations_lots.csv.part >> $EXPORTDIR/pmc_lots.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/pmc_lots.csv.part > $EXPORTDIR/pmc_lots.csv
+rm $EXPORTDIR/pmc_lots.csv.part
 
 rm $EXPORTDIR/declarations_lots.csv.part
 
@@ -156,6 +166,10 @@ rm $EXPORTDIR/parcellaireintentionaffectation.csv.part
 bash bin/export_docs.sh ParcellaireAffectation $EXPORTSLEEP $1 > $EXPORTDIR/parcellaireaffectation.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaireaffectation.csv.part > $EXPORTDIR/parcellaireaffectation.csv
 rm $EXPORTDIR/parcellaireaffectation.csv.part
+
+bash bin/export_docs.sh ParcellaireManquant $EXPORTSLEEP $1 > $EXPORTDIR/parcellairemanquant.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellairemanquant.csv.part > $EXPORTDIR/parcellairemanquant.csv
+rm $EXPORTDIR/parcellairemanquant.csv.part
 
 curl -s "http://$COUCHHOST:$COUCHDBPORT/$COUCHDBBASE/_all_docs?startkey=\"PARCELLAIRE-\"&endkey=\"PARCELLAIRE-Z\"" | cut -d '"' -f 4 | grep "PARCELLAIRE" | sort -r | awk -F '-' 'BEGIN { } { if(!identifiant[$2]) { print $0 } identifiant[$2] = $0; }' | while read id;do php symfony declaration:export-csv --header=$(if ! test $header;then echo -n "1"; fi) $SYMFONYTASKOPTIONS $id; header=0; done > $EXPORTDIR/parcellaire.csv.part
 iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/parcellaire.csv.part > $EXPORTDIR/parcellaire.csv

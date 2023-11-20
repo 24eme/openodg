@@ -147,6 +147,14 @@ if os.path.exists(sys.argv[2]+"/parcellaireaffectation.csv") and os.path.getsize
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
 
+if os.path.exists(sys.argv[2]+"/parcellairemanquant.csv") and os.path.getsize(sys.argv[2]+"/parcellairemanquant.csv"):
+  try:
+    sys.stderr.write(sys.argv[2]+"/parcellairemanquant.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/parcellairemanquant.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False)
+    csv.to_sql('parcellairemanquant', con=engine, if_exists='replace')
+  except Exception as e:
+    sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
+
 if os.path.exists(sys.argv[2]+"/travaux_marc.csv") and os.path.getsize(sys.argv[2]+"/travaux_marc.csv"):
   try:
     sys.stderr.write(sys.argv[2]+"/travaux_marc.csv\n")
@@ -294,6 +302,34 @@ if os.path.exists(sys.argv[2]+"/transaction_lots.csv") and os.path.getsize(sys.a
     #Millésime
     csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('transaction_lots', con=engine, if_exists='replace')
+  except Exception as e:
+    sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
+
+if os.path.exists(sys.argv[2]+"/pmc_lots.csv") and os.path.getsize(sys.argv[2]+"/transaction_lots.csv"):
+  try:
+    sys.stderr.write(sys.argv[2]+"/pmc_lots.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/pmc_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    #CVI Opérateur
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    #SIRET Opérateur
+    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    #Millésime
+    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    csv.to_sql('pmc_lots', con=engine, if_exists='replace')
+  except Exception as e:
+    sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
+
+if os.path.exists(sys.argv[2]+"/pmcnc_lots.csv") and os.path.getsize(sys.argv[2]+"/transaction_lots.csv"):
+  try:
+    sys.stderr.write(sys.argv[2]+"/pmcnc_lots.csv\n")
+    csv = pd.read_csv(sys.argv[2]+"/pmcnc_lots.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Identifiant': 'str', 'Campagne': 'str', 'Mention': 'str', 'Cepage': 'str', 'Num dossier': 'str'})
+    #CVI Opérateur
+    csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    #SIRET Opérateur
+    csv[csv.columns[5]] = csv[csv.columns[5]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    #Millésime
+    csv[csv.columns[25]] = csv[csv.columns[25]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    csv.to_sql('pmcnc_lots', con=engine, if_exists='replace')
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
 
