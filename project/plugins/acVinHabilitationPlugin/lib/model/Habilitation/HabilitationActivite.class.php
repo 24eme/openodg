@@ -19,7 +19,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
       $this->date = $date;
       $this->statut = $statut;
       $this->commentaire = $commentaire;
-      $this->activite = $this->getKey();
+      $this->activite = preg_replace("/-SITE_[0-9]*$/", "", $this->getKey());
   }
 
     public function getLibelle() {
