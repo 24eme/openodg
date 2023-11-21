@@ -46,12 +46,12 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdminODG()) {
 
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdminODG()) {
 
             return false;
         }
@@ -61,7 +61,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin()) {
+        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdminODG()) {
 
             return false;
         }
@@ -86,7 +86,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin()) {
+        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdminODG()) {
 
             return false;
         }
@@ -96,7 +96,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::MODIFICATRICE, $droits) && !$this->user->isAdmin()) {
+        if(in_array(self::MODIFICATRICE, $droits) && !$this->user->isAdminODG()) {
 
             return false;
         }
