@@ -29,6 +29,7 @@ class DRevValidation extends DeclarationLotsValidation
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', "Le volume revendiqué n'a pas été saisi");
         $this->addControle(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', "Le volume revendiqué n'a pas été saisi");
+        $this->addControle(self::TYPE_WARNING, 'revendication_apporteur_total_warn', "Aucun volume de récolte en cave particulière a été détecté");
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', "La superficie revendiquée n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_warn', "Le rendement sur le volume revendiqué n'est pas respecté (peut être lié à un achat de vendange ou l'intégration de VCI stocké chez un négociant)");
@@ -240,7 +241,9 @@ class DRevValidation extends DeclarationLotsValidation
         if ($produit->isCleanable()) {
           return;
         }
-        if($produit->getSommeProduitsCepage('superficie_revendique') === null) {
+        if ($produit->recolte && !$produit->recolte->volume_sur_place) {
+            $this->addPoint(self::TYPE_WARNING, 'revendication_apporteur_total_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }elseif($produit->getSommeProduitsCepage('superficie_revendique') === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
         if($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') === null) {
