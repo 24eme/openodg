@@ -11,6 +11,8 @@
     }
 </style>
 
+<?php include_partial('degustation/headerCourrier') ?>
+<br/><br/>
 <table style="width:1100px;padding-left:400px;" >
     <tr><td></td></tr>
     <tr><td><?php echo $etablissement->raison_sociale ?></td></tr>
