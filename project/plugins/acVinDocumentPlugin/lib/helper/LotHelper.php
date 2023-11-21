@@ -115,7 +115,7 @@ function pictoDegustable($lot) {
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
 
-function showLotStatusCartouche($lot_ou_mvt_value) {
+function showLotStatusCartouche($lot_ou_mvt_value, $with_details = true) {
     $statut = $lot_ou_mvt_value->statut;
     $detail = null;
     if(isset($lot_ou_mvt_value->detail)) {
@@ -144,7 +144,7 @@ function showLotStatusCartouche($lot_ou_mvt_value) {
         $text .= Lot::$libellesStatuts[$statut];
     }
     $text .= '</span>';
-    if($detail) {
+    if($detail && $with_details) {
         $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
     }
     return $text;

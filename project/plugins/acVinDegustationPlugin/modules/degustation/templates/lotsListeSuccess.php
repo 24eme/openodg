@@ -70,7 +70,7 @@
                       </a>
                   </td>
                   <td>
-                      <?php  echo showLotStatusCartouche($mouvement->value);  ?>&nbsp;<?php  echo showSummerizedLotPublicStatusCartouche($mouvement->value, true);  ?>
+                      <?php  echo showLotStatusCartouche($mouvement->value, false);  ?>&nbsp;<?php  echo showSummerizedLotPublicStatusCartouche($mouvement->value, true);  ?>
                   <?php else: ?>
                   </td>
                   <td><?php  echo showLotPublicStatusCartouche($mouvement->value, false);  ?></td>
