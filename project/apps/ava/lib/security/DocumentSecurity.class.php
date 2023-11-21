@@ -22,7 +22,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             $droits = array($droits);
         }
 
-        if(!$this->user->isAdminODG() && $this->user->getEtablissement()->identifiant != $this->doc->identifiant) {
+        if(!$this->user->isAdmin() && $this->user->getEtablissement()->identifiant != $this->doc->identifiant) {
 
             $lienSymbolique = DeclarationClient::getInstance()->find(str_replace($this->doc->identifiant, $this->user->getEtablissement()->identifiant, $this->doc->_id), acCouchdbClient::HYDRATE_JSON, true);
 
@@ -46,12 +46,12 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdminODG()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin()) {
 
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdminODG()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin()) {
 
             return false;
         }
@@ -61,7 +61,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdminODG()) {
+        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin()) {
 
             return false;
         }
@@ -86,7 +86,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdminODG()) {
+        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin()) {
 
             return false;
         }
@@ -96,7 +96,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::MODIFICATRICE, $droits) && !$this->user->isAdminODG()) {
+        if(in_array(self::MODIFICATRICE, $droits) && !$this->user->isAdmin()) {
 
             return false;
         }
