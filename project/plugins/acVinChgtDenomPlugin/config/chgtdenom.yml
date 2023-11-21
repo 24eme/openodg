@@ -1,6 +1,7 @@
 all:
   configuration:
     chgtdenom:
+      demat_enabled: false
       specificite_lot: false
       specificites:
         bio: "bio"
