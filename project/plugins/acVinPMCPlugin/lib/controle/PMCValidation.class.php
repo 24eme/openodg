@@ -65,7 +65,7 @@ class PMCValidation extends DocumentValidation
 
         foreach($this->document->getMillesimes() as $millesime) {
             $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, $millesime]));
-            if ($drev === null || ! $drev->validation_odg) {
+            if ($drev === null || ! $drev->isValidateOdgByRegion($this->document->region)) {
                 $this->addPoint(self::TYPE_FATAL, 'revendication_manquante', "Déclaration de Revendication ".$millesime, true);
             }
         }
