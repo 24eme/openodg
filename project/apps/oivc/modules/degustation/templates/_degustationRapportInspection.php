@@ -84,14 +84,14 @@
         <tr><td>
             <table cellspacing="0">
                 <tr>
-                    <td>AOC et couleur : <?php echo showProduitCepagesLot($lot, false) ?></td>
+                    <td>AOC et couleur : <?php echo $lot->produit_libelle; ?></td>
                     <td>Millésime : <?php echo $lot->millesime ?></td>
                     <td>Volume : <?php echo $lot->volume ?> <small>hl</small></td>
                 </tr>
                 <tr>
                     <td>N° lot : <?php echo $lot->numero_logement_operateur ?></td>
-                    <td>N° Cuve si vrac : </td>
-                    <td>Nb Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : null ?></td>
+                    <td><?php if (false) : ?> N° Cuve si vrac : <?php endif; ?></td>
+                    <td><?php if ( $lot->exist('quantite')) : ?> Nb Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : null ?><?php endif; ?></td>
                 </tr>
             </table>
         </td></tr>
