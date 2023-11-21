@@ -48,24 +48,32 @@
         <tr><td>
             <table>
                 <tr>
-                    <td style="width: 10%">Type :</td><td><?php echoCheck('Aléatoire', true) ?></td><td><?php echoCheck('Aléatoire renforcé', false) ?></td><td><?php echoCheck('Vrac export', false) ?></td>
+                    <td style="width: 10%">Type :</td>
+                    <td><?php echoCheck('Aléatoire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) ?></td>
+                    <td><?php echoCheck('Aléatoire renforcé', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) ?></td>
+                    <td><?php echoCheck('Vrac export', false) ?></td>
                 </tr>
                 <tr>
-                    <td></td><td colspan="2"><?php echoCheck('Suite à contrôle produit ODG non conforme', false) ?></td><td><?php echoCheck('Sous traitance', false) ?></td>
+                    <td></td>
+                    <td><?php echoCheck('Recours', false) ?></td>
+                    <td><?php echoCheck('Sous traitance', false) ?></td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td></td><td colspan="2"><?php echoCheck('Suite à contrôle produit OIVC non conforme', false) ?></td><td></td>
+                    <td></td>
+                    <td colspan="3"><?php echoCheck('Suite à contrôle produit ODG non conforme', $lot->initial_type == PMCClient::TYPE_MODEL) ?></td>
                 </tr>
                 <tr>
-                    <td></td><td><?php echoCheck('Recours', false) ?></td><td></td><td></td>
+                    <td></td>
+                    <td colspan="3"><?php echoCheck('Suite à contrôle produit OIVC non conforme', $lot->initial_type == PMCNCClient::TYPE_MODEL) ?></td>
                 </tr>
                 <tr>
-                    <td></td><td colspan="2"><?php echoCheck('Contrôle supplémentaire', false) ?></td><td></td>
+                    <td></td><td colspan="3"><?php echoCheck('Contrôle supplémentaire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE) ?></td><td></td>
                 </tr>
             </table>
         </td></tr>
         <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->preleve)->format('d/m/Y') ?></td></tr>
-        <tr><td>Au moment du prélèvement, le vin est : </td></tr>
+        <tr><td>Au moment du prélèvement, le vin est : <?php echo $courrier->getExtra('vin_emplacement'); ?> </td></tr>
         <tr><td>Opérateur ou son représentant présent au cours du prélèvement<br/>
                 Nom : <?php echo $courrier->getExtra('representant_nom'); ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i>Fonction : <?php echo $courrier->getExtra('representant_fonction'); ?>
         </td></tr>
@@ -88,7 +96,10 @@
             </table>
         </td></tr>
         <tr>
-            <td>Observations éventuelles :<br/><br/><br/><br/><br/><br/></td>
+            <td>
+                Observations éventuelles :
+                <br/><br/>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -102,12 +113,27 @@
         <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement / Code manquement</td> <td>Niveau de gravité</td>
     </tr>
     <tr>
-        <td>Examen analytique<br/>(sous traitance)</td> <td><?php echo $courrier->getExtraDateFormat('analytique_date', 'd/m/Y'); ?></td> <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
+        <td>Examen analytique<br/>(sous traitance)</td>
+        <td style="text-align:center;"><?php echo $courrier->getExtraDateFormat('analytique_date', 'd/m/Y'); ?></td>
+        <td><?php echo echoCheck(null, ! $lot->isNonConforme() || $courrier->getExtra('analytique_conforme')); ?></td>
+        <td><?php echo echoCheck(null, $lot->isNonConforme() && !$courrier->getExtra('analytique_conforme')); ?></td>
+        <td style="text-align:center;">
+            <?php echo $courrier->getExtra('analytique_libelle') ; ?>
+            <?php if ($courrier->getExtra('analytique_libelle') && $courrier->getExtra('analytique_code')) echo '/'; ?>
+            <?php echo $courrier->getExtra('analytique_code') ; ?>
+        </td>
+        <td style="text-align:center;"><?php echo $courrier->getExtra('analytique_niveau') ; ?></td>
     </tr>
     <tr>
         <td>Examen organoleptique<br/></td>
-        <td><?php echo $degustation->getDateFormat('d/m/Y'); ?></td>
-        <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td> <td></td> <td></td>
+        <td style="text-align:center;"><?php echo $degustation->getDateFormat('d/m/Y'); ?></td>
+        <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td>
+        <td style="text-align:center;">
+            <?php echo $lot->motif ; ?>
+            <?php if ($lot->motif && $courrier->getExtra('organoleptique_code')) echo '/'; ?>
+            <?php echo $courrier->getExtra('organoleptique_code') ; ?>
+        </td>
+        <td style="text-align:center;"><?php echo $courrier->getExtra('organoleptique_niveau') ; ?></td>
     </tr>
     <tr><td colspan="6">Date transmission INAO :</td></tr>
 </table>
