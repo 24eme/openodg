@@ -31,7 +31,7 @@ class GenerationFactureMail extends GenerationAbstract {
 
     public static function getActionDescription() {
 
-        return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".self::getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
+        return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".Email::getInstance()->getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
     }
 
     public function getMailer() {
