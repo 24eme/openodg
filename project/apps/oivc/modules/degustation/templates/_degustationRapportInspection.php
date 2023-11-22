@@ -138,7 +138,7 @@
         </td>
         <td style="text-align:center;"><?php echo $courrier->getExtra('organoleptique_niveau') ; ?></td>
     </tr>
-    <tr><td colspan="6">Date transmission INAO :</td></tr>
+    <tr><td colspan="6">Date transmission INAO :<br /><br /><br /></td></tr>
 </table>
 
 <br/><br/>
