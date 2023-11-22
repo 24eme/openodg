@@ -2,6 +2,15 @@ all:
   configuration:
     region:
       odg:
+        COTEDURHONE:
+          nom: "Syndicat des Vignerons des Côtes du Rhône"
+          adresse: "6 rue des Trois Faucons - CS 60093, 84918 Avignon Cedex 9"
+          telephone: "%app_drev_COTEDURHONE_telephone%"
+          email: "%app_drev_COTEDURHONE_email%"
+          produits:
+            - "TRANQ/appellations/CDR"
+            - "TRANQ/appellations/CVG"
+          habilitation_produits: "/Beaumes de Venise/"
         BEAUMESVENISE:
           nom: "Conservatoire AOC Beaumes Venise"
           adresse: "Place du marché à coté de la poste, 84190 Beaumes-de-Venise"
