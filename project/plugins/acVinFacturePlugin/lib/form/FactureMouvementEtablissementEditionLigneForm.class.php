@@ -41,7 +41,6 @@ class FactureMouvementEtablissementEditionLigneForm extends acCouchdbObjectForm 
               $this->setDefault('identifiant', $lastMouvement->identifiant);
               $this->setDefault('identifiant_analytique', $lastMouvement->identifiant_analytique);
               $this->setDefault('detail_libelle', $lastMouvement->detail_libelle);
-              $this->setDefault('quantite', $lastMouvement->quantite);
               $this->setDefault('prix_unitaire', $lastMouvement->prix_unitaire);
           }
       }
