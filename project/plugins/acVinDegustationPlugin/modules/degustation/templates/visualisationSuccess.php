@@ -71,3 +71,7 @@
     <?php endforeach ?>
     </tbody>
 </table>
+
+<div class="col-xs-12 text-right">
+    <a title="Les lots de ce documents ont été dégusté, la dévalidation n'est pas possible" class="btn btn-default btn-sm" href="<?php echo url_for('degustation_resultats_etape', $degustation); ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+</div>
