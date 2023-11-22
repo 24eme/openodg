@@ -70,12 +70,15 @@ class HabilitationActivite extends BaseHabilitationActivite {
   }
 
   public function getActivite() {
-      if($this->exist('activite') && $this->_get('activite')) {
+      $activite = ($this->exist('activite')) ? $this->_get('activite') : null;
 
-          return $this->_get('activite');
+      if($activite && $activite != 'activites') {
+
+          return $activite;
       }
-
-      return preg_replace("/-SITE_[0-9]*$/", "", $this->getKey());
+      $activite = preg_replace("/-SITE_[0-9]*$/", "", $this->getKey());
+      $this->_set('activite', $activite);
+      return $activite;
   }
 
 }

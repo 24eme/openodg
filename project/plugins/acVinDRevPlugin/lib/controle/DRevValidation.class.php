@@ -375,6 +375,9 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleHabilitationODG()
     {
+        if (DRevConfiguration::getInstance()->hasHabilitationINAO()) {
+            return;
+        }
         foreach($this->document->getNonHabilitationODG() as $produit) {
             $this->addPoint(self::TYPE_ERROR, 'drev_habilitation_odg', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
@@ -469,7 +472,7 @@ class DRevValidation extends DeclarationLotsValidation
                 else{
                     $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                     foreach($contrats as $k=>$v){
-                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,'', null, $hash_produit);
+                        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k, $produit, null, $hash_produit);
                     }
                 }
                 if($contrats && count($contrats)>1){
