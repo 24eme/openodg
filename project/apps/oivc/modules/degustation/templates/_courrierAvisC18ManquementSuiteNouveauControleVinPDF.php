@@ -1,72 +1,20 @@
 <?php use_helper("Date"); ?>
-<?php use_helper('Lot'); ?>
 <?php use_helper('Float'); ?>
 
-<style>
-table {
-    font-size: 12px;
-}
+<?php include_partial('degustation/headerCourrier', ['courrier' => $courrier, "objet" => "Avis de manquement suite a nouveau controle vin"]) ?>
 
-th {
-    font-weight: bold;
-}
-</style>
-<?php include_partial('degustation/headerCourrier') ?>
-<br/><br/>
-<table style="width:1100px;padding-left:400px;" >
-    <tr><td></td></tr>
-    <tr><td><?php echo $etablissement->raison_sociale ?></td></tr>
-    <tr><td><?php echo $etablissement->adresse ?></td></tr>
-    <tr><td><?php echo $etablissement->code_postal .' '.$etablissement->commune ?></td></tr>
-</table>
-<br/>
+<p>Suite au nouvel examen analytique et/ou organoleptique d'un lot de votre cave :</p>
 
-<br/>
-<br/>
-<br/><br/>
+<p><strong><?php echo showProduitCepagesLot($lot, false, null) ?> de <?php if ($lot->exist('quantite') && $lot->quantite) : ?><?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?><?php else: ?><?php echoFloat($lot->volume*1) ?> hl<?php endif; ?> (échantillon n°<?php echo $lot->numero_archive ?>)</strong></p>
 
-<table style="text-align: center"><tr><td><strong>Objet : Avis de manquement suite a nouveau controle vin</strong></td></tr></table>
-<br/><br/>
+<p>Un manquement a été détecté : <strong>défaut <?php echo $lot->getShortLibelleConformite() ?></strong></p>
 
+<p>Ce lot doit donc rester bloqué.</p>
 
-<table>
-    <tr><td>Madame, Monsieur,</td></tr>
-    <br/>
-    <tr><td>Suite au nouvel examen analytique et/ou organoleptique d'un lot de votre cave :</td></tr>
-    <br/>
-    <tr><td>AOC, couleur, millésime : <strong><?php echo showProduitCepagesLot($lot, false) ?></strong></td></tr>
-    <br/>
-    <?php if ($lot->exist('quantite') && $lot->quantite) : ?>
-        <tr><td>Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?></td></tr>
-    <?php else: ?>
-        <tr><td>Volume : <?php echoFloat($lot->volume) ?> hl</td></tr>
-    <?php endif; ?>
-    <br/>
-    <tr><td>un manquement a été détecté : défaut <strong><?php echo $lot->getShortLibelleConformite() ?></strong></td></tr>
-</table>
+<p>Vous trouverez ci-joint le rapport d'inspection et la fiche de manquement correspondante.</p>
 
-<br/>
-<br/>
+<p>Vous pouvez nous faire parvenir sous 10 jours maximum à partir de la date d'envoi vos éventuelles observations et demande de recours sur papier libre.</p>
 
-<table>
-    <tr><td>Ce lot doit donc rester bloqué.</td></tr>
-</table>
-<br/>
-<br/>
-<table>
-    <tr><td>Vous trouverez ci-joint le rapport d'inspection et la fiche de manquement correspondante.</td></tr>
-<br/>
-<br/>
-<tr><td>Vous pouvez nous faire parvenir sous 10 jours maximum à partir de la date d'envoi vos éventuelles observations et demande de recours sur papier libre.</td></tr>
-<br/>
-<br/>
-<tr><td>Conformément au Plan d'Inspection de l'Appellation, le dossier est transmis à l'INAO.</td></tr>
-<br/>
-<br/>
-<tr><td>Veuillez recevoir, Madame, Monsieur, nos sincères salutations.</td></tr>
-</table>
+<p>Conformément au Plan d'Inspection de l'Appellation, le dossier est transmis à l'INAO.</p>
 
-<br/><br/>
-<br/><br/>
-<br/><br/>
-<p style="text-right"><?php echo nl2br(str_replace(",", "&nbsp;&nbsp;&nbsp;", Organisme::getInstance(null, 'degustation')->getResponsable())) ?><p>
+<?php include_partial('degustation/footerCourrier', ['courrier' => $courrier]) ?>

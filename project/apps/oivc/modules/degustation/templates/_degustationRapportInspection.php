@@ -45,7 +45,7 @@
                 Adresse du site de prélèvement<br/>
                 <?php echo $lot->getAdresseLogement() ?>
         </td></tr>
-        <tr style="background-color: #CCCCCC;"><td><strong>PRÉLÈVEMENT N° ÉCHANTILLON :</strong></td></tr>
+        <tr style="background-color: #CCCCCC;"><td><strong>PRÉLÈVEMENT N° ÉCHANTILLON :</strong> <?php echo $lot->numero_archive; ?></td></tr>
         <tr><td>
             <table>
                 <tr>
@@ -74,7 +74,7 @@
             </table>
         </td></tr>
         <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->preleve)->format('d/m/Y') ?></td></tr>
-        <tr><td>Au moment du prélèvement, le vin est : <?php echo $courrier->getExtra('vin_emplacement'); ?> </td></tr>
+        <tr><td>Au moment du prélèvement, le vin est : <?php if ($lot->exist('quantite') && $lot->quantite) : ?>conditionné<?php else: ?>en vrac<?php endif; ?></td></tr>
         <tr><td>Opérateur ou son représentant présent au cours du prélèvement<br/>
                 Nom : <?php echo $courrier->getExtra('representant_nom'); ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i>Fonction : <?php echo $courrier->getExtra('representant_fonction'); ?>
         </td></tr>
