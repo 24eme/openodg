@@ -69,7 +69,4 @@ th {
 <br/><br/>
 <br/><br/>
 <br/><br/>
-<table style="width:1100px;padding-left:400px;" >
-    <tr><td><?php echo nl2br(Organisme::getInstance(null, 'degustation')->getResponsable()) ?></td></tr>
-    <tr><td><?php if(file_exists(Organisme::getInstance(null, 'degustation')->getImageSignaturePath())): ?><img src="<?php echo Organisme::getInstance(null, 'degustation')->getImageSignaturePath() ?>"/><?php endif; ?></td></tr>
-</table>
+<p style="text-right"><?php echo nl2br(str_replace(",", "&nbsp;&nbsp;&nbsp;", Organisme::getInstance(null, 'degustation')->getResponsable())) ?><p>
