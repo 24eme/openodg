@@ -74,7 +74,7 @@
             </table>
         </td></tr>
         <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->preleve)->format('d/m/Y') ?></td></tr>
-        <tr><td>Au moment du prélèvement, le vin est : <?php if ($lot->exist('quantite') && $lot->quantite) : ?>conditionné<?php else: ?>en vrac<?php endif; ?></td></tr>
+        <tr><td>Au moment du prélèvement, le vin est : <?php if ($lot->exist('quantite') && $lot->quantite) : ?>conditionné<?php else: ?>en vrac<?php endif; ?><?php if($lot->destination_type == DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE): ?> sur conservatoire<?php endif; ?></td></tr>
         <tr><td>Opérateur ou son représentant présent au cours du prélèvement<br/>
                 Nom : <?php echo $courrier->getExtra('representant_nom'); ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i>Fonction : <?php echo $courrier->getExtra('representant_fonction'); ?>
         </td></tr>
