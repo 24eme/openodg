@@ -2,7 +2,7 @@
 
 <p>Le lot <strong><?php echo showProduitCepagesLot($lot, false, null) ?> de <?php if ($lot->exist('quantite') && $lot->quantite) : ?><?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?> cols<?php else: ?><?php echoFloat($lot->volume*1) ?> hl<?php endif; ?> (échantillon n°<?php echo $lot->numero_archive ?>)</strong> a été prélevé pour un examen analytique et organoleptique. Celui-ci n'à relevé aucun manquement au cahier des charges de l'Appellation revendiquée.</p>
 
-<p>En conséquence, la circulation du lot conccerné est autorisée à réception du présent courrier.</p>
+<p>En conséquence, la circulation du lot concerné est autorisée à réception du présent courrier.</p>
 
 <p>Vous trouverez ci-joint une copie du rapport d'inspection correspondant.</p>
 
