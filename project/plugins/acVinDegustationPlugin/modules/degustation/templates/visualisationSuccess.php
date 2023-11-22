@@ -16,7 +16,12 @@
   </h2>
 </div>
 
-<h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
+<div class="col-xs-8">
+    <h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
+</div>
+<div class="col-xs-4 text-right pb-3">
+    <a id="btn_pdf_fiches_proces_verbal" class="btn btn-default" href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a>
+</div>
 <table class="table table-condensed table-bordered table-striped">
     <thead>
         <tr>
