@@ -90,11 +90,11 @@
                     <?php if ($lot->exist('quantite') && $lot->quantite) : ?>
                     <td style="width: 30%;">Nb Cols : <?php echo $lot->quantite ?></td>
                     <?php else: ?>
-                    <td style="width: 30%;">Volume : <?php echoFloat($lot->volume) ?> <small>hl</small></td>
+                    <td style="width: 30%;">Volume : <?php echoFloat($lot->volume) ?> hl</td>
                     <?php endif; ?>
                 </tr>
                 <tr>
-                    <td colspan="3">N° lot : <?php echo $lot->numero_logement_operateur ?></td>
+                    <td colspan="3">N° lot / cuve : <?php echo $lot->numero_logement_operateur ?></td>
                 </tr>
             </table>
         </td></tr>
