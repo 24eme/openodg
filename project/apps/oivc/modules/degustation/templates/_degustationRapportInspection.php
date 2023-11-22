@@ -90,7 +90,7 @@
                     <?php if ($lot->exist('quantite') && $lot->quantite) : ?>
                     <td style="width: 30%;">Nb Cols : <?php echo $lot->quantite ?></td>
                     <?php else: ?>
-                    <td style="width: 30%;">Volume : <?php echoFloat($lot->volume) ?> hl</td>
+                    <td style="width: 30%;">Volume : <?php echoFloatFr($lot->volume) ?> hl</td>
                     <?php endif; ?>
                 </tr>
                 <tr>
