@@ -157,11 +157,11 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
     }
 
     public function generateUrlPiece($source = null) {
-    	return sfContext::getInstance()->getRouting()->generate('drev_export_pdf', $this);
+    	return sfContext::getInstance()->getRouting()->generate('courrier_visualisation', array('id' => $this->_id));
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return sfContext::getInstance()->getRouting()->generate('drev_visualisation', array('id' => $id));
+    	return sfContext::getInstance()->getRouting()->generate('courrier_visualisation', array('id' => $id));
     }
 
     public static function getUrlGenerationCsvPiece($id, $admin = false) {
