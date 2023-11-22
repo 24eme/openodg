@@ -3,7 +3,10 @@
 function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
 {
 
-  $text = $lot->produit_libelle." <".$tag.">";
+  $text = $lot->produit_libelle." ";
+  if($tag) {
+      $text .= "<".$tag.">";
+  }
   $text .= ($lot->millesime) ? $lot->millesime : "";
   if ($show_always_specificite || DegustationConfiguration::getInstance()->hasSpecificiteLotPdf()) {
       if($lot->specificite && $lot->specificite !== Lot::SPECIFICITE_UNDEFINED){
@@ -15,8 +18,10 @@ function showOnlyProduit($lot, $show_always_specificite = true, $tag = 'small')
       }
   }
 
-  $text .= "</".$tag.">";
-  return $text;
+  if($tag) {
+      $text .= "</".$tag.">";
+  }
+  return trim($text);
 }
 
 function showProduitCepagesLot($lot, $show_always_specificite = true, $tagSmall = 'small')
@@ -29,7 +34,10 @@ function showProduitCepagesLot($lot, $show_always_specificite = true, $tagSmall 
 
 function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
   $text = '';
-  $html = " <".$tag." class='text-muted'>";
+  $html = "";
+  if($tag) {
+      $html = " <".$tag." class='text-muted'>";
+  }
   if ($lot instanceof stdClass) {
     $total = $lot->volume;
     foreach ($lot->cepages as $cepage => $hl) {
@@ -43,14 +51,16 @@ function showOnlyCepages($lot, $maxcars = null, $tag = 'small') {
         $text .= $lot->details;
     }
   }
-  if (!$text) {
+  if (!$text && $tag) {
     return " <".$tag.">&nbsp;</".$tag.">";
   }
   if ($maxcars) {
       $text = substrUtf8($text, 0, $maxcars);
   }
   $html .= $text;
-  $html .= "</".$tag.">";
+  if($tag) {
+      $html .= "</".$tag.">";
+  }
   return $html;
 }
 
@@ -115,7 +125,7 @@ function pictoDegustable($lot) {
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
 
-function showLotStatusCartouche($lot_ou_mvt_value) {
+function showLotStatusCartouche($lot_ou_mvt_value, $with_details = true) {
     $statut = $lot_ou_mvt_value->statut;
     $detail = null;
     if(isset($lot_ou_mvt_value->detail)) {
@@ -144,7 +154,7 @@ function showLotStatusCartouche($lot_ou_mvt_value) {
         $text .= Lot::$libellesStatuts[$statut];
     }
     $text .= '</span>';
-    if($detail) {
+    if($detail && $with_details) {
         $text .= "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"$detail\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-".$labelClass."'>".$detail."</span>";
     }
     return $text;

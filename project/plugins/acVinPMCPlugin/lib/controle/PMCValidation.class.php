@@ -65,7 +65,7 @@ class PMCValidation extends DocumentValidation
 
         foreach($this->document->getMillesimes() as $millesime) {
             $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, $millesime]));
-            if ($drev === null || ! $drev->validation_odg) {
+            if ($drev === null || ! $drev->isValidateOdgByRegion($this->document->region)) {
                 $this->addPoint(self::TYPE_FATAL, 'revendication_manquante', "Déclaration de Revendication ".$millesime, true);
             }
         }
@@ -170,7 +170,7 @@ class PMCValidation extends DocumentValidation
           $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->document->getEtablissementObject()->getSociete()->identifiant);
           foreach($this->factures as $f) {
             if ($f->hasNonPaiement() && $f->exist('region') && in_array($f->region, $this->document->getRegions())) {
-                if ($f->date_facturation > date('Y-m-d', strtotime('-1.5 year'))) {
+                if ($f->date_facturation > date('Y-m-d', strtotime('-1 year -6 month'))) {
                     $this->addPoint(self::TYPE_ERROR, 'facture_missing', 'Facture '.$f->region.' n°'.$f->numero_archive);
                 }
                 break;

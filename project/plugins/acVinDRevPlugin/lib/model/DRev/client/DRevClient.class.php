@@ -19,6 +19,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
     const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
     const LOT_DESTINATION_CONDITIONNEMENT = 'CONDITIONNEMENT';
+    const LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE = 'CONDITIONNEMENT_CONSERVATOIRE';
     const LOT_DESTINATION_TRANSACTION = 'VRAC_EXPORT';
     const LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT = "VRAC_FRANCE_VRAC_EXPORT";
     const LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT = "VRAC_EXPORT_CONDITIONNEMENT";
@@ -43,6 +44,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
+        DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => "Conditionnement sur conservatoire",
         DRevClient::LOT_DESTINATION_TRANSACTION => "Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
