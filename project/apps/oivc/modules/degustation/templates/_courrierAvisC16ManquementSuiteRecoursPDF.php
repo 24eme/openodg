@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Lot'); ?>
+<?php use_helper('Float'); ?>
 
 <style>
 table {
@@ -35,8 +36,11 @@ th {
     <br/>
     <tr><td>AOC, couleur, millésime : <strong><?php echo showProduitCepagesLot($lot, false) ?></strong></td></tr>
     <br/>
-    <tr><td>Volume : <?php echo $lot->volume ?> hl</td></tr>
-    <tr><td>Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?></td></tr>
+    <?php if ($lot->exist('quantite') && $lot->quantite) : ?>
+        <tr><td>Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?></td></tr>
+    <?php else: ?>
+        <tr><td>Volume : <?php echo echoFloat($lot->volume) ?> hl</td></tr>
+    <?php endif; ?>
     <br/>
     <tr><td>un manquement a été détecté : défaut <strong><?php echo $lot->getShortLibelleConformite() ?></strong></td></tr>
 </table>

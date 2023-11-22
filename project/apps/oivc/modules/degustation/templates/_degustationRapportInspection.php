@@ -2,6 +2,7 @@
 <?php use_helper('Lot'); ?>
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Compte'); ?>
+<?php use_helper('Float'); ?>
 
 <style>
     <?php echo style(); ?>
@@ -82,16 +83,18 @@
         </td></tr>
         <tr style="background-color: #CCCCCC;"><td><strong>DESCRIPTION DU LOT :</strong></td></tr>
         <tr><td>
-            <table cellspacing="0">
+            <table cellspacing="0" cellpadding="0">
                 <tr>
-                    <td>AOC et couleur : <?php echo $lot->produit_libelle; ?></td>
-                    <td>Millésime : <?php echo $lot->millesime ?></td>
-                    <td>Volume : <?php echo $lot->volume ?> <small>hl</small></td>
+                    <td style="width: 40%;">AOC et couleur : <?php echo $lot->produit_libelle; ?></td>
+                    <td style="width: 30%;">Millésime : <?php echo $lot->millesime ?></td>
+                    <?php if ($lot->exist('quantite') && $lot->quantite) : ?>
+                    <td style="width: 30%;">Nb Cols : <?php echo $lot->quantite ?></td>
+                    <?php else: ?>
+                    <td style="width: 30%;">Volume : <?php echoFloat($lot->volume) ?> <small>hl</small></td>
+                    <?php endif; ?>
                 </tr>
                 <tr>
-                    <td>N° lot : <?php echo $lot->numero_logement_operateur ?></td>
-                    <td><?php if (false) : ?> N° Cuve si vrac : <?php endif; ?></td>
-                    <td><?php if ( $lot->exist('quantite')) : ?> Nb Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : null ?><?php endif; ?></td>
+                    <td colspan="3">N° lot : <?php echo $lot->numero_logement_operateur ?></td>
                 </tr>
             </table>
         </td></tr>

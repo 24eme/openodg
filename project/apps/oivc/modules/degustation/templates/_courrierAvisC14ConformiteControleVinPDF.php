@@ -1,5 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Lot'); ?>
+<?php use_helper('Float'); ?>
 
 <style>
     table {
@@ -18,29 +19,26 @@
     <tr><td><?php echo $etablissement->raison_sociale ?></td></tr>
     <tr><td><?php echo $etablissement->adresse ?></td></tr>
     <tr><td><?php echo $etablissement->code_postal .' '.$etablissement->commune ?></td></tr>
+    <tr><td></td></tr>
+    <tr><td>Le <?php echo $courrier->getDateFormat('d/m/Y') ?></td></tr>
 </table>
-<br/><br/>
-<br/><br/>
+<br/>
+<br/>
+<br/>
 <strong>Objet : Avis de conformité controle vin</strong>
-<br/><br/>
-<br/><br/>
+<p></p>
 
-<table>
-    <tr><td>Madame, Monsieur,</td></tr>
-    <br/>
-    <tr><td>Le lot : </td></tr>
-    <br/>
-    <tr><td>AOC, couleur, millésime : <strong><?php echo showProduitCepagesLot($lot, false) ?></strong></td></tr>
-    <br/>
-    <tr><td>Volume : <?php echo $lot->volume ?> hl</td></tr>
-    <tr><td>Cols : <?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?></td></tr>
-    <br/>
-    <tr><td>a été prélevé pour un nouvel examen analytique et organoleptique. Celui-ci n'à relevé aucun manquement au cahier des charges de l'Appellation revendiquée.</td></tr>
-    <br/>
-    <tr><td>En conséquence la circulation du lot conccerné est autorisée à réception du présent courrier.</td></tr>
-    <br/>
-    <tr><td>Vous trouverez ci-joint une copie du rapport d'inspection correspondant.</td></tr>
-    <br/>
-    <br/>
-    <tr><td>Nous vous adressons, Madame, Monsieur, nos sincères salutations.</td></tr>
-</table>
+<p>Madame, Monsieur,</p>
+
+<p>Le lot <strong><?php echo showProduitCepagesLot($lot, false, null) ?> de <?php if ($lot->exist('quantite') && $lot->quantite) : ?><?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?><?php else: ?><?php echoFloat($lot->volume*1) ?> hl<?php endif; ?> (échantillon n°<?php echo $lot->numero_archive ?>)</strong> a été prélevé pour un examen analytique et organoleptique. Celui-ci n'à relevé aucun manquement au cahier des charges de l'Appellation revendiquée.</p>
+
+<p>En conséquence la circulation du lot conccerné est autorisée à réception du présent courrier.</p>
+
+<p>Vous trouverez ci-joint une copie du rapport d'inspection correspondant.</p>
+
+<p>Nous vous adressons, Madame, Monsieur, nos sincères salutations.</p>
+
+<p></p>
+<p></p>
+
+<table style="width:1100px; padding-left:400px;" ><tr><td><?php echo nl2br(str_replace(",", "&nbsp;&nbsp;&nbsp;", Organisme::getInstance(null, 'degustation')->getResponsable())) ?></td></tr></table>
