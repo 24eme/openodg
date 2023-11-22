@@ -5,9 +5,9 @@
 
 <p>Suite au nouvel examen analytique et/ou organoleptique d'un lot de votre cave :</p>
 
-<p><strong><?php echo showProduitCepagesLot($lot, false, null) ?> de <?php if ($lot->exist('quantite') && $lot->quantite) : ?><?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?><?php else: ?><?php echoFloat($lot->volume*1) ?> hl<?php endif; ?> (échantillon n°<?php echo $lot->numero_archive ?>)</strong></p>
+<p><strong><?php echo showProduitCepagesLot($lot, false, null) ?> de <?php if ($lot->exist('quantite') && $lot->quantite) : ?><?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?> cols<?php else: ?><?php echoFloat($lot->volume*1) ?> hl<?php endif; ?> (échantillon n°<?php echo $lot->numero_archive ?>)</strong></p>
 
-<p>Un manquement a été détecté : <strong>défaut <?php echo $lot->getShortLibelleConformite() ?></strong></p>
+<p>Un manquement a été détecté : <strong>Défaut <?php echo $lot->getShortLibelleConformite() ?></strong></p>
 
 <p>Ce lot doit donc rester bloqué.</p>
 
