@@ -75,7 +75,7 @@ $lots = $document->getLotsByCouleur();
             <?php if (count($lot->cepages)): ?>&nbsp;<small><?php echo $lot->getCepagesLibelle(); ?></small><?php endif; ?>
         </td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-        <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo ($lot->exist('date_degustation_voulue')) ? (new DateTimeImmutable($lot->date_degustation_voulue))->format('m/Y') : "" ?></td>
+        <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo ($lot->exist('date_degustation_voulue')) ? (new DateTimeImmutable($lot->date_degustation_voulue))->format('d/m/Y') : "" ?></td>
       </tr>
       <?php endforeach; ?>
     <?php endforeach; ?>
