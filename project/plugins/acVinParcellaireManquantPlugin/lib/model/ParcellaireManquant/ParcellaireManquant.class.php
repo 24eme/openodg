@@ -139,6 +139,8 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       		$hash = str_replace('/declaration/', '', $hash);
     	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
     	  		$this->addParcelleFromParcellaireParcelle($parcellaire->get($hash));
+            }else{
+                $this->updateParcelleFromParcellaireParcelle($parcellaire->get($hash));
             }
       	}
       	$remove = array();
@@ -170,16 +172,37 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
             $subitem->active = 1;
             if ($detail->ecart_pieds && $detail->ecart_rang) {
                 $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
-        } else {
-            $subitem->densite = 0;
-        }
-
+            } else {
+                $subitem->densite = 0;
+            }
             $subitem->remove('vtsgn');
             if($detail->exist('vtsgn')) {
                 $subitem->add('vtsgn', (int)$detail->vtsgn);
             }
             $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
 
+        return $subitem;
+    }
+
+    public function updateParcelleFromParcellaireParcelle($detail) {
+        $produit = $detail->getProduit();
+        $hash = str_replace('/declaration/', null, $produit->getHash());
+        if (!$this->declaration->exist($hash)) {
+            return;
+        }
+        $item = $this->declaration->get($hash);
+        $item->libelle = $produit->libelle;
+        $subitem = $item->detail->add($detail->getKey());
+        $subitem->superficie = $detail->superficie;
+        $subitem->lieu = $detail->lieu;
+        $subitem->cepage = $detail->cepage;
+        $subitem->active = 1;
+        if ($detail->ecart_pieds && $detail->ecart_rang) {
+            $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
+        } else {
+            $subitem->densite = 0;
+        }
+        $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
 
         return $subitem;
     }
