@@ -47,10 +47,10 @@
     <br/>
     <div class="row row-margin">
         <div class="col-xs-6 text-left">
-            <a class="btn btn-default btn-lg btn-upper" tabindex="-1" href="<?php echo url_for('facturation_libre') ?>">Retour</a>
+            <a class="btn btn-default btn-upper" tabindex="-1" href="<?php echo url_for('facturation_libre') ?>"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
         </div>
         <div class="col-xs-6 text-right">
-            <input type="submit" class="btn btn-success btn-lg btn-upper" value="Valider" />
+            <input type="submit" class="btn btn-success btn-upper" value="Valider / Ajouter une ligne" />
         </div>
     </div>
 

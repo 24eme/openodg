@@ -45,7 +45,7 @@
                 Adresse du site de prélèvement<br/>
                 <?php echo $lot->getAdresseLogement() ?>
         </td></tr>
-        <tr style="background-color: #CCCCCC;"><td><strong>PRÉLÈVEMENT N° ÉCHANTILLON :</strong></td></tr>
+        <tr style="background-color: #CCCCCC;"><td><strong>PRÉLÈVEMENT N° ÉCHANTILLON :</strong> <?php echo $lot->numero_archive; ?></td></tr>
         <tr><td>
             <table>
                 <tr>
@@ -74,7 +74,7 @@
             </table>
         </td></tr>
         <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->preleve)->format('d/m/Y') ?></td></tr>
-        <tr><td>Au moment du prélèvement, le vin est : <?php echo $courrier->getExtra('vin_emplacement'); ?> </td></tr>
+        <tr><td>Au moment du prélèvement, le vin est : <?php if ($lot->exist('quantite') && $lot->quantite) : ?>conditionné<?php else: ?>en vrac<?php endif; ?><?php if($lot->destination_type == DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE): ?> sur conservatoire<?php endif; ?></td></tr>
         <tr><td>Opérateur ou son représentant présent au cours du prélèvement<br/>
                 Nom : <?php echo $courrier->getExtra('representant_nom'); ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i>Fonction : <?php echo $courrier->getExtra('representant_fonction'); ?>
         </td></tr>
@@ -90,11 +90,11 @@
                     <?php if ($lot->exist('quantite') && $lot->quantite) : ?>
                     <td style="width: 30%;">Nb Cols : <?php echo $lot->quantite ?></td>
                     <?php else: ?>
-                    <td style="width: 30%;">Volume : <?php echoFloat($lot->volume) ?> <small>hl</small></td>
+                    <td style="width: 30%;">Volume : <?php echoFloatFr($lot->volume) ?> hl</td>
                     <?php endif; ?>
                 </tr>
                 <tr>
-                    <td colspan="3">N° lot : <?php echo $lot->numero_logement_operateur ?></td>
+                    <td colspan="3">N° lot / logement : <?php echo $lot->numero_logement_operateur ?></td>
                 </tr>
             </table>
         </td></tr>
@@ -138,7 +138,7 @@
         </td>
         <td style="text-align:center;"><?php echo $courrier->getExtra('organoleptique_niveau') ; ?></td>
     </tr>
-    <tr><td colspan="6">Date transmission INAO :</td></tr>
+    <tr><td colspan="6">Date transmission INAO :<br /><br /></td></tr>
 </table>
 
 <br/><br/>
