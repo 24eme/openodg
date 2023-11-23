@@ -64,7 +64,7 @@ $lots = $document->getLotsByCouleur();
         <th class="th" style="text-align: left; width: 25%">&nbsp;N° Lot Opérat.</th>
         <th class="th" style="text-align: left; width: 45%">&nbsp;Produit (millésime)</th>
         <th class="th" style="text-align: center; width: 15%">Volume</th>
-        <th class="th" style="text-align: center; width: 15%">Date de dégust° souhaitée</th>
+        <th class="th" style="text-align: center; width: 15%">Lot prélevable à partir du</th>
     </tr>
     <?php foreach($lots as $lotsByCouleur): ?>
       <?php foreach ($lotsByCouleur as $lot) : ?>
