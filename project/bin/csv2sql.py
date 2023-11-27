@@ -6,7 +6,7 @@ engine = create_engine('sqlite:///'+sys.argv[1], echo=False, encoding='iso-8859-
 if os.path.exists(sys.argv[2]+"/etablissements.csv") and os.path.getsize(sys.argv[2]+"/etablissements.csv"):
   try:
     sys.stderr.write(sys.argv[2]+"/etablissements.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/etablissements.csv", encoding='iso-8859-1', delimiter=";", index_col=False, dtype={'Code postal': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/etablissements.csv", encoding='iso-8859-1', delimiter=";", index_col=False, dtype={'Code postal': 'str', 'CVI': 'str', 'SIRET': 'str', 'Login': 'str', 'Identifiant etablissement': 'str'})
     csv.to_sql('etablissement', con=engine, if_exists='replace')
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
@@ -22,7 +22,7 @@ if os.path.exists(sys.argv[2]+"/chais.csv") and os.path.getsize(sys.argv[2]+"/ch
 if os.path.exists(sys.argv[2]+"/societe.csv") and os.path.getsize(sys.argv[2]+"/societe.csv"):
   try:
     sys.stderr.write(sys.argv[2]+"/societe.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/societe.csv", encoding='iso-8859-1', delimiter=";", index_col=False)
+    csv = pd.read_csv(sys.argv[2]+"/societe.csv", encoding='iso-8859-1', delimiter=";", index_col=False, dtype={'SIRET': 'str'})
     csv.to_sql('societe', con=engine, if_exists='replace')
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
