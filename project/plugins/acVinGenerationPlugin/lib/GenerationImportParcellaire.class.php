@@ -4,7 +4,7 @@ class GenerationImportParcellaire extends GenerationAbstract
 {
     public function generate()
     {
-        /* $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS); */
+        $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS);
         $batch_size = 50;
         $batch_i = 1;
 
@@ -14,15 +14,24 @@ class GenerationImportParcellaire extends GenerationAbstract
                 continue;
             }
 
-            if ($etablissement->key[7] !== "CDP0446301") {
+            if ($etablissement->key[5] === null) {
                 continue;
             }
 
             $etablissement = EtablissementClient::getInstance()->find($etablissement->id);
 
+            if ($etablissement->getSociete()->isSuspendu()) {
+                continue;
+            }
+
             $errors = [];
-            ParcellaireClient::getInstance()->saveParcellaire($etablissement, $errors);
-            $this->generation->documents->add(null, ParcellaireClient::getInstance()->getLast($etablissement->identifiant));
+            try {
+                ParcellaireClient::getInstance()->saveParcellaire($etablissement, $errors);
+            } catch (Exception $e) {
+                echo $e->getMessage().PHP_EOL;
+            }
+
+            $this->generation->documents->add(null, ParcellaireClient::getInstance()->getLast($etablissement->identifiant)->_id);
 
             $batch_i++;
             if ($batch_i > $batch_size) {
@@ -30,7 +39,7 @@ class GenerationImportParcellaire extends GenerationAbstract
             }
         }
 
-        //$this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
+        $this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
         $this->generation->save();
     }
 }
