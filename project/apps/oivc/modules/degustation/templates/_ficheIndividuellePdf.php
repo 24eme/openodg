@@ -4,6 +4,7 @@
 <?php echo style(); ?>
 
 </style>
+      <div></div>
       <table>
         <tr>
           <td><strong>Date : <?php $date = date_create($degustation->date); echo $date->format("d/m/Y"); ?></strong><br><strong>Heure : <?php echo $date->format("H:i"); ?></strong>
@@ -35,7 +36,7 @@
      <table border="1px" class="table" id="table_fiche_<?php echo $table_num ?>" $cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:5%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-          <th class="topempty bg-white" style="width:20%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
+          <th class="topempty bg-white" style="width:20%; "><?php echo tdStart() ?><strong>Produit millesime</strong></th>
           <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Visuelles</strong></th>
           <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Olfactives</strong></th>
           <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Gustatives</strong></th>
@@ -72,5 +73,5 @@
     <?php $i++; ?>
   <?php endforeach; ?>
 </table>
-<p>L’avis favorable signifie que le lot représenté par l’échantillon dispose des caractéristiques du cahier des charges de l’AOC, ne présente pas de défaut, est acceptable au sein de son appellation. Les conclusions de ma dégustation sont effectuées en toute impartialité.</p>
+<p>L’avis favorable signifie que le lot représenté par l’échantillon dispose des caractéristiques du cahier des charges de l’AOC, ne présente pas de défaut, est acceptable au sein de son appellation.</p>
 <p>* S = Satisfaisant - NS = Non Satisfaisant</p>
