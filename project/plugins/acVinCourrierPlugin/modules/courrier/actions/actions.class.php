@@ -59,4 +59,11 @@ class courrierActions extends sfActions
         return $this->renderText($this->document->output());
 
     }
+
+    function executeExtras(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $unique_id = $request->getParameter('lot_unique_id');
+        $this->lot = LotsClient::getInstance()->findByUniqueId($this->etablissement->getIdentifiant(), $unique_id);
+        $this->form = new CourrierExtrasNouveauForm($this->etablissement, $this->lot);
+    }
 }

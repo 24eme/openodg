@@ -14,7 +14,7 @@
 <?php include_partial('chgtdenom/infoLotOrigine', array('lot' => $form->getLot(), 'opacity' => false)); ?>
 
 
-<form action="<?php echo url_for('courrier_lot_creation', array('identifiant' => $etablissement->identifiant, 'lot_unique_id' => $lot->unique_id)) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for('courrier_extras', array('identifiant' => $etablissement->identifiant, 'lot_unique_id' => $lot->unique_id)) ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
