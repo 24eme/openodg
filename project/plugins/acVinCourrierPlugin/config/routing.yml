@@ -13,7 +13,7 @@ courrier_visualisation:
   param: { module: courrier, action: visualisation }
 
 courrier_extras:
-    url: /courrier/:identifiant/:lot_unique_id/create/extras
+    url: /courrier/:identifiant/:unique_id/:id_form/create/extras
     param: { module: courrier, action: extras }
     class: DeclarationDeclarantRoute
     options:
