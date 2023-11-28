@@ -94,9 +94,9 @@ th {
             <?php if (! $degustateur->exist("numero_table") || $degustateur->numero_table == null): continue; endif; ?>
             <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
               <tr style="line-height:35px;">
-                  <td style="width:5%"><br /></td>
-                  <td style="width:5%"><br /></td>
-                  <td style="width:5%"><br /></td>
+                  <td style="width:5%"><?php if (strpos($degustateur->getHash(), 'degustateur_porteur_de_memoire') !== false): ?>X<?php else: ?><br /><?php endif; ?></td>
+                  <td style="width:5%"><?php if (strpos($degustateur->getHash(), 'degustateur_technicien') !== false): ?>X<?php else: ?><br /><?php endif; ?></td>
+                  <td style="width:5%"><?php if (strpos($degustateur->getHash(), 'degustateur_usager_du_produit') !== false): ?>X<?php else: ?><br /><?php endif; ?></td>
                   <td class="text-center" style="width:35%"><?php echo $compte->getNom() ?> <?php echo $compte->getPrenom() ?></td>
                   <td style="width:25%"><br /></td>
                   <?php if ($j==0): ?>
