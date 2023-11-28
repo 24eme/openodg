@@ -13,14 +13,14 @@
                             <?php echo $form->renderGlobalErrors(); ?>
                             <div class="form-group">
                                 <?php echo $form['login']->renderError() ?>
-                                <?php echo $form['login']->renderLabel(null, ['class' => 'control-label col-sm-4']) ?>
+                                <?php echo $form['login']->renderLabel(null, ['class' => 'control-label col-sm-5']) ?>
                                 <div class="col-sm-4">
                                     <?php echo $form['login']->render() ?>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <?php echo $form['mdp']->renderError() ?>
-                                <?php echo $form['mdp']->renderLabel(null, ['class' => 'control-label col-sm-4']) ?>
+                                <?php echo $form['mdp']->renderLabel(null, ['class' => 'control-label col-sm-5']) ?>
                                 <div class="col-sm-4">
                                     <?php echo $form['mdp']->render() ?>
                                 </div>
