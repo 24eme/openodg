@@ -36,16 +36,25 @@ class ExportDegustationFicheRecapTablesPDF extends ExportDeclarationLotsPDF {
         }
     }
 
-
     protected function getHeaderTitle() {
-        return "Fiche de synthèse";
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheRecapTablesPdfHeader', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            return "Fiche de synthèse";
+        }
     }
 
-    protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
-        $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
-
-        return $header_subtitle;
+    protected function getHeaderSubtitle()
+    {
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheRecapTablesPdfHeaderSubtitle', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+            $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
+            return $header_subtitle;
+        }
     }
 
 

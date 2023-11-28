@@ -1904,4 +1904,13 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         public function getPeriode() {
             return substr($this->campagne, 0, 4);
         }
+
+		public function getAppellationsLots() {
+			$conf = $this->getConfiguration();
+			$appellations= [];
+			foreach($this->lots as $lot) {
+				$appellations[$conf->get($lot->produit_hash)->getAppellation()->libelle] = $conf->get($lot->produit_hash)->getAppellation()->libelle;
+			}
+			return $appellations;
+		}
 }

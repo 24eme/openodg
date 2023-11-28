@@ -1407,9 +1407,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->getDateDepot();
 
         $this->updateAddressCurrentLots();
-        if ($this->isValideeOdg()) {
-            $this->generateMouvementsLots();
-        }
+
+        $this->generateMouvementsLots();
 
         $regions = $this->getRegions();
         if (count($regions)) {

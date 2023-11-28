@@ -11,3 +11,13 @@ courrier_lot_creation:
 courrier_visualisation:
   url: /courrier/:id/visualisation
   param: { module: courrier, action: visualisation }
+
+courrier_extras:
+    url: /courrier/:identifiant/:unique_id/:id_form/create/extras
+    param: { module: courrier, action: extras }
+    class: DeclarationDeclarantRoute
+    options:
+      model:    EtablissementRoute
+      type:     object
+    requirements:
+      sf_method: [get, post]
