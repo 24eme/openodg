@@ -368,7 +368,7 @@ if os.path.exists(sys.argv[2]+"/paiements.csv") and os.path.getsize(sys.argv[2]+
 if os.path.exists(sys.argv[2]+"/degustations.csv") and os.path.getsize(sys.argv[2]+"/degustations.csv"):
   try:
     sys.stderr.write(sys.argv[2]+"/degustations.csv\n")
-    csv = pd.read_csv(sys.argv[2]+"/degustations.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Num archive': 'str', 'Code postal lieu': 'str', 'Id Opérateur': 'str', 'Adresse Opérateur': 'str', 'Code postal Opérateur': 'str', 'Commune Opérateur': 'str', 'Num dossier': 'str', 'Num lot': 'str', 'Num Table': 'str', 'Mention': 'str'; 'Lieu': 'str', 'Cepage': 'str', 'Millésime': 'str', 'Date de conformité en appel': 'str'})
+    csv = pd.read_csv(sys.argv[2]+"/degustations.csv", encoding='iso-8859-1', delimiter=";", decimal=",", index_col=False, dtype={'Num archive': 'str', 'Code postal lieu': 'str', 'Id Opérateur': 'str', 'Adresse Opérateur': 'str', 'Code postal Opérateur': 'str', 'Commune Opérateur': 'str', 'Num dossier': 'str', 'Num lot': 'str', 'Num Table': 'str', 'Mention': 'str', 'Lieu': 'str', 'Cepage': 'str', 'Millésime': 'str', 'Date de conformité en appel': 'str'})
     csv.to_sql('degustations', con=engine, if_exists='replace')
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");
