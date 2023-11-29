@@ -266,8 +266,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     $eOrigin[1] = "Superificie de récolte originale";
                 }
                 $ratio_bailleur = null;
-                if(!$ratio_bailleur && isset($ratios_bailleur["05"][$k]) && $ratios_bailleur["05"][$k]) {
-                    $ratio_bailleur = $ratios_bailleur["05"][$k];
+                if(!$ratio_bailleur && isset($ratios_bailleur["15"][$k]) && $ratios_bailleur["15"][$k]) {
+                    $ratio_bailleur = $ratios_bailleur["15"][$k];
                 }
                 if(($e[0] == 4) && isset($baillage[$k])) {
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));
