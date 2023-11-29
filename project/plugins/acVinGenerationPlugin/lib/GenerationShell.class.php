@@ -1,10 +1,11 @@
 <?php
 
-class GenerationImportParcellaire extends GenerationAbstract
+class GenerationShell extends GenerationAbstract
 {
     const DESC_STDIN = 0;
     const DESC_STDOUT = 1;
     const DESC_STDERR = 2;
+
     private $webdir = '/generation/';
     private $oldpath;
 
