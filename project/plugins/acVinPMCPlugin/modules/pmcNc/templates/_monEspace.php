@@ -7,7 +7,7 @@
         </div>
         <?php if ($pmc): ?>
             <div class="panel-body">
-                <p class="explications">Reprendre la déclaration de mise en circulation suite à non conformité du <?php echo DateTimeImmutable::createFromFormat('YmdHis', $pmc->getDate())->format('d/m/Y'); ?>.</p>
+                <p class="explications">Reprendre la déclaration de mise en circulation suite à non conformité du <?php $pmc->getDateFr(); ?>.</p>
                 <div class="actions">
                     <a class="btn btn-block btn-primary" href="<?php echo url_for('pmc_edit', $pmc) ?>"><span class="glyphicon glyphicon-pencil"></span> Reprendre la saisie</a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('pmc_delete', $pmc) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>

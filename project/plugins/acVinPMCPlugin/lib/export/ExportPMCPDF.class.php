@@ -55,9 +55,8 @@ class ExportPMCPDF extends ExportPDF
     }
 
     protected function getHeaderTitle() {
-        $date = new DateTimeImmutable($this->declaration->date);
         $suffix = $this->nc ? PMCNCClient::SUFFIX : '';
-        $titre = sprintf("Déclaration de Mise en Circulation%s du %s", $suffix, $date->format('d/m/Y'));
+        $titre = sprintf("Déclaration de Mise en Circulation%s du %s", $suffix, $this->declaration->getDateFr());
         return $titre;
     }
 
