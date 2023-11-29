@@ -35,14 +35,14 @@ class GenerationImportParcellaire extends GenerationAbstract
             $pipes
         );
 
-        if (is_resource($process)) {
-            $returnvalue = proc_close($process);
-        } else {
+        if (is_resource($process) === false) {
             $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENERREUR);
             $this->generation->setMessage("Impossible de lancer le processus");
             $this->generation->save();
             exit;
         }
+
+        $returnvalue = proc_close($process);
 
         // lien vers les deux fichiers à la fin de la génération
 
