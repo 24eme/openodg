@@ -75,7 +75,7 @@ class GenerationImportParcellaire extends GenerationAbstract
     private function buildCommandLine()
     {
         if (version_compare(PHP_VERSION, '7.4.0', '>=')) {
-            return $this->generation->arguments;
+            return $this->generation->arguments->toArray();
         } else {
             $cmde = [];
             foreach ($this->generation->arguments as $arg) {
