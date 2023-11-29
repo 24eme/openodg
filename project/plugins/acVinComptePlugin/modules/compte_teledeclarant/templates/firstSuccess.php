@@ -7,20 +7,20 @@
                         <h2 style="margin-top: 10px;">Première connexion</h2>
                     </div>
                     <div class="panel-body">
-                        <p>Afin d'accèder à la plateforme de télédéclaration, veuillez remplir les champs suivants :</p>
+                        <p>Afin de créer de votre compte pour la <strong>plateforme ODG</strong>, veuillez remplir les champs suivants :</p>
                         <div id="nouvelle_declaration" style="margin-top: 30px;">
                             <?php echo $form->renderHiddenFields(); ?>
                             <?php echo $form->renderGlobalErrors(); ?>
                             <div class="form-group">
                                 <?php echo $form['login']->renderError() ?>
-                                <?php echo $form['login']->renderLabel(null, ['class' => 'control-label col-sm-4']) ?>
+                                <?php echo $form['login']->renderLabel(null, ['class' => 'control-label col-sm-5']) ?>
                                 <div class="col-sm-4">
                                     <?php echo $form['login']->render() ?>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <?php echo $form['mdp']->renderError() ?>
-                                <?php echo $form['mdp']->renderLabel(null, ['class' => 'control-label col-sm-4']) ?>
+                                <?php echo $form['mdp']->renderLabel(null, ['class' => 'control-label col-sm-5']) ?>
                                 <div class="col-sm-4">
                                     <?php echo $form['mdp']->render() ?>
                                 </div>

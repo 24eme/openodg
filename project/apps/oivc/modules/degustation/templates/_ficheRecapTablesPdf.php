@@ -52,17 +52,14 @@ th {
       <?php if ($table_header): $table_header = false; ?>
           <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
             <tr style="line-height:20px;">
-               <th class="topempty bg-white"style="width:10%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-               <th class="topempty bg-white" style="width:30%; "><?php echo tdStart() ?><strong>Produit millesime</strong></th>
-               <th class="bg-white" colspan="2" style="width:20%;"><?php echo tdStart() ?><strong>Avis</strong></th>
-               <th class="topempty bg-white" style="width:40%;"><strong>Motifs (si avis défavorable)</strong></th>
+               <th style="width:10%;" rowspan="2"><?php echo tdStart() ?><strong>Anon</strong></th>
+               <th style="width:30%;" rowspan="2"><?php echo tdStart() ?><strong>Produit millesime</strong></th>
+               <th style="width:20%;" colspan="2"><?php echo tdStart() ?><strong>Avis</strong></th>
+               <th style="width:40%;" rowspan="2"><strong>Motifs si avis défavorable</strong></th>
             </tr>
             <tr style="line-height:13px;">
-              <th class="empty bg-white"></th>
-              <th class="empty bg-white"></th>
-              <th class="bg-white" style="width:10%;" ><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
-              <th class="bg-white" style="width:10%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
-              <th class="empty bg-white"></th>
+              <th style="width:10%;" ><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
+              <th style="width:10%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
             </tr>
       <?php endif; ?>
          <tr style="line-height:15px;">
@@ -82,17 +79,14 @@ th {
         <thead>
           <tr>
             <th style="width:15%" colspan="3">Collège</th>
-            <th class="topempty bg-white" style="width:35%">Noms et prénoms des membres</th>
-            <th class="topempty bg-white" style="width:25%">Signatures</th>
-            <th class="topempty bg-white" style="width:25%">Nom et signature de</th>
+            <th style="width:35%" rowspan="2">Noms et prénoms des membres de la commission</th>
+            <th style="width:25%" rowspan="2">Signatures</th>
+            <th style="width:25%" rowspan="2">Nom et signature de l'agent habilité</th>
           </tr>
           <tr>
             <th style="width:5%">PM</th>
             <th style="width:5%">T</th>
             <th style="width:5%">UP</th>
-            <th class="empty bg-white">de la commission</th>
-            <th class="empty bg-white"></th>
-            <th class="empty bg-white">l'agent habilité</th>
           </tr>
         </thead>
         <tbody>
@@ -100,9 +94,9 @@ th {
             <?php if (! $degustateur->exist("numero_table") || $degustateur->numero_table == null): continue; endif; ?>
             <?php $compte = CompteClient::getInstance()->find($id_compte); ?>
               <tr style="line-height:35px;">
-                  <td style="width:5%"><br /></td>
-                  <td style="width:5%"><br /></td>
-                  <td style="width:5%"><br /></td>
+                  <td style="width:5%"><?php if (strpos($degustateur->getHash(), 'degustateur_porteur_de_memoire') !== false): ?>X<?php else: ?><br /><?php endif; ?></td>
+                  <td style="width:5%"><?php if (strpos($degustateur->getHash(), 'degustateur_technicien') !== false): ?>X<?php else: ?><br /><?php endif; ?></td>
+                  <td style="width:5%"><?php if (strpos($degustateur->getHash(), 'degustateur_usager_du_produit') !== false): ?>X<?php else: ?><br /><?php endif; ?></td>
                   <td class="text-center" style="width:35%"><?php echo $compte->getNom() ?> <?php echo $compte->getPrenom() ?></td>
                   <td style="width:25%"><br /></td>
                   <?php if ($j==0): ?>

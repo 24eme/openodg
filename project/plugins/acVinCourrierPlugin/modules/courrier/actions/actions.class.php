@@ -27,6 +27,29 @@ class courrierActions extends sfActions
             return sfView::SUCCESS;
         }
 
+        $courrier = $this->form->save();
+        return $this->redirect('courrier_extras', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id, 'id_form' => $courrier->_id));
+    }
+
+    function executeExtras(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $unique_id = $request->getParameter('unique_id');
+        $this->lot = LotsClient::getInstance()->findByUniqueId($this->etablissement->getIdentifiant(), $unique_id);
+        $this->courrier = CourrierClient::getInstance()->find($request->getParameter('id_form'));
+
+        $this->form = new CourrierExtrasNouveauForm($this->courrier->add('extras'));
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
         $this->form->save();
         return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
     }
