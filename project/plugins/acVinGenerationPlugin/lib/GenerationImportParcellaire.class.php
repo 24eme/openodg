@@ -5,6 +5,7 @@ class GenerationImportParcellaire extends GenerationAbstract
     const DESC_STDIN = 0;
     const DESC_STDOUT = 1;
     const DESC_STDERR = 2;
+    private $webdir = '/generation/';
     private $oldpath;
 
     public function generate()
@@ -43,10 +44,14 @@ class GenerationImportParcellaire extends GenerationAbstract
         $returnvalue = proc_close($process);
 
         // lien vers les deux fichiers à la fin de la génération
+        $webfile = $this->webdir.$this->generation->date_emission;
+        rename($stderr->getRealPath(), sfConfig::get('sf_web_dir').$webfile.'_stderr.txt');
+        rename($stdout->getRealPath(), sfConfig::get('sf_web_dir').$webfile.'_stdout.txt');
 
-        //$this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
-        //$this->generation->save();
+        $this->generation->add('fichiers')->add(urlencode($webfile.'_stderr.txt'), "Log d'erreur de la génération");
+        $this->generation->add('fichiers')->add(urlencode($webfile.'_stdout.txt'), "Log de sortie de la génération");
 
+        // clean
         chdir($oldpath);
         rmdir($tempdirectory);
 
