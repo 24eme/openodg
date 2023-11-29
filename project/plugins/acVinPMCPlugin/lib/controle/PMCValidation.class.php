@@ -63,10 +63,12 @@ class PMCValidation extends DocumentValidation
             $this->addPoint(self::TYPE_FATAL, 'produits_multi_region', null, $this->generateUrl($routeName, array("id" => $this->document->_id)));
         }
 
-        foreach($this->document->getMillesimes() as $millesime) {
-            $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, $millesime]));
-            if ($drev === null || ! $drev->isValidateOdgByRegion($this->document->region)) {
-                $this->addPoint(self::TYPE_FATAL, 'revendication_manquante', "Déclaration de Revendication ".$millesime, true);
+        if(!$this->document->isNonConformite()) {
+            foreach($this->document->getMillesimes() as $millesime) {
+                $drev = DRevClient::getInstance()->find(implode('-', ['DREV', $this->document->identifiant, $millesime]));
+                if ($drev === null || ! $drev->isValidateOdgByRegion($this->document->region)) {
+                    $this->addPoint(self::TYPE_FATAL, 'revendication_manquante', "Déclaration de Revendication ".$millesime, true);
+                }
             }
         }
 
@@ -127,6 +129,9 @@ class PMCValidation extends DocumentValidation
             }
             if(!$lot->date_degustation_voulue){
                 $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date à laquelle le lot peut être prélevé", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
+                continue;
+            }
+            if($this->document->isNonConformite()) {
                 continue;
             }
             $date_degust = new DateTimeImmutable($lot->date_degustation_voulue);
