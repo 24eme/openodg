@@ -57,4 +57,8 @@ class Tournee extends Degustation
             }
         }
     }
+
+    public function isTournee() {
+        return true;
+    }
 }

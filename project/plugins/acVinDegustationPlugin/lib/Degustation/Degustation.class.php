@@ -1913,4 +1913,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			}
 			return $appellations;
 		}
+
+        public function isTournee() {
+            return strpos($this->_id, 'TOURNEE') !== false;
+        }
 }
