@@ -83,19 +83,32 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        $title = "Fiche de prélevement";
-        if ($this->secteur) {
-            $title .= " – $this->secteur";
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheIndividuelleLotsAPreleverPdfHeader', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            $title = "Fiche de prélevement";
+            if ($this->secteur) {
+                $title .= " – $this->secteur";
+            }
+            return $title;
         }
-        return $title;
     }
 
-    protected function getHeaderSubtitle() {
-        if($this->degustation->type == TourneeClient::TYPE_MODEL) {
-
-            return sprintf("\nTournée du %s\n\n", $this->degustation->getDateFormat('d/m/Y'));
+    protected function getHeaderSubtitle()
+    {
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheIndividuelleLotsAPreleverPdfHeaderSubtitle', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            if($this->degustation->type == TourneeClient::TYPE_MODEL) {
+                return sprintf("\nTournée du %s\n\n", $this->degustation->getDateFormat('d/m/Y'));
+            } else {
+                $header_subtitle = sprintf("\nDégustation du %s", $this->degustation->getDateFormat('d/m/Y'));
+                $header_subtitle .= sprintf("\n%s", $this->degustation->lieu);
+                return $header_subtitle;
+            }
         }
-        return sprintf("\nDégustation du %s, %s\n\n", $this->degustation->getDateFormat('d/m/Y'), $this->degustation->lieu);
     }
 
     protected function getConfig() {
