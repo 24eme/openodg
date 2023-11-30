@@ -48,7 +48,7 @@ class GenerationShell extends GenerationAbstract
         $prefix = $this->webdir.$this->generation->date_emission;
         foreach (glob('*') as $generatedFile) {
             rename($generatedFile, sfConfig::get('sf_web_dir').$prefix.'_'.$generatedFile);
-            $this->generation->add('fichiers')->add(urlencode($prefix.'_'.$generatedFile), $generatedFile);
+            $this->generation->add('fichiers')->add(urlencode($prefix.'_'.$generatedFile), $this->formatName($generatedFile));
         }
 
         // clean
@@ -83,5 +83,18 @@ class GenerationShell extends GenerationAbstract
             }
             return implode(' ', $cmde);
         }
+    }
+
+    private function formatName($file)
+    {
+        if (strpos($file, 'stderr') !== false) {
+            return "Log d'erreur de la génération";
+        }
+
+        if (strpos($file, 'stdout') !== false) {
+            return "Log de sortie de la génération";
+        }
+
+        return $file;
     }
 }
