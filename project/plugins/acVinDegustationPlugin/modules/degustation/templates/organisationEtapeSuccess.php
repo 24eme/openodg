@@ -57,8 +57,8 @@ echo $form->renderGlobalErrors();
                 if (!$firstlot) continue;
             ?>
             <tr class="vertical-center">
-                <td class="text-left"><?php echo $firstlot->getLogementNom(); ?></td>
-                <td class="text-left"><?php echo $firstlot->getLogementAdresse(); ?><br /><?php echo $firstlot->getLogementCommune(); ?> (<?php echo $firstlot->getLogementCodePostal(); ?>)</td>
+                <td class="text-left"><?php echo $firstlot->declarant_nom; ?></td>
+                <td class="text-left"><?php echo $firstlot->getLogementNom(); ?><br /><?php echo $firstlot->getLogementAdresse(); ?><br /><?php echo $firstlot->getLogementCodePostal(); ?> <?php echo $firstlot->getLogementCommune(); ?></td>
                 <td class="text-center"><?php echo $form->getNbLots($logementKey); ?></td>
                 <td class="text-center"><?php echo $subForm['heure']->render(); ?></td>
                 <?php if ($degustation->type == DegustationClient::TYPE_MODEL) : ?>

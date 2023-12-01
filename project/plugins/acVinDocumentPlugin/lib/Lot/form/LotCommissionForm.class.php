@@ -20,18 +20,6 @@ class LotCommissionForm extends acCouchdbObjectForm
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
-    private function getDatesCommissionPossible()
-    {
-        $now = new DateTimeImmutable();
-        $dates = [];
-
-        foreach (range(1, 5) as $week) {
-            $dates[$now->modify('+'.$week.' week')->format('d/m/Y')] = $now->modify('+'.$week.' week')->format('d M Y H:i');
-        }
-
-        return $dates;
-    }
-
     public static function getDegustationChoices() {
         $degustations = array();
         $history = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_DOCUMENT, Organisme::getCurrentRegion());
@@ -52,7 +40,9 @@ class LotCommissionForm extends acCouchdbObjectForm
             $degustations[$date->format('d/m/Y')] = "Degustation du ".$degustation->getDateFormat('d/m/Y');
         }
 
-        return $degustations;
+        ksort($degustations);
+
+        return array_merge(["" => ""], $degustations);
     }
 
     public function updateDefaultsFromObject()

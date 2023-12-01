@@ -95,7 +95,7 @@ p, div {
          <th style="width: 22%"><?php echo tdStart() ?><small>Produit / Cépage / Millésime</small></th>
          <th style="width: 14%"><?php echo tdStart() ?><small>N°Logement Opérateur</small></th>
          <th style="width: 9%"><?php echo tdStart() ?><small>Type contrôle</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Type de Prélevement<br /><small>(CONDIT|VRAC|CONSERV|TEMOIN)</small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>Type de Prélevement<br />(CONDIT|VRAC|CONSERV|TEMOIN)</small></th>
          <th style="width: 9%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
          <th style="width: 9%"><?php echo tdStart() ?><small>Nb de cols</small></th>
          <th style="width: 20%"><?php echo tdStart() ?><small>Observations</small></th>
