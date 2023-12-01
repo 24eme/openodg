@@ -75,8 +75,8 @@ p, div {
     <th border="1px" class="border" style="width: 50%; text-align: center;"><strong>Nom et signature personne présente</strong></th>
   </tr>
   <tr>
-    <td border="1px" class="border"></td>
-    <td border="1px" class="border"></td>
+    <td border="1px" class="border"><br /><br /></td>
+    <td border="1px" class="border"><br /><br /></td>
   </tr>
 </table>
 <br />
@@ -91,25 +91,25 @@ p, div {
     <?php if ($table_header): $table_header = false; ?>
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
-         <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier / Lot</small></th>
-         <th style="width: 22%"><?php echo tdStart() ?><small>Produit / Cépage / Millésime</small></th>
-         <th style="width: 14%"><?php echo tdStart() ?><small>N°Logement Opérateur</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Type contrôle</small></th>
-         <th style="width: 13%"><?php echo tdStart() ?><small>Type de Prélevement<br /><small>(CONDIT|VRAC|CONSERV|TEMOIN)</small></small></th>
-         <th style="width: 7%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
-         <th style="width: 7%"><?php echo tdStart() ?><small>Nb de cols</small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>N° Dossier / Lot</small></th>
+         <th style="width: 18%"><?php echo tdStart() ?><small>Produit / Millésime</small></th>
+         <th style="width: 18%"><?php echo tdStart() ?><small>N°lot / logement</small></th>
+         <th style="width: 8%"><?php echo tdStart() ?><small>Type contrôle</small></th>
+         <th style="width: 11%"><?php echo tdStart() ?><small>Type de Prélevement<br /><small>CONDI,VRAC,CONSERV,TEMOIN</small></small></th>
+         <th style="width: 8%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
+         <th style="width: 8%"><?php echo tdStart() ?><small>Nb de cols</small></th>
          <th style="width: 20%"><?php echo tdStart() ?><small>Observations</small></th>
        </tr>
    <?php endif;?>
-    <tr style="line-height:17px;">
-     <td><?php echo tdStart() ?><?php if($lot->numero_archive): ?><small><?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></small><?php endif; ?></td>
-     <td style="text-align:left;"><?php echo tdStart() ?><span style="font-size: 11px;"><?php echo showProduitCepagesLot($lot, false, 'span'); ?></span></td>
-     <td><?php echo tdStart() ?><small><?php echo $lot->numero_logement_operateur ?></small></td>
-     <td><?php echo tdStart() ?><small><?php echo $lot->initial_type ?></small></td>
-     <td><?php echo tdStart() ?><small><?php echo $lot->getDestinationType() ?></small></td>
-     <td><?php echo tdStart() ?><small><?php echoFloat($lot->volume); ?></small></td>
-     <td><?php echo tdStart() ?>&nbsp;<br /></td>
-     <td><?php echo tdStart() ?>&nbsp;<br /></td>
+    <tr style="line-height:17px; font-size: 11px;">
+     <td><?php echo tdStart() ?><?php if($lot->numero_archive): ?><?php echo $lot->numero_dossier.'&nbsp;/&nbsp;'.$lot->numero_archive ?><?php endif; ?></td>
+     <td style="text-align:left;"><?php echo tdStart() ?><?php echo showProduitCepagesLot($lot, false, 'span'); ?></td>
+     <td style="text-align:left;"><?php echo tdStart() ?><?php echo $lot->numero_logement_operateur ?></td>
+     <td><?php echo tdStart() ?><?php echo $lot->initial_type ?></td>
+     <td><?php echo tdStart() ?><?php echo $lot->getDestinationType() ?></td>
+     <td><?php echo tdStart() ?><?php echoFloat($lot->volume); ?></td>
+     <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
+     <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
     </tr>
   <?php endforeach; ?>
   </table>

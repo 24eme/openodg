@@ -32,7 +32,6 @@ class TourneeLotsForm extends acCouchdbForm
             $embedForm->doUpdateObject($values['lots'][$key]);
         }
         $this->getDocument()->cleanLotsSansProduit();
-        $this->getDocument()->archiverLot($this->getDocument()->numero_archive);
         $this->getDocument()->save();
     }
 }

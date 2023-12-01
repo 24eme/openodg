@@ -131,6 +131,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
     }
 
     public function save($saveDependants = true) {
+        if($this->numero_archive) {
+            $this->archiverLot($this->numero_archive);
+        }
         $this->generateMouvementsLots();
 
         if($this->generateMouvementsFacturesOnNextSave && !$this->isFactures()) {
@@ -180,6 +183,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         // À refacto avec DeclarationLots
         $lots = [];
         foreach($this->getLots() as $lot) {
+            if(!$lot->produit_hash && !$lot->details) {
+                continue;
+            }
+            if($lot->isLeurre()) {
+                continue;
+            }
             if ($lot->numero_archive) {
                 continue;
             }
