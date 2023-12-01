@@ -119,6 +119,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->exist('automatique') && $this->get('automatique');
     }
 
+    public function getLectureSeule() {
+        if(!$this->exist('lecture_seule')) {
+
+            return false;
+        }
+
+        return $this->_get('lecture_seule');
+    }
+
     public function isLectureSeule() {
         return $this->exist('lecture_seule') && $this->get('lecture_seule');
     }
@@ -303,7 +312,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         if (!$this->addProduit($hash_produit)->exist('activites')) {
             return false;
         }
-        return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
+        return $this->addproduit($hash_produit)->isHabiliteFor($activite);
     }
 
   public function containHashProduit($hash) {
