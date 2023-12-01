@@ -68,7 +68,7 @@ p, div {
   </tr>
 </table>
 <br />
-<p><small>Le représentant de l'entreprise ci-dessus-désigné reconnait avoir assisté au prélevement ce jour de un ou plusieurs échantillon(s) en vue de leur présentation aux examens analyptiques et/ou organoleptiques que le prélevement a été<br /><br />effectué conformément au plan de contrôle de l'AOC concernée.</small></p>
+<p><small>Le représentant de l'entreprise ci-dessus-désigné reconnait avoir assisté au prélevement ce jour de un ou plusieurs échantillon(s) en vue de leur présentation aux examens analyptiques et/ou organoleptiques et que le prélevement <br /><br /> a été effectué conformément au plan de contrôle de l'AOC concernée.</small></p>
 <table class="table" cellspacing=0 cellpadding=0 style="border-collapse:collapse;" scope="colgroup">
   <tr>
     <th border="1px" class="border" style="width: 50%; text-align: center;"><strong>Nom et signature préleveur</strong></th>
@@ -108,20 +108,8 @@ p, div {
      <td><?php echo tdStart() ?><small><?php echo $lot->initial_type ?></small></td>
      <td><?php echo tdStart() ?><small><?php echo $lot->getDestinationType() ?></small></td>
      <td><?php echo tdStart() ?><small><?php echoFloat($lot->volume); ?></small></td>
-     <td><?php echo tdStart() ?></td>
-     <td><?php echo tdStart() ?></td>
+     <td><?php echo tdStart() ?>&nbsp;<br /></td>
+     <td><?php echo tdStart() ?>&nbsp;<br /></td>
     </tr>
   <?php endforeach; ?>
-  <?php for($i = 0; $i < 5; $i++): ?>
-      <tr style="line-height:17px;">
-       <td><?php echo tdStart() ?></td>
-       <td style="text-align:left;"><?php echo tdStart() ?></td>
-       <td><?php echo tdStart() ?></td>
-       <td><?php echo tdStart() ?></td>
-       <td><?php echo tdStart() ?></td>
-       <td><?php echo tdStart() ?></td>
-       <td><?php echo tdStart() ?></td>
-       <td><?php echo tdStart() ?></td>
-      </tr>
-  <?php endfor; ?>
   </table>
