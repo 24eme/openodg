@@ -146,6 +146,7 @@
               \end{tabular}
               \newpage
           <?php endif; ?>
+          <?php if (!$i) { $i = 12;} ?>
           \begin{tabular}{|m{9.1cm}|>{\raggedleft}m{1.5cm}|>{\raggedleft}m{2.1cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.2cm}|}
           \hline
           \rowcolor{verttresclair} \textbf{Désignation} & \multicolumn{1}{c|}{\textbf{Prix~uni.}} & \multicolumn{1}{c|}{\textbf{Quantité}} & \multicolumn{1}{c|}{\textbf{TVA}} & \multicolumn{1}{c|}{\textbf{Total HT}}  \tabularnewline
@@ -159,7 +160,7 @@
         <?php echo ($detail->taux_tva) ? formatFloat($detail->montant_tva, ',')." €" : null; ?> &
         <?php echo formatFloat($detail->montant_ht, ','); ?> € \tabularnewline
 		\hline
-    <?php if ($i) $i++ ; else $i = 12; endforeach; ?>
+    <?php  $i++ ; endforeach; ?>
   <?php endforeach; ?>
   \end{tabular}
 
