@@ -149,7 +149,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             if (!$this->isValidated()) {
                 $this->validate();
             }
-            if ($this->isValidated() && !$this->hasMouvementsEnAttente()) {
+            if ($this->isValidated() && !$this->isValidatedOI() && !$this->hasMouvementsEnAttente()) {
                 $this->validateOI();
             }
         }
