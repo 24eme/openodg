@@ -887,10 +887,14 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->declarant_nom = $this->declarant_nom;
         $mouvement->campagne = $this->getCampagne();
         $mouvement->statut = $statut;
-        if ($this->exist('email_envoye')) {
+
+        if($this->getDocument() instanceof Degustation && $this->getDocument()->isValidatedOI()) {
+            $mouvement->date_notification = $this->getDocument()->validation_oi;
+        }
+        if ($this->exist('email_envoye') && $this->email_envoye) {
             $mouvement->date_notification = $this->email_envoye;
         }
-        if ($this->exist('date_notification')) {
+        if ($this->exist('date_notification') && $this->date_notification) {
             $mouvement->date_notification = $this->date_notification;
         }
 
