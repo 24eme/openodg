@@ -95,7 +95,7 @@ p, div {
          <th style="width: 18%"><?php echo tdStart() ?><small>Produit / Millésime</small></th>
          <th style="width: 18%"><?php echo tdStart() ?><small>N°lot / logement</small></th>
          <th style="width: 8%"><?php echo tdStart() ?><small>Type contrôle</small></th>
-         <th style="width: 11%"><?php echo tdStart() ?><small>Type de Prélevement</small></th>
+         <th style="width: 11%"><?php echo tdStart() ?><small>Type de prélevement*</small></th>
          <th style="width: 8%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
          <th style="width: 8%"><?php echo tdStart() ?><small>Nb de cols</small></th>
          <th style="width: 20%"><?php echo tdStart() ?><small>Observations</small></th>
@@ -113,4 +113,4 @@ p, div {
     </tr>
   <?php endforeach; ?>
   </table>
-  <p><small>Type de Prélevement : C (conditionné), V (vrac), Cons (conditionné sur conservatoire), T (témoin)</small></p>
+  <p><small>(*) Type de Prélevement : C (conditionné), V (vrac), Cons (conditionné sur conservatoire), T (témoin)</small></p>
