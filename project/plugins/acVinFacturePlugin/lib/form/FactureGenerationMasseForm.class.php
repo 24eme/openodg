@@ -49,7 +49,6 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
             GenerationClient::TYPE_DOCUMENT_FACTURES => 'Facturation',
             GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE => 'Export comptable',
             GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA => 'Export XML SEPA',
-            GenerationClient::TYPE_DOCUMENT_IMPORT_PARCELLAIRE => 'Import Parcellaire global'
         );
     }
 
