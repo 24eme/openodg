@@ -95,7 +95,7 @@ p, div {
          <th style="width: 18%"><?php echo tdStart() ?><small>Produit / Millésime</small></th>
          <th style="width: 18%"><?php echo tdStart() ?><small>N°lot / logement</small></th>
          <th style="width: 8%"><?php echo tdStart() ?><small>Type contrôle</small></th>
-         <th style="width: 11%"><?php echo tdStart() ?><small>Type de Prélevement<br /><small>CONDI,VRAC,CONSERV,TEMOIN</small></small></th>
+         <th style="width: 11%"><?php echo tdStart() ?><small>Type de Prélevement</small></th>
          <th style="width: 8%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
          <th style="width: 8%"><?php echo tdStart() ?><small>Nb de cols</small></th>
          <th style="width: 20%"><?php echo tdStart() ?><small>Observations</small></th>
@@ -105,11 +105,12 @@ p, div {
      <td><?php echo tdStart() ?><?php if($lot->numero_archive): ?><?php echo $lot->numero_dossier.'&nbsp;/&nbsp;'.$lot->numero_archive ?><?php endif; ?></td>
      <td style="text-align:left;"><?php echo tdStart() ?><?php echo showProduitCepagesLot($lot, false, 'span'); ?></td>
      <td style="text-align:left;"><?php echo tdStart() ?><?php echo $lot->numero_logement_operateur ?></td>
-     <td><?php echo tdStart() ?><?php echo $lot->initial_type ?></td>
-     <td><?php echo tdStart() ?><?php echo $lot->getDestinationType() ?></td>
+     <td><?php echo tdStart() ?><?php echo getTypeControle($lot) ?></td>
+     <td><?php echo tdStart() ?><?php echo getTypePrelevementLettre($lot) ?></td>
      <td><?php echo tdStart() ?><?php echoFloat($lot->volume); ?></td>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
     </tr>
   <?php endforeach; ?>
   </table>
+  <p><small>Type de Prélevement : C (conditionné), V (vrac), Cons (conditionné sur conservatoire), T (témoin)</small></p>
