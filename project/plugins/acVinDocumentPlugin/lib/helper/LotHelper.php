@@ -197,10 +197,3 @@ function getTypePrelevementLettre($lot) {
   }
   return 'C';
 }
-
-function getTypeControle($lot) {
-  if ($lot->initial_type == 'PMCNC') {
-    return 'Recours';
-  }
-  return $lot->initial_type;
-}
