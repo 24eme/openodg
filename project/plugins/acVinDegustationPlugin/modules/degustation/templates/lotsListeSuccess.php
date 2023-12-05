@@ -73,10 +73,10 @@
                       <?php  echo showLotStatusCartouche($mouvement->value, false);  ?>&nbsp;<?php  echo showSummerizedLotPublicStatusCartouche($mouvement->value, true);  ?>
                   <?php else: ?>
                   </td>
-                  <td><?php  echo showLotPublicStatusCartouche($mouvement->value, false);  ?></td>
+                  <td><?php echo showLotPublicStatusCartouche($mouvement->value, false);  ?></td>
                   <?php endif; ?>
                   <td class="text-right hidden-print">
-                  <?php if ($sf_user->hasDrevAdmin() || !MouvementLotHistoryView::isWaitingLotNotification($mouvement->value)): ?>
+                  <?php if ($sf_user->isAdminODG() || !MouvementLotHistoryView::isWaitingLotNotification($mouvement->value)): ?>
                       <a class="btn btn-xs btn-default btn-historique" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
                   <?php endif; ?>
                   </td>
