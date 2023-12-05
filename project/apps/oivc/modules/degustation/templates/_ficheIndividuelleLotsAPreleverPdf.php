@@ -106,7 +106,7 @@ p, div {
      <td style="text-align:left;"><?php echo tdStart() ?><?php echo showProduitCepagesLot($lot, false, 'span'); ?></td>
      <td style="text-align:left;"><?php echo tdStart() ?><?php echo $lot->numero_logement_operateur ?></td>
      <td><?php echo tdStart() ?><?php echo $lot->initial_type ?></td>
-     <td><?php echo tdStart() ?><?php echo $lot->getDestinationType() ?></td>
+     <td><?php echo tdStart() ?>&nbsp;</td>
      <td><?php echo tdStart() ?><?php echoFloat($lot->volume); ?></td>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
