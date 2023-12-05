@@ -181,19 +181,3 @@ function clarifieTypeDocumentLibelle($type) {
     $result = str_replace('TRANSACTION', 'VRAC_EXPORT', $result);
     return $result;
 }
-
-function getTypePrelevementLettre($lot) {
-  if (!$lot->getDestinationType()) {
-    return '';
-  }
-  if ($lot->isLeurre()) {
-    return 'T';
-  }
-  if (strpos($lot->getDestinationType(), 'VRAC') !== false) {
-    return 'V';
-  }
-  if (strpos($lot->getDestinationType(), 'CONSERVATOIRE') !== false) {
-    return 'Cons';
-  }
-  return 'C';
-}
