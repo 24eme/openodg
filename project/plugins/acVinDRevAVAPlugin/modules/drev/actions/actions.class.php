@@ -103,7 +103,13 @@ class drevActions extends sfActions {
             mkdir($cache_dir);
         }
 
+        if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
+
+            return sfView::SUCCESS;
+        }
+
         $typedoc = ($this->drev->isNonRecoltant()) ? 'SV' : 'DR';
+
 
         if ($request->getParameter('csv')) {
 

@@ -81,4 +81,18 @@ class ParcellaireConfiguration {
         return $this->configuration['affectation']['needs_intention'];
 
     }
+
+    public function isManquantMandatory() {
+        if(!isset($this->configuration['manquant']) || !isset($this->configuration['manquant']['mandatory'])) {
+            return false;
+        }
+        return $this->configuration['manquant']['mandatory'];
+    }
+
+    public function getManquantPCMin() {
+        if(!isset($this->configuration['manquant']) || !isset($this->configuration['manquant']['pc_min'])) {
+            return 20;
+        }
+        return $this->configuration['manquant']['pc_min'];
+    }
 }

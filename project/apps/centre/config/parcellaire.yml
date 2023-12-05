@@ -2,6 +2,8 @@ all:
   configuration:
     parcellaire:
       ecart_pieds_max: 25000
+      manquant:
+        mandatory: true
       aires:
         communes-aoc:
           name: "AOC Centre"

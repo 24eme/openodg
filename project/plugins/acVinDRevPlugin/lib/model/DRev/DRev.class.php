@@ -626,15 +626,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $this->declarant->famille = $this->getEtablissementObject()->famille;
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
-          return false;
+          throw new sfException('Superficies déjà saisies');
       }
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
-          return false;
+          throw new sfException('Volume déjà déclaré');
       }
 
       if(count($this->getProduitsWithoutLots()) > 0 && $this->isValidee()) {
-        return false;
+          throw new sfException('Document validé');
       }
 
       $this->remove('declaration');
@@ -644,12 +644,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$csv) {
       	return false;
       }
-	    try {
-          $this->importCSVDouane($csv);
-          return true;
-      } catch (Exception $e) { }
 
-      return false;
+      $this->importCSVDouane($csv);
+
+      return true;
     }
 
     public function importCSVDouane($csv) {
@@ -1383,9 +1381,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->getDateDepot();
 
         $this->updateAddressCurrentLots();
-        if ($this->isValideeOdg()) {
-            $this->generateMouvementsLots();
-        }
+
+        $this->generateMouvementsLots();
 
         $saved = parent::save();
 
@@ -2291,7 +2288,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduits() as $hash_c => $produit_c) {
             $produit = $produit_c->getCepage();
             $hash = $produit->getHash();
-            if (!$habilitation || !$habilitation->isHabiliteFor($produit->getConfig()->getAppellation()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+            if (!$habilitation || !$habilitation->isHabiliteFor(str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $produit->getConfig()->getAppellation()->getHash()), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
                 $nonHabilitationODG[$hash] = $produit;
             }
         }
