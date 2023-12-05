@@ -25,15 +25,15 @@
         <td colspan="2" style="overflow-wrap:break-word;text-align: center; height: 24px; line-height: 12px; overflow: hidden;">&nbsp;&nbsp;<?php echo showOnlyCepages($lotInfo->lot, 58, 'span') ?></td>
       </tr>
       <tr>
-        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>Lot <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
+        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 60%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>Lot <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
         </td>
-        <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 35%;"><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong> HL</td>
+        <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 40%;"><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong> COL/HL</td>
       </tr>
       <?php else: ?>
       <tr>
-        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>Lot <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
+        <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 60%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>Lot <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
         </td>
-        <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 35%;"><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong> HL</td>
+        <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 40%;"><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong> COL/HL</td>
       </tr>
       <tr>
         <?php
