@@ -1254,5 +1254,23 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
         return $this->getPeriode().'-12-15';
     }
 
+    public function getDocumentsEnAttente() {
+        if(!$this->exist('documents')) {
+
+            return [];
+        }
+
+        $documents = [];
+        foreach($this->documents as $document) {
+            if($document->statut == DRevDocuments::STATUT_RECU) {
+                continue;
+            }
+
+            $documents[] = $document;
+        }
+
+        return $documents;
+    }
+
     /**** FIN DE VERSION ****/
 }
