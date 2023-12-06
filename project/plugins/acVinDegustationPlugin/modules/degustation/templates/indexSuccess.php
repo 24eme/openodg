@@ -118,13 +118,15 @@
 </form>
 
 <div style="margin-top: 0px;" class="page-header no-border">
+    <a style="margin-top: 20px;" class="pull-right" href="<?= url_for('degustation_liste', ['campagne' => $lastAnnee]) ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les dégustations</a>
+
     <h2 style="margin-top: 0px;">Les dernières dégustations</h2>
 </div>
 
 <?php include_partial('degustation/liste', ['degustations' => $degustations]) ?>
 
 <div>
-    <a href="<?= url_for('degustation_liste', ['campagne' => date('Y')]) ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les dégustations</a>
+
 </div>
 
 <div class="page-header no-border">
