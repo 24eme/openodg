@@ -19,7 +19,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
       $this->date = $date;
       $this->statut = $statut;
       $this->commentaire = $commentaire;
-      $this->activite = $this->getKey();
+      $this->activite = $this->getActivite();
   }
 
     public function getLibelle() {
@@ -67,6 +67,18 @@ class HabilitationActivite extends BaseHabilitationActivite {
 
   public function hasSite() {
     return $this->exist('site') && $this->site;
+  }
+
+  public function getActivite() {
+      $activite = ($this->exist('activite')) ? $this->_get('activite') : null;
+
+      if($activite && $activite != 'activites') {
+
+          return $activite;
+      }
+      $activite = preg_replace("/-SITE_[0-9]*$/", "", $this->getKey());
+      $this->_set('activite', $activite);
+      return $activite;
   }
 
 }

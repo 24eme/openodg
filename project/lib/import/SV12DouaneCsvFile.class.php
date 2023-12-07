@@ -29,7 +29,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
             return "CsvVendanges";
         }
 
-        throw new sfException('Format non supporté');
+        throw new sfException('Format non supporté : '.$this->doc.' '.implode(',', $csvFile->getCsv()[0]));
     }
 
     public function convertFromCsvVendanges() {

@@ -14,8 +14,11 @@ class DSDouaneCsvFile extends DouaneImportCsvFile {
 
         $type = "DS";
 
-        preg_match('/ds-.+_(.+).csv/', $this->filePath, $campagne);
-        $campagne = substr_replace($campagne[1], '/', 2, 0);
+        if (preg_match('/ds-([12][0-9][0-9][0-9])-([0-9A-Z]*).csv/', $this->filePath, $campagne)) {
+            $campagne = sprintf('%d-%d', $campagne[1], $campagne[1] + 1);
+        } elseif (preg_match('/ds-.+_(.+).csv/', $this->filePath, $campagne)) {
+            $campagne = substr_replace($campagne[1], '/', 2, 0);
+        }
 
         $cvi = $csv[1][1];
         $siret = $csv[3][1];

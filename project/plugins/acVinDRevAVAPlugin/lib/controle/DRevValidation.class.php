@@ -61,7 +61,7 @@ class DRevValidation extends DocumentValidation {
          * Engagement
          */
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre une copie de votre Déclaration de Récolte');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre Document de Production');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre Déclaration de Production');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Une <strong>copie</strong> du Carnet de Pressoir');
     }
 
@@ -181,12 +181,11 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        if (!$this->document->isNonRecoltant() && !$this->document->hasDR()) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, '');
+        if ($this->document->isNonRecoltant()) {
+            return;
         }
-        if ($this->document->isNonRecoltant() && !$this->document->hasSV()) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
-        }
+
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, '');
     }
 
     protected function controleEngagementPressoir($produit) {
@@ -326,18 +325,6 @@ class DRevValidation extends DocumentValidation {
         }
 
         if (!$this->document->isNonRecoltant()) {
-
-            return;
-        }
-
-        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE)) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
-
-            return;
-        }
-
-        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, '');
 
             return;
         }

@@ -24,12 +24,55 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
     }
 
     public function getCampagnePlantation() {
-
+        if ($this->exist('campagne_plantation')) {
+            return $this->_get('campagne_plantation');
+        }
+        if (preg_match('/[A-Z]-([12][0-9][0-9][0-9]-[12][0-9][0-9][0-9])-[A-Z]/', $this->getKey(), $m)) {
+            return $m[1];
+        }
         return null;
     }
 
-    public function getIDU() {
-        return $this->getParcelleIdentifiant();
+    public function getCodeCommune($guess = false) {
+        if ($this->exist('code_commune')) {
+            return $this->_get('code_commune');
+        }
+        if (!$guess) {
+            return null;
+        }
+        return substr($this->getIDU(true), 0, 5);
+    }
+
+    public function getPrefix($guess = false) {
+        if ($this->exist('prefix')) {
+            return $this->_get('prefix');
+        }
+        if (!$guess) {
+            return null;
+        }
+        return str_replace('0', '', substr($this->getIDU($guess), 5, 3));
+    }
+
+    public function getIDU($guess = null) {
+        if ($this->exist('idu')) {
+            return $this->_get('idu');
+        }
+        if ($guess) {
+            $p = $this->getParcelleParcellaire();
+            if ($p) {
+                return $p->idu;
+            }
+            return null;
+        }
+        //return sprintf('%05s%03s%02s%04s', $this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
+        return null;
+    }
+
+    public function getSuperficie($unit = null) {
+        if (!$unit || $unit == ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) {
+            return $this->_get('superficie');
+        }
+        return $this->_get('superficie') / 100;
     }
 
     public function getAcheteursCepageByCVI() {
@@ -219,6 +262,14 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
     public function getSection() {
 
         return preg_replace('/^0*/', '', $this->_get('section'));
+    }
+
+    public function getParcelleParcellaire() {
+        $parcellaire = $this->getDocument()->getParcellaire();
+        if ($parcellaire->exist($this->getAppellation()->getHash()) && $parcellaire->get($this->getAppellation()->getHash())->detail->exist($this->getKey())) {
+            return $parcellaire->get($this->getAppellation()->getHash())->detail->get($this->getKey());
+        }
+        return ParcellaireClient::findParcelle($parcellaire, $this, 0.5);
     }
 
 }

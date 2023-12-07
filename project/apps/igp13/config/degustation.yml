@@ -1,6 +1,7 @@
 all:
   configuration:
     degustation:
+      specificite_lot_pdf: true
       conformite:
         - CONFORME
         - NONCONFORME_MINEUR

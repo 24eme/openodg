@@ -4,3 +4,5 @@ all:
       limit_produits_configuration: true
       unit: "hectares"
       aires:
+    manquant:
+      pc_min: 20

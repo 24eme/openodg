@@ -30,6 +30,10 @@ class acVinEtablissementRouting {
             'action' => 'visualisation'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')));
 
+        $r->prependRoute('etablissement_update_coordonnees_latlon', new EtablissementCompteRoute('/etablissement/:identifiant/updateLatLon', array('module' => 'etablissement',
+            'action' => 'updateCoordonneesLatLon'), array('sf_method' => array('get')), array('model' => 'Etablissement',
+            'type' => 'object')));
+
         $r->prependRoute('etablissement_switch_statut', new EtablissementCompteRoute('/etablissement/:identifiant/switchStatus', array('module' => 'etablissement',
             'action' => 'switchStatus'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')

@@ -9,11 +9,12 @@
     <?php echo $form->renderGlobalErrors(); ?>
 
     <?php if(isset($form["date"])): ?>
+        <?php if ($form["date"]->getError()): ?>
+            <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
+        <?php endif; ?>
     <div class="row">
         <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>
-                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
-            <?php endif; ?>
+
             <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
             <div class="col-xs-4">
                 <div class="input-group date-picker">

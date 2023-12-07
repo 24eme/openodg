@@ -16,6 +16,7 @@ class ParcellaireAffectationValidation extends DocumentValidation {
          */
         $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
         $this->addControle(self::TYPE_WARNING, 'parcelle_doublon', 'Parcelle doublonnée');
+        $this->addControle(self::TYPE_WARNING, 'parcelle_inconnue', 'Parcelle inconnue dans le parcellaire');
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition', "La répartition des acheteurs n'est pas complète");
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition_parcelles', "La répartition des acheteurs par parcelles n'est pas complète");
         $this->addControle(self::TYPE_ERROR, 'parcellaire_multiappellation', "Parcelle déclarée plusieurs fois");
@@ -50,6 +51,10 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             $keyParcelle = $detailv->getCepage()->getHash() . '/' . $detailv->getCommune() . '-' . $detailv->getSection() . '-' . $detailv->getNumeroParcelle().'-'.sprintf("%0.4f", $detailv->superficie);
             if (array_key_exists($keyParcelle, $uniqParcelles)) {
                 $this->addPoint(self::TYPE_WARNING, 'parcelle_doublon', 'parcelle n°' . $detailv->getSection() . ' ' . $detailv->getNumeroParcelle() . ' à ' . $detailv->getCommune() . ' déclarée en ' . $detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
+                            'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
+                            'erreur' => $detailv->getHashForKey())));
+            }elseif (!$detailv->getParcelleParcellaire()) {
+                $this->addPoint(self::TYPE_WARNING, 'parcelle_inconnue', 'parcelle n°' . $detailv->getSection() . ' ' . $detailv->getNumeroParcelle() . ' à ' . $detailv->getCommune() . ' déclarée en ' . $detailv->getLibelleComplet().' ('.$detailv->getIDU().')', $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
                             'erreur' => $detailv->getHashForKey())));
             } else {

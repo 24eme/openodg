@@ -426,7 +426,7 @@ class facturationActions extends sfActions
     public function executeTemplate(sfWebRequest $request) {
         $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
 
-        $this->organisme = Organisme::getInstance();
+        $this->organisme = Organisme::getInstance(null, Organisme::FACTURE_TYPE);
 
         $this->lignes = array();
 

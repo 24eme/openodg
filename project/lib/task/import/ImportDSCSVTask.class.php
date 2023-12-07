@@ -39,7 +39,7 @@ EOF;
 
         $fichier = new DSDouaneCSVFile($file);
 
-        if (isset($options['header']) && $options['header'] != "false") {
+        if (isset($options['header']) && $options['header'] && $options['header'] != "false") {
             echo DSDouaneCSVFile::CSV_ENTETES;
         }
 
