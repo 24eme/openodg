@@ -71,7 +71,7 @@
                         <?php if (Piece::hasUrlPublic($document->id)): ?>
                         <a style="opacity: 0.3" onclick="navigator.clipboard.writeText(this.href); alert('Le lien a été copié dans le presse papier !'); return false;" title="Lien public pour partage" class="pull-left" href="<?php echo url_for('piece_public_view', array('doc_id' => $document->id, 'source' => $document->key[PieceAllView::KEYS_SOURCE], 'auth' => UrlSecurity::generateAuthKey($document->id.$document->key[PieceAllView::KEYS_SOURCE]))) ?>"><span class="glyphicon glyphicon-link"></span></a>
                         <?php endif; ?>
-                        <?php if (Piece::isPieceEditable($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+                        <?php if (Piece::isPieceEditable($document->id, $sf_user->isAdminODG())): ?>
                 			<a href="<?php echo url_for('edit_fichier', array('id' => $document->id)) ?>"><span class="glyphicon glyphicon-user"></span></a>
                 		<?php endif; ?>
                 		<?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) && $urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
