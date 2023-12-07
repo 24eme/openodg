@@ -1,5 +1,6 @@
 <?php use_helper('TemplatingPDF'); ?>
 <?php use_helper('Lot'); ?>
+<?php use_helper('Date'); ?>
 <style>
 <?php echo style(); ?>
 .bg-white{
@@ -12,7 +13,7 @@ th {
 </style>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
-        $key_etablissement = explode('/', $key_lots)[2];
+        $key_etablissement = explode('/', $key_lots)[1];
         $etablissement = $etablissements[$key_etablissement];
         foreach ($lotsDossier as $numDossier => $lots) :
             $lot = $lots[0]->getRawValue();
@@ -28,7 +29,7 @@ th {
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
           <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Lieu de prélèvement /<br/>Coordonnées</strong></th>
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
-          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Commentaire</strong></th>
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
         </tr>
     <?php endif;?>
@@ -58,8 +59,8 @@ th {
             ?>
           </small>
           </td>
-          <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
-          <td><?php echo $degustation->getDateFormat('d/m/Y') ?><br /><?php echo $lot->prelevement_heure ?></td>
+          <td></td>
+          <td><?php echo date_create_from_format("Y-m-d", $lot->date)->format('d/m/Y') ?> <?php echo $lot->prelevement_heure ?></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>

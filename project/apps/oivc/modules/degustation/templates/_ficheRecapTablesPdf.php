@@ -54,12 +54,12 @@ th {
             <tr style="line-height:20px;">
                <th style="width:10%;" rowspan="2"><?php echo tdStart() ?><strong>Anon</strong></th>
                <th style="width:30%;" rowspan="2"><?php echo tdStart() ?><strong>Produit millesime</strong></th>
-               <th style="width:20%;" colspan="2"><?php echo tdStart() ?><strong>Avis</strong></th>
-               <th style="width:40%;" rowspan="2"><strong>Motifs si avis défavorable</strong></th>
+               <th style="width:30%;" colspan="2"><?php echo tdStart() ?><strong>Avis</strong></th>
+               <th style="width:30%;" rowspan="2"><strong>Motifs si avis défavorable</strong></th>
             </tr>
             <tr style="line-height:13px;">
-              <th style="width:10%;" ><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
-              <th style="width:10%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
+              <th style="width:15%;" ><?php echo tdStart() ?><strong><small>Favorable</small></strong></th>
+              <th style="width:15%;"><?php echo tdStart() ?><strong><small>Defavorable</small></strong></th>
             </tr>
       <?php endif; ?>
          <tr style="line-height:15px;">

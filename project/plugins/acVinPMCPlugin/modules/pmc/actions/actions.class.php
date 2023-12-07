@@ -273,13 +273,6 @@ class pmcActions extends sfActions {
         $this->pmc->validateOdg(null,$this->regionParam);
         $this->pmc->save();
 
-        $mother = $this->pmc->getMother();
-        while ($mother) {
-            $mother->validateOdg(null, $this->regionParam);
-            $mother->save();
-            $mother = $mother->getMother();
-        }
-
         if($this->pmc->validation_odg) {
             $this->getUser()->setFlash("notice", "La déclaration a été approuvée.");
         }

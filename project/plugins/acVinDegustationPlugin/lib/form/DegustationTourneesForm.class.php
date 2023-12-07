@@ -50,7 +50,7 @@ class DegustationTourneesForm extends acCouchdbForm
             $form->setWidget('heure', new bsWidgetFormInput(array("type"=>'time'), ['class' => 'form-control select2SubmitOnBlur']));
             $form->setValidator('heure', new sfValidatorTime(array('time_output' => 'H:i', 'time_format' => '~(?<hour>\d{2}):(?P<minute>\d{2})~', 'required' => false)));
             $form->setWidget('logement', new bsWidgetFormChoice(['choices' => $this->getSecteurs()], ['class' => 'form-control select2SubmitOnChange']));
-            $form->setValidator('logement', new sfValidatorChoice(['choices' => array_keys($this->getSecteurs())]));
+            $form->setValidator('logement', new sfValidatorChoice(['choices' => array_keys($this->getSecteurs()), 'required' => false]));
             if ($heure = $this->getFirstLot($logementKey)->prelevement_heure) {
                 $form->setDefault('heure', $heure);
             }

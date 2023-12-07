@@ -25,13 +25,14 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
           if(!isset($this->etablissements[$lot->declarant_identifiant])) {
               $this->etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
           }
-          $this->lots[$this->secteur][$lot->getLogementCodePostal().'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
+          $this->lots[$this->secteur][$lot->prelevement_heure.'/'.$lot->getLogementCodePostal().'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
       }
       ksort($this->lots);
     }
 
     public function create() {
         foreach ($this->lots as $secteur => $lots) {
+            ksort($lots);
             @$this->printable_document->addPage(
                 $this->getPartial('degustation/ficheLotsAPrelevesPdf',
                 array(
@@ -45,28 +46,39 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
     }
 
     protected function getHeaderTitle() {
-        $title = "Fiche de tournée";
-        if ($this->secteur) {
-            $title .= " – $this->secteur";
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheLotsAPrelevesPdfHeader', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            $title = "Fiche de tournée";
+            if ($this->secteur) {
+                $title .= " – $this->secteur";
+            }
+            return $title;
         }
-        return $title;
     }
 
-    protected function getHeaderSubtitle() {
-        $nbOperateurs = count($this->etablissements);
-        $nbLots = 0;
-        foreach ($this->lots as $secteur => $lotsecteur) {
-            foreach($lotsecteur as $key_lots => $lotsDossier) {
-                foreach ($lotsDossier as $numDossier => $lots) {
-                    $nbLots += count($lots);
+    protected function getHeaderSubtitle()
+    {
+        sfApplicationConfiguration::getActive()->loadHelpers(array('Partial'));
+        try {
+            return get_partial('degustation/ficheLotsAPrelevesPdfHeaderSubtitle', ['degustation' => $this->degustation]);
+        } catch (Exception $e) {
+            $nbOperateurs = count($this->etablissements);
+            $nbLots = 0;
+            foreach ($this->lots as $secteur => $lotsecteur) {
+                foreach($lotsecteur as $key_lots => $lotsDossier) {
+                    foreach ($lotsDossier as $numDossier => $lots) {
+                        $nbLots += count($lots);
+                    }
                 }
             }
+            $prelevement = ($nbOperateurs > 1)? "$nbOperateurs opérateurs" : "$nbOperateurs opérateur";
+            $prelevement .= ($nbLots > 1)? " pour $nbLots lots à prélever" : " pour $nbLots lot à prélever";
+            $header_subtitle = sprintf("Dégustation du %s, %s", $this->degustation->getDateFormat('d/m/Y'), $this->degustation->lieu);
+            $header_subtitle .= sprintf("\n$prelevement");
+            return $header_subtitle;
         }
-        $prelevement = ($nbOperateurs > 1)? "$nbOperateurs opérateurs" : "$nbOperateurs opérateur";
-        $prelevement .= ($nbLots > 1)? " pour $nbLots lots à prélever" : " pour $nbLots lot à prélever";
-        $header_subtitle = sprintf("Dégustation du %s, %s", $this->degustation->getDateFormat('d/m/Y'), $this->degustation->lieu);
-        $header_subtitle .= sprintf("\n$prelevement");
-        return $header_subtitle;
     }
 
     public function getFileName($with_rev = false) {

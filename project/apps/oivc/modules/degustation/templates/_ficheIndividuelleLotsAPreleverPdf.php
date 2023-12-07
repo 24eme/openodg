@@ -68,19 +68,19 @@ p, div {
   </tr>
 </table>
 <br />
-<br />
+<p><small>Le représentant de l'entreprise ci-dessus-désigné reconnait avoir assisté au prélevement ce jour de un ou plusieurs échantillon(s) en vue de leur présentation aux examens analyptiques et/ou organoleptiques et que le prélevement <br /><br /> a été effectué conformément au plan de contrôle de l'AOC concernée.</small></p>
 <table class="table" cellspacing=0 cellpadding=0 style="border-collapse:collapse;" scope="colgroup">
   <tr>
     <th border="1px" class="border" style="width: 50%; text-align: center;"><strong>Nom et signature préleveur</strong></th>
     <th border="1px" class="border" style="width: 50%; text-align: center;"><strong>Nom et signature personne présente</strong></th>
   </tr>
   <tr>
-    <td border="1px" class="border"></td>
-    <td border="1px" class="border"></td>
+    <td border="1px" class="border"><br /><br /></td>
+    <td border="1px" class="border"><br /><br /></td>
   </tr>
 </table>
 <br />
-<p><strong><?php echo count($lots) ?> lot(s) à prélever</strong> <small>(pour un volume total de <?php echo $volumeLotTotal ?> hl)</small> :</p>
+<p><strong><?php echo count($lots) ?> lot(s) à prélever</strong> :</p>
   <?php $i = 10; $table_header = true; foreach($lots as $key => $lot): ?>
    <?php if($i % 20 == 0 ): $table_header = true; ?>
     </table>
@@ -91,32 +91,26 @@ p, div {
     <?php if ($table_header): $table_header = false; ?>
      <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
-         <th style="width: 8%"><?php echo tdStart() ?><small>N° Dossier / Lot</small></th>
-         <th style="width: 22%"><?php echo tdStart() ?><small>Produit / Cépage / Millésime</small></th>
-         <th style="width: 14%"><?php echo tdStart() ?><small>N°Logement Opérateur</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Type contrôle</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Type de Prélevement<br /><small>(CONDIT|VRAC|CONSERV|TEMOIN)</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
-         <th style="width: 9%"><?php echo tdStart() ?><small>Nb de cols</small></th>
+         <th style="width: 9%"><?php echo tdStart() ?><small>N° Dossier / Lot</small></th>
+         <th style="width: 18%"><?php echo tdStart() ?><small>Produit / Millésime</small></th>
+         <th style="width: 18%"><?php echo tdStart() ?><small>N°lot / logement</small></th>
+         <th style="width: 8%"><?php echo tdStart() ?><small>Type contrôle</small></th>
+         <th style="width: 11%"><?php echo tdStart() ?><small>Type de prélevement*</small></th>
+         <th style="width: 8%"><?php echo tdStart() ?><small>Volume (hl)</small></th>
+         <th style="width: 8%"><?php echo tdStart() ?><small>Nb de cols</small></th>
          <th style="width: 20%"><?php echo tdStart() ?><small>Observations</small></th>
        </tr>
    <?php endif;?>
-     <?php $nbLignes = 1; ?>
-     <?php if(!$lot->volume || !$lot->exist('quantite')): ?>
-        <?php $nbLignes = 5 ?>
-     <?php endif; ?>
-    <?php for($i = 0; $i < $nbLignes; $i): ?>
-    <tr style="line-height:17px;">
-     <td><?php echo tdStart() ?><?php if($lot->numero_archive): ?><small><?php echo $lot->numero_dossier.' / '.$lot->numero_archive ?></small><?php endif; ?></td>
-     <td style="text-align:left;"><?php echo tdStart() ?><span style="font-size: 11px;"><?php echo showProduitCepagesLot($lot, true, 'span'); ?></span></td>
-     <td><?php echo tdStart() ?><small><?php echo $lot->numero_logement_operateur ?></small></td>
-     <td><?php echo tdStart() ?><small><?php echo $lot->initial_type ?></small></td>
-     <td><?php echo tdStart() ?></td>
-     <td><?php echo tdStart() ?><small><?php echoFloat($lot->volume); ?></small></td>
-     <td><?php echo tdStart() ?></td>
-     <td><?php echo tdStart() ?></td>
+    <tr style="line-height:17px; font-size: 11px;">
+     <td><?php echo tdStart() ?><?php if($lot->numero_archive): ?><?php echo $lot->numero_dossier.'&nbsp;/&nbsp;'.$lot->numero_archive ?><?php endif; ?></td>
+     <td style="text-align:left;"><?php echo tdStart() ?><?php echo showProduitCepagesLot($lot, false, 'span'); ?></td>
+     <td style="text-align:left;"><?php echo tdStart() ?><?php echo $lot->numero_logement_operateur ?></td>
+     <td><?php echo tdStart() ?><?php echo $lot->initial_type ?></td>
+     <td><?php echo tdStart() ?>&nbsp;</td>
+     <td><?php echo tdStart() ?><?php echoFloat($lot->volume); ?></td>
+     <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
+     <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
     </tr>
-    <?php $i++; ?>
-    <?php endfor; ?>
   <?php endforeach; ?>
   </table>
+  <p><small>(*) Type de Prélevement : C (conditionné), V (vrac), Cons (conditionné sur conservatoire), T (témoin)</small></p>
