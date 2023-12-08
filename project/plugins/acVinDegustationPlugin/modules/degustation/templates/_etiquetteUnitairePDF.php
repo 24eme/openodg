@@ -28,7 +28,7 @@
       <tr>
         <td style="overflow-wrap:break-word;text-align: left; height: 15px; line-height: 15px; overflow: hidden; width: 65%;">&nbsp;&nbsp;<?php $lot = $lotInfo->lot; $centilisation = $lot->centilisation ? " ($lot->centilisation)" : null; ?>Lot <strong><?php echo truncate_text($lotInfo->lot->numero_logement_operateur.$centilisation, 15, '…');  ?></strong>
         </td>
-        <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 35%;"><?php if(!is_null($lotInfo->lot->volume)): ?><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong><?php endif; ?> HL<?php if(is_null($lotInfo->lot->volume)): ?>/COL<?php endif; ?></td>
+        <td style="overflow-wrap:break-word;text-align: right; height: 15px; line-height: 15px; overflow: hidden; width: 35%;"><?php if(!is_null($lotInfo->lot->volume)): ?><strong><?php echo sprintf("%.2f", $lotInfo->lot->volume);  ?></strong><?php endif; ?> HL<?php if(is_null($lotInfo->lot->volume)): ?>/COLS<?php endif; ?></td>
       </tr>
       <?php if(!DegustationConfiguration::getInstance()->hasTypiciteCepage()): ?>
       <tr>
