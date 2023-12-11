@@ -10,6 +10,15 @@ visualisation:
 parcellairePDF:
   credentials: []
 
+parcellaireExportCSV:
+  credentials: []
+
+parcellaireExportKML:
+  credentials: []
+
+parcellaireExportGeoJson:
+  credentials: []
+
 scrape:
   credentials: []
 
