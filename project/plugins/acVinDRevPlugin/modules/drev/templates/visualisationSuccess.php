@@ -21,6 +21,7 @@
     <?php if (false && $sf_user->isAdminODG() && $drev->validation_odg): // Si cette ligne est toujours là en 2024, à supprimer ?><a href="<?php echo url_for('drev_send_oi', $drev); echo ($regionParam)? '?region='.$regionParam : ''; ?>" onclick="return confirm('Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?');"  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a>&nbsp;<small><a href="<?php  echo url_for('drev_export_xml', $drev) ?>" class=""><span class="glyphicon glyphicon-console"/></a></small><?php endif; ?>
     </small>
     </h2>
+    <?php if ($drev->isFactures()): ?><div style="margin-top: -20px;" class="pull-right"><span class="text-muted">DRev facturée</span></div><?php endif; ?>
 </div>
 
 <?php if ($drev->isValidee()): ?>
@@ -159,12 +160,10 @@
     <div class="col-xs-4 text-right">
         <div class="btn-group">
         <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION) && !$drev->hasLotsUtilises()):
-                if (!$drev->validation_odg): ?>
+                if (!$drev->validation_odg && !$drev->isFactures()): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
             <?php elseif (!$drev->isFactures() && !$drev->isLectureSeule() && $sf_user->isAdminODG() &&  !$drev->hasLotsUtilises() && $drev->isMaster()): ?>
                     <a class="btn btn-default btn-sm" href="<?php echo url_for('drev_devalidation', $drev) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette DRev ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-            <?php elseif ($drev->isFactures()): ?>
-                <span class="text-muted">DRev facturée</span>
             <?php endif; ?>
         <?php endif; ?>
         <?php if(!$drev->validation): ?>

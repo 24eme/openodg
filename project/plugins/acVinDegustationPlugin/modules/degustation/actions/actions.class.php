@@ -160,7 +160,11 @@ class degustationActions extends sfActions {
 
     public function executeOperateurAdd(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation);
+        $this->etablissement_identifiant = null;
+        if(isset($request->getParameter('selection_operateur')['identifiant'])) {
+            $this->etablissement_identifiant = $request->getParameter('selection_operateur')['identifiant'];
+        }
+        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation, $this->etablissement_identifiant);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
