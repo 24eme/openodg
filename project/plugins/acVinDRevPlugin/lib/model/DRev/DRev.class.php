@@ -1545,6 +1545,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $deleted = false;
         foreach($this->getDeletedLots() as $lot) {
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
             $volume_mod -= $lot->volume;
             $deleted = true;
         }
