@@ -13,6 +13,7 @@ class CourrierClient extends acCouchdbClient {
     const COURRIER_AVIS17 = '10_Avis_17';
     const COURRIER_AVIS18 = '10_Avis_18';
     const COURRIER_AVIS19 = '10_Avis_19';
+    const COURRIER_AVIS_PRELEVEMENT = '10_Avis_Prelevement_OIVC';
     const COURRIER_FICHE_CONTROLE = '20_Fiche_Controle';
     const COURRIER_IMPORT = '99_Import';
 
@@ -25,6 +26,7 @@ class CourrierClient extends acCouchdbClient {
         self::COURRIER_AVIS17 => 'Leve de Manquement Contrôle Vin (C17)',
         self::COURRIER_AVIS18 => 'Avis de Manquement Suite à Nouveau Contrôle Vin (C18)',
         self::COURRIER_AVIS19 => 'Avis de Manquement Suite à Recours INAO (C19)',
+        self::COURRIER_AVIS_PRELEVEMENT => 'Avis de prélèvement par l\'OIVC',
         self::COURRIER_IMPORT => 'Avis importé',
     );
 
@@ -37,6 +39,7 @@ class CourrierClient extends acCouchdbClient {
             self::COURRIER_AVIS17 => ['courrierLeveeC17ManquementControleVinPDF'],
             self::COURRIER_AVIS18 => ['courrierAvisC18ManquementSuiteNouveauControleVinPDF', 'degustationRapportInspection'],
             self::COURRIER_AVIS19 => ['courrierAvisC19ManquementSuiteRecoursPDF', 'degustationRapportInspection'],
+            self::COURRIER_AVIS_PRELEVEMENT => ['courrierAvisDePrelevementPDF']
     );
 
 	/**

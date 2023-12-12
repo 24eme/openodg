@@ -65,7 +65,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
               $csv .= $this->floatHelper->formatFr($facture->total_ttc - $facture->montant_paiement,2,2).';';
               $csv .= $paiement->exist('execute') ? $paiement->execute.";" : ";";
               $csv .= $paiement->versement_comptable.";";
-              $csv .= Organisme::getCurrentOrganisme().";";
+              $csv .= (($facture->exist('region') && $facture->region) ? $facture->region : Organisme::getCurrentOrganisme()).";";
               $csv .= $facture->_id.";";
               $csv .= $paiement->getHash().';';
               $csv .= "\n";
