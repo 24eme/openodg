@@ -12,6 +12,13 @@ facturation_en_attente:
     sf_method: [get]
   class: FacturationRoute
 
+facturation_historique:
+  url: /facturation/historique
+  param: { module: facturation, action: factureHistorique }
+  requierements:
+    sf_method: [get]
+  class: FacturationRoute
+
 facturation_massive:
   url: /facturation_massive
   param: { module: facturation, action: massive }
