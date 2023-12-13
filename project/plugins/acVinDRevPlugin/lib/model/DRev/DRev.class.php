@@ -65,6 +65,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($this->getProduits(null, false) as $hash => $p) {
             $regions[] = $p->getRegion();
         }
+        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+        if ($docDouanier) {
+            foreach ($docDouanier->getProduits() as $hash => $p) {
+                $regions[] = RegionConfiguration::getInstance()->getOdgRegion($hash);
+            }
+        }
 
         return array_values(array_unique($regions));
     }
