@@ -23,8 +23,14 @@ class facturationActions extends sfActions
         }
         $this->formFacturationMassive = new FactureGenerationMasseForm();
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
+        $this->campagnes = $this->getCampagnesList();
+        $this->campagne = reset($this->campagnes);
+        if ($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne');
+        }
+        $this->factures = FactureClient::getInstance()->getLastFactures($this->campagne);
 
+        if (!$request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
         }
 
@@ -556,6 +562,31 @@ class facturationActions extends sfActions
 
          $this->getUser()->setFlash("notice", "La facture a bien été transmise à l'adresse ".$facture->getSociete()->getEmailCompta());
          $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
+    }
+
+    public function executeFactureHistorique(sfWebRequest $request) {
+        $this->campagnes = $this->getCampagnesList($request);
+        $this->campagne = reset($this->campagnes);
+        if ($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne');
+        }
+        $this->factures = FactureClient::getInstance()->getAllFactures($this->campagne);
+    }
+
+    public function getCampagnesList() {
+        $listeCampagnes = acCouchdbManager::getClient()
+            ->startkey(array("Facture", array()))
+            ->endkey(array("Facture"))
+            ->reduce(true)
+            ->group_level(2)
+            ->descending(true)
+            ->getView('declaration', 'export')->rows;
+
+        $campagnes = [];
+        foreach ($listeCampagnes as $index => $annee) {
+            $campagnes[] = $annee->key[1];
+        }
+        return $campagnes;
     }
 
     public function getCurrentRegion() {

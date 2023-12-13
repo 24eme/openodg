@@ -8,7 +8,7 @@
   <li class="active"><a href=""><?php echo $periode ?>-<?php echo $periode +1 ?></a></li>
 </ol>
 
-<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
+<?php if ($sf_user->hasDrevAdmin() && class_exists("EtablissementChoiceForm")): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'), 'noautofocus' => true)); ?>
 <?php endif; ?>
 

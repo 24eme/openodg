@@ -494,7 +494,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateMontantPaiement() {
-        $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
+        if ($this->exist('paiements') && count($this->paiements)) {
+            $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
+        }
     }
 
     public function getMontantPaiement() {
@@ -715,8 +717,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $paiement->date = $this->_get('date_paiement');
             $paiement->versement_comptable = $this->versement_comptable_paiement;
             $this->remove('reglement_paiement');
-            $this->updateMontantPaiement();
         }
+        $this->updateMontantPaiement();
 
         $versement = true;
         $date = null;
