@@ -822,14 +822,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI_L19) {
-                $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
-            	$produit->vci->constitue = $produitRecolte->vci_constitue;
+                if ($produitRecolte->volume_sur_place_revendique) {
+                    $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    $produit->vci->constitue = $produitRecolte->vci_constitue;
+                }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VSI_L18) {
-                if(!$produitRecolte->exist('vsi')) {
-                    $produitRecolte->add('vsi');
+                if ($produitRecolte->volume_sur_place_revendique) {
+                    if(!$produitRecolte->exist('vsi')) {
+                        $produitRecolte->add('vsi');
+                    }
+                    $produitRecolte->vsi += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
                 }
-                $produitRecolte->vsi += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
