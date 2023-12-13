@@ -23,8 +23,14 @@ class facturationActions extends sfActions
         }
         $this->formFacturationMassive = new FactureGenerationMasseForm();
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
+        $this->campagnes = $this->getCampagnesList();
+        $this->campagne = reset($this->campagnes);
+        if ($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne');
+        }
+        $this->factures = FactureClient::getInstance()->getLastFactures($this->campagne);
 
+        if (!$request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
         }
 
@@ -559,6 +565,15 @@ class facturationActions extends sfActions
     }
 
     public function executeFactureHistorique(sfWebRequest $request) {
+        $this->campagnes = $this->getCampagnesList($request);
+        $this->campagne = reset($this->campagnes);
+        if ($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne');
+        }
+        $this->factures = FactureClient::getInstance()->getAllFactures($this->campagne);
+    }
+
+    public function getCampagnesList() {
         $listeCampagnes = acCouchdbManager::getClient()
             ->startkey(array("Facture", array()))
             ->endkey(array("Facture"))
@@ -567,29 +582,11 @@ class facturationActions extends sfActions
             ->descending(true)
             ->getView('declaration', 'export')->rows;
 
-        $this->campagnes = [];
+        $campagnes = [];
         foreach ($listeCampagnes as $index => $annee) {
-            $this->campagnes[] = $annee->key[1];
+            $campagnes[] = $annee->key[1];
         }
-
-        $this->campagne = reset($this->campagnes);
-        if ($request->getParameter('campagne')) {
-            $this->campagne = $request->getParameter('campagne');
-        }
-        $this->factures = acCouchdbManager::getClient()
-            ->startkey(array("Facture", $this->campagne, array()))
-            ->endkey(array("Facture", $this->campagne))
-            ->reduce(false)
-            ->include_docs(true)
-            ->descending(true)
-            ->getView('declaration', 'export')->rows;
-
-        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
-            $region = Organisme::getInstance()->getCurrentRegion();
-            $this->factures = array_filter($this->factures, function ($facture) use ($region) {
-                return $facture->doc->region === $region;
-            });
-        }
+        return $campagnes;
     }
 
     public function getCurrentRegion() {

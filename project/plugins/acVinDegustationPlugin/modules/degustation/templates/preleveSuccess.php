@@ -30,7 +30,7 @@
 <div class="input-group" style="margin-bottom: 0; position: relative;">
     <span class="input-group-addon">Filtrer le tableau</span>
     <input id="table_filtre" type="text" class="form-control" placeholder="Rechercher par opérateur, produit ou numéro de logement" autofocus="autofocus" />
-    <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute;">Annuler la recherche</a>
+    <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute; color: grey;"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a>
 </div>
 <form action="<?php echo url_for("degustation_preleve", $degustation) ?><?php if($differer): ?>?differer=1<?php endif; ?>" method="post" class="ajaxForm form-horizontal degustation prelevements">
 	<?php echo $form->renderHiddenFields(); ?>
