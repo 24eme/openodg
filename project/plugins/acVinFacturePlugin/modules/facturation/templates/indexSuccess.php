@@ -29,8 +29,12 @@
 </div>
 <?php endif; ?>
 
+<h3>Historique des 10 dernières factures <small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>">Voir toutes les factures</a></small></h3>
+<?php include_partial('facturation/lastFactures', array('factures' => $factures)); ?>
+<small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>">Voir plus</a></small><br/>
+<hr/>
 <?php include_partial('facturation/generationForm', array('form' => $formFacturationMassive, 'massive' => true)); ?>
-    <h3>Historique des 10 dernières factures <small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>">Voir toutes les factures</a></small></h3>
-    <?php include_partial('facturation/lastFactures', array('factures' => $factures)); ?>
+
+
 <h3>Historique des générations</h3>
 <?php include_partial('generation/list', array('generations' => $generations)); ?>
