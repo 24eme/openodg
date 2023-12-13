@@ -560,12 +560,12 @@ class facturationActions extends sfActions
 
     public function executeFactureHistorique(sfWebRequest $request) {
         $listeCampagnes = acCouchdbManager::getClient()
-                ->startkey(array("Facture", array()))
-                ->endkey(array("Facture"))
-                ->reduce(true)
-                ->group_level(2)
-                ->descending(true)
-                ->getView('declaration', 'export')->rows;
+            ->startkey(array("Facture", array()))
+            ->endkey(array("Facture"))
+            ->reduce(true)
+            ->group_level(2)
+            ->descending(true)
+            ->getView('declaration', 'export')->rows;
 
         $this->campagnes = [];
         foreach ($listeCampagnes as $index => $annee) {
@@ -576,13 +576,20 @@ class facturationActions extends sfActions
         if ($request->getParameter('campagne')) {
             $this->campagne = $request->getParameter('campagne');
         }
-                $this->factures = acCouchdbManager::getClient()
-                ->startkey(array("Facture", $this->campagne, array()))
-                ->endkey(array("Facture", $this->campagne))
-                ->reduce(false)
-                ->include_docs(true)
-                ->descending(true)
-                ->getView('declaration', 'export')->rows;
+        $this->factures = acCouchdbManager::getClient()
+            ->startkey(array("Facture", $this->campagne, array()))
+            ->endkey(array("Facture", $this->campagne))
+            ->reduce(false)
+            ->include_docs(true)
+            ->descending(true)
+            ->getView('declaration', 'export')->rows;
+
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $region = Organisme::getInstance()->getCurrentRegion();
+            $this->factures = array_filter($this->factures, function ($facture) use ($region) {
+                return $facture->doc->region === $region;
+            });
+        }
     }
 
     public function getCurrentRegion() {
