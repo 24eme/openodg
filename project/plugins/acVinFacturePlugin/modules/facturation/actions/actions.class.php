@@ -558,6 +558,33 @@ class facturationActions extends sfActions
          $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
     }
 
+    public function executeFactureHistorique(sfWebRequest $request) {
+        $listeCampagnes = acCouchdbManager::getClient()
+                ->startkey(array("Facture", array()))
+                ->endkey(array("Facture"))
+                ->reduce(true)
+                ->group_level(2)
+                ->descending(true)
+                ->getView('declaration', 'export')->rows;
+
+        $this->campagnes = [];
+        foreach ($listeCampagnes as $index => $annee) {
+            $this->campagnes[] = $annee->key[1];
+        }
+
+        $this->campagne = reset($this->campagnes);
+        if ($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne');
+        }
+                $this->factures = acCouchdbManager::getClient()
+                ->startkey(array("Facture", $this->campagne, array()))
+                ->endkey(array("Facture", $this->campagne))
+                ->reduce(false)
+                ->include_docs(true)
+                ->descending(true)
+                ->getView('declaration', 'export')->rows;
+    }
+
     public function getCurrentRegion() {
         return (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
     }

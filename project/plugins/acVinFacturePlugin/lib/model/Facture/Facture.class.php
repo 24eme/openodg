@@ -715,8 +715,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $paiement->date = $this->_get('date_paiement');
             $paiement->versement_comptable = $this->versement_comptable_paiement;
             $this->remove('reglement_paiement');
-            $this->updateMontantPaiement();
         }
+        $this->updateMontantPaiement();
 
         $versement = true;
         $date = null;

@@ -105,8 +105,8 @@ p, div {
      <td><?php echo tdStart() ?><?php if($lot->numero_archive): ?><?php echo $lot->numero_dossier.'&nbsp;/&nbsp;'.$lot->numero_archive ?><?php endif; ?></td>
      <td style="text-align:left;"><?php echo tdStart() ?><?php echo showProduitCepagesLot($lot, false, 'span'); ?></td>
      <td style="text-align:left;"><?php echo tdStart() ?><?php echo $lot->numero_logement_operateur ?></td>
-     <td><?php echo tdStart() ?><?php echo getTypeControle($lot) ?></td>
-     <td><?php echo tdStart() ?><?php echo getTypePrelevementLettre($lot) ?></td>
+     <td><?php echo tdStart() ?><?php echo $lot->initial_type ?></td>
+     <td><?php echo tdStart() ?>&nbsp;</td>
      <td><?php echo tdStart() ?><?php echoFloat($lot->volume); ?></td>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>

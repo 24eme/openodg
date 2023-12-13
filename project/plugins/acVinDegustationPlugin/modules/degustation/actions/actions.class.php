@@ -10,7 +10,13 @@ class degustationActions extends sfActions {
         $this->lotsElevages = DegustationClient::getInstance()->getElevages(null, Organisme::getInstance()->getCurrentRegion());
         $this->lotsManquements = DegustationClient::getInstance()->getManquements(null, (Organisme::getInstance()->isOC()) ? null : Organisme::getInstance()->getCurrentRegion());
 
+        $this->lastAnnee = date('Y');
         $this->degustations = DegustationClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, Organisme::getCurrentRegion());
+
+        foreach($this->degustations as $d) {
+            $this->lastAnnee = explode("-", $d->date)[0];
+        }
+
         $this->tournees = TourneeClient::getInstance()->getHistory(10, "", acCouchdbClient::HYDRATE_JSON, Organisme::getInstance()->getCurrentRegion());
 
         if(class_exists("EtablissementChoiceForm")) {
@@ -154,7 +160,11 @@ class degustationActions extends sfActions {
 
     public function executeOperateurAdd(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation);
+        $this->etablissement_identifiant = null;
+        if(isset($request->getParameter('selection_operateur')['identifiant'])) {
+            $this->etablissement_identifiant = $request->getParameter('selection_operateur')['identifiant'];
+        }
+        $this->formOperateurs = new DegustationSelectionOperateursForm($this->degustation, $this->etablissement_identifiant);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;

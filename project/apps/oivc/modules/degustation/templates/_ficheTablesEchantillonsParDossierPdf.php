@@ -14,7 +14,7 @@
               Code Commission: <?= $degustation->_id ?><br/>
             </td>
             <td style="width:40%;">
-              Responsable : Christelle ANTOINE<br/>
+              Responsable : <br/>
             </td>
           </tr>
 
@@ -80,8 +80,8 @@
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_anonymat?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
-            <td style="float:right; text-align:right;"><small><?php echo number_format($lot->volume, 2, ',', ' ') ?>&nbsp;hl </small></td>
-            <td style="height:25px; text-align: left;"><small><?php echo showProduitCepagesLot($lot, false); ?></small></td>
+            <td style="text-align: right;"><small><?php if($lot->exist('quantite') && $lot->quantite): ?><?php echo $lot->quantite ?>&nbsp;cols<?php elseif($lot->volume): ?><?php echo number_format($lot->volume, 2) ?>&nbsp;hl<?php endif; ?> &nbsp;</small></td>
+            <td style="height:25px; text-align: left;"><small><?php echo showOnlyProduit($lot, false) ?></small></td>
           </tr>
           <?php $i++; ?>
       <?php endforeach; ?>

@@ -23,7 +23,7 @@
               Code Commission: <?= $degustation->_id ?><br/>
             </td>
             <td style="width:60%;">
-              Responsable : Christelle ANTOINE<br/>
+              Responsable : <br/>
             </td>
             <td style="width:2%"><br/>
             </td>
@@ -79,7 +79,7 @@
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Dos</small></strong></th>
                 <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>N° Ech</small></strong></th>
                 <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Id Lot Opérateur</small></strong></th>
-                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Volume</small></strong></th>
+                <th class="bg-white" style="width:8%;"><?php echo tdStart() ?><strong><small>Quantité</small></strong></th>
                 <th class="bg-white" style="width:30%;"><?php echo tdStart() ?><strong><small>Produit millésime</small></strong></th>
               </tr>
           <?php endif; ?>
@@ -91,8 +91,8 @@
             <td><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?></small></td>
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_logement_operateur ?></small></td>
-            <td style="text-align: right;"><small><?php echo number_format($lot->volume, 2) ?>&nbsp;hl &nbsp;</small></td>
-            <td style="text-align: left;"><small><?php echo showOnlyProduit($lot, false) ?><br/><?php echo showOnlyCepages($lot, 70) ?></small></td>
+            <td style="text-align: right;"><small><?php if($lot->exist('quantite') && $lot->quantite): ?><?php echo $lot->quantite ?>&nbsp;cols<?php elseif($lot->volume): ?><?php echo number_format($lot->volume, 2) ?>&nbsp;hl<?php endif; ?> &nbsp;</small></td>
+            <td style="text-align: left;"><small><?php echo showOnlyProduit($lot, false) ?></small></td>
           </tr>
           <?php $i++; endforeach; ?>
         <?php endforeach; ?>
