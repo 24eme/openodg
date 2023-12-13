@@ -30,9 +30,7 @@
 <?php endif; ?>
 
 <?php include_partial('facturation/generationForm', array('form' => $formFacturationMassive, 'massive' => true)); ?>
-<div class="row">
-    <h3 class="col-sm-10">Historique des factures</h3>
-    <a class="col-sm-2" href="<?php echo url_for("facturation_historique") ?>">Toutes les factures</a>
-</div>
+    <h3>Historique des 10 dernières factures <small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>">Voir toutes les factures</a></small></h3>
+    <?php include_partial('facturation/lastFactures', array('factures' => $factures)); ?>
 <h3>Historique des générations</h3>
 <?php include_partial('generation/list', array('generations' => $generations)); ?>
