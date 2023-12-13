@@ -58,7 +58,7 @@ abstract class DocumentValidation
         return $this->controles[sprintf("%s-%s", $type, $code)];
     }
 
-    public function addPoint($type, $code, $info, $lien = null) {
+    public function addPoint($type, $code, $info, $lien = null, $additionalInfo = null) {
         $controle = $this->findControle($type, $code);
 
         if(!$controle) {
@@ -68,6 +68,7 @@ abstract class DocumentValidation
         $point_controle = clone $controle;
         $point_controle->setInfo($info);
         $point_controle->setLien($lien);
+        $point_controle->setAdditionalInfo($additionalInfo);
 
         $this->points[$type][$code.$info.$lien] = $point_controle;
 

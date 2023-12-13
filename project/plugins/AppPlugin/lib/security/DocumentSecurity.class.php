@@ -32,12 +32,12 @@ abstract class DocumentSecurity implements SecurityInterface {
         }
 
         if (in_array(self::EDITION, $droits) || in_array(self::VISUALISATION, $droits)) {
-            if($this->user->getCompte()->getSociete() && preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
+            if($this->user->getCompte() && $this->user->getCompte()->getSociete() && preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->doc->identifiant)) {
                 return true;
             }
         }
 
-        if(!$this->isAdmin() && !preg_match("/^".$this->user->getCompte()->identifiant."/", $this->doc->identifiant)) {
+        if(!$this->isAdmin() && $this->user->getCompte() && !preg_match("/^".$this->user->getCompte()->identifiant."/", $this->doc->identifiant)) {
 
             $lienSymbolique = null;
 

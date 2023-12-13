@@ -1,6 +1,6 @@
 <?php
 
-class drevActions extends sfActions {
+class /***AVA***/drevActions extends sfActions {
 
     public function executePushDR(sfWebRequest $request) {
         $this->url = $request->getParameter('url');
@@ -78,6 +78,12 @@ class drevActions extends sfActions {
 
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        if ($this->drev->hasDROrSV()) {
+
+            return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
+        }
+
         $this->secure(DRevSecurity::EDITION, $this->drev);
     }
 
@@ -103,7 +109,13 @@ class drevActions extends sfActions {
             mkdir($cache_dir);
         }
 
+        if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
+
+            return sfView::SUCCESS;
+        }
+
         $typedoc = ($this->drev->isNonRecoltant()) ? 'SV' : 'DR';
+
 
         if ($request->getParameter('csv')) {
 
@@ -679,7 +691,7 @@ class drevActions extends sfActions {
         foreach ($this->validation->getEngagements() as $engagement) {
             $document = $documents->add($engagement->getCode());
             $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDR()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
-            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_SV && !$this->drev->hasSV()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_SV && $this->drev->hasSV()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
         }
 
         if($this->form->getValue("commentaire")) {
@@ -853,7 +865,15 @@ class drevActions extends sfActions {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);
 
-        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+        $type = null;
+
+        if($drev->hasDR()) {
+            $type = "DR";
+        } elseif($drev->hasSV()) {
+            $type = "SV";
+        }
+
+        $file = file_get_contents($drev->getAttachmentUri($type.".pdf"));
 
         if(!$file) {
 

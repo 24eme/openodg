@@ -79,12 +79,24 @@
       	</td>
         <td class="edit text-center">
             <a class="text-muted" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le logement <?php echo $lot->numero_logement_operateur.' de '.$lot->volume."hl" ?> ?');" title="Supprimer le logement" href="<?php echo url_for('degustation_supprimer_lot_non_preleve', ['id' => $degustation->_id, 'lot' => $key]) ?>"><i class="glyphicon glyphicon-trash"></i></a>
-
-          <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
-              <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'anonymat4labo' => true]) ?>" class="btn btn-default btn-xs transparence-md pull-right" title="Étiquettes de prélèvement (avec anonymat labo)"><span class="glyphicon glyphicon-th"></span></a>
-          <?php else : ?>
-              <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant]) ?>" class="btn btn-default btn-xs pull-right transparence-md pull-right" title="Étiquettes de prélèvement"><span class="glyphicon glyphicon-th"></span></a>
-          <?php endif ?>
+            <div class="dropdown pull-right" style="display: inline-block">
+                <button class="btn btn-default dropdown-toggle btn-xs" type="button" id="listePdf" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="glyphicon glyphicon-file"></span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="listePdf">
+                    <li>
+                      <?php if(DegustationConfiguration::getInstance()->hasAnonymat4labo()) : ?>
+                          <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant, 'anonymat4labo' => true]) ?>" title="Étiquettes de prélèvement (avec anonymat labo)"><span class="glyphicon glyphicon-th"></span> Étiquettes de prélèvement (avec anonymat labo)</a>
+                      <?php else : ?>
+                          <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_etiquette_pdf', ['id' => $degustation->_id, 'identifiant' => $lot->declarant_identifiant]) ?>" title="Étiquettes de prélèvement"><span class="glyphicon glyphicon-th"></span> Étiquettes de prélèvement</a>
+                      <?php endif ?>
+                    </li>
+                    <li>
+                        <a id="btn_pdf_etiquettes_de_prelevement" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', ['id' => $degustation->_id, 'lotid' => $lot->unique_id]) ?>" title="Fiche tournée prélevement"><span class="glyphicon glyphicon-file"></span> Fiche tournée prélevement</a>
+                    </li>
+                </ul>
+            </div>
         </td>
       </tr>
     <?php endforeach; ?>

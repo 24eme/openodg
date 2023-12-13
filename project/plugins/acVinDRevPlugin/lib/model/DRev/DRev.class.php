@@ -626,15 +626,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $this->declarant->famille = $this->getEtablissementObject()->famille;
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
-          return false;
+          throw new sfException('Superficies déjà saisies');
       }
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
-          return false;
+          throw new sfException('Volume déjà déclaré');
       }
 
       if(count($this->getProduitsWithoutLots()) > 0 && $this->isValidee()) {
-        return false;
+          throw new sfException('Document validé');
       }
 
       $this->remove('declaration');
@@ -644,12 +644,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$csv) {
       	return false;
       }
-	    try {
-          $this->importCSVDouane($csv);
-          return true;
-      } catch (Exception $e) { }
 
-      return false;
+      $this->importCSVDouane($csv);
+
+      return true;
     }
 
     public function importCSVDouane($csv) {
@@ -827,6 +825,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     $produit->vci->constitue = $produitRecolte->vci_constitue;
                 }
             }
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VCI) {
+                $produitRecolte->vci_constitue += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
+                $produit->vci->constitue = $produitRecolte->vci_constitue;
+            }
+
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VSI_L18) {
                 if ($produitRecolte->volume_sur_place_revendique) {
                     if(!$produitRecolte->exist('vsi')) {
@@ -834,6 +837,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     }
                     $produitRecolte->vsi += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
                 }
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VSI) {
+                if(!$produitRecolte->exist('vsi')) {
+                    $produitRecolte->add('vsi');
+                }
+                $produitRecolte->vsi += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
@@ -853,10 +862,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_total += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_sur_place += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
-            }
-            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VCI) {
-                $produitRecolte->vci_constitue += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
-                $produit->vci->constitue = $produitRecolte->vci_constitue;
             }
         }
         //Si on n'a pas de volume sur place
@@ -1387,9 +1392,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->getDateDepot();
 
         $this->updateAddressCurrentLots();
-        if ($this->isValideeOdg()) {
-            $this->generateMouvementsLots();
-        }
+
+        $this->generateMouvementsLots();
 
         $saved = parent::save();
 
@@ -1552,6 +1556,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $deleted = false;
         foreach($this->getDeletedLots() as $lot) {
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
             $volume_mod -= $lot->volume;
             $deleted = true;
         }
@@ -2169,7 +2176,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function generateModificative() {
 
         $drev = $this->version_document->generateModificative();
-        $drev->resetAndImportFromDocumentDouanier();
+        try {
+            $drev->resetAndImportFromDocumentDouanier();
+        } catch(Exception $e) {
+
+        }
         return $drev;
     }
 
@@ -2295,7 +2306,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduits() as $hash_c => $produit_c) {
             $produit = $produit_c->getCepage();
             $hash = $produit->getHash();
-            if (!$habilitation || !$habilitation->isHabiliteFor($produit->getConfig()->getAppellation()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+            if (!$habilitation || !$habilitation->isHabiliteFor(str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $produit->getConfig()->getAppellation()->getHash()), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
                 $nonHabilitationODG[$hash] = $produit;
             }
         }
