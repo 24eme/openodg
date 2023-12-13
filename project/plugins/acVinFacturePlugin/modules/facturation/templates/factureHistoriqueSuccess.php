@@ -56,7 +56,7 @@
                     <?php endif; ?>
                 </td>
                 <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€</td>
-                <td class="text-right"><?php ($facture->doc->montant_paiement) == 0 ? $amount = "" : $amount = $facture->doc->montant_paiement . "€"; ?>&nbsp;<?php echo $amount ?></td>
+                <td class="text-right"><?php ($facture->doc->montant_paiement) == 0 ? $amount = "" : $amount = formatFloat($facture->doc->montant_paiement) . "€"; ?>&nbsp;<?php echo $amount ?></td>
             </tr>
         <?php endforeach; ?>
         <tr class="hidden"><td colspan="7">Aucun lot trouvé</td></tr>
