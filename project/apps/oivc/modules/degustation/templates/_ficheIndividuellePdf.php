@@ -59,7 +59,7 @@
 
     <tr style="line-height:30px; height:32px">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
-      <td style="text-align:left;"><?php echo tdStart() ?><span style="line-height: 16px;"> <?php echo showOnlyProduit($lotInfo, false, 'span') ?> <?php echo showOnlyCepages($lotInfo, false) ?></span></td>
+      <td style="text-align:left;"><?php echo tdStart() ?><span style="line-height: 16px;"> <?php echo showOnlyProduit($lotInfo, false, 'span') ?></span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
