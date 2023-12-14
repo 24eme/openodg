@@ -1210,4 +1210,22 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getRegion() {
         return RegionConfiguration::getInstance()->getOdgRegion($this->getProduitHash());
     }
+
+    public function setPrelevementHeure($h) {
+        if ($this->getDocument()->type != TourneeClient::TYPE_MODEL) {
+            throw new sfException('setPrelevementHeure ne devrait être appelé que pour les tournée');
+        }
+        return $this->setPrelevementDatetime($this->getDocument()->getDateFormat('Y-m-d').' '.$h);
+    }
+
+    public function getPrelevementHeure() {
+        return $this->getPrelevementFormat('h:i');
+    }
+
+    public function getPrelevementFormat($format = 'Y-m-d h:i') {
+        if (!$this->prelevement_datetime) {
+            return ;
+        }
+        return date($format, strtotime($this->prelevement_datetime));
+    }
 }

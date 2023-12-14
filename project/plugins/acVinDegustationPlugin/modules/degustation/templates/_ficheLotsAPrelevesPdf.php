@@ -59,7 +59,7 @@ th {
           </small>
           </td>
           <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
-          <td><?php echo $degustation->getDateFormat('d/m/Y') ?><br /><?php echo $lot->prelevement_heure ?></td>
+          <td><?php echo $lot->getPrelevementFormat('d/m/Y h:M') ?></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>

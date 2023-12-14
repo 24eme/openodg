@@ -154,6 +154,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
         }
 
+        foreach($this->lots as $l) {
+            if ($l->exist('prelevement_heure')) {
+                $h = $l->_get('prelevement_heure');
+                if ($h) {
+                    $l->setPrelevementHeure($h);
+                }
+                $l->remove('prelevement_heure');
+            }
+        }
+
         $saved = parent::save();
 
         if($saveDependants) {
