@@ -1222,7 +1222,7 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getPrelevementFormat('H:i');
     }
 
-    public function getPrelevementFormat($format = 'Y-m-d H:i') {
+    public function getPrelevementFormat($format = 'd/m/Y H:i') {
         if (!$this->prelevement_datetime) {
             return ;
         }
