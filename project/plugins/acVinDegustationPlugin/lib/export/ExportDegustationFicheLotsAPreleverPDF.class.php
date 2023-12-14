@@ -25,7 +25,7 @@ class ExportDegustationFicheLotsAPreleverPDF extends ExportDeclarationLotsPDF {
           if(!isset($this->etablissements[$lot->declarant_identifiant])) {
               $this->etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->findByIdentifiant($lot->declarant_identifiant);
           }
-          $this->lots[$this->secteur][$lot->prelevement_heure.'/'.$lot->getLogementCodePostal().'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
+          $this->lots[$this->secteur][$lot->prelevement_datetime.'/'.$lot->getLogementCodePostal().'/'.$lot->declarant_identifiant][$lot->getNumeroDossier()][] = $lot;
       }
       ksort($this->lots);
     }

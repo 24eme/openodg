@@ -38,11 +38,11 @@ th {
              <small><?php
               if($lot->hasLogement()):
                 if ($lot->getLogementNom() != $etablissement->raison_sociale) {
-                    echo substrUtf8($lot->getLogementNom(), 0, 32).'<br/>';
-                }?>
+                    echo substrUtf8($lot->getLogementNom(), 0, 32);
+                }?><br/>
                 <?php echo substrUtf8($lot->getLogementAdresse(), 0, 32).'<br/>'.substrUtf8($lot->getLogementCodePostal().' '.$lot->getLogementCommune(), 0, 32).'<br/>'; ?>
               <?php else: ?>
-                <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
+                <?php echo  '<br/>'.$etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
               <?php endif; ?>
              <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?>
              <?php echo ($etablissement->telephone_bureau && $etablissement->telephone_mobile) ? ' / ' : ''; ?>
@@ -59,7 +59,7 @@ th {
           </small>
           </td>
           <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
-          <td><?php echo $degustation->getDateFormat('d/m/Y') ?><br /><?php echo $lot->prelevement_heure ?></td>
+          <td><?php echo $lot->getPrelevementFormat('d/m/Y h:M') ?></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>
