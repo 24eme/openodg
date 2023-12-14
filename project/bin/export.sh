@@ -130,6 +130,16 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
     cat $EXPORTDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/habilitation.csv
     head -n 1 $EXPORTDIR/drev.csv > $SUBDIR/drev.csv
     cat $EXPORTDIR/drev.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/drev.csv
+    if [ -z $IS_NO_VINIF ]; then
+        head -n 1 $EXPORTDIR/dr.csv > $SUBDIR/dr.csv
+        cat $EXPORTDIR/dr.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/dr.csv
+        head -n 1 $EXPORTDIR/sv11.csv > $SUBDIR/sv11.csv
+        cat $EXPORTDIR/sv11.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/sv11.csv
+        head -n 1 $EXPORTDIR/sv12.csv > $SUBDIR/sv12.csv
+        cat $EXPORTDIR/sv12.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/sv12.csv
+        head -n 1 $EXPORTDIR/production.csv > $SUBDIR/production.csv
+        cat $EXPORTDIR/production.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/production.csv
+    fi
 done
 
 sleep $EXPORTSLEEP
