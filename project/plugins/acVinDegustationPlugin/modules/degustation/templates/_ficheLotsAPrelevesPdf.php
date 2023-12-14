@@ -59,7 +59,7 @@ th {
           </small>
           </td>
           <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
-          <td><?php echo $lot->getPrelevementFormat('d/m/Y h:M') ?></td>
+          <td><?php echo $lot->getPrelevementFormat() ?></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>
