@@ -109,7 +109,10 @@ class DRevDeclaration extends BaseDRevDeclaration
 			if($produit->getConfig()->isRevendicationParLots()){
 				continue;
 			}
-			$produits[$produit->getHash()] = $produit;
+            if (!$produit->hasVolumeOrSuperficieRevendicables()) {
+                continue;
+            }
+            $produits[$produit->getHash()] = $produit;
 		}
 
 		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
@@ -131,6 +134,9 @@ class DRevDeclaration extends BaseDRevDeclaration
 
 				continue;
 			}
+            if (!$produit->hasVolumeOrSuperficieRevendicables()) {
+                continue;
+            }
 			$produits[$produit->getHash()] = $produit;
 		}
 		return $produits;
