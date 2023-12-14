@@ -115,6 +115,7 @@ class DRevDeclaration extends BaseDRevDeclaration
             $produits[$produit->getHash()] = $produit;
 		}
 
+        //Tri des produits par région pour le récap plus lisible
 		foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
 			$produitsByRegion = $this->getProduitsWithoutLotsByRegion($region);
 			foreach($produitsByRegion as $hash => $produit) {
