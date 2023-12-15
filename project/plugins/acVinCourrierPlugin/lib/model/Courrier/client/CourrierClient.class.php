@@ -42,6 +42,25 @@ class CourrierClient extends acCouchdbClient {
             self::COURRIER_AVIS_PRELEVEMENT => ['courrierAvisDePrelevementPDF']
     );
 
+    public static $courrier_page_extra = array(
+            'degustationRapportInspection' => array(
+                'representant_nom',
+                'representant_fonction',
+                'agent_nom',
+                'analytique_date',
+                'analytique_conforme',
+                'analytique_conforme',
+                'analytique_libelle',
+                'analytique_libelle',
+                'analytique_code',
+                'analytique_code',
+                'analytique_niveau',
+                'organoleptique_code',
+                'organoleptique_code',
+                'organoleptique_niveau',
+            ),
+    );
+
 	/**
 	*
 	* @return CurrentClient
@@ -85,6 +104,16 @@ class CourrierClient extends acCouchdbClient {
             throw new sfException('wrong page id '.$id.' for '.$courrier_key);
         }
         return self::$courrier_templates_pages[$courrier_key][$i];
+    }
+    public function getExtraFields($courrier_key) {
+        $fields = array();
+        for($i = 0 ; $i < $this->getNbPages($courrier_key) ; $i++) {
+            $page = $this->getPDFTemplateNameForPageId($courrier_key, $i);
+            if (isset(self::$courrier_page_extra[$page])) {
+                $fields = array_merge($fields, self::$courrier_page_extra[$page]);
+            }
+        }
+        return $fields;
     }
 
 }

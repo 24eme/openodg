@@ -37,7 +37,10 @@ class courrierActions extends sfActions
         $this->lot = LotsClient::getInstance()->findByUniqueId($this->etablissement->getIdentifiant(), $unique_id);
         $this->courrier = CourrierClient::getInstance()->find($request->getParameter('id_form'));
 
-        $this->form = new CourrierExtrasNouveauForm($this->courrier->add('extras'));
+        $this->form = new CourrierExtrasNouveauForm($this->courrier);
+        if (!$this->form->getNbFields()) {
+            return $this->redirect('degustation_lot_historique', array('identifiant' => $this->etablissement->identifiant, 'unique_id' => $this->lot->unique_id));
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
