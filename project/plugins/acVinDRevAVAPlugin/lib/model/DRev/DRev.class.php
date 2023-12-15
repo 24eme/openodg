@@ -1,10 +1,8 @@
 <?php
 
-/**
- * Model for DRev
- *
- */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
+/*** AVA ***/
+
+class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -1254,6 +1252,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDate() {
         return $this->getPeriode().'-12-15';
+    }
+
+    public function getDocumentsEnAttente() {
+        if(!$this->exist('documents')) {
+
+            return [];
+        }
+
+        $documents = [];
+        foreach($this->documents as $document) {
+            if($document->statut == DRevDocuments::STATUT_RECU) {
+                continue;
+            }
+
+            $documents[] = $document;
+        }
+
+        return $documents;
     }
 
     /**** FIN DE VERSION ****/
