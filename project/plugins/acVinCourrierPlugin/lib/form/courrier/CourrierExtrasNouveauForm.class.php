@@ -19,7 +19,7 @@ class CourrierExtrasNouveauForm extends acCouchdbObjectForm {
                 $this->setValidator($name, new sfValidatorString(array('required' => false)));
             } elseif ($options_array['type'] == 'date') {
                 $this->setWidget($name, new bsWidgetFormInput($options_array, array()));
-                $this->setValidator($name, new sfValidatorDate(array('datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)));
+                $this->setValidator($name, new sfValidatorDate(array('datetime_output' => 'Y-m-d', 'required' => false)));
             } else {
                 $this->setWidget($name, new sfWidgetFormInputCheckbox($options_array));
                 $this->setValidator($name, new sfValidatorBoolean());
