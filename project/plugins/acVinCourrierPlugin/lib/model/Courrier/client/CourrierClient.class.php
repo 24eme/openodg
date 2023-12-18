@@ -27,7 +27,6 @@ class CourrierClient extends acCouchdbClient {
         self::COURRIER_AVIS18 => 'Avis de Manquement Suite à Nouveau Contrôle Vin (C18)',
         self::COURRIER_AVIS19 => 'Avis de Manquement Suite à Recours INAO (C19)',
         self::COURRIER_AVIS_PRELEVEMENT => 'Avis de prélèvement par l\'OIVC',
-        self::COURRIER_IMPORT => 'Avis importé',
     );
 
     public static $courrier_templates_pages = array(
