@@ -124,7 +124,7 @@
     <tr>
         <td>Examen analytique<br/>(sous traitance)</td>
         <td style="text-align:center;"><?php if ($courrier->getExtra('analytique_date')) echo $courrier->getExtraDateFormat('analytique_date', 'd/m/Y'); ?></td>
-        <td><?php echo echoCheck(null, ! $lot->isNonConforme() || $courrier->getExtra('analytique_conforme')); ?></td>
+        <td><?php echo echoCheck(null, ($courrier->getExtra('analytique_date')) && (! $lot->isNonConforme() || $courrier->getExtra('analytique_conforme'))); ?></td>
         <td><?php echo echoCheck(null, $lot->isNonConforme() && $courrier->getExtra('analytique_date') && !$courrier->getExtra('analytique_conforme')); ?></td>
         <td style="text-align:center;">
             <?php echo $courrier->getExtra('analytique_libelle') ; ?>
@@ -135,7 +135,7 @@
     </tr>
     <tr>
         <td>Examen organoleptique<br/></td>
-        <td style="text-align:center;"><?php echo $degustation->getDateFormat('d/m/Y'); ?></td>
+        <td style="text-align:center;"><?php echo $lot->getDateCommissionFormat(); ?></td>
         <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td>
         <td style="text-align:center;">
             <?php echo $lot->motif ; ?>

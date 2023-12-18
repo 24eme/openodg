@@ -347,6 +347,13 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->_get('date_commission');
     }
 
+    public function getDateCommissionFormat($format = 'd/m/Y') {
+        if($this->date_commission && preg_match("/(\d{4}\-\d{2}-\d{2})/", $this->date_commission, $m)){
+          return Date::francizeDate(DateTime::createFromFormat('Y-m-d', $m[1])->format($format));
+        }
+        throw new sfException('wrong date_commission format : '.$this->date_commission);
+    }
+
     public function getDocOrigine(){
       if(!$this->exist('id_document') || !$this->id_document){
         return null;
