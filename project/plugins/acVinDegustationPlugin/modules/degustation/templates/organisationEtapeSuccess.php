@@ -44,7 +44,9 @@ echo $form->renderGlobalErrors();
             <th class="col-xs-3 text-left">Opérateur</th>
             <th class="col-xs-4 text-left">Adresse du logement</th>
             <th class="col-xs-1 text-left">Nombre de lots</th>
+            <?php if ($degustation->type == TourneeClient::TYPE_MODEL) : ?>
             <th class="col-xs-2 text-left">Heure</th>
+            <?php endif; ?>
             <?php if ($degustation->type == DegustationClient::TYPE_MODEL) : ?>
             <th class="col-xs-2 text-center">Secteur</th>
             <?php endif; ?>
@@ -60,7 +62,9 @@ echo $form->renderGlobalErrors();
                 <td class="text-left"><?php echo $firstlot->declarant_nom; ?></td>
                 <td class="text-left"><?php echo $firstlot->getLogementNom(); ?><br /><?php echo $firstlot->getLogementAdresse(); ?><br /><?php echo $firstlot->getLogementCodePostal(); ?> <?php echo $firstlot->getLogementCommune(); ?></td>
                 <td class="text-center"><?php echo $form->getNbLots($logementKey); ?></td>
+                <?php if (isset($subForm['heure'])) : ?>
                 <td class="text-center"><?php echo $subForm['heure']->render(); ?></td>
+                <?php endif; ?>
                 <?php if ($degustation->type == DegustationClient::TYPE_MODEL) : ?>
                 <td class="text-center"><?php echo $subForm['logement']->render(); ?></td>
                 <?php endif; ?>
