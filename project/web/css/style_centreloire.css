@@ -82,6 +82,16 @@ body {
     font-size: 14px;
 }
 
+#etapes_degustation .nav-step ul.navbar-nav li a::before {
+    display: block;
+    margin: 0 auto 8px auto;
+}
+
+#etapes_degustation .nav-step ul.navbar-nav li a {
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
 .nav-step ul.navbar-nav li {
     border-top: 1px solid #dbd3c8;
     border-right: 1px solid #dbd3c8;

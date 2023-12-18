@@ -27,7 +27,6 @@ class CourrierClient extends acCouchdbClient {
         self::COURRIER_AVIS18 => 'Avis de Manquement Suite à Nouveau Contrôle Vin (C18)',
         self::COURRIER_AVIS19 => 'Avis de Manquement Suite à Recours INAO (C19)',
         self::COURRIER_AVIS_PRELEVEMENT => 'Avis de prélèvement par l\'OIVC',
-        self::COURRIER_IMPORT => 'Avis importé',
     );
 
     public static $courrier_templates_pages = array(
@@ -40,6 +39,25 @@ class CourrierClient extends acCouchdbClient {
             self::COURRIER_AVIS18 => ['courrierAvisC18ManquementSuiteNouveauControleVinPDF', 'degustationRapportInspection'],
             self::COURRIER_AVIS19 => ['courrierAvisC19ManquementSuiteRecoursPDF', 'degustationRapportInspection'],
             self::COURRIER_AVIS_PRELEVEMENT => ['courrierAvisDePrelevementPDF']
+    );
+
+    public static $courrier_page_extra = array(
+            'degustationRapportInspection' => array(
+                'representant_nom',
+                'representant_fonction',
+                'agent_nom',
+                'analytique_date',
+                'analytique_conforme',
+                'analytique_conforme',
+                'analytique_libelle',
+                'analytique_libelle',
+                'analytique_code',
+                'analytique_code',
+                'analytique_niveau',
+                'organoleptique_code',
+                'organoleptique_code',
+                'organoleptique_niveau',
+            ),
     );
 
 	/**
@@ -84,7 +102,20 @@ class CourrierClient extends acCouchdbClient {
         if ($this->getNbPages($courrier_key) < $i) {
             throw new sfException('wrong page id '.$id.' for '.$courrier_key);
         }
+        if (!isset(self::$courrier_templates_pages[$courrier_key]) || !isset(self::$courrier_templates_pages[$courrier_key][$i])) {
+            return null;
+        }
         return self::$courrier_templates_pages[$courrier_key][$i];
+    }
+    public function getExtraFields($courrier_key) {
+        $fields = array();
+        for($i = 0 ; $i < $this->getNbPages($courrier_key) ; $i++) {
+            $page = $this->getPDFTemplateNameForPageId($courrier_key, $i);
+            if (isset(self::$courrier_page_extra[$page])) {
+                $fields = array_merge($fields, self::$courrier_page_extra[$page]);
+            }
+        }
+        return $fields;
     }
 
 }

@@ -14,3 +14,4 @@ all:
       typicite_cepage: true
       tournee_autonome: false
       has_notification : false
+      anonymisation_format: %s%02d

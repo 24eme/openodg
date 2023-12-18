@@ -90,7 +90,6 @@ class DegustationSelectionLotsForm extends acCouchdbObjectForm {
 
     protected function doUpdateObject($values) {
         $this->getObject()->fillDocToSaveFromLots();
-        parent::doUpdateObject($values);
 
         $lots = [];
         foreach ($values['lots'] as $id => $val) {

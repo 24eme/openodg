@@ -56,7 +56,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td><?php echoCheck('Recours', false) ?></td>
+                    <td><?php echoCheck('Recours', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_RECOURS) ?></td>
                     <td><?php echoCheck('Sous traitance', false) ?></td>
                     <td></td>
                 </tr>
@@ -74,7 +74,13 @@
             </table>
         </td></tr>
         <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->preleve)->format('d/m/Y') ?></td></tr>
-        <tr><td>Au moment du prélèvement, le vin est : <?php if ($lot->exist('quantite') && $lot->quantite) : ?>conditionné<?php else: ?>en vrac<?php endif; ?><?php if($lot->destination_type == DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE): ?> sur conservatoire<?php endif; ?></td></tr>
+        <tr><td>Au moment du prélèvement, le vin est :
+            <?php if($lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_RECOURS) :?>
+                Témoin
+            <?php else: ?>
+                <?php if ($lot->exist('quantite') && $lot->quantite) : ?>conditionné<?php else: ?>en vrac<?php endif; ?><?php if($lot->destination_type == DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE): ?> sur conservatoire<?php endif; ?>
+            <?php endif; ?>
+        </td></tr>
         <tr><td>Opérateur ou son représentant présent au cours du prélèvement<br/>
                 Nom : <?php echo $courrier->getExtra('representant_nom'); ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i>Fonction : <?php echo $courrier->getExtra('representant_fonction'); ?>
         </td></tr>
@@ -117,9 +123,9 @@
     </tr>
     <tr>
         <td>Examen analytique<br/>(sous traitance)</td>
-        <td style="text-align:center;"><?php echo $courrier->getExtraDateFormat('analytique_date', 'd/m/Y'); ?></td>
-        <td><?php echo echoCheck(null, ! $lot->isNonConforme() || $courrier->getExtra('analytique_conforme')); ?></td>
-        <td><?php echo echoCheck(null, $lot->isNonConforme() && !$courrier->getExtra('analytique_conforme')); ?></td>
+        <td style="text-align:center;"><?php if ($courrier->getExtra('analytique_date')) echo $courrier->getExtraDateFormat('analytique_date', 'd/m/Y'); ?></td>
+        <td><?php echo echoCheck(null, ($courrier->getExtra('analytique_date')) && (! $lot->isNonConforme() || $courrier->getExtra('analytique_conforme'))); ?></td>
+        <td><?php echo echoCheck(null, $lot->isNonConforme() && $courrier->getExtra('analytique_date') && !$courrier->getExtra('analytique_conforme')); ?></td>
         <td style="text-align:center;">
             <?php echo $courrier->getExtra('analytique_libelle') ; ?>
             <?php if ($courrier->getExtra('analytique_libelle') && $courrier->getExtra('analytique_code')) echo '/'; ?>
@@ -129,7 +135,7 @@
     </tr>
     <tr>
         <td>Examen organoleptique<br/></td>
-        <td style="text-align:center;"><?php echo $degustation->getDateFormat('d/m/Y'); ?></td>
+        <td style="text-align:center;"><?php echo $lot->getDateCommissionFormat(); ?></td>
         <td><?php echo echoCheck(null, ! $lot->isNonConforme()); ?></td> <td><?php echo echoCheck(null, $lot->isNonConforme()); ?></td>
         <td style="text-align:center;">
             <?php echo $lot->motif ; ?>

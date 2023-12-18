@@ -29,123 +29,17 @@
                   <p class="form-control render" disabled><?php echo $courrier->courrier_titre ?></p>
               </div>
         </div>
-
+        <?php foreach ($form as $k => $f): if ($k == '_revision') { continue; }?>
         <div class="form-group">
             <div class="col-sm-4 control-label">
-              <?php echo $form["agent_nom"]->renderError(); ?>
-              <?php echo $form["agent_nom"]->renderLabel(); ?> :
+              <?php echo $f->renderError(); ?>
+              <?php echo $f->renderLabel(); ?> :
             </div>
             <div class="col-sm-4">
-                <?php echo $form["agent_nom"]->render() ?>
+                <?php echo $f->render() ?>
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["representant_nom"]->renderError(); ?>
-              <?php echo $form["representant_nom"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["representant_nom"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["representant_fonction"]->renderError(); ?>
-              <?php echo $form["representant_fonction"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["representant_fonction"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["analytique_date"]->renderError(); ?>
-              <?php echo $form["analytique_date"]->renderLabel("Date d'analyse"); ?>
-            </div>
-            <div class="col-sm-4">
-                <div class="input-group date-picker">
-                    <?php echo $form["analytique_date"]->render(array("class" => "form-control")); ?>
-                    <div class="input-group-addon">
-                        <span class="glyphicon-calendar glyphicon"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["analytique_conforme"]->renderError(); ?>
-              <?php echo $form["analytique_conforme"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-2 checkbox ml-4">
-                <?php echo $form["analytique_conforme"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["analytique_libelle"]->renderError(); ?>
-              <?php echo $form["analytique_libelle"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["analytique_libelle"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["analytique_code"]->renderError(); ?>
-              <?php echo $form["analytique_code"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["analytique_code"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["analytique_niveau"]->renderError(); ?>
-              <?php echo $form["analytique_niveau"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["analytique_niveau"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["organoleptique_code"]->renderError(); ?>
-              <?php echo $form["organoleptique_code"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["organoleptique_code"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["organoleptique_niveau"]->renderError(); ?>
-              <?php echo $form["organoleptique_niveau"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["organoleptique_niveau"]->render() ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-4 control-label">
-              <?php echo $form["vin_emplacement"]->renderError(); ?>
-              <?php echo $form["vin_emplacement"]->renderLabel(); ?> :
-            </div>
-            <div class="col-sm-4">
-                <?php echo $form["vin_emplacement"]->render() ?>
-            </div>
-        </div>
-
-
+        <?php endforeach; ?>
         <div class="col-xs-2">
         </div>
         <div class="col-xs-7">

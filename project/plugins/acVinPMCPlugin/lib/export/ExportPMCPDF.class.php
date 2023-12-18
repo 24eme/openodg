@@ -92,6 +92,13 @@ class ExportPMCPDF extends ExportPDF
         return $header_subtitle;
     }
 
+    protected function getLogo() {
+        foreach($this->declaration->getRegions()  as $r) {
+            return 'logo_'.strtolower($r).'.jpg';
+        }
+        return 'logo_'.strtolower(Organisme::getCurrentOrganisme()).'.jpg';
+    }
+
     protected function getConfig() {
         return new ExportPMCPDFConfig();
     }

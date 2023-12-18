@@ -154,6 +154,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
         }
 
+        foreach($this->lots as $l) {
+            if ($l->exist('prelevement_heure')) {
+                $h = $l->_get('prelevement_heure');
+                if ($h) {
+                    $l->setPrelevementHeure($h);
+                }
+                $l->remove('prelevement_heure');
+            }
+        }
+
         $saved = parent::save();
 
         if($saveDependants) {
@@ -390,7 +400,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
 			}elseif($lot->isAffectable()) {
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
-			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC)) && !$lot->id_document_affectation) {
+			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
@@ -517,13 +527,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function setLots($lots)
     {
-         $this->fillDocToSaveFromLots();
+        $this->fillDocToSaveFromLots();
 
-		 $this->remove('lots');
-		 $this->add('lots');
+        $lotsExistants = [];
+        foreach($this->lots as $lot) {
+            if($lot->unique_id) {
+                $lotsExistants[$lot->unique_id] = $lot->unique_id;
+            }
+        }
 
         foreach($lots as $key => $lot) {
+            if(isset($uniqIds[$lot->unique_id])) {
+                unset($uniqIds[$lot->unique_id]);
+                continue;
+            }
             $this->addLot($lot);
+        }
+
+        foreach($lotsExistants as $unique_id) {
+            $this->removeLot($this->getLot($unique_id));
         }
 	 }
 

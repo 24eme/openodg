@@ -347,6 +347,13 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->_get('date_commission');
     }
 
+    public function getDateCommissionFormat($format = 'd/m/Y') {
+        if($this->date_commission && preg_match("/(\d{4}\-\d{2}-\d{2})/", $this->date_commission, $m)){
+          return Date::francizeDate(DateTime::createFromFormat('Y-m-d', $m[1])->format($format));
+        }
+        throw new sfException('wrong date_commission format : '.$this->date_commission);
+    }
+
     public function getDocOrigine(){
       if(!$this->exist('id_document') || !$this->id_document){
         return null;
@@ -1209,5 +1216,23 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getRegion() {
         return RegionConfiguration::getInstance()->getOdgRegion($this->getProduitHash());
+    }
+
+    public function setPrelevementHeure($h) {
+        if ($this->getDocument()->type != TourneeClient::TYPE_MODEL) {
+            throw new sfException('setPrelevementHeure ne devrait être appelé que pour les tournée');
+        }
+        return $this->setPrelevementDatetime($this->getDocument()->getDateFormat('Y-m-d').' '.$h);
+    }
+
+    public function getPrelevementHeure() {
+        return $this->getPrelevementFormat('H:i');
+    }
+
+    public function getPrelevementFormat($format = 'd/m/Y H:i') {
+        if (!$this->prelevement_datetime) {
+            return ;
+        }
+        return date($format, strtotime($this->prelevement_datetime));
     }
 }

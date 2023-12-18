@@ -51,7 +51,7 @@
             </tr>
             <?php endif; endforeach; ?>
 
-            <?php if ($sf_user->isAdmin()): ?>
+            <?php if ($sf_user->isAdminODG()): ?>
             <tr class="hidden-print">
               <td colspan="3">
               </td>

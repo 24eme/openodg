@@ -12,10 +12,9 @@ class DegustationTourneesForm extends acCouchdbForm
         $this->secteur = $secteur;
         $this->lots_par_logements = $degustation->getLotsBySecteur();
         $defaults = [];
-        foreach($this->lots_par_logements[$this->secteur] as $key => $lots) {
-            $defaults[$key] = $this->secteur;
-            $this->firstLot[$key] = $lots[0];
-            $this->nbLots[$key] = count($lots);
+        foreach($this->lots_par_logements[$this->secteur] as $logementKey => $lots) {
+            $this->firstLot[$logementKey] = $lots[0];
+            $this->nbLots[$logementKey] = count($lots);
         }
 
         parent::__construct($degustation, $defaults, $options, $CSRFSecret);
@@ -40,20 +39,25 @@ class DegustationTourneesForm extends acCouchdbForm
             $logements[$logementKey] = $lots;
         }
 
-        uasort($logements, function ($a, $b) {
-            if (($a[0])->prelevement_heure == ($b[0])->prelevement_heure) return 0;
-            return (($a[0])->prelevement_heure < ($b[0])->prelevement_heure)? -1 : 1;
-        });
+        if ($this->getDocument()->type == TourneeClient::TYPE_MODEL) {
+            uasort($logements, function ($a, $b) {
+                return strcmp($a[0]->prelevement_datetime, $b[0]->prelevement_datetime);
+            });
+        }
 
         foreach($logements as $logementKey => $lots) {
             $form = new BaseForm();
-            $form->setWidget('heure', new bsWidgetFormInput(array("type"=>'time'), ['class' => 'form-control select2SubmitOnBlur']));
-            $form->setValidator('heure', new sfValidatorTime(array('time_output' => 'H:i', 'time_format' => '~(?<hour>\d{2}):(?P<minute>\d{2})~', 'required' => false)));
+            if ($this->getDocument()->type == TourneeClient::TYPE_MODEL) {
+                $form->setWidget('heure', new bsWidgetFormInput(array("type"=>'time'), ['class' => 'form-control select2SubmitOnBlur']));
+                $form->setValidator('heure', new sfValidatorTime(array('time_output' => 'H:i', 'time_format' => '~(?<hour>\d{2}):(?P<minute>\d{2})~', 'required' => false)));
+                if ($heure = $this->getFirstLot($logementKey)->getPrelevementHeure()) {
+                    $form->setDefault('heure', $heure);
+                }
+            }
             $form->setWidget('logement', new bsWidgetFormChoice(['choices' => $this->getSecteurs()], ['class' => 'form-control select2SubmitOnChange']));
             $form->setValidator('logement', new sfValidatorChoice(['choices' => array_keys($this->getSecteurs()), 'required' => false]));
-            if ($heure = $this->getFirstLot($logementKey)->prelevement_heure) {
-                $form->setDefault('heure', $heure);
-            }
+            $form->setDefault('logement', $this->secteur);
+
             $this->embedForm($logementKey, $form);
         }
 
@@ -67,7 +71,9 @@ class DegustationTourneesForm extends acCouchdbForm
         foreach($this->lots_par_logements[$this->secteur] as $logementKey => $lots) {
             foreach($lots as $lot) {
                 if (isset($values[$logementKey])) {
-                    $lot->prelevement_heure = $values[$logementKey]['heure'];
+                    if(isset($values[$logementKey]['heure'])) {
+                        $lot->setPrelevementHeure($values[$logementKey]['heure']);
+                    }
                     $lot->secteur = ($values[$logementKey]['logement'] != DegustationClient::DEGUSTATION_SANS_SECTEUR) ? $values[$logementKey]['logement'] : null;
                 }
             }

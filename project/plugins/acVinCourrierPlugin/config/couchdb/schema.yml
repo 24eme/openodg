@@ -106,6 +106,7 @@ Courrier:
                   engagement_8515: { required: false }
                   preleve: {}
                   secteur: {}
+                  prelevement_datetime: {}
       mouvements_lots:
         type: collection
         definition:

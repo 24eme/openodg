@@ -838,7 +838,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI_L19) {
-                if ($produitRecolte->volume_sur_place_revendique) {
+                if (!$has_coop_l8){
                     $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
                     $produit->vci->constitue = $produitRecolte->vci_constitue;
                 }
@@ -849,7 +849,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VSI_L18) {
-                if ($produitRecolte->volume_sur_place_revendique) {
+                if (!$has_coop_l8){
                     if(!$produitRecolte->exist('vsi')) {
                         $produitRecolte->add('vsi');
                     }
