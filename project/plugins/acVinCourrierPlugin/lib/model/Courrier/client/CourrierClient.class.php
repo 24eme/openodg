@@ -102,6 +102,9 @@ class CourrierClient extends acCouchdbClient {
         if ($this->getNbPages($courrier_key) < $i) {
             throw new sfException('wrong page id '.$id.' for '.$courrier_key);
         }
+        if (!isset(self::$courrier_templates_pages[$courrier_key]) || !isset(self::$courrier_templates_pages[$courrier_key][$i])) {
+            return null;
+        }
         return self::$courrier_templates_pages[$courrier_key][$i];
     }
     public function getExtraFields($courrier_key) {

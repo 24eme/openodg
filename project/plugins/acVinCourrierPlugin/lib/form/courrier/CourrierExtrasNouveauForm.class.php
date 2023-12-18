@@ -4,6 +4,9 @@ class CourrierExtrasNouveauForm extends acCouchdbObjectForm {
     private $courrier = null;
 
     public function __construct($courrier) {
+        if (!$courrier) {
+            throw new sfException('Courrier needed');
+        }
         $this->courrier = $courrier;
         parent::__construct($this->courrier->add('extras'));
     }
