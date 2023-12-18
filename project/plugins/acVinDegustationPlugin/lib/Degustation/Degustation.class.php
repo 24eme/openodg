@@ -527,13 +527,25 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
     public function setLots($lots)
     {
-         $this->fillDocToSaveFromLots();
+        $this->fillDocToSaveFromLots();
 
-		 $this->remove('lots');
-		 $this->add('lots');
+        $lotsExistants = [];
+        foreach($this->lots as $lot) {
+            if($lot->unique_id) {
+                $lotsExistants[$lot->unique_id] = $lot->unique_id;
+            }
+        }
 
         foreach($lots as $key => $lot) {
+            if(isset($uniqIds[$lot->unique_id])) {
+                unset($uniqIds[$lot->unique_id]);
+                continue;
+            }
             $this->addLot($lot);
+        }
+
+        foreach($lotsExistants as $unique_id) {
+            $this->removeLot($this->getLot($unique_id));
         }
 	 }
 
