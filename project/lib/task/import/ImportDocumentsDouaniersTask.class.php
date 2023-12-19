@@ -53,7 +53,7 @@ EOF;
 		    $nb = count($items);
         foreach ($items as $item) {
 
-            if ($options['limitidentifiant'] && strpos($options['limitidentifiant'], $item->id) === false) {
+            if ($options['limitidentifiant'] && strpos($item->id, $options['limitidentifiant']) === false) {
                 continue;
             }
 
