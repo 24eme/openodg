@@ -71,7 +71,7 @@ EOF;
                     continue;
                 }
 
-        		if (!$etablissement->cvi || !preg_match('/^[0-9]{10}$/', $etablissement->cvi)) {
+        		if (!$etablissement->cvi || !preg_match('/^[0-9]{9}[0-9A-Z]$/', $etablissement->cvi)) {
         			echo sprintf("ERROR;CVI non valide %s pour %s\n", $etablissement->cvi, $etablissement->_id);
         			continue;
         		}
