@@ -1141,10 +1141,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->save();
         }
 
-        if(!$this->isFactures()){
-            $this->clearMouvementsFactures();
-            $this->generateMouvementsFactures();
-        }
     }
 
     public function setStatutOdgByRegion($statut, $region = null) {
@@ -1394,6 +1390,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updateAddressCurrentLots();
 
         $this->generateMouvementsLots();
+
+        if(!$this->isFactures() && $this->isValideeOdg()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
 
         $saved = parent::save();
 
@@ -1903,7 +1904,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$this->isValideeOdg()) {
           return;
         }
-
+        $commission_date = [];
         foreach ($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
                 continue;
@@ -1933,6 +1934,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if($lot->isAffecte()) {
+                $commission_date[$lot->date_commission] = $lot->date_commission;
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
                 continue;
             }
@@ -1943,6 +1945,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }else{
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
             }
+        }
+        if (count(array_keys($commission_date)) == 1) {
+            $this->date_commission = array_key_first($commission_date);
         }
     }
 
