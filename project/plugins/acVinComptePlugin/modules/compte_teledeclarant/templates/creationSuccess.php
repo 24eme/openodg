@@ -8,15 +8,16 @@
             </div>
             <div class="panel-body">
         <?php
-        $libelle = "Merci d'indiquer votre e-mail, votre mot de passe";
+        $libelle = "Merci d'indiquer votre mot de passe";
         $libelle .= ($form->getTypeCompte() == SocieteClient::TYPE_COURTIER)? " et votre numéro de carte professionnelle" : "";
+        $libelle_mail = "Merci de renseigner l'adresse email sur laquelle vous voulez recevoir les informations liées à vos déclarations :";
         /*$libelle .= ($form->getTypeCompte() == SocieteClient::TYPE_OPERATEUR && isset($form['siret']))?
                     //" et votre numéro de SIRET" : "";*/
         $libelle .= " :";
         ?>
           <div class="row">
               <div class="col-xs-12">
-                <p class="well"><strong>Conseil :</strong> Utiliser un <strong>email</strong> connu par vos collaborateurs habilités à télé-déclarer sur vos différents établissements. Concernant le <strong>mot de passe</strong>, vous devez en choisir un de 8 caractères minimum.</p>
+                <p class="well">Veuillez renseigner un mot de passe de <strong>8 caractères minimum.</strong></p>
               </div>
               <div class="col-xs-12">
                 <p class="titre_section">&nbsp;&nbsp;<?php echo $libelle; ?></p>
@@ -28,22 +29,6 @@
                     <?php echo $form->renderHiddenFields(); ?>
                     <?php echo $form->renderGlobalErrors(); ?>
                   </div>
-                <div class="col-xs-12">
-                    <div class="row">
-                      <div class="col-xs-12">
-                        <?php echo $form['email']->renderError() ?>
-                      </div>
-                    </div>
-                      <div class="row">
-                      <div class="col-xs-4 text-right">
-                        <?php echo $form['email']->renderLabel() ?>
-                      </div>
-                      <div class="col-xs-4 col-xs-offset-2 text-left">
-                          <?php echo $form['email']->render(array('class' => "form-control")) ?>
-                      </div>
-                    </div>
-                    <br/>
-                </div>
                 <div class="col-xs-12">
                     <div class="row">
                       <div class="col-xs-12">
@@ -72,6 +57,28 @@
                       </div>
                       <div class="col-xs-4 col-xs-offset-2 text-left">
                         <?php echo $form['mdp2']->render(array('class' => "form-control")) ?>
+                      </div>
+                    </div>
+                    <br/>
+                </div>
+                <div class="col-xs-12">
+                  <p class="well"><strong>Conseil :</strong> Utiliser un <strong>email</strong> connu par vos collaborateurs habilités à télé-déclarer sur vos différents établissements.</p>
+                </div>
+                <div class="col-xs-12">
+                  <p class="titre_section">&nbsp;&nbsp;<?php echo $libelle_mail; ?></p>
+                </div>
+                <div class="col-xs-12">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <?php echo $form['email']->renderError() ?>
+                      </div>
+                    </div>
+                      <div class="row">
+                      <div class="col-xs-4 text-right">
+                        <?php echo $form['email']->renderLabel() ?>
+                      </div>
+                      <div class="col-xs-4 col-xs-offset-2 text-left">
+                          <?php echo $form['email']->render(array('class' => "form-control")) ?>
                       </div>
                     </div>
                     <br/>

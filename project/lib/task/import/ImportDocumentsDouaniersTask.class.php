@@ -15,6 +15,7 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
 
         	  new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, "Type de document", null),
+            new sfCommandOption('limitidentifiant', null, sfCommandOption::PARAMETER_OPTIONAL, "Limit à l'identifiant indiqué", null),
             new sfCommandOption('forceimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Force import document (exept if manualy edited)", false),
             new sfCommandOption('scrapefiles', null, sfCommandOption::PARAMETER_OPTIONAL, "Scrape import document", false),
         ));
@@ -52,6 +53,9 @@ EOF;
 		    $nb = count($items);
         foreach ($items as $item) {
 
+            if ($options['limitidentifiant'] && strpos($options['limitidentifiant'], $item->id) === false) {
+                continue;
+            }
 
         	$i++;
         	echo "PROCESSUS;".$i.'/'.$nb.' => '.floor($i / $nb * 100)."\n";
