@@ -176,6 +176,10 @@ class /***AVA***/drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
+        if($this->drev->isPapier()) {
+            return $this->redirect('drev_revendication', $this->drev);
+        }
+
         return $this->redirect('drev_dr', $this->drev);
 
     }
