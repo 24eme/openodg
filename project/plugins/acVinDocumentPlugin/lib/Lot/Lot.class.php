@@ -1116,19 +1116,16 @@ abstract class Lot extends acCouchdbDocumentTree
         if (strpos($this->getAdresseLogement(), '—') === false) {
             return null;
         }
-        return explode('—', $this->getAdresseLogement());
+        return array_map(function($a) { return trim($a); }, explode('—', $this->getAdresseLogement()));
     }
 
     private function explodeLogement() {
-        $adresse_total = $this->getAdresseLogement();
         $s = $this->splitLogementIfHasSeparator();
-        if ($s) {
-            $adresse_total = $s[1];
-        }
-        if (preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) ([^0-9]*)$/', $adresse_total, $m)) {
+        if (!$s && preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) ([^0-9]*)$/', $this->getAdresseLogement(), $m)) {
             return $m;
         }
-        return array($adresse_total, $adresse_total, '', '');
+
+        return $s;
     }
 
     public function getLogementNom() {
@@ -1141,26 +1138,24 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function getLogementCommune() {
         $r = $this->explodeLogement();
-        if ($r && $r[3]) {
-            return $r[3];
+
+        if ($r && $r[2]) {
+            return preg_replace('/^[^ ]* /', '', $r[2]);
         }
-        $s = $this->splitLogementIfHasSeparator();
-        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
-        if ($s && isset($s[3]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
-            return $s[3];
-        }
+
+
+        /* Déprécié */ $s = $this->splitLogementIfHasSeparator(); if ($s && isset($s[3]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) { return $s[3]; } //- Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+
         return $this->getEtablissement()->commune;
     }
     public function getLogementCodePostal() {
         $r = $this->explodeLogement();
         if ($r && $r[2]) {
-            return $r[2];
+            return preg_replace('/ .*$/', '', $r[2]);
         }
-        $s = $this->splitLogementIfHasSeparator();
-        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
-        if ($s && isset($s[2]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
-            return $s[2];
-        }
+
+        /* Déprécié */ $s = $this->splitLogementIfHasSeparator(); if ($s && isset($s[2]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) { return $s[2]; }  //- Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+
         return $this->getEtablissement()->code_postal;
 
     }
