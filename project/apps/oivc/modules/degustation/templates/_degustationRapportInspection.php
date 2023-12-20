@@ -100,7 +100,8 @@
                     <?php endif; ?>
                 </tr>
                 <tr>
-                    <td colspan="3">N° lot / logement : <?php echo $lot->numero_logement_operateur ?></td>
+                    <td style="width: 40%;">N° lot / logement : <?php echo $lot->numero_logement_operateur ?></td>
+                    <td style="width: 50%;">Date de transaction/conditionnement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->destination_date)->format('d/m/Y') ?></td>
                 </tr>
             </table>
         </td></tr>
