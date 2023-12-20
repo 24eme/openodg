@@ -55,8 +55,8 @@
                         <a href="<?php echo url_for('facturation_declarant', array('identifiant' => $facture->doc->identifiant)); ?>"><?php echo $facture->doc->declarant->nom ?></a>
                     <?php endif; ?>
                 </td>
-                <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€</td>
-                <td class="text-right"><?php ($facture->doc->montant_paiement) == 0 ? $amount = "" : $amount = formatFloat($facture->doc->montant_paiement) . "€"; ?>&nbsp;<?php echo $amount ?></td>
+                <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€<span hidden><?php echo Anonymization::hideIfNeeded($facture->doc->total_ttc); ?></span></td>
+                <td class="text-right"><?php ($facture->doc->montant_paiement) == 0 ? $amount = "" : $amount = echoFloat((float)$facture->doc->montant_paiement) . "€"; ?>&nbsp;<?php echo $amount ?><span hidden><?php echo $facture->doc->montant_paiement ?></span></td>
             </tr>
         <?php endforeach; ?>
         <tr class="hidden"><td colspan="7">Aucun lot trouvé</td></tr>
