@@ -14,7 +14,7 @@ class TourneeLotForm extends LotModificationForm
         unset($this['elevage']);
 
         $this->setWidget('quantite', new bsWidgetFormInputInteger());
-        $this->setValidator('quantite', new sfValidatorInteger(['min' => 1, 'required' => false]));
+        $this->setValidator('quantite', new sfValidatorInteger(['required' => false]));
         $this->widgetSchema->setLabel('quantite', 'Cols');
     }
 
