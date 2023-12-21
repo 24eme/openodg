@@ -40,4 +40,6 @@ find ../../prodouane_scrapy/documents/ -name 'prod*-'$ANNEE'*.csv' | while read 
   php symfony $SYMFONYTASKOPTIONS douaneRecolte:convert2csv  $csv
 done >> $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
 
-mv $EXPORTDIR"/dr_"$ANNEE".csv.tmp" $EXPORTDIR"/dr_"$(echo $SYMFONYTASKOPTIONS | sed 's/.*--application=//' | sed 's/ .*//')"_"$ANNEE".csv"
+grep "$HASHPRODUIT" $EXPORTDIR"/dr_"$ANNEE".csv.tmp" > $EXPORTDIR"/dr_"$(echo $SYMFONYTASKOPTIONS | sed 's/.*--application=//' | sed 's/ .*//')"_"$ANNEE".csv.tmp"
+mv $EXPORTDIR"/dr_"$(echo $SYMFONYTASKOPTIONS | sed 's/.*--application=//' | sed 's/ .*//')"_"$ANNEE".csv.tmp" $EXPORTDIR"/dr_"$(echo $SYMFONYTASKOPTIONS | sed 's/.*--application=//' | sed 's/ .*//')"_"$ANNEE".csv"
+rm $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
