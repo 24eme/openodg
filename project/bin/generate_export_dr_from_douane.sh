@@ -2,7 +2,21 @@
 
 cd $(dirname $0)/.. > /dev/null 2>&1
 
-. bin/config.inc
+# Mode multi app
+if ! test -f $(echo $0 | sed 's/[^\/]*$//')config.inc && ! test $1 ; then
+    ls . $(echo $0 | sed 's/[^\/]*$//') | grep "config_" | grep ".inc$" | sed 's/config_//' | sed 's/\.inc//' | while read app; do
+        bash $(echo $0 | sed 's/[^\/]*$//')/generate_export_dr_from_douane.sh $1 $app;
+    done
+    exit 0;
+fi
+
+if ! test $2 ; then
+    . $(echo $0 | sed 's/[^\/]*$//')config.inc
+    confname='config.inc'
+else
+    . $(echo $0 | sed 's/[^\/]*$//')config_"$2".inc
+    confname="config."$2".inc"
+fi
 
 cd ../../prodouane_scrapy/
 
@@ -12,9 +26,9 @@ else
   ANNEE=$(date '+%Y') ;
 fi
 
-bash bin/download_all.sh $ANNEE dr
-bash bin/download_all.sh $ANNEE sv11
-bash bin/download_all.sh $ANNEE sv12
+PRODOUANE_CONFIG_FILENAME="$confname" bash bin/download_all.sh $ANNEE dr
+PRODOUANE_CONFIG_FILENAME="$confname" bash bin/download_all.sh $ANNEE sv11
+PRODOUANE_CONFIG_FILENAME="$confname" bash bin/download_all.sh $ANNEE sv12
 
 cd -
 
