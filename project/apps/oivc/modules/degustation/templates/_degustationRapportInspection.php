@@ -101,7 +101,9 @@
                 </tr>
                 <tr>
                     <td style="width: 40%;">N° lot / logement : <?php echo $lot->numero_logement_operateur ?></td>
+                    <?php if($lot->destination_date): ?>
                     <td style="width: 50%;">Date de transaction/conditionnement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->destination_date)->format('d/m/Y') ?></td>
+                    <?php endif; ?>
                 </tr>
             </table>
         </td></tr>
