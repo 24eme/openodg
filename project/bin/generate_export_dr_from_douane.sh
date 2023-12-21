@@ -36,5 +36,8 @@ echo "type;année;id interne;cvi;raison sociale;;commune;tiers;tiers id;categori
 find ../../prodouane_scrapy/documents/ -name '[ds][rv]*-'$ANNEE'*.xls' | while read xls ; do
   php symfony $SYMFONYTASKOPTIONS douaneRecolte:convert2csv  $xls
 done >> $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
+find ../../prodouane_scrapy/documents/ -name 'prod*-'$ANNEE'*.csv' | while read csv ; do
+  php symfony $SYMFONYTASKOPTIONS douaneRecolte:convert2csv  $csv
+done >> $EXPORTDIR"/dr_"$ANNEE".csv.tmp"
 
 mv $EXPORTDIR"/dr_"$ANNEE".csv.tmp" $EXPORTDIR"/dr_"$(echo $SYMFONYTASKOPTIONS | sed 's/.*--application=//' | sed 's/ .*//')"_"$ANNEE".csv"
