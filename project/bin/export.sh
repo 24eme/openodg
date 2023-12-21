@@ -144,6 +144,7 @@ fi
 echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; do
     eval 'SUBDIR=$EXPORT_SUB_HABILITATION_'$subhab'_DIR'
     eval 'SUBFILTRE=$EXPORT_SUB_HABILITATION_'$subhab'_FILTRE'
+    eval 'SUBMETABASE=$EXPORT_SUB_HABILITATION_'$subhab'_METABASE'
     mkdir -p $SUBDIR
     head -n 1 $EXPORTDIR/habilitation.csv > $SUBDIR/habilitation.csv
     cat $EXPORTDIR/habilitation.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591 >> $SUBDIR/habilitation.csv
@@ -158,6 +159,10 @@ echo $EXPORT_SUB_HABILITATION | tr '|' '\n' | grep '[A-Z]' | while read subhab; 
         cat $EXPORTDIR/sv12.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/sv12.csv
         head -n 1 $EXPORTDIR/production.csv > $SUBDIR/production.csv
         cat $EXPORTDIR/production.csv | iconv -f ISO88591 -t UTF8 | grep -E "$SUBFILTRE" | iconv -f UTF8 -t ISO88591  >> $SUBDIR/production.csv
+    fi
+    if test "$SUBMETABASE"; then
+        python3 bin/csv2sql.py $SUBMETABASE".tmp" $SUBDIR
+        mv $SUBMETABASE".tmp" $SUBMETABASE
     fi
 done
 
