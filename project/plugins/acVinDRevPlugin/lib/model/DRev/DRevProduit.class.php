@@ -405,4 +405,8 @@ class DRevProduit extends BaseDRevProduit
 		return $this->getCepage()->getSommeProduits($hash);
 	}
 
+    public function hasVolumeOrSuperficieRevendicables() {
+        return $this->recolte->volume_sur_place || $this->volume_revendique_total || $this->superficie_revendique;
+
+    }
 }

@@ -820,10 +820,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI_L19) {
-                $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
-            	$produit->vci->constitue = $produitRecolte->vci_constitue;
+                if ($produitRecolte->volume_sur_place_revendique) {
+                    $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    $produit->vci->constitue = $produitRecolte->vci_constitue;
+                }
             }
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VCI) {
+                $produitRecolte->vci_constitue += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
+                $produit->vci->constitue = $produitRecolte->vci_constitue;
+            }
+
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VSI_L18) {
+                if ($produitRecolte->volume_sur_place_revendique) {
+                    if(!$produitRecolte->exist('vsi')) {
+                        $produitRecolte->add('vsi');
+                    }
+                    $produitRecolte->vsi += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                }
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VSI) {
                 if(!$produitRecolte->exist('vsi')) {
                     $produitRecolte->add('vsi');
                 }
@@ -847,10 +862,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_total += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_sur_place += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
-            }
-            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VCI) {
-                $produitRecolte->vci_constitue += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
-                $produit->vci->constitue = $produitRecolte->vci_constitue;
             }
         }
         //Si on n'a pas de volume sur place
@@ -1130,10 +1141,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->save();
         }
 
-        if(!$this->isFactures()){
-            $this->clearMouvementsFactures();
-            $this->generateMouvementsFactures();
-        }
     }
 
     public function setStatutOdgByRegion($statut, $region = null) {
@@ -1384,6 +1391,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $this->generateMouvementsLots();
 
+        if(!$this->isFactures() && $this->isValideeOdg()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
+
         $saved = parent::save();
 
         if($saveDependants) {
@@ -1545,6 +1557,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $deleted = false;
         foreach($this->getDeletedLots() as $lot) {
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
             $volume_mod -= $lot->volume;
             $deleted = true;
         }
@@ -1889,7 +1904,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$this->isValideeOdg()) {
           return;
         }
-
+        $commission_date = [];
         foreach ($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
                 continue;
@@ -1919,6 +1934,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if($lot->isAffecte()) {
+                $commission_date[$lot->date_commission] = $lot->date_commission;
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
                 continue;
             }
@@ -1929,6 +1945,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }else{
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
             }
+        }
+        if (count(array_keys($commission_date)) == 1) {
+            $this->date_commission = array_key_first($commission_date);
         }
     }
 
@@ -2162,7 +2181,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function generateModificative() {
 
         $drev = $this->version_document->generateModificative();
-        $drev->resetAndImportFromDocumentDouanier();
+        try {
+            $drev->resetAndImportFromDocumentDouanier();
+        } catch(Exception $e) {
+
+        }
         return $drev;
     }
 

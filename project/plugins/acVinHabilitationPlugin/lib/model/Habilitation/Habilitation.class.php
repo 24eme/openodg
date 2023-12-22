@@ -119,6 +119,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->exist('automatique') && $this->get('automatique');
     }
 
+    public function getLectureSeule() {
+        if(!$this->exist('lecture_seule')) {
+
+            return false;
+        }
+
+        return $this->_get('lecture_seule');
+    }
+
     public function isLectureSeule() {
         return $this->exist('lecture_seule') && $this->get('lecture_seule');
     }
