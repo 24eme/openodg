@@ -887,7 +887,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 					$lots[] = $lot;
 				}
 			}
-			$this->array_tri = ['numero_anonymat'];
+			$this->array_tri = [DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT];
 			usort($lots, array($this, "sortLotsByThisTri"));
  		 	return $lots;
 		}
@@ -1155,7 +1155,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 			foreach($this->array_tri as $t) {
 				$a_data .= $a->getValueForTri($t);
 				$b_data .= $b->getValueForTri($t);
-				if ( $this->array_tri == ['numero_anonymat']){
+				if ( $t == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT){
 					$cmp = $a_data-$b_data;
 					if ($cmp !=0) {
 						return $cmp;
