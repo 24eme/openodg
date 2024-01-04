@@ -281,7 +281,10 @@ abstract class Lot extends acCouchdbDocumentTree
              return $this->position;
          }
          if (!$this->getConfig()||$type == DegustationClient::DEGUSTATION_TRI_NUMERO_ANONYMAT) {
-           $numero= intval(substr($this->numero_anonymat, 1));
+           $numero = $this->numero_anonymat;
+           if (intval($numero) != $numero) {
+               $numero = intval(substr($numero, 1));
+           }
            return $numero;
          }
         if ($type == DegustationClient::DEGUSTATION_TRI_APPELLATION) {
