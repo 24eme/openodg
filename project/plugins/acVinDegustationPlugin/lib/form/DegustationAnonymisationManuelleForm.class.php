@@ -27,8 +27,9 @@ class DegustationAnonymisationManuelleForm extends acCouchdbObjectForm
 
     public function checkUnicity($validator, $values)
     {
-        if (count($values) !== count(array_unique($values))) {
-            throw new sfValidatorError($validator, "Au moins deux valeurs ont le même numéro d'anonymat");
+        $duplicates = array_diff_assoc($values, array_unique($values));
+        if (count($duplicates)) {
+            throw new sfValidatorError($validator, sprintf("Des valeurs ont le même numéro d'anonymat : %s", implode(", ", array_values($duplicates))));
         }
 
         return $values;
