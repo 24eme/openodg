@@ -34,17 +34,19 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <thead>
           <tr>
-            <th style="width:35%">Nom</th>
-            <th style="width:35%">Prénom</th>
-            <th style="width:30%">Signature</th>
+            <th style="width:25%">Nom</th>
+            <th style="width:25%">Prénom</th>
+            <th style="width:25%">Collège</th>
+            <th style="width:25%">Signature</th>
           </tr>
         </thead>
         <tbody>
           <?php for( $i = 0; $i<5; $i++): ?>
               <tr>
-                <td style="width:35%; text-align:left; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
-                <td style="width:35%; text-align:left; margin-left: 1em;"><br/></td>
-                <td style="width:30%"><br/></td>
+                <td style="width:25%; text-align:left; margin-left: 1em;">&nbsp;<br/>&nbsp;</td>
+                <td style="width:25%; text-align:left; margin-left: 1em;"><br/></td>
+                <td style="width:25%"><br/></td>
+                <td style="width:25%"><br/></td>
               </tr>
           <?php endfor; ?>
         </tbody>
