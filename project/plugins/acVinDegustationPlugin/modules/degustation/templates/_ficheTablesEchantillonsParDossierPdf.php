@@ -80,7 +80,7 @@
               }
               ?>
               <td rowspan="<?php echo $affiche; ?>" style="margin-top: 10em; vertical-align: middle;"><small><?php echo ($lot->numero_dossier) ? $lot->numero_dossier : "Leurre" ; ?><br/><span style="color:grey;"><?php echo $lot->campagne; ?></span></small></td>
-              <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle; text-align: left;"><small><?php echo $lot->getRawValue()->declarant_nom ?><br><span style="color:grey;"><?php echo $lot->declarant_identifiant;?></span></small></td>
+	      <td rowspan="<?php echo $affiche; ?>" style="vertical-align: middle; text-align: left;"><small><?php echo $lot->getRawValue()->declarant_nom ?><br><span style="color:grey;"><?php echo $lot->declarant_identifiant;?></span><?php if($lot->secteur): ?> <small style="color: #aeaeae";><?php echo $lot->secteur ?></small><?php endif; ?></small></td>
             <?php $firstDisplay= false; endif; ?>
             <td><small><?php echo $lot->numero_archive ?></small></td>
             <td><small><?php echo $lot->numero_anonymat?></small></td>
