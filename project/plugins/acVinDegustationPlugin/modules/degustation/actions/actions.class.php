@@ -1288,6 +1288,14 @@ class degustationActions extends sfActions {
         return $this->mutualExcecutePDF($request);
     }
 
+    public function executeFicheTablesEchantillonsParTourneePDF(sfWebRequest $request)
+    {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->redirectIfIsNotAnonymized();
+        $this->document = new ExportDegustationFicheTablesEchantillonsParTourneePDF($this->degustation,$request->getParameter('output','pdf'), false);
+        return $this->mutualExcecutePDF($request);
+    }
+
     public function executeFicheTablesEchantillonsParAnonymatPDF(sfWebRequest $request){
       $this->degustation = $this->getRoute()->getDegustation();
       $this->document = new ExportDegustationFicheTablesEchantillonsParAnonymatPDF($this->degustation,$request->getParameter('output','pdf'),false);
