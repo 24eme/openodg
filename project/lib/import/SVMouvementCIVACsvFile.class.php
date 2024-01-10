@@ -122,9 +122,13 @@ class SVMouvementCIVACsvFile extends CIVACsvFile
             if (!$drev->getConfiguration()->exist($hash)) {
                 continue;
             }
-
             $config = $drev->getConfiguration()->get($hash);
-            $detail = $drev->getOrAdd($config->getHash())->addDetailNode($line[self::CSV_LIEUDIT]);
+            $lieudit = $line[self::CSV_LIEUDIT];
+            if($config->hasLieuEditable() && !$lieudit && $line[self::CSV_DENOMINATION]) {
+                $lieudit = $line[self::CSV_DENOMINATION];
+            }
+
+            $detail = $drev->getOrAdd($config->getHash())->addDetailNode($lieudit);
             switch ($line[self::CSV_TYPE_MOUVEMENT]) {
                 case self::TYPE_MOUVEMENT_SUPERFICIE:
                     if ($line[self::CSV_VTSGN] == "VT") {
