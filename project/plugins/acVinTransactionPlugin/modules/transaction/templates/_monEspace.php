@@ -7,7 +7,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($transaction && $transaction->validation): ?>panel-success<?php elseif($transaction): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Déclaration&nbsp;de&nbsp;Vrac</h3>
+            <h3 class="panel-title">Transaction</h3>
         </div>
         <?php if ($transaction && $transaction->validation): ?>
             <div class="panel-body">
@@ -26,7 +26,7 @@
             </div>
         <?php else: ?>
             <div class="panel-body">
-                <p class="explications">Espace permettant la déclaration de vos vrac.</p>
+                <p class="explications">Espace permettant la déclaration de vos transactions.</p>
                 <div class=actions>
                     <?php if ($sf_user->isAdmin() || $sf_user->hasTransactionAdmin()): ?>
                         <a class="btn btn-block btn-default" href="<?php echo url_for('transaction_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
