@@ -27,6 +27,7 @@ class DegustationAnonymisationManuelleForm extends acCouchdbObjectForm
 
     public function checkUnicity($validator, $values)
     {
+        $values = array_filter($values);
         $duplicates = array_diff_assoc($values, array_unique($values));
         if (count($duplicates)) {
             throw new sfValidatorError($validator, sprintf("Des valeurs ont le même numéro d'anonymat : %s", implode(", ", array_values($duplicates))));
@@ -48,7 +49,7 @@ class DegustationAnonymisationManuelleForm extends acCouchdbObjectForm
         parent::doUpdateObject($values);
         foreach ($this->getObject()->lots as $lot) {
             $name = $this->getWidgetNameFromLot($lot);
-            if ($values[$name]) {
+            if (isset($values[$name]) && $values[$name]) {
                 $lot->numero_anonymat = $values[$name];
                 $lot->statut = Lot::STATUT_ANONYMISE;
             } else {
