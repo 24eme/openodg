@@ -37,10 +37,12 @@
 <?php endif; ?>
 
 <?php
+if (class_exists(EtablissementFindByCviView::class)):
 $e = EtablissementFindByCviView::getInstance()->findByCvi($etablissement->cvi);
 if(count($e) > 1):
 ?>
 <p class="alert alert-danger" role="alert">Le CVI de l'opérateur est attribué à plusieurs établissement : <a href="<?php echo url_for('compte_search', array('q' => $etablissement->cvi, 'contacts_all' => 1, 'tags' => 'automatique:etablissement')); ?>">consulter les établissements</a>.</p>
+<?php endif; ?>
 <?php endif; ?>
 
 <?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null, 'public' => !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION))); ?>
