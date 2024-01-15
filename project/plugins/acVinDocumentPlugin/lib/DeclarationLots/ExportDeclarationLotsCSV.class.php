@@ -52,7 +52,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             $dateDegustationVoulue = null;
             if($lot->exist('date_degustation_voulue') && $lot->date_degustation_voulue) {
                 $dateDegustationVoulue = $lot->date_degustation_voulue;
-            } elseif($this->document->exist('date_degustation_voulue') && $lot->date_degustation_voulue) {
+            } elseif($this->document->exist('date_degustation_voulue') && $this->document->date_degustation_voulue) {
                 $dateDegustationVoulue = $this->document->date_degustation_voulue;
             }
 
