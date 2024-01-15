@@ -2,6 +2,8 @@
 <?php use_helper('Lot'); ?>
 <?php use_helper('TemplatingPDF'); ?>
 
+<?php include_partial('degustation/headerCourrier', ['courrier' => $courrier, "objet" => "Résultat de lot non conforme"]) ?>
+
 <style>
     <?php echo style(); ?>
     table {
@@ -22,15 +24,16 @@
     </tr>
 </table>
 
-<br/><br/>
+<br/>
+<br/>
 
 <table style="text-align: center"><tr><td><strong>Fiche De Manquement Contrôle Produit</strong></td></tr></table>
 
-<br/><br/>
+<br/>
 
 <table><tr><td>Nom opérateur : <?php echo $etablissement->raison_sociale ?></td></tr></table>
 
-<br/><br/>
+<br/>
 
 <table><tr><td><strong>N° de rapport d'inspection correspondant : </strong></td></tr></table>
 
@@ -39,11 +42,11 @@
 
 <table border="1">
     <tr><td>À REMPLIR PAR L'OPÉRATEUR</td></tr>
-    <tr><td>Éventuelles observations :<br/><br/><br/><br/><br/><br/><br/></td></tr>
-    <tr><td>Mesure(s) de correction proposée(s) :<br/><br/><br/><br/><br/><br/><br/></td></tr>
+    <tr><td>Éventuelles observations :<br/><br/><br/><br/></td></tr>
+    <tr><td>Mesure(s) de correction proposée(s) :<br/><br/><br/><br/></td></tr>
     <tr><td>Je souhaite que le lot soit reprélevé au mois de :</td></tr>
     <tr><td>Je souhaite exercer un recours : OUI <?php echo echoCheck(null, false) ?></td></tr>
-    <tr><td>Nom du responsable de l'entreprise :<br/><br/>Date et signature :<br/><br/></td></tr>
+    <tr><td>Nom du responsable de l'entreprise :<br/><br/>Date et signature :<br/></td></tr>
 </table>
 
 <br/>
