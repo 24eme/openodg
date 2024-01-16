@@ -71,7 +71,13 @@ class DegustationLot extends BaseDegustationLot {
             $table_anno = $this->getNumeroTableStr();
         }
         $this->numero_anonymat = sprintf(DegustationConfiguration::getInstance()->getFormatAnonymat(), $table_anno, $index + 1);
-        $this->statut = Lot::STATUT_ANONYMISE;
+    }
+
+    public function setNumeroAnonymat($numero) {
+        $this->_set('numero_anonymat', $numero);
+        if($numero && !$this->conformite) {
+            $this->statut = Lot::STATUT_ANONYMISE;
+        }
     }
 
     public function recoursOc($date = null){
