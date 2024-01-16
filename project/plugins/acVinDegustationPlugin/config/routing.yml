@@ -550,6 +550,16 @@ degustation_fiche_tables_echantillons_par_anonymat_pdf:
     requirements:
       sf_method: [get]
 
+degustation_fiche_tables_echantillons_par_tournee_pdf:
+    url: /degustation/:id/ficheTablesEchantillonsParTournee/pdf
+    param: { module: degustation, action: ficheTablesEchantillonsParTourneePDF }
+    class: DegustationRoute
+    options:
+      model:    Degustation
+      type:     object
+    requirements:
+      sf_method: [get]
+
 degustation_fiche_tables_echantillons_par_raison_sociale_pdf:
     url: /degustation/:id/ficheTablesEchantillonsParRaisonSociale/pdf
     param: { module: degustation, action: ficheTablesEchantillonsParRaisonSocialePDF }

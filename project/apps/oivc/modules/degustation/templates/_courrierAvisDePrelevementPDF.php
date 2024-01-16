@@ -6,7 +6,7 @@
 
 <p><strong><?php echo showProduitCepagesLot($lot, false, null) ?> de <?php if ($lot->exist('quantite') && $lot->quantite) : ?><?php echo $lot->exist('quantite') ? $lot->quantite : 0 ?> cols<?php else: ?><?php echoFloatFr($lot->volume*1) ?> hl<?php endif; ?> (échantillon n°<?php echo $lot->numero_archive ?>)</strong></p>
 
-<p>Une non-conformité a été détectée, le motif est : <strong><?php echo $lot->getShortLibelleConformite() ?></strong></p>
+<p>Une non-conformité a été détectée, le motif est : <strong><?php echo $lot->getShortLibelleConformite() ?> - <?php echo $lot->motif ?></strong></p>
 
 <p>Dans l'attente du prélèvement par l'OIVC ce lot doit donc rester bloqué.</p>
 

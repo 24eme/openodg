@@ -1,6 +1,6 @@
 <?php
 
-class ExportDegustationFicheTablesEchantillonsParRaisonSocialePDF extends ExportDeclarationLotsPDF
+class ExportDegustationFicheTablesEchantillonsParTourneePDF extends ExportDeclarationLotsPDF
 {
     protected $degustation = null;
 
@@ -11,13 +11,16 @@ class ExportDegustationFicheTablesEchantillonsParRaisonSocialePDF extends Export
 
     public function create() {
         $lots = $this->degustation->getLotsByOperateurs();
-        usort($lots, function ($a, $b) {
-            return strcmp($a[0]->declarant_nom, $b[0]->declarant_nom);
-        });
 
-        foreach ($lots as $operateur => &$lots_operateur) {
-            usort($lots_operateur, function($a, $b) {return strcmp($a->numero_anonymat, $b->numero_anonymat);});
-        }
+        usort($lots, function ($a, $b) {
+
+            if($a[0]->secteur == $b[0]->secteur) {
+
+                return strcmp($a[0]->declarant_nom, $b[0]->declarant_nom);
+            }
+
+            return strcmp($a[0]->secteur, $b[0]->secteur);
+        });
 
         $lots = array_merge($lots, ['leurres' => $this->degustation->getLeurres()]);
 
@@ -35,7 +38,7 @@ class ExportDegustationFicheTablesEchantillonsParRaisonSocialePDF extends Export
         try {
             return get_partial('degustation/ficheTablesEchantillonsParDossierPdfHeader', ['degustation' => $this->degustation]);
         } catch (Exception $e) {
-            return "Fiche des lots ventilés anonymisés par raison sociale";
+            return "Fiche des lots ventilés anonymisés par tournée";
         }
     }
 
@@ -52,7 +55,7 @@ class ExportDegustationFicheTablesEchantillonsParRaisonSocialePDF extends Export
     }
 
     public function getFileName($with_rev = false) {
-        $filename = sprintf("fiche_echantillons_table_par_raison_sociale_%s", $this->degustation->_id);
+        $filename = sprintf("fiche_echantillons_table_par_tournee_%s", $this->degustation->_id);
         if ($with_rev) {
             $filename .= '_' . $this->degustation->_rev;
         }

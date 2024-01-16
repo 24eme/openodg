@@ -92,7 +92,8 @@ class EtablissementClient extends acCouchdbClient {
     public static $caution_libelles = array(self::CAUTION_DISPENSE => 'Dispensé',
         self::CAUTION_CAUTION => 'Caution');
 
-    public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
+    public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_PRESSURAGE => 'Site de pressurage',
+                                                  self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VRAC => 'Stockage Vin en Vrac',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VCI => 'Stockage de VCI',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE => 'Stockage Vin Conditionné',
