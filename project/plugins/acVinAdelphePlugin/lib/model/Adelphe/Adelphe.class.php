@@ -24,13 +24,17 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
   }
 
   public function constructId() {
-    $id = AdelpheClient::TYPE_COUCHDB . '-' . $this->identifiant . '-' . $this->periode;
+    $id = AdelpheClient::TYPE_COUCHDB . '-' . $this->identifiant . '-' . $this->getPeriode();
     $this->set('_id', $id);
+  }
+
+  public function getPeriode() {
+      return substr($this->campagne, 0, 4);
   }
 
   public function initDoc($identifiant, $periode) {
     $this->identifiant = $identifiant;
-    $this->periode = $periode;
+    $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
     $this->constructId();
   }
 

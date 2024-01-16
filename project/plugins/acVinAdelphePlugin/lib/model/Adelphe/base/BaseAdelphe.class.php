@@ -7,7 +7,7 @@
  * @property string $_id
  * @property string $_rev
  * @property string $type
- * @property string $periode
+ * @property string $campagne
  * @property string $identifiant
  * @property string $volume_conditionne_total
  * @property string $volume_conditionne_bib
@@ -25,8 +25,8 @@
  * @method string setRev()
  * @method string getType()
  * @method string setType()
- * @method string getPeriode()
- * @method string setPeriode()
+ * @method string getCampagne()
+ * @method string setCampagne()
  * @method string getIdentifiant()
  * @method string setIdentifiant()
  * @method string getVolumeConditionneTotal()

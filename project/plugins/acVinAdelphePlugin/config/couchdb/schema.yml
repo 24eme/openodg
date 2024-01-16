@@ -5,7 +5,7 @@ Adelphe:
       _id: { }
       _rev: { }
       type: { }
-      periode: { }
+      campagne: { }
       identifiant: { }
       volume_conditionne_total: { }
       volume_conditionne_bib: { }
