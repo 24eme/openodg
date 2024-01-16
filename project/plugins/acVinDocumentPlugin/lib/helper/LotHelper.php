@@ -160,11 +160,14 @@ function showLotStatusCartouche($lot_ou_mvt_value, $with_details = true) {
     return $text;
 }
 
-function showLotPublicStatusCartouche($mvt_value) {
+function showLotPublicStatusCartouche($mvt_value, $with_details = true) {
     if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
         return "<span data-toggle=\"tooltip\" data-html=\"true\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'>En attente de contrôle</span>";
     }
-    return showLotStatusCartouche($mvt_value);
+    if (strpos($lot_ou_mvt_value->detail, ' anon') !== false) {
+        $lot_ou_mvt_value->detail = '';
+    }
+    return showLotStatusCartouche($mvt_value, $with_details);
 }
 function showSummerizedLotPublicStatusCartouche($mvt_value) {
     if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
