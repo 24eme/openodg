@@ -1,0 +1,39 @@
+adelphe_create:
+  url: /adelphe/creation/:identifiant
+  param: { module: adelphe, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+adelphe_edit:
+  url: /adelphe/edition/:id
+  param: { module: adelphe, action: edit }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]
+
+adelphe_delete:
+  url: /adelphe/suppression/:id
+  param: { module: adelphe, action: delete }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]
+
+adelphe_visualisation:
+  url: /adelphe/visualisation/:id
+  param: { module: adelphe, action: visualisation }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]
