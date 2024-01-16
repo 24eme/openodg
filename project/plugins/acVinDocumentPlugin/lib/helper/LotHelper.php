@@ -164,8 +164,8 @@ function showLotPublicStatusCartouche($mvt_value, $with_details = true) {
     if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
         return "<span data-toggle=\"tooltip\" data-html=\"true\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'>En attente de contrôle</span>";
     }
-    if (strpos($lot_ou_mvt_value->detail, ' anon') !== false) {
-        $lot_ou_mvt_value->detail = '';
+    if (strpos($mvt_value->detail, ' anon') !== false) {
+        $mvt_value->detail = '';
     }
     return showLotStatusCartouche($mvt_value, $with_details);
 }
