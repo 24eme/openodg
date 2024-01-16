@@ -76,7 +76,7 @@
                   <td><?php echo showLotPublicStatusCartouche($mouvement->value, false);  ?></td>
                   <?php endif; ?>
                   <td class="text-right hidden-print">
-                  <?php if ($sf_user->isAdminODG() || !MouvementLotHistoryView::isWaitingLotNotification($mouvement->value)): ?>
+                  <?php if ($sf_user->isAdminODG()): ?>
                       <a class="btn btn-xs btn-default btn-historique" href="<?php  echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $mouvement->value->lot_unique_id));  ?>">Historique&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
                   <?php endif; ?>
                   </td>
