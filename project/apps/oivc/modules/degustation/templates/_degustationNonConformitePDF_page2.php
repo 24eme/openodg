@@ -2,8 +2,6 @@
 <?php use_helper('Lot'); ?>
 <?php use_helper('TemplatingPDF'); ?>
 
-<?php include_partial('degustation/headerCourrier', ['courrier' => $courrier, "objet" => "Résultat de lot non conforme"]) ?>
-
 <style>
     <?php echo style(); ?>
     table {
@@ -26,9 +24,19 @@
 
 <br/>
 <br/>
+<table border="1">
+<tbody>
+    <tr>
+        <td>FUVC-OIVC<br/>MANUEL QUALITE / CHAPITRE 07<br/>ANNEXE 07.13 FICHE DE MANQUEMENT CONTRÔLE PRODUIT / 0621 / REV C</td>
+    </tr>
+</tbody>
+</table>
+<br/>
+<br/>
 
 <table style="text-align: center"><tr><td><strong>Fiche De Manquement Contrôle Produit</strong></td></tr></table>
 
+<br/>
 <br/>
 
 <table><tr><td>Nom opérateur : <?php echo $etablissement->raison_sociale ?></td></tr></table>
@@ -39,14 +47,15 @@
 
 <br/>
 <br/>
+<br/>
 
 <table border="1">
     <tr><td>À REMPLIR PAR L'OPÉRATEUR</td></tr>
-    <tr><td>Éventuelles observations :<br/><br/><br/><br/></td></tr>
-    <tr><td>Mesure(s) de correction proposée(s) :<br/><br/><br/><br/></td></tr>
+    <tr><td>Éventuelles observations :<br/><br/><br/><br/><br/><br/><br/><br/></td></tr>
+    <tr><td>Mesure(s) de correction proposée(s) :<br/><br/><br/><br/><br/><br/><br/></td></tr>
     <tr><td>Je souhaite que le lot soit reprélevé au mois de :</td></tr>
     <tr><td>Je souhaite exercer un recours : OUI <?php echo echoCheck(null, false) ?></td></tr>
-    <tr><td>Nom du responsable de l'entreprise :<br/><br/>Date et signature :<br/></td></tr>
+    <tr><td>Nom du responsable de l'entreprise :<br/><br/><br/>Date et signature :<br/><br/><br/></td></tr>
 </table>
 
 <br/>
@@ -59,15 +68,15 @@
         <td></td> <td>Date</td> <td>Conforme</td> <td>Non conforme</td> <td>Libellé manquement / Code manquement</td>
     </tr>
     <tr>
-        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td><?php echo echoCheck(null, false); ?></td> <td><?php echo echoCheck(null, true); ?></td> <td></td>
+        <td>Examen analytique<br/>(sous traitance)</td> <td></td> <td><?php echo echoCheck(null, false); ?></td> <td><?php echo echoCheck(null, false); ?></td> <td></td>
     </tr>
     <tr>
-        <td>Examen organoleptique<br/></td> <td><?php echo $degustation->getDate(); ?></td> <td><?php echo echoCheck(null, true); ?></td> <td><?php echo echoCheck(null, false); ?></td> <td></td>
+        <td>Examen organoleptique<br/></td> <td></td> <td><?php echo echoCheck(null, false); ?></td> <td><?php echo echoCheck(null, false); ?></td> <td></td>
     </tr>
     <tr><td colspan="5">Date transmission INAO :</td></tr>
 </table>
 
-<br/><br/>
+<br/><br/><br/>
 
 <table>
 <tr>
@@ -77,6 +86,7 @@
 </tr>
 </table>
 
+<br/><br/>
 <br/><br/>
 <br/><br/>
 
