@@ -90,4 +90,4 @@
 <br/><br/>
 <br/><br/>
 
-<table><tr><td>Fiche à retourner à l'OIVC par courrier au <?php echo Organisme::getInstance()->getAdresse() ?></td></tr></table>
+<table><tr><td>Fiche à retourner à l’OIVC par courrier au <strong><?php echo Organisme::getInstance()->getAdresse() ?> <?php echo Organisme::getInstance()->getCodePostal() ?> <?php echo Organisme::getInstance()->getCommune() ?></strong> ou par mail</td></tr></table>
