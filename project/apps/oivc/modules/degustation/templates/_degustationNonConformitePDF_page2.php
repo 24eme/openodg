@@ -18,7 +18,7 @@
 <table>
     <tr>
         <td style="width: 70%">Date de rédaction : <?php echo format_date($degustation->date, "P", "fr_FR"); ?></td>
-        <td style="width: 30%">N° RI: <?php echo $lot->unique_id; ?></td>
+        <td style="width: 30%">N°: FM-<?php echo $lot->unique_id; ?></td>
     </tr>
 </table>
 
