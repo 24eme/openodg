@@ -886,8 +886,8 @@ class degustationActions extends sfActions {
         $uniqueId = $request->getParameter('unique_id');
 
         $this->lot = LotsClient::getInstance()->findByUniqueId($identifiant, $uniqueId);
-
-        if (!$this->getUser()->hasDrevAdmin() && MouvementLotHistoryView::isWaitingLotNotification($this->lot)) {
+        $mvts = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($identifiant, $uniqueId, null, null, true);
+        if (!$this->getUser()->hasDrevAdmin() && (!$mvts->rows[0] || MouvementLotHistoryView::isWaitingLotNotification($mvts->rows[0]->value))) {
             throw new sfError403Exception('Accès impossible');
         }
 
