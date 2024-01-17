@@ -43,7 +43,7 @@
 
 <br/>
 
-<table><tr><td><strong>N° de rapport d'inspection correspondant : </strong></td></tr></table>
+<table><tr><td><strong>N° de rapport d'inspection correspondant :</strong> RI-<?php echo explode('-', $courrier->_id, 2)[1];?></td></tr></table>
 
 <br/>
 <br/>
