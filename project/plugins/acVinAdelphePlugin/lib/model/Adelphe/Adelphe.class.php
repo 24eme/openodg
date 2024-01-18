@@ -56,4 +56,10 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     return $this->etablissement;
   }
+
+  public function storeEtape($etape) {
+    $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;
+    $this->add('etape', $etape);
+    return $etapeOriginal != $this->etape;
+  }
 }

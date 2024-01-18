@@ -25,4 +25,12 @@ class adelpheActions extends sfActions {
     $adelphe = $this->getRoute()->getAdelphe();
   }
 
+  private function getEtape($doc, $etape) {
+    $etapes = AdelpheEtapes::getInstance();
+    if (!$doc->exist('etape')) {
+      return $etape;
+    }
+    return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
+  }
+
 }
