@@ -15,6 +15,7 @@ Adelphe:
       contribution_valeur: { }
       validation: { }
       validation_odg: { }
+      etape: { required: false }
       declarant:
         type: collection
         class: AdelpheDeclarant

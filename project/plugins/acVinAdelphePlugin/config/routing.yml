@@ -18,6 +18,16 @@ adelphe_edit:
   requirements:
     sf_method: [get]
 
+adelphe_volume_conditionne:
+  url: /adelphe/volume-conditionne/:id
+  param: { module: adelphe, action: volumeConditionne }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 adelphe_delete:
   url: /adelphe/suppression/:id
   param: { module: adelphe, action: delete }
