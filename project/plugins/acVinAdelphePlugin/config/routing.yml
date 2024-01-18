@@ -28,6 +28,16 @@ adelphe_volume_conditionne:
   requirements:
     sf_method: [get, post]
 
+adelphe_repartition_bib:
+  url: /adelphe/repartition-bib/:id
+  param: { module: adelphe, action: repartitionBib }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 adelphe_delete:
   url: /adelphe/suppression/:id
   param: { module: adelphe, action: delete }
