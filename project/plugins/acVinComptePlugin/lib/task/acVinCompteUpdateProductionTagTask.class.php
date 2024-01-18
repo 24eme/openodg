@@ -80,6 +80,13 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
                 }
             }
 
+            if (class_exists('MouvementLotView')) {
+                foreach(MouvementLotView::getInstance()->getByIdentifiant($etablissement->identifiant)->rows as $row) {
+                    if (in_array($row->value->campagne, $campagnes) && $row->value->affectable) {
+                        $tags['documents']['controle_odg_'.explode("-", $row->value->campagne)[0]] = 1;
+                    }
+                }
+            }
             $compte->tags->remove('documents');
 
             $this->logSection("reset tags documents", $compte->identifiant);
