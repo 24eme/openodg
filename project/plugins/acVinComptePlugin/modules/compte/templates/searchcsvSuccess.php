@@ -49,7 +49,7 @@ foreach ($results as $res) {
   $csv .= '"'.$compte_type.'";';
   $csv .= '"'.$data['doc']['identifiant']. '";';
   $csv .= '"'.$data['doc']['num_interne']. '";';
-  $csv .= '"'.$data['doc']['etablissement']['cvi']. '";';
+  $csv .= '"'.$data['doc']['etablissement_informations']['cvi']. '";';
   $csv .= '"'.$data['doc']['societe_informations']['siret']. '";';
   $csv .= '"'.$data['doc']['civilite']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom']). '";';
