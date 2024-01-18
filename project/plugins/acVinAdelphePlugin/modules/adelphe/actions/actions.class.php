@@ -29,7 +29,24 @@ class adelpheActions extends sfActions {
         return sfView::SUCCESS;
     }
     $this->form->save();
-    return $this->redirect('adelphe_repartition_bib', $adelphe);
+    return $this->redirect('adelphe_repartition_bib', $this->adelphe);
+  }
+
+  public function executeRepartitionBib(sfWebRequest $request) {
+    $this->adelphe = $this->getRoute()->getAdelphe();
+    if($this->adelphe->storeEtape($this->getEtape($this->adelphe, AdelpheEtapes::ETAPE_REPARTITION_BIB))) {
+      $this->adelphe->save();
+    }
+    $this->form = new AdelpheRepartitionForm($this->adelphe);
+    if (!$request->isMethod(sfWebRequest::POST)) {
+      return sfView::SUCCESS;
+    }
+    $this->form->bind($request->getParameter($this->form->getName()));
+    if (!$this->form->isValid()) {
+        return sfView::SUCCESS;
+    }
+    $this->form->save();
+    return $this->redirect('adelphe_validation', $adelphe);
   }
 
   public function executeDelete(sfWebRequest $request) {
