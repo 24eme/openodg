@@ -46,7 +46,7 @@ class adelpheActions extends sfActions {
         return sfView::SUCCESS;
     }
     $this->form->save();
-    return $this->redirect('adelphe_validation', $adelphe);
+    return $this->redirect('adelphe_validation', $this->adelphe);
   }
 
   public function executeValidation(sfWebRequest $request) {

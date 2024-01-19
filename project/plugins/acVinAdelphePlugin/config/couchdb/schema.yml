@@ -10,7 +10,8 @@ Adelphe:
       volume_conditionne_total: { }
       volume_conditionne_bib: { }
       volume_conditionne_bouteille: { }
-      contribution_regime_bib: { }
+      conditionnement_bib: { }
+      repartition_bib: { }
       contribution_taux: { }
       contribution_valeur: { }
       validation: { }
