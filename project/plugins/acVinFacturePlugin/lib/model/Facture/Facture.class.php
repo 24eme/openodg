@@ -205,7 +205,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public function storeLignesByMouvementsView($mouvement_agreges, $mouvements_originaux = null) {
             $keyLigne = str_replace("%detail_identifiant%",$mouvement_agreges->value->detail_identifiant,$mouvement_agreges->value->categorie);
             $ligne = $this->lignes->add($keyLigne);
-            $ligne->libelle = $mouvement_agreges->value->detail_libelle;
+            $ligne->libelle = $mouvement_agreges->value->type_libelle;
             if (!$mouvements_originaux) {
                 $mouvements_originaux = array($mouvement_agreges);
             }
@@ -233,7 +233,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $detail = $ligne->details->add();
             $detail->prix_unitaire = $mouvement_agreges->value->taux;
             $detail->taux_tva = $mouvement_agreges->value->tva;
-            $detail->libelle = $mouvement_agreges->value->type_libelle;
+            $detail->libelle = $mouvement_agreges->value->detail_libelle;
             if(isset($mouvement_agreges->value->unite) && $mouvement_agreges->value->unite) {
                 $detail->add('unite', $mouvement_agreges->value->unite);
             }
