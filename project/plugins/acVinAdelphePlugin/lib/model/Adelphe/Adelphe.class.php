@@ -62,4 +62,11 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     $this->add('etape', $etape);
     return $etapeOriginal != $this->etape;
   }
+
+  public function validate($date = null) {
+      if(is_null($date)) {
+          $date = date('c');
+      }
+      $this->validation = $date;
+  }
 }

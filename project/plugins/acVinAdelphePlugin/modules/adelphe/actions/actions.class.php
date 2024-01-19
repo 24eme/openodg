@@ -46,11 +46,17 @@ class adelpheActions extends sfActions {
         return sfView::SUCCESS;
     }
     $this->form->save();
-    return $this->redirect('adelphe_validation', $adelphe);
+    return $this->redirect('adelphe_validation', $this->adelphe);
   }
 
   public function executeValidation(sfWebRequest $request) {
     $this->adelphe = $this->getRoute()->getAdelphe();
+    if (!$request->isMethod(sfWebRequest::POST)) {
+        return sfView::SUCCESS;
+    }
+    $this->adelphe->validate(date('c'));
+    $this->adelphe->save();
+    return $this->redirect('adelphe_visualisation', $this->adelphe);
   }
 
   public function executeDelete(sfWebRequest $request) {
@@ -61,7 +67,7 @@ class adelpheActions extends sfActions {
   }
 
   public function executeVisualisation(sfWebRequest $request) {
-    $adelphe = $this->getRoute()->getAdelphe();
+    $this->adelphe = $this->getRoute()->getAdelphe();
   }
 
   private function getEtape($doc, $etape) {
