@@ -69,4 +69,25 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
       }
       $this->validation = $date;
   }
+
+  public function getTauxBibCalcule() {
+    if ($this->volume_conditionne_bib > 0 && $this->volume_conditionne_total > 0 && $this->volume_conditionne_total >= $this->volume_conditionne_bib) {
+      return round($this->volume_conditionne_bib / $this->volume_conditionne_total * 100);
+    }
+    return null;
+  }
+
+  public function conditionnementUniquementBouteille() {
+    $this->conditionnement_bib = 0;
+    $this->repartition_bib = 0;
+    $this->volume_conditionne_bib = 0;
+    $this->volume_conditionne_bouteille = $this->volume_conditionne_total;
+  }
+
+  public function conditionnementBibForfait() {
+    $this->conditionnement_bib = 1;
+    $this->repartition_bib = 0;
+    $this->volume_conditionne_bib = round($this->volume_conditionne_total * AdelpheConfiguration::getInstance()->getTauxForfaitaireBib());
+    $this->volume_conditionne_bouteille = $this->volume_conditionne_total - $this->volume_conditionne_bib;
+  }
 }

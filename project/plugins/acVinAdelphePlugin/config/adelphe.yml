@@ -1,0 +1,4 @@
+all:
+  configuration:
+    adelphe:
+      taux_forfaitaire_bib: 0.32
