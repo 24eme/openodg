@@ -38,6 +38,16 @@ adelphe_repartition_bib:
   requirements:
     sf_method: [get, post]
 
+adelphe_validation:
+  url: /adelphe/validation/:id
+  param: { module: adelphe, action: validation }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 adelphe_delete:
   url: /adelphe/suppression/:id
   param: { module: adelphe, action: delete }

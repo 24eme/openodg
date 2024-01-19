@@ -49,6 +49,10 @@ class adelpheActions extends sfActions {
     return $this->redirect('adelphe_validation', $adelphe);
   }
 
+  public function executeValidation(sfWebRequest $request) {
+    $this->adelphe = $this->getRoute()->getAdelphe();
+  }
+
   public function executeDelete(sfWebRequest $request) {
       $adelphe = $this->getRoute()->getAdelphe();
       $adelphe->delete();
