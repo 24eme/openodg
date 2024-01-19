@@ -1,5 +1,5 @@
 <?php
-$csv = "# id société ; nom complet ; type ; id compte ; numéro interne ; civilité ; nom ; prénom ; adresse ; adresse complémentaire 1 ; adresse complémentaire 2 ; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone perso ; fax ; email ; commentaire ; nom groupe ; fonction ; type société ; société raison sociale ; société adresse ; société adresse complémentaire 1; société adresse complémentaire 2; société code postal ; société commune ; société téléphone ; société fax ; société email; code de création \n";
+$csv = "# id société ; nom complet ; type ; id compte ; numéro interne ; cvi ; siret ; civilité ; nom ; prénom ; adresse ; adresse complémentaire 1 ; adresse complémentaire 2 ; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone perso ; fax ; email ; commentaire ; nom groupe ; fonction ; type société ; société raison sociale ; société adresse ; société adresse complémentaire 1; société adresse complémentaire 2; société code postal ; société commune ; société téléphone ; société fax ; société email; code de création \n";
 
 $groupe = null;
 if(isset($selected_typetags) && (count($selected_typetags->getRawValue()) == 1)){
@@ -47,8 +47,10 @@ foreach ($results as $res) {
   $csv .= '"'.$id_societe. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom_a_afficher']). '";';
   $csv .= '"'.$compte_type.'";';
-  $csv .= '" '.$data['doc']['identifiant']. '";';
+  $csv .= '"'.$data['doc']['identifiant']. '";';
   $csv .= '"'.$data['doc']['num_interne']. '";';
+  $csv .= '"'.$data['doc']['etablissement_informations']['cvi']. '";';
+  $csv .= '"'.$data['doc']['societe_informations']['siret']. '";';
   $csv .= '"'.$data['doc']['civilite']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom']). '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['prenom']). '";';

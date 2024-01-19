@@ -1,0 +1,6 @@
+all:
+  configuration:
+    adelphe:
+      taux_forfaitaire_bib: 0.32
+      prix_unitaire_bib: 2.1267
+      prix_unitaire_bouteille: 1.1170
