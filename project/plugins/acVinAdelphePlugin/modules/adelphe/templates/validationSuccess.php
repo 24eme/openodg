@@ -4,3 +4,5 @@
 <div class="page-header">
     <h2>Validation</h2>
 </div>
+
+<?php include_partial('adelphe/recap', array('adelphe' => $adelphe)); ?>
