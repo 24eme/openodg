@@ -20,7 +20,9 @@ class AdelpheRepartitionForm extends acCouchdbObjectForm {
   protected function updateDefaultsFromObject() {
     parent::updateDefaultsFromObject();
     $defaults = $this->getDefaults();
-    $defaults['taux_conditionne_bib'] = $this->getObject()->getTauxBibCalcule();
+    if ($tx = $this->getObject()->getTauxBibCalcule()) {
+      $defaults['taux_conditionne_bib'] = $tx;
+    }
     $this->setDefaults($defaults);
   }
 
