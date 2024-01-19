@@ -37,14 +37,14 @@ class AdelpheConfiguration {
       return 0;
     }
 
-    public function getPrixUnitaireBib(){
+    public function getPrixUnitaireBib() {
         if (isset($this->configuration['prix_unitaire_bib']) && $this->configuration['prix_unitaire_bib']) {
             return $this->configuration['prix_unitaire_bib'];
         }
         return 0;
     }
 
-    public function getPrixUnitaireBouteille(){
+    public function getPrixUnitaireBouteille() {
         if (isset($this->configuration['prix_unitaire_bouteille']) && $this->configuration['prix_unitaire_bouteille']) {
             return $this->configuration['prix_unitaire_bouteille'];
         }
