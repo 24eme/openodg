@@ -5,6 +5,8 @@
     <h2>Validation</h2>
 </div>
 
+<p>Seuil : <?php echo $adelphe->getSeuil() ?></p>
+
 
 <?php include_partial('adelphe/recap', array('adelphe' => $adelphe)); ?>
 

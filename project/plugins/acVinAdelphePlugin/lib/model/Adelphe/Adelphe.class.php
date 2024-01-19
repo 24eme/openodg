@@ -82,6 +82,17 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     if ($this->volume_conditionne_bib > 0 && $this->volume_conditionne_total > 0 && $this->volume_conditionne_total >= $this->volume_conditionne_bib) {
       return round($this->volume_conditionne_bib / $this->volume_conditionne_total * 100);
     }
+    return 0;
+  }
+
+  public function getSeuil() {
+    if (!AdelpheConfiguration::getInstance()->getFonctionCalculSeuil()) {
+      return null;
+    }
+    $fctCalculSeuil = str_replace('%TXBIB%', $this->getTauxBibCalcule() / 100, AdelpheConfiguration::getInstance()->getFonctionCalculSeuil());
+    if ($this->volume_conditionne_total) {
+      return eval($fctCalculSeuil);
+    }
     return null;
   }
 
