@@ -325,6 +325,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $compte->id_societe = $this->getSociete()->_id;
         $compte->nom = $this->nom;
         $compte->statut = $this->statut;
+        $compte->commentaire = $this->commentaire;
 
         $this->compte = $compte->_id;
 

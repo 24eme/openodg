@@ -17,6 +17,7 @@ class DRevValidation extends DeclarationLotsValidation
          * Warning
          */
         $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
+        $this->addControle(self::TYPE_ERROR, 'declaration_multi_cvi', "est lié à plusieurs opérateurs");
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous ne revendiquez pas le même volume que celui qui figure sur votre déclaration douanière en L15 (peut-être dû au complèment de VCI ou un achat)');
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
         $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre déclaration douanière");
@@ -376,6 +377,11 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleHabilitationODG()
     {
+        $e = EtablissementFindByCviView::getInstance()->findByCvi($this->document->declarant->cvi);
+        if(count($e) > 1) {
+            $this->addPoint(self::TYPE_ERROR, 'declaration_multi_cvi', 'Le CVI '.$this->document->declarant->cvi, $this->generateUrl('compte_search', array('q' => $this->document->declarant->cvi, 'contacts_all' => 1, 'tags' => 'automatique:etablissement')) );
+        }
+
         if (DRevConfiguration::getInstance()->hasHabilitationINAO()) {
             return;
         }

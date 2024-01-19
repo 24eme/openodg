@@ -22,16 +22,16 @@ echo "conversion des documents douaniers en tableurs exploitables"
 cd -
 echo "conversion des DR"
 ls ~/prodouane_scrapy/documents/fede/dr"-"$campagne"-"*".xls" | while read file; do
-    csvfile=$(echo $echo | sed 's/.xls/.csv/')
+    csvfile=$(echo $file | sed 's/.xls/.csv/')
     if ! test -f $csvfile; then
-        php symfony douaneRecolte:convert2csv $file --application=igploire > $csvfile".csv";
+        php symfony douaneRecolte:convert2csv $file --application=igploire > $csvfile ;
     fi
 done
 echo "conversion des documents de production"
 ls ~/prodouane_scrapy/documents/fede/production"-"$campagne"-"*".csv" | while read file; do
-    csvfile=$(echo $echo | sed 's/production-/sv-/') ;
+    csvfile=$(echo $file | sed 's/production-/sv-/') ;
     if ! test -f $csvfile; then
-        php symfony douaneRecolte:convert2csv $file --application=igploire > $csvfile".csv";
+        php symfony douaneRecolte:convert2csv $file --application=igploire > $csvfile ;
     fi
 done
 rename -f 's/production-/sv-/' ~/prodouane_scrapy/documents/fede/production-$campagne-*.pdf

@@ -44,13 +44,12 @@ class GenerationShell extends GenerationAbstract
 
         $returnvalue = proc_close($process);
 
-        // lien vers les deux fichiers à la fin de la génération
-        $webfile = $this->webdir.$this->generation->date_emission;
-        rename($stderr->getRealPath(), sfConfig::get('sf_web_dir').$webfile.'_stderr.txt');
-        rename($stdout->getRealPath(), sfConfig::get('sf_web_dir').$webfile.'_stdout.txt');
-
-        $this->generation->add('fichiers')->add(urlencode($webfile.'_stderr.txt'), "Log d'erreur de la génération");
-        $this->generation->add('fichiers')->add(urlencode($webfile.'_stdout.txt'), "Log de sortie de la génération");
+        // lien vers les fichiers à la fin de la génération
+        $prefix = $this->webdir.$this->generation->date_emission;
+        foreach (glob('*') as $generatedFile) {
+            rename($generatedFile, sfConfig::get('sf_web_dir').$prefix.'_'.$generatedFile);
+            $this->generation->add('fichiers')->add(urlencode($prefix.'_'.$generatedFile), $this->formatName($generatedFile));
+        }
 
         // clean
         chdir($oldpath);
@@ -84,5 +83,18 @@ class GenerationShell extends GenerationAbstract
             }
             return implode(' ', $cmde);
         }
+    }
+
+    private function formatName($file)
+    {
+        if (strpos($file, 'stderr') !== false) {
+            return "Log d'erreur de la génération";
+        }
+
+        if (strpos($file, 'stdout') !== false) {
+            return "Log de sortie de la génération";
+        }
+
+        return $file;
     }
 }
