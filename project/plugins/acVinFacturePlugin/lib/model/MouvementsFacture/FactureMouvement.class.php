@@ -39,7 +39,7 @@ class FactureMouvement extends BaseFactureMouvement {
     }
 
     public function setTypeLibelle($s) {
-        $this->categorie = substring(sha1($s), 0, 8);
+        $this->categorie = substr(sha1($s), 0, 8);
         return $this->_set('type_libelle', $s);
     }
 
