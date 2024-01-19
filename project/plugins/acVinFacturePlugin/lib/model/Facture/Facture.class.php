@@ -203,6 +203,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     /** facturation par mvts **/
     public function storeLignesByMouvementsView($mouvement_agreges, $mouvements_originaux = null) {
+            if (!$mouvement_agreges->value->categorie) {
+                throw new sfException('Categorie missing in mouvement '.$mouvement->id);
+            }
             $keyLigne = str_replace("%detail_identifiant%",$mouvement_agreges->value->detail_identifiant,$mouvement_agreges->value->categorie);
             $ligne = $this->lignes->add($keyLigne);
             $ligne->libelle = $mouvement_agreges->value->type_libelle;

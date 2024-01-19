@@ -38,4 +38,9 @@ class FactureMouvement extends BaseFactureMouvement {
         return $this->getQuantite() * $this->getPrixUnitaire();
     }
 
+    public function setTypeLibelle($s) {
+        $this->categorie = substring(sha1($s), 0, 8);
+        return $this->_set('type_libelle', $s);
+    }
+
 }

@@ -195,6 +195,7 @@ MouvementsFacture:
                         identifiant_analytique_libelle_compta: {  }
                         identifiant: {  }
                         type_libelle: {  }
+                        categorie: { }
                         detail_libelle: {  }
                         quantite: { type: float }
                         prix_unitaire: { type: float }
