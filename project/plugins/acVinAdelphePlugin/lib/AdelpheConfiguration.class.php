@@ -23,7 +23,14 @@ class AdelpheConfiguration {
         $this->load();
     }
 
-    public function getTauxForfaitaireBib(){
+    public function getFonctionCalculSeuil() {
+      if (isset($this->configuration['fonction_calcul_seuil']) && $this->configuration['fonction_calcul_seuil']) {
+        return $this->configuration['fonction_calcul_seuil'];
+      }
+      return null;
+    }
+
+    public function getTauxForfaitaireBib() {
       if (isset($this->configuration['taux_forfaitaire_bib']) && $this->configuration['taux_forfaitaire_bib']) {
         return $this->configuration['taux_forfaitaire_bib'];
       }

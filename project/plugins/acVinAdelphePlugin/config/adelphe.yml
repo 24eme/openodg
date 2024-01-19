@@ -1,6 +1,7 @@
 all:
   configuration:
     adelphe:
+      fonction_calcul_seuil: "return 3750 + 18250 * %TXBIB%;"
       taux_forfaitaire_bib: 0.32
       prix_unitaire_bib: 2.1267
       prix_unitaire_bouteille: 1.1170
