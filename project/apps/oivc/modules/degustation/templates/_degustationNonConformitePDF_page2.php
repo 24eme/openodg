@@ -18,7 +18,7 @@
 <table>
     <tr>
         <td style="width: 70%">Date de rédaction : <?php echo format_date($degustation->date, "P", "fr_FR"); ?></td>
-        <td style="width: 30%">N° : <?php echo $lot->unique_id; ?></td>
+        <td style="width: 30%">N°: FM-<?php echo $lot->unique_id; ?></td>
     </tr>
 </table>
 
@@ -43,7 +43,7 @@
 
 <br/>
 
-<table><tr><td><strong>N° de rapport d'inspection correspondant : </strong></td></tr></table>
+<table><tr><td><strong>N° de rapport d'inspection correspondant :</strong> <?php echo $lot->unique_id; ?></td></tr></table>
 
 <br/>
 <br/>
@@ -90,4 +90,4 @@
 <br/><br/>
 <br/><br/>
 
-<table><tr><td>Fiche à retourner à l'OIVC par courrier au <?php echo Organisme::getInstance()->getAdresse() ?></td></tr></table>
+<table><tr><td>Fiche à retourner à l’OIVC par courrier au <strong><?php echo Organisme::getInstance()->getAdresse() ?> <?php echo Organisme::getInstance()->getCodePostal() ?> <?php echo Organisme::getInstance()->getCommune() ?></strong> ou par mail</td></tr></table>
