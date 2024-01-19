@@ -35,6 +35,8 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
   public function initDoc($identifiant, $periode) {
     $this->identifiant = $identifiant;
     $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
+    $this->prix_unitaire_bib = AdelpheConfiguration::getInstance()->getPrixUnitaireBib();
+    $this->prix_unitaire_bouteille = AdelpheConfiguration::getInstance()->getPrixUnitaireBouteille();
     $this->constructId();
   }
 
@@ -67,7 +69,13 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
       if(is_null($date)) {
           $date = date('c');
       }
-      $this->validation = $date;
+      $this->getPrixTotaux();
+      $this->validation = $this->validation_odg = $date;
+  }
+
+  public function getPrixTotaux() {
+      $this->prix_total_bib = $this->prix_unitaire_bib * $this->volume_conditionne_bib;
+      $this->prix_total_bouteille = $this->prix_unitaire_bouteille * $this->volume_conditionne_bouteille;
   }
 
   public function getTauxBibCalcule() {

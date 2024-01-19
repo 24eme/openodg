@@ -12,8 +12,10 @@ Adelphe:
       volume_conditionne_bouteille: { }
       conditionnement_bib: { }
       repartition_bib: { }
-      contribution_taux: { }
-      contribution_valeur: { }
+      prix_unitaire_bib: { }
+      prix_total_bib: { }
+      prix_unitaire_bouteille: { }
+      prix_total_bouteille: { }
       validation: { }
       validation_odg: { }
       etape: { required: false }
