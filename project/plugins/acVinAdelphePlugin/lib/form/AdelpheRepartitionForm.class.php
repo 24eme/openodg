@@ -35,6 +35,8 @@ class AdelpheRepartitionForm extends acCouchdbObjectForm {
       $this->getObject()->conditionnementUniquementBouteille();
     } elseif (!$values['repartition_bib']) {
       $this->getObject()->conditionnementBibForfait();
+    } else {
+      $this->getObject()->conditionnementBibReel();
     }
   }
 }

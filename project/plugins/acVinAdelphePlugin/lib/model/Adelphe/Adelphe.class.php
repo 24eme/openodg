@@ -98,4 +98,10 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     $this->volume_conditionne_bib = round($this->volume_conditionne_total * AdelpheConfiguration::getInstance()->getTauxForfaitaireBib());
     $this->volume_conditionne_bouteille = $this->volume_conditionne_total - $this->volume_conditionne_bib;
   }
+
+  public function conditionnementBibReel() {
+    $this->conditionnement_bib = 1;
+    $this->repartition_bib = 1;
+    $this->volume_conditionne_bouteille = $this->volume_conditionne_total - $this->volume_conditionne_bib;
+  }
 }
