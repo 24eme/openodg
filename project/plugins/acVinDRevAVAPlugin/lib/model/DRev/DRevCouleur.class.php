@@ -314,7 +314,7 @@ class DRevCouleur extends BaseDRevCouleur
         if (!$this->exist('volume_revendique_vci')){
             return $this->setVolumeRevendique( $v);
         }
-        $this->setVolumeRevendique( $v + $this->get('volume_revendique_vci'));
+        $this->setVolumeRevendique( $v + $this->getTotalVolumeRevendiqueVCI(true));
     }
 
 }
