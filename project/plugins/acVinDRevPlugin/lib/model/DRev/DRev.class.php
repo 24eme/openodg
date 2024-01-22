@@ -2120,7 +2120,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getMother() {
 
-        return $this->version_document->getMother($force);
+        return $this->version_document->getMother();
     }
 
     public function motherGet($hash) {
