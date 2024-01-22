@@ -51,4 +51,10 @@ class AdelpheConfiguration {
         return 0;
     }
 
+    public function getUrlAdelphe() {
+        if (isset($this->configuration['url_adelphe']) && $this->configuration['url_adelphe']) {
+            return $this->configuration['url_adelphe'];
+        }
+        return 0;
+    }
 }

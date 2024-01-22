@@ -29,6 +29,10 @@ class adelpheActions extends sfActions {
         return sfView::SUCCESS;
     }
     $this->form->save();
+
+    if ($this->adelphe->volume_conditionne_total >= $this->adelphe->getMaxSeuil()) {
+        return $this->redirect(AdelpheConfiguration::getInstance()->getUrlAdelphe());
+    }
     return $this->redirect('adelphe_repartition_bib', $this->adelphe);
   }
 
