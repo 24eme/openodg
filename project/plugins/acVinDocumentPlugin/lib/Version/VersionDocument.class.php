@@ -106,6 +106,10 @@ class VersionDocument
         return $this->document->getMother()->exist($hash);
     }
 
+    public function resetMother() {
+        $this->mother = null;
+    }
+
     public function getMother() {
         if (!$this->document->hasVersion()) {
             return null;
