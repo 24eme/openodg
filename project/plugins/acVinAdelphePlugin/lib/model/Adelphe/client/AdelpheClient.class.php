@@ -20,7 +20,6 @@ class AdelpheClient extends acCouchdbClient {
   public function createDoc($identifiant, $periode, $papier = false) {
     $adelphe = new Adelphe();
     $adelphe->initDoc($identifiant, $periode);
-    $adelphe->storeDeclarant();
     if($papier) {
         $adelphe->add('papier', 1);
     }
