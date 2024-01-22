@@ -1359,7 +1359,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	}
 
     public function saveDocumentsDependants() {
-        $mother = $this->getMother();
+        $mother = $this->getMother(true);
 
         if(!$mother) {
 
@@ -1367,7 +1367,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $mother->save(false);
-        $this->version_document->resetMother();
         $docs2save = array();
         foreach($this->getDeletedLots() as $lot) {
             $docs2save[$lot->id_document] = $lot->id_document;
