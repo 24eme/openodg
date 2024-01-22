@@ -31,7 +31,7 @@
         <?php endif; ?>
     </td>
     <td class="text-center">
-        <?php echo 'volume_revendique'.$suffixe ; echoFloat($produit->get('volume_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('volume_revendique'.$suffixe))): ?> <small class="text-muted">hl</small><?php endif; ?>
+        <?php echoFloat($produit->get('volume_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('volume_revendique'.$suffixe))): ?> <small class="text-muted">hl</small><?php endif; ?>
     </td>
 </tr>
 <?php if (count($produit->getProduitsCepage()) > 0): ?>
