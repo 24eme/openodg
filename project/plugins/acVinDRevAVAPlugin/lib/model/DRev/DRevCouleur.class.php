@@ -167,12 +167,14 @@ class DRevCouleur extends BaseDRevCouleur
             return $this->exist('volume_revendique_vci') ? $this->volume_revendique_vci : 0;
         }
         $vci = 0;
-        foreach($this->vci as $k => $v) {
+        if ($this->exist('vci')) {
+          foreach($this->vci as $k => $v) {
             if ($k == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
                 $vci += $v->complement;
                 $vci += $v->substitution;
                 $vci += $v->rafraichi;
             }
+          }
         }
         return $vci;
     }
