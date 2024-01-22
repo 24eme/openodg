@@ -123,4 +123,9 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     $this->repartition_bib = 1;
     $this->volume_conditionne_bouteille = $this->volume_conditionne_total - $this->volume_conditionne_bib;
   }
+
+  public function setRedirect($input) {
+      $this->redirect_adelphe = $input;
+      $this->save();
+  }
 }
