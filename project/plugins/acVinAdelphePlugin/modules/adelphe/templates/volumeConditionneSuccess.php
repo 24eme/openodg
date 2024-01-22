@@ -11,6 +11,10 @@
 <form action="<?php echo url_for("adelphe_volume_conditionne", $adelphe) ?>" method="post" class="form-horizontal">
   <?php echo $form->renderHiddenFields(); ?>
   <div class="row row-margin">
+      <div class="col-xs-12 ml-2">
+          <p><span class="glyphicon glyphicon-info-sign"></span> Si votre volume total conditionné est supérieur a <strong><?php echo $adelphe->getMaxSeuil() ?> hl</strong>, vous serez redirigé automatiquement sur le site de l'Adelphe après avoir cliqué sur 'Valider et Continuer'.</p>
+      </div>
+      <br/><br/>
     <div class="col-xs-12">
       <div class="form-group">
           <?php echo $form["volume_conditionne_total"]->renderError(); ?>
@@ -24,6 +28,7 @@
       </div>
     </div>
   </div>
+</br>
 
   <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $adelphe->identifiant, 'campagne' => $adelphe->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à mon espace</a></div>

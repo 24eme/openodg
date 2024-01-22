@@ -96,6 +96,14 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     return null;
   }
 
+  public function getMaxSeuil() {
+      if (!AdelpheConfiguration::getInstance()->getFonctionCalculSeuil()) {
+        return null;
+      }
+      $fctCalculSeuil = str_replace('%TXBIB%', '1', AdelpheConfiguration::getInstance()->getFonctionCalculSeuil());
+      return eval($fctCalculSeuil);
+  }
+
   public function conditionnementUniquementBouteille() {
     $this->conditionnement_bib = 0;
     $this->repartition_bib = 0;
