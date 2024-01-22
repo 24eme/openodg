@@ -35,6 +35,8 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
   public function initDoc($identifiant, $periode) {
     $this->identifiant = $identifiant;
     $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
+    $this->prix_unitaire_bib = AdelpheConfiguration::getInstance()->getPrixUnitaireBib();
+    $this->prix_unitaire_bouteille = AdelpheConfiguration::getInstance()->getPrixUnitaireBouteille();
     $this->constructId();
   }
 
@@ -61,5 +63,56 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;
     $this->add('etape', $etape);
     return $etapeOriginal != $this->etape;
+  }
+
+  public function validate($date = null) {
+      if(is_null($date)) {
+          $date = date('c');
+      }
+      $this->getPrixTotaux();
+      $this->validation = $this->validation_odg = $date;
+  }
+
+  public function getPrixTotaux() {
+      $this->prix_total_bib = $this->prix_unitaire_bib * $this->volume_conditionne_bib;
+      $this->prix_total_bouteille = $this->prix_unitaire_bouteille * $this->volume_conditionne_bouteille;
+  }
+
+  public function getTauxBibCalcule() {
+    if ($this->volume_conditionne_bib > 0 && $this->volume_conditionne_total > 0 && $this->volume_conditionne_total >= $this->volume_conditionne_bib) {
+      return round($this->volume_conditionne_bib / $this->volume_conditionne_total * 100);
+    }
+    return 0;
+  }
+
+  public function getSeuil() {
+    if (!AdelpheConfiguration::getInstance()->getFonctionCalculSeuil()) {
+      return null;
+    }
+    $fctCalculSeuil = str_replace('%TXBIB%', $this->getTauxBibCalcule() / 100, AdelpheConfiguration::getInstance()->getFonctionCalculSeuil());
+    if ($this->volume_conditionne_total) {
+      return eval($fctCalculSeuil);
+    }
+    return null;
+  }
+
+  public function conditionnementUniquementBouteille() {
+    $this->conditionnement_bib = 0;
+    $this->repartition_bib = 0;
+    $this->volume_conditionne_bib = 0;
+    $this->volume_conditionne_bouteille = $this->volume_conditionne_total;
+  }
+
+  public function conditionnementBibForfait() {
+    $this->conditionnement_bib = 1;
+    $this->repartition_bib = 0;
+    $this->volume_conditionne_bib = round($this->volume_conditionne_total * AdelpheConfiguration::getInstance()->getTauxForfaitaireBib());
+    $this->volume_conditionne_bouteille = $this->volume_conditionne_total - $this->volume_conditionne_bib;
+  }
+
+  public function conditionnementBibReel() {
+    $this->conditionnement_bib = 1;
+    $this->repartition_bib = 1;
+    $this->volume_conditionne_bouteille = $this->volume_conditionne_total - $this->volume_conditionne_bib;
   }
 }

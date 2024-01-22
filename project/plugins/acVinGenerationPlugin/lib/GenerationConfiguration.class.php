@@ -60,4 +60,17 @@ class GenerationConfiguration
     {
         return $this->hasSousGeneration($type) && ($type) ? $this->configuration['sousgeneration'][$type] : array();
     }
+
+    public function getShellScriptPath()
+    {
+        if (isset($this->configuration['shellpath']) === false) {
+            return null;
+        }
+
+        if (is_dir($this->configuration['shellpath']) === false) {
+            throw new sfException('Le chemin '.$this->configuration['shellpath'].' n\'existe pas');
+        }
+
+        return $this->configuration['shellpath'];
+    }
 }

@@ -1,5 +1,6 @@
 all:
   configuration:
     generation:
+      shellpath: %SF_ROOT_DIR%/bin/tasks
       sousgeneration:
         FACTURE: ['FACTUREMAIL', 'FACTUREPAPIER']

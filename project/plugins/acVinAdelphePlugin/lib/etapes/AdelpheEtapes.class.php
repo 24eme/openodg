@@ -8,7 +8,7 @@ class AdelpheEtapes extends Etapes
 	public static $etapes = array(
             self::ETAPE_VOLUME_CONDITIONNE => 1,
             self::ETAPE_REPARTITION_BIB => 2,
-            self::ETAPE_VALIDATION => 3
+            self::ETAPE_VALIDATION => 3,
     );
 
 	public static $links = array(
@@ -20,7 +20,7 @@ class AdelpheEtapes extends Etapes
 	public static $libelles = array(
             self::ETAPE_VOLUME_CONDITIONNE => "Volume conditionné",
             self::ETAPE_REPARTITION_BIB => "Répartition BIB",
-            self::ETAPE_VALIDATION => "Validation"
+            self::ETAPE_VALIDATION => "Validation",
     );
 
 	private static $_instance = null;
