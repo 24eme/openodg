@@ -5,7 +5,7 @@
     <h2>Validation</h2>
 </div>
 
-<?php if ($adelphe->redirect_adelphe == true): ?>
+<?php if ($adelphe->redirect_adelphe): ?>
 
 <?php include_partial('adelphe/redirect', array('adelphe' => $adelphe)); ?>
 <form action="<?php echo url_for("adelphe_validation", $adelphe) ?>" method="post" class="form-horizontal">
@@ -19,7 +19,6 @@
 
 <?php else: ?>
 <?php include_partial('adelphe/recap', array('adelphe' => $adelphe)); ?>
-
 
 <form action="<?php echo url_for("adelphe_validation", $adelphe) ?>" method="post" class="form-horizontal">
     <div class="row row-margin row-button">
