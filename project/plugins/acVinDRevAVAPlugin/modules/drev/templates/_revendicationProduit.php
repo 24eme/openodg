@@ -13,18 +13,26 @@
             <?php endif; ?>
         </div>
     </td>
-    <?php if(!$drev->isNonRecoltant()): ?>
-    <td class="text-center"><?php echoFloat($produit->get('superficie_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_revendique'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?></td>
-    <?php endif; ?>
-    <?php if ($drev->canHaveSuperficieVinifiee()): ?>
-    <td class="text-center"><?php if ($produit->exist('superficie_vinifiee'.$suffixe)): ?><?php echoFloat($produit->get('superficie_vinifiee'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_vinifiee'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?><?php endif; ?></td>
-    <?php endif; ?>
-    <?php if(($drev->hasProduitsVCI() || $drev->hasProduitsVCI() || $drev->declaration->hasVolumeRevendiqueVci()) && !$suffixe): ?>
-    <td class="text-center"><?php if ($produit->exist('volume_revendique_vci') && !is_null($produit->get('volume_revendique_vci'))): ?> <?php echoFloat($produit->get('volume_revendique_vci')) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-    <?php elseif($drev->hasProduitsVCI() || $drev->declaration->hasVolumeRevendiqueVci()): ?>
-    <td>&nbsp;</td>
-    <?php endif; ?>
-    <td class="text-center"><?php echoFloat($produit->get('volume_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('volume_revendique'.$suffixe))): ?> <small class="text-muted">hl</small><?php endif; ?></td>
+    <td class="text-center">
+        <?php if(!$drev->isNonRecoltant()): ?>
+            <?php echoFloat($produit->get('superficie_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_revendique'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?>
+        <?php endif; ?>
+    </td>
+    <td class="text-center">
+        <?php if ($drev->canHaveSuperficieVinifiee()): ?>
+            <?php if ($produit->exist('superficie_vinifiee'.$suffixe)): ?><?php echoFloat($produit->get('superficie_vinifiee'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_vinifiee'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?><?php endif; ?>
+        <?php endif; ?>
+    </td>
+    <td class="text-center">
+        <?php if(($drev->hasProduitsVCI() || $drev->hasProduitsVCI() || $drev->declaration->hasVolumeRevendiqueVci()) && !$suffixe): ?>
+            <?php if ($produit->exist('volume_revendique_vci') && !is_null($produit->get('volume_revendique_vci'))): ?> <?php echoFloat($produit->get('volume_revendique_vci')) ?> <small class="text-muted">hl</small><?php endif; ?>
+        <?php elseif($drev->hasProduitsVCI() || $drev->declaration->hasVolumeRevendiqueVci()): ?>
+            &nbsp;
+        <?php endif; ?>
+    </td>
+    <td class="text-center">
+        <?php echo 'volume_revendique'.$suffixe ; echoFloat($produit->get('volume_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('volume_revendique'.$suffixe))): ?> <small class="text-muted">hl</small><?php endif; ?>
+    </td>
 </tr>
 <?php if (count($produit->getProduitsCepage()) > 0): ?>
     <tr>
@@ -48,9 +56,11 @@
                                     </td>
                                     <?php endif; ?>
                                     <?php if ($drev->canHaveSuperficieVinifiee()): ?>
-                                    <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><?php if ($produit_cepage->superficie_vinifiee): ?>
+                                    <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>">
+                                        <?php if ($produit_cepage->superficie_vinifiee): ?>
                                         <small><?php echoFloat($produit_cepage->superficie_vinifiee) ?><?php if (!is_null($produit_cepage->superficie_vinifiee)): ?> <small class="text-muted">ares</small><?php endif; ?></small>
-                                    <?php endif; ?></td>
+                                        <?php endif; ?>
+                                    </td>
                                     <?php endif; ?>
                                     <?php if($drev->hasProduitsVCI() || $drev->declaration->hasVolumeRevendiqueVci()): ?>
 								    <td class="text-center text-muted col-md-2"><?php if($produit_cepage->getVolumeRevendiqueVci() !== null): ?><small><?php echoFloat($produit_cepage->getVolumeRevendiqueVci()) ?><?php if (!is_null($produit_cepage->getVolumeRevendiqueVci())): ?> <small class="text-muted">hl</small><?php endif; ?></small><?php else: ?>&nbsp;<?php endif; ?></td>
