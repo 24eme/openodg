@@ -1,6 +1,6 @@
 <?php
 
-class drevActions extends sfActions {
+class /***AVA***/drevActions extends sfActions {
 
     public function executePushDR(sfWebRequest $request) {
         $this->url = $request->getParameter('url');
@@ -78,6 +78,12 @@ class drevActions extends sfActions {
 
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        if ($this->drev->hasDROrSV()) {
+
+            return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
+        }
+
         $this->secure(DRevSecurity::EDITION, $this->drev);
     }
 
@@ -168,6 +174,10 @@ class drevActions extends sfActions {
 
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
+        }
+
+        if($this->drev->isPapier()) {
+            return $this->redirect('drev_revendication', $this->drev);
         }
 
         return $this->redirect('drev_dr', $this->drev);

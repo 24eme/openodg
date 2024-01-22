@@ -34,7 +34,7 @@ class ExportTransactionPDF extends ExportPDF {
 
   protected function getHeaderTitle() {
       $date = new DateTime($this->declaration->date);
-      $titre = sprintf("Déclaration de Vrac export du %s", $date->format('d/m/Y'));
+      $titre = sprintf("Transaction du %s", $date->format('d/m/Y'));
       return $titre;
   }
     protected function getHeaderSubtitle()
