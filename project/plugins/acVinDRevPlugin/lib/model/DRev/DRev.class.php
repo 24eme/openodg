@@ -1359,7 +1359,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	}
 
     public function saveDocumentsDependants() {
-        $mother = $this->getMother(true);
+        $mother = $this->version_document->getMother(true);
 
         if(!$mother) {
 
@@ -2120,7 +2120,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getMother() {
 
-        return $this->version_document->getMother();
+        return $this->version_document->getMother($force);
     }
 
     public function motherGet($hash) {
