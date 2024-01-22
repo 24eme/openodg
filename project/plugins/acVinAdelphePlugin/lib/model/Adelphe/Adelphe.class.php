@@ -45,6 +45,7 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     $this->prix_unitaire_bib = AdelpheConfiguration::getInstance()->getPrixUnitaireBib();
     $this->prix_unitaire_bouteille = AdelpheConfiguration::getInstance()->getPrixUnitaireBouteille();
     $this->constructId();
+    $this->storeDeclarant();
     $this->setVolumeConditionneTotalFromCsv();
   }
 
