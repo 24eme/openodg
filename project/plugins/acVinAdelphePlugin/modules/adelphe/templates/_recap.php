@@ -14,22 +14,22 @@
     </thead>
     <tbody>
         <tr>
-            <td class="text-center">BIB</td>
-            <td class="text-center"><?php echo $adelphe->volume_conditionne_bib ?></td>
-            <td class="text-center"><?php echo $adelphe->prix_unitaire_bib ?>€</td>
-            <td class="text-center"><?php echo $total_bib = $adelphe->volume_conditionne_bib * $adelphe->prix_unitaire_bib ?>€</td>
+            <td class="text-left">BIB</td>
+            <td class="text-right"><?php echo $adelphe->volume_conditionne_bib ?></td>
+            <td class="text-right"><?php echo $adelphe->prix_unitaire_bib ?>€</td>
+            <td class="text-right"><?php echo $total_bib = $adelphe->volume_conditionne_bib * $adelphe->prix_unitaire_bib ?>€</td>
         </tr>
         <tr>
-            <td class="text-center">Bouteille</td>
-            <td class="text-center"><?php echo $adelphe->volume_conditionne_bouteille ?></td>
-            <td class="text-center"><?php echo $adelphe->prix_unitaire_bouteille ?>€</td>
-            <td class="text-center"><?php echo $total_bouteille = $adelphe->volume_conditionne_bouteille * $adelphe->prix_unitaire_bouteille ?>€</td>
+            <td class="text-left">Bouteille</td>
+            <td class="text-right"><?php echo $adelphe->volume_conditionne_bouteille ?></td>
+            <td class="text-right"><?php echo $adelphe->prix_unitaire_bouteille ?>€</td>
+            <td class="text-right"><?php echo $total_bouteille = $adelphe->volume_conditionne_bouteille * $adelphe->prix_unitaire_bouteille ?>€</td>
         </tr>
         <tr>
-            <td class="text-center"><strong>Total</strong></td>
-            <td class="text-center"><?php echo $adelphe->volume_conditionne_total ?></td>
-            <td class="text-center">---</td>
-            <td class="text-center"><?php echo $total_total = $total_bib + $total_bouteille ?>€</td>
+            <td class="text-left"><strong>Total</strong></td>
+            <td class="text-right"><?php echo $adelphe->volume_conditionne_total ?></td>
+            <td class="text-right">---</td>
+            <td class="text-right"><?php echo $total_total = $total_bib + $total_bouteille ?>€</td>
         </tr>
     </tbody>
 </table>

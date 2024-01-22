@@ -17,6 +17,7 @@ class adelpheActions extends sfActions {
 
   public function executeVolumeConditionne(sfWebRequest $request) {
     $this->adelphe = $this->getRoute()->getAdelphe();
+    $this->adelphe->setRedirect(false);
     if($this->adelphe->storeEtape($this->getEtape($this->adelphe, AdelpheEtapes::ETAPE_VOLUME_CONDITIONNE))) {
       $this->adelphe->save();
     }
@@ -31,7 +32,8 @@ class adelpheActions extends sfActions {
     $this->form->save();
 
     if ($this->adelphe->volume_conditionne_total >= $this->adelphe->getMaxSeuil()) {
-        return $this->redirect(AdelpheConfiguration::getInstance()->getUrlAdelphe());
+        $this->adelphe->setRedirect(true);
+        return $this->redirect('adelphe_validation', $this->adelphe);
     }
     return $this->redirect('adelphe_repartition_bib', $this->adelphe);
   }
@@ -50,6 +52,10 @@ class adelpheActions extends sfActions {
         return sfView::SUCCESS;
     }
     $this->form->save();
+
+    if ($this->adelphe->volume_conditionne_total >= $this->adelphe->getSeuil()) {
+        $this->adelphe->setRedirect(true);
+    }
     return $this->redirect('adelphe_validation', $this->adelphe);
   }
 
@@ -60,6 +66,9 @@ class adelpheActions extends sfActions {
     }
     $this->adelphe->validate(date('c'));
     $this->adelphe->save();
+    if ($this->adelphe->redirect_adelphe) {
+        return $this->redirect(AdelpheConfiguration::getInstance()->getUrlAdelphe());
+    }
     return $this->redirect('adelphe_visualisation', $this->adelphe);
   }
 

@@ -19,6 +19,7 @@ Adelphe:
       validation: { }
       validation_odg: { }
       etape: { required: false }
+      redirect_adelphe: { }
       declarant:
         type: collection
         class: AdelpheDeclarant
