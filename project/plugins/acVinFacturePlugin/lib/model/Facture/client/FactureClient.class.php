@@ -472,7 +472,7 @@ class FactureClient extends acCouchdbClient {
       $paiements = [];
       if($f->exist('paiements')) {
         foreach($f->paiements as $p) {
-          if( ($p->type_reglement != FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) || $p->execute) {
+          if( ($p->type_reglement != FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) || ($p->exist('execute') && $p->execute)) {
               $paiements[] = $p;
           }
         }
