@@ -12,4 +12,5 @@ all:
         "timbre": "Timbre"
         "stalker": "Stalker"
         "teledeclaration_drev_admin": "ODG Région"
+        "adelphe": "ADELPHE"
       visualisation_teledeclaration: true
