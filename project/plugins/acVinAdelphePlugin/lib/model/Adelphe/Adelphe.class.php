@@ -4,7 +4,7 @@
  *
  */
 
-class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
+class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, InterfaceDeclaration {
 
   protected $declarant_document = null;
   protected $etablissement = null;
@@ -157,4 +157,25 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
       fclose($handle);
     }
   }
+
+  public function isLectureSeule() {
+    return $this->exist('lecture_seule') && $this->get('lecture_seule');
+  }
+
+  public function isPapier() {
+    return $this->exist('papier') && $this->get('papier');
+  }
+
+  public function isAutomatique() {
+    return $this->exist('automatique') && $this->get('automatique');
+  }
+
+  public function getValidation() {
+    return $this->_get('validation');
+  }
+
+  public function getValidationOdg() {
+    return $this->_get('validation_odg');
+  }
+
 }
