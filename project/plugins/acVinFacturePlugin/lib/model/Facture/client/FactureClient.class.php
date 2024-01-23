@@ -407,7 +407,7 @@ class FactureClient extends acCouchdbClient {
       return !$this->isRedressee($factureview) && $factureview->value[FactureSocieteView::VALUE_STATUT] != self::STATUT_NONREDRESSABLE;
     }
 
-    public function createAvoir(Facture $f) {
+    public function createAvaAvoir(Facture $f) {
       if (!$f->isRedressable()) {
   return ;
       }
@@ -450,10 +450,10 @@ class FactureClient extends acCouchdbClient {
 
       $avoir->date_paiement = null;
       $avoir->modalite_paiement = null;
-      $avoir->montant_paiement = null;
       $avoir->remove('reglement_paiement');
       $avoir->remove('paiements');
       $avoir->add('paiements');
+      $avoir->remove('montant_paiement');
 
       return $avoir;
     }
@@ -504,6 +504,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->versement_comptable_paiement = 0;
       $avoir->remove('paiements');
       $avoir->add('paiements');
+      $avoir->remove('montant_paiement');
       $avoir->save();
       $f->defacturer();
       $f->save();
