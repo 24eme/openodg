@@ -94,6 +94,10 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     return 0;
   }
 
+  public function getTauxBouteilleCalcule() {
+    return 100 - $this->getTauxBibCalcule();
+  }
+
   public function getSeuil() {
     if (!AdelpheConfiguration::getInstance()->getFonctionCalculSeuil()) {
       return null;
