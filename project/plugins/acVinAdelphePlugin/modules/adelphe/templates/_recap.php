@@ -2,7 +2,16 @@
     <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $adelphe->getEtablissementObject())); ?>
 </div>
 
-<h3>Vos conditionnements</h3>
+<?php if ($adelphe->redirect_adelphe): ?>
+
+<p class="bg-warning text-center p-5 mb-5">
+    <span class="glyphicon glyphicon-alert"></span><br />
+    Votre volume conditionné déclaré est supérieur au seuil géré par votre syndicat. Vous devez déclarer directement sur le site de l'ADELPHE.</h4>
+</p>
+
+<?php else: ?>
+
+<h3>Votre contribution Adelphe</h3>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -33,3 +42,5 @@
         </tr>
     </tbody>
 </table>
+
+<?php endif; ?>
