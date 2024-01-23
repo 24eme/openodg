@@ -115,7 +115,7 @@
     const vol = document.getElementById('adelphe_volume_conditionne_bib').value;
     const tx = vol / volTotal * 100;
     if (tx > 0) {
-      document.getElementById('adelphe_taux_conditionne_bib').value = parseFloat(tx).toFixed(2);
+      document.getElementById('adelphe_taux_conditionne_bib').value = Math.round(tx);
     }
   });
   document.getElementById('adelphe_taux_conditionne_bib').addEventListener('keyup', function(e) {
