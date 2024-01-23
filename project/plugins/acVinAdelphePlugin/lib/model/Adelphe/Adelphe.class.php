@@ -158,6 +158,22 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     }
   }
 
+  public function getPrixBouteille() {
+    return round($this->volume_conditionne_bouteille * $this->prix_unitaire_bouteille, 2);
+  }
+
+  public function getPrixBib() {
+    return round($this->volume_conditionne_bib * $this->prix_unitaire_bib, 2);
+  }
+
+  public function getPrixTotal() {
+    return $this->getPrixBouteille() + $this->getPrixBib();
+  }
+
+  public function isRepartitionForfaitaire() {
+    return ($this->conditionnement_bib && !$this->repartition_bib);
+  }
+
   public function isLectureSeule() {
     return $this->exist('lecture_seule') && $this->get('lecture_seule');
   }
