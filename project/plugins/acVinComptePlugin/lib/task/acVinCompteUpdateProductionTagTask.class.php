@@ -33,11 +33,6 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-            new sfCommandOption('campagne', null, sfCommandOption::PARAMETER_OPTIONAL, 'Campagne', null),
-            new sfCommandOption('reinitialisation_tags_produit', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', false),
-            new sfCommandOption('reinitialisation_tags_export', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', false),
-            new sfCommandOption('reinitialisation_tags_domaines', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', false),
-            new sfCommandOption('reinitialisation_tags_documents', null, sfCommandOption::PARAMETER_REQUIRED, 'Reset tags', true),
             new sfCommandOption('debug', null, sfCommandOption::PARAMETER_OPTIONAL, 'use only one code creation', '0'),
         ));
 
@@ -54,87 +49,48 @@ class acVinCompteUpdateProductionTagTask extends sfBaseTask {
 
         $this->debug = array_key_exists('debug', $options) && $options['debug'];
 
-
-        if (!isset($options['campagne']) || !$options['campagne']) {
-            $campagne = ConfigurationClient::getInstance()->getCurrentCampagne();
-        } else {
-            $campagne = $options['campagne'];
+        $campagnes = [];
+        $currentCampagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent();
+        for($i=0; $i < 3; $i++) {
+            $campagnes[$currentCampagne] = $currentCampagne;
+            $currentCampagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getPrevious($currentCampagne);
         }
 
-        $this->logSection("campagne use", $campagne);
+        $this->logSection("campagne use", implode(',', $campagnes));
 
         foreach (EtablissementAllView::getInstance()->findByInterproStatutAndFamilleVIEW('INTERPRO-declaration', EtablissementClient::STATUT_ACTIF, null) as $e) {
             $id = $e->key[EtablissementAllView::KEY_ETABLISSEMENT_ID];
             $tags = array('export' => array(), 'produit' => array(), 'domaines' => array(), 'documents' => array());
-
-            if (class_exists('SV12MouvementsConsultationView')) {
-            $mvts = SV12MouvementsConsultationView::getInstance()->getByIdentifiantAndCampagne($id, $campagne);
-            foreach ($mvts as $m) {
-                $produit_libelle = $this->getProduitLibelle($m->produit_hash);
-                if(!$produit_libelle) {
-                    continue;
-                }
-                $tags['produit'][$produit_libelle] = 1;
-                $tags['documents']['SV12'] = 1;
-            }
-            }
-            if (class_exists('SV12MouvementsConsultationView')) {
-            $mvts = DRMMouvementsConsultationView::getInstance()->getByIdentifiantAndCampagne($id, $campagne);
-            foreach ($mvts as $m) {
-                $produit_libelle = $this->getProduitLibelle($m->produit_hash);
-                if(!$produit_libelle) {
-                    continue;
-                }
-                $tags['produit'][$produit_libelle] = 1;
-                $tags['documents']['DRM'] = 1;
-                if ($m->detail_libelle && preg_match("/Export/", $m->type_libelle)) {
-                    $tags['export'][$this->replaceAccents($m->detail_libelle)] = 1;
-                }
-            }
-            }
-            if (class_exists('SV12MouvementsConsultationView')) {
-            $contratDomaines = VracDomainesView::getInstance()->findDomainesByVendeur(str_replace('ETABLISSEMENT-', '', $id), date('Y'), 1000);
-            foreach ($contratDomaines->rows as $domaineView) {
-                $domaine = $this->replaceAccents($domaineView->key[VracDomainesView::KEY_DOMAINE]);
-                $tags['domaines'][$domaine] = 1;
-            }
-            }
             $etablissement = EtablissementClient::getInstance()->findByIdentifiant(str_replace('ETABLISSEMENT-', '', $id));
             if (!$etablissement) {
                 throw new sfException("etablissement $id non trouvé");
             }
-            if (class_exists('SV12MouvementsConsultationView')) {
-            $factures = FactureSocieteView::getInstance()->getYearFaturesBySociete($etablissement->getSociete());
-            if (count($factures)) {
-                $tags['documents']['Facture'] = 1;
-            }
-            }
             $compte = $etablissement->getContact();
             if (class_exists('DeclarationIdentifiantView')) {
-            $types_view = DeclarationIdentifiantView::getInstance()->getByIdentifiant($compte->identifiant);
-            foreach($types_view->rows as $t) {
-                $date = date('Y') - 1;
-                if ($t->key[DeclarationIdentifiantView::KEY_CAMPAGNE] >= $date) {
-                    $tags['documents'][$t->key[DeclarationIdentifiantView::KEY_TYPE].'_'.$date] = 1;
+                $types_view = DeclarationIdentifiantView::getInstance()->getByIdentifiant($etablissement->identifiant);
+                foreach($types_view->rows as $t) {
+                    $docCampagne = $t->key[DeclarationIdentifiantView::KEY_CAMPAGNE];
+
+                    if(strlen($docCampagne) == 4) {
+                        $docCampagne = $docCampagne.'-'.($docCampagne + 1);
+                    }
+                    if (in_array($docCampagne, $campagnes)) {
+                        $tags['documents'][$t->key[DeclarationIdentifiantView::KEY_TYPE].'_'.explode("-", $docCampagne)[0]] = 1;
+                    }
                 }
             }
+
+            if (class_exists('MouvementLotView')) {
+                foreach(MouvementLotView::getInstance()->getByIdentifiant($etablissement->identifiant)->rows as $row) {
+                    if (in_array($row->value->campagne, $campagnes) && $row->value->affectable) {
+                        $tags['documents']['controle_odg_'.explode("-", $row->value->campagne)[0]] = 1;
+                    }
+                }
             }
-            if ($options['reinitialisation_tags_export']) {
-                $compte->tags->remove('export');
-                $this->logSection("reset tags export", $compte->identifiant);
-            }
-            if ($options['reinitialisation_tags_produit']) {
-                $compte->tags->remove('produit');
-                $this->logSection("reset tags produit", $compte->identifiant);
-            }
-            if ($options['reinitialisation_tags_domaines']) {
-                $compte->tags->remove('domaines');
-                $this->logSection("reset tags produit", $compte->identifiant);
-            }
-            if ($options['reinitialisation_tags_documents']) {
-                $compte->tags->remove('documents');
-                $this->logSection("reset tags documents", $compte->identifiant);
-            }
+            $compte->tags->remove('documents');
+
+            $this->logSection("reset tags documents", $compte->identifiant);
+
             if (!count($tags)) {
                 continue;
             }

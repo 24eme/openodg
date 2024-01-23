@@ -31,7 +31,6 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $denominations = array();
         $communes = array();
-        $empty_args = (!$arguments['commune_insee'] && !$arguments['identifiant_inao']);
         if ($arguments['commune_insee']) {
             $communes[] = $arguments['commune_insee'];
         }
@@ -47,8 +46,8 @@ EOF;
             }
         }
         foreach($denominations as $d) {
-            if ($empty_args) {
-                $communes = [];
+            if (!$arguments['commune_insee']) {
+                $communes = array();
                 foreach(AireClient::getInstance()->getCommunesArrayFromDenominationId($d) as $c) {
                     $communes[$c] = $c;
                 }
@@ -56,10 +55,11 @@ EOF;
             foreach($communes as $c) {
                 try {
                     $aire = AireClient::getInstance()->createOrUpdateAireFromHttp($c, $d);
+                    $aire->isInAire($aire->getGeoParcelle());
                     $aire->save();
-                    echo "DEBUG: ".$aire->denomination_libelle." (".$aire->denomination_identifiant.") form ".$aire->commune_libelle." (".$aire->commune_identifiant.") imported\n";
-                }catch(sfException $e) {
-                    echo "Error: ".$e->getMessage()."\n";
+                    echo "DEBUG: ".$aire->denomination_libelle." (".$aire->denomination_identifiant.") for ".$aire->commune_libelle." (".$aire->commune_identifiant.") imported\n";
+                }catch(Exception $e) {
+                    echo "Error: unable to import delimitation $d for commune $c because ".$e->getMessage()."\n";
                 }
             }
         }

@@ -154,5 +154,8 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return false;
     }
 
-    /* FIN DR */
+    public function getAttribut($name, $default = null) {
+
+        return $default;
+    }
 }

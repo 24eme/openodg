@@ -325,6 +325,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $compte->id_societe = $this->getSociete()->_id;
         $compte->nom = $this->nom;
         $compte->statut = $this->statut;
+        $compte->commentaire = $this->commentaire;
 
         $this->compte = $compte->_id;
 
@@ -454,9 +455,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $this->getSociete()->getMasterCompte()->isTeledeclarationActive();
     }
 
-    public function getEmailTeledeclaration() {
-        if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
-            return $this->teledeclaration_email;
+    public function getTeledeclarationEmail() {
+        if ($this->exist('teledeclaration_email') && $this->_get('teledeclaration_email')) {
+            return $this->_get('teledeclaration_email');
         }
     	if ($compteSociete = $this->getMasterCompte()) {
 	        if ($compteSociete->exist('societe_information') && $compteSociete->societe_information->exist('email') && $compteSociete->societe_information->email) {
@@ -478,6 +479,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $this->exist('crd_regime') && $this->crd_regime;
     }
 
+
+    public function getCommentaires() {
+        $lines = explode("\n", str_replace(' - ', "\n", $this->getCommentaire()));
+        return array_filter($lines, fn($value) => (rtrim($value)));
+    }
 
     public function addCommentaire($s) {
         $c = $this->get('commentaire');

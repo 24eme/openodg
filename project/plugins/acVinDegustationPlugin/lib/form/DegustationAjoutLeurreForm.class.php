@@ -42,7 +42,7 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $this->setDefault('millesime', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent());
 
         $this->widgetSchema['table'] = new sfWidgetFormInputHidden();
-        $this->validatorSchema['table'] = new sfValidatorInteger(['required' => true, 'min' => 0]);
+        $this->validatorSchema['table'] = new sfValidatorInteger(['required' => ! DegustationConfiguration::getInstance()->isAnonymisationManuelle(), 'min' => 1]);
 
         $this->widgetSchema->setNameFormat('degustation_ajout_leurre[%s]');
     }

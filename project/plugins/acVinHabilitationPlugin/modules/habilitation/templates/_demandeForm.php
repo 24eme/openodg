@@ -166,7 +166,7 @@
     <div class="col-xs-6">
         <span class="text-danger"><?php echo $form['date']->renderError() ?></span>
         <div class="input-group date-picker">
-            <?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"class" => "form-control")) ?>
+            <?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"autocomplete" => "off", "class" => "form-control")) ?>
             <div class="input-group-addon">
                     <span class="glyphicon-calendar glyphicon"></span>
             </div>

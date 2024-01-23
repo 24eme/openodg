@@ -8,6 +8,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
   protected $declarant_document = null;
   protected $piece_document = null;
+  protected $parcelles_idu = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -58,7 +59,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->campagne = $periode.'-'.($periode + 1);
       $this->constructId();
       $this->storeDeclarant();
-      $this->storeParcellesAffectation();
+      $this->updateParcellesAffectation();
   }
 
   public function getPeriode() {
@@ -66,16 +67,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function updateParcellesAffectation() {
-    $this->storeParcellesAffectation(true);
-  }
-
-  public function storeParcellesAffectation($isUpDate=false) {
     if($this->validation){
         return;
     }
-    $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->identifiant);
+    $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant);
     if (!$intention) {
-        $intention = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->identifiant, $this->campagne);
+        $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->campagne);
         if (!count($intention->declaration)) {
             $intention = null;
         }
@@ -91,16 +88,43 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         if (!$parcelle->affectation) {
             continue;
         }
+        if($this->findParcelle($parcelle, true)) {
+            continue;
+        }
         $item = $this->declaration->add($hash);
         $item->libelle = $produit->libelle;
         $parcelle->origine_doc = $intention->_id;
         unset($parcelle['origine_hash']);
         $detail = $item->detail->add($parcelle->getKey(), $parcelle);
         $detail->origine_doc = $intention->_id;
-        if($previous && $previous->exist($detail->getHash()) && $previous->get($detail->getHash())->affectee) {
-            $detail->affectee = 1;
+        if($previous) {
+            $pMatch = $previous->findParcelle($detail);
+
+            if($pMatch && $pMatch->affectee) {
+                $detail->affectee = 1;
+            }
         }
 	}
+  }
+
+  public function getParcellesByIdu() {
+      if(is_array($this->parcelles_idu)) {
+
+          return $this->parcelles_idu;
+      }
+
+      $this->parcelles_idu = [];
+
+      foreach($this->getParcelles() as $parcelle) {
+          $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+      }
+
+      return $this->parcelles_idu;
+  }
+
+  public function findParcelle($parcelle, $with_cepage_match = false) {
+
+      return ParcellaireClient::findParcelle($this, $parcelle, 0.5, $with_cepage_match);
   }
 
   public function getConfiguration() {

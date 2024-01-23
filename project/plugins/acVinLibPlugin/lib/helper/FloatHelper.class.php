@@ -60,7 +60,7 @@ class FloatHelper
         } else {
             $nbDecimal = $maxDecimalAuthorized;
         }
-		$separate = ($milliSeparate)? ' ' : '';
+		$separate = ($milliSeparate)? '&nbsp;' : '';
         return number_format($number, $nbDecimal, '.', $separate);
     }
 

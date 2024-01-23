@@ -15,6 +15,9 @@ class DRValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'rendement_manquant', "Rendement non présent en configuration");
         $this->addControle(self::TYPE_WARNING, 'rendement_ligne_manquante', "Il manque une ligne dans le produit");
         $this->addControle(self::TYPE_WARNING, 'rendement_declaration', "Le rendement n'est pas respecté");
+        if (class_exists(ParcellaireManquant::class)) {
+            $this->addControle(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort");
+        }
     }
 
     public function controle()
@@ -25,6 +28,8 @@ class DRValidation extends DocumentValidation
         foreach ($this->document->getProduits() as $produit) {
             $this->controleRendement($produit);
         }
+
+        $this->controleDocuments();
     }
 
     public function controleRendement($produit)
@@ -65,6 +70,18 @@ class DRValidation extends DocumentValidation
                 'rendement_declaration',
                 "Le rendement L15 du produit <strong>".$produit['libelle']."</strong> est de " . round($produit['lignes']['15']['val'] / $produit['lignes']['04']['val'], 2) . " hl/ha, " ."le maximum étant <strong>".$produit_conf->getRendementDrL15()."</strong> hl/ha"
             );
+        }
+    }
+
+    public function controleDocuments()
+    {
+        if (class_exists(ParcellaireManquant::class)) {
+            $PM = ParcellaireManquantClient::getInstance()->find(
+                ParcellaireManquantClient::getInstance()->buildId($this->document->getIdentifiant(), $this->document->getPeriode())
+            );
+            if ($PM === null || $PM->periode !== $this->document->campagne) {
+                $this->addPoint(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort pour cette campagne");
+            }
         }
     }
 }

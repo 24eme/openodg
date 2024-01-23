@@ -1,6 +1,6 @@
 <?php
 
-class drevActions extends sfActions {
+class /***AVA***/drevActions extends sfActions {
 
     public function executePushDR(sfWebRequest $request) {
         $this->url = $request->getParameter('url');
@@ -78,19 +78,25 @@ class drevActions extends sfActions {
 
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        if ($this->drev->hasDROrSV()) {
+
+            return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
+        }
+
         $this->secure(DRevSecurity::EDITION, $this->drev);
     }
 
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $drev);
-
+        $typedoc = ($drev->isNonRecoltant()) ? 'SV' : 'DR';
         return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
-                        "?" .
-                        http_build_query(array(
-                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne),
-                            'url' => $this->generateUrl('drev_dr_import', $drev, true),
-                        )));
+                    "?" .
+                    http_build_query(array(
+                        'id' => sprintf($typedoc.'-%s-%s', $drev->identifiant, $drev->campagne),
+                        'url' => $this->generateUrl('drev_dr_import', $drev, true),
+                    )));
     }
 
     public function executeDrImport(sfWebRequest $request) {
@@ -108,13 +114,22 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        file_put_contents($cache_dir . "/DR.csv", base64_decode($request->getParameter('csv')));
-        $this->drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
+        $typedoc = ($this->drev->isNonRecoltant()) ? 'SV' : 'DR';
 
-        file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
-        $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
 
-        $this->drev->updateFromCSV(true, true);
+        if ($request->getParameter('csv')) {
+
+            file_put_contents($cache_dir . "/$typedoc.csv", base64_decode($request->getParameter('csv')));
+            $this->drev->storeAttachment($cache_dir . "/$typedoc.csv", "text/csv");
+        }
+
+        if ($request->getParameter('pdf')) {
+
+            file_put_contents($cache_dir . "/$typedoc.pdf", base64_decode($request->getParameter('pdf')));
+            $this->drev->storeAttachment($cache_dir . "/$typedoc.pdf", "application/pdf");
+        }
+
+        $this->drev->updateFromCIVACsvFile(true, true);
         $this->drev->save();
 
         return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
@@ -161,12 +176,12 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
-
-            return $this->redirect('drev_dr', $this->drev);
+        if($this->drev->isPapier()) {
+            return $this->redirect('drev_revendication', $this->drev);
         }
 
-        return $this->redirect('drev_revendication', $this->drev);
+        return $this->redirect('drev_dr', $this->drev);
+
     }
 
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {
@@ -679,7 +694,8 @@ class drevActions extends sfActions {
 
         foreach ($this->validation->getEngagements() as $engagement) {
             $document = $documents->add($engagement->getCode());
-            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDR()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_SV && $this->drev->hasSV()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
         }
 
         if($this->form->getValue("commentaire")) {
@@ -853,7 +869,15 @@ class drevActions extends sfActions {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);
 
-        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+        $type = null;
+
+        if($drev->hasDR()) {
+            $type = "DR";
+        } elseif($drev->hasSV()) {
+            $type = "SV";
+        }
+
+        $file = file_get_contents($drev->getAttachmentUri($type.".pdf"));
 
         if(!$file) {
 

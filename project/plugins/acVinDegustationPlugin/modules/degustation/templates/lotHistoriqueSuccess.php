@@ -2,7 +2,7 @@
 <?php use_helper('Lot'); ?>
 <?php use_helper('Float') ?>
 
-<ol class="breadcrumb">
+<ol class="breadcrumb hidden-print">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
   <li><a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant)); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a></li>
   <li><a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $lot->campagne)); ?>" ><?php echo $lot->campagne ?></a>
@@ -24,13 +24,14 @@
           <th class="col-sm-1">Document</th>
         <th class="col-sm-1">Date</th>
         <th class="col-sm-8">Étape / Détail</th>
-        <th class="col-sm-1"></th>
+        <th class="col-sm-1 hidden-print"></th>
       </thead>
       <tbody>
         <?php $lastiddate = ''; ?>
         <?php foreach($mouvements as $lotKey => $mouvement): if (isset(Lot::$libellesStatuts[$mouvement->value->statut])): ?>
-          <?php $url = url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
+          <?php $url = $sf_user->isAdmin() === false ? '#' : url_for(strtolower($mouvement->value->document_type).'_visualisation', array('id' => $mouvement->value->document_id)); ?>
           <?php $class = ($lastiddate == preg_replace("/ .*$/", "", $mouvement->value->document_id.$mouvement->value->date)) ? "text-muted": null ; ?>
+          <?php $class .= $sf_user->isAdmin() === false ? ' disabled' : null; ?>
               <tr<?php if ($lot->unique_id !== $mouvement->value->lot_unique_id) { echo ' style="opacity:0.5"'; } ?>>
                   <td>
                       <a href="<?php echo $url; ?>" class="<?php echo $class; ?>">
@@ -41,15 +42,17 @@
                     <?php echo format_date($mouvement->value->date, "dd/MM/yyyy", "fr_FR");  ?>
                 </td>
                 <!-- TODO trouver l'origine concrète du débordement du tableau. La solution display:grid peut être temporaire -->
-                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;"><?php echo showLotStatusCartouche($mouvement->value->statut, $mouvement->value->detail); ?></p></td>
+                <td style="display:grid;"><p class="trunk-text" style="border-radius: 0.25em 0.25em 0 0; width: 100%; color:white;"><?php echo showLotStatusCartouche($mouvement->value); ?></p></td>
 
-                <td class="text-right">
+                <td class="text-right hidden-print">
                     <a href="<?php echo $url; ?>" class="btn btn-default btn-xs<?php echo " ".$class; ?>">accéder&nbsp;<span class="glyphicon glyphicon-chevron-right <?php echo $class; ?>"></span></a>
                     <?php $lastiddate = $mouvement->value->document_id.preg_replace("/ .*$/", "", $mouvement->value->date) ; ?>
                 </td>
             </tr>
             <?php endif; endforeach; ?>
-            <tr>
+
+            <?php if ($sf_user->isAdmin()): ?>
+            <tr class="hidden-print">
               <td colspan="3">
               </td>
               <td class="text-right">
@@ -81,16 +84,22 @@
                 <?php endif; ?>
                 <?php if (in_array($mouvement->value->statut, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME, Lot::STATUT_NONAFFECTABLE, Lot::STATUT_AFFECTABLE))): ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('chgtdenom_create_from_lot', array('identifiant' => $mouvement->value->declarant_identifiant, 'lot' => $mouvement->value->document_id.':'.$mouvement->value->lot_unique_id)) ?>">Déclassement / Chgmt denom.</a></li>
-                    <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return (prompt('Pour confirmez le retrait de ce lot DÉGUSTÉ de la dégustation, merci d\'indiquer son numéro de lot :','') == '<?php echo $lot->numero_archive ; ?>' )">Retirer ce lot DÉGUSTÉ de la dégustation</a></li>
+                <?php endif; ?>
+                <?php if (in_array($mouvement->value->statut, array(Lot::STATUT_CONFORME, Lot::STATUT_NONCONFORME))): ?>
+                    <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return (prompt('Pour confirmez le retrait de ce lot DÉGUSTÉ de la dégustation, merci d\'indiquer son numéro de lot (avec le 0 devant) :','') == '<?php echo $lot->numero_archive ; ?>' )">Retirer ce lot DÉGUSTÉ de la dégustation</a></li>
                 <?php endif; ?>
                 <?php if ($mouvement->value->statut == Lot::STATUT_ATTENTE_PRELEVEMENT): ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous le retrait de la dégustation de ce lot pour qu\' il soit affectable à un autre moment ?')">Retirer de la dégustation</a></li>
+                <?php endif; ?>
+                <?php if ($mouvement->value->statut == Lot::STATUT_ANONYMISE): ?>
+                    <li><a class="dropdown-item" href="<?php echo url_for('degustation_retirer', array('id' => $mouvement->value->declarant_identifiant, 'degustation_id' => $mouvement->value->document_id, 'unique_id' => $mouvement->value->lot_unique_id)) ?>" onlcik="return (prompt('Pour confirmez le retrait de ce lot ANONYMISÉ de la dégustation, merci d\'indiquer son numéro de lot : ', '') == '<?php echo $lot->numero_archive ; ?>')">Retirer ce lot ANONYMISÉ de la dégustation</a></li>
                 <?php endif; ?>
                     <li><a class="dropdown-item" href="<?php echo url_for('degustation_lot_modification', array('identifiant' => $lot->declarant_identifiant, 'unique_id' => $mouvement->value->lot_unique_id)) ?>">Modifier les informations du lot</a></li>
                 </ul>
                 </div>
               </td>
           </tr>
+          <?php endif ?>
         </tbody>
           </table>
           <?php endif; ?>
@@ -98,6 +107,6 @@
 
   </div>
 
-    <div>
+    <div class="hidden-print">
         <a href="<?php echo url_for('degustation_declarant_lots_liste',array('identifiant' => $etablissement->identifiant, 'campagne' => $lot->campagne)); ?>" class=" btn btn-default" alt="Retour"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>

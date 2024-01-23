@@ -7,7 +7,7 @@
     <?php if($parcellaire->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> reçue le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
     <?php elseif($parcellaire->validation): ?>
-    <small class="pull-right">Télédéclaration<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> validée le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
+    <small class="pull-right">Télédéclaration<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> signée le <?php echo format_date($parcellaire->getDateDepot(), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
     <?php endif; ?>
     </h2>
 </div>
@@ -23,39 +23,33 @@
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", $parcellaire->getEtablissementObject()) ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
     <div class="col-xs-4 text-center">
-        <?php if ($sf_user->isAdmin()): ?>
-            <div class="btn-group">
-                <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>" class="btn btn-warning btn-lg">
-                    <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
-                </a>
-                <?php if (count($parcellaire->getAcheteursByCVI())): ?>
-                    <button type="button" class="btn btn-warning btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>">Global (PDF)</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo url_for("parcellaire_affectation_export_csv", $parcellaire) ?>">Global (CSV)</a>
-                        </li>
-                        <?php foreach ($parcellaire->getAcheteursByCVI() as $cvi => $acheteur): ?>
-                        <li>
-                            <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (PDF)</a>
-                        </li>
-                        <li>
-                            <a href="<?php echo url_for("parcellaire_affectation_export_csv", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (CSV)</a>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-            </div>
-        <?php else: ?>
+        <div class="btn-group">
             <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>" class="btn btn-warning btn-lg">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
             </a>
-        <?php endif ?>
+            <?php if (count($parcellaire->getAcheteursByCVI())): ?>
+                <button type="button" class="btn btn-warning btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>">Global (PDF)</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo url_for("parcellaire_affectation_export_csv", $parcellaire) ?>">Global (CSV)</a>
+                    </li>
+                    <?php foreach ($parcellaire->getAcheteursByCVI() as $cvi => $acheteur): ?>
+                    <li>
+                        <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (PDF)</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo url_for("parcellaire_affectation_export_csv", $parcellaire) ?>?cvi=<?php echo $cvi ?>"><?php echo $acheteur->nom ?> (CSV)</a>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
     </div>
     <?php if(!$parcellaire->validation): ?>
     <div class="col-xs-4 text-right">

@@ -42,7 +42,7 @@
 							</div>
 							<div class="col-xs-6" >
 								<div class="input-group date-picker">
-										<?php echo $editForm['date_'.$idKey]->render(array('placeholder' => "Date", "required" => "required" ,"class" => "form-control")); ?>
+										<?php echo $editForm['date_'.$idKey]->render(array('placeholder' => "Date", "required" => "required" ,"class" => "form-control", "autocomplete" => "off")); ?>
 										<div class="input-group-addon">
 												<span class="glyphicon-calendar glyphicon"></span>
 										</div>

@@ -135,4 +135,14 @@
     if(document.getElementById('degustation_creation_time'))
       document.getElementById('degustation_creation_time').style.paddingTop = '0';
 
+    // Anonymisation manuelle
+    document.getElementById("table_anonymisation_manuelle")?.addEventListener('click', function (e) {
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+      if (del = e.target.closest('.lot-anonymat button.close')) {
+        const td = del.closest('td')
+        const input = td.querySelector('input')
+        input.value = ''
+      }
+    });
   });

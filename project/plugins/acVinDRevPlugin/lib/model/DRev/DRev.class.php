@@ -7,8 +7,6 @@
 class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementFacturesDocument, InterfacePieceDocument, InterfaceMouvementLotsDocument, InterfaceArchivageDocument {
 
     const DEFAULT_KEY = 'DEFAUT';
-    const VIP2C_COLONNE_CVI = 3;
-    const VIP2C_COLONNE_NOM = 11;
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
@@ -82,56 +80,58 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->resetAndImportFromDocumentDouanier();
         }
 
+        $millesime = substr($this->campagne, 0, 4);
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
-            $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR();
+            $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR().' '.$millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_total' => 0, 'volume_sur_place' => 0,
                                             'volume_max' => 0, 'volume_lots' => 0,
-                                            'volume_restant' => 0, 'nb_lots' => 0,
-                                            'nb_lots_degustables' => 0
+                                            'volume_restant' => 0, 'volume_restant_max' => 0, 'nb_lots' => 0,
+                                            'nb_lots_degustables' => 0, 'is_precis_sur_place' => true,
+                                            'millesime' => $millesime
                                            );
             }
-            $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' Total';
-            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $p->getConfig()->getAppellation()->getLibelleComplet()).' '.$p->getConfig()->getCouleur()->getLibelleDR().' Total';
+            $couleurs[$couleur]['appellation'] = $p->getConfig()->getAppellation()->getLibelleComplet().' XXX'.$millesime.' Total';
+            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $p->getConfig()->getAppellation()->getLibelleComplet()).' '.$p->getConfig()->getCouleur()->getLibelleDR().' XXX'.$millesime.' Total';
             $couleurs[$couleur]['volume_total'] += $p->recolte->volume_total;
-            if(isset($couleurs[$couleur]['volume_sur_place']) && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) {
-                $couleurs[$couleur]['volume_sur_place'] += $p->getTheoriticalVolumeRevendiqueIssuRecole();
+            if(isset($couleurs[$couleur]['volume_sur_place'])) {
+                $couleurs[$couleur]['volume_sur_place'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
             } elseif($p->hasDonneesRecolte()) {
                 unset($couleurs[$couleur]['volume_sur_place']);
             }
             $couleurs[$couleur]['volume_max'] += ($p->canCalculTheoriticalVolumeRevendiqueIssuRecolte()) ? $p->getTheoriticalVolumeRevendiqueIssuRecole() : $p->recolte->volume_sur_place;
+            $couleurs[$couleur]['is_precis_sur_place'] = $couleurs[$couleur]['is_precis_sur_place'] && $p->canCalculTheoriticalVolumeRevendiqueIssuRecolte();
             $couleurs[$couleur]['superficie_revendiquee'] += $p->superficie_revendique;
             $couleurs[$couleur]['superficie_totale'] += $p->recolte->superficie_total;
         }
 
         // Parcours dans les lots
         foreach($this->lots as $lot) {
-            if($lot->millesime != $this->getPeriode()) {
-                continue;
-            }
             if(!$lot->produit_hash) {
                 continue;
             }
-            $couleur = $lot->getConfig()->getCouleur()->getLibelleCompletDR();
+            $couleur = $lot->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('volume_sur_place' => 0, 'volume_total' => 0,
                                             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
                                             'volume_max' => 0, 'volume_lots' => 0,
-                                            'volume_restant' => 0, 'nb_lots' => 0,
-                                            'nb_lots_degustables' => 0
+                                            'volume_restant' => 0, 'volume_restant_max' => 0, 'nb_lots' => 0,
+                                            'nb_lots_degustables' => 0, 'millesime' => $lot->millesime
                                            );
             }
-            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' Total';
-            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' '.$lot->getConfig()->getCouleur()->getLibelleDR().' Total';
+            $couleurs[$couleur]['appellation'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' XXX'.$lot->millesime.' Total';
+            $couleurs[$couleur]['appellation_couleur'] = str_replace(' Vin de base', '', $lot->getConfig()->getAppellation()->getLibelleComplet()).' '.$lot->getConfig()->getCouleur()->getLibelleDR().' XXX'.$lot->millesime.' Total';
             if($lot->getProduitRevendique()){
-                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR();
+                $couleur = $lot->getProduitRevendique()->getConfig()->getCouleur()->getLibelleCompletDR().' '.$lot->millesime;
             }
-            $couleurs[$couleur]['volume_lots'] += $lot->volume;
-            $couleurs[$couleur]['nb_lots']++;
-            if ($lot->isControle()) {
-                $couleurs[$couleur]['nb_lots_degustables']++;
+            if ($lot->volume) {
+                $couleurs[$couleur]['volume_lots'] += $lot->volume;
+                $couleurs[$couleur]['nb_lots']++;
+                if ($lot->isControle()) {
+                    $couleurs[$couleur]['nb_lots_degustables']++;
+                }
             }
         }
         $total_appellations = array("XXXTotal global" =>  array(
@@ -139,14 +139,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             'volume_sur_place' => 0, 'volume_total' => 0,
             'volume_max' => 0, 'volume_lots' => 0,
             'volume_restant' => 0, 'volume_restant_max' => 0,
-            'nb_lots' => 0, 'nb_lots_degustables' => 0
+            'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
         ));
         $total_couleurs = array("XXXTotal global" =>  array(
             'superficie_totale' => 0, 'superficie_revendiquee' => 0,
             'volume_sur_place' => 0, 'volume_total' => 0,
             'volume_max' => 0, 'volume_lots' => 0,
             'volume_restant' => 0, 'volume_restant_max' => 0,
-            'nb_lots' => 0, 'nb_lots_degustables' => 0
+            'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true
         ));
 
         foreach($couleurs as $k => $couleur) {
@@ -154,7 +154,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $couleur['volume_sur_place'] = 0;
                 $couleur['volume_total'] = 0;
             }
-            if (isset($couleur['volume_lots'])) {
+            if (isset($couleur['volume_lots']) && $couleur['millesime'] == $millesime) {
                 $couleur['volume_restant'] = $couleur['volume_sur_place'] - $couleur['volume_lots'];
                 $couleur['volume_restant_max'] = $couleur['volume_max'] - $couleur['volume_lots'];
                 $couleurs[$k]['volume_restant'] = $couleur['volume_restant'];
@@ -169,7 +169,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     'volume_sur_place' => 0, 'volume_total' => 0,
                     'volume_max' => 0, 'volume_lots' => 0,
                     'volume_restant' => 0, 'volume_restant_max' => 0,
-                    'nb_lots' => 0, 'nb_lots_degustables' => 0
+                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true,
+                    'millesime' => $couleur['millesime']
                 );
             }
             $total_appellations[$couleur['appellation']]['volume_total'] += $couleur['volume_total'];
@@ -177,6 +178,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations[$couleur['appellation']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations[$couleur['appellation']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations[$couleur['appellation']]['volume_max'] += $couleur['volume_max'];
+            $total_appellations[$couleur['appellation']]['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_appellations[$couleur['appellation']]['volume_lots'] += $couleur['volume_lots'];
             $total_appellations[$couleur['appellation']]['volume_restant'] += $couleur['volume_restant'];
             $total_appellations[$couleur['appellation']]['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -187,6 +189,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_appellations['XXXTotal global']['superficie_totale'] += $couleur['superficie_totale'];
             $total_appellations['XXXTotal global']['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_appellations['XXXTotal global']['volume_max'] += $couleur['volume_max'];
+            $total_appellations['XXXTotal global']['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_appellations['XXXTotal global']['volume_lots'] += $couleur['volume_lots'];
             $total_appellations['XXXTotal global']['volume_restant'] += $couleur['volume_restant'];
             $total_appellations['XXXTotal global']['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -199,7 +202,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     'volume_sur_place' => 0, 'volume_total' => 0,
                     'volume_max' => 0, 'volume_lots' => 0,
                     'volume_restant' => 0, 'volume_restant_max' => 0,
-                    'nb_lots' => 0, 'nb_lots_degustables' => 0
+                    'nb_lots' => 0, 'nb_lots_degustables' => 0, 'is_precis_sur_place' => true,
+                    'millesime' => $couleur['millesime']
                 );
             }
             $total_couleurs[$couleur['appellation_couleur']]['volume_total'] += $couleur['volume_total'];
@@ -207,6 +211,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $total_couleurs[$couleur['appellation_couleur']]['superficie_totale'] += $couleur['superficie_totale'];
             $total_couleurs[$couleur['appellation_couleur']]['superficie_revendiquee'] += $couleur['superficie_revendiquee'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_max'] += $couleur['volume_max'];
+            $total_couleurs[$couleur['appellation_couleur']]['is_precis_sur_place'] &= isset($couleur['is_precis_sur_place']) && $couleur['is_precis_sur_place'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_lots'] += $couleur['volume_lots'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant'] += $couleur['volume_restant'];
             $total_couleurs[$couleur['appellation_couleur']]['volume_restant_max'] += $couleur['volume_restant_max'];
@@ -224,9 +229,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         ksort($couleurs);
-        if (isset($couleurs['XXXTotal global'])) {
-            $couleurs['Total global'] = $couleurs['XXXTotal global'];
-            unset($couleurs['XXXTotal global']);
+        $keys = array_keys($couleurs);
+        foreach($keys as $k) {
+            $couleurs[$k]['libelle'] = str_replace('XXX', '', $k);
         }
         return $couleurs;
     }
@@ -573,7 +578,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
-    		if (!mkdir($path)) {
+    		if (!mkdir($path, 2775)) {
     			throw new sfException('cannot create '.$path);
     		}
     	}
@@ -621,15 +626,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       $this->declarant->famille = $this->getEtablissementObject()->famille;
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
-          return false;
+          throw new sfException('Superficies déjà saisies');
       }
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
-          return false;
+          throw new sfException('Volume déjà déclaré');
       }
 
       if(count($this->getProduitsWithoutLots()) > 0 && $this->isValidee()) {
-        return false;
+          throw new sfException('Document validé');
       }
 
       $this->remove('declaration');
@@ -639,12 +644,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$csv) {
       	return false;
       }
-	    try {
-          $this->importCSVDouane($csv);
-          return true;
-      } catch (Exception $e) { }
 
-      return false;
+      $this->importCSVDouane($csv);
+
+      return true;
     }
 
     public function importCSVDouane($csv) {
@@ -661,6 +664,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $has_bio_in_dr = false;
         $has_hve_in_dr = false;
 
+        $has_coop_l8 = false;
+        $has_mout_l7 = false;
+
         if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
             $labelsDefault = array_fill_keys($this->getDenominationAuto(), true);
             foreach($csv as $k => $line) {
@@ -672,8 +678,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     unset($labelsDefault[DRevClient::DENOMINATION_BIO]);
                     continue;
                 }
-                if (in_array(DRevClient::DENOMINATION_DEMETER, $labelsDouane)) {
-                    unset($labelsDefault[DRevClient::DENOMINATION_BIO]);
+                if (DRevConfiguration::getInstance()->hasDenominationBiodynamie() && in_array(DRevClient::DENOMINATION_BIODYNAMIE, $labelsDouane)) {
+                    unset($labelsDefault[DRevClient::DENOMINATION_BIODYNAMIE]);
                     continue;
                 }
                 if (in_array(DRevClient::DENOMINATION_HVE, $labelsDouane)) {
@@ -747,12 +753,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $complement = null;
-            if (DRevConfiguration::getInstance()->hasDenominationAuto() && (in_array(DRevClient::DENOMINATION_BIO, $labelsDouane) || in_array(DRevClient::DENOMINATION_DEMETER, $labelsDouane))) {
+            if (DRevConfiguration::getInstance()->hasDenominationAuto() && (in_array(DRevClient::DENOMINATION_BIO, $labelsDouane) || (!DRevConfiguration::getInstance()->hasDenominationBiodynamie() && in_array(DRevClient::DENOMINATION_BIODYNAMIE, $labelsDouane)))) {
                 $complement = DRevClient::DENOMINATION_BIO_LIBELLE_AUTO;
+            } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && DRevConfiguration::getInstance()->hasDenominationBiodynamie() &&  in_array(DRevClient::DENOMINATION_BIODYNAMIE, $labelsDouane)) {
+                $complement = DRevClient::DENOMINATION_BIODYNAMIE_LIBELLE_AUTO;
             } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && in_array(DRevClient::DENOMINATION_HVE, $labelsDouane)) {
                 $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
             } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && count($labelsDefault) == 1 && array_key_first($labelsDefault) != DRevClient::DENOMINATION_CONVENTIONNEL) {
-                $complement = DRevClient::$denominationsAuto[array_key_first($labelsDefault)];
+                $complement = DRevClient::getDenominationsAuto()[array_key_first($labelsDefault)];
             } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
                 $complement = $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT];
             }
@@ -785,7 +793,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16) {
             	$produitRecolte->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
                 if (!$has_coop_l8) {
-                    $produitRecolte->usages_industriels_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    if (!$has_mout_l7) {
+                        $produitRecolte->usages_industriels_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    }else{
+                        $produitRecolte->usages_industriels_sur_place = $produitRecolte->volume_sur_place - $produitRecolte->volume_sur_place_revendique;
+                    }
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4) {
@@ -794,6 +806,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_COOPERATIVE_L8 && $line[DRCsvFile::CSV_VALEUR])  {
                 $has_coop_l8 = true;
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_MOUTS_L7 && $line[DRCsvFile::CSV_VALEUR])  {
+                $has_mout_l7 = true;
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME_L9)  {
             	$produitRecolte->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
@@ -805,10 +820,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI_L19) {
-                $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
-            	$produit->vci->constitue = $produitRecolte->vci_constitue;
+                if ($produitRecolte->volume_sur_place_revendique) {
+                    $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                    $produit->vci->constitue = $produitRecolte->vci_constitue;
+                }
             }
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VCI) {
+                $produitRecolte->vci_constitue += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
+                $produit->vci->constitue = $produitRecolte->vci_constitue;
+            }
+
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VSI_L18) {
+                if ($produitRecolte->volume_sur_place_revendique) {
+                    if(!$produitRecolte->exist('vsi')) {
+                        $produitRecolte->add('vsi');
+                    }
+                    $produitRecolte->vsi += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+                }
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VSI) {
                 if(!$produitRecolte->exist('vsi')) {
                     $produitRecolte->add('vsi');
                 }
@@ -832,10 +862,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_total += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_sur_place += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
-            }
-            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_VCI) {
-                $produitRecolte->vci_constitue += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
-                $produit->vci->constitue = $produitRecolte->vci_constitue;
             }
         }
         //Si on n'a pas de volume sur place
@@ -917,7 +943,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                     if($label == DRevClient::DENOMINATION_CONVENTIONNEL) {
                         continue;
                     }
-                    $this->addProduit($p->getParent()->getHash(), DRevClient::$denominationsAuto[$label]);
+                    $this->addProduit($p->getParent()->getHash(), DRevClient::getDenominationsAuto()[$label]);
                 }
                 $p->superficie_revendique = null;
             }
@@ -975,13 +1001,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         if(!$exist) {
             $this->declaration->reorderByConf();
-        }
-
-        if(!$exist && $produit->getConfig()->isRevendicationParLots()) {
-            $lot = $this->addLot();
-            if($lot) {
-                $lot->setProduitHash($produit->getConfig()->getHash());
-            }
         }
 
         return $this->get($produit->getHash());
@@ -1088,9 +1107,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function devalidate() {
-        if(!$this->exist('date_depot') || !$this->date_depot) {
-            $this->add('date_depot', $this->getDateValidation());
-        }
+        $this->getDateDepot();
 
         $this->validation = null;
         $this->validation_odg = null;
@@ -1124,10 +1141,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->save();
         }
 
-        if(!$this->isFactures()){
-            $this->clearMouvementsFactures();
-            $this->generateMouvementsFactures();
-        }
     }
 
     public function setStatutOdgByRegion($statut, $region = null) {
@@ -1346,7 +1359,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	}
 
     public function saveDocumentsDependants() {
-        $mother = $this->getMother();
+        $mother = $this->version_document->getMother(true);
 
         if(!$mother) {
 
@@ -1375,8 +1388,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->getDateDepot();
 
         $this->updateAddressCurrentLots();
-        if ($this->isValideeOdg()) {
-            $this->generateMouvementsLots();
+
+        $this->generateMouvementsLots();
+
+        if(!$this->isFactures() && $this->isValideeOdg()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
         }
 
         $saved = parent::save();
@@ -1540,6 +1557,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $deleted = false;
         foreach($this->getDeletedLots() as $lot) {
+            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+                continue;
+            }
             $volume_mod -= $lot->volume;
             $deleted = true;
         }
@@ -1884,7 +1904,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$this->isValideeOdg()) {
           return;
         }
-
+        $commission_date = [];
         foreach ($this->lots as $lot) {
             if($lot->hasBeenEdited()) {
                 continue;
@@ -1914,6 +1934,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if($lot->isAffecte()) {
+                $commission_date[$lot->date_commission] = $lot->date_commission;
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, '1er passage'));
                 continue;
             }
@@ -1924,6 +1945,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }else{
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_NONAFFECTABLE));
             }
+        }
+        if (count(array_keys($commission_date)) == 1) {
+            $this->date_commission = array_key_first($commission_date);
         }
     }
 
@@ -2157,7 +2181,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function generateModificative() {
 
         $drev = $this->version_document->generateModificative();
-        $drev->resetAndImportFromDocumentDouanier();
+        try {
+            $drev->resetAndImportFromDocumentDouanier();
+        } catch(Exception $e) {
+
+        }
         return $drev;
     }
 
@@ -2283,7 +2311,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach($this->getProduits() as $hash_c => $produit_c) {
             $produit = $produit_c->getCepage();
             $hash = $produit->getHash();
-            if (!$habilitation || !$habilitation->isHabiliteFor($produit->getConfig()->getAppellation()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+            if (!$habilitation || !$habilitation->isHabiliteFor(str_replace('/VDN/appellations/VDR', '/TRANQ/appellations/RTA', $produit->getConfig()->getAppellation()->getHash()), HabilitationClient::ACTIVITE_VINIFICATEUR)) {
                 $nonHabilitationODG[$hash] = $produit;
             }
         }
@@ -2324,44 +2352,59 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return -1;
     }
 
+    public function getProduitsHashWithVolumeSeuil() {
+        $p = array();
+        foreach(VIP2C::getProduitsHashWithVolumeSeuil($this->declarant->cvi, $this->getDefaultMillesime()) as $hash_produit) {
+            if ($this->declaration->exist($hash_produit)) {
+                $p[] = $hash_produit;
+            }
+        }
+        return $p;
+    }
 
     public function hasVolumeSeuilAndSetIfNecessary(){
 
-        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+        if(!VIP2C::hasVolumeSeuil()) {
             return false;
         }
 
-        if(!isset($this->document->declaration[DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil()])){
+        if(!($this->getCampagne() >= VIP2C::getConfigCampagneVolumeSeuil())){
             return false;
         }
 
-        if(!($this->getCampagne() == DRevConfiguration::getInstance()->getCampagneVolumeSeuil())){
-            return false;
+        $ret = false;
+        foreach($this->getProduitsHashWithVolumeSeuil() as $hash_produit) {
+
+            if(!isset($this->document->declaration[$hash_produit])){
+                continue;
+            }
+
+            if(!$this->document->declaration->get($hash_produit)->exist('DEFAUT')) {
+                continue;
+            }
+
+            $produit = $this->document->declaration->get($hash_produit)->DEFAUT;
+
+            if(!$produit->exist('volume_revendique_seuil') && !(VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->getDefaultMillesime(), $hash_produit))) {
+                continue;
+            }
+            if($produit->exist('volume_revendique_seuil')){
+                $ret = true;
+                continue;
+            }
+
+            $volumeSeuil = VIP2C::getVolumeSeuilProduitFromCSV($this->declarant->cvi, $this->getDefaultMillesime(), $hash_produit);
+            if ($volumeSeuil) {
+                $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
+                $this->save();
+            }
         }
-
-        if(!$this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->exist('DEFAUT')) {
-            return false;
-        }
-
-        $produit = $this->document->declaration->get(DRevConfiguration::getInstance()->getProduitHashWithVolumeSeuil())->DEFAUT;
-
-        if(!$produit->exist('volume_revendique_seuil') && !($this->getVolumeSeuilFromCSV($this->declarant->cvi))){
-            return false;
-        }
-        if($produit->exist('volume_revendique_seuil')){
-            return true;
-        }
-
-        $volumeSeuil = $this->getVolumeSeuilFromCSV($this->declarant->cvi);
-        $produit->add('volume_revendique_seuil',floatval($volumeSeuil));
-        $this->save();
-
-        return true;
+        return $ret;
 
     }
 
     public function getVolumeRevendiqueSeuil($hash){
-        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()) {
+        if(!VIP2C::hasVolumeSeuil()) {
             return null;
         }
 
@@ -2387,53 +2430,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return($volumeSeuil-($volumeSeuil*0.1)); #les prévenir à 10%
     }
 
-    protected function getVolumeSeuilFromCSV($cvi){
-        if(!DRevConfiguration::getInstance()->hasVolumeSeuil()){
-            return null;
-        }
-        $configFile = fopen(sfConfig::get('sf_root_dir')."/".sfConfig::get('app_api_contrats_fichier_csv'),"r");
-
-        $volumes = array();
-        while (($line = fgetcsv($configFile)) !== false) {
-            $volumes[$line[self::VIP2C_COLONNE_CVI]] = str_replace(",","",$line[self::VIP2C_COLONNE_NOM]);
-        }
-        fclose($configFile);
-
-        if (!isset($volumes[$cvi])) {
-            return null;
-        }
-        return $volumes[$cvi];
-    }
-
-
-    public function getContratsAPIURL(){
-
-        $api_link = sfConfig::get('app_api_contrats_link');
-        $secret = sfConfig::get('app_api_contrats_secret');
-        if (!$api_link || !$secret) {
-            return array();
-        }
-
-        $cvi = $this->declarant->cvi;
-        $millesime = DRevConfiguration::getInstance()->getMillesime();
-        $epoch = (string)time();
-
-        $md5 = md5($secret."/".$cvi."/".$millesime."/".$epoch);
-        return $api_link."/".$cvi."/".$millesime."/".$epoch."/".$md5;
-    }
-
-    public function getContratsFromAPI(){
-        $url = $this->getContratsAPIURL();
-        if (!$url) {
-            return array();
-        }
-        $content = file_get_contents($url);
-
-        $result = json_decode($content,true);
-
-        return($result);
-    }
-
     public function hasLotsProduitFilter($hash_or_filter) {
         foreach ($this->lots as $lot) {
             if(strpos($lot->produit_hash, $hash_or_filter) !== false) {
@@ -2456,5 +2452,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $drev->add('lots', array_values($lots));
 
         return $drev;
+    }
+
+    public function getDefaultMillesime() {
+        return substr($this->campagne, 0, 4);
     }
 }

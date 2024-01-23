@@ -77,7 +77,7 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
         return $this->affectationParcellaire;
     }
 
-    public function createAffectationParcellaire() {
+    public function createAffectationParcellaire() { // Dépréciée mais encore utilisée dans les tests
         $this->affectationParcellaire = ParcellaireAffectationClient::getInstance()->createDoc($this->getEtablissementIdentifiant(), substr($this->getDocument()->campagne, 0, 4));
 
         return $this->affectationParcellaire;
@@ -85,7 +85,7 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
 
     public function updateParcelles() {
         $this->nb_parcelles_identifiees = 0;
-        $intention = ParcellaireIntentionAffectationClient::getInstance()->getLast($this->getEtablissementIdentifiant());
+        $intention = ParcellaireIntentionClient::getInstance()->getLast($this->getEtablissementIdentifiant());
         if ($intention) {
             $this->nb_parcelles_identifiees = count($intention->getParcelles());
         }

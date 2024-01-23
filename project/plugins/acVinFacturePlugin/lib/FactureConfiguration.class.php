@@ -2,6 +2,8 @@
 
 class FactureConfiguration {
 
+    const EXERCICE_VITICOLE = 'viticole';
+
     private static $_instance = null;
     protected $configuration;
 
@@ -84,6 +86,14 @@ class FactureConfiguration {
     public function getExercice() {
 
         return ($this->configuration['exercice']) ?: '';
+    }
+
+    public function isExcerciceVitictole() {
+        return $this->getExercice() == self::EXERCICE_VITICOLE;
+    }
+
+    public function isExcerciceCivile() {
+        return !$this->isExcerciceVitictole();
     }
 
     public function isListeDernierExercice() {

@@ -719,7 +719,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function getAttribut($name, $default = null) {
         if (!$this->exist('attributs') || !$this->attributs->exist($name)) {
 
-            return $default;
+            return $this->getParentNode()->getAttribut($name, $default);
         }
 
 
@@ -813,8 +813,15 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->existRendementByKey('rendement_vci');
     }
 
+    public function getRendementVsi() {
+    	return $this->getRendementByKey('rendement_vci');
+    }
+
     public function getRendementVci() {
-        return $this->getRendementByKey('rendement_vci');
+        if (!$this->hasRendementVciTotal()) {
+            return null;
+        }
+    	return $this->getRendementByKey('rendement_vci');
     }
 
     public function getRendementVciTotal() {
@@ -843,9 +850,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     	return ($this->getRendement() <= 0 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;
     }
 
+    public function hasRendementVsi() {
+
+    	return $this->hasRendementByKey('rendement_vci');
+    }
+
     public function hasRendementVci() {
 
-        return $this->hasRendementByKey('rendement_vci');
+        return $this->hasRendementVciTotal() && $this->hasRendementByKey('rendement_vci');
     }
 
     public function hasRendementVciTotal() {

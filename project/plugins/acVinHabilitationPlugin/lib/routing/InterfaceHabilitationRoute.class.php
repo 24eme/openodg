@@ -1,6 +1,6 @@
 <?php
 
-interface InterfaceHabilitationRoute
+interface InterfaceHabilitationRoute extends InterfaceUsurpationRoute
 {
 
 }

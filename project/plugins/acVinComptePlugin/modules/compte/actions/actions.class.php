@@ -274,6 +274,9 @@ class compteActions extends sfCredentialActions {
 	  break;
 	}
       }
+      if ($cpt == 1 && strpos($request->getParameter('retour'), '/visualisation')) {
+          return true;
+      }
       $q = $this->initSearch($request, $tag, !$remove);
       $resset = $index->search($q);
 
@@ -342,6 +345,9 @@ class compteActions extends sfCredentialActions {
     public function executeRemovetag(sfWebRequest $request) {
       if (!$this->addremovetag($request, true)) {
 		      return ;
+      }
+      if ($r = $request->getParameter('retour')) {
+          return $this->redirect($r);
       }
       $this->args['tags'] = implode(',', array_diff($this->selected_rawtags, array('manuel:'.$request->getParameter('tag'))));
       return $this->redirect('compte_search', $this->args);
@@ -491,6 +497,6 @@ class compteActions extends sfCredentialActions {
     		}
     	}
 
-    	return $this->redirect('compte_search', array("q" => "(doc.num_interne:" . implode(" OR doc.num_interne:", $identifiants) . ")", "contacts_all" => 1));
+    	return $this->redirect('compte_search', array("q" => "(doc.etablissement_informations.cvi:" . implode(" OR doc.etablissement_informations.cvi:", $identifiants) . ")", "contacts_all" => 1));
     }
 }

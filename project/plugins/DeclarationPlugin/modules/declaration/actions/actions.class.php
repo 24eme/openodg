@@ -87,12 +87,12 @@ class declarationActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIRE"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIREAFFECTATIONCREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIREAFFECTATIONCREMANT", "INTENTIONCREMANT"))) {
 
             return $this->redirect("parcellaireaffectation_visualisation", array("id" => $doc_id));
         }
@@ -123,6 +123,10 @@ class declarationActions extends sfActions {
 
         if ($doc_type == "TRANSACTION" ) {
             return $this->redirect("transaction_visualisation", array("id" => $doc_id));
+        }
+
+        if ($doc_type == "PMC" ) {
+            return $this->redirect("pmc_visualisation", array("id" => $doc_id));
         }
 
         if ($doc_type == "SV12") {
@@ -241,7 +245,11 @@ class declarationActions extends sfActions {
         if (!isset($this->query['Campagne'])){
             ksort($this->facets["Campagne"]);
             $campagnes = array_keys($this->facets["Campagne"]);
-            $this->query['Campagne'] = "".array_pop($campagnes);
+            $this->query['Campagne_max'] = "".array_pop($campagnes);
+            $this->query['Campagne_min'] = "".array_pop($campagnes);
+        }else{
+            $this->query['Campagne_min'] = $this->query['Campagne'];
+            $this->query['Campagne_max'] = $this->query['Campagne'];
         }
 
         if (isset($this->query['Type'])) {
@@ -254,11 +262,18 @@ class declarationActions extends sfActions {
         foreach($types as $type) {
             $view = acCouchdbManager::getClient()
                     ->reduce(false);
-            $view = $view->startkey(array($type, $this->query['Campagne'], ''))->endkey(array($type, $this->query['Campagne'], 'zzzzzzz'));
+            if ($this->query['Campagne_min'] == $this->query['Campagne_max']){
+                $view = $view->startkey(array($type, $this->query['Campagne_min'], ''));
+                $view = $view->endkey(array($type, $this->query['Campagne_max'], 'zzzzzzz'));
+            }else{
+                $view = $view->startkey(array($type, $this->query['Campagne_min']));
+                $view = $view->endkey(array($type, $this->query['Campagne_max']."XXX"));
+            }
+
             $rows = array_merge($rows, $view->getView('declaration', 'tous')->rows);
         }
         foreach($this->facets['Campagne'] as $annee => $nb) {
-            if ($annee == $this->query['Campagne']) {
+            if (isset($this->query['Campagne']) && $annee == $this->query['Campagne']) {
                 $this->facets['Campagne'][$annee] = 0;
             }else{
                 $this->facets['Campagne'][$annee] = '?';
@@ -309,7 +324,16 @@ class declarationActions extends sfActions {
                 $find = true;
                 if($this->query) {
                     foreach($this->query as $queryKey => $queryValue) {
+                        if (strpos($queryKey, 'Campagne_m') !== false) {
+                            continue;
+                        }
                         if($queryValue != $row->key[$facetToRowKey[$queryKey]]) {
+                            $find = false;
+                            break;
+                        }
+                    }
+                    if (!isset($this->query['Campagne']) && isset($this->query['Campagne_max'])) {
+                        if ($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_A_APPROUVER && $row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_BROUILLON && $row->key[DeclarationTousView::KEY_CAMPAGNE] != $this->query['Campagne_max']) {
                             $find = false;
                             break;
                         }
@@ -326,7 +350,9 @@ class declarationActions extends sfActions {
                     $this->facets[$facetNom][$row->key[$facetKey]] = 0;
                 }
                 if(isset($row->key[$facetKey]) && !isset($documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])])){
-                  $this->facets[$facetNom][$row->key[$facetKey]] += 1;
+                  if(is_int($this->facets[$facetNom][$row->key[$facetKey]])) {
+                      $this->facets[$facetNom][$row->key[$facetKey]] += 1;
+                  }
                   $documentsCounter[DeclarationTousView::constructIdentifiantDocument($row,$row->key[$facetKey])] = 1;
                 }
                 $this->docs[$row->id] = $row;
@@ -356,6 +382,9 @@ class declarationActions extends sfActions {
           }
           $this->docs = $tmp_docs;
         }
+
+        unset($this->query['Campagne_min']);
+        unset($this->query['Campagne_max']);
 
         krsort($this->facets["Campagne"]);
         ksort($this->facets["Statut"]);

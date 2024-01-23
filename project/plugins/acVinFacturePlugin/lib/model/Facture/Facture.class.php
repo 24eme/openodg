@@ -306,6 +306,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
+    public function getOrigineTypes() {
+        $origines = [];
+        foreach($this->origines as $id) {
+            $origines[] = explode("-", $id)[0];
+        }
+
+        return  $origines;
+    }
+
     public function storeTemplates($template) {
         if ($template) {
             $this->templates->add($template->_id, $template->_id);
@@ -346,6 +355,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function addPrelevementAutomatique()
     {
+      if (!MandatSepaConfiguration::getInstance()->isActive()) {
+        return false;
+      }
       $paiement = $this->add('paiements')->add();
       $paiement->montant =  $this->total_ttc;
       $paiement->type_reglement = FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO;
@@ -483,7 +495,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateMontantPaiement() {
-        $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
+        if ($this->exist('paiements')) {
+            $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
+        }else{
+            $this->remove('montant_paiement');
+        }
     }
 
     public function getMontantPaiement() {

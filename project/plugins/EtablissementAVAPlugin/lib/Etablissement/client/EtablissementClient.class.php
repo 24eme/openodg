@@ -88,8 +88,18 @@ class EtablissementClient extends acCouchdbClient {
         return $id;
     }
 
-    public function findByCviOrAcciseOrPPMOrSiren($cvi_or_accise_or_ppm, $with_suspendu = false){
-        $qs = new acElasticaQueryQueryString($cvi_or_accise_or_ppm);
+    public function findByCviOrAcciseOrPPMOrSiren($accise, $with_suspendu = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+      return $this->findByCviOrAcciseOrPPMOrSirenOrTVA($accise, $with_suspendu, $hydrate);
+    }
+
+    public function findByCviOrAcciseOrPPMOrSirenOrTVA($cvi_or_accise_or_ppm, $with_suspendu = false){
+        if(!$cvi_or_accise_or_ppm) {
+
+            return null;
+        }
+
+
+        $qs = new acElasticaQueryQueryString("doc.cvi:\"".$cvi_or_accise_or_ppm."\" OR doc.cvi:\"".$cvi_or_accise_or_ppm."\" OR doc.siret:\"".$cvi_or_accise_or_ppm."\" OR doc.siren:\"".$cvi_or_accise_or_ppm."\" OR doc.no_accises:\"".$cvi_or_accise_or_ppm."\"");
         $q = new acElasticaQuery();
         $q->setQuery($qs);
         $index = acElasticaManager::getType('COMPTE');

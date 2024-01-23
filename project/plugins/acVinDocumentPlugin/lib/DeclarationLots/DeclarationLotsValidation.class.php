@@ -9,6 +9,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'lot_incomplet', "Cette information est incomplète");
         $this->addControle(self::TYPE_WARNING, 'lot_a_completer', "Cette information pourrait être renseignée");
         $this->addControle(self::TYPE_FATAL, 'lot_cepage_volume_different', "Le volume déclaré ne correspond pas à la somme des volumes des cépages");
+        $this->addControle(self::TYPE_ERROR, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
         /*
          * Engagement
          */
@@ -38,6 +39,11 @@ abstract class DeclarationLotsValidation extends DocumentValidation
               continue;
             }
 
+            $activite = $this->getActivite($lot->getDocument()->type);
+            if (!DRevConfiguration::getInstance()->hasHabilitationINAO() && !$lot->isHabilite($activite)) {
+                $this->addPoint(self::TYPE_ERROR, 'declaration_habilitation', $lot->getConfigProduit()->getCepage()->getLibelleComplet(), $this->generateUrl($routeName, array("id" => $this->document->_id)) );
+            }
+
             $volume = sprintf("%01.02f",$lot->getVolume());
 
             if(!$lot->numero_logement_operateur){
@@ -45,7 +51,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
               continue;
             }
 
-            if(in_array('destination_type', $lot->getFieldsToFill()) && !$lot->destination_type){
+            if(!$this->document->isValideeOdg() && in_array('destination_type', $lot->getFieldsToFill()) && !$lot->destination_type){
                 $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Type de destination", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
             }
@@ -57,7 +63,7 @@ abstract class DeclarationLotsValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_ERROR, 'lot_incomplet', $lot->getProduitLibelle(). " ( ".$volume." hl ) : Centilisation", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
                 continue;
             }
-            if(!$lot->destination_date){
+            if(!$this->document->isValideeOdg() && !$lot->destination_date){
               $this->addPoint(self::TYPE_WARNING, 'lot_a_completer', $lot->getProduitLibelle(). " ( ".$volume." hl ) - Date", $this->generateUrl($routeName, array("id" => $this->document->_id, "appellation" => $key)));
               continue;
             }
@@ -89,5 +95,18 @@ abstract class DeclarationLotsValidation extends DocumentValidation
 
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_ELEVAGE_CONTACT_SYNDICAT, implode(', ', $msg));
         }
+    }
+
+    private function getActivite($type)
+    {
+        $activite = HabilitationClient::ACTIVITE_VINIFICATEUR;
+
+        switch ($type) {
+            case TransactionClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_VRAC; break;
+            case ConditionnementClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_CONDITIONNEUR; break;
+            case DRevClient::TYPE_MODEL: $activite = HabilitationClient::ACTIVITE_VINIFICATEUR; break;
+        }
+
+        return $activite;
     }
 }

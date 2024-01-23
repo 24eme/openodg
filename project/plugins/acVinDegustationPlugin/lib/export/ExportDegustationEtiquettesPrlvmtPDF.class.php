@@ -72,7 +72,6 @@ class ExportDegustationEtiquettesPrlvmtPDF extends ExportPDF {
     public static function buildFileName($degustation, $with_rev = false) {
         $filename = sprintf("table_des_etiquettes_des_lots_preleves_%s", $degustation->_id);
 
-
         if ($with_rev) {
             $filename .= '_' . $degustation->_rev;
         }

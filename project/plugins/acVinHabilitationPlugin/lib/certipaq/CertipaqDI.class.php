@@ -25,10 +25,15 @@ class CertipaqDI extends CertipaqDeroulant
     private function fillAdresseAndContact(&$obj, $compte) {
         $this->fillAdresse($obj, $compte);
         $obj['telephone'] = ($compte->getTelephoneBureau()) ? $compte->getTelephoneBureau() : $compte->getTelephonePerso();
+        if (!$obj['telephone']) {
+            unset($obj['telephone']);
+        }
         if ($compte->getTelephoneMobile()) {
             $obj['portable'] = $compte->getTelephoneMobile();
         }
-        $obj['email'] = $compte->getEmail();
+        if ($obj['email']) {
+            $obj['email'] = $compte->getEmail();
+        }
     }
 
     private function fillOperateur($habilitation, $with_contact = true) {

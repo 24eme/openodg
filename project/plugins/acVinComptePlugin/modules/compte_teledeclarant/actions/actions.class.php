@@ -163,12 +163,9 @@ class compte_teledeclarantActions extends sfActions {
 
                 $societe = $compte->getSociete();
                 $lien = $this->generateUrl("compte_teledeclarant_mot_de_passe_oublie_login", array("login" => $societe->identifiant, "mdp" => str_replace("{OUBLIE}", "", $compte->mot_de_passe)), true);
-                $emailCible = null;
-
-                if (!$societe->isTransaction()) {
-                    $emailCible = $societe->getEmailTeledeclaration();
-                }else{
-                    $emailCible = $societe->getEtablissementPrincipal()->getEmailTeledeclaration();
+                $emailCible = $compte->getTeledeclarationEmail();
+                if (!$emailCible) {
+                    $emailCible = $compte->getEmail();
                 }
 
                 $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Demande de mot de passe oublié", $this->getPartial('motDePasseOublieEmail', array('compte' => $compte, 'lien' => $lien)));
@@ -259,14 +256,24 @@ class compte_teledeclarantActions extends sfActions {
     {
         $this->checkApiAccess($request);
         $login = $request->getParameter('login');
-        $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin(strtolower($login));
+        $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin($login);
+        if (!$compte) {
+            $compte = acCouchdbManager::getClient('Compte')->retrieveByLogin(strtolower($login));
+        }
         if (!$compte) {
             http_response_code(401);
             die("Unauthorized $login");
         }
         $this->entities = array('raison_sociale' => [], 'cvi' => [], 'siret' => [], 'ppm' => [], 'accise' => [], 'tva' => []);
         $this->entities_number = 0;
+        $entities = array();
         foreach($compte->getSociete()->getEtablissementsObj() as $e) {
+            $k = $e->etablissement->cvi.$e->etablissement->no_accises;
+            if ($k) {
+                $entities[$k] = $e;
+            }
+        }
+        foreach($entities as $k => $e) {
             $this->entities['raison_sociale'][] = htmlspecialchars($e->etablissement->raison_sociale, ENT_XML1, 'UTF-8');
             $this->entities['cvi'][] = str_replace(' ', '', $e->etablissement->cvi);
             $this->entities['siret'][] = str_replace(' ', '', $compte->societe_informations->siret);

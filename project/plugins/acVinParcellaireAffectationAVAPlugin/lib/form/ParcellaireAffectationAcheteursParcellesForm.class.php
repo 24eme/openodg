@@ -27,7 +27,7 @@ class ParcellaireAffectationAcheteursParcellesForm extends ParcellaireAffectatio
             $this->getWidget($hash)->setLabel(ParcellaireAffectationAcheteursForm::buildLibelle($cepage, $hash));
 
             foreach($cepage->getProduitsCepageDetails() as $parcelle) {
-                if($lieu_affecte && $parcelle->lieu != $lieu_affecte) {
+                if($lieu_affecte && trim($parcelle->lieu) != trim($lieu_affecte)) {
                     continue;
                 }
                 $acheteurs = $parcelle->getAcheteursCepageByCVI();

@@ -7,12 +7,12 @@ mkdir $EXPORTDIR 2> /dev/null
 split_export_by_annee () {
     EXPORTTYPE=$1
     FILEPART=$EXPORTDIR/$EXPORTTYPE.csv.part
-    cat $FILEPART | cut -d ";" -f 1 | sort | uniq | grep -E "^[0-9]+" | while read annee; do
+    cat $FILEPART | cut -d ";" -f 1 | sort -u | grep -E "^[0-9]+" | while read annee; do
         FILEPARTANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv.part
         FILEANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv
         mkdir $EXPORTDIR/$annee 2> /dev/null;
         head -n 1 $FILEPART > $FILEPARTANNEE
-        cat $FILEPART | sort -t ";" -k 1,1 | grep -E "^$annee;" >> $FILEPARTANNEE
+        cat $FILEPART | grep -E "^$annee;" >> $FILEPARTANNEE
         iconv -f UTF8 -t ISO88591//TRANSLIT $FILEPARTANNEE > $FILEANNEE
         rm $FILEPARTANNEE
     done;
@@ -61,6 +61,10 @@ iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/constats.csv.part > $EXPORTDIR/co
 split_export_by_annee "constats"
 rm $EXPORTDIR/constats.csv.part
 
+bash bin/export_docs.sh Habilitation > $EXPORTDIR/habilitation.csv.part
+iconv -f UTF8 -t ISO88591//TRANSLIT $EXPORTDIR/habilitation.csv.part > $EXPORTDIR/habilitation.csv
+rm $EXPORTDIR/habilitation.csv.part
+
 echo "campagne;categorie;nombre opérateurs;superficie totale" > $EXPORTDIR/facture_stats.csv.part;
 cat $EXPORTDIR/facture.csv | iconv -f ISO88591//TRANSLIT -t UTF-8 | cut -d ";" -f 18,19 | sed -r 's/_.+;/;/' | grep "TEMPLATE" | sort | uniq | while read ligne; do
     TEMPLATE=$(echo $ligne | cut -d ";" -f 1);
@@ -74,6 +78,7 @@ rm $EXPORTDIR/facture_stats.csv.part
 for ((i=2015 ; i <= $(date +%Y -d "-9 month") ; i++)); do
     mkdir $EXPORTDIR/$i 2> /dev/null;
     curl -s "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/$i/"$i"_dr.csv
+    curl -s "$HTTP_CIVA_DATA/Production/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/$i/"$i"_sv.csv
 done
 
 rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null

@@ -13,7 +13,8 @@ function(doc) {
         doc.type != "RegistreVCI" &&
         doc.type != "Tirage" &&
         doc.type != "Transaction" &&
-        doc.type != "TravauxMarc"
+        doc.type != "TravauxMarc" &&
+        doc.type != "PMC"
     ) {
         return;
     }

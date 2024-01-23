@@ -54,7 +54,7 @@ class DeclarationExportCsv
                 $res .= ";".$produitconfig->getCepage()->getLibelle();
             }
         }else{
-            $res .= ';';
+            $res .= null;
             if ($withLibelle) {
                 $res .= ';';
             }

@@ -28,7 +28,7 @@
             <th class="col-xs-1">Date</th>
             <th class="col-xs-1">Numéro</th>
             <th class="col-xs-1">Type</th>
-            <th class="col-xs-3">Libellé</th>
+            <th class="col-xs-3">Origine</th>
             <th class="col-xs-2">Montant TTC</th>
             <th class="col-xs-2">Paiement</th>
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
@@ -48,7 +48,7 @@
             <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
             <td>N°&nbsp;<?php echo $facture->numero_ava ?></td>
             <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
-            <td><?php if(!$facture->isAvoir()): ?><?php echo $facture->getTemplate()->libelle ?><?php endif; ?></td>
+            <td><?php echo implode(", ", $facture->getOrigineTypes()->getRawValue()) ?></td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
             <td class="text-center">
                 <?php if($facture->isPayee() && !$facture->isAvoir() && !$facture->versement_comptable_paiement && $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>

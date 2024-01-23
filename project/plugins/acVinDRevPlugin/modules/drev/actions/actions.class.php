@@ -130,7 +130,7 @@ class drevActions extends sfActions {
         try {
             $imported = $this->drev->resetAndImportFromDocumentDouanier();
         } catch (Exception $e) {
-            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
                 $message .= "<br/> Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non que celui organisé par produit).";
             }
@@ -204,7 +204,7 @@ class drevActions extends sfActions {
             }
         } catch(Exception $e) {
 
-            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendues.';
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus ('.$e->getMessage().').';
 
             if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
                 $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteurs/fournisseurs (et non celui organisé par produit).";
@@ -684,7 +684,11 @@ class drevActions extends sfActions {
                 if(!$this->form->getValue("engagement_".$engagement->getCode())) {
                     continue;
                 }
-                $document = $documents->add($engagement->getCode());
+                $key = $engagement->getCode();
+                if ($addInfo = $engagement->getAdditionalInfo()) {
+                    $key .= '_'.$addInfo;
+                }
+                $document = $documents->add($key);
                 $document->libelle = $engagement->getMessage();
                 if($engagement->getInfo()) {
                     $document->libelle .= " : ".$engagement->getInfo();
@@ -832,6 +836,24 @@ class drevActions extends sfActions {
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
+
+    public function executeVip2c(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
+        $vip2c = array();
+        $vip2c['declarvins_api_url'] = VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->campagne);
+        $vip2c['declarvins_api_contrats'] = VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->campagne);
+        $vip2c['volumes'] = array();
+        foreach ($drev->getProduitsHashWithVolumeSeuil() as $produit_hash) {
+            $vip2c['volumes'][$produit_hash] = array();
+            $vip2c['volumes'][$produit_hash]['revendique'] = $drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash());
+            $vip2c['volumes'][$produit_hash]['seuil'] = $drev->getVolumeRevendiqueSeuil($produit_hash);
+        }
+        header('Content-type: text/json');
+        echo json_encode($vip2c);
+        exit;
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
@@ -858,10 +880,6 @@ class drevActions extends sfActions {
         }
 
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
-        $this->mouvements = [];
-        foreach (MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($this->drev->identifiant, $this->drev->campagne)->rows as $mouvement) {
-            $this->mouvements[$mouvement->key[2].$mouvement->key[3]] = $mouvement->value;
-        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
           return sfView::SUCCESS;
@@ -1033,6 +1051,11 @@ class drevActions extends sfActions {
     }
 
     protected function secure($droits, $doc) {
+        if ($droits == DRevSecurity::EDITION) {
+            if ($doc && $doc->validation) {
+                return $this->forwardSecure();
+            }
+        }
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
             return $this->forwardSecure();
@@ -1067,7 +1090,7 @@ class drevActions extends sfActions {
 
     public function executeDeclarvapi(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        print_r([$drev->getContratsAPIURL(), $drev->getContratsFromAPI()]);
+        print_r([VIP2C::getContratsAPIURL($drev->declarant->cvi, $drev->getDefaultMillesime()), VIP2C::getContratsFromAPI($drev->declarant->cvi, $drev->getDefaultMillesime())]);
         exit;
     }
 

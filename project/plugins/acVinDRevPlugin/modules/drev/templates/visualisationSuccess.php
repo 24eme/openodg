@@ -58,7 +58,7 @@
     <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
 
-<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr, 'mouvements' => $mouvements)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form, 'dr' => $dr)); ?>
 
 <?php if($drev->exist('documents') && count($drev->documents->toArray(true, false)) ): ?>
     <hr />
@@ -168,6 +168,7 @@
             <?php endif; ?>
         <?php endif; ?>
         <?php if(!$drev->validation): ?>
+                <a href="<?php echo url_for("drev_delete", $drev) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER la saisie de ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer</a>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$drev->validation_odg && ( $sf_user->isAdmin() ||
                                                  ($sf_user->hasDrevAdmin() && DrevConfiguration::getInstance()->hasValidationOdgRegion() && !$drev->isValidateOdgByRegion($regionParam))

@@ -16,11 +16,7 @@
         <?php include_partial('tirage/pointsAttentions', array('tirage' => $tirage, 'validation' => $validation)); ?>
     <?php endif; ?>
 
-    <div class="row row-margin">
-        <div class="col-xs-12">
-            <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
-        </div>
-    </div>
+    <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
 
     <?php  if (!$tirage->isPapier() && count($validation->getEngagements()) > 0): ?>
         <h2 class="h3">J'ai pris connaissance des pièces à fournir</h2>
@@ -82,6 +78,11 @@
             </div>
         </div>
     </div>
+    <?php endif; ?>
+
+    <?php if(isset($form['commentaire'])): ?>
+        <h3>Commentaire interne <small>(seulement visible par l'ODG)</small></h3>
+        <?php echo $form['commentaire']->render(array('class' => 'form-control text-left', "")) ?>
     <?php endif; ?>
 
     <div class="row row-margin row-button">

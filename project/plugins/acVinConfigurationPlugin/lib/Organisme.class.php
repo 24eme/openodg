@@ -3,6 +3,8 @@
 class Organisme
 {
     const DEFAULT_TYPE = 'facture';
+    const FACTURE_TYPE = 'facture';
+    const DEGUSTATION_TYPE = 'degustation';
 
     private static $organismes = array();
     private $region = null;
@@ -23,7 +25,7 @@ class Organisme
             $region = self::getCurrentRegion();
         }
 
-        if (in_array($type, ['degustation', 'facture']) === false) {
+        if (in_array($type, [self::DEGUSTATION_TYPE, self::FACTURE_TYPE]) === false) {
             $type = self::DEFAULT_TYPE;
         }
 
@@ -38,14 +40,19 @@ class Organisme
         $this->type = $type;
     }
 
-    public function getInfos() {
-        $infos = (sfConfig::has('app_'.$this->type.'_emetteur'))
-                    ? sfConfig::get('app_'.$this->type.'_emetteur')
-                    : sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
-
-        if (!array_key_exists($this->region, $infos)) {
-            $infos = sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
+    public function getStaticInfos($region, $type) {
+        if (!sfConfig::has('app_'.$type.'_emetteur') && $type != self::DEFAULT_TYPE) {
+            return self::getStaticInfos($region, self::DEFAULT_TYPE);
         }
+        $app = sfConfig::get('app_'.$type.'_emetteur');
+        if (!isset($app[$region]) && $type != self::DEFAULT_TYPE) {
+            return self::getStaticInfos($region, self::DEFAULT_TYPE);
+        }
+        return $app;
+    }
+
+    public function getInfos() {
+        $infos = self::getStaticInfos($this->region, $this->type);
 
         if (!array_key_exists($this->region, $infos)) {
             throw new sfException(sprintf('Config %s not found in app.yml', $this->region));

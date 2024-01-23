@@ -49,6 +49,14 @@ class DouaneImportCsvFile {
         return null;
     }
     public static function getTypeFromFile($file)  {
+      if (preg_match('/production/i', $file)) {
+          $str = file_get_contents($file, false, null, 0, 200);
+          if (preg_match('/APPORTEUR/', $str)) {
+              return 'SV11';
+          }else{
+              return 'SV12';
+          }
+      }
       if (preg_match('/sv11/i', $file)) {
         return 'SV11';
       }
@@ -131,17 +139,20 @@ class DouaneImportCsvFile {
                     $p[] = $donnee->categorie;
                     $p[] = $donnee->categorie_libelle;
                     $p[] = str_replace('.', ',', $donnee->valeur);
-                    if ($donnee->tiers && $t = EtablissementClient::getInstance()->find($donnee->tiers)) {
-                        $p[] = $t->cvi;
-                        $p[] = DouaneImportCsvFile::cleanRaisonSociale($t->raison_sociale);
-                        $p[] = null;
-                        $p[] = ($t->siege->commune) ? $t->siege->commune : $t->commune;
-                    } else {
-                        $p[] = $donnee->tiers_cvi;
-                        $p[] = ($donnee->tiers_cvi) ? DouaneImportCsvFile::cleanRaisonSociale("CVI non reconnu : ".preg_replace('/(^"|"$)/', '', $donnee->tiers_raison_sociale)) : '';
-                        $p[] = null;
-                        $p[] = null;
+
+                    $donnee->tiers_cvi = str_replace('"', '', $donnee->tiers_cvi);
+                    if ($donnee->tiers_cvi && (!$donnee->tiers || !$donnee->tiers_raison_sociale || !$donnee->tiers_commune)) {
+                        DouaneProduction::fillItemWithTiersData($donnee, $donnee->tiers_cvi, $donnee->tiers_raison_sociale);
                     }
+                    $p[] = $donnee->tiers_cvi;
+                    if ($donnee->tiers_cvi && !$donnee->tiers) {
+                        $p[] = DouaneImportCsvFile::cleanRaisonSociale("CVI non reconnu : ".preg_replace('/(^"|"$)/', '', $donnee->tiers_raison_sociale));
+                    }else {
+                        $p[] =  DouaneImportCsvFile::cleanRaisonSociale($donnee->tiers_raison_sociale);
+                    }
+                    $p[] = null;
+                    $p[] = $donnee->tiers_commune;
+
                     $p[] = $donnee->colonneid;
                     $p[] = Organisme::getCurrentOrganisme();
                     $p[] = $produit->getHash();
@@ -179,6 +190,8 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
+        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+            $labels[DRevClient::DENOMINATION_BIODYNAMIE] = DRevClient::DENOMINATION_BIODYNAMIE;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BIOLOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(VIN ?BIOL|agriculture biol|AGRICBIOLOGIQUE)/i', $mentionComplementaire)) {
@@ -196,10 +209,6 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(non bio)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             unset($labels['DENOMINATION_BIO']);
-        }
-
-        if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(demeter|biody|biodynamie|bio-dynamie|biodyn|biodynamique)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
-            $labels[DRevClient::DENOMINATION_DEMETER] = DRevClient::DENOMINATION_DEMETER;
         }
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(hve|h.v.e.|haute valeur environnementale|hve3)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {

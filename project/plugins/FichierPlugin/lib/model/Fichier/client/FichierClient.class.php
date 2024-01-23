@@ -116,7 +116,7 @@ class FichierClient extends acCouchdbClient {
     	$files = array();
     	$directory = new DirectoryIterator(ProdouaneScrappyClient::getDocumentPath($context));
     	$iterator = new IteratorIterator($directory);
-        if ($type == 'sv11' || $type == 'sv12') {
+        if ($annee > 2021 && ($type == 'sv11' || $type == 'sv12')) {
             $type = 'production';
         }
     	$regex = new RegexIterator($directory, '/^'.$type.'-'.$annee.'-'.$etablissement->cvi.'\..+$/i', RegexIterator::MATCH);

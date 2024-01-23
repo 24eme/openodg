@@ -10,6 +10,11 @@ class TemplateFacture extends BaseTemplateFacture
 	public function generateCotisations($document)
 	{
 		$cotisations = array();
+        if (method_exists($document, 'getEtablissementObject') && $e = $document->getEtablissementObject()) {
+            if ($e->exist('region') && strpos($e->region, 'HORS_') !== false) {
+                return;
+            }
+        }
 		foreach ($this->cotisations as $config) {
 			if(!$config->isForType($document->getType())) {
 				continue;

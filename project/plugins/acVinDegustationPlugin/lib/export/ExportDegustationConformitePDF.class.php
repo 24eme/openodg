@@ -15,7 +15,7 @@ class ExportDegustationConformitePDF extends ExportDeclarationLotsPDF {
     public function create() {
         $lots = array();
         foreach ($this->degustation->getLotsDegustables() as $lot) {
-            if ($lot->declarant_identifiant == $this->etablissement->identifiant && ($lot->conformite == Lot::CONFORMITE_CONFORME || !$lot->conformite) && ($lot->statut == Lot::STATUT_PRELEVE || $lot->statut == Lot::STATUT_CONFORME) ) {
+            if ($lot->declarant_identifiant == $this->etablissement->identifiant && ($lot->statut == Lot::STATUT_CONFORME || $lot->statut == Lot::STATUT_NONCONFORME_LEVEE) ) {
                 $lots[] = $lot;
             }
         }

@@ -149,13 +149,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
     }
 
     public function getLastDegustationDate() {
-        $last =  DegustationClient::getInstance()->getLastDegustationByStatut($this->appellation, $this->identifiant, "DEGUSTE");
 
-        if(!$last) {
-            return null;
-        }
-
-        return $last->date_degustation;
+        return DegustationClient::getInstance()->getLastDateDegustationByStatut($this->appellation, $this->identifiant, "DEGUSTE");
     }
 
     public function getDrev() {

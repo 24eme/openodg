@@ -7,14 +7,14 @@ class DrevRevendicationProduitDenominationAutoForm extends acCouchdbForm
     {
         $defaults = array();
 
-        if($produit->denomination_complementaire && !isset(array_flip(DRevClient::$denominationsAuto)[$produit->denomination_complementaire])) {
+        if($produit->denomination_complementaire && !isset(array_flip($this->getDenominationAuto())[$produit->denomination_complementaire])) {
             throw new Exception("La dénomination n'est pas modifiable pour ce produit");
         }
 
         $defaults['denomination_auto'] = DRevClient::DENOMINATION_CONVENTIONNEL;
 
         if($produit->denomination_complementaire) {
-            $defaults['denomination_auto'] =  array_flip(DRevClient::$denominationsAuto)[$produit->denomination_complementaire];
+            $defaults['denomination_auto'] =  array_flip($this->getDenominationAuto())[$produit->denomination_complementaire];
         }
         $this->produit = $produit;
         parent::__construct($produit->getDocument(), $defaults, $options, $CSRFSecret);
@@ -32,7 +32,7 @@ class DrevRevendicationProduitDenominationAutoForm extends acCouchdbForm
 
     public function getDenominationAuto() {
 
-        return DrevClient::$denominationsAuto;
+        return DRevClient::getDenominationsAuto();
     }
 
     public function formatter($widget, $inputs)
@@ -49,7 +49,7 @@ class DrevRevendicationProduitDenominationAutoForm extends acCouchdbForm
     public function save()
     {
         $values = $this->getValues();
-        $denomination_complementaire = DRevClient::$denominationsAuto[$values['denomination_auto']];
+        $denomination_complementaire = $this->getDenominationAuto()[$values['denomination_auto']];
         if($values['denomination_auto'] == DRevClient::DENOMINATION_CONVENTIONNEL) {
             $denomination_complementaire = null;
         }

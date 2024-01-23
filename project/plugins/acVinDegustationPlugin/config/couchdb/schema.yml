@@ -72,7 +72,9 @@ Degustation:
                   conforme_appel: {}
                   nonconformite_levee: {}
                   a_redeguster: {required: false}
+                  engagement_8515: { required: false }
                   preleve: {}
+                  secteur: {}
       mouvements_lots:
         type: collection
         definition:
@@ -92,6 +94,7 @@ Degustation:
                         numero_dossier: {  }
                         numero_archive: {  }
                         date_commission: { }
+                        date_notification: { }
                         libelle: {}
                         detail: {}
                         volume: { type: float }

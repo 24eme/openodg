@@ -4,7 +4,6 @@ all:
       mentions_complementaire: true
       import_with_mentions_complementaire: true
       validation_odg: 'auto'
-      habilitation_inao: true
       etape_superficie: false
       dr_douane_required: false
       degustation: true
@@ -13,5 +12,4 @@ all:
       send_email_operateur: false
       email_disabled: true
       volume_seuil:
-        hash: certifications/IGP/genres/TRANQ/appellations/MED/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT
         campagne: 2022-2023

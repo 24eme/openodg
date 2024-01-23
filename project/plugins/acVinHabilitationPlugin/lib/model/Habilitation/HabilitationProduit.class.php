@@ -112,5 +112,22 @@ class HabilitationProduit extends BaseHabilitationProduit {
         }
     }
 
+    public function isHabiliteFor($activite) {
+        if(!$this->exist('activites')) {
+            return false;
+        }
+        foreach($this->activites as $a) {
+            if(strpos($a->activite, $activite) !==  0) {
+                continue;
+            }
+
+            if($a->isHabilite()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
 }

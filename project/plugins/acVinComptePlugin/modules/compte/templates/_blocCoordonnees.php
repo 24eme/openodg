@@ -28,6 +28,16 @@
                 </div>
             </div>
         <?php endif; ?>
+        <?php if($compte->getTeledeclarationEmail()): ?>
+            <div class="row">
+                <div class="col-xs-3 text-muted">
+                    ETelecl.&nbsp;:
+                </div>
+                <div class="col-xs-9">
+                    <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo $compte->getTeledeclarationEmail(); ?></a></small>
+                </div>
+            </div>
+        <?php endif; ?>
         <?php if ($compte->telephone_perso) : ?>
             <div class="row">
                 <div class="col-xs-3 text-muted">
@@ -78,4 +88,17 @@
             </div>
         <?php endif; ?>
     </div>
+<?php elseif ($compte->isSameContactThanSociete() && !isset($forceCoordonnee)): ?>
+    <?php if($compte->getTeledeclarationEmail()): ?>
+        <div style="margin-top: 10px;" class="col-xs-12">
+        <div class="row">
+            <div class="col-xs-3 text-muted">
+                Em.Telecl.&nbsp;:
+            </div>
+            <div class="col-xs-9">
+                <small><a href="mailto:<?php echo $compte->getTeledeclarationEmail(); ?>"><?php echo $compte->getTeledeclarationEmail(); ?></a></small>
+            </div>
+        </div>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>

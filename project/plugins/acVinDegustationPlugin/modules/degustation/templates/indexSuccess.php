@@ -76,7 +76,7 @@
 <?php include_partial('degustation/liste', ['degustations' => $degustations]) ?>
 
 <div>
-    <a href="<?= url_for('degustation_liste', ['campagne' => $campagne]) ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les dégustations</a>
+    <a href="<?= url_for('degustation_liste', ['campagne' => date('Y')]) ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les dégustations</a>
 </div>
 
 <div class="page-header no-border">

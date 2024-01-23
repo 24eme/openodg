@@ -23,11 +23,12 @@ class ExportDegustationAllNotificationsPDF extends ExportDeclarationLotsPDF {
 
             if ($lot->conformite == Lot::CONFORMITE_CONFORME) {
                 $lots[$lot->declarant_identifiant]['conforme'][] = $lot;
+            } elseif ($lot->statut == Lot::STATUT_NONCONFORME_LEVEE) {
+                    $lots[$lot->declarant_identifiant]['conforme'][] = $lot;
             } elseif ($lot->statut == Lot::STATUT_NONCONFORME) {
                 $lots[$lot->declarant_identifiant]['nonconforme'][] = $lot;
             }
         }
-
         foreach ($lots as $declarant => $lots_declarant) {
             if (isset($lots_declarant['conforme']) && count($lots_declarant['conforme'])) {
                 $this->printable_document->addPage($this->getPartial('degustation/degustationConformitePDF', array('degustation' => $this->degustation, 'etablissement' => $etablissements[$declarant], 'lots' => $lots_declarant['conforme'])));

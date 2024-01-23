@@ -1,7 +1,7 @@
 <?php
 use_helper("Date");
 use_helper("Float");
-$last = $parcellaire->getParcellaireLastCampagne();
+$last = $parcellaire->getAffectationLastCampagne();
 $lastParcellesKeysByAppellations = null;
 if ($last) {
     $lastParcellesKeysByAppellations = $last->getAllParcellesKeysByAppellations()->getRawValue();
@@ -9,17 +9,13 @@ if ($last) {
 ?>
 
 <?php if($parcellaire->isIntentionCremant()): ?>
-    <p class="text-muted">En plus des vos éventuelles parcelles déclarées dans votre affectation crémant, vous avez décidé de produire cette année du crémant dans les parcelles suivantes :</p>
+    <p class="text-muted">En plus de vos éventuelles parcelles déclarées dans votre affectation crémant, vous avez décidé de produire cette année du crémant dans les parcelles suivantes :</p>
 <?php endif; ?>
 
 <?php if (count($parcellaire->declaration->getAppellationsOrderParcellaire()) > 0): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <?php
-            foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation):
-                ?>
+            <?php foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation): ?>
                 <?php if(!isset($notitle) || !$notitle): ?>
-                <h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' ares'; ?></span></h3>
+                <h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong></h3>
                 <?php endif; ?>
                 <?php
                 if (!$appellation->getSuperficieTotale()) {
@@ -27,7 +23,7 @@ if ($last) {
                     continue;
                 }
                 ?>
-                <table class="table table-striped table-condensed">
+                <table style="margin-bottom: 0;" class="table table-striped table-condensed">
                     <thead>
                         <tr>
                             <th class="col-xs-4 text-center">Appellation</th>
@@ -41,101 +37,40 @@ if ($last) {
                     <tbody>
                         <?php
                         $appellation_details = $appellation->getDetailsSortedByParcelle();
-                        $detailsHashes = array();
                         foreach ($appellation_details as $detail):
                             if ($detail->isCleanable()) {
                                 continue;
-                            }
-                            $detailsHashes[$detail->getHash()] = $detail->getHash();
-                            $classline = '';
-                            $styleline = '';
-                            $styleproduit = '';
-                            $styleparcelle = '';
-                            $classparcelle = '';
-                            $classsuperficie = '';
-                            $stylesuperficie = '';
-                            if (isset($diff) && $diff) {
-                                if ($last && !$last->exist($detail->getHash())) {
-                                    #$classline = 'success';
-                                    $styleline = 'border-style: solid; border-width: 1px; border-color: darkgreen;';
-                                } else {
-                                    if ($last && $detail->getParcelleIdentifiant() != $last->get($detail->getHash())->getParcelleIdentifiant()) {
-                                        $styleparcelle = 'border-style: solid; border-width: 1px; border-color: darkorange;';
-                                        #$classparcelle = 'warning';
-                                    }
-                                    if ($last && $detail->getSuperficie() != $last->get($detail->getHash())->getSuperficie()) {
-                                        $styleline = (!$detail->superficie) ? 'text-decoration: line-through; border-style: solid; border-width: 1px; border-color: darkred' : '';
-                                        $classline = (!$detail->superficie) ? 'danger' : '';
-                                        $stylesuperficie = (!$detail->superficie) ? 'border-style: solid; border-width: 1px; border-color: darkgreen' : 'border-style: solid; border-width: 1px; border-color: darkgreen';
-                                        #$classsuperficie = (!$detail->superficie) ? 'danger' : 'warning';
-                                    }
-                                }
-                                if (!$detail->getSuperficie()) {
-                                    $stylesuperficie = 'border-style: solid; border-width: 1px; border-color: darkred';
-                                    #$classsuperficie = 'danger';
-                                }
-
-                                if (!$detail->isAffectee()) {
-                                    $styleline="opacity: 0.4;";
-                                    $styleproduit="text-decoration: line-through;";
-                                    $styleparcelle="text-decoration: line-through;";
-                                    $stylesuperficie="text-decoration: line-through;";
-                                    $classline="";
-                                    $classsuperficie="";
-                                    $classparcelle="";
-                                }
-                            }
-                            ?>
-                            <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
-                                <td style="<?php echo $styleproduit; ?>">
+                            } ?>
+                            <tr>
+                                <td>
                                     <?php echo $detail->getAppellationLibelle(); ?>
                                 </td>
-                                <td style="<?php echo $styleproduit; ?>">
+                                <td>
                                     <?php echo $detail->getCommune(); ?>
                                 </td>
-                                <td style="text-align: right; <?php echo $styleparcelle; ?>">
+                                <td class="text-right">
                                     <?php echo $detail->getSection(); ?> <?php echo $detail->getNumeroParcelle(); ?>
                                 </td>
-                                <td style="<?php echo $styleproduit; ?>">
+                                <td>
                                     <?php echo $detail->getLieuLibelle(); ?>
                                 </td>
-                                <td style="<?php echo $styleproduit; ?>">
+                                <td>
                                     <?php echo $detail->getCepageLibelle();  ?>
                                 </td>
-                                <td class="<?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
+                                <td class="text-right">
                                     <?php echoFloat($detail->getSuperficie()) ?> <small class="text-muted">ares</small>
                                 </td>
                             </tr>
-                            <?php
-                        endforeach;
-
-                        if (isset($diff) && $diff && $lastParcellesKeysByAppellations && array_key_exists($appellation->gethash(), $lastParcellesKeysByAppellations)):
-                            foreach ($lastParcellesKeysByAppellations[$appellation->gethash()] as $hashDetail => $detail):
-                                if (!array_key_exists($hashDetail, $detailsHashes)):
-                                    ?>
-                                    <tr class="" style="opacity: 0.4">
-                                        <td class="col-xs-3" style="text-decoration: line-through;">
-                                            <?php echo $detail->getLieuLibelle(); ?>
-                                        </td>
-                                        <td class="col-xs-3" style="text-decoration: line-through;">
-                                            <?php echo $detail->getCepageLibelle(); ?>
-                                        </td>
-                                        <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
-                                        <td class="col-xs-3" style="text-align: right; text-decoration: line-through;">
-                                            <?php echo $detail->getParcelleIdentifiant(); ?>
-                                        </td>
-                                        <td class="col-xs-1" style="text-align: right; text-decoration: line-through;">
-                                            <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                endif;
-                            endforeach;
-                        endif;
-                        ?>
+                            <?php endforeach; ?>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4">Superficie totale affectable de l'appellation</th>
+                                    <th colspan="2" class="text-right"><?php echoFloat($appellation->getSuperficieTotale()) ?> <small class="text-muted">ares</small></th>
+                                </tr>
+                            </tfoot>
                     </tbody>
                 </table>
-                <p class="text-muted">Ces raisins sont destinés à être vinifiés <?php
+                <p class="text-muted" style="margin-top: 10px;">Ces raisins sont destinés à être vinifiés <?php
                     $libelledestination = array('SUR_PLACE' => 'sur place', 'CAVE_COOPERATIVE' => 'en caves coopératives', 'NEGOCIANT' => 'par des négociants');
                     $acheteurs = $appellation->getAcheteursNode();
                     $i = 0;
@@ -165,14 +100,8 @@ if ($last) {
                     }
                     ?>.</p>
     <?php endforeach; ?>
-        </div>
-    </div>
 <?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <p class="text-muted">
-                Aucune parcelle n'a été déclarée pour cette année.
-            </p>
-        </div>
-    </div>
+    <p class="text-muted">
+        Aucune parcelle n'a été déclarée pour cette année.
+    </p>
 <?php endif; ?>

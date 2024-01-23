@@ -12,8 +12,10 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_PAIEMENT_PRELEVEMENT_AUTO = "PRELEVEMENT_AUTO";
     const FACTURE_REJET_PRELEVEMENT = "REJET_PRELEVEMENT";
     const FACTURE_PAIEMENT_REMBOURSEMENT = "REMBOURSEMENT";
+    const FACTURE_PAIEMENT_ESPECES = "ESPECES";
+    const FACTURE_PAIEMENT_CARTE_BANCAIRE = "CARTE_BANCAIRE";
 
-    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement");
+    public static $types_paiements = array(self::FACTURE_PAIEMENT_CHEQUE => "Chèque", self::FACTURE_PAIEMENT_VIREMENT => "Virement", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_PAIEMENT_PRELEVEMENT_AUTO => "Prélèvement automatique", self::FACTURE_REJET_PRELEVEMENT => "Rejet de prélèvement", self::FACTURE_PAIEMENT_REMBOURSEMENT => "Remboursement", self::FACTURE_PAIEMENT_ESPECES => "Espèces", self::FACTURE_PAIEMENT_CARTE_BANCAIRE => "Carte Bancaire");
 
     private $documents_origine = array();
 
@@ -171,8 +173,14 @@ class FactureClient extends acCouchdbClient {
             $region = Organisme::getCurrentRegion();
         }
         $facture = $this->createEmptyDoc($compte, $date_facturation, $message_communication, $region, $template);
-
+        $types = [];
+        foreach($mouvements as $mvt) {
+            $types[$mvt->value->type] = $mvt->value->type;
+        }
         foreach($template->cotisations as $configCollection) {
+            if(!$configCollection->isForType($types)) {
+                continue;
+            }
             if(!$configCollection->isRequired()) {
                 continue;
             }
@@ -182,7 +190,10 @@ class FactureClient extends acCouchdbClient {
         $lignes = array();
         $lignes_originaux = array();
         foreach ($mouvements as $identifiant => $mvt) {
-            $cle = $mvt->value->categorie.$mvt->value->detail_libelle.$mvt->value->type_libelle.$mvt->value->taux.$mvt->value->tva.$mvt->value->unite;
+            $cle = $mvt->value->categorie.$mvt->value->detail_libelle.$mvt->value->type_libelle.$mvt->value->taux.$mvt->value->tva;
+            if (isset($mvt->value->unite)) {
+                $cle .= $mvt->value->unite;
+            }
             $lignes_originaux[$cle][] = $mvt;
             if (isset($lignes[$cle])) {
                 $lignes[$cle]->value->quantite += $mvt->value->quantite;
@@ -396,7 +407,7 @@ class FactureClient extends acCouchdbClient {
       return !$this->isRedressee($factureview) && $factureview->value[FactureSocieteView::VALUE_STATUT] != self::STATUT_NONREDRESSABLE;
     }
 
-    public function createAvoir(Facture $f) {
+    public function createAvaAvoir(Facture $f) {
       if (!$f->isRedressable()) {
   return ;
       }
@@ -439,10 +450,10 @@ class FactureClient extends acCouchdbClient {
 
       $avoir->date_paiement = null;
       $avoir->modalite_paiement = null;
-      $avoir->montant_paiement = null;
-      $avoir->reglement_paiement = null;
+      $avoir->remove('reglement_paiement');
       $avoir->remove('paiements');
       $avoir->add('paiements');
+      $avoir->remove('montant_paiement');
 
       return $avoir;
     }
@@ -493,6 +504,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->versement_comptable_paiement = 0;
       $avoir->remove('paiements');
       $avoir->add('paiements');
+      $avoir->remove('montant_paiement');
       $avoir->save();
       $f->defacturer();
       $f->save();

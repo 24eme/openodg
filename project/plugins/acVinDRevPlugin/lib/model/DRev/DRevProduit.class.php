@@ -180,6 +180,10 @@ class DRevProduit extends BaseDRevProduit
         return $this->getParent();
     }
 
+    public function getAppellation() {
+        return $this->getCepage()->getAppellation();
+    }
+
 	public function canCalculTheoriticalVolumeRevendiqueIssuRecolte() {
         if(!DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && !$this->getCepage()->hasProduitsSansDonneesRecolte()) {
             if(!$this->superficie_revendique || $this->getSommeProduitsCepage('superficie_revendique') != $this->superficie_revendique) {
@@ -401,4 +405,8 @@ class DRevProduit extends BaseDRevProduit
 		return $this->getCepage()->getSommeProduits($hash);
 	}
 
+    public function hasVolumeOrSuperficieRevendicables() {
+        return $this->recolte->volume_sur_place || $this->volume_revendique_total || $this->superficie_revendique;
+
+    }
 }

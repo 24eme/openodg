@@ -26,6 +26,11 @@ habilitation_declarant:
   requirements:
     sf_method: [get, post]
 
+habilitation_consultation:
+  url: /habilitation/consultation
+  param: { module: habilitation, action: consultation }
+  class: HabilitationGeneralRoute
+
 habilitation_visualisation:
   url: /habilitation/visualisation/:id
   param: { module: habilitation, action: visualisation }

@@ -13,6 +13,6 @@
         <li class="dropdown-header">Documents partagés avec les opérateurs</li>
 <?php endif; ?>
         <li><a href="<?php echo url_for('parcellaire_export_csv', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le CSV du parcellaire</a></li>
-        <li><a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le PDF Douanier</a></li>
+        <li class="<?php if(!$parcellaire->hasParcellairePDF()): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaire_pdf', array('id' => $parcellaire->_id)); ?>" class="dropdown-item">Télécharger le PDF Douanier</a></li>
     </ul>
 </div>

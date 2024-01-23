@@ -30,7 +30,7 @@ class DRevValidationForm extends acCouchdbForm
             }
             if (DrevConfiguration::getInstance()->hasDegustation()) {
                 $this->setWidget('date_degustation_voulue', new sfWidgetFormInput(array(), array()));
-                $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
+                $this->setValidator('date_degustation_voulue', new sfValidatorDate(array('with_time' => false, 'datetime_output' => 'Y-m-d', 'date_format' => '~(?<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true, 'min' => date('Y-m-d'))));
 
                 if ($this->getDocument()->exist('date_degustation_voulue') && $this->getDocument()->date_degustation_voulue !== null) {
                     $this->setDefault('date_degustation_voulue', DateTime::createFromFormat('Y-m-d', $this->getDocument()->date_degustation_voulue)->format('d/m/Y'));
@@ -85,7 +85,50 @@ class DRevValidationForm extends acCouchdbForm
             $this->embedForm('lots', $formDegustable);
         }
 
+        $this->validatorSchema->setPostValidator(
+            new sfValidatorCallback(array('callback' => array($this, 'checkEngagements')))
+        );
         $this->widgetSchema->setNameFormat('validation[%s]');
+    }
+
+    public function checkEngagements($validator, $values)
+    {
+        $checked = [];
+
+        foreach ($values as $key => $value) {
+            if (strpos($key, 'engagement_') === false) {
+                continue;
+            }
+
+            if (strpos($key, '_OU_') !== false) {
+                $checked_oukey = preg_replace('/_OU_.*/', '_OU_', $key);
+                if (array_key_exists($checked_oukey, $checked) === false) {
+                    $checked[$checked_oukey] = 0;
+                }
+
+                if($value === true) { $checked[$checked_oukey]++; }
+            }
+
+            if (strpos($key, '_OUEX_') !== false) {
+                $checked_ouexkey = preg_replace('/_OUEX_.*/', '_OUEX_', $key);
+                if (array_key_exists($checked_ouexkey, $checked) === false) {
+                    $checked[$checked_ouexkey] = 0;
+                }
+
+                if($value === true) { $checked[$checked_ouexkey]++; }
+            }
+        }
+
+        foreach($checked as $key => $val)
+        if (strpos($key, '_OU_') !== false && $val < 1) {
+            throw new sfValidatorError($validator, 'Il faut sélectionner au moins un engagement');
+        }
+
+        if (strpos($key, '_OUEX_') !== false && $val != 1) {
+            throw new sfValidatorError($validator, 'Il ne faut sélectionner qu\'un engagement');
+        }
+
+        return $values;
     }
 
     public function save() {

@@ -26,6 +26,14 @@ abstract class Etapes
         return $this->getRouteLinksHash()[$step];
     }
 
+    public function getPreviousLink($step) {
+        return $this->getRouteLink($this->getPrevious($step));
+    }
+
+    public function getNextLink($step) {
+        return $this->getRouteLink($this->getNext($step));
+    }
+
     public function getLibelle($step, $doc = null) {
         return $this->getLibellesHash()[$step];
     }
@@ -51,28 +59,30 @@ abstract class Etapes
 		return $first;
 	}
 
-	public function getNext($etape)
+    public function getPrevious($etape)
 	{
-		if (!$etape) {
+        $etapes = $this->getEtapes();
+
+        if (false !== $index_etape = array_search($etape, $etapes)) {
+            return ($index_etape - 1 >= 0) ? $etapes[$index_etape-1] : $this->getFirst();
+        }
+
+        throw new sfException('Etape inconnue');
+    }
+
+    public function getNext($etape)
+	{
+        if (!$etape) {
 			return $this->getFirst();
 		}
 		$etapes = $this->getEtapes();
-		if (!in_array($etape, $etapes)) {
-			throw new sfException('Etape inconnue');
-		}
-		$find = false;
-		$next = $this->getDefaultStep();
-		foreach ($etapes as $e) {
-			if ($find) {
-				$next = $e;
-				break;
-			}
-			if ($etape == $e) {
-				$find = true;
-			}
-		}
-		return $next;
-	}
+
+        if (false !== $index_etape = array_search($etape, $etapes)) {
+            return ($index_etape + 1 <= count($etapes)) ? $etapes[$index_etape+1] : $this->getLast();
+        }
+
+        throw new sfException('Etape inconnue');
+    }
 
 	public function isGt($etapeToTest, $etape)
 	{

@@ -30,7 +30,6 @@ th {
         foreach ($lotsDossier as $numDossier => $lots) :
             $lot = $lots[0]->getRawValue();
             $adresse = $lot->adresse_logement;
-            $adresseLogement = splitLogementAdresse($lot->adresse_logement);
     ?>
     <?php if ($ligne % 15 == 0 ) : $table_header = true; ?>
       </table>
@@ -42,7 +41,7 @@ th {
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
           <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Coordonnées</strong></th>
           <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Laboratoire</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
           <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
         </tr>
     <?php endif;?>
@@ -50,11 +49,11 @@ th {
            <td><?php echo tdStart() ?><strong><small><?php echo $etablissement->raison_sociale; ?></small></strong></td>
            <td>
              <small><?php
-              if($adresseLogement):
-                if ($adresseLogement['nom'] != $etablissement->raison_sociale) {
-                    echo substrUtf8($adresseLogement['nom'], 0, 32).'<br/>';
+              if($lot->hasLogement()):
+                if ($lot->getLogementNom() != $etablissement->raison_sociale) {
+                    echo substrUtf8($lot->getLogementNom(), 0, 32).'<br/>';
                 }?>
-                <?php echo substrUtf8($adresseLogement['adresse'], 0, 32).'<br/>'.substrUtf8($adresseLogement['code_postal'].' '.$adresseLogement['commune'], 0, 32).'<br/>'; ?>
+                <?php echo substrUtf8($lot->getLogementAdresse(), 0, 32).'<br/>'.substrUtf8($lot->getLogementCodePostal().' '.$lot->getLogementCommune(), 0, 32).'<br/>'; ?>
               <?php else: ?>
                 <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
               <?php endif; ?>

@@ -226,7 +226,7 @@ if os.path.exists(sys.argv[2]+"/lots.csv") and os.path.getsize(sys.argv[2]+"/lot
     #CVI Opérateur
     csv[csv.columns[4]] = csv[csv.columns[4]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     #Millésime
-    csv[csv.columns[22]] = csv[csv.columns[22]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
+    csv[csv.columns[21]] = csv[csv.columns[21]].apply(lambda x: str(x).replace(".0", "").replace("nan", ""))
     csv.to_sql('lots', con=engine, if_exists='replace')
   except Exception as e:
     sys.stderr.write("ERROR: unable to read csv file:\n\t"+str(e)+"\n");

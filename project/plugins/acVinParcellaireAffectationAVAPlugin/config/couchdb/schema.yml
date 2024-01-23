@@ -10,6 +10,7 @@ ParcellaireAffectation:
       etape: { }
       validation: { }
       validation_odg: { }
+      date_depot: { required: false }
       autorisation_acheteur: { }
       papier: { required: false, type: integer }
       type_proprietaire:

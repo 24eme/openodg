@@ -47,6 +47,7 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_MAJEUR = "NONCONFORME_MAJEUR";
     const CONFORMITE_NONCONFORME_GRAVE = "NONCONFORME_GRAVE";
     const CONFORMITE_NONCONFORME_ANALYTIQUE = "NONCONFORME_ANALYTIQUE";
+    const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
     const SPECIFICITE_UNDEFINED = "UNDEFINED";
@@ -111,6 +112,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Non conformité grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Non typicité cépage",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Non conformité analytique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Non conformité organoléptique",
     );
 
     public static $shortLibellesConformites = array(
@@ -120,6 +122,7 @@ abstract class Lot extends acCouchdbDocumentTree
       self::CONFORMITE_NONCONFORME_GRAVE => "Grave",
       self::CONFORMITE_NONTYPICITE_CEPAGE => "Typ. cép.",
       self::CONFORMITE_NONCONFORME_ANALYTIQUE => "Analytique",
+      self::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE => "Organoléptique",
     );
 
     public static $nonConformites = array(
@@ -324,7 +327,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getDateCommission() {
-        if(!$this->isCurrent()) {
+        if(!$this->isCurrent() && $this->getLotOrigine() !== null) {
             $this->date_commission = $this->getLotOrigine()->date_commission;
         }
 
@@ -755,7 +758,7 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getTypeProvenance()
     {
         if ($this->id_document_provenance) {
-            return substr($this->id_document_provenance, 0, 4);
+            return substr(strtok($this->id_document_provenance, '-'), 0, 4);
         }
         return '';
     }
@@ -853,6 +856,12 @@ abstract class Lot extends acCouchdbDocumentTree
         $mouvement->declarant_nom = $this->declarant_nom;
         $mouvement->campagne = $this->getCampagne();
         $mouvement->statut = $statut;
+        if ($this->exist('email_envoye')) {
+            $mouvement->date_notification = $this->email_envoye;
+        }
+        if ($this->exist('date_notification')) {
+            $mouvement->date_notification = $this->date_notification;
+        }
 
         return $mouvement;
     }
@@ -877,6 +886,24 @@ abstract class Lot extends acCouchdbDocumentTree
         }
 
         return $this->getDocument()->get($hash);
+    }
+
+    public function getLastMouvement()
+    {
+        $mvts = LotsClient::getInstance()->getLastMouvements($this->getDocument());
+        return $mvts[$this->numero_dossier.$this->numero_archive];
+    }
+
+    public function isCommercialisable()
+    {
+        $status_conforme = [
+            Lot::STATUT_NONPRELEVABLE,
+            Lot::STATUT_CONFORME,
+            Lot::STATUT_CONFORME_APPEL,
+            Lot::STATUT_NONAFFECTABLE
+        ];
+
+        return in_array($this->getLastMouvement()->statut, $status_conforme);
     }
 
     public function getLotDocumentOrdre($documentOrdre) {
@@ -1028,6 +1055,85 @@ abstract class Lot extends acCouchdbDocumentTree
         return Anonymization::hideIfNeeded($this->_get('adresse_logement'));
     }
 
+    public function hasLogement() {
+        return ($this->getAdresseLogement());
+    }
+
+    private function splitLogementIfHasSeparator() {
+        if (strpos($this->getAdresseLogement(), '—') === false) {
+            return null;
+        }
+        return explode('—', $this->getAdresseLogement());
+    }
+
+    private function explodeLogement() {
+        $adresse_total = $this->getAdresseLogement();
+        $s = $this->splitLogementIfHasSeparator();
+        if ($s) {
+            $adresse_total = $s[1];
+        }
+        if (preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) ([^0-9]*)$/', $adresse_total, $m)) {
+            return $m;
+        }
+        return array($adresse_total, $adresse_total, '', '');
+    }
+
+    public function getLogementNom() {
+        $r = $this->splitLogementIfHasSeparator();
+        if ($r) {
+            return $r[0];
+        }
+        return $this->getEtablissement()->raison_sociale;
+    }
+
+    public function getLogementCommune() {
+        $r = $this->explodeLogement();
+        if ($r && $r[3]) {
+            return $r[3];
+        }
+        $s = $this->splitLogementIfHasSeparator();
+        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+        if ($s && isset($s[3]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
+            return $s[3];
+        }
+        return $this->getEtablissement()->commune;
+    }
+    public function getLogementCodePostal() {
+        $r = $this->explodeLogement();
+        if ($r && $r[2]) {
+            return $r[2];
+        }
+        $s = $this->splitLogementIfHasSeparator();
+        //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé from ebf4944ef4e21bd523aeeb4cdf854e7e
+        if ($s && isset($s[2]) && preg_match('/^[0-9][0-9AB][0-9]{3}$/', $s[2])) {
+            return $s[2];
+        }
+        return $this->getEtablissement()->code_postal;
+
+    }
+    public function getLogementAdresse() {
+        $r = $this->explodeLogement();
+        if ($r) {
+            return $r[1];
+        }
+        return $this->getEtablissement()->adresse;
+
+    }
+    public function getLogementTelephone() {
+        $r = $this->splitLogementIfHasSeparator();
+        if ($r && isset($r[2]) && preg_match('/^[0-9+][0-9\. ]{4,16}[0-9]$/', $r[2])) {
+            return $r[2];
+        }
+        return $this->getEtablissement()->telephone_bureau;
+    }
+    public function getLogementPortable() {
+        $r = $this->splitLogementIfHasSeparator();
+        if ($r && isset($r[3]) && preg_match('/^[0-9+][0-9\. ]{4,16}[0-9]$/', $r[3])) {
+            return $r[3];
+        }
+        return $this->getEtablissement()->telephone_mobile;
+    }
+
     public function getDeclarantNom() {
         return Anonymization::hideIfNeeded($this->_get('declarant_nom'));
     }
@@ -1035,4 +1141,16 @@ abstract class Lot extends acCouchdbDocumentTree
     public function getLotInDrevOrigine(){
         return $this;
     }
+
+    public function isHabilite($activite = HabilitationClient::ACTIVITE_VINIFICATEUR) {
+		$date = date('Y-m-d');
+		if($this->document->isValidee()){
+			$date = $this->document->validation;
+		}
+		$hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->document->identifiant, $date);
+		if (!$hab) {
+			return false;
+		}
+		return $hab->isHabiliteFor($this->getProduitHash(), $activite);
+	}
 }

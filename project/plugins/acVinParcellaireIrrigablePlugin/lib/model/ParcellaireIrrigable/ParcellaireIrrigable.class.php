@@ -7,6 +7,7 @@
 class ParcellaireIrrigable extends BaseParcellaireIrrigable implements InterfaceDeclaration {
   protected $declarant_document = null;
   protected $piece_document = null;
+  protected $parcelles_idu = null;
 
   public function __construct() {
       parent::__construct();
@@ -145,6 +146,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     	  		$subitem->superficie = $detail->superficie;
     	  		$subitem->commune = $detail->commune;
                 $subitem->code_commune = $detail->code_commune;
+                $subitem->prefix = $detail->prefix;
     	  		$subitem->section = $detail->section;
     	  		$subitem->numero_parcelle = $detail->numero_parcelle;
                 $subitem->idu = $detail->idu;
@@ -170,6 +172,25 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       	}
     }
 
+    public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
+
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
+    }
+
+    public function findParcelle($parcelle) {
+
+        return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
+    }
 
     public function getDeclarantSiret(){
         $siret = "";

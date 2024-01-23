@@ -1,0 +1,8 @@
+all:
+  configuration:
+    degustation:
+      anonymisation_manuelle: true
+      conformite:
+        - CONFORME
+        - NONCONFORME_ANALYTIQUE
+        - NONCONFORME_ORGANOLEPTIQUE

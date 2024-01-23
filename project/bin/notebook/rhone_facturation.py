@@ -44,14 +44,14 @@ def createCSVFacturationByCampagne(campagne,drev,etablissements,dr,societe):
     facturation["Vendange fraiche"] = facturation["Valeur"]
     facturation["Vendange fraiche sablet"] = facturation["Valeur sablet"]
     facturation["Vendange fraiche vaison la romaine"] = facturation["Valeur vaison la romaine"]
-    
+
     etablissements['Identifiant'] = etablissements['Identifiant etablissement']
     etablissements = etablissements.rename(columns = {'Titre':'Titre Etablissement','Raison sociale':'Raison sociale Etablissement','Adresse':'Adresse Etablissement','Adresse 2':'Adresse 2 Etablissement','Adresse 3':'Adresse 3 Etablissement','Code postal':'Code postal Etablissement','Commune':'Commune Etablissement','Code comptable':'Code comptable Etablissement','Fax':'Fax Etablissement','Email':'Email Etablissement','Statut':'Statut Etablissement','Observation':'Observation Etablissement'})
     etablissements = pd.merge(etablissements, societe, how='inner',left_on="Login", right_on="Identifiant",suffixes=("", " societe"))
 
     facturation = pd.merge(facturation, etablissements,  how='inner', on=['Identifiant'], suffixes=("", " etablissement"))
-    facturation = facturation[['Campagne', 'Identifiant', 'CVI', 'Raison sociale', 'Adresse', 'Adresse 2', 'Adresse 3', 'Code postal', 'Commune', 'Téléphone', 'Téléphone portable', 'Email', 'Famille', 'Superficie revendiqué', 'Volume revendiqué net total', 'Superficie revendiqué sablet', 'Volume revendiqué net total sablet',  'Superficie revendiqué vaison la romaine', 'Volume revendiqué net total vaison la romaine', 'Vendange fraiche', 'Vendange fraiche sablet', 'Vendange fraiche vaison la romaine']]
-    
+    facturation = facturation[['Campagne', 'Identifiant', 'CVI', 'Raison sociale', 'Adresse', 'Adresse 2', 'Adresse 3', 'Code postal', 'Commune', 'Téléphone', 'Téléphone portable', 'Email', 'Famille', 'Superficie revendiquée', 'Volume revendiqué net total', 'Superficie revendiquée sablet', 'Volume revendiqué net total sablet',  'Superficie revendiquée vaison la romaine', 'Volume revendiqué net total vaison la romaine', 'Vendange fraiche', 'Vendange fraiche sablet', 'Vendange fraiche vaison la romaine']]
+
     facturation.to_csv('../../web/exports/stats/facturation_cotisations_'+campagne+'.csv', encoding="iso8859_15", sep=";", decimal=",", index=False)
 
 

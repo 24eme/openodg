@@ -26,7 +26,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
     }
 
     public static function getHeaderCsv() {
-        return "#Identifiant;Raison Sociale;Code comptable client;Numéro facture;Date de paiement;Montant;Type de reglement;Commentaire;Montant restant a payer;Execute;Exporte;Facture doc ID;paiement ID\n";
+        return "#Identifiant;Raison Sociale;Code comptable client;Numéro facture;Date de paiement;Montant;Type de reglement;Commentaire;Montant restant a payer;Execute;Exporte;organisme;Facture doc ID;paiement ID\n";
     }
 
     public function export() {
@@ -65,6 +65,7 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
               $csv .= $this->floatHelper->formatFr($facture->total_ttc - $facture->montant_paiement,2,2).';';
               $csv .= $paiement->exist('execute') ? $paiement->execute.";" : ";";
               $csv .= $paiement->versement_comptable.";";
+              $csv .= Organisme::getCurrentOrganisme().";";
               $csv .= $facture->_id.";";
               $csv .= $paiement->getHash().';';
               $csv .= "\n";

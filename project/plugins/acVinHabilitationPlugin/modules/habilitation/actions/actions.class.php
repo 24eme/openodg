@@ -162,6 +162,42 @@ class habilitationActions extends sfActions {
         $this->setTemplate('habilitation');
     }
 
+    public function executeConsultation(sfWebRequest $request)
+    {
+        if(sfConfig::get('sf_app') != 'ava') { // Pour le moment cette fonctionnalité est activé que pour l'AVA
+
+            throw new sfError404Exception();
+        }
+
+        if(!$request->getParameter('numero')) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->numero = preg_replace('/[^0-9A-Za-z]+/', '', $request->getParameter('numero'));
+
+        $this->etablissement = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($this->numero);
+
+        if($this->etablissement && $this->etablissement->cvi != $this->numero) {
+
+            $this->etablissement = null;
+        }
+
+        if(!$this->etablissement) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+
+        if($request->getParameter('format') == 'json') {
+
+            $this->getResponse()->setContentType('application/json');
+
+            return $this->renderText(json_encode($this->habilitation->getPublicData()));
+        }
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         if(class_exists("SocieteConfiguration") && !SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
 
@@ -727,6 +763,14 @@ class habilitationActions extends sfActions {
                 }
             } catch(sfException $e) {
                 $this->res = array($e->getMessage());
+                $this->errors = array();
+                foreach($this->res as $r) {
+                    if (strpos($r, '{"errors"') > 0) {
+                        $r = preg_replace('/.*{"errors"/', '{"errors"', $r);
+                        $o = json_decode($r);
+                        $this->errors = array_merge($this->errors, $o->errors);
+                    }
+                }
             }
         }
         try {

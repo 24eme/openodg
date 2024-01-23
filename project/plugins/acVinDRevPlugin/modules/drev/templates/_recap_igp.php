@@ -4,7 +4,7 @@
                   <tr>
                     <th class="text-center col-xs-5" style="border-top: hidden; border-left: hidden;"></th>
                     <th class="text-center col-xs-2" colspan="2">
-                        <?php echo $drev->getDocumentDouanierType(); ?> &nbsp;
+                        <?php echo $drev->getDocumentDouanierType(); ?> <?php echo substr($drev->campagne, 0, 4); ?> &nbsp;
                         <a href="<?php echo url_for('drev_update_recolte', array('sf_subject' => $drev)); ?>"><span class="glyphicon glyphicon-refresh">&nbsp;</span></a>
                     </th>
                     <th class="text-center col-xs-5" colspan="3">DRev</th>
@@ -12,12 +12,12 @@
                 </thead>
                 <thead>
                   <tr>
-                    <th class="text-center col-xs-5">Produit (millesime) <small class="pull-right text-muted">Rdmt L5</small></th>
+                    <th class="text-center col-xs">Produit (millesime) <small class="pull-right text-muted">Rdmt L5</small></th>
                     <th class="text-center col-xs-1">Superficie</th>
                     <th class="text-center col-xs-1">Volume</th>
                     <th class="text-center col-xs-1">Nb lots</th>
                     <th class="text-center col-xs-1">Vol. revendiqué</th>
-                    <th class="text-center col-xs-2">Restant à revendiquer</th>
+                    <th class="text-center col-xs-1">Restant à revendiquer</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -26,21 +26,22 @@
                     ?>
                     <tr <?php if ($isTotal) { echo ' style="font-weight: bold;"'; } ?>>
                       <td>
-                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $couleur ?></strong></a>
+                          <strong><a href="#filtre=<?php echo $couleur; ?>" class="hamzastyle_link" ><?php echo $synthese['libelle']; ?></strong></a>
                           <?php if (!$isTotal) : ?>
-                              <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2)); ?>&nbsp;hl/ha</small><?php endif; ?>
+                              <small class="pull-right">&nbsp;<?php if($synthese['superficie_totale']): ?><?php echoFloat(round($synthese['volume_total'] / $synthese['superficie_totale'], 2), true); ?>&nbsp;hl/ha</small><?php endif; ?>
                           <?php endif; ?>
                       </td>
                       <td class="text-right">
                           <?php if($synthese['superficie_totale']): ?><?php printf("%.04f", $synthese['superficie_totale']); ?><small class="text-muted">&nbsp;ha</small><?php endif; ?>
                       </td>
                         <?php if(isset($synthese['volume_sur_place']) && $synthese['volume_sur_place']): ?>
-                          <td class="text-right">
-                          <?php echoFloat($synthese['volume_sur_place']); ?><small class="text-muted">&nbsp;hl</small>
-                          </td>
-                         <?php elseif(isset($synthese['volume_max']) && $synthese['volume_max']): ?>
-                          <td class="text-right alert-danger">
-                              <abbr title="Volume max : cet opérateur est apporteur et a du volume en cave. On ne peut pas connaitre précisemment son volume hors lies">⚠</abbr> <?php echoFloat($synthese['volume_max']); ?><small class="text-muted">&nbsp;hl</small></span>
+                            <?php if(isset($synthese['is_precis_sur_place']) && !$synthese['is_precis_sur_place']): ?>
+                              <td class="text-right text-warning">
+                              <abbr title="Volume max : cet opérateur est apporteur et a du volume en cave. On ne peut pas connaitre précisemment son volume hors lies">⚠</abbr>
+                            <?php else: ?>
+                              <td class="text-right">
+                            <?php endif; ?>
+                          <?php echoFloat($synthese['volume_sur_place'], true); ?><small class="text-muted">&nbsp;hl</small>
                           </td>
                          <?php else: ?>
                           <td></td>
@@ -59,12 +60,12 @@
                                <?php endif; ?>
                       </td>
                       <td class="text-right">
-                          <?php echoFloat($synthese['volume_lots']); ?><small class="text-muted">&nbsp;hl</small>
+                          <?php echoFloat($synthese['volume_lots'], true); ?><small class="text-muted">&nbsp;hl</small>
                       </td>
                       <td class="text-right">
                         <?php if(isset($synthese['volume_sur_place']) && $synthese['volume_sur_place']): ?>
-                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) >= 0): ?><?php echoFloat($synthese['volume_restant_max']); ?><small>&nbsp;hl</small><?php endif; ?>
-                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant_max']*-1); ?><small>&nbsp;hl</small></span><?php endif; ?>
+                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) >= 0): ?><?php echoFloat($synthese['volume_restant_max'], true); ?><small>&nbsp;hl</small><?php endif; ?>
+                            <?php if(isset($synthese) && round($synthese['volume_restant_max'],2) < 0): ?><span class="text-danger">excédent : +<?php echoFloat($synthese['volume_restant_max']*-1, true); ?><small>&nbsp;hl</small></span><?php endif; ?>
                         <?php endif; ?>
                       </td>
                       </tr>
@@ -132,13 +133,10 @@
                             <small class="text-muted"> en élevage </small>
                           <?php endif; ?>
                         </td>
-                        <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume); ?></span><small class="text-muted">&nbsp;hl</small></td>
+                        <td class="text-right"><span class="lot_volume"><?php echoFloat($lot->volume, true); ?></span><small class="text-muted">&nbsp;hl</small></td>
                         <td class="text-center"><?php echo ($lot->destination_type)? DRevClient::$lotDestinationsType[$lot->destination_type] : ''; echo ($lot->destination_date) ? '<br/><small class="text-muted">'.$lot->getDestinationDateFr()."</small>" : ''; ?></td>
-                        <td class="text-center
-                        <?php if (in_array($mouvements[$lot->numero_dossier.$lot->numero_archive]->statut, [Lot::STATUT_MANQUEMENT_EN_ATTENTE, Lot::STATUT_NONCONFORME])): ?>
-                            alert-danger
-                        <?php endif ?>
-                        ">
+                        <?php if ($sf_user->isAdmin()): ?>
+                        <td class="text-center">
                         <?php if($sf_user->isAdmin() && !$drev->validation_odg && ($lot->id_document == $drev->_id) && isset($form['lots']) && isset($form['lots'][$lot->getKey()])): ?>
                             <div style="margin-bottom: 0;" class="<?php if($form['lots'][$lot->getKey()]->hasError()): ?>has-error<?php endif; ?>">
                               <?php echo $form['lots'][$lot->getKey()]['affectable']->renderError() ?>
@@ -153,7 +151,7 @@
                                             ); ?>
                                 </div>
                             </div>
-                          <?php elseif ($sf_user->isAdmin() || ($drev->exist('date_commission') && new DateTime($drev->date_commission) < new DateTime())): ?>
+                          <?php else: ?>
                             <div style="margin-bottom: 0;" class="">
                               <div class="col-xs-12">
                                   <?php echo pictoDegustable($lot); ?>
@@ -161,6 +159,7 @@
                             </div>
                         <?php endif; ?>
                         </td>
+                        <?php endif; ?>
 
                       </tr>
                       <?php
@@ -175,7 +174,7 @@
                 ?>
                   <td colspan="<?php echo $colspan; ?>"></td>
                   <td class="text-right">Total : </td>
-                  <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume); ?></span><small class="text-muted">&nbsp;hl</small></td>
+                  <td class="text-right"><span class="total_lots"><?php echoFloat($totalVolume, true); ?></span><small class="text-muted">&nbsp;hl</small></td>
                   <td></td>
                   <?php if ($sf_user->isAdmin()): ?>
                     <td></td>

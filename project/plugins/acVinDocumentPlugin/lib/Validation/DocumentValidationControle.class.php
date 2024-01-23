@@ -6,11 +6,13 @@ class DocumentValidationControle
     protected $lien;
     protected $message;
     protected $info;
+    protected $additionalInfo;
 
-    public function __construct($type, $code, $message) {
+    public function __construct($type, $code, $message, $additionalInfo = null) {
         $this->setType($type);
         $this->setCode($code);
         $this->setMessage($message);
+        $this->setAdditionalInfo($additionalInfo);
     }
 
     public function getType()
@@ -57,11 +59,19 @@ class DocumentValidationControle
         $this->info = $info;
     }
 
+    public function setAdditionalInfo($additionalInfo) {
+        $this->additionalInfo = $additionalInfo;
+    }
+
     public function getInfo() {
-        
+
         return $this->info;
     }
-    
+
+    public function getAdditionalInfo() {
+        return $this->additionalInfo;
+    }
+
     public function __toString()
     {
         if (!$this->getInfo()) {

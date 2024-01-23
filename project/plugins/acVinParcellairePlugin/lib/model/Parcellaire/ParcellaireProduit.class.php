@@ -22,15 +22,10 @@ class ParcellaireProduit extends BaseParcellaireProduit {
 	}
 
     public function getProduitsDetails($onlyVtSgn = false, $active = false) {
-
-    	if ($onlyVtSgn && (!$this->getConfig()->hasVtsgn() || !$this->isRealProduit())) {
-    		return array();
-    	}
-
         $details = array();
 
         foreach ($this->detail as $item) {
-            $details = array_merge($details, $item->getProduitsDetails($onlyVtSgn, $active));
+            $details = array_merge($details, $item->getProduitsDetails());
         }
 
     	return $details;
@@ -144,7 +139,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         if($lieu){
             $lieu = strtoupper($lieu);
         }
-        $detail->lieu = $lieu;
+        $detail->lieu = trim($lieu);
 
         return $detail;
     }

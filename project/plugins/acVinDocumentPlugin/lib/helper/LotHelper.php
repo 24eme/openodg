@@ -97,22 +97,33 @@ function getUrlEtapeFromMvtLot($mvtLot)
 }
 
 function pictoDegustable($lot) {
-    $lot = $lot->getLotInDrevOrigine();
-    if($lot->id_document_affectation) {
+    $lotOrigine = $lot->getLotInDrevOrigine();
+
+    if(!$lotOrigine) {
+        throw new Exception("Lot ".$lot->getDocument()->_id.":".$lot->getHash()." non trouvé");
+    }
+
+    if($lotOrigine->id_document_affectation) {
         return '<span title="Dégusté" class="glyphicon glyphicon-ok-circle text-success"></span>';
     }
 
-    if($lot->affectable) {
+    if($lotOrigine->affectable) {
         return '<span title="À déguster" class="glyphicon glyphicon-time text-success"></span>';
     }
 
     return '<span title="Réputé conforme" style="opacity: 0.5;" class="text-muted glyphicon glyphicon-ok"></span>';
 }
 
-function showLotStatusCartouche($statut, $detail = null, $secondPassage = false) {
+function showLotStatusCartouche($lot_ou_mvt_value) {
+    $statut = $lot_ou_mvt_value->statut;
+    $detail = null;
+    if(isset($lot_ou_mvt_value->detail)) {
+        $detail = $lot_ou_mvt_value->detail;
+    }
     if (!isset(Lot::$libellesStatuts[$statut]) && !$detail) {
         return ;
     }
+    $secondPassage = isset($lot_ou_mvt_value->libelle) && preg_match("/ème dégustation/", $lot_ou_mvt_value->libelle);
     $labelClass = isset(Lot::$statut2label[$statut]) ? Lot::$statut2label[$statut] : "default";
     $text = '';
     if($secondPassage) {
@@ -138,55 +149,16 @@ function showLotStatusCartouche($statut, $detail = null, $secondPassage = false)
     return $text;
 }
 
-function splitLogementAdresse($adresseLogement, $etablissement = null){
-    $logementEtablissement = null;
-    if ($etablissement) {
-        $logementEtablissement = array(
-            'nom' => $etablissement->nom,
-            'adresse' => $etablissement->adresse,
-            'code_postal' => $etablissement->code_postal,
-            'commune' => $etablissement->commune,
-            'telephone' => $etablissement->telephone_bureau,
-            'portable' => $etablissement->telephone_mobile
-        );
+function showLotPublicStatusCartouche($mvt_value) {
+    if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'>En attente de contrôle</span>";
     }
-
-    if(!$adresseLogement){
-        return $logementEtablissement;
+    return showLotStatusCartouche($mvt_value);
+}
+function showSummerizedLotPublicStatusCartouche($mvt_value) {
+    if (MouvementLotHistoryView::isWaitingLotNotification($mvt_value)) {
+        return "<span data-toggle=\"tooltip\" data-html=\"true\" title=\"L'opérateur voit ici EN ATTENTE DE CONTROLE, la notification n'ayant pas été envoyée. L'accès à l'historique ne leur est pas permis.\" style='border-radius: 0 0.25em 0.25em 0; border-left: 1px solid #fff;' class='label label-default'><span class='glyphicon glyphicon-eye-close'></span></span>";
     }
-
-    $adresseSplit = explode('—',$adresseLogement);
-    $adresse['nom'] = trim($adresseSplit[0]);
-    $adresse['adresse_totale'] = $adresseSplit[1];
-    if (!trim($adresse['adresse_totale'])) {
-        return $logementEtablissement;
-    }
-    //Hack des premières version de logement : devra être supprimé
-    if (preg_match('/^[0-9 ]+$/', trim($adresse['adresse_totale']))) {
-        $adresse['telephone'] = $adresse['adresse_totale'];
-        $adresse['adresse_totale'] = $adresse['nom'];
-        $adresse['nom'] = '';
-    }
-    //split l'adresse en différents champs
-    if (preg_match('/^(.*) ([0-9][0-9AB][0-9][0-9][0-9]) (.*)$/', $adresse['adresse_totale'], $m)) {
-        $adresse['adresse'] = trim($m[1]);
-        $adresse['code_postal'] = trim($m[2]);
-        $adresse['commune'] = trim($m[3]);
-    }else{
-        $adresse['adresse'] = trim($adresse['adresse_totale']);
-    }
-
-    $adresse['telephone'] = trim($adresseSplit[2]);
-    $adresse['portable'] = trim($adresseSplit[3]);
-    //Hack pour le cas des vieux lots qui ont des séparateur - en milieu : devra être supprimé
-    if (!$adresse['code_postal'] && preg_match('//', $adresse['telephone'])) {
-        $adresse['code_postal'] = $adresse['telephone'];
-        $adresse['commune'] = $adresse['portable'];
-        $adresse['telephone'] = null;
-        $adresse['portable'] = null;
-    }
-
-    return $adresse;
 }
 
 function substrUtf8($str, $offset, $length) {

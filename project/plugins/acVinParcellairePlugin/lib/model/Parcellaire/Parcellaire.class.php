@@ -11,6 +11,7 @@ class Parcellaire extends BaseParcellaire {
     protected $piece_document = null;
     protected $cache_produitsbycepagefromhabilitationorconfiguration = null;
     protected $habilitation = false;
+    protected $parcelles_idu = null;
     private $cache_geojson = null;
 
     public function __construct() {
@@ -80,9 +81,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
-    public function getParcelles($onlyVtSgn = false, $active = false) {
+    public function getParcelles() {
 
-        return $this->declaration->getParcelles($onlyVtSgn, $active);
+        return $this->declaration->getParcelles();
     }
 
     public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
@@ -94,7 +95,7 @@ class Parcellaire extends BaseParcellaire {
         $sameParcelle = 0;
 
         foreach ($this->getParcelles() as $parcelleExistante) {
-            if ($parcelleExistante->section !== $section) {
+            if ($parcelleExistante->section !== preg_replace('/^0*/', '', $section)) {
                 continue;
             }
 
@@ -115,6 +116,26 @@ class Parcellaire extends BaseParcellaire {
 
         return $sameParcelle;
 
+    }
+
+    public function getParcellesByIdu() {
+        if(is_array($this->parcelles_idu)) {
+
+            return $this->parcelles_idu;
+        }
+
+        $this->parcelles_idu = [];
+
+        foreach($this->getParcelles() as $parcelle) {
+            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
+        }
+
+        return $this->parcelles_idu;
+    }
+
+    public function findParcelle($parcelle) {
+
+        return ParcellaireClient::findParcelle($this, $parcelle);
     }
 
     public function getDateFr() {
@@ -278,13 +299,33 @@ class Parcellaire extends BaseParcellaire {
         return $superficie;
     }
 
-    public function getParcellairePDFUri() {
+    public function getParcellairePDFKey() {
         foreach ($this->_attachments as $key => $attachement) {
             if ($attachement->content_type == 'application/pdf') {
-                return $this->getAttachmentUri($key);
+                return $key;
             }
         }
-        return '';
+        return null;
+    }
+
+    public function getParcellairePDFUri() {
+        $key = $this->getParcellairePDFKey();
+
+        if(!$key) {
+
+            return null;
+        }
+
+        return $this->getAttachmentUri($key);
+    }
+
+    public function getParcellairePDFMd5() {
+        if (!$this->hasParcellairePDF()) {
+
+            return null;
+        }
+
+        return md5($this->getParcellairePDF());
     }
 
     public function hasParcellairePDF() {
