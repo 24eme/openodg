@@ -57,4 +57,15 @@ class AdelpheConfiguration {
         }
         return 0;
     }
+
+    public function getVolumesConditionnesCsv($annee = null) {
+      $filename = null;
+      if (isset($this->configuration['volumes_conditionnes_csv']) && $this->configuration['volumes_conditionnes_csv']) {
+          $filename = $this->configuration['volumes_conditionnes_csv'];
+      }
+      if ($annee && strpos($filename, '%ANNEE%') !== false) {
+        $filename = str_replace('%ANNEE%', $annee, $filename);
+      }
+      return sfConfig::get('sf_root_dir').$filename;
+    }
 }

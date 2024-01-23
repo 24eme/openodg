@@ -12,11 +12,17 @@ class adelpheActions extends sfActions {
 
   public function executeEdit(sfWebRequest $request) {
       $adelphe = $this->getRoute()->getAdelphe();
+      $this->secure(AdelpheSecurity::EDITION, $adelphe);
+      if ($adelphe->exist('etape') && $adelphe->etape) {
+          return $this->redirect('adelphe_' . $adelphe->etape, $adelphe);
+      }
       return $this->redirect('adelphe_volume_conditionne', $adelphe);
   }
 
   public function executeVolumeConditionne(sfWebRequest $request) {
     $this->adelphe = $this->getRoute()->getAdelphe();
+    $this->secure(AdelpheSecurity::EDITION, $this->adelphe);
+    $this->adelphe->setRedirect(false);
     if($this->adelphe->storeEtape($this->getEtape($this->adelphe, AdelpheEtapes::ETAPE_VOLUME_CONDITIONNE))) {
       $this->adelphe->save();
     }
@@ -31,13 +37,15 @@ class adelpheActions extends sfActions {
     $this->form->save();
 
     if ($this->adelphe->volume_conditionne_total >= $this->adelphe->getMaxSeuil()) {
-        return $this->redirect(AdelpheConfiguration::getInstance()->getUrlAdelphe());
+        $this->adelphe->setRedirect(true);
+        return $this->redirect('adelphe_validation', $this->adelphe);
     }
     return $this->redirect('adelphe_repartition_bib', $this->adelphe);
   }
 
   public function executeRepartitionBib(sfWebRequest $request) {
     $this->adelphe = $this->getRoute()->getAdelphe();
+    $this->secure(AdelpheSecurity::EDITION, $this->adelphe);
     if($this->adelphe->storeEtape($this->getEtape($this->adelphe, AdelpheEtapes::ETAPE_REPARTITION_BIB))) {
       $this->adelphe->save();
     }
@@ -50,16 +58,27 @@ class adelpheActions extends sfActions {
         return sfView::SUCCESS;
     }
     $this->form->save();
+
+    if ($this->adelphe->volume_conditionne_total >= $this->adelphe->getSeuil()) {
+        $this->adelphe->setRedirect(true);
+    }
     return $this->redirect('adelphe_validation', $this->adelphe);
   }
 
   public function executeValidation(sfWebRequest $request) {
     $this->adelphe = $this->getRoute()->getAdelphe();
+    $this->secure(AdelpheSecurity::EDITION, $this->adelphe);
+    if($this->adelphe->storeEtape($this->getEtape($this->adelphe, AdelpheEtapes::ETAPE_VALIDATION))) {
+      $this->adelphe->save();
+    }
     if (!$request->isMethod(sfWebRequest::POST)) {
         return sfView::SUCCESS;
     }
     $this->adelphe->validate(date('c'));
     $this->adelphe->save();
+    if ($this->adelphe->redirect_adelphe) {
+        return $this->redirect(AdelpheConfiguration::getInstance()->getUrlAdelphe());
+    }
     return $this->redirect('adelphe_visualisation', $this->adelphe);
   }
 
@@ -69,6 +88,7 @@ class adelpheActions extends sfActions {
 
   public function executeDelete(sfWebRequest $request) {
       $adelphe = $this->getRoute()->getAdelphe();
+      $this->secure(AdelpheSecurity::EDITION, $adelphe);
       $adelphe->delete();
       $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
       return $this->redirect('declaration_etablissement', array('identifiant' => $adelphe->identifiant));
@@ -80,6 +100,22 @@ class adelpheActions extends sfActions {
       return $etape;
     }
     return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
-  }
+    }
+
+    protected function secure($droits, $doc) {
+      if ($droits == AdelpheSecurity::EDITION) {
+        if ($doc && $doc->validation) {
+          return $this->forwardSecure();
+        }
+      }
+      if (!AdelpheSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+        return $this->forwardSecure();
+      }
+    }
+
+    protected function forwardSecure() {
+      $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+      throw new sfStopException();
+    }
 
 }
