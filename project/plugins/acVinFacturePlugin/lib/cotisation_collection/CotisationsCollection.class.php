@@ -28,20 +28,18 @@ class CotisationsCollection
 			$total += $cotisation->getTotal();
 			$cotisations[] = $cotisation;
 		}
-
         if($this->config->exist('minimum') && $this->config->exist('minimum_fallback')) {
             $minimum = $this->config->minimum;
             $minimum_fallback_name = $this->config->minimum_fallback;
-
-            if ($this->config->getDocument()->cotisations->exist($minimum_fallback_name)) {
-                $minimum_fallback = $this->config->getDocument()->cotisations->$minimum_fallback_name;
-
-                if ($total <= $minimum && $total > 0 && $minimum_fallback->isForType($this->getDoc()->getType())) {
-                    return $minimum_fallback->generateCotisations($this->getDoc());
-                }
+            if (!$this->config->getDocument()->cotisations->exist($minimum_fallback_name)) {
+                throw new sfException("minimum_fallback /cotisations/$minimum_fallback_name not found in ".$this->config->getDocument()->_id);
+            }
+            $minimum_fallback = $this->config->getDocument()->cotisations->$minimum_fallback_name;
+            echo " $total <= $minimum \n";
+            if ($total <= $minimum && $total > 0 && $minimum_fallback->isForType($this->getDoc()->getType())) {
+                return $minimum_fallback->generateCotisations($this->getDoc());
             }
         }
-
 		if(!$total && !$this->isConfigRequired()) {
 			return array();
 		}
