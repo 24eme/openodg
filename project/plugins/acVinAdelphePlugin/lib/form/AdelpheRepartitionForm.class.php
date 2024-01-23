@@ -28,7 +28,7 @@ class AdelpheRepartitionForm extends acCouchdbObjectForm {
 
   protected function doUpdateObject($values) {
     if ($values['taux_conditionne_bib'] && !$values['volume_conditionne_bib']) {
-      $values['volume_conditionne_bib'] = round($this->getObject()->volume_conditionne_total * $values['taux_conditionne_bib'] / 100);
+      $values['volume_conditionne_bib'] = round($this->getObject()->volume_conditionne_total * $values['taux_conditionne_bib'] / 100, 2);
     }
     parent::doUpdateObject($values);
     if (!$values['conditionnement_bib']) {
