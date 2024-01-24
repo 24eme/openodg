@@ -4,7 +4,7 @@
  *
  */
 
-class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
+class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, InterfaceDeclaration {
 
   protected $declarant_document = null;
   protected $etablissement = null;
@@ -94,6 +94,10 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
     return 0;
   }
 
+  public function getTauxBouteilleCalcule() {
+    return 100 - $this->getTauxBibCalcule();
+  }
+
   public function getSeuil() {
     if (!AdelpheConfiguration::getInstance()->getFonctionCalculSeuil()) {
       return null;
@@ -123,7 +127,7 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
   public function conditionnementBibForfait() {
     $this->conditionnement_bib = 1;
     $this->repartition_bib = 0;
-    $this->volume_conditionne_bib = round($this->volume_conditionne_total * AdelpheConfiguration::getInstance()->getTauxForfaitaireBib());
+    $this->volume_conditionne_bib = round($this->volume_conditionne_total * AdelpheConfiguration::getInstance()->getTauxForfaitaireBib(), 2);
     $this->volume_conditionne_bouteille = $this->volume_conditionne_total - $this->volume_conditionne_bib;
   }
 
@@ -157,4 +161,41 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument {
       fclose($handle);
     }
   }
+
+  public function getPrixBouteille() {
+    return round($this->volume_conditionne_bouteille * $this->prix_unitaire_bouteille, 2);
+  }
+
+  public function getPrixBib() {
+    return round($this->volume_conditionne_bib * $this->prix_unitaire_bib, 2);
+  }
+
+  public function getPrixTotal() {
+    return $this->getPrixBouteille() + $this->getPrixBib();
+  }
+
+  public function isRepartitionForfaitaire() {
+    return ($this->conditionnement_bib && !$this->repartition_bib);
+  }
+
+  public function isLectureSeule() {
+    return $this->exist('lecture_seule') && $this->get('lecture_seule');
+  }
+
+  public function isPapier() {
+    return $this->exist('papier') && $this->get('papier');
+  }
+
+  public function isAutomatique() {
+    return $this->exist('automatique') && $this->get('automatique');
+  }
+
+  public function getValidation() {
+    return $this->_get('validation');
+  }
+
+  public function getValidationOdg() {
+    return $this->_get('validation_odg');
+  }
+
 }
