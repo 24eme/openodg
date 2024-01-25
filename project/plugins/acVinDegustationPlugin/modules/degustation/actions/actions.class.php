@@ -456,6 +456,7 @@ class degustationActions extends sfActions {
     public function executeSaisieEtape(sfWebRequest $request)
     {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->forward403IfLotsAffectes();
 
         if ($this->degustation->hasLotsSansProvenance() === false) {
             return $this->redirect(DegustationEtapes::getInstance()->getNextLink(TourneeDegustationEtapes::ETAPE_SAISIE), $this->degustation);
@@ -1428,8 +1429,18 @@ class degustationActions extends sfActions {
     }
 
 
+    private function forward403IfLotsAffectes() {
+        foreach($this->degustation->lots as $l) {
+            if ($l->id_document_affectation) {
+                throw new sfError403Exception('Modification impossible : Lot '.$l->unique_id.' est affecté à '.$l->id_document_affectation);
+            }
+        }
+    }
+
     private function redirectIfIsAnonymized()
     {
+        $this->forward403IfLotsAffectes();
+
         if (DegustationConfiguration::getInstance()->isAnonymisationManuelle()) {
             return false;
         }
