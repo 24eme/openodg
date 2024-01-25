@@ -1223,6 +1223,13 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->setPrelevementDatetime($this->getDocument()->getDateFormat('Y-m-d').' '.$h);
     }
 
+    public function setPreleve($d){
+        if ($this->exist('prelevement_datetime') && $this->prelevement_datetime) {
+            return $this->_set('preleve', preg_replace('/ .*/', '', $this->prelevement_datetime));
+        }
+        return $this->_set('preleve', $d);
+    }
+
     public function getPrelevementHeure() {
         return $this->getPrelevementFormat('H:i');
     }
