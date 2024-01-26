@@ -27,7 +27,7 @@
         <tr>
             <td class="text-left">BIB <?php if($adelphe->isRepartitionForfaitaire()): ?><small>(volume forfaitaire)</small><?php endif; ?><small class="pull-right"><?php echo $adelphe->getTauxBibCalcule() ?>%</small></td>
             <td class="text-right"><?php echo sprintFloat($adelphe->volume_conditionne_bib) ?> <small class="text-muted">hl</small></td>
-            <td class="text-right"><?php echo sprintFloat($adelphe->prix_unitaire_bib) ?> <small class="text-muted">€</small></td>
+            <td class="text-right"><?php echo sprintf("%.4f", $adelphe->prix_unitaire_bib*1) ?> <small class="text-muted">€</small></td>
             <td class="text-right"><?php echo sprintFloat($adelphe->getPrixBib()) ?> <small class="text-muted">€</small></td>
         </tr>
         <?php endif ?>
@@ -35,7 +35,7 @@
         <tr>
             <td class="text-left">Bouteille<small class="pull-right"><?php echo $adelphe->getTauxBouteilleCalcule() ?>%</small></td>
             <td class="text-right"><?php echo sprintFloat($adelphe->volume_conditionne_bouteille) ?> <small class="text-muted">hl</small></td>
-            <td class="text-right"><?php echo sprintFloat($adelphe->prix_unitaire_bouteille) ?> <small class="text-muted">€</small></td>
+            <td class="text-right"><?php echo sprintf("%.4f", $adelphe->prix_unitaire_bouteille) ?> <small class="text-muted">€</small></td>
             <td class="text-right"><?php echo sprintFloat($adelphe->getPrixBouteille()) ?> <small class="text-muted">€</small></td>
         </tr>
       <?php endif; ?>
