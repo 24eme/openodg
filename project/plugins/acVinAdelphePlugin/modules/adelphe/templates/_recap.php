@@ -7,7 +7,7 @@
 
 <p class="bg-warning text-center p-5 mb-5">
     <span class="glyphicon glyphicon-alert"></span><br />
-    Votre volume conditionné déclaré est supérieur au seuil géré par votre syndicat. Vous devez déclarer directement sur le site de l'ADELPHE.</h4>
+    Votre volume conditionné déclaré est supérieur au seuil géré par votre syndicat. Vous devez déclarer directement sur le site de l'ADELPHE.
 </p>
 
 <?php else: ?>

@@ -28,7 +28,6 @@
       </div>
     </div>
   </div>
-</br>
 
   <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $adelphe->identifiant, 'campagne' => $adelphe->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à mon espace</a></div>
