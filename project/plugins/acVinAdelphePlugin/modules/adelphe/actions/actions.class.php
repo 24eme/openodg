@@ -22,10 +22,11 @@ class adelpheActions extends sfActions {
   public function executeVolumeConditionne(sfWebRequest $request) {
     $this->adelphe = $this->getRoute()->getAdelphe();
     $this->secure(AdelpheSecurity::EDITION, $this->adelphe);
-    $this->adelphe->setRedirect(false);
     if($this->adelphe->storeEtape($this->getEtape($this->adelphe, AdelpheEtapes::ETAPE_VOLUME_CONDITIONNE))) {
       $this->adelphe->save();
     }
+    $this->adelphe->setRedirect(false);
+    $this->adelphe->save();
     $this->form = new AdelpheVolumeForm($this->adelphe);
     if (!$request->isMethod(sfWebRequest::POST)) {
       return sfView::SUCCESS;
@@ -38,6 +39,7 @@ class adelpheActions extends sfActions {
 
     if ($this->adelphe->volume_conditionne_total >= $this->adelphe->getMaxSeuil()) {
         $this->adelphe->setRedirect(true);
+        $this->adelphe->save();
         return $this->redirect('adelphe_validation', $this->adelphe);
     }
     return $this->redirect('adelphe_repartition_bib', $this->adelphe);
@@ -61,6 +63,7 @@ class adelpheActions extends sfActions {
 
     if ($this->adelphe->volume_conditionne_total >= $this->adelphe->getSeuil()) {
         $this->adelphe->setRedirect(true);
+        $this->adelphe->save();
     }
     return $this->redirect('adelphe_validation', $this->adelphe);
   }
