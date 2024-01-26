@@ -4,7 +4,6 @@ class AdelpheClient extends acCouchdbClient {
 
   const TYPE_MODEL = "Adelphe";
   const TYPE_COUCHDB = "ADELPHE";
-  const DROIT_ADELPHE = "ADELPHE";
 
   public static function getInstance() {
       return acCouchdbManager::getClient("Adelphe");

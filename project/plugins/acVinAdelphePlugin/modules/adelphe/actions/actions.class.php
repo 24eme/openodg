@@ -4,6 +4,7 @@ class adelpheActions extends sfActions {
 
   public function executeCreate(sfWebRequest $request) {
       $etablissement = $this->getRoute()->getEtablissement();
+      $this->secureEtablissement(AdelpheSecurity::DROIT_ADELPHE, $etablissement);
       $periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentYearPeriode());
       $adelphe = AdelpheClient::getInstance()->createDoc($etablissement->identifiant, $periode, ($request->getParameter('papier') == 1));
       $adelphe->save();
@@ -87,6 +88,7 @@ class adelpheActions extends sfActions {
 
   public function executeVisualisation(sfWebRequest $request) {
       $this->adelphe = $this->getRoute()->getAdelphe();
+      $this->secureEtablissement(AdelpheSecurity::DROIT_ADELPHE, $this->adelphe->getEtablissementObject());
   }
 
   public function executeDelete(sfWebRequest $request) {
@@ -114,6 +116,13 @@ class adelpheActions extends sfActions {
       if (!AdelpheSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
         return $this->forwardSecure();
       }
+    }
+
+    protected function secureEtablissement($droit, $etablissement) {
+        if (!$etablissement->getMasterCompte()->hasDroit($droit)) {
+            throw new sfError403Exception($etablissement->_id." n'a pas les droits pour accéder à la déclaration Adelphe");
+            return $this->forwardSecure();
+        }
     }
 
     protected function forwardSecure() {
