@@ -192,10 +192,11 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <tr>
                                 <td><?php echo $liaison->getTypeLiaisonLibelle() ?></td>
                                 <td>
+                                <?php $etablissementLiaison = $liaison->getEtablissement(); ?>
                                 <?php if($modifiable): ?>
-                                    <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a>
+                                    <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo Anonymization::hideIfNeeded($etablissementLiaison->nom); ?></a>
                                 <?php else: ?>
-                                    <?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a>
+                                    <?php echo Anonymization::hideIfNeeded($etablissementLiaison->nom); ?></a>
                                 <?php endif; ?>
                                 </td>
                                 <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>

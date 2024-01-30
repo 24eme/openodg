@@ -60,7 +60,7 @@ class DRevCouleur extends BaseDRevCouleur
     	}
         return $produits;
     }
-    
+
     public function getTotalConstitue() {
     	$val = 0;
     	foreach ($this->getProduitsVCI() as $p) {
@@ -167,15 +167,13 @@ class DRevCouleur extends BaseDRevCouleur
             return $this->exist('volume_revendique_vci') ? $this->volume_revendique_vci : 0;
         }
         $vci = 0;
-        if ($this->exist('vci')) {
-          foreach($this->vci as $k => $v) {
-            if ($k == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
-                $vci += $v->complement;
-                $vci += $v->substitution;
-                $vci += $v->rafraichi;
+        foreach ($this->getProduitsVci() as $produit) {
+            if(!$produit->isStockageCaveParticuliere()) {
+                continue;
             }
-          }
-        }
+            $vci += $produit->complement + $produit->substitution + $produit->rafraichi;
+    	}
+
         return $vci;
     }
 
