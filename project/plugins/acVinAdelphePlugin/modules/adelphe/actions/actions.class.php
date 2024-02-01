@@ -80,7 +80,7 @@ class adelpheActions extends sfActions {
     }
     $this->adelphe->validate(date('c'));
     $this->adelphe->save();
-    //Email::getInstance()->sendAdelpheValidation($this->adelphe);
+    Email::getInstance()->sendAdelpheValidation($this->adelphe);
     if ($this->adelphe->redirect_adelphe) {
         return $this->redirect(AdelpheConfiguration::getInstance()->getUrlAdelphe());
     }

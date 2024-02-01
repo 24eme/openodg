@@ -1,9 +1,11 @@
-Bonjour,
+Madame, Monsieur,
 
-Votre déclaration Adelphe <?php echo $adelphe->getPeriode(); ?> a bien été transmise au syndicat via le site votre syndicat.
+Nous accusons bonne réception de votre déclaration auprès d’ADELPHE pour les mises en marché <?php echo $adelphe->getPeriode(); ?>.
 
-Pour toute question, n'hésitez pas à contacter votre syndicat.
+Celle-ci sera traitée dans les meilleurs délais.
 
-Bonne journée.
+Nous reviendrons vers vous avec la facture correspondante.
+
+Pour tout renseignement, veuillez contacter : cdradelphe@syndicat-cotesdurhone.com
 
 <?php echo include_partial('Email/footerMail'); ?>
