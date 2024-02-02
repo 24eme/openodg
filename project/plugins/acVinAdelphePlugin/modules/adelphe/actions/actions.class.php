@@ -98,6 +98,23 @@ class adelpheActions extends sfActions {
       $adelphe->delete();
       $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
       return $this->redirect('declaration_etablissement', array('identifiant' => $adelphe->identifiant));
+    }
+
+  public function executeExport(sfWebRequest $request) {
+    $this->forward404Unless($this->getUser()->isAdmin());
+    $ids = DeclarationClient::getInstance()->getIds(AdelpheClient::TYPE_MODEL);
+    $csv = ExportAdelpheCSV::getHeaderCsv();
+    foreach($ids as $id) {
+      $doc = AdelpheClient::getInstance()->find($id);
+      if (!$doc->validation) {
+        continue;
+      }
+      $export = new ExportAdelpheCSV($doc, false);
+      $csv .= $export->export();
+    }
+    $this->response->setContentType('text/csv');
+    $this->response->setHttpHeader('Content-Disposition', "attachment; filename=".date('YmdH:i')."_declarations_adelphe.csv");
+    return $this->renderText($csv);
   }
 
   private function getEtape($doc, $etape) {
