@@ -40,10 +40,32 @@ class generationActions extends sfActions {
       $this->sous_generations = $this->generation->getSubGenerations();
   }
 
-  public function executeList(sfWebRequest $request) {
-      $this->type = $request['type_document'];
-      $this->historyGeneration = GenerationClient::getInstance()->findHistoryWithType($this->type);
-  }
+    public function executeList(sfWebRequest $request)
+    {
+        $this->tasks = [];
+        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/*.sh') as $script) {
+            $content = fopen($script, 'r');
+            $title = $desc = '';
+            while ($line = fgets($content)) {
+                if (strpos($line, '# Title') === 0) {
+                    $title = str_replace(': ', '', strpbrk($line, ':'));
+                }
+                if (strpos($line, '# Description') === 0) {
+                    $desc = str_replace(': ', '', strpbrk($line, ':'));
+                }
+            }
+
+            $this->tasks[basename($script)] = compact('title', 'desc');
+        }
+
+        return sfView::SUCCESS;
+        // if post
+
+            $task = new Generation();
+            $task->type_document = GenerationClient::TYPE_DOCUMENT_SHELL;
+            $task->libelle = $this->tasks[$request->getParameter('task')]['title'];
+
+    }
 
   public function executeReload(sfWebRequest $request) {
       $generation = $this->getGenerationFromRequest($request);
