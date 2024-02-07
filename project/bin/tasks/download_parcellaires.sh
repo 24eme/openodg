@@ -11,7 +11,7 @@ curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/habilitation/_v
 
 while read -r id; do
     echo "Import de l'opérateur $id"
-    php "$WORKINGDIR/symfony" $SYMFONYTASKOPTIONS import:parcellaire-douanier "$cvi"
+    php "$WORKINGDIR/symfony" $SYMFONYTASKOPTIONS import:parcellaire-douanier "$id"
 done < "$IDS"
 
 rm "$IDS"
