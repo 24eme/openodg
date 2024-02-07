@@ -640,6 +640,24 @@ class Email {
         return $this->getMailer()->send($message);
     }
 
+    public function sendAdelpheValidation($adelphe) {
+      if (!$adelphe->declarant->email) {
+          return false;
+      }
+      $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+      $to = array($drev->declarant->email);
+      $subject = 'Validation de votre Déclaration Adelphe';
+      $body = $this->getBodyFromPartial('send_adelphe_validation', array('adelphe' => $adelphe));
+      $message = Swift_Message::newInstance()
+              ->setFrom($from)
+              ->setTo($to)
+              ->setReplyTo(array(Organisme::getInstance()->getEmail()))
+              ->setSubject($subject)
+              ->setBody($body)
+              ->setContentType('text/plain');
+      return $this->getMailer()->send($message);
+    }
+
 
     protected function getMailer() {
         return $this->_context->getMailer();

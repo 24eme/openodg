@@ -12,7 +12,7 @@
 
   <?php echo $form->renderHiddenFields(); ?>
 
-  <div class="row row-margin">
+  <div class="row row-margin pb-5">
 
     <div class="col-xs-12">
       <div class="form-group">
@@ -123,7 +123,7 @@
     const tx = document.getElementById('adelphe_taux_conditionne_bib').value;
     const vol =  volTotal * tx / 100;
     if (vol > 0) {
-      document.getElementById('adelphe_volume_conditionne_bib').value = Math.round(vol);
+      document.getElementById('adelphe_volume_conditionne_bib').value = parseFloat(vol).toFixed(2);
     }
   });
 </script>

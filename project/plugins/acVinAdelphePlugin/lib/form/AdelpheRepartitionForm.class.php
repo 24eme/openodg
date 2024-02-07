@@ -20,19 +20,23 @@ class AdelpheRepartitionForm extends acCouchdbObjectForm {
   protected function updateDefaultsFromObject() {
     parent::updateDefaultsFromObject();
     $defaults = $this->getDefaults();
-    $defaults['taux_conditionne_bib'] = $this->getObject()->getTauxBibCalcule();
+    if ($tx = $this->getObject()->getTauxBibCalcule()) {
+      $defaults['taux_conditionne_bib'] = $tx;
+    }
     $this->setDefaults($defaults);
   }
 
   protected function doUpdateObject($values) {
     if ($values['taux_conditionne_bib'] && !$values['volume_conditionne_bib']) {
-      $values['volume_conditionne_bib'] = round($this->getObject()->volume_conditionne_total * $values['taux_conditionne_bib'] / 100);
+      $values['volume_conditionne_bib'] = round($this->getObject()->volume_conditionne_total * $values['taux_conditionne_bib'] / 100, 2);
     }
     parent::doUpdateObject($values);
     if (!$values['conditionnement_bib']) {
       $this->getObject()->conditionnementUniquementBouteille();
     } elseif (!$values['repartition_bib']) {
       $this->getObject()->conditionnementBibForfait();
+    } else {
+      $this->getObject()->conditionnementBibReel();
     }
   }
 }

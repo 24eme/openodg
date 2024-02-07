@@ -55,7 +55,7 @@
                                     <?php if($drev->hasProduitsVCI() || $drev->declaration->hasVolumeRevendiqueVci()): ?>
 								    <td class="text-center text-muted col-md-2"><?php if($produit_cepage->getVolumeRevendiqueVci() !== null): ?><small><?php echoFloat($produit_cepage->getVolumeRevendiqueVci()) ?><?php if (!is_null($produit_cepage->getVolumeRevendiqueVci())): ?> <small class="text-muted">hl</small><?php endif; ?></small><?php else: ?>&nbsp;<?php endif; ?></td>
 								    <?php endif; ?>
-                                    <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique + $produit_cepage->getVolumeRevendiqueVci())): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
+                                    <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique + $produit_cepage->getVolumeRevendiqueVci(true))): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                 </tr>
                                 <?php $print = true; endif; ?>
                                 <?php if ($produit_cepage->volume_revendique_vt && $vtsgn): ?>

@@ -23,25 +23,49 @@ class AdelpheConfiguration {
         $this->load();
     }
 
-    public function getTauxForfaitaireBib(){
+    public function getFonctionCalculSeuil() {
+      if (isset($this->configuration['fonction_calcul_seuil']) && $this->configuration['fonction_calcul_seuil']) {
+        return $this->configuration['fonction_calcul_seuil'];
+      }
+      return null;
+    }
+
+    public function getTauxForfaitaireBib() {
       if (isset($this->configuration['taux_forfaitaire_bib']) && $this->configuration['taux_forfaitaire_bib']) {
         return $this->configuration['taux_forfaitaire_bib'];
       }
       return 0;
     }
 
-    public function getPrixUnitaireBib(){
+    public function getPrixUnitaireBib() {
         if (isset($this->configuration['prix_unitaire_bib']) && $this->configuration['prix_unitaire_bib']) {
             return $this->configuration['prix_unitaire_bib'];
         }
         return 0;
     }
 
-    public function getPrixUnitaireBouteille(){
+    public function getPrixUnitaireBouteille() {
         if (isset($this->configuration['prix_unitaire_bouteille']) && $this->configuration['prix_unitaire_bouteille']) {
             return $this->configuration['prix_unitaire_bouteille'];
         }
         return 0;
     }
 
+    public function getUrlAdelphe() {
+        if (isset($this->configuration['url_adelphe']) && $this->configuration['url_adelphe']) {
+            return $this->configuration['url_adelphe'];
+        }
+        return 0;
+    }
+
+    public function getVolumesConditionnesCsv($annee = null) {
+      $filename = null;
+      if (isset($this->configuration['volumes_conditionnes_csv']) && $this->configuration['volumes_conditionnes_csv']) {
+          $filename = $this->configuration['volumes_conditionnes_csv'];
+      }
+      if ($annee && strpos($filename, '%ANNEE%') !== false) {
+        $filename = str_replace('%ANNEE%', $annee, $filename);
+      }
+      return sfConfig::get('sf_root_dir').$filename;
+    }
 }

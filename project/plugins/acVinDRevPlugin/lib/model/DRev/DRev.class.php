@@ -1359,7 +1359,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	}
 
     public function saveDocumentsDependants() {
-        $mother = $this->getMother();
+        $mother = $this->version_document->getMother(true);
 
         if(!$mother) {
 
