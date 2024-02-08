@@ -35,7 +35,6 @@ class CotisationsCollection
                 throw new sfException("minimum_fallback /cotisations/$minimum_fallback_name not found in ".$this->config->getDocument()->_id);
             }
             $minimum_fallback = $this->config->getDocument()->cotisations->$minimum_fallback_name;
-            echo " $total <= $minimum \n";
             if ($total <= $minimum && $total > 0 && $minimum_fallback->isForType($this->getDoc()->getType())) {
                 return $minimum_fallback->generateCotisations($this->getDoc());
             }
