@@ -2,7 +2,7 @@ generation_list:
   url: /generation
   param: { module: generation, action: list }
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 generation_view:
   url: /generation/:id
