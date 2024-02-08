@@ -1650,6 +1650,31 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $sv11->getTotalValeur("10");
     }
 
+    public function getSuperficieFromDR($produitFilter = null) {
+        $docDouanier = $this->getDocumentDouanierOlderThanMe();
+        if (!$docDouanier) {
+            return ;
+        }
+        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return ;
+        }
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, $produitFilter);
+    }
+
+    public function getVolumeVinifiableFromDR($produitFilter = null) {
+        $docDouanier = $this->getDocumentDouanierOlderThanMe();
+        if (!$docDouanier) {
+            return ;
+        }
+        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return ;
+        }
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $produitFilter)
+            - $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_AUTRES_VOLUMES_NON_VINIFIES_L12, null, $produitFilter)
+            - $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_VOLUME_SANS_IG_L14, null, $produitFilter)
+            - $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16, null, $produitFilter) ;
+    }
+
     public function getSuperficieHorsApportCoopFromDocumentProduction($produitFilter = null) {
         $docDouanier = $this->getDocumentDouanierOlderThanMe();
         if (!$docDouanier) {
