@@ -32,3 +32,6 @@
 </table>
 
 </form>
+
+<h3>Historique des générations</h3>
+<?php include_partial('generation/list', ['generations' => $generations]); ?>
