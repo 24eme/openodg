@@ -42,6 +42,10 @@ class generationActions extends sfActions {
 
     public function executeList(sfWebRequest $request)
     {
+        if (! $this->getUser()->isAdmin()) {
+            throw new sfException("Vous n'avez pas les droits d'accéder à cette page");
+        }
+
         $this->tasks = [];
         foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/*.sh') as $script) {
             $content = fopen($script, 'r');
