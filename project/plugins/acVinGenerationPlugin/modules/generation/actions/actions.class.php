@@ -45,7 +45,10 @@ class generationActions extends sfActions {
         $this->tasks = [];
         foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/*.sh') as $script) {
             $content = fopen($script, 'r');
+
             $title = $desc = '';
+            $id = basename($script);
+
             while ($line = fgets($content)) {
                 if (strpos($line, '# Title') === 0) {
                     $title = str_replace(': ', '', strpbrk($line, ':'));
@@ -55,16 +58,22 @@ class generationActions extends sfActions {
                 }
             }
 
-            $this->tasks[basename($script)] = compact('title', 'desc');
+            $this->tasks[$id] = compact('title', 'desc', 'script');
         }
 
-        return sfView::SUCCESS;
-        // if post
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
 
-            $task = new Generation();
-            $task->type_document = GenerationClient::TYPE_DOCUMENT_SHELL;
-            $task->libelle = $this->tasks[$request->getParameter('task')]['title'];
-
+        $task = new Generation();
+        $task->type_document = GenerationClient::TYPE_DOCUMENT_SHELL;
+        $task->libelle = $this->tasks[$request->getParameter('task')]['title'];
+        $task->arguments = [
+            'bash',
+            $this->tasks[$request->getParameter('task')]['script']
+        ];
+        $task->save();
+        return $this->redirect('generation_view', ['id' => $task->_id]);
     }
 
   public function executeReload(sfWebRequest $request) {
