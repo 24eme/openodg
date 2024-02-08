@@ -139,7 +139,6 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
 
   public function setRedirect($input) {
       $this->redirect_adelphe = $input;
-      $this->save();
   }
 
   public function setVolumeConditionneTotalFromCsv() {

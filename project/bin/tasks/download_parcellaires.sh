@@ -5,11 +5,13 @@
 
 source "$(dirname $0)/../config.inc"
 
-bash ~/Code/prodouane_scrapy/bin/download_parcellaires.sh
+IDS=$(mktemp)
 
-for csv in ~/Code/prodouane_scrapy/documents/parcellaire-*.csv; do
-    [ -e "$csv" ] || continue
-    cvi=$(basename "$csv" ".csv" | cut -d'-' -f2)
-    echo "Import du parcellaire du cvi $cvi"
-    php "$WORKINGDIR/symfony" $SYMFONYTASKOPTIONS import:parcellaire-douanier "$cvi"
-done
+curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/habilitation/_view/activites?reduce=false" | grep "PRODUCTEUR" | grep '"HABILITE"' | cut -d'-' -f2 | sort | uniq > "$IDS"
+
+while read -r id; do
+    echo "Import de l'opérateur $id"
+    sudo -u www-data php "$WORKINGDIR/symfony" $SYMFONYTASKOPTIONS import:parcellaire-douanier "$id"
+done < "$IDS"
+
+rm "$IDS"

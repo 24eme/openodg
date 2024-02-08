@@ -4,6 +4,7 @@ class AdelpheSecurity extends DocumentSecurity implements SecurityInterface {
 
     protected $doc;
     protected $user;
+    const DROIT_ADELPHE = "adelphe";
 
     public static function getInstance($user, $doc) {
       return new AdelpheSecurity($user, $doc);
