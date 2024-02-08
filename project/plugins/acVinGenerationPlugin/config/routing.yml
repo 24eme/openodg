@@ -1,5 +1,5 @@
 generation_list:
-  url: /generation
+  url: /tachesrecurrentes
   param: { module: generation, action: list }
   requirements:
     sf_method: [get, post]
