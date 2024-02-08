@@ -40,10 +40,45 @@ class generationActions extends sfActions {
       $this->sous_generations = $this->generation->getSubGenerations();
   }
 
-  public function executeList(sfWebRequest $request) {
-      $this->type = $request['type_document'];
-      $this->historyGeneration = GenerationClient::getInstance()->findHistoryWithType($this->type);
-  }
+    public function executeList(sfWebRequest $request)
+    {
+        if (! $this->getUser()->isAdmin()) {
+            throw new sfException("Vous n'avez pas les droits d'accéder à cette page");
+        }
+
+        $this->tasks = [];
+        foreach(glob(sfConfig::get('sf_root_dir').'/bin/tasks/*.sh') as $script) {
+            $content = fopen($script, 'r');
+
+            $title = $desc = '';
+            $id = basename($script);
+
+            while ($line = fgets($content)) {
+                if (strpos($line, '# Title') === 0) {
+                    $title = str_replace(': ', '', strpbrk($line, ':'));
+                }
+                if (strpos($line, '# Description') === 0) {
+                    $desc = str_replace(': ', '', strpbrk($line, ':'));
+                }
+            }
+
+            $this->tasks[$id] = compact('title', 'desc', 'script');
+        }
+
+        if (! $request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $task = new Generation();
+        $task->type_document = GenerationClient::TYPE_DOCUMENT_SHELL;
+        $task->libelle = $this->tasks[$request->getParameter('task')]['title'];
+        $task->arguments = [
+            'bash',
+            $this->tasks[$request->getParameter('task')]['script']
+        ];
+        $task->save();
+        return $this->redirect('generation_view', ['id' => $task->_id]);
+    }
 
   public function executeReload(sfWebRequest $request) {
       $generation = $this->getGenerationFromRequest($request);
