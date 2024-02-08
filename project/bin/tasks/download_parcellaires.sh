@@ -7,7 +7,7 @@ source "$(dirname $0)/../config.inc"
 
 IDS=$(mktemp)
 
-curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/habilitation/_view/activites?reduce=false" | grep -- '"HABILITE"' | cut -d'-' -f2 | sort | uniq > "$IDS"
+curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/habilitation/_view/activites?reduce=false" | grep "PRODUCTEUR" | grep '"HABILITE"' | cut -d'-' -f2 | sort | uniq > "$IDS"
 
 while read -r id; do
     echo "Import de l'opérateur $id"
