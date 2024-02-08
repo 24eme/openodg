@@ -254,4 +254,9 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         return '';
     }
 
+    public function isFactures() {
+
+        return false;
+    }
+
 }
