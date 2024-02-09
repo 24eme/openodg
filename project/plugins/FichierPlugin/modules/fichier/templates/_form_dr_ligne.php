@@ -2,7 +2,7 @@
 	$options = array('required' => 'required', 'class' => 'form-control select2autocompleteAjax input-md', "autofocus" => "autofocus");
 ?>
 <div class="form-group drLigne">
-	<div class="col-xs-3">
+	<div class="col-xs-2">
 		<?php echo $form['produit']->render(array('class' => 'form-control input select2 select2-offscreen select2autocomplete liste-produits', 'placeholder' => "Produit")) ?>
 	</div>
 	<div class="col-xs-1">
@@ -17,7 +17,7 @@
 	<div class="col-xs-1">
 		<?php echo $form['valeur']->render(array('class' => 'form-control input text-right', 'placeholder' => "Volume / Valeur")) ?>
 	</div>
-	<div class="col-xs-3">
+	<div class="col-xs-4">
 		<div class="col-xs-10" style="padding-right: 0px !important; padding-left: 0px !important;">
 			<?php echo $form['tiers']->render(array_merge($options, array('placeholder' => "Tiers"))) ?>
 		</div>
