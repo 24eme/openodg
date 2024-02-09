@@ -537,8 +537,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         }
 
         foreach($lots as $key => $lot) {
-            if(isset($uniqIds[$lot->unique_id])) {
-                unset($uniqIds[$lot->unique_id]);
+            if(isset($lotsExistants[$lot->unique_id])) {
+                unset($lotsExistants[$lot->unique_id]);
                 continue;
             }
             $this->addLot($lot);
