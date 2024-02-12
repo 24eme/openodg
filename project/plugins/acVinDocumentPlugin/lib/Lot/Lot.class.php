@@ -1224,7 +1224,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function setPreleve($d){
-        if ($this->exist('prelevement_datetime') && $this->prelevement_datetime) {
+        if ($d && $this->exist('prelevement_datetime') && $this->prelevement_datetime) {
             return $this->_set('preleve', preg_replace('/ .*/', '', $this->prelevement_datetime));
         }
         return $this->_set('preleve', $d);
