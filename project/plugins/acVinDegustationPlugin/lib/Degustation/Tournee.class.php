@@ -61,4 +61,16 @@ class Tournee extends Degustation
     public function isTournee() {
         return true;
     }
+
+    public function save($saveDependants = true) {
+        foreach($this->lots as $lot) {
+            if($lot->isPreleve()) {
+                $lot->affectable = true;
+            }
+        }
+
+        $saved = parent::save($saveDependants);
+
+        return $saved;
+    }
 }
