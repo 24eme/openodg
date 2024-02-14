@@ -71,6 +71,9 @@ EOF;
                 if($line[$tagKey] == "OUI") {
                     $statut = SocieteClient::STATUT_ACTIF;
                 }
+                if($line[$tagKey] == "EN COURS") {
+                    $statut = SocieteClient::STATUT_ACTIF;
+                }
             }
 
             $initialRevisionSociete = null;
