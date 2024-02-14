@@ -11,7 +11,9 @@ class GenerationShell extends GenerationAbstract
 
     public function generate()
     {
-        /* $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS); */
+        $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS);
+        $this->generation->save();
+
         $batch_size = 50;
         $batch_i = 1;
 

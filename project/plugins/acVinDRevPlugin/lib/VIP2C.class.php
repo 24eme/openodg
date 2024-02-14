@@ -55,6 +55,9 @@ class VIP2C
         if(!VIP2C::hasVolumeSeuil()){
             return null;
         }
+        if (!$cvi) {
+          return null;
+        }
         $configFile = fopen(sfConfig::get('sf_root_dir')."/".sfConfig::get('app_api_contrats_fichier_csv'),"r");
 
         $volumes = array();

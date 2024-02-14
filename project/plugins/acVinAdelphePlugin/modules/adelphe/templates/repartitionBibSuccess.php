@@ -12,7 +12,7 @@
 
   <?php echo $form->renderHiddenFields(); ?>
 
-  <div class="row row-margin">
+  <div class="row row-margin pb-5">
 
     <div class="col-xs-12">
       <div class="form-group">

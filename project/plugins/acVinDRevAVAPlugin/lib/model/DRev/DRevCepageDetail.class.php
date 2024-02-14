@@ -161,14 +161,15 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
             return;
         }
 
-        $total = 0;
-        foreach ($this->vci as $k => $v) {
-            if (!$only_cave_particuliere || $k == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
-                $total += $v->complement + $v->substitution + $v->rafraichi;
+        $vci = 0;
+        foreach ($this->getProduitsVci() as $produit) {
+            if(!$produit->isStockageCaveParticuliere()) {
+                continue;
             }
-        }
+            $vci += $produit->complement + $produit->substitution + $produit->rafraichi;
+    	}
 
-        return round($total, 2);
+        return round($vci, 2);
     }
 
     public function hasVci() {
