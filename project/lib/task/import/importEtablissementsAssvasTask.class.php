@@ -117,6 +117,10 @@ EOF;
             $societe->email = (trim($line[self::CSV_EMAIL_1])) ?: null;
             $societe->save();
 
+            $compte = $societe->getMasterCompte();
+            $compte->statut = $societe->statut;
+            $compte->save();
+
             if(EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant.'01', acCouchdbClient::HYDRATE_JSON)) {
                 $etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societe->identifiant.'01');
                 $initialRevisionEtablissement = $etablissement->_rev;
@@ -144,6 +148,7 @@ EOF;
                     $actif = true;
                 }
             }
+            $compte->statut = $etablissement->statut;
             $compte->save();
 
             if(!$actif) {
