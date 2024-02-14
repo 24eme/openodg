@@ -29,6 +29,17 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $dr = DRClient::getInstance()->find('DR-'.$arguments['identifiant'] .'-'. $arguments['periode']);
+        if (!$dr) {
+            echo sprintf("INFO;Pas de DR;%s\n", 'DR-'.$arguments['identifiant'] .'-'. $arguments['periode']);
+            exit(0);
+        }
+
+        $volume_l9 = $dr->getTotalValeur('9');
+        if($volume_l9) {
+            echo sprintf("INFO;La DR possède du volume en cave particulière;%s\n", 'DR-'.$arguments['identifiant'] .'-'. $arguments['periode']);
+            exit(0);
+        }
 
         $drev = DRevClient::getInstance()->createDoc($arguments['identifiant'], $arguments['periode']);
         $drev->validation = date('Y-m-d');
