@@ -18,11 +18,9 @@ mkdir -p $TMPDIR"/"$$
 cd $TMPDIR"/"$$
 wget -q $ASSVAS_ETABLISSEMENT_FILE_URL -O import.zip
 unzip import.zip > /dev/null
-mv import_openodg/*xlsx $XLSX_IMPORT
+mv import_openodg/*csv $XLSX_IMPORT
 cd - > /dev/null
 rm -rf $TMPDIR"/"$$
-
-xlsx2csv -d ";" "$XLSX_IMPORT" > "$CSV_IMPORT"
 
 if test "$CHECKSUM" = "$(md5sum $XLSX_IMPORT)"; then
     exit;
