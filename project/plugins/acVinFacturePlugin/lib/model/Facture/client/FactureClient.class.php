@@ -477,11 +477,11 @@ class FactureClient extends acCouchdbClient {
           }
         }
 
-        $avoir->remove('paiements');
-        $avoir->add('paiements');
+        $f->remove('paiements');
+        $f->add('paiements');
         $f->paiements = $paiements;
+        $f->updateMontantPaiement();
       }
-      $f->save();
       foreach($avoir->lignes as $type => $ligne) {
         $ligne->montant_ht *= -1;
         $ligne->montant_tva *= -1;
@@ -504,7 +504,11 @@ class FactureClient extends acCouchdbClient {
       $avoir->versement_comptable_paiement = 0;
       $avoir->remove('paiements');
       $avoir->add('paiements');
-      $avoir->remove('montant_paiement');
+      $avoir->montant_paiement = null;
+      $avoir->remove('pieces');
+      $avoir->date_paiement = null;
+      $avoir->modalite_paiement = null;
+      $avoir->versement_sepa = 1;
       $avoir->save();
       $f->defacturer();
       $f->save();

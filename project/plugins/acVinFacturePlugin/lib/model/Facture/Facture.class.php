@@ -504,7 +504,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function getMontantPaiement() {
 
-        if ($this->exist('paiements') && count($this->paiements)) {
+        if ($this->exist('paiements')) {
             $this->updateMontantPaiement();
         }
 
