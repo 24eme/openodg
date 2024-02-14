@@ -481,7 +481,6 @@ class FactureClient extends acCouchdbClient {
         $avoir->add('paiements');
         $f->paiements = $paiements;
       }
-      $f->save();
       foreach($avoir->lignes as $type => $ligne) {
         $ligne->montant_ht *= -1;
         $ligne->montant_tva *= -1;
