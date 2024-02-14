@@ -57,7 +57,7 @@ if not moisjour:
     if '%s-%s' % (str(int(millesime) + 1), moisjour) > '%04d-%02d-%02d' % ( datetime.now().year, datetime.now().month, datetime.now().day ):
         moisjour = '07-31'
 
-if not increment_annee:
+if increment_annee is None:
     increment_annee = 1
 
 date_debut_courant = millesime + '-08-01'
