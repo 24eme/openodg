@@ -65,6 +65,7 @@ class pmcActions extends sfActions {
             $lot->validation_odg = null;
           }
         }
+        $pmc->remove('mouvements_lots');
         $pmc->add('etape', null);
         $pmc->devalidate();
         $pmc->save();
