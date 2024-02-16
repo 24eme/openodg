@@ -223,15 +223,19 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
                 throw new sfException("No template found (".$mouvement_agreges->id.")");
             }
 
-            foreach ($template->getCotisations() as $cotisName => $cotis) {
-                if($cotis->code_comptable) {
-                    $code_comptable = true;
-                    $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
-                    if ($mouvement_agreges->value->categorie == $cotisName) {
-                        $ligne->produit_identifiant_analytique = $cotis->code_comptable;
-                        break;
-                    }
-                }
+            if (strpos($mouvement_agreges->id, 'MOUVEMENTSFACTURE') !== false) {
+              $ligne->produit_identifiant_analytique = $mouvement_agreges->value->identifiant_analytique;
+            } else {
+              foreach ($template->getCotisations() as $cotisName => $cotis) {
+                  if($cotis->code_comptable) {
+                      $code_comptable = true;
+                      $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
+                      if ($mouvement_agreges->value->categorie == $cotisName) {
+                          $ligne->produit_identifiant_analytique = $cotis->code_comptable;
+                          break;
+                      }
+                  }
+              }
             }
             $detail = $ligne->details->add();
             $detail->prix_unitaire = $mouvement_agreges->value->taux;
@@ -493,20 +497,24 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function isVersementComptablePaiement() {
 
-        return $this->versement_comptable_paiement && $this->exist('paiements') && count($this->paiements) > 0;
+        return $this->versement_comptable_paiement && count($this->paiements) > 0;
+    }
+
+    public function getPaiements() {
+        if (!$this->exist('paiements')) {
+            $f = new Facture();
+            $f->add('paiements');
+            return $f->paiements;
+        }
+        return $this->_get('paiements');
     }
 
     public function updateMontantPaiement() {
-        if ($this->exist('paiements') && count($this->paiements)) {
-            $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
-        }
+        $this->_set('montant_paiement', $this->paiements->getPaiementsTotal());
     }
 
     public function getMontantPaiement() {
-
-        if ($this->exist('paiements') && count($this->paiements)) {
-            $this->updateMontantPaiement();
-        }
+        $this->updateMontantPaiement();
 
         return Anonymization::hideIfNeeded($this->_get('montant_paiement'));
     }
@@ -684,17 +692,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return 0;
     }
 
-    public function getMandatSepaMontant($i){
-      return($this->paiements[$i]->montant);
-    }
-
-    public function paiementIsExecute($i){
-      if($this->paiements){
-        return ($this->paiements[$i]->execute);
-      }
-      return true;
-    }
-
     public function setTelechargee($date = null)
     {
         if (!$date) {
@@ -725,12 +722,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
         $versement = true;
         $date = null;
-        if ($this->exist('paiements')) {
-            foreach ($this->paiements as $p) {
-                $versement = $versement && $p->versement_comptable;
-                if ($p->date > $date) {
-                    $date = $p->date;
-                }
+        foreach ($this->paiements as $p) {
+            $versement = $versement && $p->versement_comptable;
+            if ($p->date > $date) {
+                $date = $p->date;
             }
         }
         $this->versement_comptable_paiement = $versement * 1;
@@ -748,17 +743,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     }
 
     public function updateVersementSepa(){
-      $versement_sepa = 1;
-      if ($this->exist('paiements')) {
-          foreach($this->paiements as $paiement){
-              if (! $paiement->exist('execute')) {
-                  continue;
-              }
-              if(!$paiement->execute){
-                  $versement_sepa = 0;
-              }
-          }
-      }
-      $this->versement_sepa = $versement_sepa;
+        $versement_sepa = 1;
+        foreach($this->paiements as $paiement){
+            if (! $paiement->exist('execute')) {
+                continue;
+            }
+            if(!$paiement->execute){
+                $versement_sepa = 0;
+            }
+        }
+        $this->versement_sepa = $versement_sepa;
     }
 }
