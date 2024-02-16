@@ -189,7 +189,7 @@
 
 
 
-<?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
+<?php if (count($facture->paiements)): ?>
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|m{5cm}|>{\raggedleft}m{8cm}|>{\raggedleft}m{5cm}|}
