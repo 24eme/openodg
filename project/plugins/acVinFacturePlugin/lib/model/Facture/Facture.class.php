@@ -223,15 +223,19 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
                 throw new sfException("No template found (".$mouvement_agreges->id.")");
             }
 
-            foreach ($template->getCotisations() as $cotisName => $cotis) {
-                if($cotis->code_comptable) {
-                    $code_comptable = true;
-                    $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
-                    if ($mouvement_agreges->value->categorie == $cotisName) {
-                        $ligne->produit_identifiant_analytique = $cotis->code_comptable;
-                        break;
-                    }
-                }
+            if (strpos($mouvement_agreges->id, 'MOUVEMENTSFACTURE') !== false) {
+              $ligne->produit_identifiant_analytique = $mouvement_agreges->value->identifiant_analytique;
+            } else {
+              foreach ($template->getCotisations() as $cotisName => $cotis) {
+                  if($cotis->code_comptable) {
+                      $code_comptable = true;
+                      $cotisName = str_replace('%detail_identifiant%', $mouvement_agreges->value->detail_identifiant, $cotisName);
+                      if ($mouvement_agreges->value->categorie == $cotisName) {
+                          $ligne->produit_identifiant_analytique = $cotis->code_comptable;
+                          break;
+                      }
+                  }
+              }
             }
             $detail = $ligne->details->add();
             $detail->prix_unitaire = $mouvement_agreges->value->taux;
