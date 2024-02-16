@@ -502,7 +502,9 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function getPaiements() {
         if (!$this->exist('paiements')) {
-            return new FacturePaiements();
+            $f = new Facture();
+            $f->add('paiements');
+            return $f->paiements;
         }
         return $this->_get('paiements');
     }
