@@ -52,7 +52,7 @@
                     <td style="width: 10%">Type :</td>
                     <td><?php echoCheck('Aléatoire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) ?></td>
                     <td><?php echoCheck('Aléatoire renforcé', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) ?></td>
-                    <td><?php echoCheck('Vrac export', false) ?></td>
+                    <td><?php echoCheck('Vrac export', $lot->initial_type == Transaction::TYPE_MODEL) ?></td>
                 </tr>
                 <tr>
                     <td></td>
