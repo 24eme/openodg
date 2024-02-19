@@ -286,8 +286,9 @@ class fichierActions extends sfActions
 				}
 			}catch(sfException $e ) {
 				$this->getUser()->setFlash('error', $e->getMessage());
+				return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant, "campagne" => sprintf('%d-%d', $this->periode, ($this->periode + 1)) ));
 			}
-			return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant, 'campagne' => $this->periode.'-'.($this->periode + 1)));
+			return $this->redirect('dr_redirect', array('identifiant' => $this->etablissement->identifiant, 'campagne' => sprintf('%d-%d', $this->periode, ($this->periode + 1)) ));
 		}
 
 	}

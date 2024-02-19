@@ -31,12 +31,12 @@ class CourrierClient extends acCouchdbClient {
 
     public static $courrier_templates_pages = array(
             self::COURRIER_NC_Passage1 => ['courrierAvisC13ManquementControleVinPDF', 'degustationRapportInspection', 'degustationNonConformitePDF_page2'],
-            self::COURRIER_AVIS13 => ['courrierAvisC13ManquementControleVinPDF', 'degustationRapportInspection'],
+            self::COURRIER_AVIS13 => ['courrierAvisC13ManquementControleVinPDF', 'degustationRapportInspection', 'degustationNonConformitePDF_page2'],
             self::COURRIER_AVIS14 => ['courrierAvisC14ConformiteControleVinPDF', 'degustationRapportInspection'],
             self::COURRIER_AVIS15 => ['courrierLeveeC15ManquementControleVinPDF', 'degustationRapportInspection'],
-            self::COURRIER_AVIS16 => ['courrierAvisC16ManquementSuiteRecoursPDF', 'degustationRapportInspection'],
-            self::COURRIER_AVIS17 => ['courrierLeveeC17ManquementControleVinPDF'],
-            self::COURRIER_AVIS18 => ['courrierAvisC18ManquementSuiteNouveauControleVinPDF', 'degustationRapportInspection'],
+            self::COURRIER_AVIS16 => ['courrierAvisC16ManquementSuiteRecoursPDF', 'degustationNonConformitePDF_page2'],
+            self::COURRIER_AVIS17 => ['courrierLeveeC17ManquementControleVinPDF', 'degustationNonConformitePDF_page2'],
+            self::COURRIER_AVIS18 => ['courrierAvisC18ManquementSuiteNouveauControleVinPDF', 'degustationRapportInspection', 'degustationNonConformitePDF_page2'],
             self::COURRIER_AVIS19 => ['courrierAvisC19ManquementSuiteRecoursPDF', 'degustationRapportInspection'],
             self::COURRIER_AVIS_PRELEVEMENT => ['courrierAvisDePrelevementPDF']
     );

@@ -75,7 +75,7 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
             $this->date .= ' 00:00:00';
         }
         $date = substr(str_replace(['-', ' ', ':'], '', $this->date), 0, 8);
-        $id = 'COURRIER-' . $this->identifiant . '-' . $date .'-'.str_replace('_', '', $this->courrier_type);
+        $id = 'COURRIER-' . $this->identifiant . '-' . $this->arg_lot_origine->unique_id . '-' . $date;
         $this->set('_id', $id);
     }
 
