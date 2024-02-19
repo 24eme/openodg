@@ -19,10 +19,17 @@
 <div class="col-xs-8">
     <h4>Lots <?php if ($degustation->getType() === DegustationClient::TYPE_MODEL) : ?>dégustés<?php else: ?>prélevés<?php endif;?> (<?php echo count($lots->getRawValue()) ?>)</h4>
 </div>
-<div class="col-xs-4 text-right pb-3">
-    <?php if (!$degustation->isTournee()): ?>
-    <a id="btn_pdf_fiches_proces_verbal" class="btn btn-default" href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a>
+<div class="btn-group pull-right">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Documents téléchargeables&nbsp;<span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <?php if (!$degustation->isTournee()): ?>
+            <li><a id="btn_pdf_fiches_proces_verbal" href="<?php echo url_for('degustation_proces_verbal_degustation_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de procès verbal</a></li>
+        <li><a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiches des lots triées par numéro de dossier</a></li>
+        <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des lots</a></li>
     <?php endif; ?>
+    </ul>
 </div>
 <table class="table table-condensed table-bordered table-striped">
     <thead>
