@@ -29,6 +29,11 @@
         <li><a id="btn_degustation_fiche_tables_echantillons_par_dossier_pdf" href="<?php echo url_for('degustation_fiche_tables_echantillons_par_dossier_pdf', $degustation) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiches des lots triées par numéro de dossier</a></li>
         <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur des lots</a></li>
     <?php endif; ?>
+    <?php if ($degustation->isTournee()) :?>
+        <li><a id="btn_pdf_fiche_tournee_prelevement" href="<?php echo url_for('degustation_fiche_lots_a_prelever_pdf', array('sf_subject' => $degustation)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche tournée</a></li>
+        <li><a id="btn_pdf_fiche_individuelle_lots_a_prelever" href="<?php echo url_for('degustation_fiche_individuelle_lots_a_prelever_pdf', array('sf_subject' => $degustation)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Fiche de prélèvements</a></li>
+        <li><a id="btn_csv_etiquette" href="<?php echo url_for('degustation_etiquette_csv', $degustation) ?>?labo=1"><span class="glyphicon glyphicon-list"></span>&nbsp;Tableur pour labo</a></li>
+    <?php endif; ?>
     </ul>
 </div>
 <table class="table table-condensed table-bordered table-striped">
