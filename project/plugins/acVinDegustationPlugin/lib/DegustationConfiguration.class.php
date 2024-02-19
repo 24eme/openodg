@@ -55,7 +55,7 @@ class DegustationConfiguration {
     }
 
     public function _getLieux() {
-        $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON);
+        $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON, Organisme::getInstance()->getCurrentRegion());
         $lieux = array();
         foreach ($degusts as $d) {
             $lieux[$d->lieu] = $d->lieu;
