@@ -147,4 +147,8 @@ class DRevConfiguration {
         return isset($this->configuration['email_disabled']) && boolval($this->configuration['email_disabled']);
     }
 
+    public function isModificativeEnabled() {
+        return $this->isRevendicationParLots();
+    }
+
 }

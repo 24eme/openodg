@@ -91,6 +91,7 @@
                          </a>
                     </li>
                     <?php endforeach; ?>
+                    <li><a href="<?php echo url_for('adelphe_export') ?>"><strong>Export Adelphe</strong></a></li>
                   </ul>
                 </li>
                 <?php endif; ?>

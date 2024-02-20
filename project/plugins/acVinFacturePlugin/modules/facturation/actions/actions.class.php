@@ -252,7 +252,7 @@ class facturationActions extends sfActions
             return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
         }
 
-        $this->facture = FactureClient::getInstance()->createAvoir($this->baseFacture);
+        $this->facture = FactureClient::getInstance()->createAvaAvoir($this->baseFacture);
 
         $this->form = new FactureEditionForm($this->facture);
 

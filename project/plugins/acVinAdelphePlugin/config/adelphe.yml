@@ -1,0 +1,9 @@
+all:
+  configuration:
+    adelphe:
+      fonction_calcul_seuil: "return 3750 + 18250 * %TXBIB%;"
+      taux_forfaitaire_bib: 0.32
+      prix_unitaire_bib: 1.1170
+      prix_unitaire_bouteille: 2.1267
+      url_adelphe: "https://www.adelphe.fr/"
+      volumes_conditionnes_csv: '/data/configuration/adelphe_volumes_conditionnes_%ANNEE%.csv'

@@ -426,7 +426,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $doc = $this->getDocumentDouanier($ext, $periode, $hydrate);
-        if ($doc->date_import <= substr($this->validation_odg, 0, 10)){
+        if ( !DRevConfiguration::getInstance()->isModificativeEnabled() || ($doc->date_import <= substr($this->validation_odg, 0, 10)) ) {
             return $doc;
         }
         return null;
@@ -1359,7 +1359,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	}
 
     public function saveDocumentsDependants() {
-        $mother = $this->getMother();
+        $mother = $this->version_document->getMother(true);
 
         if(!$mother) {
 
@@ -1648,6 +1648,31 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         return $sv11->getTotalValeur("10");
+    }
+
+    public function getSuperficieFromDR($produitFilter = null) {
+        $docDouanier = $this->getDocumentDouanierOlderThanMe();
+        if (!$docDouanier) {
+            return ;
+        }
+        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return ;
+        }
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, $produitFilter);
+    }
+
+    public function getVolumeVinifiableFromDR($produitFilter = null) {
+        $docDouanier = $this->getDocumentDouanierOlderThanMe();
+        if (!$docDouanier) {
+            return ;
+        }
+        if ($docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return ;
+        }
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $produitFilter)
+            - $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_AUTRES_VOLUMES_NON_VINIFIES_L12, null, $produitFilter)
+            - $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_VOLUME_SANS_IG_L14, null, $produitFilter)
+            - $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16, null, $produitFilter) ;
     }
 
     public function getSuperficieHorsApportCoopFromDocumentProduction($produitFilter = null) {
@@ -2179,6 +2204,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateModificative() {
+
+        if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
+            throw new sfException('Drev Modificative non permise');
+        }
 
         $drev = $this->version_document->generateModificative();
         try {

@@ -190,7 +190,10 @@ class FactureClient extends acCouchdbClient {
         $lignes = array();
         $lignes_originaux = array();
         foreach ($mouvements as $identifiant => $mvt) {
-            $cle = $mvt->value->categorie.$mvt->value->detail_libelle.$mvt->value->type_libelle.$mvt->value->taux.$mvt->value->tva.$mvt->value->unite;
+            $cle = $mvt->value->categorie.$mvt->value->detail_libelle.$mvt->value->type_libelle.$mvt->value->taux.$mvt->value->tva;
+            if (isset($mvt->value->unite)) {
+                $cle .= $mvt->value->unite;
+            }
             $lignes_originaux[$cle][] = $mvt;
             if (isset($lignes[$cle])) {
                 $lignes[$cle]->value->quantite += $mvt->value->quantite;
@@ -404,7 +407,7 @@ class FactureClient extends acCouchdbClient {
       return !$this->isRedressee($factureview) && $factureview->value[FactureSocieteView::VALUE_STATUT] != self::STATUT_NONREDRESSABLE;
     }
 
-    public function createAvoir(Facture $f) {
+    public function createAvaAvoir(Facture $f) {
       if (!$f->isRedressable()) {
   return ;
       }
@@ -447,10 +450,10 @@ class FactureClient extends acCouchdbClient {
 
       $avoir->date_paiement = null;
       $avoir->modalite_paiement = null;
-      $avoir->montant_paiement = null;
       $avoir->remove('reglement_paiement');
       $avoir->remove('paiements');
       $avoir->add('paiements');
+      $avoir->remove('montant_paiement');
 
       return $avoir;
     }
@@ -467,18 +470,16 @@ class FactureClient extends acCouchdbClient {
       $avoir->constructIds($compte, $f->region);
       $f->add('avoir',$avoir->_id);
       $paiements = [];
-      if($f->exist('paiements')) {
-        foreach($f->paiements as $p) {
-          if( ($p->type_reglement != FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) || $p->execute) {
+      foreach($f->paiements as $p) {
+        if( ($p->type_reglement != FactureClient::FACTURE_PAIEMENT_PRELEVEMENT_AUTO) || $p->execute) {
               $paiements[] = $p;
-          }
         }
 
-        $avoir->remove('paiements');
-        $avoir->add('paiements');
+        $f->remove('paiements');
+        $f->add('paiements');
         $f->paiements = $paiements;
+        $f->updateMontantPaiement();
       }
-      $f->save();
       foreach($avoir->lignes as $type => $ligne) {
         $ligne->montant_ht *= -1;
         $ligne->montant_tva *= -1;
@@ -501,6 +502,11 @@ class FactureClient extends acCouchdbClient {
       $avoir->versement_comptable_paiement = 0;
       $avoir->remove('paiements');
       $avoir->add('paiements');
+      $avoir->montant_paiement = null;
+      $avoir->remove('pieces');
+      $avoir->date_paiement = null;
+      $avoir->modalite_paiement = null;
+      $avoir->versement_sepa = 1;
       $avoir->save();
       $f->defacturer();
       $f->save();

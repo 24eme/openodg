@@ -1,3 +1,9 @@
+generation_list:
+  url: /tachesrecurrentes
+  param: { module: generation, action: list }
+  requirements:
+    sf_method: [get, post]
+
 generation_view:
   url: /generation/:id
   param: { module: generation, action: view }
