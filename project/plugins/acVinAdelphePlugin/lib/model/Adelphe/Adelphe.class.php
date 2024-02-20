@@ -211,13 +211,13 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     /*
     * Calcul des prix
     */
-    $prixBouteilleNormale = round($quantiteBouteilleNormale * $prixUnitaireBouteilleNormale, 1);
-    $prixBouteilleAllegee = round($quantiteBouteilleAllegee * $prixUnitaireBouteilleAllegee, 1);
-    $prixBouteilleCarton = round($quantiteCarton * $prixUnitaireCarton, 1);
-    $prixBib3L = round($quantiteBib3L * $prixUnitaireBib3L, 1);
-    $prixBib5L = round($quantiteBib5L * $prixUnitaireBib5L, 1);
-    $prixBib10L = round($quantiteBib10L * $prixUnitaireBib10L, 1);
-    $prixTotal = round($prixBouteilleNormale + $prixBouteilleAllegee + $prixBouteilleCarton + $prixBib3L + $prixBib5L + $prixBib10L, 1);
+    $prixBouteilleNormale = round($quantiteBouteilleNormale * $prixUnitaireBouteilleNormale);
+    $prixBouteilleAllegee = round($quantiteBouteilleAllegee * $prixUnitaireBouteilleAllegee);
+    $prixBouteilleCarton = round($quantiteCarton * $prixUnitaireCarton);
+    $prixBib3L = round($quantiteBib3L * $prixUnitaireBib3L);
+    $prixBib5L = round($quantiteBib5L * $prixUnitaireBib5L);
+    $prixBib10L = round($quantiteBib10L * $prixUnitaireBib10L);
+    $prixTotal = $prixBouteilleNormale + $prixBouteilleAllegee + $prixBouteilleCarton + $prixBib3L + $prixBib5L + $prixBib10L;
     /*
     * Controle du prix forfaitaire minimal
     */
