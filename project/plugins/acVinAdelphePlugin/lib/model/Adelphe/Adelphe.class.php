@@ -42,8 +42,8 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
   public function initDoc($identifiant, $periode) {
     $this->identifiant = $identifiant;
     $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
-    $this->prix_unitaire_bib = AdelpheConfiguration::getInstance()->getPrixUnitaireBib();
-    $this->prix_unitaire_bouteille = AdelpheConfiguration::getInstance()->getPrixUnitaireBouteille();
+    $this->volume_conditionne_bib = 0;
+    $this->volume_conditionne_bouteille = 0;
     $this->constructId();
     $this->storeDeclarant();
     $this->setVolumeConditionneTotalFromCsv();
@@ -78,13 +78,7 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
       if(is_null($date)) {
           $date = date('c');
       }
-      $this->getPrixTotaux();
       $this->validation = $this->validation_odg = $date;
-  }
-
-  public function getPrixTotaux() {
-      $this->prix_total_bib = $this->prix_unitaire_bib * $this->volume_conditionne_bib;
-      $this->prix_total_bouteille = $this->prix_unitaire_bouteille * $this->volume_conditionne_bouteille;
   }
 
   public function getTauxBibCalcule() {
@@ -159,18 +153,6 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
       }
       fclose($handle);
     }
-  }
-
-  public function getPrixBouteille() {
-    return round($this->volume_conditionne_bouteille * $this->prix_unitaire_bouteille, 2);
-  }
-
-  public function getPrixBib() {
-    return round($this->volume_conditionne_bib * $this->prix_unitaire_bib, 2);
-  }
-
-  public function getPrixTotal() {
-    return $this->getPrixBouteille() + $this->getPrixBib();
   }
 
   public function isRepartitionForfaitaire() {
