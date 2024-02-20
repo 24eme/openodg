@@ -228,6 +228,40 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
       return null;
     }
 
+    public function matchFilterDrev($drev, $filterparameters)
+    {
+        $match = true;
+
+        if ($filterparameters === null) {
+            $filters = [];
+        }else{
+            $filters = $filterparameters->getParameters();
+        }
+        foreach ($filters as $type => $filter) {
+            if ($type === 'appellations') {
+                throw new sfException('not implemented');
+            } elseif ($type === 'millesime') {
+                throw new sfException('not implemented');
+            } elseif ($type === 'deja') {
+                throw new sfException('not implemented');
+            } elseif ($type === 'region') {
+                if ($drev->exist('region')) {
+                    $region = str_replace('/region/', '', $filter);
+                    $match = $match && strpos($drev->region, $region) !== false;
+                }
+            } elseif($type === 'famille') {
+                $matchfamille = strpos($filter, $drev->declarant->famille) !== false;
+                if (strpos($filter, 'NOT ') === 0) {
+                    $match = $match && !$matchfamille;
+                }else{
+                    $match = $match && $matchfamille;
+                }
+            }
+        }
+
+        return $match;
+    }
+
     public function matchFilterLot($lot, $produitFilter)
     {
         $etablissements = [];

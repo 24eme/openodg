@@ -1752,6 +1752,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getQuantiteVolumeRevendiqueRecolte(TemplateFactureCotisationCallbackParameters $parameters)
     {
+        if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
+            return null;
+        }
         $volume = 0;
         foreach ($this->declaration->getProduitsFilteredBy($parameters) as $produit) {
             $volume += $produit->getVolumeRevendiqueIssuRecolte();
@@ -1786,6 +1789,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+
+        if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
+            return null;
+        }
         $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
 
         if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
