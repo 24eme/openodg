@@ -1808,7 +1808,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
 
         }
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6, null, $parameters->getParameters());
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6, null, $parameters->getParameters()) +
+                $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_MOUTS_L7, null, $parameters->getParameters());
     }
 
     /**** MOUVEMENTS ****/
