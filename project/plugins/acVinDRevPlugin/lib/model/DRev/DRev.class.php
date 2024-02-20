@@ -1799,7 +1799,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
         }
 
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null, $parameters->getParameters(), null, [], false);
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null);
     }
 
     public function getQuantiteVolumeVendue(TemplateFactureCotisationCallbackParameters $parameters) {
