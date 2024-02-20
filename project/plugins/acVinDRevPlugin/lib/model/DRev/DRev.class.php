@@ -1578,7 +1578,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $lotsmodifsvolumes = [];
         $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
                 continue;
             }
             if ($lot->numero_dossier === $this->numero_archive && $lot->id_document == $this->getDocument()->_id) {
@@ -1640,7 +1640,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     private function getInternalVolumeRevendique($lots, $produitFilter) {
         $total = 0;
         foreach($lots as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
                 continue;
             }
 

@@ -1790,7 +1790,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-				if ($filters && DRevClient::getInstance()->matchFilter($lot, $filters->getParameters()) === false) {
+				if ($filters && DRevClient::getInstance()->matchFilterLot($lot, $filters->getParameters()) === false) {
 					continue;
 				}
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
@@ -1826,7 +1826,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             }
 
             foreach ($this->getLotsDegustables() as $lot) {
-                if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+                if (DRevClient::getInstance()->matchFilterLot($lot, $filters) === false) {
                     continue;
                 }
 
@@ -1870,7 +1870,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $detailKey = $cotisation->getDetailKey();
             $nblots_operateurs = [];
             foreach ($this->getLotsDegustables() as $lot) {
-                if (DRevClient::getInstance()->matchFilter($lot, $filters->getParameters()) === false) {
+                if (DRevClient::getInstance()->matchFilterLot($lot, $filters->getParameters()) === false) {
                     continue;
                 }
                 @$nblots_operateurs[$lot->declarant_identifiant] += 1;
@@ -1896,7 +1896,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if(strpos($lot->id_document_provenance, 'CONDITIONNEMENT') !== 0){
                     continue;
                 }
-				if (DRevClient::getInstance()->matchFilter($lot, $filters) === false) {
+				if (DRevClient::getInstance()->matchFilterLot($lot, $filters) === false) {
                     continue;
                 }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);

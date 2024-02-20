@@ -228,7 +228,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
       return null;
     }
 
-    public function matchFilter($lot, $produitFilter)
+    public function matchFilterLot($lot, $produitFilter)
     {
         $etablissements = [];
         $match = true;
