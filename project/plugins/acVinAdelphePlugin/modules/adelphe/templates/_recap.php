@@ -39,5 +39,8 @@
         </tr>
     </tbody>
 </table>
-
+<div class="well">
+  <h3 class="text-center">Montant estimé de votre cotisation Adelphe</h3>
+  <h3 class="text-center"><?php echo sprintFloat($adelphe->cotisation_prix_total) ?> <small class="text-muted">€</small></h3>
+</div>
 <?php endif; ?>
