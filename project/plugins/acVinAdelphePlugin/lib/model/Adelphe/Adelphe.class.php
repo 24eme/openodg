@@ -74,6 +74,10 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     return $etapeOriginal != $this->etape;
   }
 
+  protected function preSave() {
+    $this->updateCotisation();
+  }
+
   public function validate($date = null) {
       if(is_null($date)) {
           $date = date('c');
