@@ -1656,13 +1656,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter->getParameters(), null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter, null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
-            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, null, $produitFilter->getParameters());
+            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, null, $produitFilter);
         }
         if ($type == SV12CsvFile::CSV_TYPE_SV12) {
-            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL, null, $produitFilter->getParameters());
+            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_VOLUME_TOTAL, null, $produitFilter);
         }
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
@@ -1672,7 +1672,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
             return null;
         }
-        return $dr->getTotalValeur("15", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL) + $dr->getTotalValeur("14", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+        return $dr->getTotalValeur("15", null, $produitFilter, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL) + $dr->getTotalValeur("14", null, $produitFilter, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
     }
 
     public function getVolumeIGPSIGFromSV11($produitFilter = null) {
@@ -1693,13 +1693,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, $produitFilter->getParameters(), DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE_L4, null, $produitFilter, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
-            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter->getParameters());
+            return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter);
         }
         if ($type == SV12CsvFile::CSV_TYPE_SV12) {
-            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter->getParameters());
+            return $docDouanier->getTotalValeur(SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE, null, $produitFilter);
         }
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
@@ -1785,7 +1785,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
         }
 
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters->getParameters());
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters);
     }
 
     public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
@@ -1799,7 +1799,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
         }
 
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null);
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null, $parameters);
     }
 
     public function getQuantiteVolumeVendue(TemplateFactureCotisationCallbackParameters $parameters) {
@@ -1808,8 +1808,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return;
 
         }
-        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6, null, $parameters->getParameters()) +
-                $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_MOUTS_L7, null, $parameters->getParameters());
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6, null, $parameters) +
+                $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_MOUTS_L7, null, $parameters);
     }
 
     /**** MOUVEMENTS ****/

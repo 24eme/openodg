@@ -416,7 +416,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         $calcul = $formule;
         $numLignes = preg_split('|[\-+*\/() ]+|', $formule, -1, PREG_SPLIT_NO_EMPTY);
         foreach($numLignes as $numLigne) {
-            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter->getParameters());
+            $datas[$numLigne] = $this->getTotalValeur($numLigne, null, $produitFilter);
         }
 
         foreach($datas as $numLigne => $value) {
@@ -477,7 +477,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
 
-    public function getTotalValeur($numLigne, $familles = null, $produitFilter = null, $famille_exclue = null, $throw_familles = array(), $metayer_only = true) {
+    public function getTotalValeur($numLigne, $familles = null, TemplateFactureCotisationCallbackParameters $produitFilter = null, $famille_exclue = null, $throw_familles = array(), $metayer_only = true) {
         $value = 0;
         foreach($this->getEnhancedDonnees() as $donnee) {
             if (in_array($donnee->colonne_famille, $throw_familles)) {
@@ -500,9 +500,9 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             }
             $value = $value + VarManipulator::floatize($donnee->valeur);
         }
-
-        if (isset($produitFilter['round_methode'])) {
-            $value = $produitFilter['round_methode']($value);
+        $round_methode = $produitFilter->getParameters('round_methode');
+        if ($round_methode) {
+            $value = $round_methode($value);
         }
 
         return $value;
