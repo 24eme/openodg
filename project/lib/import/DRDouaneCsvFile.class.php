@@ -19,19 +19,20 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $familles_lignes = array();
         $max_ligne = 0;
         foreach ($csv as $key => $values) {
-            if (substr(trim($values[0]), 0, 1) == "6" || substr(trim($values[0]), 0, 1) == '7') {
+            $ligneid = explode('-', $values[0])[0];
+            if ($ligneid == "6" || $ligneid == '7') {
                 for($i = 2 ; $i < count($values); $i++) {
                     $has_volume_nego_lignes[$i] = boolval($values[$i]);
                     $has_volume_nego += boolval($values[$i]);
                 }
             }
-            if (substr(trim($values[0]), 0, 1) == '8') {
+            if ($ligneid == '8') {
                 for($i = 2 ; $i < count($values); $i++) {
                     $has_volume_coop_lignes[$i] = boolval($values[$i]);
                     $has_volume_coop += boolval($values[$i]);
                 }
             }
-            if (substr(trim($values[0]), 0, 1) == '9') {
+            if ($ligneid == '9') {
                 for($i = 2 ; $i < count($values); $i++) {
                     $has_volume_cave_lignes[$i] = boolval($values[$i]);
                     $has_volume_cave += boolval($values[$i]);
