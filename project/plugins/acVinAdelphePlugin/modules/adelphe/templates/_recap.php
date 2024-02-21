@@ -12,14 +12,12 @@
 
 <?php else: ?>
 
-<h3>Votre contribution Adelphe</h3>
+<h3>Votre volume conditionné</h3>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-2 text-center">Condtionnement</th>
-            <th class="col-xs-4 text-center">Volume conditionné <small class="text-muted">(hl)</small></th>
-            <th class="col-xs-2 text-center">Prix unitaire <small class="text-muted">(€ HT)</small></th>
-            <th class="col-xs-4 text-center">Prix estimé <small class="text-muted">(€ HT)</small></th>
+            <th class="col-xs-4 text-center">Condtionnement</th>
+            <th class="col-xs-8 text-center">Volume conditionné <small class="text-muted">(hl)</small></th>
         </tr>
     </thead>
     <tbody>
@@ -27,25 +25,22 @@
         <tr>
             <td class="text-left">BIB <?php if($adelphe->isRepartitionForfaitaire()): ?><small>(volume forfaitaire)</small><?php endif; ?><small class="pull-right"><?php echo $adelphe->getTauxBibCalcule() ?>%</small></td>
             <td class="text-right"><?php echo sprintFloat($adelphe->volume_conditionne_bib) ?> <small class="text-muted">hl</small></td>
-            <td class="text-right"><?php echo sprintf("%.4f", $adelphe->prix_unitaire_bib*1) ?> <small class="text-muted">€ HT</small></td>
-            <td class="text-right"><?php echo sprintFloat($adelphe->getPrixBib()) ?> <small class="text-muted">€ HT</small></td>
         </tr>
         <?php endif ?>
         <?php if ($adelphe->getTauxBouteilleCalcule() > 0): ?>
         <tr>
             <td class="text-left">Bouteille<small class="pull-right"><?php echo $adelphe->getTauxBouteilleCalcule() ?>%</small></td>
             <td class="text-right"><?php echo sprintFloat($adelphe->volume_conditionne_bouteille) ?> <small class="text-muted">hl</small></td>
-            <td class="text-right"><?php echo sprintf("%.4f", $adelphe->prix_unitaire_bouteille) ?> <small class="text-muted">€ HT</small></td>
-            <td class="text-right"><?php echo sprintFloat($adelphe->getPrixBouteille()) ?> <small class="text-muted">€ HT</small></td>
         </tr>
       <?php endif; ?>
         <tr>
             <td class="text-left"><strong>Total</strong></td>
             <td class="text-right"><strong><?php echo sprintFloat($adelphe->volume_conditionne_total) ?> <small class="text-muted">hl</small></strong></td>
-            <td class="text-right"></td>
-            <td class="text-right"><strong><?php echo sprintFloat($adelphe->getPrixTotal()) ?> <small class="text-muted">€ HT</small></strong></td>
         </tr>
     </tbody>
 </table>
-
+<div class="well">
+  <h3 class="text-center">Montant estimé de votre cotisation Adelphe</h3>
+  <h3 class="text-center"><?php echo number_format($adelphe->cotisation_prix_total, 2, ',', ' ') ?> <span class="text-muted">€</span></h3>
+</div>
 <?php endif; ?>
