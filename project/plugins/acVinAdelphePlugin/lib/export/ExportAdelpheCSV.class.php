@@ -7,7 +7,7 @@ class ExportAdelpheCSV implements InterfaceDeclarationExportCsv {
     protected $region = null;
 
     public static function getHeaderCsv() {
-        return "Raison sociale;Adresse;Commune;CVI;Mise en marché de BIB;Part BIB (%);Volume (hl);Contribution (€ HT);Identifiant\n";
+        return "Raison sociale;Adresse;Commune;CVI;Mise en marché de BIB;Part BIB (%);Volume conditionne total (hl);Contribution (€);Identifiant;Volume bouteille (hl);Volume BIB (hl);Quantité bouteille normale (uc);Prix bouteille normale (€);Quantité bouteille allégée (uc);Prix bouteille allégée (€);Quantité carton (uc);Prix carton (€);Quantité BIB 3L (uc);Prix BIB 3L (€);Quantité BIB 5L (uc);Prix BIB 5L (€);Quantité BIB 10L (uc);Prix BIB 10L (€)\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -34,7 +34,7 @@ class ExportAdelpheCSV implements InterfaceDeclarationExportCsv {
         $mis_en_marche_bib = ($this->doc->isRepartitionForfaitaire())? 'Oui, sur la base du standard' : 'Oui, sur le réel';
 
       }
-    	$csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+    	$csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
       	$this->protectStr($this->doc->declarant->raison_sociale),
       	$this->protectStr($this->doc->declarant->adresse),
         $this->protectStr($this->doc->declarant->code_postal.' '.$this->doc->declarant->commune),
@@ -42,8 +42,22 @@ class ExportAdelpheCSV implements InterfaceDeclarationExportCsv {
       	$this->protectStr($mis_en_marche_bib),
         $this->formatFloat($this->doc->getTauxBibCalcule()),
         $this->formatFloat($this->doc->volume_conditionne_total),
-        $this->formatFloat($this->doc->getPrixTotal()),
+        $this->doc->cotisation_prix_total,
         $this->protectStr($this->doc->identifiant),
+        $this->formatFloat($this->doc->volume_conditionne_bouteille),
+        $this->formatFloat($this->doc->volume_conditionne_bib),
+        $this->doc->cotisation_prix_details->BOUTEILLES_NORMALES->quantite,
+        $this->doc->cotisation_prix_details->BOUTEILLES_NORMALES->prix,
+        $this->doc->cotisation_prix_details->BOUTEILLES_ALLEGEES->quantite,
+        $this->doc->cotisation_prix_details->BOUTEILLES_ALLEGEES->prix,
+        $this->doc->cotisation_prix_details->BOUTEILLES_CARTONS->quantite,
+        $this->doc->cotisation_prix_details->BOUTEILLES_CARTONS->prix,
+        $this->doc->cotisation_prix_details->BIB_3L->quantite,
+        $this->doc->cotisation_prix_details->BIB_3L->prix,
+        $this->doc->cotisation_prix_details->BIB_5L->quantite,
+        $this->doc->cotisation_prix_details->BIB_5L->prix,
+        $this->doc->cotisation_prix_details->BIB_10L->quantite,
+        $this->doc->cotisation_prix_details->BIB_10L->prix,
       );
       return $csv;
     }

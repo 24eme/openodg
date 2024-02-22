@@ -42,8 +42,8 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
   public function initDoc($identifiant, $periode) {
     $this->identifiant = $identifiant;
     $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
-    $this->prix_unitaire_bib = AdelpheConfiguration::getInstance()->getPrixUnitaireBib();
-    $this->prix_unitaire_bouteille = AdelpheConfiguration::getInstance()->getPrixUnitaireBouteille();
+    $this->volume_conditionne_bib = 0;
+    $this->volume_conditionne_bouteille = 0;
     $this->constructId();
     $this->storeDeclarant();
     $this->setVolumeConditionneTotalFromCsv();
@@ -74,17 +74,15 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     return $etapeOriginal != $this->etape;
   }
 
+  protected function preSave() {
+    $this->updateCotisation();
+  }
+
   public function validate($date = null) {
       if(is_null($date)) {
           $date = date('c');
       }
-      $this->getPrixTotaux();
       $this->validation = $this->validation_odg = $date;
-  }
-
-  public function getPrixTotaux() {
-      $this->prix_total_bib = $this->prix_unitaire_bib * $this->volume_conditionne_bib;
-      $this->prix_total_bouteille = $this->prix_unitaire_bouteille * $this->volume_conditionne_bouteille;
   }
 
   public function getTauxBibCalcule() {
@@ -161,18 +159,6 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
     }
   }
 
-  public function getPrixBouteille() {
-    return round($this->volume_conditionne_bouteille * $this->prix_unitaire_bouteille, 2);
-  }
-
-  public function getPrixBib() {
-    return round($this->volume_conditionne_bib * $this->prix_unitaire_bib, 2);
-  }
-
-  public function getPrixTotal() {
-    return $this->getPrixBouteille() + $this->getPrixBib();
-  }
-
   public function isRepartitionForfaitaire() {
     return ($this->conditionnement_bib && !$this->repartition_bib);
   }
@@ -195,6 +181,59 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
 
   public function getValidationOdg() {
     return $this->_get('validation_odg');
+  }
+
+  public function updateCotisation() {
+    /*
+    * Valeurs prédéfinies par Adelphe
+    */
+    $partBouteilleNormale = 75/100;
+    $partBouteilleAllegee = 25/100;
+    $partCarton = 1/6;
+    $prixUnitaireBouteilleNormale = 0.0090;
+    $prixUnitaireBouteilleAllegee = 0.0084;
+    $prixUnitaireCarton = 0.0458;
+    $partBib3L = 55/100;
+    $partBib5L = 35/100;
+    $partBib10L = 10/100;
+    $prixUnitaireBib3L = 0.0363;
+    $prixUnitaireBib5L = 0.0501;
+    $prixUnitaireBib10L = 0.0900;
+    /*
+    * Calcul des unités de conditionnement
+    */
+    $quantiteBouteilleNormale = round($this->volume_conditionne_bouteille * $partBouteilleNormale * 10000 / 75);
+    $quantiteBouteilleAllegee = round($this->volume_conditionne_bouteille * $partBouteilleAllegee * 10000 / 75);
+    $quantiteCarton = round(($quantiteBouteilleNormale + $quantiteBouteilleAllegee) * $partCarton);
+    $quantiteBib3L = round($this->volume_conditionne_bib * $partBib3L * 100 / 3);
+    $quantiteBib5L = round($this->volume_conditionne_bib * $partBib5L * 100 / 5);
+    $quantiteBib10L = round($this->volume_conditionne_bib * $partBib10L * 100 / 10);
+    /*
+    * Calcul des prix
+    */
+    $prixBouteilleNormale = round($quantiteBouteilleNormale * $prixUnitaireBouteilleNormale);
+    $prixBouteilleAllegee = round($quantiteBouteilleAllegee * $prixUnitaireBouteilleAllegee);
+    $prixBouteilleCarton = round($quantiteCarton * $prixUnitaireCarton);
+    $prixBib3L = round($quantiteBib3L * $prixUnitaireBib3L);
+    $prixBib5L = round($quantiteBib5L * $prixUnitaireBib5L);
+    $prixBib10L = round($quantiteBib10L * $prixUnitaireBib10L);
+    $prixTotal = $prixBouteilleNormale + $prixBouteilleAllegee + $prixBouteilleCarton + $prixBib3L + $prixBib5L + $prixBib10L;
+    /*
+    * Controle du prix forfaitaire minimal
+    */
+    if ($prixTotal < 80) {
+      $prixTotal = 80;
+    }
+    /*
+    * Enregistrement en base de données
+    */
+    $this->cotisation_prix_details->getOrAdd('BOUTEILLES_NORMALES')->addDetail($partBouteilleNormale, $quantiteBouteilleNormale, $prixUnitaireBouteilleNormale, $prixBouteilleNormale);
+    $this->cotisation_prix_details->getOrAdd('BOUTEILLES_ALLEGEES')->addDetail($partBouteilleAllegee, $quantiteBouteilleAllegee, $prixUnitaireBouteilleAllegee, $prixBouteilleAllegee);
+    $this->cotisation_prix_details->getOrAdd('BOUTEILLES_CARTONS')->addDetail(round($partCarton,3), $quantiteCarton, $prixUnitaireCarton, $prixBouteilleCarton);
+    $this->cotisation_prix_details->getOrAdd('BIB_3L')->addDetail($partBib3L, $quantiteBib3L, $prixUnitaireBib3L, $prixBib3L);
+    $this->cotisation_prix_details->getOrAdd('BIB_5L')->addDetail($partBib5L, $quantiteBib5L, $prixUnitaireBib5L, $prixBib5L);
+    $this->cotisation_prix_details->getOrAdd('BIB_10L')->addDetail($partBib10L, $quantiteBib10L, $prixUnitaireBib10L, $prixBib10L);
+    $this->cotisation_prix_total = $prixTotal;
   }
 
 }
