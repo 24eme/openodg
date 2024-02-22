@@ -46,7 +46,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             foreach($this->getProduits() as $produit_hash => $p) {
                 if (RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit_hash)) {
                     $regions[] = $region;
-                    break 2;
+                    break;
                 }
             }
         }
