@@ -50,8 +50,8 @@
             <table>
                 <tr>
                     <td style="width: 10%">Type :</td>
-                    <td><?php echoCheck('Aléatoire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE) ?></td>
-                    <td><?php echoCheck('Aléatoire renforcé', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE) ?></td>
+                    <td><?php echoCheck('Aléatoire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE && !$lot->hasSpecificitePassage()) ?></td>
+                    <td><?php echoCheck('Aléatoire renforcé', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE && !$lot->hasSpecificitePassage()) ?></td>
                     <td><?php echoCheck('Vrac export', $lot->initial_type == 'VracExport') ?></td>
                 </tr>
                 <tr>
@@ -66,7 +66,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td colspan="3"><?php echoCheck('Suite à contrôle produit OIVC non conforme', false) ?></td>
+                    <td colspan="3"><?php echoCheck('Suite à contrôle produit OIVC non conforme', $lot->hasSpecificitePassage()) ?></td>
                 </tr>
                 <tr>
                     <td></td><td colspan="3"><?php echoCheck('Contrôle supplémentaire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE) ?></td><td></td>
