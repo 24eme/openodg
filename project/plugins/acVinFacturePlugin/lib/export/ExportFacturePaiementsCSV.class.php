@@ -46,30 +46,28 @@ class ExportFacturePaiementsCSV implements InterfaceDeclarationExportCsv {
         $facture = $this->facture;
         $csv = '';
         $csv_prefix = $facture->identifiant.";".$this->facture->declarant->nom.";".$facture->code_comptable_client.';'.$facture->getNumeroOdg().";";
-        if($facture->exist('paiements')) {
-          foreach ($facture->paiements as $paiement) {
-              if ($this->que_les_non_verses_comptablement && $paiement->versement_comptable) {
-                  continue;
-              }
-              if ($date_max && $date_max < $paiement->date) {
-                  continue;
-              }
-              if ($set_verse) {
-                  $paiement->versement_comptable = true;
-              }
-              $csv .= $csv_prefix;
-              $csv .= $paiement->date.";";
-              $csv .= $this->floatHelper->formatFr($paiement->montant,2,2).";";
-              $csv .= $paiement->type_reglement.";";
-              $csv .= $paiement->commentaire.";";
-              $csv .= $this->floatHelper->formatFr($facture->total_ttc - $facture->montant_paiement,2,2).';';
-              $csv .= $paiement->exist('execute') ? $paiement->execute.";" : ";";
-              $csv .= $paiement->versement_comptable.";";
-              $csv .= Organisme::getCurrentOrganisme().";";
-              $csv .= $facture->_id.";";
-              $csv .= $paiement->getHash().';';
-              $csv .= "\n";
-          }
+        foreach ($facture->paiements as $paiement) {
+            if ($this->que_les_non_verses_comptablement && $paiement->versement_comptable) {
+                continue;
+            }
+            if ($date_max && $date_max < $paiement->date) {
+                continue;
+            }
+            if ($set_verse) {
+                $paiement->versement_comptable = true;
+            }
+            $csv .= $csv_prefix;
+            $csv .= $paiement->date.";";
+            $csv .= $this->floatHelper->formatFr($paiement->montant,2,2).";";
+            $csv .= $paiement->type_reglement.";";
+            $csv .= $paiement->commentaire.";";
+            $csv .= $this->floatHelper->formatFr($facture->total_ttc - $facture->montant_paiement,2,2).';';
+            $csv .= $paiement->exist('execute') ? $paiement->execute.";" : ";";
+            $csv .= $paiement->versement_comptable.";";
+            $csv .= (($facture->exist('region') && $facture->region) ? $facture->region : Organisme::getCurrentOrganisme()).";";
+            $csv .= $facture->_id.";";
+            $csv .= $paiement->getHash().';';
+            $csv .= "\n";
         }
 
         return $csv;

@@ -200,7 +200,7 @@
 \textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\
 <?php endif; ?>
 \\\vspace{6mm}
-<?php if ($facture->exist('paiements') && count($facture->paiements)): ?>
+<?php if (count($facture->paiements)): ?>
 \textbf{Paiement(s) :} \\
 \begin{itemize}
 <?php foreach($facture->paiements as $paiement): ?>
