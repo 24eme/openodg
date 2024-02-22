@@ -249,7 +249,7 @@ class DRevDeclaration extends BaseDRevDeclaration
     	$total = 0;
 
         foreach($this->getProduits() as $key => $item) {
-            if (DRevClient::getInstance()->matchFilter($item, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($item, $produitFilter) === false) {
                 continue;
             }
 
