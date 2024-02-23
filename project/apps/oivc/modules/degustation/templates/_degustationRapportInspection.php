@@ -73,7 +73,7 @@
                 </tr>
             </table>
         </td></tr>
-        <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->preleve)->format('d/m/Y') ?></td></tr>
+        <tr><td>Date du prélèvement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d H:i', $lot->prelevement_datetime)->format('d/m/Y') ?></td></tr>
         <tr><td>Au moment du prélèvement, le vin est :
             <?php if($lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_RECOURS) :?>
                 Témoin
