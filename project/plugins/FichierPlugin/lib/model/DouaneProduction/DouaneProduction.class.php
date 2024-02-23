@@ -426,7 +426,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         return eval("return $calcul;");
     }
 
-    public function matchFilter($produit, $produitFilter)
+    public function matchFilter($produit, TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         $match = true;
         $etablissements = [];
@@ -434,8 +434,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         if ($produitFilter === null) {
             $produitFilter = [];
         }
-
-        foreach ($produitFilter as $type => $filter) {
+        foreach ($produitFilter->getParameters() as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($produit, $filter);
             } elseif ($type === 'millesime') {
@@ -448,11 +447,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
                 $region = $filter;
                 $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->produit);
             } elseif($type === 'famille') {
-                if (array_key_exists($produit->declarant_identifiant, $etablissements) === false) {
-                    $etablissements[$produit->declarant_identifiant] = EtablissementClient::getInstance()->find($produit->declarant_identifiant);
-                }
-
-                $match = $match && $this->matchFilterFamille($etablissements[$produit->declarant_identifiant]->famille, $filter);
+                $match = $match && DRevClient::getInstance()->matchFilterFamille($this->declarant->famille, $filter);
             }
         }
 

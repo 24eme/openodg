@@ -228,7 +228,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
       return null;
     }
 
-    public function matchFilterDrev($drev, $filterparameters)
+    public function matchFilterDrev($drev, TemplateFactureCotisationCallbackParameters $filterparameters)
     {
         $match = true;
 
@@ -262,7 +262,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $match;
     }
 
-    public function matchFilterLot($lot, $produitFilter)
+    public function matchFilterLot($lot, TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         $etablissements = [];
         $match = true;
@@ -295,7 +295,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $match;
     }
 
-    private function matchFilterFamille($famille, $familleFilter)
+    public function matchFilterFamille($famille, $familleFilter)
     {
         if(! $famille){
             return false;
