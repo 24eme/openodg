@@ -137,7 +137,7 @@ class DRevProduit extends BaseDRevProduit
 		$this->volume_revendique_issu_vci = null;
 		if($this->hasVci()) {
 			$this->volume_revendique_issu_vci = ((float) $this->vci->complement) + ((float) $this->vci->substitution) + ((float) $this->vci->rafraichi);
-			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement);
+			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue) + ((float) $this->vci->ajustement) + ((float) $this->vci->substitution);
 		}
         if($this->recolte->exist('vsi') && $this->recolte->vsi) {
             $this->add('volume_revendique_issu_vsi', $this->recolte->vsi);

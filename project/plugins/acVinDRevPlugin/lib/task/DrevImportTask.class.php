@@ -133,8 +133,7 @@ EOF;
                     if($this->formatFloat($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE_ISSU_MUTAGE]) > 0 && $produit->exist('volume_revendique_issu_mutage')) {
                         $produit->volume_revendique_issu_mutage = $this->formatFloat($data[ExportDRevCSV::CSV_VOLUME_REVENDIQUE_ISSU_MUTAGE]);
                     }
-
-                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_PRECEDENT]) > 0)
+                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_PRECEDENT]) > 0) {
                         $produit->vci->stock_precedent += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_PRECEDENT]);
                     }
                     if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_DESTRUCTION]) > 0) {
@@ -149,10 +148,10 @@ EOF;
                     if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_RAFRAICHI]) > 0) {
                         $produit->vci->rafraichi += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_RAFRAICHI]);
                     }
-                    if($this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_CONSTITUE]) > 0) {
+                    if(!$drev->hasDR() && $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_CONSTITUE]) > 0) {
                         $produit->vci->constitue += $this->formatFloat($data[ExportDRevCSV::CSV_VCI_STOCK_CONSTITUE]);
                     }
-
+                }
                 $drev->update();
                 $dateValidation = null;
                 if ($data[ExportDRevCSV::CSV_DATE_VALIDATION_DECLARANT]){
