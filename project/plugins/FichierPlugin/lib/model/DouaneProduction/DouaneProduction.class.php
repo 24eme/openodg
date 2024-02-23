@@ -46,7 +46,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
             foreach($this->getProduits() as $produit_hash => $p) {
                 if (RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit_hash)) {
                     $regions[] = $region;
-                    break 2;
+                    break;
                 }
             }
         }
@@ -508,6 +508,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
     public function getDonnees() {
+        //Si les tiers ne s'affiche pas, supprimer le champ données en base
         if (!$this->exist('donnees')) {
             $this->generateDonnees();
         }
