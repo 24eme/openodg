@@ -513,6 +513,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     }
 
     public function getDonnees() {
+        //Si les tiers ne s'affiche pas, supprimer le champ données en base
         if (!$this->exist('donnees')) {
             $this->generateDonnees();
         }
