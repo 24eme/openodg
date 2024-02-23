@@ -73,7 +73,7 @@ class TourneeClient extends DegustationClient {
         return $degustation;
     }
 
-    public function getLotsEnAttente($region) {
+    public function getLotsEnAttente($region, $date = null) {
 
         return parent::getLotsEnAttente($region);
 	}

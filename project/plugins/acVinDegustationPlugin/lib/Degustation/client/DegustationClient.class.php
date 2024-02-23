@@ -97,7 +97,7 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
         return $lot;
     }
 
-    public function getLotsEnAttente($region) {
+    public function getLotsEnAttente($region, $date = null) {
 	    $lots = array();
         $statut = Lot::STATUT_AFFECTABLE;
         if(DegustationConfiguration::getInstance()->isTourneeAutonome() && get_called_class() != "TourneeClient") {
@@ -112,6 +112,9 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
                 continue;
             }
             if ($lot->key[MouvementLotView::KEY_REGION] === Organisme::getInstance()->getOIRegion() && $lot->key[MouvementLotView::KEY_REGION] !== $region) {
+                continue;
+            }
+            if (strtotime($lot->value->date_degustation_voulue) > strtotime($date)) {
                 continue;
             }
             if (!$lot->value) {
