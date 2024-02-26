@@ -166,7 +166,7 @@ class PMCValidation extends DocumentValidation
         if (DRevConfiguration::getInstance()->hasLogementChais() && sfContext::getInstance()->getUser()->isAdmin()) {
             if (!$this->document->chais->nom && !$this->document->chais->adresse && !$this->document->chais->commune && ! $this->document->chais->code_postal) {
                 $this->addPoint(self::TYPE_ERROR, 'logement_chai_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));
-            } elseif(!$this->document->chais->secteur) {
+            } elseif(!$this->document->chais->secteur && $this->document->type == PMCClient::TYPE_MODEL) {
                 $this->addPoint(self::TYPE_ERROR, 'logement_chai_secteur_inexistant', 'Logement', $this->generateUrl('pmc_exploitation', array("id" => $this->document->_id)));
             }
         }

@@ -40,6 +40,14 @@ class PMCNCClient extends PMCClient
             $lot->remove($key);
         }
 
+        $pmcNc->chais->nom = $lot->getLogementNom();
+        $pmcNc->chais->adresse = $lot->getLogementAdresse();
+        $pmcNc->chais->code_postal = $lot->getLogementCodePostal();
+        $pmcNc->chais->commune = $lot->getLogementCommune();
+        if($lot->exist('secteur')) {
+            $pmcNc->chais->secteur = $lot->secteur;
+        }
+
         $lot = $pmcNc->lots->add(null, $lot);
         $lot->id_document = $pmcNc->_id;
         $lot->updateDocumentDependances();
