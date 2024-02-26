@@ -806,7 +806,7 @@ class degustationActions extends sfActions {
     public function executeLotConformeAppel(sfWebRequest $request) {
         $docid = $request->getParameter('id');
         $lotid = $request->getParameter('lot');
-        $doc = DegustationClient::getInstance()->find($docid);
+        $doc = acCouchdbClient::getInstance()->find($docid);
         $this->forward404Unless($doc);
         $lot = $doc->getLot($lotid);
         $this->forward404Unless($lot);
