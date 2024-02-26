@@ -588,7 +588,6 @@ class FactureClient extends acCouchdbClient {
         $factures = acCouchdbManager::getClient()
             ->startkey(array("Facture", $campagne, array()))
             ->endkey(array("Facture", $campagne))
-            ->limit(200)
             ->reduce(false)
             ->include_docs(true)
             ->descending(true)
@@ -600,11 +599,11 @@ class FactureClient extends acCouchdbClient {
                 return $facture->doc->region === $region;
             });
         }
-        $lastFactures = array_slice($factures, 0, 10);
-        usort($lastFactures, function($a, $b) {
+
+        usort($factures, function($a, $b) {
             return strtotime($b->doc->date_facturation) - strtotime($a->doc->date_facturation);
         });
-        return $lastFactures;
+        return array_slice($factures, 0, 10);
     }
 
     public function getAllFactures($campagne) {
