@@ -24,7 +24,7 @@ class facturationActions extends sfActions
         $this->formFacturationMassive = new FactureGenerationMasseForm();
 
         $this->campagnes = $this->getCampagnesList();
-        $this->campagne = reset($this->campagnes);
+        $this->campagne = FactureClient::getInstance()->getCampagneByDate(date('Y-m-d'));
         if ($request->getParameter('campagne')) {
             $this->campagne = $request->getParameter('campagne');
         }
