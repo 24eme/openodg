@@ -114,8 +114,8 @@ class DegustationClient extends acCouchdbClient implements FacturableClient {
             if ($lot->key[MouvementLotView::KEY_REGION] === Organisme::getInstance()->getOIRegion() && $lot->key[MouvementLotView::KEY_REGION] !== $region) {
                 continue;
             }
-            if (strtotime($lot->value->date_degustation_voulue) > strtotime($date)) {
-                continue;
+            if (isset($lot->value->date_degustation_voulue) && $date && strtotime($lot->value->date_degustation_voulue) > strtotime($date)) {
+              continue;
             }
             if (!$lot->value) {
                 throw new sfException("Lot ne devrait pas être vide : ".print_r($lot, true));
