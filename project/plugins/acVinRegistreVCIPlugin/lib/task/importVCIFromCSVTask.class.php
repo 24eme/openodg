@@ -89,7 +89,7 @@ EOF;
             if($data[13] && (!$produitDetail || $produitDetail->complement != $this->formatFloat($data[13]) )) {
                 $registre->addLigne($confProduit->getHash(), 'complement', $this->formatFloat($data[13]), $cvi);
             }
-            if($data[14] && (!$produitDetail || $produitDetail->complement != $this->formatFloat($data[14]))) {
+            if($data[14] && (!$produitDetail || $produitDetail->substitution != $this->formatFloat($data[14]))) {
                 $registre->addLigne($confProduit->getHash(), 'substitution', $this->formatFloat($data[14]), $cvi);
             }
             if($data[15] && (!$produitDetail || $produitDetail->rafraichi != $this->formatFloat($data[15]))) {
