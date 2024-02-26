@@ -811,7 +811,8 @@ class degustationActions extends sfActions {
         $lot = $doc->getLot($lotid);
         $this->forward404Unless($lot);
 
-        $lot->conformeAppel();
+        $lot->statut = Lot::STATUT_CONFORME_APPEL;
+        $lot->conforme_appel = date('Y-m-d');
 
         $doc->generateMouvementsLots();
         $doc->save();
