@@ -28,6 +28,21 @@ class DRevDeclaration extends BaseDRevDeclaration
 	}
 
 	public function cleanNode() {
+        $saveStock = 0;
+        foreach ($this as $hash) {
+            if (count($hash) == 2) {
+                foreach ($hash as $element) {
+                    if ($element->vci->stock_precedent && !$element->recolte->superficie_total) {
+                        $saveStock = $element->vci->stock_precedent;
+                    }
+                }
+                foreach ($hash as $element) {
+                    if ($element->vci->stock_precedent && $element->recolte->superficie_total) {
+                        $element->vci->stock_precedent = $saveStock;
+                    }
+                }
+            }
+        }
 		$hash_to_delete = array();
 		foreach($this->getProduits() as $produit) {
 			if($produit->isCleanable()) {

@@ -878,6 +878,7 @@ class drevActions extends sfActions {
         if($this->getUser()->isAdmin()) {
             $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
         }
+        $this->drev->declaration->cleanNode();
 
         $this->dr = DRClient::getInstance()->findByArgs($this->drev->identifiant, $this->drev->periode);
 
