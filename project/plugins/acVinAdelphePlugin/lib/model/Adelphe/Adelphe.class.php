@@ -85,6 +85,10 @@ class Adelphe extends BaseAdelphe implements InterfaceDeclarantDocument, Interfa
       $this->validation = $this->validation_odg = $date;
   }
 
+  public function devalidate() {
+    $this->validation = $this->validation_odg = null;
+  }
+
   public function getTauxBibCalcule() {
     if ($this->volume_conditionne_bib > 0 && $this->volume_conditionne_total > 0 && $this->volume_conditionne_total >= $this->volume_conditionne_bib) {
       return round($this->volume_conditionne_bib / $this->volume_conditionne_total * 100);
