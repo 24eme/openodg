@@ -101,6 +101,7 @@ ChgtDenom:
                   adresse_logement: {}
                   specificite: {}
                   affectable: { }
+                  conforme_appel: {}
                   document_fils: { required: false }
                   cepages:
                     type: collection

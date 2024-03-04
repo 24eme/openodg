@@ -37,6 +37,10 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             $pid = $detailv->getAppellation()->getHash().' '.$detailv->section . ' ' . $detailv->numero_parcelle;
 
             $appellation_id = $detailv->section . ' ' . $detailv->numero_parcelle.' '.$detailv->superficie;
+            if ($detailv->vtsgn) {
+              $appellation_id .= ' VT/SGN';
+            }
+
             if(!isset($uniq_appellation[$appellation_id])) {
                 $uniq_appellation[$appellation_id] = array();
             }

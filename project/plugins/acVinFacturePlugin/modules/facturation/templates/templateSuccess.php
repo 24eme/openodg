@@ -55,6 +55,7 @@
             <th>Compta</th>
             <th>Type</th>
             <th>Prix</th>
+            <th>TVA</th>
             <th>Document</th>
             <th>Calcul de la Quantité</th>
             <th>Unité</th>
@@ -68,6 +69,7 @@
         <td><?php echo $cotisation->code_comptable ?></td>
         <td><?php echo str_replace("Cotisation", "", $detail->modele) ?></td>
         <td class="text-right"><?php echo $detail->prix ?>&nbsp;€</td>
+        <td class="text-right"><?php echo $detail->tva ?>&nbsp;€</td>
         <td><?php echo implode(",&nbsp;", $detail->docs->getRawValue()->toArray()) ?></td>
         <td><?php echo $detail->callback ?><?php if($detail->exist('callback_parameters')): ?> <small class="text-muted"><?php echo implode(", ", $detail->callback_parameters->getRawValue()->toArray()) ?></small><?php endif; ?></td>
         <td class="text-left"><?php if($detail->exist('unite')): ?><?php echo $detail->unite ?><?php endif; ?></td>
