@@ -45,7 +45,6 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
         $isempty = true;
         foreach ($this->doc->declaration->getParcellesByCommune() as $commune => $parcelles) {
         	foreach ($parcelles as $parcelle) {
-                $isempty = false;
             	$configProduit = $parcelle->getProduit()->getConfig();
 
             	$inao = $configProduit->getCodeDouane();
@@ -75,9 +74,7 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
                 );
         	}
         }
-        if ($isempty === true) {
-            $csv = sprintf("%s;Parcellaire Manquant;;;;;;;;;;;;;;;;;;;;;;%s;%s;%s;;%s;%s\n", $ligne_base, $this->doc->validation, $mode, $this->doc->_id, $this->doc->region,$this->doc->declarant->cvi."-".substr($this->doc->campagne, 0, 4));
-        }
+        $csv .= sprintf("%s;Parcellaire Manquant;;;;;;;;;;;;;;;;;;;;;;%s;%s;%s;;%s;%s\n", $ligne_base, $this->doc->validation, $mode, $this->doc->_id, $this->doc->region,$this->doc->declarant->cvi."-".substr($this->doc->campagne, 0, 4));
 
         return $csv;
     }
