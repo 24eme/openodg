@@ -662,6 +662,18 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return explode(';',$this->email);
     }
 
+    public function getTelephoneDisponible() {
+        if ($this->getTelephoneBureau()) {
+            return $this->getTelephoneBureau();
+        } elseif ($this->getTelephoneMobile()) {
+            return $this->getTelephoneMobile();
+        } elseif ($this->getTelephonePerso()) {
+            return $this->getTelephonePerso();
+        } else {
+            return null;
+        }
+    }
+
     public function getTelephoneBureau() {
         return Anonymization::hideIfNeeded($this->_get('telephone_bureau'));
     }

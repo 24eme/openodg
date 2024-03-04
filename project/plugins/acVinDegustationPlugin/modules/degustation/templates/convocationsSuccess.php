@@ -43,6 +43,7 @@
                               	<tr>
                                     <th class="col-xs-2">Collège</th>
                                     <th class="col-xs-7">Membre</th>
+                                    <th class="col-xs-2">N° téléphone</th>
                                     <th class="col-xs-3">Email</th>
                                   </tr>
                           	</thead>
@@ -52,6 +53,7 @@
                                 <tr>
                                 <td><?php echo DegustationConfiguration::getInstance()->getLibelleCollege($college) ?></td>
                                 <td><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $identifiant)) ?>" target="_blank"><?php echo $degustateur->get('libelle','') ?></a></td>
+                                <td class="text-center"><?php echo (CompteClient::getInstance()->find($identifiant)->getTelephoneDisponible()); ?></td>
                                 <td><?php echo (CompteClient::getInstance()->find($identifiant)->email); ?></td>
                                 </tr>
                                 <?php endforeach;?>
