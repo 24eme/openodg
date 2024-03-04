@@ -320,6 +320,14 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         return array_filter(array_unique($regions));
     }
 
+    public function getRegion() {
+        if(!$this->exist('region')) {
+            return null;
+        }
+
+        return $this->_get('region');
+    }
+
   /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {
