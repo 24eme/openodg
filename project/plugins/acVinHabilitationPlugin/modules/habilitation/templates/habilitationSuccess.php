@@ -37,7 +37,7 @@
 <?php endif; ?>
 
 <?php
-if (class_exists(EtablissementFindByCviView::class)):
+if (class_exists(EtablissementFindByCviView::class) && ($etablissement->cvi || in_array($etablissement->famille, [EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR, EtablissementFamilles::FAMILLE_COOPERATIVE]))):
 $e = EtablissementFindByCviView::getInstance()->findByCvi($etablissement->cvi);
 if(count($e) > 1):
 ?>
