@@ -39,9 +39,11 @@
 <?php
 if (class_exists(EtablissementFindByCviView::class) && ($etablissement->cvi || in_array($etablissement->famille, [EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR, EtablissementFamilles::FAMILLE_COOPERATIVE]))):
 $e = EtablissementFindByCviView::getInstance()->findByCvi($etablissement->cvi);
-if(count($e) > 1):
+if($etablissement->cvi && count($e) > 1):
 ?>
 <p class="alert alert-danger" role="alert">Le CVI de l'opérateur est attribué à plusieurs établissement : <a href="<?php echo url_for('compte_search', array('q' => $etablissement->cvi, 'contacts_all' => 1, 'tags' => 'automatique:etablissement')); ?>">consulter les établissements</a>.</p>
+<?php elseif (!$etablissement->cvi && (!in_array($etablissement->famille, [EtablissementFamilles::FAMILLE_PRODUCTEUR]) || !$etablissement->ppm)) : ?>
+    <p class="alert alert-danger" role="alert">CVI ou PPM absent.</p>
 <?php endif; ?>
 <?php endif; ?>
 

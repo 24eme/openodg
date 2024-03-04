@@ -7,7 +7,8 @@
     <span class="text-muted"> -
     <?php echo EtablissementFamilles::getFamilleLibelle($etablissement->famille); ?> -
     <?php echo $etablissement->getIdentifiant(); ?>
-    <?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - SIRET : '.formatSIRET($etablissement->getSiret()); } ?>
+    <?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } elseif($etablissement->ppm){ echo ' - PPM : '.$etablissement->ppm; } ?>
+    <?php  if($etablissement->getSiret()){ echo ' - SIRET : '.formatSIRET($etablissement->getSiret()); } ?>
     </span>
 </h4>
 <div class="row">
