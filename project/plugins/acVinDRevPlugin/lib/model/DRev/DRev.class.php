@@ -1618,6 +1618,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getVolumeVininifieFromDocumentDouanier($produitFilter = null) {
         $docDouanier = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
+        if(!$docDouanier) {
+            return;
+        }
         $type = $docDouanier->type;
         if (!$type) {
             return ;
