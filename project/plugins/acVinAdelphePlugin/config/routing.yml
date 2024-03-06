@@ -67,3 +67,19 @@ adelphe_visualisation:
     type:     object
   requirements:
     sf_method: [get]
+
+adelphe_export:
+  url: /adelphe/export
+  param: { module: adelphe, action: export }
+  requirements:
+    sf_method: [get]
+
+adelphe_reouvrir:
+  url: /adelphe/reouvrir/:id
+  param: { module: adelphe, action: reouvrir }
+  class: AdelpheRoute
+  options:
+    model:    Adelphe
+    type:     object
+  requirements:
+    sf_method: [get]

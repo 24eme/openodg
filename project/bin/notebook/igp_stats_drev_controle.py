@@ -13,6 +13,7 @@ from datetime import datetime
 igp = None
 millesime = None
 moisjour = None
+increment_annee = None
 
 
 # In[18]:
@@ -22,18 +23,18 @@ if sys.argv[0].find('launcher') == -1 :
 
     if(len(sys.argv) > 1 and re.search("^igp", sys.argv[1])):
         igp = sys.argv[1].replace('igp', '')
-    
+
     if(len(sys.argv) > 2 and re.search("^[0-9]{4}$", sys.argv[2])):
         millesime = sys.argv[2]
-    
+
     if(len(sys.argv) > 3 and re.search("^[0-9]{2}-[0-9]{2}$", sys.argv[3])):
         moisjour = sys.argv[3]
 
-    if(len(sys.argv) > 4 and int(sys.argv[4]) == 0:
+    if(len(sys.argv) > 4 and int(sys.argv[4]) == 0):
         increment_annee = 0
 
 else:
-    
+
     igp = "gascogne"
 
 
@@ -56,7 +57,7 @@ if not moisjour:
     if '%s-%s' % (str(int(millesime) + 1), moisjour) > '%04d-%02d-%02d' % ( datetime.now().year, datetime.now().month, datetime.now().day ):
         moisjour = '07-31'
 
-if not increment_annee:
+if increment_annee is None:
     increment_annee = 1
 
 date_debut_courant = millesime + '-08-01'

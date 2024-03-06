@@ -68,7 +68,7 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
             );
         }
 
-        if ($this->getObject()->hasCepagesAutorises()) {
+        if ($this->getObject()->exist('cepages_autorises')) {
             $this->setWidget('cepages_autorises', new bsWidgetFormTextarea());
             $this->widgetSchema->setLabel('cepages_autorises', 'Cepages autorisés : ');
             $this->setValidator('cepages_autorises', new sfValidatorString(array('required' => false)));

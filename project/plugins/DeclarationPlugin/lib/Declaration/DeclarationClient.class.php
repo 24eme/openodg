@@ -122,6 +122,10 @@ class DeclarationClient
         if(class_exists("DegustationClient") && $type == DegustationClient::TYPE_MODEL) {
 
             return 'ExportDegustationCSV';
+          }
+
+        if(class_exists("AdelpheClient") && $type == AdelpheClient::TYPE_MODEL) {
+          return 'ExportAdelpheCSV';
         }
 
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));

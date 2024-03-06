@@ -5,8 +5,8 @@
     <h2>Volume conditionné <small>pour l'année <?php echo $adelphe->getPeriode() ?></small></h2>
 </div>
 
-<p>Le volume conditionné annuel est repris et calculé depuis vos DRM disponibles sur DeclarVins.
-<br /><br />Veuillez vérifier sa véracité et au besoin le saisir ou le corriger.</p>
+<p>Ce chiffre correspond au volume conditionné mis en marché en France uniquement et hors vrac. Les ventes à l’export ne doivent pas être inclues dans ce chiffre.</p>
+<p class="mb-5">Toute modification des données pre-saisies engage votre responsabilité. Le Syndicat et InterRhone ne pourront être responsables de données inexactes transmises.</p>
 
 <form action="<?php echo url_for("adelphe_volume_conditionne", $adelphe) ?>" method="post" class="form-horizontal">
   <?php echo $form->renderHiddenFields(); ?>

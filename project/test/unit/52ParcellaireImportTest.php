@@ -118,7 +118,7 @@ $array = [
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0036', "$commune",'SAINT-OUEN','AY','36', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.1', '0.7', '2017-2018','100','250', '', 'Propriétaire'],
     [$viti->cvi, $viti->siret, $viti->nom, $viti->adresse, $viti->code_postal, $viti->commune, 'email@exemple.com', $code_commune.'0000AY0037', "$commune",'SAINT-OUEN','AY','37', $configProduit[0]->getLibelleFormat(),'GRENACHE N','0.6', '0.7', '2006-2007','100','250', '', 'Propriétaire'],
 ];
-
+unlink($tempfname);
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-6 day"))."-");
 $handle = fopen($tempfname, 'w');
 foreach ($array as $line) {
@@ -142,7 +142,7 @@ $parcelles = $parcellaire->getParcelles();
 $t->is(count($parcelles), 2, "Le nouveau parcellaire a deux parcelles");
 
 $t->comment("import d'un fichier sans parcelles $tempfname ");
-
+unlink($tempfname);
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-5 day"))."-");
 $handle = fopen($tempfname, 'w');
 fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut");
@@ -178,3 +178,4 @@ $parcellaireLoader->convert();
 
 $parcellaire = $parcellaireLoader->getParcellaire();
 $t->is(count($parcellaire->getParcelles()), 4, "Il y a quatre parcelles");
+unlink($tempfname);
