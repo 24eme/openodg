@@ -88,7 +88,7 @@ $dr->setDateDepot("$campagne-12-15");
 $dr->save();
 $dr->storeFichier($csvTmpFile);
 $dr->save();
-
+unlink($csvTmpFile);
 $drev->resetAndImportFromDocumentDouanier();
 $drev->save();
 $t->comment($drev->_id);

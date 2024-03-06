@@ -37,6 +37,7 @@ head -n 1 $GLOBALDIR/production.csv > $EXPORTFORAPPGLOBALSUBDIR/production.csv.p
 tail -n +2 $EXPORTFORAPPGLOBALSUBDIR/production.ligneavecdrev.csv $EXPORTFORAPPGLOBALSUBDIR/production.lignesansdrev.csv | grep -va ^== | grep -a ';' | iconv -f ISO88591 -t UTF8 | awk -F ';' '{uniq = $1"-"$2"-"$4 ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0  ; unicite[uniq] = $3 } }' | awk -F ';' '{print $1";"$2";"$3";"}' | sort -u > /tmp/productionid.$$.grep
 grep -a -f /tmp/productionid.$$.grep $GLOBALDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/production.csv.part
 mv $EXPORTFORAPPGLOBALSUBDIR/production.csv.part $EXPORTFORAPPGLOBALSUBDIR/production.csv
+rm /tmp/productionid.$$.grep
 
 cut -d ";" -f 2 $EXPORTFORAPPGLOBALSUBDIR/lots.csv $EXPORTFORAPPGLOBALSUBDIR/habilitation.csv | sed 's/"//g' | sort -u | sed -r 's/[0-9]{2}$//' > $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp
 cut -d ";" -f 3 $EXPORTFORAPPGLOBALSUBDIR/production.csv >> $EXPORTFORAPPGLOBALSUBDIR/etablissements.ids.tmp
