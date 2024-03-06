@@ -137,6 +137,36 @@
     	  	  	    & \textbf{TOTAL A PAYER} \rule[-5pt]{0pt}{18pt} & {\textbf{<?php echo formatFloat($facture->total_ttc); ?>~€}} \rule[-5pt]{0pt}{18pt} \tabularnewline
   \cline{2-3}
 \end{tabular}
+\end{minipage}
+
+\\\vspace{6mm}
+
+<?php if (isset($exoneration) && $exoneration === true): ?>
+\textbf{ * }: Exonération de TVA en vertu du 9° du 4. de l'article 261 du Code général des impôts
+<?php endif; ?>
+
+<?php if($facture->date_echeance == $facture->date_facturation): ?>Paiement à réception de facture<?php else: ?>Paiement sous <?php echo date_diff(date_create($facture->date_facturation), date_create($facture->date_echeance))->format("%a"); ?> jours<?php endif; ?>. Nos conditions de vente ne prévoient pas d'escompte pour paiement anticipé. En cas de retard de paiement, sera exigible, conformément à l'article L 441-6 du code de commerce, une indemnité calculée sur la base de trois fois le taux de l'intérêt légal en vigueur. En cas de retard de paiement, une indemnité forfaitaire de 40€ sera perçue pour frais de recouvrement (décret n°2012-1115 du 2/10/2012).
+
+<?php if ($facture->exist('message_communication') && $facture->message_communication): ?>
+\textit{<?= escape_string_for_latex($facture->message_communication); ?>} \\ \\
+<?php endif; ?>
+\\\vspace{6mm}
+<?php if (count($facture->paiements)): ?>
+\textbf{Paiement(s) :} \\
+\begin{itemize}
+<?php foreach($facture->paiements as $paiement): ?>
+\item <?= (isset(FactureClient::$types_paiements[$paiement->type_reglement])) ? FactureClient::$types_paiements[$paiement->type_reglement]. " de ": ""; ?> <?= formatFloat($paiement->montant, ','); ?>~€,
+<?php if ($paiement->date): ?>
+le <?php $date = new DateTime($paiement->date); echo $date->format('d/m/Y'); ?>
+<?php endif; ?>
+\textit{<?= ($paiement->commentaire) ? "(".escape_string_for_latex($paiement->commentaire).")" : ''; ?>}
+ \\
+<?php endforeach; ?>
+\end{itemize}
+<?php elseif (!$facture->isAvoir() && $facture->exist('modalite_paiement') && $facture->modalite_paiement): ?>
+\textbf{Modalités de paiements} \\ \\
+<?= escape_string_for_latex($facture->modalite_paiement) ?>
+<?php endif; ?>
 \end{center}
 <?php if(!$facture->isAvoir()): ?>
 	\vspace{1mm}

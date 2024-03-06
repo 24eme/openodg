@@ -173,7 +173,7 @@ class DRevLot extends BaseDRevLot
             }
             return false;
         }
-        if (!isset($diff[$this->getHash()."/volume"])) {
+        if (!array_key_exists($this->getHash()."/volume", $diff)) {
             return $this->volume;
         }
         return $diff[$this->getHash()."/volume"];

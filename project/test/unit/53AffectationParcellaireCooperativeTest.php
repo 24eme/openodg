@@ -109,6 +109,7 @@ $sv11->setDateDepot("$campagne-12-15");
 $sv11->save();
 $sv11->storeFichier($csvTmpFile);
 $sv11->save();
+unlink($csvTmpFile);
 
 $t->ok($sv11->_rev, "Création de la sv11 ".$sv11->_id);
 $t->ok(count($sv11->getCsv()), "Le csv a au moins une ligne");
