@@ -28,7 +28,15 @@ class TemplateFactureClient extends acCouchdbClient {
             return null;
         }
         if (!$campagne_start) {
-            $campagne_start = date('Y');
+            if (FactureConfiguration::getInstance()->isExcerciceCivile()) {
+                $campagne_start = date('Y');
+            }else{
+                if (date('m') > 7) {
+                    $campagne_start = date('Y');
+                }else{
+                    $campagne_start = date('Y') - 1;
+                }
+            }
         }
         for($d = $campagne_start ; $d > $campagne_start - 10 ; $d--) {
             $id = sprintf($template, $d);

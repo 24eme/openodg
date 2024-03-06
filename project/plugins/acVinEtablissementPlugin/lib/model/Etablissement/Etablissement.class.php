@@ -325,6 +325,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $compte->id_societe = $this->getSociete()->_id;
         $compte->nom = $this->nom;
         $compte->statut = $this->statut;
+        $compte->commentaire = $this->commentaire;
 
         $this->compte = $compte->_id;
 
@@ -478,6 +479,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $this->exist('crd_regime') && $this->crd_regime;
     }
 
+
+    public function getCommentaires() {
+        $lines = explode("\n", str_replace(' - ', "\n", $this->getCommentaire()));
+        return array_filter($lines, fn($value) => (rtrim($value)));
+    }
 
     public function addCommentaire($s) {
         $c = $this->get('commentaire');

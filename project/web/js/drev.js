@@ -161,10 +161,10 @@
                 var somme = 0;
                 $(this).find('.input_sum_value').each(function() {
                     if($(this).val()) {
-                        somme += parseFloat($(this).val());
+                        somme += parseFloat($(this).val().replace(/\s/, ''));
                     } else {
                     	if (parseFloat($(this).text())) {
-                        somme += parseFloat($(this).text());
+                        somme += parseFloat($(this).text().replace(/\s/, ''));
                     	}
                     }
                 })

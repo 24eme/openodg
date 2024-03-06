@@ -45,7 +45,11 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
     }
 
     public function getModeleChoices() {
-        return array(GenerationClient::TYPE_DOCUMENT_FACTURES => 'Facturation', GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE => 'Export comptable', GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA => 'Export XML SEPA');
+        return array(
+            GenerationClient::TYPE_DOCUMENT_FACTURES => 'Facturation',
+            GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE => 'Export comptable',
+            GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA => 'Export XML SEPA'
+        );
     }
 
 }

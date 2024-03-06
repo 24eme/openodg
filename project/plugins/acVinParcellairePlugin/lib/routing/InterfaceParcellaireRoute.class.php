@@ -1,6 +1,6 @@
 <?php
 
-interface InterfaceParcellaireRoute
+interface InterfaceParcellaireRoute extends InterfaceUsurpationRoute
 {
 
 }

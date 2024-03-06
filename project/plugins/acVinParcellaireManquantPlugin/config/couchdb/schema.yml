@@ -6,6 +6,7 @@ ParcellaireManquant:
       _rev: { }
       type: { }
       campagne: { }
+      periode: { }
       identifiant: { }
       etape: { }
       validation: { }
@@ -63,8 +64,8 @@ ParcellaireManquant:
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
-                              materiel: {  }
-                              ressource: {  }
+                              densite: { }
+                              pourcentage: { }
       observations: {  }
       pieces:
         type: array_collection

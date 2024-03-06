@@ -1,6 +1,10 @@
 all:
   configuration:
     parcellaire:
+      manquant:
+        pc_min: 15
+      affectation:
+        needs_intention: false
       aires:
         CotesduRhone:
           name: "Côtes du Rhône"

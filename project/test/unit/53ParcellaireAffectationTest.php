@@ -61,7 +61,7 @@ $affectation = ParcellaireAffectationClient::getInstance()->createDoc($viti->ide
 $t->is(count($affectation->getParcelles()), 0, "L'affectation a aucune parcelle car elle n'a pas de declaration d'intention");
 
 
-$intention = ParcellaireIntentionAffectationClient::getInstance()->createDoc($viti->identifiant, $yearprevious + 1, false, $dateprevious);
+$intention = ParcellaireIntentionClient::getInstance()->createDoc($viti->identifiant, $yearprevious + 1, false, $dateprevious);
 
 $t->comment("Intention Parcellaire au $dateprevious : ".$intention->_id);
 
@@ -99,7 +99,7 @@ $parcellaire->save();
 
 $t->comment("Parcellaire au $dateprevious : ".$parcellaire->_id);
 
-$intention = ParcellaireIntentionAffectationClient::getInstance()->createDoc($viti->identifiant, $year + 1, false, $date);
+$intention = ParcellaireIntentionClient::getInstance()->createDoc($viti->identifiant, $year + 1, false, $date);
 
 $t->comment("Intention Parcellaire au $date : ".$intention->_id);
 

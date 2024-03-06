@@ -73,6 +73,11 @@
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
                 <?php include_partial('compte/visualisationLogin', array('compte' => $societe->getMasterCompte())); ?>
                 <hr />
+                <?php if ($societe->commentaire && $modifiable) : ?>
+                <h5 style="margin-bottom: 15px; margin-top: 0px;"><strong>🗣 Commentaire️</strong></h5>
+                <p>🗨️ <?php echo implode('</p><p>🗨️ ', $societe->getCommentaires()->getRawValue()); ?></p>
+                <hr />
+                <?php endif; ?>
                 <?php if (MandatSepaConfiguration::getInstance()->isActive()): ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Coordonnées bancaires</strong></h5>
                 <?php if ($mandatSepa): ?>
@@ -105,11 +110,6 @@
                 <?php endif; ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $societe->getMasterCompte(), 'modifiable' => $modifiable)); ?>
-                <?php if ($societe->commentaire && $modifiable) : ?>
-                <hr />
-                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <pre><?php echo html_entity_decode($societe->commentaire); ?></pre>
-                <?php endif; ?>
             </div>
         </div>
     </div>

@@ -3,9 +3,11 @@
 class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
 
     protected $degustation = null;
+    protected $lotid = null;
 
-    public function __construct($degustation, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
+    public function __construct($degustation, $lotid = null, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->degustation = $degustation;
+        $this->lotid = $lotid;
 
         if (!$filename) {
             $filename = $this->getFileName(true);
@@ -15,13 +17,21 @@ class ExportDegustationFicheIndividuelleLotsAPreleverPDF extends ExportPDF {
     }
 
     public function create() {
-
+      $adresseFilter = null;
       $adresses = array();
       $lots = $etablissements = array();
       foreach ($this->degustation->getLotsPrelevables() as $lot) {
           $adresses[$lot->adresse_logement.$lot->declarant_identifiant][$lot->unique_id] = $lot;
+          if ($this->lotid == $lot->unique_id) {
+              $adresseFilter = $lot->adresse_logement.$lot->declarant_identifiant;
+          }
       }
-      ksort($adresses);
+      if ($adresseFilter) {
+          $adresses = [$adresseFilter => $adresses[$adresseFilter]];
+      } else {
+          ksort($adresses);
+      }
+
       foreach ($adresses as $lotsArchive) {
         $volumeLotTotal = 0;
         foreach ($lotsArchive as $archive => $lot) {

@@ -42,4 +42,9 @@ class ParcellaireManquantProduitDetail extends BaseParcellaireManquantProduitDet
 
         return $this->getProduit()->getConfig()->getLieu();
     }
+
+    public function setPourcentage($pourcentage)
+    {
+        $this->_set('pourcentage', round($pourcentage, 2));
+    }
 }

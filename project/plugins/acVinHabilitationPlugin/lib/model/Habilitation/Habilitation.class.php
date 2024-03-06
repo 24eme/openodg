@@ -119,6 +119,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return $this->exist('automatique') && $this->get('automatique');
     }
 
+    public function getLectureSeule() {
+        if(!$this->exist('lecture_seule')) {
+
+            return false;
+        }
+
+        return $this->_get('lecture_seule');
+    }
+
     public function isLectureSeule() {
         return $this->exist('lecture_seule') && $this->get('lecture_seule');
     }
@@ -303,7 +312,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         if (!$this->addProduit($hash_produit)->exist('activites')) {
             return false;
         }
-        return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
+        return $this->addproduit($hash_produit)->isHabiliteFor($activite);
     }
 
   public function containHashProduit($hash) {
@@ -345,23 +354,16 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function save() {
         $this->constructId();
-
         $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
+        $this->add('lecture_seule', ($last && $last->_id > $this->_id));
+        parent::save();
 
-        if($last && $last->_id != $this->_id) {
-            if ($last->_id > $this->_id) {
-                $this->add('lecture_seule', true);
-            }elseif (!$last->exist('lecture_seule') || !$last->lecture_seule) {
-                $last->add('lecture_seule', true);
-                $last->save();
-            }
-        } elseif ($last && $last->_id == $this->_id) {
-            $this->remove('lecture_seule');
+        if($last && $last->_id != $this->_id && ($last->lecture_seule != !$this->lecture_seule)) {
+            $last->add('lecture_seule', !$this->lecture_seule);
+            $last->save();
         }
 
-        parent::save();
         $precedente = $this->getPrevious();
-
         if($precedente && !$precedente->isLectureSeule()) {
             $precedente->add('lecture_seule', true);
             $precedente->save();

@@ -9,15 +9,19 @@ if ! test "$ASSVAS_ETABLISSEMENT_FILE_URL"; then
     exit;
 fi
 
-XLSX_IMPORT="$TMPDIR"/import_etablissements_assvas.xslx
 CSV_IMPORT="$TMPDIR"/import_etablissements_assvas.csv
 
-CHECKSUM=$(md5sum $XLSX_IMPORT)
+CHECKSUM=$(md5sum $CSV_IMPORT)
 
-wget $ASSVAS_ETABLISSEMENT_FILE_URL -O $XLSX_IMPORT
-xlsx2csv -d ";" "$XLSX_IMPORT" > "$CSV_IMPORT"
+mkdir -p $TMPDIR"/"$$
+cd $TMPDIR"/"$$
+wget -q $ASSVAS_ETABLISSEMENT_FILE_URL -O import.zip
+unzip import.zip > /dev/null
+mv import_openodg/*csv $CSV_IMPORT
+cd - > /dev/null
+rm -rf $TMPDIR"/"$$
 
-if test "$CHECKSUM" = "$(md5sum $XLSX_IMPORT)"; then
+if test "$CHECKSUM" = "$(md5sum $CSV_IMPORT)"; then
     exit;
 fi
 

@@ -139,8 +139,9 @@ class AireClient extends acCouchdbClient {
 
     public function getIsInAiresFromCommuneAndGeoParcelle($commune_insee, ParcellaireParcelle $parcelle) {
         $is_in_aires = array();
-        $geoparcelle = $parcelle->getGeoParcelle();
-        foreach($this->getAiresForInseeCommunes(array($commune_insee)) as $a) {
+        try {
+          $geoparcelle = $parcelle->getGeoParcelle();
+          foreach($this->getAiresForInseeCommunes(array($commune_insee)) as $a) {
             try {
                 $iia = $a->isInAire($geoparcelle);
                 if ($iia == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) {
@@ -154,9 +155,15 @@ class AireClient extends acCouchdbClient {
                 if ($a->exist('denomination_libelle')) {
                     $is_in_aires[$a->denomination_libelle] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
                 }else{
-                    $is_in_aires['erreur'] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
+                    $is_in_aires['aire'] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
                 }
             }
+          }
+        } catch(Exception $e) {
+            if (sfConfig::get('sf_environment') == 'dev') {
+                throw new sfException('Erreur avec la parcelle ('.$parcelle->getHash().') : '.$e->getMessage());
+            }
+            $is_in_aires['parcelle'] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
         }
         return $is_in_aires;
     }

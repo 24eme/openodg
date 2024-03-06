@@ -9,7 +9,7 @@
 <?php endif; ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration de Vrac export <small>du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?></small>
+    <h2>Transaction <small>du <?php echo format_date($transaction->getDate(), 'dd/MM/yyyy'); ?></small>
     <?php if($transaction->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($transaction->validation && $transaction->validation !== true): ?> reçue le <?php echo format_date($transaction->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($transaction->validation): ?>
@@ -66,10 +66,11 @@
         <div class="btn-group row">
         <?php if ($transaction->validation && TransactionSecurity::getInstance($sf_user, $transaction->getRawValue())->isAuthorized(TransactionSecurity::DEVALIDATION) && !$transaction->hasLotsUtilises()):
                 if (!$transaction->validation_odg): ?>
-                    <a class="btn btn-default" href="<?php echo url_for('transaction_devalidation', $transaction) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir ce vrac export ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+                    <a class="btn btn-default" href="<?php echo url_for('transaction_devalidation', $transaction) ?>" onclick="return confirm('Êtes-vous sûr de vouloir réouvrir ce vrac ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
             <?php endif; ?>
         <?php endif; ?>
         <?php if(!$transaction->validation): ?>
+                <a href="<?php echo url_for("transaction_delete", $transaction) ?>" class="btn btn-default alert-danger" onclick="return confirm('Souhaitez-vous vraiment SUPPRIMER ce document ?')"><span class="glyphicon glyphicon-remove"></span> Supprimer cette saisie</a>
                 <a href="<?php echo url_for("transaction_edit", $transaction) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$transaction->validation_odg && ( $sf_user->isAdmin() ||
                                                  ($sf_user->hasTransactionAdmin() && TransactionConfiguration::getInstance()->hasValidationOdgRegion() && !$transaction->isValidateOdgByRegion($regionParam))

@@ -70,4 +70,29 @@ class ParcellaireConfiguration {
 
         return $this->configuration['aires'][$key];
     }
+
+    public function affectationNeedsIntention() {
+        if(!isset($this->configuration['affectation'])) {
+            return true;
+        }
+        if(!isset($this->configuration['affectation']['needs_intention'])) {
+            return true;
+        }
+        return $this->configuration['affectation']['needs_intention'];
+
+    }
+
+    public function isManquantMandatory() {
+        if(!isset($this->configuration['manquant']) || !isset($this->configuration['manquant']['mandatory'])) {
+            return false;
+        }
+        return $this->configuration['manquant']['mandatory'];
+    }
+
+    public function getManquantPCMin() {
+        if(!isset($this->configuration['manquant']) || !isset($this->configuration['manquant']['pc_min'])) {
+            return 20;
+        }
+        return $this->configuration['manquant']['pc_min'];
+    }
 }

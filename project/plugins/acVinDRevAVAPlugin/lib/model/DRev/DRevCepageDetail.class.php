@@ -80,7 +80,7 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
 
     public function updateTotal() {
         if($this->exist('volume_revendique_recolte') && !is_null($this->volume_revendique_recolte)) {
-            $this->volume_revendique = $this->volume_revendique_recolte + $this->getVolumeRevendiqueVci();
+            $this->volume_revendique = $this->volume_revendique_recolte + $this->getVolumeRevendiqueVci(true);
         }
         $this->volume_revendique_total = round($this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt, 2);
         $this->superficie_revendique_total = round($this->superficie_revendique + $this->superficie_revendique_sgn + $this->superficie_revendique_vt, 2);
@@ -156,17 +156,20 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     	return $this->getProduitLibelleComplet();
     }
 
-    public function getVolumeRevendiqueVci() {
+    public function getVolumeRevendiqueVci( $only_cave_particuliere = false ) {
         if(!$this->hasVci()) {
             return;
         }
 
-        $total = 0;
-        foreach ($this->vci as $k => $v) {
-            $total += $v->complement + $v->substitution + $v->rafraichi;
-        }
+        $vci = 0;
+        foreach ($this->getProduitsVci() as $produit) {
+            if(!$produit->isStockageCaveParticuliere()) {
+                continue;
+            }
+            $vci += $produit->complement + $produit->substitution + $produit->rafraichi;
+    	}
 
-        return round($total, 2);
+        return round($vci, 2);
     }
 
     public function hasVci() {

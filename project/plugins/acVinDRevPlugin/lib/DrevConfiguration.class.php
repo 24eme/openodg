@@ -46,6 +46,11 @@ class DRevConfiguration {
       return isset($this->configuration['denomination_auto']) && boolval($this->configuration['denomination_auto']);
     }
 
+    public function hasDenominationBiodynamie() {
+
+      return isset($this->configuration['denomination_biodynamie']) && boolval($this->configuration['denomination_biodynamie']);
+    }
+
     public function hasExploitationSave() {
       return isset($this->configuration['exploitation_save']) && boolval($this->configuration['exploitation_save']);
     }
@@ -131,13 +136,6 @@ class DRevConfiguration {
         return isset($this->configuration['volume_seuil']) && boolval($this->configuration['volume_seuil']);
     }
 
-    public function getProduitHashWithVolumeSeuil(){
-        if(isset($this->configuration['volume_seuil']['hash']) && boolval($this->configuration['volume_seuil']['hash'])){
-            return($this->configuration['volume_seuil']['hash']);
-        }
-        return null;
-    }
-
     public function getCampagneVolumeSeuil(){
         if(isset($this->configuration['volume_seuil']['campagne']) && boolval($this->configuration['volume_seuil']['campagne'])){
             return($this->configuration['volume_seuil']['campagne']);
@@ -145,15 +143,12 @@ class DRevConfiguration {
         return null;
     }
 
-    public function getMillesime(){
-        if($this->getCampagneVolumeSeuil()){
-            return(substr($this->getCampagneVolumeSeuil(),0,4));
-        }
-        return null;
-    }
-
     public function hasEmailDisabled() {
         return isset($this->configuration['email_disabled']) && boolval($this->configuration['email_disabled']);
+    }
+
+    public function isModificativeEnabled() {
+        return $this->isRevendicationParLots();
     }
 
 }

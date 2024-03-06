@@ -161,11 +161,21 @@ class DRevCouleur extends BaseDRevCouleur
     	return $this->volume_revendique + (($this->canHaveVtsgn()) ? $this->volume_revendique_vtsgn : 0);
     }
 
-	public function getTotalVolumeRevendiqueVCI()
-	{
+    public function getTotalVolumeRevendiqueVCI($only_cave_particuliere = false)
+    {
+        if (!$only_cave_particuliere) {
+            return $this->exist('volume_revendique_vci') ? $this->volume_revendique_vci : 0;
+        }
+        $vci = 0;
+        foreach ($this->getProduitsVci() as $produit) {
+            if(!$produit->isStockageCaveParticuliere()) {
+                continue;
+            }
+            $vci += $produit->complement + $produit->substitution + $produit->rafraichi;
+    	}
 
-		return $this->exist('volume_revendique_vci') ? $this->volume_revendique_vci : 0;
-	}
+        return $vci;
+    }
 
     public function getTotalSuperficieVinifiee()
     {
@@ -288,24 +298,23 @@ class DRevCouleur extends BaseDRevCouleur
         return false;
     }
 
-		public function setVolumeRevendiqueVCI($v, $vciStockageNegoce = 0) {
-			parent::_set('volume_revendique_vci', $v);
+    public function setVolumeRevendiqueVCI($v, $vciStockageNegoce = 0) {
+        parent::_set('volume_revendique_vci', $v);
 
-			$v = $v - $vciStockageNegoce;
-			
-			if (!$this->exist('volume_revendique_recolte')){
-				return $this->setVolumeRevendique($v);
-			}
+        $volumesansnego = $v - $vciStockageNegoce;
+        if (!$this->exist('volume_revendique_recolte')){
+            return $this->setVolumeRevendique($volumesansnego);
+        }
 
-			return $this->setVolumeRevendique( $v + $this->get('volume_revendique_recolte'));
-		}
+        return $this->setVolumeRevendique( $volumesansnego + $this->get('volume_revendique_recolte'));
+    }
 
-		public function setVolumeRevendiqueRecolte($v) {
-			parent::_set('volume_revendique_recolte', $v);
-			if (!$this->exist('volume_revendique_vci')){
-				return $this->setVolumeRevendique( $v);
-			}
-			$this->setVolumeRevendique( $v + $this->get('volume_revendique_vci'));
-		}
+    public function setVolumeRevendiqueRecolte($v) {
+        parent::_set('volume_revendique_recolte', $v);
+        if (!$this->exist('volume_revendique_vci')){
+            return $this->setVolumeRevendique( $v);
+        }
+        $this->setVolumeRevendique( $v + $this->getTotalVolumeRevendiqueVCI(true));
+    }
 
 }

@@ -4,7 +4,7 @@
 <?php include_partial('transaction/breadcrumb', array('transaction' => $transaction )); ?>
 <?php include_partial('transaction/step', array('step' => TransactionEtapes::ETAPE_LOTS, 'transaction' => $transaction, 'ajax' => true)) ?>
 
-    <div class="page-header"><h2>Vrac export des Lots IGP</h2></div>
+    <div class="page-header"><h2>Lots en Vrac</h2></div>
 
 
 

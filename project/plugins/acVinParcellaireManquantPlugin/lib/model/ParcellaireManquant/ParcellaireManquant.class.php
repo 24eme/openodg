@@ -48,6 +48,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
   public function initDoc($identifiant, $periode) {
       $this->identifiant = $identifiant;
       $this->campagne = $periode.'-'.($periode + 1);
+      $this->periode = $periode;
       $this->set('_id', ParcellaireManquantClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->periode);
       $this->storeDeclarant();
   }
@@ -153,6 +154,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
     	  		$subitem->lieu = $detail->lieu;
     	  		$subitem->cepage = $detail->cepage;
     	  		$subitem->active = 1;
+                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
 
                 $subitem->remove('vtsgn');
                 if($detail->exist('vtsgn')) {
@@ -299,7 +301,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles irrigables '.$complement,
+            'libelle' => 'Identification des parcelles manquantes '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null

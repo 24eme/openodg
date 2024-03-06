@@ -8,7 +8,7 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Type de matériel;Type de ressource;Signataire;Date de validation;Type de declaration\n";
+        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Densite;Pourcentage de manquants;Signataire;Date de validation;Type de declaration\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -49,7 +49,7 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
             	$inao = $configProduit->getCodeDouane();
 
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-            	$csv .= sprintf("%s;Parcellaire Irrigable;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+            	$csv .= sprintf("%s;Parcellaire Manquant;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
                 DeclarationExportCsv::getProduitKeysCsv($configProduit),
                 $inao,$libelle_complet,
             	$this->protectStr($parcelle->idu),
@@ -61,8 +61,8 @@ class ExportParcellaireManquantCSV implements InterfaceDeclarationExportCsv {
             	$this->protectStr($parcelle->cepage),
             	$this->protectStr($parcelle->campagne_plantation),
             	$this->formatFloat($parcelle->superficie),
-            	$this->protectStr($parcelle->materiel),
-            	$this->protectStr($parcelle->ressource),
+            	$parcelle->densite,
+            	$this->formatFloat($parcelle->pourcentage),
             	$this->protectStr($this->doc->signataire),
             	$this->doc->validation,
             	$mode);

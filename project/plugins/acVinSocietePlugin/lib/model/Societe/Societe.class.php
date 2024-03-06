@@ -509,12 +509,15 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
         if ($c && $c1) {
             return $c . "\n" . $c1;
         }
-        if ($c) {
-            return $c;
-        }
         if ($c1) {
             return $c1;
         }
+        return $c;
+    }
+
+    public function getCommentaires() {
+        $lines = explode("\n", str_replace(' - ', "\n", $this->getCommentaire()));
+        return array_filter($lines, fn($value) => (rtrim($value)));
     }
 
     public function addCommentaire($s) {
@@ -631,6 +634,9 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
     }
 
     public function hasMandatSepaActif() {
+      if (!MandatSepaConfiguration::getInstance()->isActive()) {
+          return false;
+      }
       $mandat = MandatSepaClient::getInstance()->findLastBySociete($this->getIdentifiant());
       if (!$mandat) {
           return false;

@@ -42,6 +42,7 @@ class GenerationPDF extends GenerationAbstract {
     if ($str) {
         throw new sfException('concatenatePDFs(): pdftk returned an error: bash /tmp/'.$fileres.'.sh 2>&1 => '.$str);
     }
+    unlink("/tmp/$fileres.sh");
     return $fileres;
   }
 
@@ -57,6 +58,7 @@ class GenerationPDF extends GenerationAbstract {
     if (!file_exists($fileres) || !filesize($fileres)) {
       throw new sfException("wrong result file $fileres extracting page # $pageid from $pdf");
     }
+    unlink("/tmp/$fileres.sh");
     return $fileres;
   }
 

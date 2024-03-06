@@ -61,8 +61,10 @@ class WidgetEtablissement extends bsWidgetFormInput
                 foreach($etablissements as $key => $etablissement) {
                     $value = $etablissement->id.','.EtablissementAllView::getInstance()->makeLibelle($etablissement);
                     $compte = CompteClient::getInstance()->find(str_replace("ETABLISSEMENT-", "COMPTE-", $etablissement->id));
-                    if($compte && $compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1))){
-                        $value.=' ⛔';
+                    $exploite_plus = $compte && $compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1));
+                    $en_alerte = $compte && $compte->exist('en_alerte') && $compte->en_alerte;
+                    if($exploite_plus || $en_alerte){
+                        $value = str_replace('(', ' ⛔ (', $value);
                     }
                 }
             }

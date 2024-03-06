@@ -7,7 +7,7 @@ mkdir $EXPORTDIR 2> /dev/null
 split_export_by_annee () {
     EXPORTTYPE=$1
     FILEPART=$EXPORTDIR/$EXPORTTYPE.csv.part
-    cat $FILEPART | cut -d ";" -f 1 | sort -u | grep -E "^[0-9]+;" | while read annee; do
+    cat $FILEPART | cut -d ";" -f 1 | sort -u | grep -E "^[0-9]+" | while read annee; do
         FILEPARTANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv.part
         FILEANNEE=$EXPORTDIR/$annee/"$annee"_$EXPORTTYPE.csv
         mkdir $EXPORTDIR/$annee 2> /dev/null;
@@ -78,6 +78,7 @@ rm $EXPORTDIR/facture_stats.csv.part
 for ((i=2015 ; i <= $(date +%Y -d "-9 month") ; i++)); do
     mkdir $EXPORTDIR/$i 2> /dev/null;
     curl -s "$HTTP_CIVA_DATA/DR/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/$i/"$i"_dr.csv
+    curl -s "$HTTP_CIVA_DATA/Production/$i.csv" | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/$i/"$i"_sv.csv
 done
 
 rm $EXPORTDIR/bilan_vci.tmp.csv 2> /dev/null

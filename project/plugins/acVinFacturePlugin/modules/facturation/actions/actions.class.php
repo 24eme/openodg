@@ -252,7 +252,7 @@ class facturationActions extends sfActions
             return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
         }
 
-        $this->facture = FactureClient::getInstance()->createAvoir($this->baseFacture);
+        $this->facture = FactureClient::getInstance()->createAvaAvoir($this->baseFacture);
 
         $this->form = new FactureEditionForm($this->facture);
 
@@ -426,7 +426,7 @@ class facturationActions extends sfActions
     public function executeTemplate(sfWebRequest $request) {
         $this->template = TemplateFactureClient::getInstance()->find($request->getParameter('id'));
 
-        $this->organisme = Organisme::getInstance();
+        $this->organisme = Organisme::getInstance(null, Organisme::FACTURE_TYPE);
 
         $this->lignes = array();
 
@@ -455,14 +455,18 @@ class facturationActions extends sfActions
     }
 
     protected function forwardCompteSecure(){
-      if(!method_exists($this->getUser(),"getEtablissement")){
-          if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
-              return $this->forwardSecure();
-          }
-      }elseif(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
+      if(!class_exists("Societe") && !$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) { // Pour l'AVA
 
           return $this->forwardSecure();
       }
+
+      if(!class_exists("Societe")) { // Pour l'AVA
+          return;
+      }
+
+      if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
+          return $this->forwardSecure();
+     }
     }
 
     public function executeXml(sfWebRequest $request){

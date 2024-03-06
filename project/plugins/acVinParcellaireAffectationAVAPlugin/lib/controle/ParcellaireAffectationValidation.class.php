@@ -16,9 +16,9 @@ class ParcellaireAffectationValidation extends DocumentValidation {
          */
         $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
         $this->addControle(self::TYPE_WARNING, 'parcelle_doublon', 'Parcelle doublonnée');
+        $this->addControle(self::TYPE_WARNING, 'parcelle_inconnue', 'Parcelle inconnue dans le parcellaire');
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition', "La répartition des acheteurs n'est pas complète");
         $this->addControle(self::TYPE_ERROR, 'acheteur_repartition_parcelles', "La répartition des acheteurs par parcelles n'est pas complète");
-        $this->addControle(self::TYPE_ERROR, 'parcelle_lieudit_obligatoire', "Le lieu-dit de cette parcelle n'a pas été renseigné");
         $this->addControle(self::TYPE_ERROR, 'parcellaire_multiappellation', "Parcelle déclarée plusieurs fois");
         /*
          * Error
@@ -37,6 +37,10 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             $pid = $detailv->getAppellation()->getHash().' '.$detailv->section . ' ' . $detailv->numero_parcelle;
 
             $appellation_id = $detailv->section . ' ' . $detailv->numero_parcelle.' '.$detailv->superficie;
+            if ($detailv->vtsgn) {
+              $appellation_id .= ' VT/SGN';
+            }
+
             if(!isset($uniq_appellation[$appellation_id])) {
                 $uniq_appellation[$appellation_id] = array();
             }
@@ -51,6 +55,10 @@ class ParcellaireAffectationValidation extends DocumentValidation {
             $keyParcelle = $detailv->getCepage()->getHash() . '/' . $detailv->getCommune() . '-' . $detailv->getSection() . '-' . $detailv->getNumeroParcelle().'-'.sprintf("%0.4f", $detailv->superficie);
             if (array_key_exists($keyParcelle, $uniqParcelles)) {
                 $this->addPoint(self::TYPE_WARNING, 'parcelle_doublon', 'parcelle n°' . $detailv->getSection() . ' ' . $detailv->getNumeroParcelle() . ' à ' . $detailv->getCommune() . ' déclarée en ' . $detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
+                            'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
+                            'erreur' => $detailv->getHashForKey())));
+            }elseif (!$detailv->getParcelleParcellaire()) {
+                $this->addPoint(self::TYPE_WARNING, 'parcelle_inconnue', 'parcelle n°' . $detailv->getSection() . ' ' . $detailv->getNumeroParcelle() . ' à ' . $detailv->getCommune() . ' déclarée en ' . $detailv->getLibelleComplet().' ('.$detailv->getIDU().')', $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
                             'erreur' => $detailv->getHashForKey())));
             } else {
@@ -94,17 +102,6 @@ class ParcellaireAffectationValidation extends DocumentValidation {
 
         if($hasParcelle && !$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
             $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'Terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
-        }
-
-        foreach($this->document->declaration->getProduitsCepageDetails() as $detail) {
-            if($detail->getCepage()->getConfig()->hasLieuEditable() && !$detail->lieu) {
-                $this->addPoint(self::TYPE_ERROR, 'parcelle_lieudit_obligatoire',
-                $detail->section . ' ' . $detail->numero_parcelle . ' à ' . $detail->commune, $this->generateUrl('parcellaire_parcelles', array(
-                                        'id' => $this->document->_id,
-                                        'appellation' => preg_replace('/appellation_/', '', $detail->getAppellation()->getKey()),
-                                        'attention' => $detail->getHashForKey())));
-            }
-
         }
 
         foreach($this->document->declaration->getProduitsCepageDetails() as $detail) {

@@ -36,6 +36,17 @@
   <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
 <?php endif; ?>
 
+<?php
+if (class_exists(EtablissementFindByCviView::class) && ($etablissement->cvi || in_array($etablissement->famille, [EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR, EtablissementFamilles::FAMILLE_COOPERATIVE]))):
+$e = EtablissementFindByCviView::getInstance()->findByCvi($etablissement->cvi);
+if($etablissement->cvi && count($e) > 1):
+?>
+<p class="alert alert-danger" role="alert">Le CVI de l'opérateur est attribué à plusieurs établissement : <a href="<?php echo url_for('compte_search', array('q' => $etablissement->cvi, 'contacts_all' => 1, 'tags' => 'automatique:etablissement')); ?>">consulter les établissements</a>.</p>
+<?php elseif (!$etablissement->cvi && (!in_array($etablissement->famille, [EtablissementFamilles::FAMILLE_PRODUCTEUR]) || !$etablissement->ppm)) : ?>
+    <p class="alert alert-danger" role="alert">CVI ou PPM absent.</p>
+<?php endif; ?>
+<?php endif; ?>
+
 <?php include_partial('habilitation/habilitation', array('habilitation' => $habilitation, 'editForm' => isset($editForm) ? $editForm : null, 'public' => !$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION))); ?>
 
     <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) && count(HabilitationClient::getInstance()->getDemandes($filtre)) && HabilitationConfiguration::getInstance()->isSuiviParDemande()): ?>

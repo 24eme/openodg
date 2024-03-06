@@ -19,19 +19,20 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $familles_lignes = array();
         $max_ligne = 0;
         foreach ($csv as $key => $values) {
-            if (substr(trim($values[0]), 0, 1) == "6" || substr(trim($values[0]), 0, 1) == '7') {
+            $ligneid = explode('-', $values[0])[0];
+            if ($ligneid == "6" || $ligneid == '7') {
                 for($i = 2 ; $i < count($values); $i++) {
-                    $has_volume_nego_lignes[$i] = boolval($values[$i]);
+                    $has_volume_nego_lignes[$i] |= boolval($values[$i]);
                     $has_volume_nego += boolval($values[$i]);
                 }
             }
-            if (substr(trim($values[0]), 0, 1) == '8') {
+            if ($ligneid == '8') {
                 for($i = 2 ; $i < count($values); $i++) {
                     $has_volume_coop_lignes[$i] = boolval($values[$i]);
                     $has_volume_coop += boolval($values[$i]);
                 }
             }
-            if (substr(trim($values[0]), 0, 1) == '9') {
+            if ($ligneid == '9') {
                 for($i = 2 ; $i < count($values); $i++) {
                     $has_volume_cave_lignes[$i] = boolval($values[$i]);
                     $has_volume_cave += boolval($values[$i]);
@@ -266,8 +267,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
                     $eOrigin[1] = "Superificie de récolte originale";
                 }
                 $ratio_bailleur = null;
-                if(!$ratio_bailleur && isset($ratios_bailleur["05"][$k]) && $ratios_bailleur["05"][$k]) {
-                    $ratio_bailleur = $ratios_bailleur["05"][$k];
+                if(!$ratio_bailleur && isset($ratios_bailleur["15"][$k]) && $ratios_bailleur["15"][$k]) {
+                    $ratio_bailleur = $ratios_bailleur["15"][$k];
                 }
                 if(($e[0] == 4) && isset($baillage[$k])) {
                     $superficieInitiale = (float) (str_replace(",", ".", $e[2]));

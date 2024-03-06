@@ -51,6 +51,7 @@ factures_meta['Total valoriation TTC'] = factures_meta['Total valoriation TVA'] 
 factures_meta['Cotisation ODG TOTAL ou forfait']  = factures_pivot[('Prix HT', 'Cotisation ODG Superficie')]
 factures_meta['Cotisation ODG TOTAL ou forfait'] += factures_pivot[('Prix HT', 'Cotisation ODG VCI')]
 factures_meta['Cotisation ODG TOTAL ou forfait'] += factures_pivot[('Prix HT', 'Cotisation ODG Volume')]
+factures_meta['Cotisation ODG TOTAL ou forfait'] += factures_pivot[('Prix HT', 'Cotisation ODG Volume DGC')]
 factures_meta['Cotisation ODG TOTAL ou forfait'] += factures_pivot[('Prix HT', 'Cotisation ODG Forfait')]
 
 factures_meta['Remboursement ODG covid']  = factures_pivot[('Prix HT', 'Cotisation ODG Remise exceptionnelle Covid')]

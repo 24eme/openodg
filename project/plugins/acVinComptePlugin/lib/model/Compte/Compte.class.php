@@ -194,6 +194,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                 $this->addTag('automatique', 'teledeclaration_active');
             }
         }
+        if ($this->exist('region') && $this->region) {
+            $this->addTag('automatique', 'region_'.$this->region);
+        }
 
         $this->compte_type = CompteClient::getInstance()->createTypeFromOrigines($this->origines);
 
@@ -657,6 +660,18 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
     public function getEmails(){
         return explode(';',$this->email);
+    }
+
+    public function getTelephoneDisponible() {
+        if ($this->getTelephoneBureau()) {
+            return $this->getTelephoneBureau();
+        } elseif ($this->getTelephoneMobile()) {
+            return $this->getTelephoneMobile();
+        } elseif ($this->getTelephonePerso()) {
+            return $this->getTelephonePerso();
+        } else {
+            return null;
+        }
     }
 
     public function getTelephoneBureau() {

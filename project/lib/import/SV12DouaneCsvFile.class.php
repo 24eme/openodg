@@ -22,14 +22,16 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
             return "XlsSV12";
         }
         if(preg_match('/Code produit/i', $csvFile->getCsv()[0][0]) &&
-           preg_match('/D?nomination/i', $csvFile->getCsv()[0][1]) &&
+           preg_match('/nomination/i', $csvFile->getCsv()[0][1]) &&
            preg_match('/CVI/i', $csvFile->getCsv()[0][3]) &&
-           preg_match('/Quantit/i', $csvFile->getCsv()[0][5])) {
+           preg_match('/raisin/i', $csvFile->getCsv()[0][5]) &&
+           preg_match('/MOUTS/i', $csvFile->getCsv()[0][6])
+          ) {
 
             return "CsvVendanges";
         }
 
-        throw new sfException('Format non supporté');
+        throw new sfException('Format non supporté : '.$this->doc.' '.implode(',', $csvFile->getCsv()[0]));
     }
 
     public function convertFromCsvVendanges() {
@@ -211,7 +213,6 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
                 $produit[] = substr($this->campagne, 0, 4);
                 $produit[] = $this->getFamilleCalculeeFromLigneDouane();
-                print_r($values);
                 $produit[] = implode('|', DouaneImportCsvFile::extractLabels($values[7]));
 	        			$produits[] = $produit;
                     }

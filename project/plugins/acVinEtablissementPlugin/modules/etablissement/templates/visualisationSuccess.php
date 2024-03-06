@@ -106,9 +106,15 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
                 <?php include_partial('compte/visualisationLogin', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
-                <?php if ($etablissement->commentaire && $modifiable) : ?>
-                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <p><?php echo nl2br(html_entity_decode($etablissement->commentaire)); ?></p>
+                <?php if ((($etablissement->commentaire) || ($societe->commentaire)) && $modifiable) : ?>
+                <h5 style="margin-bottom: 15px; margin-top: 0px;"><strong>🗣 Commentaire️</strong></h5>
+                <?php if ($etablissement->commentaire): ?>
+                <p>🗨️ <?php echo implode('</p><p>🗨️ ', $etablissement->getCommentaires()->getRawValue()); ?></p>
+                <?php endif; ?>
+                <?php if ($societe->commentaire): ?>
+                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Provenant de la société</strong></h5>
+                <p>🗨️ <?php echo implode('</p><p>🗨️ ', $societe->getCommentaires()->getRawValue()); ?></p>
+                <?php endif; ?>
                 <hr />
                 <?php endif; ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
@@ -186,10 +192,11 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <tr>
                                 <td><?php echo $liaison->getTypeLiaisonLibelle() ?></td>
                                 <td>
+                                <?php $etablissementLiaison = $liaison->getEtablissement(); ?>
                                 <?php if($modifiable): ?>
-                                    <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a>
+                                    <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo Anonymization::hideIfNeeded($etablissementLiaison->nom); ?></a>
                                 <?php else: ?>
-                                    <?php echo Anonymization::hideIfNeeded($liaison->libelle_etablissement); ?></a>
+                                    <?php echo Anonymization::hideIfNeeded($etablissementLiaison->nom); ?></a>
                                 <?php endif; ?>
                                 </td>
                                 <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>

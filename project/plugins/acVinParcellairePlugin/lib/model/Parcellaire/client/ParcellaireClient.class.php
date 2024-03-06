@@ -12,6 +12,9 @@ class ParcellaireClient extends acCouchdbClient {
     const PARCELLAIRE_DEFAUT_PRODUIT_HASH = '/declaration/certifications/DEFAUT/genres/DEFAUT/appellations/DEFAUT/mentions/DEFAUT/lieux/DEFAUT/couleurs/DEFAUT/cepages/DEFAUT';
     const PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE = 'Appellation non reconnue';
 
+    const PARCELLAIRE_SUPERFICIE_UNIT_ARE = 'are';
+    const PARCELLAIRE_SUPERFICIE_UNIT_HECTARE = 'hectare';
+
     public static $modes_savoirfaire = array(
         self::MODE_SAVOIRFAIRE_FERMIER => "Fermier",
         self::MODE_SAVOIRFAIRE_PROPRIETAIRE => "Propriétaire",
@@ -303,29 +306,38 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
-    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1) {
+    public static function findParcelle($parcellaire, $parcelle, $scoreMin = 1, $with_cepage_match = false) {
         $parcelles = $parcellaire->getParcellesByIdu();
-
-        if(!isset($parcelles[$parcelle->idu])) {
-
-            return null;
-        }
 
         $parcellesMatch = [];
 
-        foreach($parcelles[$parcelle->idu] as $p) {
+        $selected_parcellaires = [];
+        if ($parcelle->exist('idu') && $parcelle->idu) {
+            $selected_parcellaires = $parcelles[$parcelle->idu];
+        }else{
+            foreach($parcelles as $idu => $multip) {
+                foreach($multip as $p) {
+                    $selected_parcellaires[] = $p;
+                }
+            }
+        }
+
+        foreach($selected_parcellaires as $p) {
             $score = 0;
 
-            if($parcelle->getCepageLibelle() == $p->getCepageLibelle()) {
+            if(strtolower($parcelle->getCepageLibelle()) == strtolower($p->getCepageLibelle())) {
                 $score += 0.25;
             }
             if($parcelle->campagne_plantation == $p->campagne_plantation) {
                 $score += 0.25;
             }
-            if($parcelle->lieu == $p->lieu) {
+            if(strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
                 $score += 0.25;
             }
-            if($parcelle->superficie == $p->superficie) {
+            if(abs($parcelle->getSuperficie(self::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) - $p->superficie) < 0.0001) {
+                $score += 0.25;
+            }
+            if (!$parcelle->getIDU(false) && ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->getPrefix()) == intval($p->prefix)) ) {
                 $score += 0.25;
             }
 
@@ -339,7 +351,11 @@ class ParcellaireClient extends acCouchdbClient {
         krsort($parcellesMatch);
 
         foreach($parcellesMatch as $key => $pMatch) {
-
+            if ($with_cepage_match) {
+                if ($pMatch->cepage != $parcelle->cepage) {
+                    continue;
+                }
+            }
             return $pMatch;
         }
 

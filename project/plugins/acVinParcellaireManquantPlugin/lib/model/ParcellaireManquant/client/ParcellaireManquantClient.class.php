@@ -73,7 +73,7 @@ class ParcellaireManquantClient extends acCouchdbClient {
 
       public function getDateOuverture($type = self::TYPE_COUCHDB) {
           if ($type == self::TYPE_COUCHDB) {
-              $dates = sfConfig::get('app_dates_ouverture_parcellaire_irrigable');
+              $dates = sfConfig::get('app_dates_ouverture_parcellaire_manquant');
           }
           if (!is_array($dates) || !isset($dates['debut']) || !isset($dates['fin'])) {
               return array('debut'=>'1900-01-01', 'fin' => '9999-12-31');
@@ -97,16 +97,6 @@ class ParcellaireManquantClient extends acCouchdbClient {
               $date = date('Y-m-d');
           }
           return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
-      }
-
-      public function getRessources($value = null)
-      {
-      	return $this->getFromConfig('ressources', $value);
-      }
-
-      public function getMateriels($value = null)
-      {
-      	return $this->getFromConfig('materiels', $value);
       }
 
       private function getFromConfig($type, $value = null)
