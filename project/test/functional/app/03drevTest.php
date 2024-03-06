@@ -92,7 +92,6 @@ $b->click('button[type="submit"]', array('fichier' => array('file' => $csvTmpFil
 if ($b->getResponse()->getStatuscode() == 200) {
     $b->isForwardedTo('drev', 'revendicationSuperficie');
     $t->is($b->getResponse()->getStatuscode(), 200, "Formulaire upload et étape superficie");
-    unlink($csvTmpFile);
 
     $b->click('button[type="submit"]')->followRedirect();
 }else{
@@ -100,6 +99,7 @@ if ($b->getResponse()->getStatuscode() == 200) {
     $t->is($b->getResponse()->getStatuscode(), 302, "Formulaire upload et étape superficie");
     $b->followRedirect();
 }
+unlink($csvTmpFile);
 $b->isForwardedTo('drev', 'vci');
 
 if ($has_vci) {

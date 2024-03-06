@@ -117,6 +117,14 @@ class adelpheActions extends sfActions {
     return $this->renderText($csv);
   }
 
+  public function executeReouvrir(sfWebRequest $request) {
+      $this->forward404Unless($this->getUser()->isAdmin());
+      $adelphe = $this->getRoute()->getAdelphe();
+      $adelphe->devalidate();
+      $adelphe->save();
+      return $this->redirect('adelphe_edit',$adelphe);
+  }
+
   private function getEtape($doc, $etape) {
     $etapes = AdelpheEtapes::getInstance();
     if (!$doc->exist('etape')) {
