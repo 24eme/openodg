@@ -92,9 +92,9 @@ $dr->setDateDepot("$periode-12-15");
 $dr->save();
 $dr->storeFichier($csvTmpFile);
 $dr->save();
-
 $drev->resetAndImportFromDocumentDouanier();
 $drev->save();
+unlink($csvTmpFile);
 
 $t->is(count(array_keys($drev->getProduits())), 2 + (!DRevConfiguration::getInstance()->hasDenominationAuto()) * 2, "La DRev a repris le bon nombre (". (2 + (!DRevConfiguration::getInstance()->hasDenominationAuto()) * 2).") de produits du csv de la DR");
 

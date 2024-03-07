@@ -54,7 +54,7 @@ $drev->save();
 
 $drev->importFromDocumentDouanier();
 $drev->save();
-
+unlink($csvTmpFile);
 $t->is(count($drev->getProduits()), 1, "La DRev a repris 1 produit du csv de la SV12");
 
 $produits = $drev->getProduits();
