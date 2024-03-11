@@ -119,7 +119,7 @@ if [ -z $IS_NO_VINIF ]; then
   bash bin/export_docs.sh SV11 $EXPORTSLEEP $1 >> $EXPORTDIR/production.csv.part
   bash bin/export_docs.sh SV12 $EXPORTSLEEP $1 >> $EXPORTDIR/production.csv.part
   head -n 1 $EXPORTDIR/production.csv.part | sed 's/$/;Pseudo Production Id/' | iconv -f UTF8 -t ISO88591//TRANSLIT > $EXPORTDIR/production.csv
-  cat $EXPORTDIR/production.csv.part | grep -E '^(DR|SV)' |  awk -F ';' '{uniq = $1"-"$2"-"$4 ; pseudoid = $4"-"substr($2,0,4); gsub(/"/, "", pseudoid) ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0";"pseudoid  ; unicite[uniq] = $3 } }'  | iconv -f UTF8 -t ISO88591//TRANSLIT >> $EXPORTDIR/production.csv
+  cat $EXPORTDIR/production.csv.part | grep -E '^(DR|SV)' |  awk -F ';' '{uniq = $1"-"$2"-"$4 ; pseudoid = $4"-"substr($2,0,4); gsub(/"/, "", pseudoid) ; if ( ! unicite[uniq] || unicite[uniq] == $3 ) { print $0";"pseudoid  ; unicite[uniq] = $3 } }' | sort -t ';' -k 2,2 -r  | iconv -f UTF8 -t ISO88591//TRANSLIT >> $EXPORTDIR/production.csv
 
   head -n 1  $EXPORTDIR/production.csv > $EXPORTDIR/dr.csv
   cat $EXPORTDIR/production.csv | grep -a '^DR' >> $EXPORTDIR/dr.csv

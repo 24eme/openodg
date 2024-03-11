@@ -1626,7 +1626,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return ;
         }
         if ($type == DRCsvFile::CSV_TYPE_DR) {
-            return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter, null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
+            try {
+                return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter, null, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE));
+            }catch(sfException $e) {
+                //Si la L15 ne permet pas d'avoir le vin clair,
+                //On prend :
+                // - les L15 qui ne sont pas ambigues
+                // - les L9 des colonnes qui apportent également en cave coop
+                $v = $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_TOTAL, DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_NEGOCE), $produitFilter);
+                $v += $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_NETTE_L15, array(DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP,DouaneProduction::FAMILLE_CAVE_PARTICULIERE_ET_APPORTEUR_COOP_ET_NEGOCE), $produitFilter);
+                return $v;
+            }
         }
         if ($type == SV11CsvFile::CSV_TYPE_SV11) {
             return $docDouanier->getTotalValeur(SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE, null, $produitFilter);
