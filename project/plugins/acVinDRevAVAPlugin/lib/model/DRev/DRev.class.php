@@ -1020,10 +1020,13 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
         $version = ($this->hasVersion()) ? ' Version '.(str_replace("M", "", $this->version)*1) : "";
-
+        $date = $this->getDateDepot();
+        if (!$date) {
+            $date = $campagne * 1 .'-12-12';
+        }
         return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-            'date_depot' => $this->getDateDepot(),
+            'date_depot' => $date,
             'libelle' => 'Revendication des appellations viticoles '.$this->campagne.$version.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
