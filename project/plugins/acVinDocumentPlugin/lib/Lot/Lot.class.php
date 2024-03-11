@@ -498,8 +498,12 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getRegionOrigine() {
-        $originelot = LotsClient::getInstance()->findByUniqueId($this->declarant_identifiant, $this->unique_id, 0);
-        return ($originelot) ? $originelot->region : null;
+        $originelot = LotsClient::getInstance()->findByUniqueId($this->declarant_identifiant, $this->unique_id, 1);
+        if ($originelot && $originelot->exist('region') && $originelot->region) {
+            return $originelot->region;
+        }
+        $originedoc = ($originelot) ? FichierClient::getInstance()->find($originelot->id_document) : null;
+        return ($originedoc) ? $originedoc->region : null;
     }
 
     public function hasSpecificitePassage()
