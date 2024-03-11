@@ -497,6 +497,11 @@ abstract class Lot extends acCouchdbDocumentTree
         return false;
     }
 
+    public function getRegionOrigine() {
+        $originelot = LotsClient::getInstance()->findByUniqueId($this->declarant_identifiant, $this->unique_id, 0);
+        return ($originelot) ? $originelot->region : null;
+    }
+
     public function hasSpecificitePassage()
     {
         return preg_match("/ème dégustation/", $this->specificite);
