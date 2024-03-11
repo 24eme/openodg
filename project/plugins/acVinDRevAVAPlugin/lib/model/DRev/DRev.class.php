@@ -1022,7 +1022,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
         $version = ($this->hasVersion()) ? ' Version '.(str_replace("M", "", $this->version)*1) : "";
         $date = $this->getDateDepot();
         if (!$date) {
-            $date = $campagne * 1 .'-12-12';
+            $date = $this->campagne * 1 .'-12-12';
         }
         return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
