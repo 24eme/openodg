@@ -1870,7 +1870,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             $detailKey = $cotisation->getDetailKey();
             $nblots_operateurs = [];
             foreach ($this->getLotsDegustables() as $lot) {
-                if (DRevClient::getInstance()->matchFilterLot($lot, $filters->getParameters()) === false) {
+                if (DRevClient::getInstance()->matchFilterLot($lot, $filters) === false) {
                     continue;
                 }
                 @$nblots_operateurs[$lot->declarant_identifiant] += 1;
