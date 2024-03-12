@@ -50,23 +50,23 @@
             <table>
                 <tr>
                     <td style="width: 10%">Type :</td>
-                    <td><?php echoCheck('Aléatoire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE && !$lot->hasSpecificitePassage()) ?></td>
-                    <td><?php echoCheck('Aléatoire renforcé', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE && !$lot->hasSpecificitePassage()) ?></td>
-                    <td><?php echoCheck('Vrac export', $lot->initial_type == 'VracExport') ?></td>
+                    <td><?php echoCheck('Aléatoire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE && !$lot->hasSpecificitePassage() && $lot->getRegionOrigine() === 'OIVC') ?></td>
+                    <td><?php echoCheck('Aléatoire renforcé', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_ALEATOIRE_RENFORCE && !$lot->hasSpecificitePassage() && $lot->getRegionOrigine() === 'OIVC') ?></td>
+                    <td><?php echoCheck('Vrac export', $lot->initial_type == 'VracExport' && !$lot->hasSpecificitePassage()) ?></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td><?php echoCheck('Recours', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_RECOURS) ?></td>
+                    <td><?php echoCheck('Recours', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_RECOURS && !$lot->hasSpecificitePassage()) ?></td>
                     <td><?php echoCheck('Sous traitance', false) ?></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td colspan="3"><?php echoCheck('Suite à contrôle produit ODG non conforme', $lot->getRegionOrigine() !== 'OIVC') ?></td>
+                    <td colspan="3"><?php echoCheck('Suite à contrôle produit ODG non conforme', $lot->hasSpecificitePassage() && $lot->getRegionOrigine() !== 'OIVC') ?></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td colspan="3"><?php echoCheck('Suite à contrôle produit OIVC non conforme', $lot->getRegionOrigine() === 'OIVC') ?></td>
+                    <td colspan="3"><?php echoCheck('Suite à contrôle produit OIVC non conforme', $lot->hasSpecificitePassage() && $lot->getRegionOrigine() === 'OIVC') ?></td>
                 </tr>
                 <tr>
                     <td></td><td colspan="3"><?php echoCheck('Contrôle supplémentaire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE) ?></td><td></td>
