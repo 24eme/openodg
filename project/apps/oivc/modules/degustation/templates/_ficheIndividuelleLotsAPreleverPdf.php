@@ -108,7 +108,11 @@ p, div {
      <td><?php echo tdStart() ?><?php echo $lot->initial_type ?></td>
      <td><?php echo tdStart() ?>&nbsp;</td>
      <td><?php echo tdStart() ?><?php echoFloat($lot->volume); ?></td>
+    <?php if ($lot->exist('quantite')): ?>
+     <td><?php echo tdStart() ?><?php echo($lot->quantite); ?></td>
+    <?php else: ?>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
+    <?php endif; ?>
      <td><?php echo tdStart() ?>&nbsp;<br /><br /></td>
     </tr>
   <?php endforeach; ?>
