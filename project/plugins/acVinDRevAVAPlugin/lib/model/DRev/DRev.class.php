@@ -890,7 +890,9 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     }
 
     public function getSyndicatsViticole() {
-
+        if (!$this->getVolumeFacturable() && !$this->getSurfaceFacturable()) {
+            return null;
+        }
         return $this->getEtablissementObject()->getCompte()->getSyndicatsViticole();
     }
 
