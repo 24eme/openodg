@@ -69,7 +69,7 @@ Etablissement:
        commune: { }
        pays: {  }
        insee: { }
-       compte_type: { }
+       compte_type: { required: false } #A supprimer
        cedex: { required: false } #A supprimer
 
        #contact
