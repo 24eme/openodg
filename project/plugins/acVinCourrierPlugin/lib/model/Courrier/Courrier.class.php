@@ -122,6 +122,10 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
         return $this->etablissement;
     }
 
+    protected function doSave() {
+        return ;
+    }
+
     public function save($saveDependants = true) {
         $this->generateMouvementsLots();
         $this->generatePieces();
