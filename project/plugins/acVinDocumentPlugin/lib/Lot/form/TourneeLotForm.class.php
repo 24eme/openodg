@@ -20,6 +20,12 @@ class TourneeLotForm extends LotModificationForm
 
     public function getDestinationsType()
     {
-        return ['' => '', 'CONDITIONNEMENT_ENCOURS' => 'En cours de conditionnement', 'CONDITIONNE' =>  'Conditionné sur pile', 'EN_VRAC' => 'En vrac', 'CONDITIONNE_CONSERVATOIRE' => 'Conditionné conservatoire'];
+        return [
+                '' => '',
+                DRevClient::LOT_DESTINATION_CONDITIONNEMENT_ENCOURS => 'En cours de conditionnement',
+                DRevClient::LOT_DESTINATION_CONDITIONNEMENT =>  'Conditionné sur pile',
+                DRevClient::LOT_DESTINATION_VRAC => 'En vrac',
+                DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => 'Conditionné conservatoire'
+            ];
     }
 }
