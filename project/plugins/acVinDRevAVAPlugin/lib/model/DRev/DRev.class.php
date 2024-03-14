@@ -850,7 +850,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
         if ($this->hasDR() && !$this->getVolumeRecolte()) {
             return 0;
         }
-        if ($this->non_recoltant) {
+        if ($this->exist('non_recoltant') && $this->non_recoltant) {
             return 0;
         }
         $totalPrecedenteVersion = 0;
