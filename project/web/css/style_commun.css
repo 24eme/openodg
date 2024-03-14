@@ -52,6 +52,10 @@ tr:hover .show-on-tr-hover {
     opacity: 0.4;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 .trunk-text{
   white-space: nowrap;
   text-overflow: ' ... ';
