@@ -275,4 +275,184 @@ class parcellaireActions extends sfActions {
             throw new sfError403Exception();
         }
     }
+
+    private function addemptycepage($original, $keys) {
+        foreach(array_keys($keys) as $k) {
+            if (!isset($original[$k])) {
+                $original[$k] = 0;
+            }
+        }
+        ksort($original);
+        return $original;
+    }
+    public function executePotentieldeproduction(sfWebRequest $request) {
+        $this->secureTeledeclarant();
+
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $synthese = $parcellaire->getSyntheseProduitsCepages();
+
+        $cepages_principaux = [];
+        foreach(['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N'] as $c) {
+            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
+                $cepages_principaux[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            }
+        }
+        $cepages_blancs = [];
+        foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
+            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
+                $cepages_blancs[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            }
+        }
+        $cepages_accessoires = [];
+        foreach(['ROUSSELI RS','CALADOC N'] as $c) {
+            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
+                $cepages_accessoires[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            }
+        }
+        $cepages_varietedinteret = [];
+        foreach(['AGIORGITIKO N','CALABRESE N','MOSCHOFILERO RS','XINOMAVRO N','VERDEJO B'] as $c) {
+            if (isset($synthese['Côtes de Provence Rouge'][$c])) {
+                $cepages_accessoires[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
+            }
+        }
+
+        $encepagement = $synthese['Côtes de Provence Rouge']['Total']['superficie_max'];
+
+        $cepages_a_max = [];
+        foreach($synthese['Côtes de Provence Rouge'] as $k => $superficies) {
+            if ($k == 'Total') {
+                continue;
+            }
+            $cepages_a_max[$k] = $superficies['superficie_max'];
+        }
+        $task = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
+
+        $this->table_potentiel = [];
+        $this->encepagement = [];
+        $this->table_potentiel['Côtes de Provence Rouge'] = [];
+
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['somme'] = array_sum($cepages_principaux);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['limit'] = $encepagement * 0.7;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['cepages'] = $cepages_principaux;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['res'] = (array_sum($cepages_principaux) >=  $encepagement * 0.7);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['sens'] = '>=';
+        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max), Simplex\Restriction::TYPE_GOE, $encepagement * 0.7));
+
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] = '';
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['limit'] = $encepagement * 0.9;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['cepages'] = $cepages_principaux;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['res'] = true;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['sens'] = '<=';
+        foreach(array_keys($cepages_principaux) as $c) {
+            $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] .= $cepages_principaux[$c].',';
+            $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['res'] &= ($cepages_principaux[$c] <=  $encepagement * 0.9);
+            $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_principaux[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.9));
+        }
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] = substr($this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'], 0, -1);
+
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['somme'] = array_sum($cepages_blancs);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['cepages'] = $cepages_blancs;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['limit'] = $encepagement * 0.2;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['res'] = (array_sum($cepages_blancs) <= $encepagement * 0.2);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['sens'] = '<=';
+        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.2));
+
+        unset($cepages_blancs['VERMENTINO B']);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['somme'] = array_sum($cepages_blancs);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['cepages'] = $cepages_blancs;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['limit'] = $encepagement * 0.1;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['res'] = (array_sum($cepages_blancs) <= $encepagement * 0.1);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['sens'] = '<=';
+        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.1));
+
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['somme'] = array_sum($cepages_accessoires);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['cepages'] = $cepages_accessoires;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['limit'] = $encepagement * 0.1;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['res'] = (array_sum($cepages_accessoires) <= $encepagement * 0.1);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['sens'] = '<=';
+        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_accessoires, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.1));
+
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['somme'] = array_sum($cepages_varietedinteret);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['cepages'] = $cepages_varietedinteret;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['limit'] = $encepagement * 0.05;
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['res'] = (array_sum($cepages_varietedinteret) <= $encepagement * 0.05);
+        $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['sens'] = '<=';
+        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.05));
+
+        foreach(array_keys($cepages_a_max) as $c) {
+            $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
+        }
+
+        $solver = new Simplex\Solver($task);
+        $solution = $solver->getSolution();
+        $optimum = $solver->getSolutionValue($solution);
+        $this->potentiel_de_production = [];
+        $this->potentiel_de_production['Côtes de Provence Rouge'] = round($optimum->toFloat(), 5);
+        $this->encepagement['Côtes de Provence Rouge'] = round($encepagement, 5);
+
+        /*
+        $printer = new Simplex\Printer;
+        $printer->printSolution($solver);
+        echo $printer->printSolver($solver); exit;
+        */
+
+        $cepages_principaux = [];
+        foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
+            if (isset($synthese['Côtes de Provence Blanc'][$c])) {
+                $cepages_principaux[$c] = $synthese['Côtes de Provence Blanc'][$c]['superficie_max'];
+            }
+        }
+        $cepages_varietedinteret = [];
+        foreach(['VERDEJO B'] as $c) {
+            if (isset($synthese['Côtes de Provence Blanc'][$c])) {
+                $cepages_varietedinteret[$c] = $synthese['Côtes de Provence Blanc'][$c]['superficie_max'];
+            }
+        }
+        $encepagement = array_sum($cepages_principaux) + array_sum($cepages_varietedinteret);
+
+        $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
+        $task_blanc = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50'] = [];
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['somme'] = array_sum($cepages_principaux);
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['limit'] = $encepagement * 0.5;
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['cepages'] = $cepages_principaux;
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['res'] = (array_sum($cepages_principaux) >=  $encepagement * 0.5);
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['sens'] = '>=';
+        $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max), Simplex\Restriction::TYPE_GOE, $encepagement * 0.5));
+
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05'] = [];
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['somme'] = array_sum($cepages_varietedinteret);
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['limit'] = $encepagement * 0.05;
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['cepages'] = $cepages_varietedinteret;
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['res'] = (array_sum($cepages_varietedinteret) <=  $encepagement * 0.05);
+        $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['sens'] = '<=';
+        if ($this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['somme']) {
+            $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.05));
+        }
+        foreach(array_keys($cepages_a_max) as $c) {
+            $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
+        }
+
+        $solver = new Simplex\Solver($task_blanc);
+        $solution = $solver->getSolution();
+        if ($solution) {
+            $optimum = $solver->getSolutionValue($solution);
+            $this->potentiel_de_production['Côtes de Provence Blanc'] = round($optimum->toFloat(), 5);
+        }else{
+            $this->potentiel_de_production['Côtes de Provence Blanc'] = "IMPOSSIBLE";
+        }
+        $this->encepagement['Côtes de Provence Blanc'] = round($encepagement, 5);
+        /*
+        $printer = new Simplex\Printer;
+        $printer->printSolution($solver);
+        echo $printer->printSolver($solver); exit;
+        */
+
+    }
 }
