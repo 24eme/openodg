@@ -840,19 +840,26 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     /*
      * Facture
      */
-	public function getSurfaceFacturable()
-	{
-        $totalPrecedenteVersion = 0;
+     public function getSurfaceFacturable()
+     {
+        throw new sfException('Déprécié. Remplacé par getSurfaceRecolteFacturable()');
+     }
+
+    public function getSurfaceRecolteFacturable()
+    {
         if ($this->hasDR() && !$this->getVolumeRecolte()) {
             return 0;
         }
-
+        if ($this->non_recoltant) {
+            return 0;
+        }
+        $totalPrecedenteVersion = 0;
         if ($this->hasVersion()) {
             $totalPrecedenteVersion = $this->getMother()->declaration->getTotalTotalSuperficie();
         }
 
 		return $this->declaration->getTotalTotalSuperficie();
-	}
+    }
 
     public function getVolumeRecolte() {
         $volume = 0;
@@ -906,7 +913,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     }
 
     public function getSyndicatsViticole() {
-        if (!$this->getVolumeFacturable() && !$this->getSurfaceFacturable()) {
+        if (!$this->getVolumeFacturable() && !$this->getSurfaceRecolteFacturable()) {
             return null;
         }
         return $this->getEtablissementObject()->getCompte()->getSyndicatsViticole();
