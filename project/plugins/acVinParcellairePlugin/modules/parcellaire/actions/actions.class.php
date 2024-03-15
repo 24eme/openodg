@@ -346,6 +346,13 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['res'] = (array_sum($cepages_a_max) >= 1.5);
         $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['sens'] = '>=';
 
+        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['somme'] = count($cepages_principaux);
+        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['limit'] = 2;
+        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['cepages'] = $cepages_principaux;
+        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['res'] = (count($cepages_principaux) >=  2);
+        $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['sens'] = '>=';
+
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70'] = [];
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['somme'] = array_sum($cepages_principaux);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['limit'] = $encepagement * 0.7;
