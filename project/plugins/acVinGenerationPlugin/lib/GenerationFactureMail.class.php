@@ -7,10 +7,6 @@ class GenerationFactureMail extends GenerationAbstract {
     public function generateMailForADocumentId($id) {
         $facture = FactureClient::getInstance()->find($id);
 
-        if ($facture->isTelechargee()) {
-            return;
-        }
-
         $email = null;
         if(!class_exists("SocieteClient")) {
             $email = $facture->getCompte()->email;
@@ -130,11 +126,10 @@ class GenerationFactureMail extends GenerationAbstract {
         $sleepSecond = 2;
         $i = 0;
         foreach($this->generation->getMasterGeneration()->documents as $factureId) {
-            $mail = $this->generateMailForADocumentId($factureId);
-
-            if(!$mail && in_array($factureId, $factureDejaEnvoye)) {
+            if(in_array($factureId, $factureDejaEnvoye)) {
                 continue;
             }
+            $mail = $this->generateMailForADocumentId($factureId);
 
             if(!$mail) {
                 $this->addLog($factureId, "PAS_DE_MAIL", "generateMailForADocumentId n'a pas retourné de mail");
