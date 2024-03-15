@@ -11,7 +11,7 @@ Vous trouverez ainsi sur cet espace les factures suivantes :
 
 La note explicative de vos cotisations est également disponible pour téléchargement : https://declaration.ava-aoc.fr/docs/explications_cotisations.pdf
 
-Enfin, l'ensemble de l'historique de vos factures et règlements sont également disponible dans votre espace de facturation : <?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant), true); ?>
+Enfin, l'ensemble de l'historique de vos factures et règlements sont également disponible dans votre espace de facturation : <?php echo ProjectConfiguration::getAppRouting()->generate('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant), true); ?>
 
 
 Bien cordialement,
