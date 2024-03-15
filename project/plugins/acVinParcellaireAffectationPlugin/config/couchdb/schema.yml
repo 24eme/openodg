@@ -12,7 +12,7 @@ ParcellaireAffectation:
       validation_odg: { }
       lecture_seule: {}
       signataire: { required: false }
-      papier: { required: false, type: integer }
+      papier: { required: false }
       declarant:
         type: collection
         class: ParcellaireAffectationDeclarant

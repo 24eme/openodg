@@ -11,7 +11,7 @@ ParcellaireIrrigable:
       validation: { }
       validation_odg: { }
       signataire: { }
-      papier: { required: false, type: integer }
+      papier: { required: false }
       declarant:
         type: collection
         class: ParcellaireIrrigableDeclarant
