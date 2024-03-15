@@ -11,14 +11,20 @@ class GenerationFactureMail extends GenerationAbstract {
             return;
         }
 
-        if(!$facture->getSociete()->getEmailCompta()) {
-            echo $facture->getSociete()->_id."\n";
+        $email = null;
+        if(!class_exists("SocieteClient")) {
+            $email = $facture->getCompte()->email;
+        } else {
+            $email = $facture->getSociete()->getEmailCompta();
+        }
+
+        if(!$email) {
             return;
         }
 
         $message = Swift_Message::newInstance()
          ->setFrom(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')))
-         ->setTo($facture->getSociete()->getEmailCompta())
+         ->setTo($email)
          ->setSubject(self::getSujet($facture->getNumeroOdg()))
          ->setBody($this->getPartial("facturation/email", array('id' => $id)));
 
@@ -104,8 +110,14 @@ class GenerationFactureMail extends GenerationAbstract {
         }
 
         $facture = FactureClient::getInstance()->find($factureId);
+	$email = null;
+        if(!class_exists("SocieteClient")) {
+            $email = $facture->getCompte()->email;
+        } else {
+            $email = $facture->getSociete()->getEmailCompta();
+        }
 
-        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $facture->getSociete()->getEmailCompta(), $statut, $commentaire, $facture->_id);
+        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $email, $statut, $commentaire, $facture->_id);
     }
 
     public function generate() {

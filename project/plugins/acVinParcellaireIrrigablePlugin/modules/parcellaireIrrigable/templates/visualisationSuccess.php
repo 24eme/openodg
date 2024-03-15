@@ -3,8 +3,10 @@
 <?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
 
 <div class="page-header no-border">
-    <h2>Identification des parcelles irrigables 
-    <?php if($parcellaireIrrigable->isPapier()): ?>
+    <h2>Identification des parcelles irrigables
+    <?php if($parcellaireIrrigable->isAuto()): ?>
+    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration générée automatiquement depuis les déclarations précédentes <?php if($parcellaireIrrigable->validation && $parcellaireIrrigable->validation !== true): ?> le <?php echo format_date($parcellaireIrrigable->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
+    <?php elseif($parcellaireIrrigable->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaireIrrigable->validation && $parcellaireIrrigable->validation !== true): ?> reçue le <?php echo format_date($parcellaireIrrigable->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($parcellaireIrrigable->validation): ?>
     <small class="pull-right">Télédéclaration<?php if($parcellaireIrrigable->validation && $parcellaireIrrigable->validation !== true): ?> validée le <?php echo format_date($parcellaireIrrigable->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
