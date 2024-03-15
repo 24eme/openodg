@@ -318,14 +318,14 @@ class parcellaireActions extends sfActions {
             }
         }
 
-        $encepagement = $synthese['Côtes de Provence Rouge']['Total']['superficie_max'];
-
         $cepages_a_max = [];
+        $encepagement = 0;
         foreach($synthese['Côtes de Provence Rouge'] as $k => $superficies) {
             if ($k == 'Total') {
                 continue;
             }
             $cepages_a_max[$k] = $superficies['superficie_max'];
+            $encepagement += $superficies['superficie_max'];
         }
         $task = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
 
@@ -416,7 +416,8 @@ class parcellaireActions extends sfActions {
                 $cepages_varietedinteret[$c] = $synthese['Côtes de Provence Blanc'][$c]['superficie_max'];
             }
         }
-        $encepagement = array_sum($cepages_principaux) + array_sum($cepages_varietedinteret);
+        $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
+        $encepagement = array_sum($cepages_a_max);
 
         $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
         $task_blanc = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
