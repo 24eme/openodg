@@ -339,6 +339,13 @@ class parcellaireActions extends sfActions {
         $this->encepagement = [];
         $this->table_potentiel['Côtes de Provence Rouge'] = [];
 
+        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50'] = [];
+        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['somme'] = array_sum($cepages_a_max);
+        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['limit'] = 1.5;
+        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['cepages'] = $cepages_a_max;
+        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['res'] = (array_sum($cepages_a_max) >= 1.5);
+        $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['sens'] = '>=';
+
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70'] = [];
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['somme'] = array_sum($cepages_principaux);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['limit'] = $encepagement * 0.7;
@@ -434,6 +441,13 @@ class parcellaireActions extends sfActions {
         }
         $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
         $encepagement = array_sum($cepages_a_max);
+
+        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50'] = [];
+        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['somme'] = array_sum($cepages_a_max);
+        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['limit'] = 1.5;
+        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['cepages'] = $cepages_a_max;
+        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['res'] = (array_sum($cepages_a_max) >= 1.5);
+        $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['sens'] = '>=';
 
         $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
         $task_blanc = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
