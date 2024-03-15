@@ -293,6 +293,14 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $synthese = $parcellaire->getSyntheseProduitsCepages();
 
+
+        $rewrite = $request->getParameter('rewrite');
+        if ($rewrite) {
+            $c = explode(':', $rewrite);
+            $synthese['Côtes de Provence Rouge'][$c[0]]['superficie_max'] = floatval($c[1]);
+        }
+
+
         $cepages_principaux = [];
         foreach(['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N'] as $c) {
             if (isset($synthese['Côtes de Provence Rouge'][$c])) {
@@ -316,12 +324,6 @@ class parcellaireActions extends sfActions {
             if (isset($synthese['Côtes de Provence Rouge'][$c])) {
                 $cepages_accessoires[$c] = $synthese['Côtes de Provence Rouge'][$c]['superficie_max'];
             }
-        }
-
-        $rewrite = $request->getParameter('rewrite');
-        if ($rewrite) {
-            $c = explode(':', $rewrite);
-            $synthese['Côtes de Provence Rouge'][$c[0]]['superficie_max'] = floatval($c[1]);
         }
 
         $cepages_a_max = [];
