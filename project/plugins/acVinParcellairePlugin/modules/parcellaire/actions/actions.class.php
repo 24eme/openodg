@@ -397,11 +397,16 @@ class parcellaireActions extends sfActions {
             $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
         }
 
+        $this->potentiel_de_production = [];
+
         $solver = new Simplex\Solver($task);
         $solution = $solver->getSolution();
-        $optimum = $solver->getSolutionValue($solution);
-        $this->potentiel_de_production = [];
-        $this->potentiel_de_production['Côtes de Provence Rouge'] = round($optimum->toFloat(), 5);
+        if ($solution) {
+            $optimum = $solver->getSolutionValue($solution);
+            $this->potentiel_de_production['Côtes de Provence Rouge'] = round($optimum->toFloat(), 5);
+        }else{
+            $this->potentiel_de_production['Côtes de Provence Rouge'] = "IMPOSSIBLE";
+        }
         $this->encepagement['Côtes de Provence Rouge'] = round($encepagement, 5);
 
         /*
