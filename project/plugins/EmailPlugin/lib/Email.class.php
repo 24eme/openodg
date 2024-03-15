@@ -645,7 +645,7 @@ class Email {
           return false;
       }
       $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-      $to = array($drev->declarant->email);
+      $to = array($adelphe->declarant->email);
       $subject = 'Validation de votre Déclaration Adelphe';
       $body = $this->getBodyFromPartial('send_adelphe_validation', array('adelphe' => $adelphe));
       $message = Swift_Message::newInstance()

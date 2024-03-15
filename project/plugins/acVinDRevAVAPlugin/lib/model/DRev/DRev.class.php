@@ -840,16 +840,39 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     /*
      * Facture
      */
-	public function getSurfaceFacturable()
-	{
-        $totalPrecedenteVersion = 0;
+     public function getSurfaceFacturable()
+     {
+        throw new sfException('Déprécié. Remplacé par getSurfaceRecolteFacturable()');
+     }
 
+    public function getSurfaceRecolteFacturable()
+    {
+        if ($this->hasDR() && !$this->getVolumeRecolte()) {
+            return 0;
+        }
+        if ($this->exist('non_recoltant') && $this->non_recoltant) {
+            return 0;
+        }
+        $totalPrecedenteVersion = 0;
         if ($this->hasVersion()) {
             $totalPrecedenteVersion = $this->getMother()->declaration->getTotalTotalSuperficie();
         }
 
 		return $this->declaration->getTotalTotalSuperficie();
-	}
+    }
+
+    public function getVolumeRecolte() {
+        $volume = 0;
+        $csv = $this->getCIVACsvFile();
+        foreach ($csv->getCsv() as $line) {
+            $hash = DRCIVACsvFile::getHashProduitByLine($line);
+            if (strpos($hash, '/appellation') === false) {
+                continue;
+            }
+            $volume += intval($line[DRCIVACsvFile::CSV_VOLUME]);
+        }
+        return $volume;
+    }
 
 	public function getVolumeFacturable()
 	{
@@ -890,7 +913,9 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     }
 
     public function getSyndicatsViticole() {
-
+        if (!$this->getVolumeFacturable() && !$this->getSurfaceRecolteFacturable()) {
+            return null;
+        }
         return $this->getEtablissementObject()->getCompte()->getSyndicatsViticole();
     }
 
@@ -1020,10 +1045,13 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
         $version = ($this->hasVersion()) ? ' Version '.(str_replace("M", "", $this->version)*1) : "";
-
+        $date = $this->getDateDepot();
+        if (!$date) {
+            $date = $this->campagne * 1 .'-12-12';
+        }
         return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-            'date_depot' => $this->getDateDepot(),
+            'date_depot' => $date,
             'libelle' => 'Revendication des appellations viticoles '.$this->campagne.$version.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
