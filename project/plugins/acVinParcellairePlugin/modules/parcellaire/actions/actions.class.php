@@ -318,6 +318,12 @@ class parcellaireActions extends sfActions {
             }
         }
 
+        $rewrite = $request->getParameter('rewrite');
+        if ($rewrite) {
+            $c = explode(':', $rewrite);
+            $synthese['Côtes de Provence Rouge'][$c[0]]['superficie_max'] = floatval($c[1]);
+        }
+
         $cepages_a_max = [];
         $encepagement = 0;
         foreach($synthese['Côtes de Provence Rouge'] as $k => $superficies) {
@@ -404,6 +410,11 @@ class parcellaireActions extends sfActions {
         echo $printer->printSolver($solver); exit;
         */
 
+        $rewrite = $request->getParameter('rewrite');
+        if ($rewrite) {
+            $c = explode(':', $rewrite);
+            $synthese['Côtes de Provence Blanc'][$c[0]]['superficie_max'] = floatval($c[1]);
+        }
         $cepages_principaux = [];
         foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
             if (isset($synthese['Côtes de Provence Blanc'][$c])) {
