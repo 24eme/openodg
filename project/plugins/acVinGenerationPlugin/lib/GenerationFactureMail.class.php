@@ -12,7 +12,7 @@ class GenerationFactureMail extends GenerationAbstract {
         }
 
         $email = null;
-        if(!class_exists("Societe")) {
+        if(!class_exists("SocieteClient")) {
             $email = $facture->getCompte()->email;
         } else {
             $email = $facture->getSociete()->getEmailCompta();
@@ -110,8 +110,14 @@ class GenerationFactureMail extends GenerationAbstract {
         }
 
         $facture = FactureClient::getInstance()->find($factureId);
+	$email = null;
+        if(!class_exists("SocieteClient")) {
+            $email = $facture->getCompte()->email;
+        } else {
+            $email = $facture->getSociete()->getEmailCompta();
+        }
 
-        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $facture->getSociete()->getEmailCompta(), $statut, $commentaire, $facture->_id);
+        return array($date, $facture->getNumeroOdg(), $facture->identifiant, $facture->declarant->raison_sociale, $email, $statut, $commentaire, $facture->_id);
     }
 
     public function generate() {
