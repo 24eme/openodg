@@ -417,8 +417,10 @@ class facturationActions extends sfActions
 
         $generation = $generationMaitre->getOrCreateSubGeneration($type);
 
-        $generationMaitre->save();
-        $generation->save();
+        if($generation->isNew()) {
+            $generationMaitre->save();
+            $generation->save();
+        }
 
         return $this->redirect('generation_view', ['id' => $generation->_id]);
     }

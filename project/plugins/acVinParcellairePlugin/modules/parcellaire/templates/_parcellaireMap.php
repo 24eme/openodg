@@ -5,8 +5,8 @@
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet-gps/dist/leaflet-gps.min.css'); ?>
 
-<div id="map" class="col-12" style="height: 350px; margin-bottom: 20px;">
-	<div class="leaflet-touch leaflet-bar"><a id="refreshButton" onclick="zoomOnMap(); return false;" href="#"><span class="glyphicon glyphicon-fullscreen"></span></a></div>
+<div id="map" class="col-12" style="height: 580px; margin-bottom: 20px;">
+	<div class="leaflet-touch leaflet-bar"><a id="refreshButton" onclick="zoomOnMap(); return false;" href="#"><span class="glyphicon glyphicon-resize-small"></span></a></div>
 </div>
 <style>
 .sectionlabel, .parcellelabel {
