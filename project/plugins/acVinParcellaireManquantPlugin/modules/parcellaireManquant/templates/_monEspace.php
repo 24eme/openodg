@@ -8,7 +8,7 @@
         </div>
         <?php if (!$parcellaire): ?>
         <div class="panel-body">
-            <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer vos pieds morts ou manquants.</p>
+            <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer vos pieds morts ou manquants : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
         </div>
         <?php elseif ($parcellaireManquant && $parcellaireManquant->validation): ?>
         <div class="panel-body">

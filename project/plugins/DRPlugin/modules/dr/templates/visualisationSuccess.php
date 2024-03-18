@@ -43,7 +43,7 @@
         <tr>
             <th class="text-center col-xs-5 clearfix">Produits
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
-                <small class="pull-right text-muted">Rdmt L5|L15</small>
+                <small class="pull-right text-muted">Rdmt L5-L16|L15</small>
 <?php else: ?>
                 <small class="pull-right text-muted">Rdmt L15</small>
 <?php endif; ?>
@@ -64,23 +64,23 @@
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                         <span title="Rendement L5" style="cursor: help">
                             <?php if ($produit['lignes']['05']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round(intval($produit['lignes']['05']['val']) / $produit['lignes']['04']['val'], 2) ?>
-                            <?php else: echo 0 ?>
+                                <?php echoFloatFr(round( ($produit['lignes']['05']['val'] * 1 - $produit['lignes']['16']['val'] * 1) / $produit['lignes']['04']['val'], 2)); ?>
+                            <?php else: echoFloatFr(0) ?>
                             <?php endif ?>
                         </span> hl/ha
                         |
 <?php endif ?>
                         <span title="Rendement L15" style="cursor: help">
                             <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ?>
-                            <?php else: echo 0 ?>
+                                <?php echoFloatFr( round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ) ;?>
+                            <?php else: echoFloatFr(0); ?>
                             <?php endif ?>
                         </span> hl/ha
                     </small>
                 </td>
                 <?php foreach ($produit['lignes'] as $l => $p): ?>
                 <td class="text-right" title="Ligne L<?= $l ?>">
-                  <?= ($p['val'] === '—') ? '—' : echoFloat($p['val']) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
+                  <?= ($p['val'] === null) ? '—' : echoFloat($p['val']) ?> <span class="text-muted"><?= $p['unit'] ?? '' ?></span>
                 </td>
                 <?php endforeach ?>
             </tr>
@@ -133,7 +133,7 @@ endif;
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?= ($service) ?: url_for('declaration_etablissement', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne]) ?>"
+        <a href="<?= (isset($service) && $service) ?: url_for('declaration_etablissement', ['identifiant' => $dr->identifiant, 'campagne' => $dr->campagne]) ?>"
             class="btn btn-default"
         >
             <i class="glyphicon glyphicon-chevron-left"></i> Retour
@@ -147,12 +147,12 @@ endif;
     </div>
 <div class="col-xs-4 text-right">
 <?php if(DRConfiguration::getInstance()->hasValidationDR()): ?>
-        <?php if ($sf_user->isAdmin()): ?>
+        <?php if ($sf_user->isAdminODG()): ?>
             <?php if($dr->exist('validation_odg') && $dr->validation_odg): ?>
                 <a class="btn btn-default btn-sm" href="<?= url_for('dr_devalidation', $dr) ?>"
-                    onclick="return confirm('Êtes vous sûr de vouloir dévalider cette DR');"
+                    onclick="return confirm('Êtes vous sûr de vouloir dévalider cette <?php echo $dr->getType() ?>');"
                 >
-                    <span class="glyphicon glyphicon-remove-sign"> Dévalider</span>
+                    <span class="glyphicon glyphicon-remove-sign"></span> Dévalider
                 </a>
             <?php elseif(isset($validation) && $validation->hasErreurs()) : ?>
                 <a href="#" class="btn btn-default disabled">
@@ -168,7 +168,7 @@ endif;
             <?php endif ?>
         <?php endif ?>
 <?php endif; ?>
-<?php if ($sf_user->isAdmin() && $dr->isDeletable()): ?>
+<?php if ($sf_user->isAdminODG() && $dr->isDeletable()): ?>
     <a href="<?= url_for('dr_suppression', ['id' => $dr->_id]) ?>" class="btn text-danger" onclick="return confirm('Etes vous sur de vouloir supprimer ce document ?');">
         Supprimer la <?php echo $dr->type ; ?>
     </a>

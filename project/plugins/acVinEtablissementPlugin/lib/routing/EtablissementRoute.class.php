@@ -4,6 +4,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
 
     protected $etablissement = null;
     protected $campagne = null;
+    protected $accesses = array();
 
     protected function getObjectForParameters($parameters = null) {
         $this->etablissement = EtablissementClient::getInstance()->find($parameters['identifiant']);
@@ -18,11 +19,22 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
 
-        if($myUser->hasDrevAdmin() && !$myUser->isAdmin()) {
-            $region = $compteUser->region;
+        $allowed = $myUser->isAdmin() || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG());
+
+        if(!$allowed && ( $myUser->hasDrevAdmin() || $myUser->isAdminODG()) ) {
+            $region = Organisme::getInstance()->getCurrentRegion();
             if(!$region || (!DrevConfiguration::getInstance()->hasHabilitationINAO() && !HabilitationClient::getInstance()->isRegionInHabilitation($this->etablissement->identifiant, $region))) {
-                throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (region)");
+                throw new sfError403RegionException($compteUser);
             }
+            $allowed = true;
+        }
+        if (!$allowed) {
+            if ($myUser->hasTeledeclaration()) {
+                $allowed = ($compteUser->identifiant == $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant);
+            }
+        }
+        if (!$allowed) {
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
         }
         $module = sfContext::getInstance()->getRequest()->getParameterHolder()->get('module');
 
@@ -40,7 +52,11 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         return array("identifiant" => $object->getIdentifiant());
     }
 
-    public function getEtablissement() {
+    public function getEtablissement($parameters = null) {
+
+        if (isset($parameters['allow_admin_odg'])) {
+            $this->accesses['allow_admin_odg'] = $parameters['allow_admin_odg'];
+        }
 
 	    if (!$this->etablissement) {
             $this->getObject();

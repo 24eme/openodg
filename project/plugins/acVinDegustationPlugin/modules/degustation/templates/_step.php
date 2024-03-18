@@ -1,7 +1,10 @@
 <?php
 $etapes =  DegustationEtapes::getInstance();
 $active = ($active) ? $active : $etapes->getFirst();
+?>
 
-include_partial('global/step', array('object' => $degustation, 'etapes' => $etapes, 'step' => $active));
+<div id="etapes_degustation">
+<?php include_partial('global/step', array('object' => $degustation, 'etapes' => $etapes, 'step' => $active)); ?>
+</div>
 
-include_partial('global/flash');
+<?php include_partial('global/flash'); ?>

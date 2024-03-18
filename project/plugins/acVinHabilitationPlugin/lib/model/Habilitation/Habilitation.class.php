@@ -310,9 +310,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         if (!$this->addProduit($hash_produit)) {
             return false;
         }
-        if (!$this->addProduit($hash_produit)->exist('activites')) {
-            return false;
-        }
+
         return $this->addproduit($hash_produit)->isHabiliteFor($activite);
     }
 
@@ -351,6 +349,58 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         ksort($demandes);
 
         return $demandes;
+    }
+
+    public function getActivitesHabilites() {
+        $activites = [];
+        foreach($this->getProduits() as $p) {
+            $activites = array_merge($activites, array_keys($p->getActivitesHabilites()));
+        }
+        $activites = array_unique($activites);
+        sort($activites);
+
+        return $activites;
+    }
+
+    public function getActivitesWrongHabilitation() {
+        $activites = [];
+        foreach($this->getProduits() as $p) {
+            $activites = array_merge($activites, array_keys($p->getActivitesWrongHabilitation()));
+        }
+        $activites = array_unique($activites);
+        sort($activites);
+
+        return $activites;
+    }
+
+    public function getTheoriticalFamille() {
+        $activites = $this->getActivitesHabilites();
+
+        if(!count($activites)) {
+            $activites = $this->getActivitesWrongHabilitation();
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites) && in_array(HabilitationClient::ACTIVITE_NEGOCIANT, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_PRODUCTEUR, $activites) && in_array(HabilitationClient::ACTIVITE_VINIFICATEUR, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_NEGOCIANT, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_NEGOCIANT;
+        }
+
+        if(in_array(HabilitationClient::ACTIVITE_PRODUCTEUR, $activites)) {
+
+            return EtablissementFamilles::FAMILLE_PRODUCTEUR;
+        }
+
+        return null;
     }
 
     public function save() {

@@ -138,30 +138,10 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       	foreach ($hashes as $hash) {
       		$hash = str_replace('/declaration/', '', $hash);
     	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-    	  		$detail = $parcellaire->get($hash);
-    	  		$produit = $detail->getProduit();
-    	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
-    	  		$item->libelle = $produit->libelle;
-    	  		$subitem = $item->detail->add($detail->getKey());
-
-    	  		$subitem->superficie = $detail->superficie;
-    	  		$subitem->commune = $detail->commune;
-                $subitem->code_commune = $detail->code_commune;
-                $subitem->prefix = $detail->prefix;
-    	  		$subitem->section = $detail->section;
-    	  		$subitem->numero_parcelle = $detail->numero_parcelle;
-                $subitem->idu = $detail->idu;
-    	  		$subitem->lieu = $detail->lieu;
-    	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->active = 1;
-                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
-
-                $subitem->remove('vtsgn');
-                if($detail->exist('vtsgn')) {
-                    $subitem->add('vtsgn', (int)$detail->vtsgn);
-                }
-    	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-    	  	}
+    	  		$this->addParcelleFromParcellaireParcelle($parcellaire->get($hash));
+            }else{
+                $this->updateParcelleFromParcellaireParcelle($parcellaire->get($hash));
+            }
       	}
       	$remove = array();
       	foreach ($this->declaration as $key => $value) {
@@ -172,6 +152,59 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       	foreach ($remove as $r) {
       		$this->declaration->remove($r);
       	}
+    }
+
+    public function addParcelleFromParcellaireParcelle($detail) {
+        $produit = $detail->getProduit();
+        $item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
+        $item->libelle = $produit->libelle;
+        $subitem = $item->detail->add($detail->getKey());
+
+            $subitem->superficie = $detail->superficie;
+            $subitem->commune = $detail->commune;
+            $subitem->code_commune = $detail->code_commune;
+            $subitem->prefix = $detail->prefix;
+            $subitem->section = $detail->section;
+            $subitem->numero_parcelle = $detail->numero_parcelle;
+            $subitem->idu = $detail->idu;
+            $subitem->lieu = $detail->lieu;
+            $subitem->cepage = $detail->cepage;
+            $subitem->active = 1;
+            if ($detail->ecart_pieds && $detail->ecart_rang) {
+                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
+            } else {
+                $subitem->densite = 0;
+            }
+            $subitem->remove('vtsgn');
+            if($detail->exist('vtsgn')) {
+                $subitem->add('vtsgn', (int)$detail->vtsgn);
+            }
+            $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
+
+        return $subitem;
+    }
+
+    public function updateParcelleFromParcellaireParcelle($detail) {
+        $produit = $detail->getProduit();
+        $hash = str_replace('/declaration/', null, $produit->getHash());
+        if (!$this->declaration->exist($hash)) {
+            return;
+        }
+        $item = $this->declaration->get($hash);
+        $item->libelle = $produit->libelle;
+        $subitem = $item->detail->add($detail->getKey());
+        $subitem->superficie = $detail->superficie;
+        $subitem->lieu = $detail->lieu;
+        $subitem->cepage = $detail->cepage;
+        $subitem->active = 1;
+        if ($detail->ecart_pieds && $detail->ecart_rang) {
+            $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
+        } else {
+            $subitem->densite = 0;
+        }
+        $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
+
+        return $subitem;
     }
 
     public function getParcellesByIdu() {
@@ -241,6 +274,11 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         }
     }
 
+    public function isValidee() {
+
+        return $this->validation;
+    }
+
   public function validate($date = null) {
       if (is_null($date)) {
           $date = date('Y-m-d');
@@ -264,6 +302,30 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
 
     protected function doSave() {
         $this->piece_document->generatePieces();
+    }
+
+    public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
+        return parent::save();
+    }
+
+    public function getRegions() {
+        $regions = array();
+        foreach ($this->getParcellaireCurrent()->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
+    public function getRegion() {
+        if(!$this->exist('region')) {
+            return null;
+        }
+
+        return $this->_get('region');
     }
 
   /*** DECLARATION DOCUMENT ***/

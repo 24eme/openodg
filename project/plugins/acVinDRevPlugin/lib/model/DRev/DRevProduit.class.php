@@ -335,6 +335,10 @@ class DRevProduit extends BaseDRevProduit
 	public function hasDonneesRecolte() {
        if ($this->exist('recolte')) {
            foreach ($this->recolte as $k => $v) {
+               //Pour les apporteurs en cave coop => a des volumes mais pas de récolte pour la cave particulière
+               if (in_array($k, ['usages_industriels_total', 'volume_total', 'superficie_total', 'recolte_nette', 'vci_constitue'])) {
+                   continue;
+               }
                if ($v && $v > 0) {
                    return true;
                }
@@ -408,5 +412,10 @@ class DRevProduit extends BaseDRevProduit
     public function hasVolumeOrSuperficieRevendicables() {
         return $this->recolte->volume_sur_place || $this->volume_revendique_total || $this->superficie_revendique;
 
+    }
+
+    public function getRegion() {
+
+        return RegionConfiguration::getInstance()->getOdgRegion($this->getHash());
     }
 }

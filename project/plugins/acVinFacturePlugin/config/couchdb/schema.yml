@@ -5,6 +5,7 @@ Facture:
       _id: {}
       _rev: {}
       type: {}
+      type_archive: { required:false }
       identifiant: {}
       code_comptable_client: {}
       numero_facture: {}
@@ -159,6 +160,76 @@ Facture:
                       fields:
                         '*': { }
 
+MouvementsFacture:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      campagne: {  }
+      periode: {  }
+      date: {  }
+      identifiant: {  }
+      libelle: {  }
+      region: {}
+      valide:
+        type: collection
+        definition:
+          fields:
+            date_saisie: {  }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: FactureMouvement
+                    inheritance: MouvementFactures
+                    type: collection
+                    definition:
+                      fields:
+                        identifiant_analytique: {  }
+                        identifiant_analytique_libelle_compta: {  }
+                        identifiant: {  }
+                        type_libelle: {  }
+                        categorie: { }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        prix_unitaire: { type: float }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        date : { }
+                        type : { }
+                        id: { }
+                        taux: { }
+                        tva: { }
+                        version: { }
+                        campagne: { }
+                        region: { }
+
+Comptabilite:
+  indexable: false
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      identifiants_analytiques:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  identifiant_analytique_numero_compte: {  }
+                  identifiant_analytique: {  }
+                  identifiant_analytique_libelle_compta: {  }
+                  identifiant_analytique_taux_tva: { type: float }
+
 TemplateFacture:
   definition:
     fields:
@@ -168,6 +239,7 @@ TemplateFacture:
       campagne: {  }
       template: {  }
       libelle: {  }
+      region: { required: false }
       docs:
         type: array_collection
         definition:
@@ -214,7 +286,7 @@ TemplateFacture:
                               reference: { required: false }
                               callback: { required: false }
                               callback_parameters:
-                                type: array_collection
+                                type: collection
                                 required: false
                                 definition:
                                   fields:

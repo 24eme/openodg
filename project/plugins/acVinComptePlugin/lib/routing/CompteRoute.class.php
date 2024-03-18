@@ -3,13 +3,26 @@
 class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
 
     protected $compte = null;
+    protected $accesses = array();
 
     protected function getObjectForParameters($parameters = null) {
       $this->compte = CompteClient::getInstance()->find(CompteClient::getInstance()->getId($parameters['identifiant']));
 
       $myUser = sfContext::getInstance()->getUser();
-      if ($myUser->isAdmin()) {
+      if ($myUser->isAdmin() || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG())) {
           return $this->compte;
+      }
+      if ($myUser->isAdminODG() && $this->getSociete()) {
+          $compteUser = $myUser->getCompte();
+          $region = Organisme::getInstance()->getCurrentRegion();
+          if ($region) {
+              foreach($this->getSociete()->getEtablissementsObj() as $e) {
+                  if (HabilitationClient::getInstance()->isRegionInHabilitation($e->etablissement->identifiant, $region)) {
+                      return $this->compte;
+                  }
+              }
+          }
+          throw new sfError403RegionException($compteUser);
       }
       if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin()
             && $myUser->getCompte()->identifiant != $this->getCompte()->getSociete()->getMasterCompte()->identifiant)
@@ -30,13 +43,16 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
     }
 
     public function getSociete() {
-      if (!$this->societe) {
+        if (!isset($this->societe) || !$this->societe) {
            $this->societe = $this->getCompte()->getSociete();
       }
       return $this->societe;
     }
 
-    public function getCompte() {
+    public function getCompte($parameters = null) {
+      if (isset($parameters['allow_admin_odg'])){
+          $this->accesses['allow_admin_odg'] = $parameters['allow_admin_odg'];
+      }
       if (!$this->compte) {
            $this->compte = $this->getObject();
       }

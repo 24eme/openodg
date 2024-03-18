@@ -12,7 +12,7 @@ class drActions extends sfActions
     public function executeApprobation(sfWebRequest $request)
     {
         $this->dr = $this->getRoute()->getDR();
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
@@ -32,7 +32,7 @@ class drActions extends sfActions
     {
         $this->dr = $this->getRoute()->getDR();
 
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
 
@@ -50,7 +50,7 @@ class drActions extends sfActions
     {
         $this->dr = $this->getRoute()->getDR();
 
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
 
@@ -68,7 +68,7 @@ class drActions extends sfActions
     {
         $dr = $this->getRoute()->getDR();
 
-        if (! $this->getUser()->isAdmin()) {
+        if (! $this->getUser()->isAdminODG()) {
             return $this->forwardSecure();
         }
         if ($dr->exist('validation_odg') && $dr->validation_odg) {

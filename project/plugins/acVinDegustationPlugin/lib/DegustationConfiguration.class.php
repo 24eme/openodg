@@ -49,8 +49,13 @@ class DegustationConfiguration {
         return CacheFunction::cache('model', array(DegustationConfiguration::getInstance(), '_getLieux'));
     }
 
+    public function hasNotification()
+    {
+        return isset($this->configuration['has_notification']) && boolval($this->configuration['has_notification']);
+    }
+
     public function _getLieux() {
-        $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON);
+        $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON, Organisme::getInstance()->getCurrentRegion());
         $lieux = array();
         foreach ($degusts as $d) {
             $lieux[$d->lieu] = $d->lieu;
@@ -66,6 +71,11 @@ class DegustationConfiguration {
         return $this->configuration['anonymisation_manuelle'] === true;
     }
 
+    public function getFormatAnonymat()
+    {
+        return isset($this->configuration['anonymisation_format']) ? $this->configuration['anonymisation_format'] : '';
+    }
+
     public function hasTypiciteCepage()
     {
         return $this->configuration['typicite_cepage'] === true;
@@ -74,5 +84,28 @@ class DegustationConfiguration {
     public function getConformites()
     {
         return $this->configuration['conformite'];
+    }
+
+    public function getNbEtiquettes()
+    {
+        return $this->configuration['nb_etiquettes'];
+    }
+
+    public function isTourneeAutonome() {
+        return $this->configuration['tournee_autonome'];
+    }
+
+    public function isDegustationAutonome() {
+        return $this->configuration['tournee_autonome'];
+    }
+
+    public function hasStaticRegion() {
+        return isset($this->configuration['static_region']) && boolval($this->configuration['static_region']);
+    }
+
+    public function getStaticRegion() {
+        if($this->hasStaticRegion()){
+          return $this->configuration['static_region'];
+        }
     }
 }

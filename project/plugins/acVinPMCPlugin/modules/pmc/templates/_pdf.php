@@ -64,7 +64,7 @@ $lots = $document->getLotsByCouleur();
         <th class="th" style="text-align: left; width: 25%">&nbsp;N° Lot Opérat.</th>
         <th class="th" style="text-align: left; width: 45%">&nbsp;Produit (millésime)</th>
         <th class="th" style="text-align: center; width: 15%">Volume</th>
-        <th class="th" style="text-align: center; width: 15%">Date de dégust° souhaitée</th>
+        <th class="th" style="text-align: center; width: 15%">Lot prélevable à partir du</th>
     </tr>
     <?php foreach($lots as $lotsByCouleur): ?>
       <?php foreach ($lotsByCouleur as $lot) : ?>
@@ -73,9 +73,10 @@ $lots = $document->getLotsByCouleur();
         <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $lot->produit_libelle ?>
             (<?php echo $lot->millesime ?>)
             <?php if (count($lot->cepages)): ?>&nbsp;<small><?php echo $lot->getCepagesLibelle(); ?></small><?php endif; ?>
+            <?php if ($lot->specificite): ?>&nbsp;<small><?php echo $lot->specificite; ?></small><?php endif; ?>
         </td>
         <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($lot->volume) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-        <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo ($lot->exist('date_degustation_voulue')) ? (new DateTimeImmutable($lot->date_degustation_voulue))->format('m/Y') : "" ?></td>
+        <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo ($lot->exist('date_degustation_voulue')) ? (new DateTimeImmutable($lot->date_degustation_voulue))->format('d/m/Y') : "" ?></td>
       </tr>
       <?php endforeach; ?>
     <?php endforeach; ?>

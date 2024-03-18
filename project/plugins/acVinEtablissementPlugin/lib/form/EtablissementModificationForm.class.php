@@ -97,11 +97,11 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
     }
 
     public static function getRegions() {
-        if(count(EtablissementClient::getRegions()) <= 1){
-          return EtablissementClient::getRegions();
+        if(count(EtablissementClient::getSecteurs()) <= 1){
+          return EtablissementClient::getSecteurs();
         }
 
-        return array_merge(array("" => ""),EtablissementClient::getRegions());
+        return array_merge(array("" => ""),EtablissementClient::getSecteurs());
     }
 
     public static function getNaturesInao() {

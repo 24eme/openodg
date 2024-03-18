@@ -7,36 +7,7 @@ class GenerationFactureMail extends GenerationAbstract {
     public function generateMailForADocumentId($id) {
         $facture = FactureClient::getInstance()->find($id);
 
-        $email = null;
-        if(!class_exists("SocieteClient")) {
-            $email = $facture->getCompte()->email;
-        } else {
-            $email = $facture->getSociete()->getEmailCompta();
-        }
-
-        if(!$email) {
-            return;
-        }
-
-        $message = Swift_Message::newInstance()
-         ->setFrom(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')))
-         ->setTo($email)
-         ->setSubject(self::getSujet($facture->getNumeroOdg()))
-         ->setBody($this->getPartial("facturation/email", array('id' => $id)));
-
-         if(Organisme::getInstance()->getEmailFacturation()) {
-            $message->setReplyTo(Organisme::getInstance()->getEmailFacturation());
-         }
-
-        return $message;
-    }
-
-    public static function getPartial($templateName, $vars = null) {
-        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
-
-        $vars = null !== $vars ? $vars : array();
-
-        return get_partial($templateName, $vars);
+        return Email::getInstance()->getMessageFacture($facture);
     }
 
     public static function getSujet($numero) {
@@ -51,7 +22,7 @@ class GenerationFactureMail extends GenerationAbstract {
 
     public static function getActionDescription() {
 
-        return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".self::getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
+        return "Sujet : ".self::getSujet("XXXXXXX")."\n\n".Email::getInstance()->getPartial("facturation/email", array('id' => 'FACTURE-XXXXXX-XXXXXXXXXX'));
     }
 
     public function getMailer() {

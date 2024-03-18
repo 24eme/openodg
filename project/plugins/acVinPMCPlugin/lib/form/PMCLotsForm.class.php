@@ -30,6 +30,9 @@ class PMCLotsForm extends acCouchdbForm
 
 		foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
 			$embedForm->doUpdateObject($values['lots'][$key]);
+			if (!$values['lots'][$key]['volume'] && !$values['lots'][$key]['numero_logement_operateur']) {
+					$this->getDocument()->lots->remove($key);
+			}
 		}
 
 		$this->getDocument()->save();

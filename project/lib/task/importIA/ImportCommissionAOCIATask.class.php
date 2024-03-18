@@ -3,6 +3,7 @@
 class ImportCommissionA0CIATask extends ImportLotsIATask
 {
     const CSV_ID= 1;
+    const CSV_RESPONSABLE = 3;
     const CSV_DATE_COMMISSION = 7;
     const CSV_CAMPAGNE = 11;
     const CSV_LIEU_NOM = 9;
@@ -41,6 +42,7 @@ class ImportCommissionA0CIATask extends ImportLotsIATask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('region', null, sfCommandOption::PARAMETER_REQUIRED, 'Force region', null),
         ));
 
         $this->namespace = 'import';
@@ -74,7 +76,17 @@ EOF;
             continue;
           }
 
-          //print_r($data);
+          if($data[self::CSV_NUMERO_ECHANTILLON] == 'Factice') {
+              continue;
+          }
+
+          if(trim($data[self::CSV_OPERATEUR]) == 'Leurre') {
+              continue;
+          }
+
+          if (!trim($data[self::CSV_RESULTAT_ORGANO]) && !trim($data[self::CSV_RESULTAT_LABO])) {
+              continue;
+          }
 
           $degustation_date = $this->formatDate(trim($data[self::CSV_DATE_COMMISSION]));
 
@@ -104,6 +116,11 @@ EOF;
           $campagne = trim($data[self::CSV_CAMPAGNE]);
 
           $newDegustation = new Degustation();
+
+          if($options['region']) {
+              $newDegustation->region = $options['region'];
+          }
+
           $newDegustation->numero_archive = sprintf("%05d", preg_replace("/^.*-/", "", $data[self::CSV_ID]));
           $newDegustation->date=$date;
           $newDegustation->lieu = trim($data[self::CSV_LIEU_NOM])." — ".trim($data[self::CSV_LIEU_ADRESSE])." ".trim($data[self::CSV_LIEU_CODE_POSTAL])." ".trim($data[self::CSV_LIEU_COMMUNE]);
@@ -159,7 +176,16 @@ EOF;
           }
           $produit = $this->produits[$produitKey];
 
-          $etablissement = $this->identifyEtablissement(preg_replace("/[ ]*[0-9]+$/", "", $data[self::CSV_OPERATEUR]), preg_replace("/^.*([0-9]+)$/", '\1', $data[self::CSV_OPERATEUR]));
+          if(!$degustation->region) {
+              foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
+                  if(RegionConfiguration::getInstance()->isHashProduitInRegion($region, $produit->getHash())) {
+                    $degustation->add('region', $region);
+                  }
+              }
+          }
+
+          $etablissement = $this->identifyEtablissement(preg_replace("/[ ]*[0-9]+$/", "", $data[self::CSV_OPERATEUR]), preg_replace("/^.* ([0-9]+)$/", '\1', $data[self::CSV_OPERATEUR]));
+
           if (!$etablissement) {
                echo "WARNING;établissement non trouvé ".$data[self::CSV_OPERATEUR].";pas d'import;$line\n";
                continue;
@@ -173,18 +199,42 @@ EOF;
           $numeroEchantillon = sprintf("%05d", trim($data[self::CSV_NUMERO_ECHANTILLON]));
 
           /*$lot = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'numero_logement_operateur' => $numeroCuve, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_NONAFFECTABLE));*/
+           $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' =>  $data[self::CSV_MILLESIME], 'numero_logement_operateur' => $numeroCuve, 'statut' => [Lot::STATUT_AFFECTABLE, Lot::STATUT_MANQUEMENT_EN_ATTENTE]), false);
+           $lot = null;
+           if(count($lots) == 1) {
+              $lot = $lots[0];
+           }
 
-              $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => Lot::STATUT_AFFECTABLE), false);
-              $lot = null;
-              if(count($lots) == 1) {
-                  $lot = $lots[0];
-              }
+           if(!$lot) {
+               $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('volume' => $volume, 'produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'statut' => [Lot::STATUT_AFFECTABLE, Lot::STATUT_MANQUEMENT_EN_ATTENTE]), false);
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
+
+           if(!$lot) {
+               foreach($lots as $key => $lot) {
+                   if($numeroCuve && !preg_match("|^".$numeroCuve." |", $lot->numero_logement_operateur)) {
+                       unset($lots[$key]);
+                   }
+               }
+               $lots =  array_values($lots);
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
+
+           if(!$lot && $numeroCuve) {
+               $lots = MouvementLotView::getInstance()->find($etablissement->identifiant, array('produit_hash' => $produit->getHash(), 'millesime' => $data[self::CSV_MILLESIME], 'numero_logement_operateur' => $numeroCuve, 'statut' => [Lot::STATUT_AFFECTABLE, Lot::STATUT_MANQUEMENT_EN_ATTENTE]), false);
+               if(count($lots) == 1) {
+                   $lot = $lots[0];
+               }
+           }
 
           if(!$lot) {
               echo "ERROR;mouvement de lot d'origin non trouvé;$line\n";
               continue;
           }
-
 
           $date_lot_securite =  date("Y-m-d",strtotime($lot->date." -6 months"));
           if ($date_lot_securite > $date) {
@@ -193,6 +243,8 @@ EOF;
           }
 
           $lot = $degustation->addLot($lot, false);
+
+          $lot->volume = $volume;
 
           $lot->preleve = preg_replace('/ .*/', '', $date);
 
@@ -211,7 +263,7 @@ EOF;
              $lot->conformite = Lot::CONFORMITE_NONCONFORME_ORGANOLEPTIQUE;
           } else {
              $lot->statut = Lot::STATUT_CONFORME;
-             $lot->conformite = Lot::STATUT_CONFORME;
+             $lot->conformite = Lot::CONFORMITE_CONFORME;
           }
         }
 
@@ -226,7 +278,9 @@ EOF;
         if($degustation->date > date('Y-m-d H:i:s')) {
             $degustation->etape = DegustationEtapes::ETAPE_LOTS;
         } else {
-            $degustation->etape = DegustationEtapes::ETAPE_NOTIFICATIONS;
+            $degustation->etape = DegustationEtapes::ETAPE_VISUALISATION;
+            $degustation->add("validation", explode(" ", $degustation->date)[0]);
+            $degustation->add("validation_oi", $degustation->validation);
         }
         $degustation->save();
     }

@@ -13,7 +13,7 @@ class PMCClient extends acCouchdbClient
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
 
-        if($doc && $doc->type != self::TYPE_MODEL) {
+        if($doc && in_array($doc->type, [PMCClient::TYPE_MODEL, PMCNCClient::TYPE_MODEL]) === false) {
 
             throw new sfException(sprintf("Document \"%s\" is not type of \"%s\"", $id, self::TYPE_MODEL));
         }
@@ -21,16 +21,16 @@ class PMCClient extends acCouchdbClient
         return $doc;
     }
 
-    public function findBrouillon($identifiant, $campagne = null)
+    public function findBrouillon($identifiant, $periode = null)
     {
-        if (!$campagne) {
-            $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent();
+        if (!$periode) {
+            $periode = ConfigurationClient::getInstance()->getCampagneVinicole(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent();
         }
 
-        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(self::TYPE_MODEL, ConfigurationClient::getInstance()->getCampagneVinicole()->getCurrent(), $identifiant);
+        $docs = DeclarationTousView::getInstance()->getByTypeCampagneIdentifiant(get_called_class()::TYPE_MODEL, ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode), $identifiant);
 
         foreach ($docs->rows as $doc) {
-            if ($doc->key[4] == DeclarationTousView::STATUT_BROUILLON) {
+            if ($doc->key[DeclarationTousView::KEY_STATUT] == DeclarationTousView::STATUT_BROUILLON) {
                 return $this->find($doc->id);
             }
         }
@@ -38,7 +38,7 @@ class PMCClient extends acCouchdbClient
     }
 
     public function findByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $docid = self::TYPE_COUCHDB.'-'.$identifiant.'-'.str_replace('-', '', $date);
+        $docid = get_called_class()::TYPE_COUCHDB.'-'.$identifiant.'-'.preg_replace('/[^0-9]/', '', $date);
         $doc = $this->find($docid);
         return $doc;
     }
@@ -52,10 +52,10 @@ class PMCClient extends acCouchdbClient
         return $doc;
     }
 
-    public function createDoc($identifiant, $campagne, $date, $papier = false)
+    public function createDoc($identifiant, $periode, $date, $papier = false)
     {
         $doc = new PMC();
-        $doc->initDoc($identifiant, $campagne, $date);
+        $doc->initDoc($identifiant, $periode, $date);
 
         $doc->storeDeclarant();
 
@@ -69,8 +69,8 @@ class PMCClient extends acCouchdbClient
     }
 
     public function getIds($periode) {
-        $ids = $this->startkey_docid(sprintf("PMC-%s-%s", "0000000000", "00000000"))
-                    ->endkey_docid(sprintf("PMC-%s-%s", "ZZZZZZZZZZ", "99999999"))
+        $ids = $this->startkey_docid(sprintf("%s-%s-%s", self::TYPE_MODEL, "0000000000", "00000000"))
+                    ->endkey_docid(sprintf("%s-%s-%s", self::TYPE_MODEL, "ZZZZZZZZZZ", "99999999"))
                     ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
 
         $ids_periode = array();
@@ -111,8 +111,8 @@ class PMCClient extends acCouchdbClient
         $campagne_from = "00000000";
         $campagne_to = "99999999";
 
-        return $this->startkey(sprintf("PMC-%s-%s", $identifiant, $campagne_from))
-                    ->endkey(sprintf("PMC-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
+        return $this->startkey(sprintf("%s-%s-%s", self::TYPE_MODEL, $identifiant, $campagne_from))
+                    ->endkey(sprintf("%s-%s-%s_ZZZZZZZZZZZZZZ", self::TYPE_MODEL, $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 

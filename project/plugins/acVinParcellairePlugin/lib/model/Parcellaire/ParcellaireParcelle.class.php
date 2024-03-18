@@ -104,6 +104,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getAppellation() {
+        if (!$this->getProduit()->getConfig()) {
+            return null;
+        }
         return $this->getProduit()->getConfig()->getAppellation();
     }
 

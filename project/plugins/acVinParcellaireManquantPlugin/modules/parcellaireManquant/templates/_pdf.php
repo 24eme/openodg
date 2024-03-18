@@ -39,7 +39,7 @@
 <?php if($parcellesByCommune === false): ?>
     <br />
     <br />
-    <i>Aucune parcelle irrigable n'a été déclarée pour cette année en Côtes de Provence.</i>
+    <i>Aucune parcelle dont le taux de pieds morts ou manquants est supérieur à 20%.</i>
     <br />
     <br />
     <?php return; ?>
@@ -75,7 +75,7 @@
 			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->lieu; ?>&nbsp;</td>
 			<td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section; ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->numero_parcelle; ?>&nbsp;</td>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->produit->libelle ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloat($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->densite; ?>&nbsp;</td>

@@ -59,6 +59,7 @@ class EtablissementClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
     const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
     const CHAI_ATTRIBUT_STOCKAGE_VRAC = "STOCKAGE_VRAC";
+    const CHAI_ATTRIBUT_STOCKAGE_VCI = "STOCKAGE_VCI";
     const CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE = "STOCKAGE_VIN_CONDITIONNE";
     const CHAI_ATTRIBUT_DGC = "DGC";
     const CHAI_ATTRIBUT_APPORT = "APPORT";
@@ -91,8 +92,10 @@ class EtablissementClient extends acCouchdbClient {
     public static $caution_libelles = array(self::CAUTION_DISPENSE => 'Dispensé',
         self::CAUTION_CAUTION => 'Caution');
 
-    public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
+    public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_PRESSURAGE => 'Site de pressurage',
+                                                  self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VRAC => 'Stockage Vin en Vrac',
+                                                  self::CHAI_ATTRIBUT_STOCKAGE_VCI => 'Stockage de VCI',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE => 'Stockage Vin Conditionné',
                                                   self::CHAI_ATTRIBUT_DGC => 'Dénomination Géographique complémentaire',
                                                   self::CHAI_ATTRIBUT_APPORT => 'Apport',
@@ -273,6 +276,28 @@ class EtablissementClient extends acCouchdbClient {
         return parent::find('ETABLISSEMENT-' . $identifiant, $hydrate);
     }
 
+    public function findByRaisonSociale($raison_sociale)
+    {
+        $e = EtablissementAllView::getInstance()->findByInterproAndStatut(null, EtablissementClient::STATUT_ACTIF, $raison_sociale, 10000);
+        $json = array();
+        foreach($e as $key => $etablissement) {
+            $text = EtablissementAllView::getInstance()->makeLibelle($etablissement);
+            if (Search::matchTerm($raison_sociale, $text)) {
+                $json[EtablissementClient::getInstance()->getId($etablissement->id)] = $text;
+            }
+
+            if (count($json) >= 2) {
+                break;
+            }
+        }
+        if (array_key_exists(0, $json)) {
+            return array_keys($json)[0];
+        }
+        else {
+            return null;
+        }
+    }
+
     public function matchFamille($f) {
         if (preg_match('/producteur/i', $f)) {
 
@@ -320,8 +345,13 @@ class EtablissementClient extends acCouchdbClient {
         return array(self::RECETTE_LOCALE => 'Recette locale');
     }
 
+
     public static function getRegions() {
     	return sfConfig::get('app_donnees_viticoles_regions', array());
+    }
+
+    public static function getSecteurs() {
+    	return sfConfig::get('app_donnees_viticoles_secteurs', array());
     }
 
     public static function getNaturesInao() {

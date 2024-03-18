@@ -172,6 +172,8 @@ Transaction:
                         declarant_identifiant: {  }
                         declarant_nom: {  }
                         statut: {}
+                        region: { required: false }
+      region: { required: false }
       pieces:
         type: array_collection
         definition:

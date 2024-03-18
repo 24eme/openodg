@@ -68,7 +68,7 @@ class ConditionnementValidationForm extends acCouchdbForm
     public function save() {
        $values = $this->getValues();
   	   $this->getDocument()->getOrAdd("date_degustation_voulue");
-       $this->getDocument()->date_degustation_voulue = date("d/m/y");
+       $this->getDocument()->date_degustation_voulue = date("Y-m-d");
 
        if (DRevConfiguration::getInstance()->hasDegustation() && $this->isAdmin()) {
            $this->getDocument()->add('date_commission', $values['date_commission']);
