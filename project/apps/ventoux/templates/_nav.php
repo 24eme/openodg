@@ -75,7 +75,6 @@
             <?php endif; ?>
             <ul class="nav navbar-nav navbar-right">
                 <?php if( $sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) ): ?>
-                    <li><a tabindex="-1" href="https://extranet.syndicat-cotesdurhone.com/" title="Extranet">Extranet</a></li>
                     <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>" title="Mon compte"><span class="glyphicon glyphicon-user"></span></a></li>
                 <?php endif; ?>
                 <?php if(NavConfiguration::getInstance()->hasStatLinks()): ?>

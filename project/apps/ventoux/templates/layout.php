@@ -11,14 +11,14 @@
         <?php include_metas() ?>
         <?php include_title() ?>
 
-        <link rel="shortcut icon" type="image/x-icon" href="/favico_rhone.ico" />
-        <link rel="icon" type="image/x-icon" href="/favico_rhone.ico" />
-        <link rel="icon" type="image/png" href="/favico_rhone.png" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favico_ventoux.ico" />
+        <link rel="icon" type="image/x-icon" href="/favico_ventoux.ico" />
+        <link rel="icon" type="image/png" href="/favico_ventoux.png" />
 
         <?php include_stylesheets() ?>
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_rhone.css?201801171851" rel="stylesheet" type="text/css">
+        <link href="/css/style_ventoux.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
