@@ -6,7 +6,7 @@ all:
       affectation:
         needs_intention: false
       aires:
-        CotesduRhone:
+        Ventoux:
           name: "Ventoux"
           color: "#ab3f97"
           denomination_id: "01363"

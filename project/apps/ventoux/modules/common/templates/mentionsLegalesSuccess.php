@@ -5,20 +5,14 @@
 	<div class="col-xs-12">
 		<h3>Raison sociale</h3>
 		<p>
-			<strong>Syndicat Général des Vignerons réunis des Côtes du Rhône</strong><br />
-			6 rue des trois faucons<br />
-			CS 60093<br />
-			84918 AVIGNON Cedex 9<br />
-			France
+			<strong>Syndicat AOC Ventoux</strong><br />
+            <?php $organisme->getAdresse(); ?><br />
+            <?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?>
+            France
 		</p>
 		<p>
-			<strong>Tél.</strong> : (33) 04 90 27 24 24<br />
-			<strong>Fax</strong> : (33) 04 90 85 26 83 <br />
-			<strong>E-mail</strong> : syndicat-cotesdurhone@syndicat-cotesdurhone.com
-		</p>
-		<p>
-			<strong>Directeur de la publication :</strong><br />
-			Laurent JEANNETEAU - Directeur du SGVRCDR
+			<strong>Tél.</strong> : <?php echo $organisme->getTelephone(); ?><br />
+			<strong>E-mail</strong> : <?php echo $organisme->getEmail(); ?>
 		</p>
 	</div>
 	<div class="col-xs-12">
