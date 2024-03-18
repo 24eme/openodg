@@ -4,7 +4,8 @@ class drActions extends sfActions
 {
     public function executeVisualisation(sfWebRequest $request)
     {
-        $this->dr = $this->getRoute()->getDR();
+        $identifiant = $request->getParameter('id');
+        $this->dr = DRClient::getInstance()->find($identifiant);
         $this->configuration = ConfigurationClient::getInstance()->getCurrent();
         $this->validation = new DRValidation($this->dr, ['configuration' => $this->configuration]);
     }

@@ -1,7 +1,6 @@
 dr_visualisation:
   url: /dr/visualisation/:id
   param: { module: dr, action: visualisation }
-  class: DRRoute
   options:
     model: DR
     type:  object

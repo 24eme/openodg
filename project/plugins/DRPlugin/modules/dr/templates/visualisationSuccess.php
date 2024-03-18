@@ -5,18 +5,26 @@
 
 <div class="page-header no-border clearfix">
     <h2>
-        Déclaration <?php if ($dr->type == 'DR') echo 'de Récolte'; else echo $dr->type; ?> <?= $dr->campagne ?>
-        <small class="pull-right">
-            <i class="glyphicon glyphicon-file"></i>
-            Déclaration
-            <?php if ($dr->exist('statut_odg') && $dr->statut_odg): ?>
-                mise en attente,
-            <?php endif ?>
-            importée le <?= format_date($dr->date_import, "dd/MM/yyyy", "fr_FR") ?>
-            <?php if ($dr->exist('validation_odg') && $dr->validation_odg): ?>
-                et approuvée le <?= format_date($dr->validation_odg, "dd/MM/yyyy", "fr_FR") ?>
-            <?php endif ?>
-        </small>
+        <?php if ($dr->exist('has_metayers')): ?>
+            <?php
+                echo 'Synthèse bailleur ';
+                if ($dr->type == 'DR') echo 'de Récolte'; else echo $dr->type;
+                echo ' '.$dr->campagne;
+            ?>
+        <?php else: echo 'Déclaration'; ?>
+            <?php if ($dr->type == 'DR') echo 'de Récolte'; else echo $dr->type; ?> <?= $dr->campagne ?>
+            <small class="pull-right">
+                <i class="glyphicon glyphicon-file"></i>
+                Déclaration
+                <?php if ($dr->exist('statut_odg') && $dr->statut_odg): ?>
+                    mise en attente,
+                <?php endif ?>
+                importée le <?= format_date($dr->date_import, "dd/MM/yyyy", "fr_FR") ?>
+                <?php if ($dr->exist('validation_odg') && $dr->validation_odg): ?>
+                    et approuvée le <?= format_date($dr->validation_odg, "dd/MM/yyyy", "fr_FR") ?>
+                <?php endif ?>
+            </small>
+        <?php endif; ?>
     </h2>
 </div>
 
@@ -24,11 +32,25 @@
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $dr->getEtablissementObject()]); ?>
 </div>
 
-<?php if (isset($validation) && $validation->hasPoints()): ?>
+<?php if (!$dr->exist('has_metayers') && isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('dr/pointsAttentions', ['validation' => $validation, 'noLink' => true]); ?>
 <?php endif ?>
 
 <?php use_helper('Float') ?>
+
+<?php if ($dr->exist('has_metayers')): ?>
+    <?php $metayers = $dr->getMetayers($dr->declarant->ppm)->getRawValue(); ?>
+    <h3>Liste des DR par métayer</h3>
+    <ul>
+        <?php foreach ($metayers as $metayer): ?>
+            <?php
+                $etablissement_metayer = EtablissementClient::getInstance()->findByCvi($metayer['cvi']);
+                $dr_metayer = DRClient::getInstance()->findByArgs($etablissement_metayer->identifiant, $dr->campagne);
+            ?>
+            <li><a href="<?php echo url_for('dr_visualisation', array('id' => $dr_metayer->_id)); ?>"><?php echo $etablissement_metayer->raison_sociale.", CVI : ".$etablissement_metayer->cvi; ?></a></li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
 
 <h3>Détail par produit</h3>
 
@@ -89,21 +111,47 @@
         <tr>
             <th class="text-right"><strong>Total</strong></th>
             <?php foreach ($produit['lignes'] as $l => $p): ?>
-                <th class="text-right"><strong><?= echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                <th class="text-right"><strong>
+                    <?php if ($dr->exist('has_metayers')): ?>
+                        <?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false, true, $dr->declarant->ppm)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                    <?php else: ?>
+                        <?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                    <?php endif; ?>
             <?php endforeach ?>
         </tr>
         <?php endif; ?>
     </tbody>
 </table>
-<?php $bailleurs = $dr->getBailleurs()->getRawValue(); ?>
-<?php if(count($bailleurs)): ?>
-    <p style="margin-top: -10px; margin-bottom: 20px;">
-    Une partie des volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
-     <?php foreach($bailleurs as $b): ?>
-        <?php  if (!$b['etablissement_id']): continue; endif; ?>
-        <a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $b['etablissement_id'], 'campagne' => $dr->campagne)) ?>"><?php echo $b['raison_sociale']; ?></a>
-    <?php endforeach; ?>. Ces volumes ne figurent pas dans le tableau.
-    </p>
+
+<?php if ($dr->exist('has_metayers')): ?>
+    <?php if(count($metayers)): ?>
+        <p style="margin-top: -10px; margin-bottom: 20px;">
+        Ces volumes ont été récoltés par les métayers
+<?php
+        $metayers_list = array();
+        foreach($metayers as $b) {
+            if (!$b['etablissement_id']) {
+                continue;
+            }
+            $etablissement_metayer = EtablissementClient::getInstance()->findByCvi($b['cvi']);
+            $dr_metayer = DRClient::getInstance()->findByArgs($etablissement_metayer->identifiant, $dr->campagne);
+            $metayers_list[] = '<a href="'. url_for('dr_visualisation', array('id' => $dr_metayer->_id)).'">'.$b['raison_sociale'].'</a>';
+        }
+        echo implode(', ', $metayers_list);
+?>
+</p>
+    <?php endif; ?>
+<?php else: ?>
+    <?php $bailleurs = $dr->getBailleurs()->getRawValue(); ?>
+    <?php if(count($bailleurs)): ?>
+        <p style="margin-top: -10px; margin-bottom: 20px;">
+        Ces volumes ont été récoltés pour le compte <?php if(count($bailleurs) > 1): ?>des<?php else: ?>du<?php endif; ?> bailleur<?php if(count($bailleurs) > 1): ?>s :<?php endif; ?>
+         <?php foreach($bailleurs as $b): ?>
+            <?php  if (!$b['etablissement_id']): continue; endif; ?>
+            <a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $b['etablissement_id'], 'campagne' => $dr->campagne)) ?>"><?php echo $b['raison_sociale']; ?></a>
+        <?php endforeach; ?>. Ces volumes ne figurent pas dans le tableau.
+        </p>
+    <?php endif; ?>
 <?php endif; ?>
 
 <?php
@@ -142,6 +190,7 @@ endif;
         </a>
     </div>
 
+<?php if (!$dr->exist('has_metayers')): ?>
     <div class="col-xs-4 text-center">
         <a class="btn btn-default" href="<?php echo url_for('get_fichier', array('id' => $dr->_id)) ?>">
             <i class="glyphicon glyphicon-file"></i> PDF de la <?php echo $dr->type ; ?>
@@ -177,3 +226,4 @@ endif;
 <?php endif; ?>
 </div>
 </div>
+<?php endif; ?>

@@ -429,15 +429,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $etablissements = $this->getEtablissementObject()->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
-        $fichiers = array();
-        foreach($etablissements as $e) {
-            $f = $this->getDocumentDouanierEtablissement($ext, null, $e->identifiant, $hydrate);
-            if ($f) {
-                $fichiers[] = $f;
-            }
-        }
-        return $fichiers;
+        return DouaneClient::getDocumentsDouaniers();
     }
 
     public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -452,7 +444,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
     }
 
-    protected function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         if (!$identifiant) {
             $identifiant = $this->identifiant;
         }

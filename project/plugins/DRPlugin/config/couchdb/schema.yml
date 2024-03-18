@@ -4,6 +4,7 @@ DR:
   definition:
     fields:
       campagne: { }
+      has_metayers: { required: false }
       donnees:
         required: false
         type: array_collection
