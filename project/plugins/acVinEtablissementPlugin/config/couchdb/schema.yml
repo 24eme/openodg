@@ -10,9 +10,9 @@ Etablissement:
        identifiant: {  }
        id_societe: {  }
        statut: {  }
-       raisins_mouts: {  }
-       exclusion_drm: {  }
-       relance_ds: {  }
+       raisins_mouts: { required: false } #deprecie
+       exclusion_drm: { required: false } #deprecie
+       relance_ds: { required: false } #deprecie
        teledeclaration_email: {  }
        nature_inao: {  }
        mois_stock_debut: { required: false }
@@ -24,7 +24,7 @@ Etablissement:
              nom: {  }
              ville: {  }
        region: {  }
-       type_dr: {  }
+       type_dr: { required: false } #deprecie
        liaisons_operateurs:
            type: collection
            definition:

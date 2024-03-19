@@ -9,8 +9,6 @@ class EtablissementClient extends acCouchdbClient {
     const REGION_HORS_CVO = 'REGION_HORS_CVO';
     const REGION_CVO = 'REGION_CVO';
     const RECETTE_LOCALE = 'RECETTE_LOCALE';
-    const TYPE_DR_DRM = 'DRM';
-    const TYPE_DR_DRA = 'DRA';
 
     const TYPE_LIAISON_BAILLEUR = 'BAILLEUR';
     const TYPE_LIAISON_METAYER = 'METAYER';
@@ -364,11 +362,6 @@ class EtablissementClient extends acCouchdbClient {
         }
         $naturesLibelles = self::getNaturesInao();
         return $naturesLibelles[$nature];
-    }
-
-    public static function getTypeDR() {
-        return array(self::TYPE_DR_DRM => self::TYPE_DR_DRM,
-            self::TYPE_DR_DRA => self::TYPE_DR_DRA);
     }
 
     public static function getTypesLiaisons() {
