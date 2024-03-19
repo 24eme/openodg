@@ -105,7 +105,6 @@
     <?php if(class_exists("Tirage")): ?>
     <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
-    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php if(class_exists("Adelphe") && in_array('adelphe', sfConfig::get('sf_enabled_modules')) && $etablissement->getMasterCompte()->hasDroit(AdelpheSecurity::DROIT_ADELPHE)): ?>
     <?php include_component('adelphe', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
     <?php endif; ?>
