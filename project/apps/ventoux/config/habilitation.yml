@@ -5,6 +5,7 @@ all:
          PRODUCTEUR: "Producteur"
          VINIFICATEUR: "Vinificateur"
          VRAC: "Vrac"
+         PRODUCTEUR_MOUTS: "Producteur de moût"
          CONDITIONNEUR: "Conditionneur"
          ELABORATEUR: "Élaborateur"
          VENTE_A_LA_TIREUSE: "Vente tireuse"
