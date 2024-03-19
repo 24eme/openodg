@@ -49,11 +49,13 @@ ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do cat $fil
 
 php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
 
+echo "Import des opérateurs archivés"
+
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs_inactifs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
-php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
+#php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
 
-echo "Habilitations"
+echo "Import des Habilitations"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" | grep -v "(F);" > $DATA_DIR/habilitations.csv
 # xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
@@ -99,9 +101,12 @@ done
 
 echo "Import DRev"
 
-for annee in 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --dateimport="$annee-12-10" --application="$ODG"; done
+for annee in 2023 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --dateimport="$annee-12-10" --application="$ODG"; done
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev.csv
+echo -n > $DATA_DIR/drev.csv
+ls $DATA_DIR/drev*.xlsx | sort -r | while read drev_file; do
+    xlsx2csv -l '\r\n' -d ";" $drev_file | tr -d "\n" | tr "\r" "\n" >> $DATA_DIR/drev.csv
+done;
 echo -n > $DATA_DIR/vci.csv
 ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
     MILLESIME=$(echo -n $vci_file | sed -r 's|^.*/vci_||' | sed 's/\.xlsx//')
@@ -162,7 +167,7 @@ echo "Parcellaire"
 
 php symfony parcellaire:update-aire --application="$ODG" --trace
 
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application=centre --noscrapping=1; done
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application="$ODG" --noscrapping=1; done
 
 echo "Import des declarations de pieds manquants"
 

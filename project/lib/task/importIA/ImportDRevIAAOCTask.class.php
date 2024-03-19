@@ -3,18 +3,13 @@
 class ImportDRevIAAOCTask extends importOperateurIACsvTask
 {
   const CSV_RAISON_SOCIALE = 0;
-  const CSV_CVI = 6;
-  const CSV_VOLUME = 7;
-  const CSV_SUPERFICIE = 8;
+  const CSV_CVI = 4;
+  const CSV_MILLESIME = 5;
+  const CSV_VOLUME = 6;
+  const CSV_SUPERFICIE = 7;
   const CSV_PRODUIT = 9;
-  const CSV_MENTION_VALORISANTE = 10;
-  const CSV_AOC = 12;
-  const CSV_MILLESIME = 11;
-  const CSV_MOIS_PRESENTATION = 7;
-  const CSV_DATE_DECLARATION = 8;
-  const CSV_DATE_COMMISSION = 9;
-  const CSV_LOGEMENT = 10;
-  const CSV_NUM_LOT = 11;
+  const CSV_AOC = 10;
+  const CSV_MENTION_VALORISANTE = 99;
 
   const CSV_VCI_MILLESIME = 0;
   const CSV_VCI_RAISON_SOCIALE = 1;
@@ -109,9 +104,9 @@ EOF;
                 }
             }
 
-            $drevProduit = $drev->addProduit($produit->getHash(), $data[self::CSV_MENTION_VALORISANTE]);
+            $drevProduit = $drev->addProduit($produit->getHash(), isset($data[self::CSV_MENTION_VALORISANTE]) ? $data[self::CSV_MENTION_VALORISANTE] : null);
             $drevProduit->volume_revendique_issu_recolte = $volume;
-            $drevProduit->superficie_revendique = $superficie;
+            $drevProduit->superficie_revendique = round($superficie / 10000, 4);
             $drevProduit->update();
 
             try {

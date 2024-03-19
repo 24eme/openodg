@@ -49,20 +49,29 @@ class importHabilitationIAAOCCsvTask extends importOperateurIACsvTask
 EOF;
 
         $this->convert_statut = array();
+        $this->convert_statut['Identification'] = HabilitationClient::STATUT_DEMANDE_HABILITATION;
+        $this->convert_statut["En cours d'habilitation"] = HabilitationClient::STATUT_DEMANDE_HABILITATION;
         $this->convert_statut['Habilitation'] = HabilitationClient::STATUT_HABILITE;
+        $this->convert_statut["Habilité"] = HabilitationClient::STATUT_HABILITE;
         $this->convert_statut["Retrait"] = HabilitationClient::STATUT_RETRAIT;
         $this->convert_statut["Habilitation en cours"] = HabilitationClient::STATUT_DEMANDE_HABILITATION;
         $this->convert_statut["Refusé"] = HabilitationClient::STATUT_REFUS;
+        $this->convert_statut["Retiré"] = HabilitationClient::STATUT_RETRAIT;
 
         $this->convert_activites = array();
         $this->convert_activites['Producteur de raisin'] = HabilitationClient::ACTIVITE_PRODUCTEUR;
         $this->convert_activites['Vinificateur (vente en vrac)'] = HabilitationClient::ACTIVITE_VINIFICATEUR;
+        $this->convert_activites['Vinificateur'] = HabilitationClient::ACTIVITE_VINIFICATEUR;
         $this->convert_activites['Conditionneur'] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
         $this->convert_activites['Négoce'] = HabilitationClient::ACTIVITE_NEGOCIANT;
         $this->convert_activites['Mise en bouteille'] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
         $this->convert_activites['Pressurage'] = HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS;;
         $this->convert_activites['Producteur de moûts'] = HabilitationClient::ACTIVITE_PRODUCTEUR_MOUTS;
         $this->convert_activites['Eleveur'] = HabilitationClient::ACTIVITE_ELEVEUR;
+        $this->convert_activites['Achat et vente de vin en vrac entre opérateur'] = HabilitationClient::ACTIVITE_VRAC;
+        $this->convert_activites['Vente de vins à la tireuse'] = HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE;
+        $this->convert_activites['Conditionneur (par prestataire)'] = HabilitationClient::ACTIVITE_CONDITIONNEUR;
+        $this->convert_activites['Elaborateur'] = HabilitationClient::ACTIVITE_ELABORATEUR;
 
 
         $this->convert_products = array();
@@ -74,6 +83,7 @@ EOF;
         $this->convert_products['Pouilly sur Loire'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PSL';
         $this->convert_products['Pouilly Fumé'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/PFM';
         $this->convert_products['Sancerre'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/SCR';
+        $this->convert_products['Ventoux'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX';
 
         $this->convert_produits_inao = [];
         $this->convert_produits_inao['A93'] = '/declaration/certifications/AOC/genres/TRANQ/appellations/MTS';

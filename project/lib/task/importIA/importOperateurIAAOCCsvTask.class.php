@@ -22,7 +22,10 @@ class importOperateurIAAOCCsvTask extends sfBaseTask
   const CSV_TYPE_DECLARATION = 18;
   const CSV_PPM = 20;
   const CSV_CODE_INTERNE = 21;
-  const CSV_STATUT = 23;
+  const CSV_NEGOCIANT = 21;
+  const CSV_CAVE_COOPERATIVE = 22;
+  const CSV_CAVE_PARTICULIERE = 23;
+  const CSV_STATUT = 24;
 
   protected $date;
   protected $convert_statut;
@@ -94,13 +97,13 @@ EOF;
 
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
-
-            if(!$data[self::CSV_CODE_INTERNE]) {
+            $identifiant = sprintf("%06d", str_replace("ENT", "", $data[self::CSV_IDENTIFIANT]));
+            if(!$identifiant) {
                 echo "pas de numéro interne ".$line;
                 continue;
             }
 
-            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, $data[self::CSV_CODE_INTERNE]);
+            $newSociete = SocieteClient::getInstance()->createSociete($data[self::CSV_RAISON_SOCIALE], SocieteClient::TYPE_OPERATEUR, $identifiant);
             $societe = SocieteClient::getInstance()->find($newSociete->_id);
 
             if($societe) {
@@ -154,14 +157,25 @@ EOF;
 
             $categorie = @$categories[trim($data[self::CSV_CODE_INTERNE])];
 
-            if(strpos($categorie, "Cave Coopérative Viticole") !== false) {
-                $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
-            } elseif(strpos($categorie, "Négociant") !== false) {
-                $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
-            } elseif(strpos($categorie, "Cave Particulière") !== false) {
-                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+            if(count($categories)) {
+                if(strpos($categorie, "Cave Coopérative Viticole") !== false) {
+                    $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+                } elseif(strpos($categorie, "Négociant") !== false) {
+                    $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+                } elseif(strpos($categorie, "Cave Particulière") !== false) {
+                    $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+                }
             } else {
-                $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+                if($data[self::CSV_NEGOCIANT] == "oui") {
+                    $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+                }
+                if($data[self::CSV_CAVE_COOPERATIVE] == "oui") {
+                    $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+                }
+                if($data[self::CSV_CAVE_PARTICULIERE] == "oui") {
+                    $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+                }
             }
 
             $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
