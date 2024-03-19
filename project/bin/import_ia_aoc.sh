@@ -53,7 +53,7 @@ echo "Import des opérateurs archivés"
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs_inactifs.csv
 sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
-#php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
+php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
 
 echo "Import des Habilitations"
 
