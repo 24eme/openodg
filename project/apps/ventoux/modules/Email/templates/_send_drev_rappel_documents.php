@@ -12,7 +12,7 @@ Rappel des documents restant à envoyer :
 
 Le ou les document(s) annexes peuvent nous être envoyés par mail (<<?php echo $organisme->getEmail(); ?>>) ou par voie postale :
 
-Syndicat Général des Côtes du Rhône
+Syndicat AOC Ventoux
 <?php $organisme->getAdresse(); ?><br />
 <?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?>
 <?php endif; ?>

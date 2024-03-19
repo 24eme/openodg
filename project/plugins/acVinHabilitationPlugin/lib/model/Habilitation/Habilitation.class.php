@@ -104,7 +104,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $produits = array();
         foreach($this->getProduits() as $p) {
             foreach($p->getConfig()->getProduits() as $c) {
-            if (in_array($cepage, $c->getCepagesAutorises()->toArray())) {
+            if (in_array($cepage, (array) $c->getCepagesAutorises())) {
                 $produits[] = $c;
                 continue;
             }}
