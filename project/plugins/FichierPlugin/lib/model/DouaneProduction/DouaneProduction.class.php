@@ -38,7 +38,6 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
     public function getRegions()
     {
         if (!RegionConfiguration::getInstance()->hasOdgProduits()) {
-            throw new sfException('regions');
             return [];
         }
         $regions = array();
