@@ -143,7 +143,9 @@
                               "rendement": 60,
                               "rendement_vci": 6,
                               "rendement_vci_total": 18,
-                              "rendement_conseille": 55
+                              "rendement_conseille": 55,
+                              "rendement_dr_l5": 60,
+                              "rendement_dr_l15": 55
                             }
                           },
                           "rose": {
@@ -186,7 +188,9 @@
                               "rendement": 60,
                               "rendement_vci": 6,
                               "rendement_vci_total": 18,
-                              "rendement_conseille": 55
+                              "rendement_conseille": 55,
+                              "rendement_dr_l5": 60,
+                              "rendement_dr_l15": 55
                             }
                           },
                           "blanc": {
@@ -229,7 +233,9 @@
                               "rendement": 60,
                               "rendement_vci": null,
                               "rendement_vci_total": null,
-                              "rendement_conseille": 60
+                              "rendement_conseille": 60,
+                              "rendement_dr_l5": 60,
+                              "rendement_dr_l15": 60
                             }
                           }
                         }
