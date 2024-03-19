@@ -181,19 +181,19 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasProblemEcartPieds() {
-      $ecart_rang_max = sfConfig::get('app_parcellaire_ecart_rangs_max', null);
-      $ecart_pieds_min = sfConfig::get('app_parcellaire_ecart_pieds_min', null);
-      $ecart_pieds_max = sfConfig::get('app_parcellaire_ecart_pieds_max', null);
-      if ($ecart_rang_max && $this->exist('ecart_rang')) {
-          if ($ecart_rang_max < $this->ecart_rang) {
+      $ecart_rangs_max = ParcellaireConfiguration::getInstance()->getEcartRangsMax();
+      $ecart_pieds_min = ParcellaireConfiguration::getInstance()->getEcartPiedsMin();
+      $ecart_pieds_max = ParcellaireConfiguration::getInstance()->getEcartPiedsMax();
+      if ($ecart_rangs_max && $this->exist('ecart_rang')) {
+          if ($ecart_rangs_max < $this->ecart_rang) {
               return true;
           }
       }
       if ($this->exist('ecart_pieds')) {
-          if ($ecart_pieds_max && $exart_pieds_max < $this->ecart_pieds) {
+          if ($ecart_pieds_max && $ecart_pieds_max < $this->ecart_pieds) {
               return true;
           }
-          if ($ecart_pieds_min && $exart_pieds_min > $this->ecart_pieds) {
+          if ($ecart_pieds_min && $ecart_pieds_min > $this->ecart_pieds) {
               return true;
           }
       }

@@ -1,8 +1,8 @@
 all:
   configuration:
     parcellaire:
-      ecart_rangs_max: 25000
-      ecart_pieds_min:  8000
+      ecart_rangs_max: 250
+      ecart_pieds_min:  80
       aires:
         communes-aoc:
           name: "AOC Côte de Provence"

@@ -95,4 +95,23 @@ class ParcellaireConfiguration {
         }
         return $this->configuration['manquant']['pc_min'];
     }
+
+    public function getEcartRangsMax() {
+        if(!isset($this->configuration['ecart_rangs_max'])) {
+            return null;
+        }
+        return $this->configuration['ecart_rangs_max'];
+    }
+    public function getEcartPiedsMin() {
+        if(!isset($this->configuration['ecart_pieds_min'])) {
+            return null;
+        }
+        return $this->configuration['ecart_pieds_min'];
+    }
+    public function getEcartPiedsMax() {
+        if(!isset($this->configuration['ecart_pieds_max'])) {
+            return null;
+        }
+        return $this->configuration['ecart_pieds_max'];
+    }
 }
