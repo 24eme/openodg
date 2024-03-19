@@ -184,7 +184,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       $ecart_rang_max = sfConfig::get('app_parcellaire_ecart_rangs_max', null);
       $ecart_pieds_min = sfConfig::get('app_parcellaire_ecart_pieds_min', null);
       $ecart_pieds_max = sfConfig::get('app_parcellaire_ecart_pieds_max', null);
-      if ($ecart_rang_max && $this->exist('ecart_rang') {
+      if ($ecart_rang_max && $this->exist('ecart_rang')) {
           if ($ecart_rang_max < $this->ecart_rang) {
               return true;
           }
