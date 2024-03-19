@@ -270,3 +270,14 @@ Licence : MIT
 .strong {
     font-weight: bold;
 }
+
+#map.fullscreen {
+    height: 100% !important;
+    width: 100% !important;
+    top: 0;
+    left: 0;
+    position: fixed !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 1000;
+}
