@@ -38,20 +38,6 @@
 
 <?php use_helper('Float') ?>
 
-<?php if ($dr->exist('has_metayers')): ?>
-    <?php $metayers = $dr->getMetayers($dr->declarant->ppm)->getRawValue(); ?>
-    <h3>Liste des DR par métayer</h3>
-    <ul>
-        <?php foreach ($metayers as $metayer): ?>
-            <?php
-                $etablissement_metayer = EtablissementClient::getInstance()->findByCvi($metayer['cvi']);
-                $dr_metayer = DRClient::getInstance()->findByArgs($etablissement_metayer->identifiant, $dr->campagne);
-            ?>
-            <li><a href="<?php echo url_for('dr_visualisation', array('id' => $dr_metayer->_id)); ?>"><?php echo $etablissement_metayer->raison_sociale.", CVI : ".$etablissement_metayer->cvi; ?></a></li>
-        <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
-
 <h3>Détail par produit</h3>
 
 <table class="table table-bordered table-striped">
@@ -80,7 +66,13 @@
         <?php foreach ($produits['produits']->getRawValue() as $hash => $produit): ?>
             <tr>
                 <td>
-                    <?= $produit['libelle'] ?>
+                    <strong><?= $produit['libelle'] ?></strong>
+                    <br />
+                    <small class="pull-left">
+                        <span>
+                            <?php echo $produit['metayers']['declarant_raison_sociale']; ?>
+                        </span>
+                    </small>
                     <br />
                     <small class="pull-right text-muted">
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
@@ -124,6 +116,7 @@
 </table>
 
 <?php if ($dr->exist('has_metayers')): ?>
+    <?php $metayers = $dr->getMetayers($dr->declarant->ppm)->getRawValue(); ?>
     <?php if(count($metayers)): ?>
         <p style="margin-top: -10px; margin-bottom: 20px;">
         Ces volumes ont été récoltés par les métayers

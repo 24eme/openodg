@@ -361,6 +361,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         $this->add('donnees');
         $item = $this->get('donnees')->add();
+        if ($this->exist('has_metayers')) {
+            $item->add('declarant_identifiant', $data[DouaneCsvFile::CSV_RECOLTANT_ID]);
+            $item->add('declarant_cvi', $data[DouaneCsvFile::CSV_RECOLTANT_CVI]);
+            $item->add('declarant_raison_sociale', $data[DouaneCsvFile::CSV_RECOLTANT_LIBELLE]);
+        }
         $item->produit = $hash;
         $item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
         $item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];
@@ -610,6 +615,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 continue;
             }
             $produit = $entry->produit;
+            if ($this->isBailleur()) {
+                $produit .= $entry->declarant_cvi;
+            }
             if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
                 $produit .= ' '.$entry->complement;
             }
@@ -625,6 +633,13 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     $donnees['produits'][$produit]['libelle'] .= ' - '.$entry->complement;
                 }
                 $donnees['produits'][$produit]['hash'] = $entry->produit;
+                if ($this->isBailleur()) {
+                    $donnees['produits'][$produit]['metayers'] = array(
+                                        'declarant_identifiant' => $entry->declarant_identifiant,
+                                        'declarant_cvi' => $entry->declarant_cvi,
+                                        'declarant_raison_sociale' => str_replace('"', '', $entry->declarant_raison_sociale)
+                                    );
+                }
             }
 
             if (array_key_exists($categorie, $donnees['produits'][$produit]['lignes']) === false) {

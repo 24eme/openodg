@@ -16,7 +16,7 @@ class ExportDRCSV extends ExportDouaneCSV
             foreach ($docs_metayers as $doc) {
                 if (count($doc->getDonnees()) >= 1) {
                   $c = new DRDouaneCsvFile(null, $doc, $this->drev_produit_filter);
-                  $csv .= $c->convertByDonnees($this->doc->declarant->ppm, true);
+                  $csv .= $c->convertByDonnees();
                 } elseif ($file = $doc->getFichier('csv')) {
                 	$c = new DRDouaneCsvFile($file, $doc, $this->drev_produit_filter);
                 	$csv .= $c->convert();

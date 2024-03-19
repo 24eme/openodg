@@ -15,6 +15,9 @@ DR:
               type: collection
               definition:
                 fields:
+                  declarant_identifiant: { required: false }
+                  declarant_cvi: { required: false }
+                  declarant_raison_sociale: { required: false }
                   produit: { }
                   produit_libelle: { }
                   complement: { }
