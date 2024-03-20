@@ -141,8 +141,8 @@
                             },
                             "attributs": {
                               "rendement": 60,
-                              "rendement_vci": 6,
-                              "rendement_vci_total": 18,
+                              "rendement_vci": 0,
+                              "rendement_vci_total": 27,
                               "rendement_conseille": 55,
                               "rendement_dr_l5": 60,
                               "rendement_dr_l15": 55
@@ -186,8 +186,8 @@
                             },
                             "attributs": {
                               "rendement": 60,
-                              "rendement_vci": 6,
-                              "rendement_vci_total": 18,
+                              "rendement_vci": 0,
+                              "rendement_vci_total": 27,
                               "rendement_conseille": 55,
                               "rendement_dr_l5": 60,
                               "rendement_dr_l15": 55
