@@ -9,23 +9,23 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-Ua-Compatible" content="IE=edge" />
-        <meta name="title" content="Plateforme de télédéclaration du syndicat Côtes-du-Rhône" />
+        <meta name="title" content="Plateforme de télédéclaration du syndicat AOC Ventoux" />
         <meta name="charset" content="utf-8" />
-        <meta name="description" content="Plateforme de télédéclaration du syndicat Côtes-du-Rhône" />
+        <meta name="description" content="Plateforme de télédéclaration du syndicat AOC Ventoux" />
         <meta name="robots" content="noindex" />
         <meta name="content-language" content="fr-FR" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Plateforme de télédéclaration du syndicat Côtes-du-Rhône</title>
+        <title>Plateforme de télédéclaration du syndicat AOC Ventoux</title>
 
         <link rel="shortcut icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/png" href="/favico.png" />
-        <link rel="stylesheet" type="text/css" media="all" href="/css/compile_rhone.css?201706281900" />
+        <link rel="stylesheet" type="text/css" media="all" href="/css/compile_ventoux.css" />
         <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
         <link rel="stylesheet" type="text/css" media="all" href="/css/../components/vins/vins.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_rhone.css" rel="stylesheet" type="text/css">
+        <link href="/css/style_ventoux.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
 
@@ -48,8 +48,8 @@
         <header id="header">
             <div class="container" style="position: relative; background-color: transparent; text-align: center;">
                 <a href="/">
-                <img style="float:left;position:relative" src="/images/logo_odgrhone.png" alt="Syndicat des Cotes du Rhone"/>
-                <img style="margin-left:70px;margin-top:3px;" src="/images/banniere_odgrhone.png" class="hidden-xs hidden-sm" alt="syndicat côtes du Rhône"/>
+                <img style="float:left;position:relative" src="/images/logo_ventoux.png" alt="Syndicat de l'AOC Ventoux"/>
+                <img style="margin-left:70px;margin-top:3px;" src="/images/banniere.png" class="hidden-xs hidden-sm" alt="syndicat AOC Ventoux"/>
                 <p class="hidden-lg hidden-md" style="margin: 0px;">&nbsp;</p>
                 <p style="font-size: 15px;opacity:0.5"><strong>L'ESPACE PROFESSIONNEL DES VITICULTEURS DES CÔTES DU RHÔNE</strong></p>
                 </a>

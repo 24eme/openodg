@@ -5,7 +5,7 @@
 	<div class="col-xs-12">
 		<h3>Raison sociale</h3>
 		<p>
-			<strong>Syndicat Général des Vignerons réunis des Côtes du Rhône</strong><br />
+			<strong>Syndicat AOC Ventoux</strong><br />
             <?php $organisme->getAdresse(); ?><br />
             <?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?>
             France
@@ -13,10 +13,6 @@
 		<p>
 			<strong>Tél.</strong> : <?php echo $organisme->getTelephone(); ?><br />
 			<strong>E-mail</strong> : <?php echo $organisme->getEmail(); ?>
-		</p>
-		<p>
-			<strong>Directeur de la publication :</strong><br />
-			Laurent JEANNETEAU - Directeur du SGVRCDR
 		</p>
 	</div>
 	<div class="col-xs-12">
