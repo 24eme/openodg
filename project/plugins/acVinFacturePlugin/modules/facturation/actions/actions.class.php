@@ -10,7 +10,7 @@ class facturationActions extends sfActions
             GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE,
             GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA,
             GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE
-        ), 10, $this->getCurrentRegion());
+        ), 20, $this->getCurrentRegion());
 
         $this->form = new LoginForm();
 
