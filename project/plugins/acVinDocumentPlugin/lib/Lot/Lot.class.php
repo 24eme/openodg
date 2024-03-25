@@ -1226,11 +1226,8 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function setPrelevementHeure($h) {
-        if ($this->prelevement_heure == $h) {
-            return;
-        }
-        if ($this->getDocument()->type != TourneeClient::TYPE_MODEL && strpos($this->id_document_provenance, TourneeClient::TYPE_MODEL) !== 0) {
-            throw new sfException('setPrelevementHeure ne devrait être appelé que pour les tournée');
+        if (strpos($this->id_document_provenance, TourneeClient::TYPE_COUCHDB) !== 0) {
+            throw new sfException('setPrelevementHeure ne devrait être appelée que pour les tournées ('.$this->unique_id.')');
         }
         return $this->setPrelevementDatetime($this->getDocument()->getDateFormat('Y-m-d').' '.$h);
     }
