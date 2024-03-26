@@ -25,7 +25,7 @@
             </p>
             <div class="actions">
                 <?php if($declaration): ?>
-                    <a class="btn btn-block btn-default" href="<?php echo url_for('dr_visualisation', ['id' => $declaration->_id]) ?>">Visualiser la synthèse du document</a>
+                    <a class="btn btn-block btn-default" href="<?php echo url_for('dr_visualisation', $declaration) ?>">Visualiser la synthèse du document</a>
                 <?php elseif($sf_user->isAdminODG()): ?>
                     <a class="btn btn-default btn-block" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'periode' => $periode, 'type' => $type)) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
             	<?php endif; ?>

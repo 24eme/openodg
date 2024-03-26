@@ -361,7 +361,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         $this->add('donnees');
         $item = $this->get('donnees')->add();
-        if ($this->exist('has_metayers')) {
+        if ($this->isBailleur()) {
             $item->add('declarant_identifiant', $data[DouaneCsvFile::CSV_RECOLTANT_ID]);
             $item->add('declarant_cvi', $data[DouaneCsvFile::CSV_RECOLTANT_CVI]);
             $item->add('declarant_raison_sociale', $data[DouaneCsvFile::CSV_RECOLTANT_LIBELLE]);
@@ -476,7 +476,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
 
-    public function getTotalValeur($numLigne, $familles = null, TemplateFactureCotisationCallbackParameters $produitFilter = null, $famille_exclue = null, $throw_familles = array(), $metayer_only = true, $bailleur_only = false, $bailleur_ppm = null) {
+    public function getTotalValeur($numLigne, $familles = null, TemplateFactureCotisationCallbackParameters $produitFilter = null, $famille_exclue = null, $throw_familles = array(), $metayer_vrai_bailleur_faux = true) {
         $value = 0;
         foreach($this->getEnhancedDonnees() as $donnee) {
             if (in_array($donnee->colonne_famille, $throw_familles)) {
@@ -494,10 +494,10 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if(preg_replace('/^0/', '', $donnee->categorie) !== preg_replace('/^0/', '', str_replace("L", "", $numLigne))) {
                 continue;
             }
-            if ($metayer_only && $donnee->bailleur_raison_sociale) {
+            if ($metayer_vrai_bailleur_faux && $donnee->bailleur_raison_sociale) {
                 continue;
             }
-            if ($bailleur_only && !($donnee->bailleur_ppm == $bailleur_ppm)) {
+            if (!$metayer_vrai_bailleur_faux && !($donnee->bailleur_ppm == $this->declarant->ppm)) {
                 continue;
             }
             $value = $value + VarManipulator::floatize($donnee->valeur);
@@ -788,17 +788,17 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $bailleurs;
     }
 
-    public function getMetayers($bailleur_ppm, $cave_particuliere_only = false) {
+    public function getMetayers($cave_particuliere_only = false) {
         $csv = $this->getCsv();
       if (!$csv) {
         return array();
       }
 
-        return DouaneProduction::getMetayersFromCsv($csv, $this->getConfiguration(), $cave_particuliere_only, $bailleur_ppm);
+        return DouaneProduction::getMetayersFromCsv($csv, $this->getConfiguration(), $cave_particuliere_only);
     }
 
-    public static function getMetayersFromCsv($csv, $configuration, $cave_particuliere_only = false, $bailleur_ppm) {
-        $etablissement = EtablissementClient::getInstance()->findByPPM($bailleur_ppm);
+    public function getMetayersFromCsv($csv, $configuration, $cave_particuliere_only = false) {
+        $etablissement = EtablissementClient::getInstance()->findByPPM($this->declarant->ppm);
 
         $etablissementMetayersRelations = array();
         foreach($etablissement->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER) as $etablissementMetayer) {
@@ -818,7 +818,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if (!$produitConfig->isActif()) {
                 continue;
             }
-            if($line[DRCsvFile::CSV_BAILLEUR_PPM] != $bailleur_ppm) {
+            if($line[DRCsvFile::CSV_BAILLEUR_PPM] != $this->declarant->ppm) {
                 continue;
             }
 

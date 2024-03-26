@@ -42,7 +42,7 @@ class DR extends BaseDR {
     }
 
     public function isExcluExportCsv() {
-        if ($this->exist('has_metayers')) {
+        if ($this->isBailleur()) {
             return true;
         }
         return false;

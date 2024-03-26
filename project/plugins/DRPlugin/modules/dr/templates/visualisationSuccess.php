@@ -5,11 +5,9 @@
 
 <div class="page-header no-border clearfix">
     <h2>
-        <?php if ($dr->exist('has_metayers')): ?>
+        <?php if ($dr->isBailleur()): ?>
             <?php
-                echo 'Synthèse bailleur ';
-                if ($dr->type == 'DR') echo 'de Récolte'; else echo $dr->type;
-                echo ' '.$dr->campagne;
+                echo 'Synthèse bailleur de Récolte '.$dr->campagne;
             ?>
         <?php else: echo 'Déclaration'; ?>
             <?php if ($dr->type == 'DR') echo 'de Récolte'; else echo $dr->type; ?> <?= $dr->campagne ?>
@@ -32,7 +30,7 @@
     <?php include_partial('etablissement/blocDeclaration', ['etablissement' => $dr->getEtablissementObject()]); ?>
 </div>
 
-<?php if (!$dr->exist('has_metayers') && isset($validation) && $validation->hasPoints()): ?>
+<?php if (!$dr->isBailleur() && isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('dr/pointsAttentions', ['validation' => $validation, 'noLink' => true]); ?>
 <?php endif ?>
 
@@ -67,12 +65,14 @@
             <tr>
                 <td>
                     <strong><?= $produit['libelle'] ?></strong>
+                    <?php if ($dr->isBailleur()): ?>
                     <br />
                     <small class="pull-left">
                         <span>
                             <?php echo $produit['metayers']['declarant_raison_sociale']; ?>
                         </span>
                     </small>
+                <?php endif; ?>
                     <br />
                     <small class="pull-right text-muted">
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
@@ -104,8 +104,8 @@
             <th class="text-right"><strong>Total</strong></th>
             <?php foreach ($produit['lignes'] as $l => $p): ?>
                 <th class="text-right"><strong>
-                    <?php if ($dr->exist('has_metayers')): ?>
-                        <?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false, true, $dr->declarant->ppm)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
+                    <?php if ($dr->isBailleur()): ?>
+                        <?php echoFloat($dr->getTotalValeur($l, null, null, null, array(), false)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
                     <?php else: ?>
                         <?php echoFloat($dr->getTotalValeur($l)) ?></strong>&nbsp;<span class='text-muted'><?= $p['unit'] ?></span></th>
                     <?php endif; ?>
@@ -115,8 +115,8 @@
     </tbody>
 </table>
 
-<?php if ($dr->exist('has_metayers')): ?>
-    <?php $metayers = $dr->getMetayers($dr->declarant->ppm)->getRawValue(); ?>
+<?php if ($dr->isBailleur()): ?>
+    <?php $metayers = $dr->getMetayers()->getRawValue(); ?>
     <?php if(count($metayers)): ?>
         <p style="margin-top: -10px; margin-bottom: 20px;">
         Ces volumes ont été récoltés par les métayers
@@ -183,7 +183,7 @@ endif;
         </a>
     </div>
 
-<?php if (!$dr->exist('has_metayers')): ?>
+<?php if (!$dr->isBailleur()): ?>
     <div class="col-xs-4 text-center">
         <a class="btn btn-default" href="<?php echo url_for('get_fichier', array('id' => $dr->_id)) ?>">
             <i class="glyphicon glyphicon-file"></i> PDF de la <?php echo $dr->type ; ?>

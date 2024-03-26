@@ -11,7 +11,7 @@ class ExportDRCSV extends ExportDouaneCSV
         	$c = new DRDouaneCsvFile($file, $this->doc, $this->drev_produit_filter);
         	$csv .= $c->convert();
         }
-        if ($this->doc->exist('has_metayers')) {
+        if ($this->doc->isBailleur()) {
             $docs_metayers = DRClient::getInstance()->getDocumentsDouaniers($this->doc->identifiant, $this->doc->campagne);
             foreach ($docs_metayers as $doc) {
                 if (count($doc->getDonnees()) >= 1) {

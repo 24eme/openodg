@@ -1,7 +1,7 @@
 <?php
 class DouaneClient extends acCouchdbClient
 {
-    static public function getDocumentsDouaniers($identifiant = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getDocumentsDouaniers($identifiant = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         if (!$identifiant) {
             $etablissements = getEtablissementObject()->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
         }
