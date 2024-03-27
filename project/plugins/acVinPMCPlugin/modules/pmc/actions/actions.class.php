@@ -132,11 +132,12 @@ class pmcActions extends sfActions {
         if($this->pmc->storeEtape($this->getEtape($this->pmc, PMCEtapes::ETAPE_LOTS))) {
             $this->pmc->save();
         }
-
+        $options = array();
         if (count($this->pmc->getLots()) == 0 || $request->getParameter('submit') == "add") {
+            $options['addrequest'] = true;
             $this->pmc->addLot();
         }
-        $this->form = new PMCLotsForm($this->pmc);
+        $this->form = new PMCLotsForm($this->pmc, array(), $options);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
