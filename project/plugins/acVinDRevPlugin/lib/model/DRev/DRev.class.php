@@ -429,7 +429,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return DouaneClient::getDocumentsDouaniers();
+        return DouaneClient::getInstance()->getDocumentsDouaniers($this->identifiant, $this->periode, $ext);
     }
 
     public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {

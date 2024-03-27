@@ -127,6 +127,9 @@ class drevActions extends sfActions {
     	$this->drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::EDITION, $this->drev);
 
+        if ($this->drev->hasDocumentDouanier()) {
+            return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
         try {
             $imported = $this->drev->resetAndImportFromDocumentDouanier();
         } catch (Exception $e) {
