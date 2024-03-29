@@ -1,14 +1,9 @@
-<?php
-$societe = $compte->getSociete();
-$identifiant = $societe->getIdentifiant();
-$etablissement = $societe->getEtablissementPrincipal();
-$organismeNom = sfConfig::get('app_organisme_nom');
-?>
 Madame, Monsieur,
 
-Votre compte a bien été créé pour l’espace professionnel du <?php echo $organismeNom ?>.
+Votre compte a bien été créé.
 
-Votre identifiant est : <?php echo $identifiant ?>.
+Votre identifiant est : <?php echo $compte->getLogin(); ?>
+
 
 Vous pouvez dès maintenant gérer toutes vos obligations déclaratives via cet espace.
 

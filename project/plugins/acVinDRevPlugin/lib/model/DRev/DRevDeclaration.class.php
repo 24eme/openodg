@@ -36,9 +36,11 @@ class DRevDeclaration extends BaseDRevDeclaration
                         $saveStock = $element->vci->stock_precedent;
                     }
                 }
-                foreach ($hash as $element) {
-                    if ($element->vci->stock_precedent && $element->recolte->superficie_total) {
-                        $element->vci->stock_precedent = $saveStock;
+                if ($saveStock) {
+                    foreach ($hash as $element) {
+                        if ($element->vci->stock_precedent && $element->recolte->superficie_total) {
+                            $element->vci->stock_precedent = $saveStock;
+                        }
                     }
                 }
             }
