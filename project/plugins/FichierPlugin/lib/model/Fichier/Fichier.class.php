@@ -158,6 +158,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		}
 		$path = sfConfig::get('sf_cache_dir').'/xls2csv/';
 		if (!is_dir($path)) {
+            umask(0);
 			mkdir($path, 0770);
 		}
 		if (!is_dir($path)) {

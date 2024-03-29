@@ -579,7 +579,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
             umask(0);
-    		if (!mkdir($path, 2775)) {
+    		if (!mkdir($path, 02775)) {
     			throw new sfException('cannot create '.$path);
     		}
             chmod($path, 2775);

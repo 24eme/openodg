@@ -30,7 +30,7 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $dr = FichierClient::getInstance()->find($arguments['dr_id']);
         $file_path = $arguments['file_path'];
-
+        umask(0);
         mkdir(dirname($file_path), 0755, true);
 
         if(!$dr) {
