@@ -106,7 +106,8 @@ class /***AVA***/drevActions extends sfActions {
         umask(0000);
         $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
         if (!file_exists($cache_dir)) {
-            mkdir($cache_dir, 2775);
+            mkdir($cache_dir);
+            chmod($cache_dir, 2775);
         }
 
         if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
