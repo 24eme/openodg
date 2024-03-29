@@ -869,7 +869,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
             if (strpos($hash, '/appellation') === false) {
                 continue;
             }
-            $volume += intval($line[DRCIVACsvFile::CSV_VOLUME]);
+            $volume += floatval($line[DRCIVACsvFile::CSV_VOLUME]);
         }
         return $volume;
     }
