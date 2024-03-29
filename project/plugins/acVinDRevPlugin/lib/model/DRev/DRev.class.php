@@ -582,7 +582,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		if (!mkdir($path, 02775)) {
     			throw new sfException('cannot create '.$path);
     		}
-            chmod($path, 2775);
+            chmod($path, 02775);
     	}
     	file_put_contents($path.$filename, $csvContent);
     	$csv = DouaneCsvFile::getNewInstanceFromType($csvOrigine->getCsvType(), $path.$filename);
