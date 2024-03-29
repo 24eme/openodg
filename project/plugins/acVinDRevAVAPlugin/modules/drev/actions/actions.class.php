@@ -103,12 +103,12 @@ class /***AVA***/drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        umask(0000);
+        umask(0);
         $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
         if (!file_exists($cache_dir)) {
             mkdir($cache_dir);
-            chmod($cache_dir, 2775);
         }
+        chmod($cache_dir, 02775);
 
         if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
 
