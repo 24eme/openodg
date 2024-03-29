@@ -109,6 +109,7 @@ class /***AVA***/drevActions extends sfActions {
             mkdir($cache_dir, 02775);
             chmod($cache_dir, 02775);
         }
+        chmod($cache_dir, 02775);
 
         if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
 
