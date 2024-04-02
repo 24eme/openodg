@@ -925,4 +925,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         return $etablissements;
     }
+
+    public function getDateDocument() {
+        return $this->getPeriode() .  '-12-10';
+    }
+
 }
