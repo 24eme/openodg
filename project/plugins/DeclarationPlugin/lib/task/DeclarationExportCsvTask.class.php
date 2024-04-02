@@ -42,7 +42,7 @@ EOF;
             fwrite(STDERR, "WARNING: document non validé, ne sera pas exporté via la tache d'export global\n");
         }
 
-        if(!$options['no-warnings'] && $option['bypass-exclude'] && method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
+        if(!$options['no-warnings'] && !$options['bypass-exclude'] && method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
             fwrite(STDERR, "WARNING: document exclu de la tache d'export global (via ".get_class($doc)."::isExcluExportCsv())\n");
             return ;
         }
