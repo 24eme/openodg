@@ -52,10 +52,10 @@ class PageablePDF extends PageableOutput {
 
          /* Defaulf file_dir */
         if (!$this->file_dir) {
-            umask(0002);
+            umask(0);
             $this->file_dir = sfConfig::get('sf_cache_dir').'/pdf/';
             if (!file_exists($this->file_dir)) {
-                mkdir($this->file_dir);
+                mkdir($this->file_dir, 02775);
             }
         }
         /******************/
