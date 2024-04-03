@@ -917,13 +917,13 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
                     if($registreProduit->getPseudoAppellation()->getHash() != $produit->getAppellation()->getHash()) {
                         continue;
                     }
-                    if($registreProduit->stock_precedent || $registreProduit->constitue) {
+                    if($registreProduit->rafraichi) {
                         $hasVci = true;
                     }
                 }
             }
             foreach($produit->getProduitsVCI() as $produitVCI) {
-                if($produitVCI->constitue > 0)  {
+                if($produitVCI->rafraichi > 0)  {
                     $hasVci = true;
                     break;
                 }
