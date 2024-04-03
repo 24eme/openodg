@@ -906,7 +906,10 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
             }
             if($lastRegistreVCI) {
                 foreach($lastRegistreVCI->getProduitsWithPseudoAppelations() as $registreProduit) {
-                    if($registreProduit->getHash() != $produit->getHash()) {
+                    if(!$registreProduit || !$registreProduit->isPseudoAppellation()) {
+                        continue;
+                    }
+                    if($registreProduit->pseudo_produit->getHash() != $produit->getHash()) {
                         continue;
                     }
                     if($registreProduit->stock_precedent || $registreProduit->constitue) {
