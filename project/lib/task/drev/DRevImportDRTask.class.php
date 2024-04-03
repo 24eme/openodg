@@ -130,10 +130,7 @@ EOF;
             $drev->add('declaration');
 
             $drev->storeDeclarant();
-
             $drev->validate(true);
-            $drev->validateOdg(true);
-
             $drev->save();
         }
 
@@ -149,6 +146,7 @@ EOF;
         }
 
         $drev->declaration->cleanNode();
+        $drev->validateOdg(true);
         $drev->save();
 
         if(!$drev->isNonVinificateur()) {
