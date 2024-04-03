@@ -898,15 +898,24 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
 
     public function getRegistreVCISurfaceFacturable() {
         $superficieFacturable = 0;
-
+        $lastRegistreVCI = $this->getLastRegistreVCI();
         foreach($this->declaration->getProduits() as $produit) {
-            $hasVci = false;
-            foreach($produit->getProduitsVCI() as $produitVCI) {
-                if(!$produitVCI->stock_precedent && !$produitVCI->constitue)  {
-                    continue;
+            $hasVci = $produit->details->total_vci > 0;
+            if($lastRegistreVCI) {
+                foreach($lastRegistreVCI->getProduitsWithPseudoAppelations() as $registreProduit) {
+                    if($registreVCI->getHash() == $produit->getHash()) {
+                        continue;
+                    }
+                    if($registreProduit->stock_precedent || $registreProduit->constitue) {
+                        $hasVci = true;
+                    }
                 }
-                $hasVci = true;
-                break;
+            }
+            foreach($produit->getProduitsVCI() as $produitVCI) {
+                if($produitVCI->constitue > 0)  {
+                    $hasVci = true;
+                    break;
+                }
             }
             if($hasVci) {
                 $superficieFacturable += $produit->superficie_revendique;
