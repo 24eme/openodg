@@ -900,7 +900,10 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
         $superficieFacturable = 0;
         $lastRegistreVCI = $this->getLastRegistreVCI();
         foreach($this->declaration->getProduits() as $produit) {
-            $hasVci = $produit->details->total_vci > 0;
+            $hasVci = false;
+            if($produit->exist('details') && $produit->details->total_vci > 0) {
+                $hasVci = true;
+            }
             if($lastRegistreVCI) {
                 foreach($lastRegistreVCI->getProduitsWithPseudoAppelations() as $registreProduit) {
                     if($registreVCI->getHash() == $produit->getHash()) {
