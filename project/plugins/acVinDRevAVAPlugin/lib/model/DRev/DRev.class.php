@@ -897,6 +897,11 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
 	}
 
     public function getRegistreVCISurfaceFacturable() {
+        if($this->isNonRecoltant() || $this->hasSV()) {
+
+            return 0;
+        }
+
         $superficieFacturable = 0;
         $lastRegistreVCI = $this->getLastRegistreVCI();
         foreach($this->declaration->getProduits() as $produit) {
