@@ -111,8 +111,8 @@ class drActions extends sfActions
 
     public function executeVerify(sfWebRequest $request) {
         $this->dr = $this->getRoute()->getDR();
-        $this->tableau_comparaison = array();
-        $this->tableau_comparaison = $this->dr->compareVolSvDr();
+        $this->tableau_comparaison = $this->dr->getTableauComparaisonVolSvDr();
+
     }
 
 }
