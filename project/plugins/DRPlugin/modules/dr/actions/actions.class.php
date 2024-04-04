@@ -109,4 +109,10 @@ class drActions extends sfActions
         return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant, 'campagne' => $campagne));
     }
 
+    public function executeVerify(sfWebRequest $request) {
+        $this->dr = $this->getRoute()->getDR();
+        $this->tableau_comparaison = array();
+        $this->tableau_comparaison = $this->dr->compareVolSvDr();
+    }
+
 }

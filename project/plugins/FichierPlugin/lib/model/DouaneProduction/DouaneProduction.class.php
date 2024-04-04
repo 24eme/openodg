@@ -930,4 +930,24 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->getPeriode() .  '-12-10';
     }
 
+    public function getVolumesFromDr($dr) {
+        $ret[] = array();
+        foreach ($dr->donnees as $produit) {
+            //if ($produit->categorie == '06' || $produit->categorie == '07' || $produit->categorie == '08')
+        }
+    }
+
+    public function compareVolSvDr() {
+        if (! ($this->type == 'SV11' || $this->type == 'SV12')) {
+            throw new sfException("Ce document n'est pas une SV11 ou une SV12.");
+        }
+        $ret = array();
+        foreach ($this->getApporteurs() as $apporteur) {
+            print_r($apporteur['etablissement']->raison_sociale);
+            $ret[] = $this->getVolumesFromDr(DRClient::getInstance()->findByArgs($apporteur['etablissement']->identifiant, $this->campagne));
+        }
+
+        return $ret;
+    }
+
 }
