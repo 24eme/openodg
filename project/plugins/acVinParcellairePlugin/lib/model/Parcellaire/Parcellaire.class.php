@@ -1,6 +1,8 @@
 <?php
 
 require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
+require_once(dirname(__FILE__).'/../../vendor/Simplex-Calculator/Simplex/simplex.php');
+
 /**
  * Model for Parcellaire
  *
@@ -190,6 +192,7 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
+        return $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
             if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
                 $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
             }
@@ -229,16 +232,13 @@ class Parcellaire extends BaseParcellaire {
     public function getSyntheseProduitsCepages() {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
-            $libelles = array($p->getProduitLibelle());
             $cepage = $p->getCepage();
-            if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
-                $libelles = array();
-                foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                    $libelles[] = $prod->getLibelleComplet();
-                }
-                if (!count($libelles)) {
-                    $libelles[] = '';
-                }
+            $libelles = array();
+            foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                $libelles[] = $prod->getLibelleComplet();
+            }
+            if (!count($libelles)) {
+                $libelles[] = '';
             }
             if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
                 $libelles = array('jeunes vignes');

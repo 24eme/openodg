@@ -13,6 +13,6 @@ curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_vi
 	NEWCAMPAGNE="$NEWANNEE-$(($NEWANNEE + 1))"
 	NEWDOCID=$(echo -n $id | sed -r "s/$ANNEE$/$NEWANNEE/");
 	curl -sX COPY "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/$id" -H "Destination: $NEWDOCID" | grep '"rev":' || continue;
-	php symfony document:setvalue $NEWDOCID campagne "$NEWCAMPAGNE" validation "$(date +%Y-%m-%d)" validation_odg "$(date +%Y-%m-%d)" signataire "Générée depuis la déclaration de $ANNEE" papier +1 $SYMFONYTASKOPTIONS
+	php symfony document:setvalue $NEWDOCID campagne "$NEWCAMPAGNE" validation "$(date +%Y-%m-%d)" validation_odg "$(date +%Y-%m-%d)" signataire "Générée depuis la déclaration de $ANNEE" papier "AUTO" $SYMFONYTASKOPTIONS
 done;
 

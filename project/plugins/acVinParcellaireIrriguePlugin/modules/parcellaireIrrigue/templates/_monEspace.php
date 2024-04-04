@@ -15,7 +15,6 @@
           <div class="actions">
               <?php if ($sf_user->isAdmin()): ?>
                   <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigable_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigable): ?>Démarrer la télédéclaration<?php else: ?>Visualiser et continuer à déclarer<?php endif; ?></a>
-                  <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireirrigable_edit', array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => true)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
               <?php endif; ?>
           </div>
       </div>
@@ -24,9 +23,6 @@
         <p class="explications">Identifier ou mettre à jour vos parcelles<br />irrigables.</p>
         <div class="actions">
             <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
-            <?php if ($sf_user->isAdmin()): ?>
-            <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('parcellaireirrigable_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
-            <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
@@ -37,7 +33,7 @@
     <div class="panel-body">
         <p class="explications">Vous avez débuté votre Identification des parcelles irrigables sans la valider.</p>
         <div class="actions">
-            <a class="btn btn-block btn-primary" href="<?php echo url_for('parcellaireirrigable_edit', $parcellaireIrrigable) ?>"><?php if($parcellaireIrrigable->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer la saisie papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
+            <a class="btn btn-block btn-primary" href="<?php echo url_for('parcellaireirrigable_edit', $parcellaireIrrigable) ?>">Continuer la télédéclaration</a>
             <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireirrigable_delete', $parcellaireIrrigable) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
         </div>
     </div>
@@ -55,7 +51,6 @@
               <div class="actions">
                   <?php if ($sf_user->isAdmin()): ?>
                           <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer la télédéclaration<?php else: ?>Visualiser et continuer à déclarer<?php endif; ?></a>
-                          <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => true)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                   <?php endif; ?>
               </div>
           </div>
@@ -64,9 +59,6 @@
             <p class="explications"><?php if(!$parcellaireIrrigue): ?>Identifier<?php else: ?>Mettre à jour<?php endif; ?> vos parcelles irriguées depuis votre <a href="<?php echo url_for('parcellaireirrigable_visualisation', array('sf_subject' => $parcellaireIrrigable)) ?>">déclaration d'irrigabilité <?php echo $periode; ?></a>.<br />&nbsp;</p>
           	<div class="actions">
                 <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => false)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer la télédéclaration<?php else: ?>Visualiser et continuer à déclarer<?php endif; ?></a>
-                <?php if ($sf_user->isAdmin()): ?>
-                <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode, 'papier' => true)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;<?php if(!$parcellaireIrrigue): ?>Saisir<?php else: ?>Poursuivre<?php endif; ?> la déclaration papier</a>
-                <?php endif; ?>
             </div>
         </div>
       <?php endif; ?>

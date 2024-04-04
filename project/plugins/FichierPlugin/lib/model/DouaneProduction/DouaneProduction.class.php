@@ -340,7 +340,7 @@ class DouaneProduction extends Fichier implements InterfaceMouvementFacturesDocu
         }
 
         $this->add('donnees');
-        $item = $this->donnees->add();
+        $item = $this->get('donnees')->add();
         $item->produit = $hash;
         $item->produit_libelle = $this->getConfiguration()->declaration->get($hash)->getLibelleComplet();
         $item->complement = $data[DouaneCsvFile::CSV_PRODUIT_COMPLEMENT];

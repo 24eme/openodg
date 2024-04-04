@@ -64,10 +64,15 @@
         <?php $sousGenerationClass = GenerationClient::getInstance()->getClassForGeneration($generation->getOrCreateSubGeneration($sous_generation_type)); ?>
         <p>
         <?php if (count($generation->getOrCreateSubGeneration($sous_generation_type)->fichiers)): continue; endif; ?>
+          <?php if($generation->getOrCreateSubGeneration($sous_generation_type)->isNew()) :?>
           <a onclick="return confirm('Étes vous sûr de vouloir <?php echo lcfirst(str_replace("'", '\\\'', $sousGenerationClass::getActionLibelle())) ?> ?')" title="<?php echo str_replace('"', '', $sousGenerationClass::getActionDescription()) ?>" class="btn btn-link" href="<?= url_for('facturation_sous_generation', [
             'generation' => $generation->_id,
             'type' => $sous_generation_type
-          ]) ?>"><?php if($generation->getOrCreateSubGeneration($sous_generation_type)->isNew()): ?><span class="glyphicon glyphicon-play-circle"></span><?php else: ?><span class="glyphicon glyphicon-eye-open"></span><?php endif; ?>&nbsp;<?php echo $sousGenerationClass::getActionLibelle() ?></a>
+          ]) ?>"><span class="glyphicon glyphicon-play-circle"></span>&nbsp;<?php echo $sousGenerationClass::getActionLibelle() ?></a>
+          <?php else: ?>
+              <a class="btn btn-link" href="<?= url_for('generation_view', [
+                'id' => $generation->getOrCreateSubGeneration($sous_generation_type)->_id]) ?>"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;<?php echo $sousGenerationClass::getActionLibelle() ?></a>
+          <?php endif; ?>
         </p>
     <?php endforeach ?>
     <?php endif ?>

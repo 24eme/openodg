@@ -984,7 +984,7 @@ class degustationActions extends sfActions {
         ]))), ENT_QUOTES | ENT_XML1, 'UTF-8');
 
         $mailto = "mailto:$email?".$cc."subject=$subject&body=$body";
-        $mailto = mb_strcut($mailto, 0, 1600); // Chrome limite les mailto à un certain nombre de caractères 1600 semblent être le max
+        $mailto = mb_strcut($mailto, 0, 1559); // Chrome limite les mailto à un certain nombre de caractères 1600 semblent être le max
 
         $this->getResponse()->clearHttpHeaders();
         $this->getResponse()->setStatusCode(302);
