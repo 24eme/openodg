@@ -204,6 +204,10 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
             return;
         }
         $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_NOTIFICATION_COURRIER, $this->courrier_titre));
+
+        if ($this->lots[0]->isAffectable()) {
+            $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_AFFECTABLE, Lot::generateTextePassageMouvement($this->lots[0]->getNombrePassage() + 1)));
+        }
     }
 
     public function getLot($lot_unique_id = null) {

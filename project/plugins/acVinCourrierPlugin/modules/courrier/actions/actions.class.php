@@ -85,4 +85,17 @@ class courrierActions extends sfActions
         return $this->renderText($this->document->output());
 
     }
+
+    public function executeRedeguster(sfWebRequest $request)
+    {
+        $courrier = CourrierClient::getInstance()->find($request->getParameter('identifiant'));
+        $lot = $courrier->getLot($request->getParameter('lot'));
+
+        $lot->redegustation();
+
+        $courrier->generateMouvementsLots();
+        $courrier->save();
+
+        return $this->redirect('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]);
+    }
 }
