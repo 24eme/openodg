@@ -98,4 +98,21 @@ class courrierActions extends sfActions
 
         return $this->redirect('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]);
     }
+
+    public function executeRecoursOc(sfWebRequest $request)
+    {
+        if (RegionConfiguration::getInstance()->hasOC() && Organisme::getInstance()->isOC() === false) {
+            throw new sfException('Vous ne pouvez pas faire de recours OC');
+        }
+
+        $courrier = CourrierClient::getInstance()->find($request->getParameter('identifiant'));
+        $lot = $courrier->getLot($request->getParameter('lot'));
+
+        $lot->recoursOc();
+
+        $courrier->generateMouvementsLots();
+        $courrier->save();
+
+        return $this->redirect('degustation_lot_historique', ['identifiant' => $lot->declarant_identifiant, 'unique_id' => $lot->unique_id]);
+    }
 }

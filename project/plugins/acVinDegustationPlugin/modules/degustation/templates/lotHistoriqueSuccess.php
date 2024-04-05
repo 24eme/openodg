@@ -104,6 +104,9 @@
                     <?php $lot = CourrierClient::getInstance()->find($mouvement->value->document_id)->get($mouvement->value->lot_hash); ?>
                     <?php if ($lot->isNonConforme()): ?>
                         <li><a class="dropdown-item" href="<?php echo url_for('courrier_redeguster', array('identifiant' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)) ?>" onclick="return confirm('Confirmez vous de rendre dégustable à nouveau ce lot ?')">Redéguster</a></li>
+                        <?php if (RegionConfiguration::getInstance()->hasOC() === false || Organisme::getInstance()->isOC()): ?>
+                            <li><a class="dropdown-item" href="<?php echo url_for('courrier_recours_oc', array('identifiant' => $mouvement->value->document_id, 'lot' => $mouvement->value->lot_unique_id)); ?>"  onclick="return confirm('Confirmez vous le recours à l\'OC ?')">Recours OC</a></li>
+                        <?php endif ?>
                     <?php endif ?>
                     <?php unset($lot); ?>
                 <?php endif ?>
