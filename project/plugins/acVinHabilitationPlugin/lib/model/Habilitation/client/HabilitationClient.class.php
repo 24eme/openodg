@@ -34,6 +34,7 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_RESILIE = "RESILIE";
     const STATUT_ANNULE = "ANNULÉ";
     const STATUT_ARCHIVE = "ARCHIVE";
+    const STATUT_EXTERIEUR = "HABILITATION_EXTERIEUR";
 
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
@@ -59,7 +60,8 @@ class HabilitationClient extends acCouchdbClient {
                                              self::STATUT_ANNULE => "Annulé",
                                              self::STATUT_RETRAIT => "Retrait",
                                              self::STATUT_RESILIE => "Résilié",
-                                            self::STATUT_ARCHIVE => "Archivé");
+                                            self::STATUT_ARCHIVE => "Archivé",
+                                            self::STATUT_EXTERIEUR => "Habilitation extérieur");
 
     public static function getInstance()
     {
