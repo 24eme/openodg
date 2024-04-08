@@ -19,6 +19,8 @@ class DRValidation extends DocumentValidation
             $this->addControle(self::TYPE_WARNING, 'pied_mort_present', "Déclaration de pied mort présente");
             $this->addControle(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort");
         }
+        $this->addControle(self::TYPE_ERROR, 'non_habilite', "L'apporteur n'est pas habilité.");
+        $this->addControle(self::TYPE_ERROR, 'pas_habilitation', "L'apporteur n'a pas d'habilitation.");
     }
 
     public function controle()
@@ -29,6 +31,30 @@ class DRValidation extends DocumentValidation
         $this->document->generateDonnees();
         foreach ($this->document->getProduits() as $produit) {
             $this->controleRendement($produit);
+        }
+
+        if (! ($this->document->type == 'DR')) {
+            $apporteurs_hash = array();
+            foreach ($this->document->getEnhancedDonnees() as $donnee) {
+                if (!$donnee->tiers || !$donnee->produit) {
+                    continue;
+                }
+                $apporteurs_hash[$donnee->tiers][$donnee->produit] = $donnee->produit;
+            }
+
+            foreach ($apporteurs_hash as $apporteur => $tab_hash) {
+                $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate(str_replace('ETABLISSEMENT-', '', $apporteur), $this->document->getDateDocument());
+                if (! $habilitation) {
+                    $this->addPoint(self::TYPE_ERROR, 'pas_habilitation', EtablissementClient::getInstance()->findByIdentifiant(str_replace('ETABLISSEMENT-', '', $apporteur))->getRaisonSociale());
+
+                    continue;
+                }
+                foreach ($tab_hash as $hash) {
+                    if (! $habilitation->isHabiliteFor($hash, HabilitationClient::ACTIVITE_PRODUCTEUR)) {
+                        $this->addPoint(self::TYPE_ERROR, 'non_habilite', EtablissementClient::getInstance()->findByIdentifiant(str_replace('ETABLISSEMENT-', '', $apporteur))->getRaisonSociale(), $this->generateUrl('habilitation_visualisation', array('id' => $habilitation->_id)));
+                    }
+                }
+            }
         }
 
         $this->controleDocuments();

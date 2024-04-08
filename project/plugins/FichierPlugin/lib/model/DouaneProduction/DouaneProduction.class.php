@@ -925,4 +925,31 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         return $etablissements;
     }
+
+    public function getDateDocument() {
+        return $this->getPeriode() .  '-12-10';
+    }
+
+    public function getTableauComparaisonVolSvDr() {
+        if (! ($this->type == 'SV11' || $this->type == 'SV12')) {
+            throw new sfException("Ce document n'est pas une SV11 ou une SV12.");
+        }
+        $produits = $this->getProduits();
+        foreach ($this->getApporteurs() as $apporteur) {
+            $dr = DRClient::getInstance()->findByArgs($apporteur['etablissement']->identifiant, $this->campagne);
+            foreach ($dr->donnees as $produit) {
+                if (! (str_replace('ETABLISSEMENT-', '', $produit->tiers) == $this->identifiant)) {
+                    continue;
+                }
+                if (($produit->categorie == '06' || $produit->categorie == '07' || $produit->categorie == '08')) {
+                    $tableau_comparaison[$produit->produit_libelle][$dr->declarant->raison_sociale] = $produit->valeur;
+                    if(! isset($tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale])) {
+                        $tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale] = $produits[$produit->produit]['lignes'][$produit->categorie]['val'];
+                    }
+                }
+            }
+        }
+        return $tableau_comparaison;
+    }
+
 }

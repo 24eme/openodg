@@ -31,7 +31,7 @@
 </div>
 
 <?php if (!$dr->isBailleur() && isset($validation) && $validation->hasPoints()): ?>
-    <?php include_partial('dr/pointsAttentions', ['validation' => $validation, 'noLink' => true]); ?>
+    <?php include_partial('dr/pointsAttentions', ['validation' => $validation]); ?>
 <?php endif ?>
 
 <?php use_helper('Float') ?>
