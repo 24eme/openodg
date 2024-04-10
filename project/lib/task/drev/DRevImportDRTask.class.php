@@ -75,6 +75,12 @@ EOF;
             return;
         }
 
+        if($drev && $drev->getLastRegistreVCI() && !$drev->getLastRegistreVCI()->isStockUtiliseEntierement()) {
+            echo sprintf("ERROR;Le stock VCI de la précédente campagne n'est pas complétement utilisée;%s\n", $drev->_id);
+
+            return;
+        }
+
         if ($drev && $drev->isLectureSeule()) {
 
             return;
@@ -130,10 +136,7 @@ EOF;
             $drev->add('declaration');
 
             $drev->storeDeclarant();
-
             $drev->validate(true);
-            $drev->validateOdg(true);
-
             $drev->save();
         }
 
@@ -149,6 +152,7 @@ EOF;
         }
 
         $drev->declaration->cleanNode();
+        $drev->validateOdg(true);
         $drev->save();
 
         if(!$drev->isNonVinificateur()) {

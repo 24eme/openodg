@@ -92,7 +92,7 @@ class FichierForm extends BaseForm
 	    	}
     		unlink($file->getSavedName());
     	}
-        $this->fichier->constructId();
+
     	$this->fichier->save();
     	return $this->fichier;
     }
