@@ -32,6 +32,10 @@ else
     . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
 fi
 
+if ! test "$SYMFONYTASKOPTIONS" ; then
+    exit
+fi
+
 mkdir $EXPORTDIR 2> /dev/null
 
 APPLICATION=$(echo -n $SYMFONYTASKOPTIONS | sed -r 's/.*--application=([^ ]+).*/\1/')

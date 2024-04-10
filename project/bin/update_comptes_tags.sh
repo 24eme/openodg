@@ -14,5 +14,9 @@ else
     . $(echo $0 | sed 's/[^\/]*$//')config_"$1".inc
 fi
 
+if ! test "$SYMFONYTASKOPTIONS" ; then
+    exit;
+fi
+
 php symfony compte:updateTagsFromHabilitations $SYMFONYTASKOPTIONS
 php symfony compte:updateProductionTag $SYMFONYTASKOPTIONS
