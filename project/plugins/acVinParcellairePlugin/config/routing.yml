@@ -28,7 +28,7 @@ parcellaire_visualisation:
   requirements:
     sf_method: [get, post]
 
-parcellaire_visualisation:
+parcellaire_potentiel_visualisation:
   url: /parcellaire/potentieldeproduction/:id
   param: { module: parcellaire, action: potentieldeproduction }
   class: ParcellaireRoute

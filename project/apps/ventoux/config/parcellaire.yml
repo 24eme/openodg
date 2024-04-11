@@ -1,0 +1,12 @@
+all:
+  configuration:
+    parcellaire:
+      manquant:
+        pc_min: 15
+      affectation:
+        needs_intention: false
+      aires:
+        Ventoux:
+          name: "Ventoux"
+          color: "#ab3f97"
+          denomination_id: "01363"

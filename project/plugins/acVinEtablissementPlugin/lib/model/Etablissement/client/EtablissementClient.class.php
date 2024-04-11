@@ -320,10 +320,6 @@ class EtablissementClient extends acCouchdbClient {
         return array(self::RECETTE_LOCALE => 'Recette locale');
     }
 
-    public static function getRegionsWithoutHorsInterLoire() {
-        return array(self::REGION_CVO => self::REGION_CVO);
-    }
-
     public static function getRegions() {
     	return sfConfig::get('app_donnees_viticoles_regions', array());
     }

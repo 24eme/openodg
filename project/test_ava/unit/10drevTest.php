@@ -322,7 +322,7 @@ foreach($f->lignes->get('odg_ava')->details as $ligne) {
 };
 
 $surfaceVinifieeFacturableAttendu = $drevM1->getSurfaceVinifieeFacturable() - $drev->getSurfaceVinifieeFacturable();
-$surfaceFacturableAttendu = $drevM1->getSurfaceFacturable() - $drev->getSurfaceFacturable();
+$surfaceFacturableAttendu = $drevM1->getSurfaceRecolteFacturable() - $drev->getSurfaceRecolteFacturable();
 $volumeFacturableAttendu = $drevM1->getVolumeFacturable() - $drev->getVolumeFacturable();
 
 $t->is($superficieHaVinifie, $surfaceVinifieeFacturableAttendu, "La superficie vinifiée prise en compte dans la facture est de ".$surfaceVinifieeFacturableAttendu." ha");
@@ -369,7 +369,7 @@ $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommée");
 $t->is(count($f->lignes->odg_ava->details), 1, "La cotisation odg ava à 1 ligne");
-$t->is($f->lignes->odg_ava->details[0]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
+$t->is($f->lignes->odg_ava->details[0]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceRecolteFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
 
 $t->comment("Génération d'une facture sans aucun mouvement à facturer");
 
