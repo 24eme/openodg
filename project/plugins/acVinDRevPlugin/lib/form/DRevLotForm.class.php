@@ -3,7 +3,7 @@ class DRevLotForm extends LotForm
 {
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         if (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
-            $options['specificite'] = DRevConfiguration::getInstance()->getSpecificites();
+            $options['specificites'] = DRevConfiguration::getInstance()->getSpecificites();
         }
         parent::__construct($object, $options, $CSRFSecret);
         $this->getDocable()->remove();

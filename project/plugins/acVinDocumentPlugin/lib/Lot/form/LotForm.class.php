@@ -3,11 +3,11 @@ class LotForm extends acCouchdbObjectForm
 {
     const NBCEPAGES = 5;
     protected $all_produits = false;
-    private $specificite = null;
+    private $specificites = null;
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         if (isset($options['specificites'])){
-            $this->specificite = $options['specificites'];
+            $this->specificites = $options['specificites'];
         }
         parent::__construct($object, $options, $CSRFSecret);
     }
@@ -57,7 +57,7 @@ class LotForm extends acCouchdbObjectForm
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
-        if($this->specificite) {
+        if($this->specificites) {
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
