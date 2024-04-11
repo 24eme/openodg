@@ -9,7 +9,7 @@
     <?php echo $form->renderGlobalErrors(); ?>
 	<p>Les données de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> <?php echo $drev->campagne; ?> ne sont pas disponibles sur le site de la Douane pour le CVI <?php echo $drev->declarant->cvi ;?>.
     <br/><BR/>
-    Merci de bien vouloir nous fournir le <b>fichier XLS<?php if ($drev->getDocumentDouanierTypeLibelle() != 'Déclaration de récolte') echo $drev->getDocumentDouanierTypeLibelle(). " Apporteurs/Fournisseurs"; ?></b> de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> afin de poursuivre la saisie de vos revendications.</p>
+    Merci de bien vouloir nous fournir le <b>fichier XLS <?php if ($drev->getDocumentDouanierTypeLibelle() != 'Déclaration de récolte') echo $drev->getDocumentDouanierTypeLibelle(). " Apporteurs/Fournisseurs"; ?></b> de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> afin de poursuivre la saisie de vos revendications.</p>
 
     <?php echo include_partial('global/flash'); ?>
 
