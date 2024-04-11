@@ -21,3 +21,19 @@ courrier_extras:
       type:     object
     requirements:
       sf_method: [get, post]
+
+courrier_redeguster:
+  url: /courrier/:identifiant/:lot/redeguster
+  param: { module: courrier, action: redeguster }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+courrier_recours_oc:
+  url: /courrier/:identifiant/:lot/recours
+  param: { module: courrier, action: recoursOc }
+  requirements:
+    sf_method: [get]

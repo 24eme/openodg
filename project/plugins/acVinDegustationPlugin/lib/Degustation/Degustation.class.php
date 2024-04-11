@@ -400,7 +400,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTE_SRC, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
 			}elseif($lot->isAffectable()) {
 				$this->addMouvementLot($lot->buildMouvement(Lot::STATUT_AFFECTABLE, Lot::generateTextePassageMouvement($lot->getNombrePassage() + 1)));
-			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC))) {
+			} elseif(in_array($lot->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC)) && !$lot->id_document_affectation) {
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
             }
         }
@@ -514,6 +514,12 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
         if(!$lot->preleve || $this->type == TourneeClient::TYPE_MODEL) {
             $lot->statut = Lot::STATUT_ATTENTE_PRELEVEMENT;
             $lot->preleve = null;
+        }
+        if ($this->type == TourneeClient::TYPE_MODEL
+            && strpos($lot->id_document_provenance, 'PMCNC') === false
+            && $lot->initial_type == PMCNCClient::TYPE_COUCHDB)
+        {
+            $lot->initial_type = TourneeClient::TYPE_TOURNEE_LOT_NC_OI;
         }
         if ((get_class($lotOrig) != 'stdClass' && $lotOrig->document_ordre) || isset($lotOrig->document_ordre)) {
             $lot->document_ordre = sprintf('%02d', intval($lotOrig->document_ordre) + 1 );

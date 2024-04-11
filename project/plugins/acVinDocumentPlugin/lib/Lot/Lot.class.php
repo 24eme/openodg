@@ -53,7 +53,9 @@ abstract class Lot extends acCouchdbDocumentTree
     const CONFORMITE_NONCONFORME_ORGANOLEPTIQUE = "NONCONFORME_ORGANOLEPTIQUE";
     const CONFORMITE_NONTYPICITE_CEPAGE = "NONTYPICITE_CEPAGE";
 
-    const STATUT_NOTIFICATION_COURRIER = "20_NOTIFICATION_COURRIER";
+    const STATUT_NOTIFICATION_COURRIER_OLD = "20_NOTIFICATION_COURRIER";
+    const STATUT_NOTIFICATION_COURRIER = "02_NOTIFICATION_COURRIER";
+
 
     const SPECIFICITE_UNDEFINED = "UNDEFINED";
     const SPECIFICITE_PRIMEUR = "Primeur";
@@ -96,6 +98,7 @@ abstract class Lot extends acCouchdbDocumentTree
         self::STATUT_AFFECTABLE_PRELEVE => 'Affectable prelevé',
 
         self::STATUT_NOTIFICATION_COURRIER => 'Courrier de notification',
+        self::STATUT_NOTIFICATION_COURRIER_OLD => 'Courrier de notification',
     );
 
     public static $statut2label = array(

@@ -127,6 +127,7 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
     }
 
     public function save($saveDependants = true) {
+        $this->lot->updateDocumentDependances();
         $this->generateMouvementsLots();
         $this->generatePieces();
         $ret = parent::save($saveDependants);
@@ -204,6 +205,19 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
             return;
         }
         $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_NOTIFICATION_COURRIER, $this->courrier_titre));
+
+        if ($this->lots[0]->isAffectable()) {
+            $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_AFFECTABLE, Lot::generateTextePassageMouvement($this->lots[0]->getNombrePassage() + 1)));
+        }
+
+        if ($this->lots[0]->recours_oc) {
+            $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_RECOURS_OC, null, $this->lots[0]->recours_oc));
+            $this->lots[0]->statut = Lot::STATUT_NONCONFORME;
+        }
+
+        if(in_array($this->lots[0]->statut, array(Lot::STATUT_NONCONFORME, Lot::STATUT_RECOURS_OC)) && !$this->lots[0]->id_document_affectation) {
+            $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_MANQUEMENT_EN_ATTENTE));
+        }
     }
 
     public function getLot($lot_unique_id = null) {
