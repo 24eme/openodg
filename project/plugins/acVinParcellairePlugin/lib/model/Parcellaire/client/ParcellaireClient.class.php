@@ -312,7 +312,7 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellesMatch = [];
 
         $selected_parcellaires = [];
-        if ($parcelle->exist('idu') && $parcelle->idu) {
+        if ($parcelle->exist('idu') && $parcelle->idu && isset($parcelles[$parcelle->idu])) {
             $selected_parcellaires = $parcelles[$parcelle->idu];
         }else{
             foreach($parcelles as $idu => $multip) {
