@@ -293,11 +293,13 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
         $synthese = $parcellaire->getSyntheseProduitsCepages();
 
+
         $rewrite = $request->getParameter('rewrite');
         if ($rewrite) {
             $c = explode(':', $rewrite);
             $synthese['Côtes de Provence Rouge'][$c[0]]['superficie_max'] = floatval($c[1]);
         }
+
 
         $cepages_principaux = [];
         foreach(['GRENACHE N', 'SYRAH N', 'MOURVEDRE N', 'TIBOUREN N', 'CINSAUT N'] as $c) {
@@ -324,23 +326,14 @@ class parcellaireActions extends sfActions {
             }
         }
 
-<<<<<<< HEAD
-        $encepagement = $synthese['Côtes de Provence Rouge']['Total']['superficie_max'];
-
-        $cepages_a_max = [];
-=======
         $cepages_a_max = [];
         $encepagement = 0;
->>>>>>> master
         foreach($synthese['Côtes de Provence Rouge'] as $k => $superficies) {
             if ($k == 'Total') {
                 continue;
             }
             $cepages_a_max[$k] = $superficies['superficie_max'];
-<<<<<<< HEAD
-=======
             $encepagement += $superficies['superficie_max'];
->>>>>>> master
         }
         $task = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
 
@@ -348,8 +341,6 @@ class parcellaireActions extends sfActions {
         $this->encepagement = [];
         $this->table_potentiel['Côtes de Provence Rouge'] = [];
 
-<<<<<<< HEAD
-=======
         $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50'] = [];
         $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['somme'] = array_sum($cepages_a_max);
         $this->table_potentiel['Côtes de Provence Rouge']['Somme(cepages) >= 1.50']['limit'] = 1.5;
@@ -364,18 +355,13 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['res'] = (count($cepages_principaux) >=  2);
         $this->table_potentiel['Côtes de Provence Rouge']['Nombre(cepages_principaux) >= 2']['sens'] = '>=';
 
->>>>>>> master
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70'] = [];
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['somme'] = array_sum($cepages_principaux);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['limit'] = $encepagement * 0.7;
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['cepages'] = $cepages_principaux;
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['res'] = (array_sum($cepages_principaux) >=  $encepagement * 0.7);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_principaux) >= 0.70']['sens'] = '>=';
-<<<<<<< HEAD
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max), Simplex\Restriction::TYPE_GOE, $encepagement * 0.7));
-=======
         $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max, -0.7), Simplex\Restriction::TYPE_GOE, 0));
->>>>>>> master
 
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90'] = [];
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] = '';
@@ -386,11 +372,7 @@ class parcellaireActions extends sfActions {
         foreach(array_keys($cepages_principaux) as $c) {
             $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] .= $cepages_principaux[$c].',';
             $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['res'] &= ($cepages_principaux[$c] <=  $encepagement * 0.9);
-<<<<<<< HEAD
-            $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_principaux[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.9));
-=======
             $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_principaux[$c]], $cepages_a_max, - 0.9), Simplex\Restriction::TYPE_LOE, 0));
->>>>>>> master
         }
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'] = substr($this->table_potentiel['Côtes de Provence Rouge']['PorportionChaque(cepages_principaux) <= 0.90']['somme'], 0, -1);
 
@@ -400,11 +382,7 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['limit'] = $encepagement * 0.2;
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['res'] = (array_sum($cepages_blancs) <= $encepagement * 0.2);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B,VERMENTINO B) <= 0.20']['sens'] = '<=';
-<<<<<<< HEAD
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.2));
-=======
         $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max, - 0.2), Simplex\Restriction::TYPE_LOE, 0));
->>>>>>> master
 
         unset($cepages_blancs['VERMENTINO B']);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10'] = [];
@@ -413,11 +391,7 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['limit'] = $encepagement * 0.1;
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['res'] = (array_sum($cepages_blancs) <= $encepagement * 0.1);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(CLAIRETTE B,SEMILLON B,UGNI BLANC B) <= 0.10']['sens'] = '<=';
-<<<<<<< HEAD
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.1));
-=======
         $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_blancs, $cepages_a_max, - 0.1), Simplex\Restriction::TYPE_LOE, 0));
->>>>>>> master
 
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10'] = [];
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['somme'] = array_sum($cepages_accessoires);
@@ -425,11 +399,7 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['limit'] = $encepagement * 0.1;
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['res'] = (array_sum($cepages_accessoires) <= $encepagement * 0.1);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(ROUSSELI RS,CALADOC N) <= 0.10']['sens'] = '<=';
-<<<<<<< HEAD
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_accessoires, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.1));
-=======
         $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_accessoires, $cepages_a_max, - 0.1), Simplex\Restriction::TYPE_LOE, 0));
->>>>>>> master
 
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05'] = [];
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['somme'] = array_sum($cepages_varietedinteret);
@@ -437,23 +407,12 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['limit'] = $encepagement * 0.05;
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['res'] = (array_sum($cepages_varietedinteret) <= $encepagement * 0.05);
         $this->table_potentiel['Côtes de Provence Rouge']['PorportionSomme(cepages_varietedinteret) <= 0.05']['sens'] = '<=';
-<<<<<<< HEAD
-        $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.05));
-=======
         $task->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max, - 0.05), Simplex\Restriction::TYPE_LOE, 0));
->>>>>>> master
 
         foreach(array_keys($cepages_a_max) as $c) {
             $task->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
         }
 
-<<<<<<< HEAD
-        $solver = new Simplex\Solver($task);
-        $solution = $solver->getSolution();
-        $optimum = $solver->getSolutionValue($solution);
-        $this->potentiel_de_production = [];
-        $this->potentiel_de_production['Côtes de Provence Rouge'] = round($optimum->toFloat(), 5);
-=======
         $this->potentiel_de_production = [];
 
         $solver = new Simplex\Solver($task);
@@ -464,7 +423,6 @@ class parcellaireActions extends sfActions {
         }else{
             $this->potentiel_de_production['Côtes de Provence Rouge'] = "IMPOSSIBLE";
         }
->>>>>>> master
         $this->encepagement['Côtes de Provence Rouge'] = round($encepagement, 5);
 
         /*
@@ -473,14 +431,11 @@ class parcellaireActions extends sfActions {
         echo $printer->printSolver($solver); exit;
         */
 
-<<<<<<< HEAD
-=======
         $rewrite = $request->getParameter('rewrite');
         if ($rewrite) {
             $c = explode(':', $rewrite);
             $synthese['Côtes de Provence Blanc'][$c[0]]['superficie_max'] = floatval($c[1]);
         }
->>>>>>> master
         $cepages_principaux = [];
         foreach(['CLAIRETTE B', 'SEMILLON B', 'UGNI BLANC B', 'VERMENTINO B'] as $c) {
             if (isset($synthese['Côtes de Provence Blanc'][$c])) {
@@ -493,9 +448,6 @@ class parcellaireActions extends sfActions {
                 $cepages_varietedinteret[$c] = $synthese['Côtes de Provence Blanc'][$c]['superficie_max'];
             }
         }
-<<<<<<< HEAD
-        $encepagement = array_sum($cepages_principaux) + array_sum($cepages_varietedinteret);
-=======
         $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
         $encepagement = array_sum($cepages_a_max);
 
@@ -505,7 +457,6 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['cepages'] = $cepages_a_max;
         $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['res'] = (array_sum($cepages_a_max) >= 1.5);
         $this->table_potentiel['Côtes de Provence Blanc']['Somme(cepages) >= 1.50']['sens'] = '>=';
->>>>>>> master
 
         $cepages_a_max = array_merge($cepages_principaux, $cepages_varietedinteret);
         $task_blanc = new Simplex\Task(new Simplex\Func($this->addemptycepage($cepages_a_max,$cepages_a_max)));
@@ -515,11 +466,7 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['cepages'] = $cepages_principaux;
         $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['res'] = (array_sum($cepages_principaux) >=  $encepagement * 0.5);
         $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(cepages_principaux) >= 0.50']['sens'] = '>=';
-<<<<<<< HEAD
-        $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max), Simplex\Restriction::TYPE_GOE, $encepagement * 0.5));
-=======
         $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_principaux, $cepages_a_max, -0.5), Simplex\Restriction::TYPE_GOE, 0));
->>>>>>> master
 
         $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05'] = [];
         $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['somme'] = array_sum($cepages_varietedinteret);
@@ -528,11 +475,7 @@ class parcellaireActions extends sfActions {
         $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['res'] = (array_sum($cepages_varietedinteret) <=  $encepagement * 0.05);
         $this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['sens'] = '<=';
         if ($this->table_potentiel['Côtes de Provence Blanc']['PorportionSomme(VERDEJO B) <= 0.05']['somme']) {
-<<<<<<< HEAD
-            $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max), Simplex\Restriction::TYPE_LOE, $encepagement * 0.05));
-=======
             $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage($cepages_varietedinteret, $cepages_a_max, - 0.05), Simplex\Restriction::TYPE_LOE, 0));
->>>>>>> master
         }
         foreach(array_keys($cepages_a_max) as $c) {
             $task_blanc->addRestriction(new Simplex\Restriction($this->addemptycepage([$c => $cepages_a_max[$c]], $cepages_a_max), Simplex\Restriction::TYPE_LOE, $cepages_a_max[$c]));
