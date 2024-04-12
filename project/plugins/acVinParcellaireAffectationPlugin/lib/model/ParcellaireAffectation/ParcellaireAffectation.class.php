@@ -235,12 +235,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
   public function isPapier() {
 
-      return $this->exist('papier') && $this->get('papier') == "1";
+      return $this->exist('papier') && $this->get('papier') === "1";
   }
 
   public function isAuto() {
       if ($this->exist('papier')) {
-          return $this->papier == "1" || $this->papier == 'AUTO';
+          return $this->papier === "1" || $this->papier === 'AUTO';
       }
       return false;
   }

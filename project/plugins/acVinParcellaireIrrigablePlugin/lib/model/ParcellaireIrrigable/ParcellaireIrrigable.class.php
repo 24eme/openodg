@@ -231,12 +231,12 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
   public function isPapier() {
 
-      return $this->exist('papier') && $this->get('papier') == "1";
+      return $this->exist('papier') && $this->get('papier') === "1";
   }
 
   public function isAuto() {
 
-      return $this->exist('papier') && ($this->get('papier') == "1" || $this->get('papier') == "AUTO");
+      return $this->exist('papier') && ($this->get('papier') === "1" || $this->get('papier') === "AUTO");
   }
 
 
