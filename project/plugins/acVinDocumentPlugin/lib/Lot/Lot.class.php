@@ -1259,4 +1259,12 @@ abstract class Lot extends acCouchdbDocumentTree
         }
         return $this->_get('prelevement_datetime');
     }
+
+    public function isNCODG() {
+        return $this->hasSpecificitePassage() && $this->getRegionOrigine() !== 'OIVC' && $this->initial_type != TourneeClient::TYPE_TOURNEE_LOT_NC_OI;
+    }
+
+    public function isNCOI() {
+        return ($this->initial_type == TourneeClient::TYPE_TOURNEE_LOT_NC_OI) || ($this->hasSpecificitePassage() && $this->getRegionOrigine() === 'OIVC');
+    }
 }

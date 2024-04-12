@@ -62,11 +62,11 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td colspan="3"><?php echoCheck('Suite à contrôle produit ODG non conforme', $lot->hasSpecificitePassage() && $lot->getRegionOrigine() !== 'OIVC') ?></td>
+                    <td colspan="3"><?php echoCheck('Suite à contrôle produit ODG non conforme', $lot->isNCODG()); ?></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td colspan="3"><?php echoCheck('Suite à contrôle produit OIVC non conforme', $lot->hasSpecificitePassage() && $lot->getRegionOrigine() === 'OIVC') ?></td>
+                    <td colspan="3"><?php echoCheck('Suite à contrôle produit OIVC non conforme', $lot->isNCOI()); ?></td>
                 </tr>
                 <tr>
                     <td></td><td colspan="3"><?php echoCheck('Contrôle supplémentaire', $lot->initial_type == TourneeClient::TYPE_TOURNEE_LOT_SUPPLEMENTAIRE) ?></td><td></td>
