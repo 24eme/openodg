@@ -21,7 +21,7 @@ Courrier:
       courrier_type: { }
       courrier_titre: { }
       lots:
-      mouvement_lots: { }
+      mouvement_lots: { required: false}
       region: { require: false }
       declarant:
         type: collection
