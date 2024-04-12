@@ -201,7 +201,7 @@ class Courrier extends BaseCourrier implements InterfaceDeclarantDocument, Inter
     public function generateMouvementsLots()
     {
         $this->clearMouvementsLots();
-        if(!count($this->lots->toArray(true, false))) {
+        if(!$this->lots->exist(0)) {
             return;
         }
         $this->addMouvementLot($this->lots[0]->buildMouvement(Lot::STATUT_NOTIFICATION_COURRIER, $this->courrier_titre));
