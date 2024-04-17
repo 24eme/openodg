@@ -2,6 +2,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Lot') ?>
 <?php use_javascript('degustation.js') ?>
+<?php use_javascript('hamza_style.js'); ?>
 
 <?php include_partial('degustation/breadcrumb', array('degustation' => $degustation, 'options' => array('route' => 'degustation_preleve', 'nom' => 'Prélevements réalisés'))); ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
@@ -13,10 +14,9 @@
 
 <?php include_partial('degustation/synthese', array('degustation' => $degustation, 'infosDegustation' => $infosDegustation)); ?>
 
-<p>Sélectionner les lots qui ont été prélevés</p>
 <div class="row">
   <div class="form-group col-xs-10">
-    <input id="hamzastyle" type="hidden" data-placeholder="Sélectionner un nom :" data-hamzastyle-container="#table_prelevements" data-hamzastyle-mininput="3" class="hamzastyle form-control">
+    <p>Sélectionner les lots qui ont été prélevés</p>
   </div>
 
   <div class="col-xs-2">
@@ -27,14 +27,19 @@
   </div>
 </div>
 
-<form action="<?php echo url_for("degustation_preleve", $degustation) ?>" method="post" class="ajaxForm form-horizontal degustation prelevements">
+<div class="input-group" style="margin-bottom: 0; position: relative;">
+    <span class="input-group-addon">Filtrer le tableau</span>
+    <input id="table_filtre" type="text" class="form-control" placeholder="Rechercher par opérateur, produit ou numéro de logement" autofocus="autofocus" />
+    <a href="" id="btn_annuler_filtre" tabindex="-1" class="small hidden" style="z-index: 3; right: 10px; top: 10px; position: absolute; color: grey;"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></a>
+</div>
+<form action="<?php echo url_for("degustation_preleve", $degustation) ?><?php if($differer): ?>?differer=1<?php endif; ?>" method="post" class="ajaxForm form-horizontal degustation prelevements">
 	<?php echo $form->renderHiddenFields(); ?>
 
     <div class="bg-danger">
     <?php echo $form->renderGlobalErrors(); ?>
     </div>
 
-    <table class="table table-bordered table-condensed table-striped" id="table_prelevements">
+    <table class="table table-bordered table-condensed table-striped table_filterable" id="table_prelevements">
         <thead>
             <tr>
                 <th class="col-xs-2">Opérateur</th>
@@ -49,7 +54,7 @@
 		<tbody>
 		<?php foreach ($form['lots'] as $key => $formLot): ?>
     <?php $lot = $degustation->lots->get($key); ?>
-      <tr class="vertical-center cursor-pointer hamzastyle-item" data-adherent="<?php echo $lot->declarant_identifiant; ?>" data-words='<?= json_encode(strtolower($lot->declarant_nom), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>'>
+      <tr class="vertical-center cursor-pointer searchable" data-adherent="<?php echo $lot->declarant_identifiant; ?>">
         <td><?php echo $lot->declarant_nom; ?></td>
         <td><?php echo $lot->getTypeProvenance(); ?> <span class="text-muted">n°<?php echo $lot->numero_dossier; ?></span></td>
         <td class="edit"><?= $lot->numero_logement_operateur ?>
@@ -65,7 +70,11 @@
         <td class="text-right edit ">
               <?php echoFloat($lot->volume); ?><small class="text-muted">&nbsp;hl</small>
               &nbsp;
-              <a class= "ajax" title="Modifier le volume" href="<?php echo url_for("degustation_lot_historique", array('identifiant' => $lot->declarant_identifiant, 'unique_id'=> $lot->unique_id)); ?>">
+              <a class= "ajax" title="Modifier le volume" href="<?php echo url_for("degustation_lot_modification", [
+                  'identifiant' => $lot->declarant_identifiant,
+                  'unique_id'=> $lot->unique_id,
+                  'service' => url_for('degustation_preleve', $degustation)
+              ]); ?>">
                 <i class="glyphicon glyphicon-share-alt"></i>
               </a>
         </td>
@@ -100,16 +109,15 @@
         </td>
       </tr>
     <?php endforeach; ?>
+      <tr class="hidden"><td colspan="7">Aucun lot trouvé <a id="btn_annuler_filtre_table" href=""><small>(annuler la recherche)</small></a></td></tr>
     </tbody>
 	</table>
 
 	<div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("degustation_prelevements_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("degustation_saisie_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider</button></div>
     </div>
 </form>
 </div>
-
-<?php use_javascript('hamza_style.js'); ?>

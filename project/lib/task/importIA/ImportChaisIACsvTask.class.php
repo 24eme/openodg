@@ -18,6 +18,7 @@ class importChaisIACsvTask extends importOperateurIAAOCCsvTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('secteurs', sfCommandArgument::REQUIRED, "Fichier csv des secteurs"),
         ));
 
         $this->addOptions(array(
@@ -38,6 +39,12 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+
+        $secteurs = [];
+        foreach(file($arguments['secteurs']) as $line) {
+            $data = str_getcsv($line, ";");
+            $secteurs[KeyInflector::slugify(preg_replace("/[ \-_',]*/", "", $data[2].$data[5].$data[6]))] = trim(str_replace(' ', '_', strtoupper($data[0])));
+        }
 
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ";");
@@ -80,6 +87,20 @@ EOF;
             $chai->adresse = $data[self::CSV_ADRESSE_SITE];
             $chai->commune = $data[self::CSV_COMMUNE_SITE];
             $chai->code_postal = $data[self::CSV_CODE_POSTAL_SITE];
+            $keyAdresse = KeyInflector::slugify(preg_replace("/[ \-_',]*/", "", $chai->adresse.$chai->code_postal.$chai->commune));
+            if(isset($secteurs[$keyAdresse])) {
+                $chai->secteur = $secteurs[$keyAdresse];
+            }
+
+            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant);
+            if(!$chai->secteur && $habilitation && $habilitation->isHabiliteFor("/declaration/certifications/AOC/genres/TRANQ/appellations/MTS", HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+                $chai->secteur = "MENETOUSALON";
+            }
+
+            $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant);
+            if(!$chai->secteur && $habilitation && $habilitation->isHabiliteFor("/declaration/certifications/AOC/genres/TRANQ/appellations/CHM", HabilitationClient::ACTIVITE_VINIFICATEUR)) {
+                $chai->secteur = "CHATEAUMEILLANT";
+            }
 
             $etablissement->save();
             echo "chai ".$chai->nom." ajouté à l'établissement ".$etablissement->raison_sociale." (".$etablissement->_id.")\n";

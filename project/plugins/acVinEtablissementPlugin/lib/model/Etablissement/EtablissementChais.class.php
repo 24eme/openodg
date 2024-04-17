@@ -39,4 +39,8 @@ class EtablissementChais extends BaseEtablissementChais {
       return $this->getDocument()->code_postal;
     }
 
+    public function __toString() {
+        return $this->getNom().' – '.$this->getAdresse().' – '.$this->getCodePostal().' '.$this->getCommune();
+    }
+
 }

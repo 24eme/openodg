@@ -99,7 +99,7 @@ $t->ok(!$drev->lots[2]->isChange(), "Le lot changeable dans la DREV n'est pas is
 $t->ok(!$drev->hasLotsUtilises(), "La drev n'a pas de lots utilisés");
 
 
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsEnAttente(null);
 $t->is(count($lotsPrelevables), 2, "2 mouvements de lot prelevables ont été générés");
 $lots = array();
 $t->is(count(ChgtDenomClient::getInstance()->getLotsChangeable($viti->identifiant, null)), 3, "Les 3 lots sont cheageable");
@@ -303,7 +303,7 @@ $t->is(count($lots), 3, "3 lots disponibles au changement de denomination (celui
 
 $t->comment("Test via une desgustation");
 
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsEnAttente(null);
 $t->is(count($lotsPrelevables), 3, "3 lots en attentes de dégustation");
 
 $degustation = new Degustation();

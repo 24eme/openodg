@@ -1,0 +1,5 @@
+all:
+  configuration:
+    dr:
+      validation: true
+      visu_teledeclaration: true

@@ -69,6 +69,7 @@ ParcellaireIrrigue:
                               ressource: {  }
                               irrigation: {  }
                               date_irrigation: {  }
+      required: { required: false }
       observations: {  }
       pieces:
         type: array_collection

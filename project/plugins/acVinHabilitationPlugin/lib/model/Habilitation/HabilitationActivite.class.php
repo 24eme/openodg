@@ -44,6 +44,10 @@ class HabilitationActivite extends BaseHabilitationActivite {
       return ($this->statut == HabilitationClient::STATUT_REFUS) || ($this->statut == HabilitationClient::STATUT_RETRAIT) || ($this->statut == HabilitationClient::STATUT_SUSPENDU ) || ($this->statut == HabilitationClient::STATUT_RESILIE);
   }
 
+  public function isHabiliteExterieur(){
+      return ($this->statut == HabilitationClient::STATUT_EXTERIEUR);
+  }
+
   public function hasStatut(){
     return $this->statut;
   }

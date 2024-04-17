@@ -118,12 +118,22 @@ pmc_confirmation:
   requirements:
     sf_method: [get, post]
 
+pmcnc_visualisation:
+  url: /pmcnc/visualisation/:id
+  param: { module: pmc, action: visualisation }
+  class: PMCRoute
+  options:
+    model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 pmc_visualisation:
   url: /pmc/visualisation/:id
   param: { module: pmc, action: visualisation }
   class: PMCRoute
   options:
-    model:    PMC
+    model:    PMCNC
     type:     object
   requirements:
     sf_method: [get, post]
@@ -134,6 +144,26 @@ pmc_export_pdf:
   class: PMCRoute
   options:
     model:    PMC
+    type:     object
+  requirements:
+    sf_method: [get]
+
+pmcnc_lots:
+  url: /pmcnc/lots/:identifiant
+  param: { module: pmcNc, action: lots }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+pmcnc_create:
+  url: /pmcnc/creation/:identifiant/:unique_id
+  param: { module: pmcNc, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get]

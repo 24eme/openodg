@@ -36,8 +36,8 @@ class ParcellaireConfiguration {
      * Seules les parcelles ayant au moins une troisième feuille sont prises
      * en compte dans les synthèse
      */
-    public function isTroisiemeFeuille() {
-        return !$this->getLimitProduitsConfiguration();
+    public function isTroisiemeFeuilleEnabled() {
+        return true;
     }
 
     public function isAres()
@@ -94,5 +94,24 @@ class ParcellaireConfiguration {
             return 20;
         }
         return $this->configuration['manquant']['pc_min'];
+    }
+
+    public function getEcartRangsMax() {
+        if(!isset($this->configuration['ecart_rangs_max'])) {
+            return null;
+        }
+        return $this->configuration['ecart_rangs_max'];
+    }
+    public function getEcartPiedsMin() {
+        if(!isset($this->configuration['ecart_pieds_min'])) {
+            return null;
+        }
+        return $this->configuration['ecart_pieds_min'];
+    }
+    public function getEcartPiedsMax() {
+        if(!isset($this->configuration['ecart_pieds_max'])) {
+            return null;
+        }
+        return $this->configuration['ecart_pieds_max'];
     }
 }

@@ -2,7 +2,7 @@
 <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
 
 <?php include_partial('parcellaireManquant/step', array('step' => 'manquants', 'parcellaireManquant' => $parcellaireManquant)) ?>
-<div">
+<div>
     <h2>Pieds morts ou manquants sur votre exploitation</h2>
     <p class="pt-3">Merci d'indiquer la densité et le % de pied manquant</p>
     <div class="alert alert-info">
@@ -55,7 +55,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['pourcentage']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->renderError() ?>
                         <div class="input-group">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->render(array('class' => 'form-control text-right', "maxlength" => 5, "size" => 5)) ?>
+                                <?php echo $form[$produitKey][$parcelle->getKey()]['pourcentage']->render(array('class' => 'form-control input-float text-right', "maxlength" => 5, "size" => 5)) ?>
                             <div class="input-group-addon">%</div>
                         </div>
                     </div>

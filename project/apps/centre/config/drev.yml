@@ -1,7 +1,11 @@
 all:
   configuration:
     drev:
-      validation_odg: 'admin'
+      validation_odg: 'region'
+      pdf_unique_region: false
+      logement_adresse: false
+      logement_chais: true
+      denomination_auto: false
+      engagement_pdf: true
       mentions_complementaire: true
-      denomination_auto: true
-      exploitation_save: true
+      import_with_mentions_complementaire: true

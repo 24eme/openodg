@@ -58,15 +58,16 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT) && !$this->getUser()->isStalker()) {
+        if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
 
             throw new sfError403Exception();
         }
 
-        $this->compte = $this->getRoute()->getCompte();
+        $this->compte = $this->getRoute()->getCompte(array('allow_admin_odg' => true));
         $this->societe = $this->compte->getSociete();
         $this->formAjoutGroupe = new CompteGroupeAjoutForm('INTERPRO-declaration');
         $this->applyRights();
+        $this->modifiable = $this->getUser()->hasContact();
         if(!$this->compte->lat && !$this->compte->lon){
           $this->compte->updateCoordonneesLongLat();
           $this->compte->save();
@@ -77,7 +78,6 @@ class compteActions extends sfCredentialActions {
         if($this->compte->isSocieteContact()) {
             return $this->redirect('societe_visualisation',array('identifiant' => $this->societe->identifiant));
         }
-        $this->modifiable = $this->getUser()->hasCredential('contacts');
     }
 
     public function executeSwitchStatus(sfWebRequest $request) {

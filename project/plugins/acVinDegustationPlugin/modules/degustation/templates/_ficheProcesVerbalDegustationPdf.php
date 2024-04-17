@@ -11,7 +11,7 @@ th {
 
 </style>
 
-  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN IGP PRÉSENTÉS À LA COMMISSION :</p>
+  <p>TABLEAU DE SYNTHÈSE GLOBAL DES LOTS DE VIN PRÉSENTÉS À LA COMMISSION :</p>
   <table>
     <tr>
       <td style="width:2%"></td>
@@ -73,7 +73,7 @@ th {
 <div>
   <table class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
     <tr>
-      <td style="width: 50%">Tableau des échantillons de vin IGP <?php echo $appellation ?> présentés à la commission</td>
+      <td style="width: 50%">Tableau des échantillons de <?php echo $appellation ?> présentés à la commission</td>
       <td style="width: 50%">
         <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
           <thead>
@@ -122,8 +122,8 @@ th {
         <div>
           <table border="0.5px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;">
             <tr>
-              <th style="width: 5%"><?php echo tdStart() ?><small>N° Dossier ODG</small></th>
-              <th style="width: 5%"><?php echo tdStart() ?><small>N° Lot ODG</small></th>
+              <th style="width: 5%"><?php echo tdStart() ?><small>N° Dossier</small></th>
+              <th style="width: 5%"><?php echo tdStart() ?><small>N° Lot</small></th>
               <th style="width: 20%"><?php echo tdStart() ?><small>Opérateur/Ville/CVI</small></th>
               <th style="width: 5%"><?php echo tdStart() ?><small>N° Ano</small></th>
               <th style="width: 10%"><?php echo tdStart() ?><small>N° Logement Op</small></th>

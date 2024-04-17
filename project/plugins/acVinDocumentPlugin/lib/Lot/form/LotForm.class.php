@@ -2,7 +2,15 @@
 class LotForm extends acCouchdbObjectForm
 {
     const NBCEPAGES = 5;
-    private $all_produits;
+    protected $all_produits = false;
+    private $specificites = null;
+
+    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        if (isset($options['specificites'])){
+            $this->specificites = $options['specificites'];
+        }
+        parent::__construct($object, $options, $CSRFSecret);
+    }
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
@@ -25,7 +33,6 @@ class LotForm extends acCouchdbObjectForm
     }
 
     public function configure() {
-        $this->all_produits = false;
         $produits = $this->getProduits();
         $cepages = $this->getCepages();
 
@@ -50,7 +57,7 @@ class LotForm extends acCouchdbObjectForm
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
-        if(DRevConfiguration::getInstance()->hasSpecificiteLot()){
+        if($this->specificites) {
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
@@ -79,7 +86,7 @@ class LotForm extends acCouchdbObjectForm
         $this->getObject()->remove('cepages');
         $this->getObject()->add('cepages');
         for($i = 0; $i < self::NBCEPAGES; $i++) {
-            if(!$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
+            if(! isset($values['cepage_'.$i],$values['repartition_hl_'.$i]) || !$values['cepage_'.$i] || !$values['repartition_hl_'.$i]) {
                 continue;
             }
 
@@ -98,7 +105,7 @@ class LotForm extends acCouchdbObjectForm
 
     public function getSpecificites()
     {
-        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  DRevConfiguration::getInstance()->getSpecificites());
+        return array_merge(array(Lot::SPECIFICITE_UNDEFINED => "", "" => "Aucune"),  $this->specificites);
     }
 
     public function getProduits()

@@ -751,11 +751,23 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return ParcellaireClient::getInstance()->getLast($this->identifiant);
     }
 
+    public function getRegions() {
+        $regions = array();
+        foreach($this->getProduits() as $produit) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getProduitHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
     protected function doSave() {
     	$this->piece_document->generatePieces();
     }
 
     public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
         $this->getDateDepot();
 
         return parent::save();

@@ -227,6 +227,22 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         $this->piece_document->generatePieces();
     }
 
+    public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
+        return parent::save();
+    }
+
+    public function getRegions() {
+        $regions = array();
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
   /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {

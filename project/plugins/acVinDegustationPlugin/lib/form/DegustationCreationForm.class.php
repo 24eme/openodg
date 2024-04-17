@@ -25,10 +25,10 @@ class DegustationCreationForm extends BaseForm
 
     public function save() {
         $values = $this->getValues();
-
-        $degustation = DegustationClient::getInstance()->createDoc($values['date']." ".$values['time'].":00");
+        $degustation = DegustationClient::getInstance()->createDoc($values['date']." ".$values['time'].":00", sfContext::getInstance()->getUser()->getRegion());
         $degustation->lieu = $values['lieu'];
         $degustation->max_lots = $values['max_lots'];
+
         $degustation->save();
 
         return $degustation;

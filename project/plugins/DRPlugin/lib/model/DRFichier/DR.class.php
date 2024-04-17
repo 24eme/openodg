@@ -40,4 +40,11 @@ class DR extends BaseDR {
     public function hasApporteurs($include_non_reconnu = false) {
         return false;
     }
+
+    public function isExcluExportCsv() {
+        if ($this->isBailleur()) {
+            return true;
+        }
+        return false;
+    }
 }

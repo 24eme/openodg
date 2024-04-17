@@ -49,7 +49,7 @@
   }
  ?>
 <div class="carte" data-point='<?php echo json_encode($points) ?>'  style="height: 180px; border-radius: 4px; margin-bottom: 10px;"></div>
-<?php if (isset($needUpdateLatLon) && $needUpdateLatLon): ?>
+<?php if (isset($etablissement) && isset($needUpdateLatLon) && $needUpdateLatLon): ?>
     <div class="text-center panel-footer" style="margin-top: -10px; margin-bottom: 10px;">
         <a href="<?php echo url_for('etablissement_update_coordonnees_latlon', $etablissement) ?>"><i class="glyphicon glyphicon-refresh"></i> Mettre à jour les coordonnées</a>
     </div>

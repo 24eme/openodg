@@ -38,5 +38,6 @@ class acTCPDFConfig
         $this->title = '';
         $this->subject = '';
         $this->keywords = '';
+        $this->header_enabled = true;
     }
 }

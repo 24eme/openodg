@@ -22,6 +22,7 @@
               $tdDisplayed = (!$habilitationsNode->hasStatut())? '1' :'';
               $tdHide = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
               $color = ($habilitationsNode->isHabilite())?  'bg-success' :'';
+              $color = (!$color && $habilitationsNode->isHabiliteExterieur())? 'bg-info' : $color;
               $color = (!$color && $habilitationsNode->isWrongHabilitation())? 'bg-danger' : $color;
             ?>
             <tr data-hide="<?php echo ($nbActivites)? '' : '1'; ?>" <?php echo ($nbActivites)? '' : 'style="display:none;"'; ?> >

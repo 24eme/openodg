@@ -10,22 +10,9 @@ th {
 }
 
 </style>
-      <table>
-        <tr>
-          <td style="width:20%;"></td>
-          <td style="width:30%;">Préleveur :</td>
-          <td style="width:30%">Date d'édition : <?php echo $date_edition;?></td>
-          <td style="width:20%;"></td>
-        </tr>
-      </table>
-      <table>
-        <tr style="line-height: 25em; height:25em;">
-          <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
-        </tr>
-      </table>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $key_lots => $lotsDossier):
-        $key_etablissement = explode('/', $key_lots)[1];
+        $key_etablissement = explode('/', $key_lots)[2];
         $etablissement = $etablissements[$key_etablissement];
         foreach ($lotsDossier as $numDossier => $lots) :
             $lot = $lots[0]->getRawValue();
@@ -39,10 +26,10 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Coordonnées</strong></th>
-          <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
-          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
-          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
+          <th class="topempty bg-white"style="width:30%;"><?php echo tdStart() ?><strong>Lieu de prélèvement /<br/>Coordonnées</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Dossier /<br/> Nombre Lots</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Laboratoire /<br/> Commentaire</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date /<br/> Heure</strong></th>
         </tr>
     <?php endif;?>
          <tr style="line-height:17px;">
@@ -51,11 +38,11 @@ th {
              <small><?php
               if($lot->hasLogement()):
                 if ($lot->getLogementNom() != $etablissement->raison_sociale) {
-                    echo substrUtf8($lot->getLogementNom(), 0, 32).'<br/>';
-                }?>
+                    echo substrUtf8($lot->getLogementNom(), 0, 32);
+                }?><br/>
                 <?php echo substrUtf8($lot->getLogementAdresse(), 0, 32).'<br/>'.substrUtf8($lot->getLogementCodePostal().' '.$lot->getLogementCommune(), 0, 32).'<br/>'; ?>
               <?php else: ?>
-                <?php echo  $etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
+                <?php echo  '<br/>'.$etablissement->adresse.'<br/>'.$etablissement->code_postal.' '.$etablissement->commune.'<br/>'; ?>
               <?php endif; ?>
              <?php echo ($etablissement->telephone_bureau) ? $etablissement->telephone_bureau : '' ?>
              <?php echo ($etablissement->telephone_bureau && $etablissement->telephone_mobile) ? ' / ' : ''; ?>
@@ -72,7 +59,7 @@ th {
           </small>
           </td>
           <td><small><br/><?php echo $etablissement->getLaboLibelle(); ?></small></td>
-          <td></td>
+          <td><br/><?php echo $lot->getPrelevementFormat() ?></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>

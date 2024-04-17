@@ -1,0 +1,56 @@
+{
+   "_id": "TEMPLATE-FACTURE-REUILLY-2011",
+   "type": "TemplateFacture",
+   "region": "REUILLY",
+   "campagne": 2011,
+   "libelle": "2011 - Reuilly",
+   "docs": [
+       "DRev"
+   ],
+   "cotisations": {
+       "00_volume": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation récolte %millesime%",
+           "code_comptable": "70620000",
+           "details": {
+               "00_volumeRecolte_%millesime%": {
+                   "modele": "CotisationVariable",
+                   "prix": 5,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRecolte",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "01_forfait": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation forfaitaire par exploitation",
+           "code_comptable": "70620000",
+           "details": {
+               "00_forfaitParExploitation": {
+                   "modele": "CotisationFixe",
+                   "prix": 50,
+                   "tva": 0,
+                   "unite": "",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": null,
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       }
+   }
+}
