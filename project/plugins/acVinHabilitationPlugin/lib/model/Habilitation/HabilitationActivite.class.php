@@ -33,7 +33,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
   }
 
   public function isHabilite(){
-    return ($this->statut == HabilitationClient::STATUT_HABILITE) || ($this->statut == HabilitationClient::STATUT_DEMANDE_RETRAIT);
+    return ($this->statut == HabilitationClient::STATUT_HABILITE) || ($this->statut == HabilitationClient::STATUT_DEMANDE_RETRAIT || $this->statut == HabilitationClient::STATUT_EXTERIEUR);
   }
 
   public function isNonhabilite(){
