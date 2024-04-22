@@ -85,7 +85,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
             foreach ($habDecla as $decla => $infos) {
-                if (str_contains($h, $decla) && $infos['activites'][HabilitationClient::ACTIVITE_VINIFICATEUR]['statut'] == HabilitationClient::STATUT_EXTERIEUR) {
+                if (strpos($h, $decla) && $infos['activites'][HabilitationClient::ACTIVITE_VINIFICATEUR]['statut'] == HabilitationClient::STATUT_EXTERIEUR) {
                     continue 2;
                 }
             }
