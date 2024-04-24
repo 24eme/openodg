@@ -1426,9 +1426,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->generateMouvementsFactures();
         }
 
-        $regions = $this->getRegions();
-        if (count($regions)) {
-            $this->add('region', implode('|', $regions));
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
+            }
         }
 
         $saved = parent::save();
