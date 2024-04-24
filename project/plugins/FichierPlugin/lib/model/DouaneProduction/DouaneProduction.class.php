@@ -53,9 +53,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     }
 
     public function save() {
-        $regions = $this->getRegions();
-        if (count($regions)) {
-            $this->add('region', implode('|', $regions));
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
+            }
         }
         if(DRevConfiguration::getInstance()->isRevendicationParLots()){
             if(!$this->exist('donnees') || !count($this->donnees)) {
