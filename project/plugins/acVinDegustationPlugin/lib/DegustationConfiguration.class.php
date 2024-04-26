@@ -46,7 +46,7 @@ class DegustationConfiguration {
 
     public function getLieux() {
 
-        return CacheFunction::cache('model', array(DegustationConfiguration::getInstance(), '_getLieux'));
+        return CacheFunction::cache('model', array(DegustationConfiguration::getInstance(), '_getLieux'), [Organisme::getInstance()->getCurrentRegion()]);
     }
 
     public function hasNotification()
@@ -54,8 +54,8 @@ class DegustationConfiguration {
         return isset($this->configuration['has_notification']) && boolval($this->configuration['has_notification']);
     }
 
-    public function _getLieux() {
-        $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON, Organisme::getInstance()->getCurrentRegion());
+    public function _getLieux($region) {
+        $degusts = DegustationClient::getInstance()->getHistory(50, '', acCouchdbClient::HYDRATE_ON_DEMAND_JSON, $region);
         $lieux = array();
         foreach ($degusts as $d) {
             $lieux[$d->lieu] = $d->lieu;
