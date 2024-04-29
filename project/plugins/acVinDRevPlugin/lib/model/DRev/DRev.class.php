@@ -612,7 +612,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $drev->remove('declaration');
     	$drev->add('declaration');
         $drev->resetAndImportFromDocumentDouanier();
-        $drev->_rev = "FICTIVE";
+        $drev->add('_rev', "FICTIVE");
     	return $drev;
     }
 
@@ -2382,7 +2382,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function isValidee() {
 
-        return $this->validation;
+        return boolval($this->validation);
     }
 
     public function isValideeOdg() {
