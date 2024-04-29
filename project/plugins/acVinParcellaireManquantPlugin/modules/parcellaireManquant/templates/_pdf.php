@@ -39,7 +39,7 @@
 <?php if($parcellesByCommune === false): ?>
     <br />
     <br />
-    <i>Aucune parcelle dont le taux de pieds morts ou manquants est supérieur à 20%.</i>
+    <i>Aucune parcelle dont le taux de pieds morts ou manquants est supérieur à <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>%.</i>
     <br />
     <br />
     <?php return; ?>
