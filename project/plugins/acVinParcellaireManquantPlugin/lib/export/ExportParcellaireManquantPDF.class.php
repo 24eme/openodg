@@ -26,8 +26,8 @@ class ExportParcellaireManquantPDF extends ExportPDF {
        }
 
        $unite = 0;
-       $uniteParPage = 23;
-       $uniteTableau = 3;
+       $uniteParPage = 22;
+       $uniteTableau = 4;
        $uniteLigne = 1;
        $uniteTableauCommentaire = 2;
        $uniteTableauLigne = 0.75;
