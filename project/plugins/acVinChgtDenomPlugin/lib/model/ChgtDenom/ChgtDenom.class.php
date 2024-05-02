@@ -255,6 +255,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         return null;
     }
 
+    public function getOrigineProduitLibelleAndCepages() {
+        $l = $this->getOrigineProduitLibelle();
+        if (count($this->origine_cepages)) {
+            $l .= ' (';
+            $l .= implode(', ', array_keys($this->origine_cepages->toArray()));
+            $l .= ')';
+        }
+        return $l;
+    }
+
     public function getCampagne() {
         if(is_null($this->_get('campagne'))) {
             $firstOrigineLot = $this->getFirstOrigineLot();

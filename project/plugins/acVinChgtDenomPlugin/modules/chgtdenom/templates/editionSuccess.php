@@ -14,7 +14,7 @@
         <?php include_partial('infoLotOrigine', array('lot' => $chgtDenom->getLotOrigine(), 'opacity' => false)); ?>
     <?php else : ?>
         <div class="well">
-            Déclare posséder un lot de <strong><?php echo $chgtDenom->getOrigineProduitLibelle() ?></strong> de <strong><?php echoFloat($chgtDenom->getOrigineVolume()) ?></strong> <span class="text-muted">hl</span>
+            Déclare posséder un lot de <strong><?php echo $chgtDenom->getOrigineProduitLibelleAndCepages() ?></strong> de <strong><?php echoFloat($chgtDenom->getOrigineVolume()) ?></strong> <span class="text-muted">hl</span>
         </div>
     <?php endif; ?>
 

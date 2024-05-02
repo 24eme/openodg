@@ -3,6 +3,7 @@ all:
     parcellaire:
       ecart_rangs_max: 250
       manquant:
+        pc_min: 20
         mandatory: true
       aires:
         sancerre:
