@@ -27,9 +27,9 @@
         </div>
     </div>
     <?php endif; ?>
-    
+
     <div class="page-header no-border">
-        <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
+        <h2>Validation de votre déclaration</h2>
     </div>
 
     <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
