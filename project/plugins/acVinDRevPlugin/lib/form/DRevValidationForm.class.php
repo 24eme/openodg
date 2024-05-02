@@ -137,15 +137,15 @@ class DRevValidationForm extends acCouchdbForm
 
     public function save() {
        $values = $this->getValues();
-
         if (DrevConfiguration::getInstance()->hasDegustation() && $this->isAdmin) {
             $this->getDocument()->add('date_commission', $values['date_commission']);
         }
 
         if($this->isAdmin){
-          foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-            $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
-         }
+            $this->getDocument()->add('papier', intval($values['saisie_papier']));
+            foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+                $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
+            }
         }
 
         if(isset($values['date_depot']) && $values['date_depot']) {

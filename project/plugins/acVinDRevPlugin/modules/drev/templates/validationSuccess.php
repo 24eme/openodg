@@ -51,7 +51,7 @@
             </div>
             <?php echo $form["saisie_papier"]->renderLabel("Saisie papier :", array("class" => "col-xs-3 control-label")); ?>
             <div class="">
-            <?php echo $form["saisie_papier"]->render(array("class" => "checkbox mt-2", "placeholder" => "", "required" => "false")); ?>
+            <?php echo $form["saisie_papier"]->render(array("class" => "checkbox mt-2", "placeholder" => "")); ?>
             </div>
         </div>
 <?php elseif($drev->isTeledeclare()): ?>
