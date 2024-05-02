@@ -764,7 +764,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $labelsDouane = array();
-            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE])) {
+            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE]) && $line[DRCsvFile::CSV_LABEL_CALCULEE]) {
                 $labelsDouane = explode("|", $line[DRCsvFile::CSV_LABEL_CALCULEE]);
             }
 
