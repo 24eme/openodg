@@ -70,6 +70,10 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $this->addParcellesFromParcellaire(array_keys($this->getDgc()));
   }
 
+  public function getDenominationAire() {
+      return "AOC Sainte-Victoire";
+  }
+
   public function addParcellesFromParcellaire(array $lieux) {
       $parcellaire = $this->getParcellesFromLastParcellaire();
       if (!$parcellaire) {
@@ -142,7 +146,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       $subitem->add('vtsgn', (int)$parcelle->vtsgn);
                   }
                   $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
-                  if (in_array($parcelle->isInDenominationLibelle("AOC Sainte-Victoire"), [AireClient::PARCELLAIRE_AIRE_TOTALEMENT, AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT])) {
+                  if (in_array($parcelle->isInDenominationLibelle($this->getDenominationAire()), [AireClient::PARCELLAIRE_AIRE_TOTALEMENT, AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT])) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = "2004-05-29";
                       if ($subitem->campagne_plantation > "2004-2005") {
