@@ -49,11 +49,11 @@ foreach($communesDenominations as $lieu => $codeCommunes) {
     }
 }
 
-$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", $communes[0], "A", "1");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[1], "A", "12");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[2], "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", $communes[2], "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", "Paris", "C", "99");
+$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", $communes[0], '', "A", "1");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[1], '', "A", "12");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[2], '', "B", "24");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", $communes[2], '', "B", "24");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", "Paris", '', "C", "99");
 $parcellaire->save();
 
 $affectation = ParcellaireAffectationClient::getInstance()->createDoc($viti->identifiant, $yearprevious + 1);
@@ -91,9 +91,9 @@ $date = $year.'-12-01';
 $campagne = $year.'-'.($year + 1);
 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, $date, "DOUANE");
 $parcellaire->save();
-$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", $communes[0], "A", "1");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[1], "A", "12");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[2], "B", "24");
+$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", $communes[0], '', "A", "1");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[1], '', "A", "12");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[2], '', "B", "24");
 $parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", "Paris", "C", "99");
 $parcellaire->save();
 

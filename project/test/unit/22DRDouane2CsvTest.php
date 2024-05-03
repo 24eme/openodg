@@ -37,7 +37,7 @@ foreach($lines as $line) {
     }
     $nb++;
 }
-$t->is($nb, 88, "Le CSV a 88 lignes");
+$t->is($nb, 89, "Le CSV a 89 lignes");
 $line = explode(";", $lines[count($lines) - 2]);
 $t->is($line[DRCsvFile::CSV_COLONNE_ID], '8', 'On a bien repéré 8 colonnes');
 
