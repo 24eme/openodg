@@ -112,6 +112,7 @@ EOF;
 
         try {
             $societe->save();
+            echo "Societe saved : ".$societe->_id.PHP_EOL;
         } catch (Exception $e) {
             echo "$societe->_id save error :".$e->getMessage()."\n";
             return false;
@@ -154,6 +155,8 @@ EOF;
         $societe->pushContactTo($etablissement);
         $etablissement->save();
 
+        echo "Etablissement saved : ".$etablissement->_id.PHP_EOL;
+
         return $etablissement;
     }
 
@@ -185,7 +188,7 @@ EOF;
             }
         }
 
+        $habilitation->save();
         echo "Habilitation mise à jour : ".$habilitation->_id.PHP_EOL;
-        $habilitation->save(true);
     }
 }
