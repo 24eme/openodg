@@ -157,22 +157,33 @@ EOF;
 
     private function importHabilitation($etablissement, $data)
     {
-        $identifiant = $etablissement->_id;
-        $date = DateTime::createFromFormat('d/m/Y', $data[self::CSV_DATE_SAISIE_IDENTIFICATION])->format('Y-m-d');
+        $identifiant = $etablissement->identifiant;
+        $date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', $data[self::CSV_DATE_SAISIE_IDENTIFICATION])->format('Y-m-d') : null;
+        $date_decision = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('d/m/Y', $data[self::CSV_DATE_HABILITATION])->format('Y-m-d') : null;
 
-        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date_demande);
         $produit = $habilitation->addProduit(self::hash_produit);
         $activites = $produit->add('activites');
 
-        foreach ([$data[self::CSV_PRODUCTION_RAISINS], $data[self::CSV_VINIFICATION], $data[self::CSV_ACHAT_VENTE_VRAC], $data[self::CSV_CONDITIONNEMENT], $data[self::CSV_TIREUSE]] as $key => $activite) {
+        foreach ([
+            self::CSV_PRODUCTION_RAISINS => $data[self::CSV_PRODUCTION_RAISINS],
+            self::CSV_VINIFICATION => $data[self::CSV_VINIFICATION],
+            self::CSV_ACHAT_VENTE_VRAC => $data[self::CSV_ACHAT_VENTE_VRAC],
+            self::CSV_CONDITIONNEMENT => $data[self::CSV_CONDITIONNEMENT],
+            self::CSV_TIREUSE => $data[self::CSV_TIREUSE]
+        ] as $key => $activite) {
             if (strtoupper($activite) === "X") {
+                if ($date_demande) {
+                    $activites->add(self::activites[$key])->updateHabilitation(HabilitationClient::STATUT_DEMANDE_HABILITATION, null, $date_demande);
+                }
 
                 $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
                 $activites->add(self::activites[$key])
-                          ->updateHabilitation($statut, null, $data[self::CSV_DATE_HABILITATION]);
+                          ->updateHabilitation($statut, null, $date_decision);
             }
         }
 
+        echo "Habilitation mise à jour : ".$habilitation->_id.PHP_EOL;
         $habilitation->save(true);
     }
 }
