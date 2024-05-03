@@ -117,6 +117,8 @@ EOF;
             return false;
         }
 
+        $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+
         if (strtoupper($data[self::CSV_PRODUCTION_RAISINS]) === "X") {
             $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR;
 
