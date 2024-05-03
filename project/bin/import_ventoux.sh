@@ -1,18 +1,13 @@
 #!/bin/bash
 
-if ! test "$1"; then
-    echo "Nom du dossier/de l'ODG";
-    exit 1;
-fi
+ODG=ventoux
 
-ODG=$1
-
-. bin/config_$ODG.inc
+. bin/config.inc
 
 DATA_DIR=$WORKINGDIR/import/igp/imports/$ODG
 mkdir -p $DATA_DIR 2> /dev/null
 
-if test "$2" = "--delete"; then
+if test "$1" = "--delete"; then
 
     echo -n "Delete database http://$COUCHHOST:$COUCHPORT/$COUCHBASE, type database name to confirm ($COUCHBASE) : "
     read databasename
@@ -39,29 +34,12 @@ do
     curl -s -X POST -d @data/configuration/$ODG/$jsonFile -H "content-type: application/json" http://$COUCHHOST:$COUCHPORT/$COUCHBASE
 done
 
-echo "Import des Opérateurs"
+echo "Import des Opérateurs et Habilitations"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/operateurs.csv
-echo "IdentifiantInterne;Commentaire;Auteur;Date" > $DATA_DIR/operateurs_commentaires.csv
-ls $DATA_DIR/01_operateurs/fiches/*_commentaires.html | while read file; do ID=$(echo $file | sed -r 's|.+/||' | cut -d "_" -f 1); echo $ID; cat $file |  tr "\n" " " | sed "s/<tr/\n<tr/g" | sed 's|</tr>|</tr>\n|' | grep "<tr" | sed 's#</td>#|#g' | sed 's#</th>#-#g' | sed 's/<[^>]*>//g' | sed -r 's/(^|#)[ \t]*/\1/g' | sed 's/&nbsp;/ /g' | sed 's/&gt;/>/g' | sed 's/;/./g' | grep -Ev "^ ?;" | grep -vE "^Commentaire-Auteur-Date" | grep -v "^ |" | sed "s/^/$ID|/"; done | sed 's/|/;/g' | grep ";" | cut -d ";" -f 1,2,3,4 >> $DATA_DIR/operateurs_commentaires.csv
-ls $DATA_DIR/01_operateurs/fiches/*_identite.html | while read file; do cat $file | grep "cblProfil" | grep 'type="checkbox"' | sed "s|<td>|\n|g" | grep 'checked="checked"' | sed 's|.*">||' | sed 's/<.*//' | tr -d "\n"; echo $file | sed -r 's|.*/|;|' | sed 's/_identite.html//'; done > $DATA_DIR/operateurs_categorie.csv
-
-php symfony import:operateur-ia-aoc $DATA_DIR/operateurs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
+php symfony import:operateur-habilitation-ventoux $DATA_DIR/ventoux-operateurs-habilites.csv  --application="$ODG" --trace
 
 echo "Import des opérateurs archivés"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/operateurs_inactifs.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/operateurs_inactifs.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/operateurs_inactifs.csv
-php symfony import:operateur-ia-aoc $DATA_DIR/operateurs_inactifs.csv $DATA_DIR/operateurs_commentaires.csv $DATA_DIR/operateurs_categorie.csv --application="$ODG" --trace
-
-echo "Import des Habilitations"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/habilitations.xlsx | tr -d "\n" | tr "\r" "\n" | grep -v "(F);" > $DATA_DIR/habilitations.csv
-# xlsx2csv -l '\r\n' -d ";" $DATA_DIR/historique_DI.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/historique_DI.csv
-# sed -i 's/Choisir Ville//' $DATA_DIR/historique_DI.csv
-#ls $DATA_DIR/01_operateurs/habilitations_inao/ | while read file; do xls2csv -c ";" "$DATA_DIR/01_operateurs/habilitations_inao/$file"; done > $DATA_DIR/habilitations_inao.csv
-php symfony import:habilitation-ia-aoc $DATA_DIR/habilitations.csv $DATA_DIR/habilitations_inao.csv --application="$ODG"
 
 echo "Import des chais"
 

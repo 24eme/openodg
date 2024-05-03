@@ -158,7 +158,7 @@ EOF;
     private function importHabilitation($etablissement, $data)
     {
         $identifiant = $etablissement->_id;
-        $date = $data[self::CSV_DATE_SAISIE_IDENTIFICATION];
+        $date = DateTime::createFromFormat('d/m/Y', $data[self::CSV_DATE_SAISIE_IDENTIFICATION])->format('Y-m-d');
 
         $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
         $produit = $habilitation->addProduit(self::hash_produit);

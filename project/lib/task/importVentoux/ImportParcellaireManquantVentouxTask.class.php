@@ -50,6 +50,7 @@ EOF;
             $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
             if (!$parcellaireTotal) {
                 $parcellaireTotal = new Parcellaire();
+                echo "Parcellaire non trouvé;".$line;
             }
             $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
             $found = false;
@@ -68,7 +69,7 @@ EOF;
                 } else {
                     $produitHash .= '/rouge/cepages/DEFAUT';
                 }
-                $parcelle = $parcellaireTotal->addParcelle($produitHash, $data[self::CSV_CEPAGE], null, null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
+                $parcelle = $parcellaireTotal->addParcelle($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
             }
             $manquantParcelle = $manquant->addParcelleFromParcellaireParcelle($parcelle);
             $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
