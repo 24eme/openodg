@@ -163,7 +163,7 @@ EOF;
     private function importHabilitation($etablissement, $data)
     {
         $identifiant = $etablissement->identifiant;
-        $date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', $data[self::CSV_DATE_SAISIE_IDENTIFICATION])->format('Y-m-d') : null;
+        $date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_SAISIE_IDENTIFICATION])[0])->format('Y-m-d') : null;
         $date_decision = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_HABILITATION])[0])->format('Y-m-d') : null;
 
         $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date_demande);
