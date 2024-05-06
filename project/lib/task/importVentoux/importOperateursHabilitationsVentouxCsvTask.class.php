@@ -6,7 +6,7 @@ class importOperateursHabilitationsVentouxCsvTask extends sfBaseTask
     const CSV_CODE_LEGENDE = 1;
     const CSV_INTITULE = 2;
     const CSV_NOM = 3;
-    const CSV_PRENOM = 3;
+    const CSV_PRENOM = 4;
     const CSV_ADRESSE_1 = 5;
     const CSV_ADRESSE_2 = 6;
     const CSV_CODE_POSTAL = 7;
