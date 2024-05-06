@@ -939,6 +939,9 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $produits = $this->getProduits();
         foreach ($this->getApporteurs() as $apporteur) {
             $dr = DRClient::getInstance()->findByArgs($apporteur['etablissement']->identifiant, $this->campagne);
+            if (!$dr) {
+                continue;
+            }
             foreach ($dr->donnees as $produit) {
                 if (! (str_replace('ETABLISSEMENT-', '', $produit->tiers) == $this->identifiant)) {
                     continue;
@@ -951,7 +954,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 }
             }
         }
-        return $tableau_comparaison;
+        return isset($tableau_comparaison) ? $tableau_comparaison : null;
     }
 
 }
