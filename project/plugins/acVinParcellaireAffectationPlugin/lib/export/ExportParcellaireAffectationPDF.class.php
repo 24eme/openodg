@@ -119,7 +119,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
                 $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
             } else {
                 $date = new DateTime($this->parcellaireAffectation->validation);
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireAffectation->signataire);
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
                 if($this->parcellaireAffectation->exist('signataire') && $this->parcellaireAffectation->signataire) {
                     $header_subtitle .= " par " . $this->parcellaireAffectation->signataire;
                 }

@@ -101,6 +101,10 @@ echo "Import des declarations de pieds manquants"
 
 php symfony import:parcellairemanquant-ventoux --application="$ODG" $DATA_DIR/parcellaire_manquant_2023.csv
 
+echo "Import des declarations de affections parcellaire"
+
+php symfony import:parcellaireaffectation-ventoux --application="$ODG" $DATA_DIR/parcellaire_manquant_2023.csv
+
 echo "Mise a jour des relations en fonction des documents de production"
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DR-\|SV11-\|SV12-' | grep '\-2022' | while read id; do php symfony production:import-relation $id --application=centre; done
