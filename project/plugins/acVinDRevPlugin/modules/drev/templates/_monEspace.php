@@ -15,7 +15,7 @@
         </div>
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
-                <p class="explications">Votre déclaration de revendication a été validée pour cette année.</p>
+                <p class="explications">Votre déclaration de revendication a été validée pour cette année<?php if (! $drev->validation_odg): ?> et est en attente d'approbation par votre organisme<?php endif ?>.</p>
                 <div class="actions">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser la déclaration</a>
                 </div>

@@ -19,7 +19,7 @@ class Organisme
             return strtoupper(sfContext::getInstance()->getUser()->getRegion());
         }
 
-        return null;
+        return strtolower(sfConfig::get('sf_app'));
     }
 
     public static function getOIRegion() {

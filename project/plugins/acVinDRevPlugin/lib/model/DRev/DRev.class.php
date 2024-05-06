@@ -612,7 +612,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $drev->remove('declaration');
     	$drev->add('declaration');
         $drev->resetAndImportFromDocumentDouanier();
-        $drev->_rev = "FICTIVE";
+        $drev->add('_rev', "FICTIVE");
     	return $drev;
     }
 
@@ -764,7 +764,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $labelsDouane = array();
-            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE])) {
+            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE]) && $line[DRCsvFile::CSV_LABEL_CALCULEE]) {
                 $labelsDouane = explode("|", $line[DRCsvFile::CSV_LABEL_CALCULEE]);
             }
 
@@ -1117,9 +1117,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 throw new sfExcpetion("le lot ".$lot->unique_id." n'a pas de hash produit");
             }
         }
-        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
-
-
+        if(RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
+        }
     }
 
     public function delete() {
@@ -1426,9 +1426,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->generateMouvementsFactures();
         }
 
-        $regions = $this->getRegions();
-        if (count($regions)) {
-            $this->add('region', implode('|', $regions));
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
+            }
         }
 
         $saved = parent::save();
@@ -2380,7 +2382,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function isValidee() {
 
-        return $this->validation;
+        return boolval($this->validation);
     }
 
     public function isValideeOdg() {

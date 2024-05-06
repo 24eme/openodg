@@ -236,7 +236,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function isInterpro() {
-        return ($this->region != EtablissementClient::REGION_HORS_CVO);
+        return ($this->region != EtablissementClient::REGION_HORS_REGION);
     }
 
     protected function initFamille() {
@@ -277,7 +277,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $this->raison_sociale = $societe->raison_sociale;
         $this->siret = $societe->siret;
         $this->interpro = "INTERPRO-declaration";
-        if(class_exists("VracConfiguration") && VracConfiguration::getInstance()->getRegionDepartement() !== false) {
+        if(ConfigurationClient::getInstance()->isGiilda() && VracConfiguration::getInstance()->getRegionDepartement() !== false) {
             $this->region = EtablissementClient::getInstance()->calculRegion($this);
         }
 
@@ -365,6 +365,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $a;
     }
     public function getEmails(){
+        if (!$this->email) {
+            return array();
+        }
         return explode(';',$this->email);
     }
 

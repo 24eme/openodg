@@ -6,8 +6,8 @@ class EtablissementClient extends acCouchdbClient {
      *
      * @return EtablissementClient
      */
-    const REGION_HORS_CVO = 'REGION_HORS_CVO';
-    const REGION_CVO = 'REGION_CVO';
+    const REGION_HORS_REGION = 'REGION_HORS_REGION';
+    const REGION_IS_REGION = 'REGION_IS_REGION';
     const RECETTE_LOCALE = 'RECETTE_LOCALE';
 
     const TYPE_LIAISON_BAILLEUR = 'BAILLEUR';
@@ -426,7 +426,7 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public static function getPrefixForRegion($region) {
-        $prefixs = array(self::REGION_CVO => '1');
+        $prefixs = array(self::REGION_IS_REGION => '1');
         return $prefixs[$region];
     }
 
@@ -436,7 +436,7 @@ class EtablissementClient extends acCouchdbClient {
         $contacts = sfConfig::get('app_teledeclaration_contact_contrat');
 
         if ($etb->famille == EtablissementFamilles::FAMILLE_COURTIER) {
-            $region = self::REGION_HORS_CVO;
+            $region = self::REGION_HORS_REGION;
 
             $result->nom = $contacts[$region]['nom'];
             $result->email = $contacts[$region]['email'];
@@ -447,20 +447,6 @@ class EtablissementClient extends acCouchdbClient {
         $result->email = $contacts[$region]['email'];
         $result->telephone = $contacts[$region]['telephone'];
         return $result;
-    }
-
-    public function calculRegion($etablissement) {
-        if($etablissement->getPays() != 'FR') {
-
-            return self::REGION_HORS_CVO;
-        }
-
-        if(!preg_match("/".VracConfiguration::getInstance()->getRegionDepartement()."/", $etablissement->getCodePostal())) {
-
-            return self::REGION_HORS_CVO;
-        }
-
-        return self::REGION_CVO;
     }
 
     public static function cleanCivilite($nom) {

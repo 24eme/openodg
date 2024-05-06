@@ -2,9 +2,9 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(56);
-
 $igp13 = ($application == 'igp13');
+
+$t = new lime_test(33 + 23 * (DRevConfiguration::getInstance()->isModificativeEnabled()));
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -210,6 +210,10 @@ if ($nbMvtsAttendu) {
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
     $t->pass("Test non nécessaire car la facturation n'est pas activé");
+}
+
+if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
+    return;
 }
 
 $t->comment("Génération d'une modificatrice");

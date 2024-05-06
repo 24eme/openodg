@@ -35,7 +35,7 @@ $t->is($etablissement, null, "L'etablissement n'existe pas");
 
 $t->comment("création d'un établissement d'après l'import");
 $etablissementfile = tempnam("/tmp", "test");
-file_put_contents($etablissementfile, "99999001;SOCIETE-999990;NEGOCIANT;\"Nego VINICOLE\";ACTIF;REGION_HORS_CVO;;;;;;\"Rue du Comte           \";;;;92310;\"Bourg\";;;FR;;01.45.15.00.00;;;01.45.15.00.00;;\n");
+file_put_contents($etablissementfile, "99999001;SOCIETE-999990;NEGOCIANT;\"Nego VINICOLE\";ACTIF;REGION_HORS_REGION;;;;;;\"Rue du Comte           \";;;;92310;\"Bourg\";;;FR;;01.45.15.00.00;;;01.45.15.00.00;;\n");
 $csv = new EtablissementCsvFile($etablissementfile, array('throw_exception' => true));
 $csv->importEtablissements();
 unlink($societefile);
