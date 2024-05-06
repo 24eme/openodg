@@ -97,7 +97,7 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?
 
 echo "Import des declarations de pieds manquants"
 
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/parcellaire_manquant_2023.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/parcellaire_manquant_2023.csv
+#xlsx2csv -l '\r\n' -d ";" $DATA_DIR/parcellaire_manquant_2023.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/parcellaire_manquant_2023.csv
 
 php symfony import:parcellairemanquant-ventoux --application="$ODG" $DATA_DIR/parcellaire_manquant_2023.csv
 
