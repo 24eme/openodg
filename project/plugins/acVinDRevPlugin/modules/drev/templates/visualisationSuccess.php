@@ -42,9 +42,9 @@
     </div>
 <?php endif; ?>
 
-<?php if($drev->validation && !$drev->validation_odg && $sf_user->isAdminODG()): ?>
+<?php if($drev->validation && !$drev->validation_odg): ?>
     <div class="alert alert-warning">
-        Cette déclaration est en <strong>attente de validation</strong> par l'ODG
+        Cette déclaration est en <strong>attente de validation</strong> par votre organisme.
     </div>
 <?php endif; ?>
 
