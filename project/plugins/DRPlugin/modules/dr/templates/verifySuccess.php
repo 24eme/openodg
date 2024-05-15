@@ -16,10 +16,11 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th></th>
             <th>Produit</th>
             <th>Déclaré</th>
+            <th>Différence</th>
             <th>Recu des apporteurs</th>
+            <th></th>
         </tr>
     </thead>
     <?php if (isset($tableau_comparaison)): ?>
@@ -27,16 +28,17 @@
             <?php foreach ($tableau_comparaison as $produit => $raison_sociale): ?>
                 <tr>
                     <div class="row">
-                        <td class="col-xs-1"><button type="button" class="center-block glyphicon glyphicon-eye-open" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>"></button></td>
                         <td class="col-xs-5"><?php echo $produit; ?></td>
                         <?php $recu = 0; foreach($raison_sociale as $raison_sociale => $declare): ?>
                             <?php if ($raison_sociale == $dr->getEtablissementObject()->raison_sociale): ?>
-                                <td class="col-xs-3 text-right"><?php echo $declare ?></td>
+                                <td class="col-xs-2 text-right"><?php $declareSV = $declare ;echo $declareSV ?></td>
                             <?php else: ?>
                                 <?php $recu += $declare ?>
                             <?php endif;?>
                         <?php endforeach; ?>
-                        <td class="col-xs-3 text-right"><?php echo $recu; ?></td>
+                        <td class="col-xs-2 text-right"><?php echo round($declareSV - $recu, 2); ?></td>
+                        <td class="col-xs-2 text-right"><?php echo $recu; ?></td>
+                        <td class="col-xs-1"><button type="button" class="center-block glyphicon glyphicon-collapse-down" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" id="collapseButton"></button></td>
                     </div>
                 </tr>
                 <tr>
