@@ -18,8 +18,7 @@ class Organisme
         if (sfContext::hasInstance() && sfContext::getInstance()->getUser()->getRegion()) {
             return strtoupper(sfContext::getInstance()->getUser()->getRegion());
         }
-
-        return strtolower(sfConfig::get('sf_app'));
+        return strtoupper(sfConfig::get('sf_app'));
     }
 
     public static function getOIRegion() {
