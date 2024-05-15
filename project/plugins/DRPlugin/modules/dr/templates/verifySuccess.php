@@ -25,15 +25,15 @@
         <tbody>
             <?php foreach ($tableau_comparaison as $produit => $raison_sociale): ?>
                 <tr>
-                    <td><?php echo $produit; ?></td>
+                    <td class="col-xs-6"><?php echo $produit; ?></td>
                     <?php $total = 0; foreach($raison_sociale as $raison_sociale => $valeur): ?>
                         <?php if ($raison_sociale == $dr->getEtablissementObject()->raison_sociale): ?>
-                            <td><?php echo $valeur ?></td>
+                            <td class="col-xs-3 text-right"><?php echo $valeur ?></td>
                         <?php else: ?>
                             <?php $total += $valeur ?>
                         <?php endif;?>
                     <?php endforeach; ?>
-                    <td><?php echo $total; ?></td>
+                    <td class="col-xs-3 text-right"><?php echo $total; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
