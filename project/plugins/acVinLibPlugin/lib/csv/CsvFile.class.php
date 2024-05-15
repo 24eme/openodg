@@ -9,6 +9,7 @@ class CsvFile
   protected $csvdata = null;
   private $ignore = null;
   protected $isFileTmp = false;
+  protected $options = null;
 
   public function getFileName() {
     return $this->file;
