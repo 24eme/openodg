@@ -29,14 +29,14 @@
                     <div class="row">
                         <td class="col-xs-1"><button type="button" class="center-block glyphicon glyphicon-eye-open" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>"></button></td>
                         <td class="col-xs-5"><?php echo $produit; ?></td>
-                        <?php $total = 0; foreach($raison_sociale as $raison_sociale => $valeur): ?>
+                        <?php $recu = 0; foreach($raison_sociale as $raison_sociale => $declare): ?>
                             <?php if ($raison_sociale == $dr->getEtablissementObject()->raison_sociale): ?>
-                                <td class="col-xs-3 text-right"><?php echo $valeur ?></td>
+                                <td class="col-xs-3 text-right"><?php echo $declare ?></td>
                             <?php else: ?>
-                                <?php $total += $valeur ?>
+                                <?php $recu += $declare ?>
                             <?php endif;?>
                         <?php endforeach; ?>
-                        <td class="col-xs-3 text-right"><?php echo $total; ?></td>
+                        <td class="col-xs-3 text-right"><?php echo $recu; ?></td>
                     </div>
                 </tr>
                 <tr>

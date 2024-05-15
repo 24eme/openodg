@@ -947,7 +947,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     continue;
                 }
                 if (($produit->categorie == '06' || $produit->categorie == '07' || $produit->categorie == '08')) {
-                    $tableau_comparaison[$produit->produit_libelle][$dr->declarant->raison_sociale] = $produit->valeur;
+                    if (! isset($tableau_comparaison[$produit->produit_libelle][$apporteur['etablissement']->cvi])) {
+                        $tableau_comparaison[$produit->produit_libelle][$apporteur['etablissement']->cvi] = $produit->valeur;
+                    } else {
+                        $tableau_comparaison[$produit->produit_libelle][$apporteur['etablissement']->cvi] += $produit->valeur;
+                    }
                     if(! isset($tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale])) {
                         $tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale] = $produits[$produit->produit]['lignes'][$produit->categorie]['val'];
                     }
