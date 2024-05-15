@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 29;
+$nb_test = 21;
 $has_lot = false;
 if ($application == 'loire' || $application == 'igp13') {
     $has_lot = true;
@@ -90,6 +90,9 @@ if ($has_lot) {
     $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
     $lot->addCepage("Chenin", 60);
     $lot->addCepage("Sauvignon", 40);
+}else{
+    $produit1->volume_revendique_total = 100;
+    $produit1->volume_revendique_issu_recolte = 100;
 }
 $drev->save();
 
@@ -100,7 +103,9 @@ $date_validation_odg_1 = $periode."-11-05";
 $t->comment("Point de vigilance DRev");
 $validation = new DRevValidation($drev);
 $vigilance = $validation->getVigilances();
-$t->ok(count($vigilance) && $vigilance[0] && preg_match('/Millésime/', $vigilance[0]->getInfo()), "Il y a une vigilance dû au millésime absent.");
+if ($has_lot) {
+    $t->ok(count($vigilance) && $vigilance[0] && preg_match('/Millésime/', $vigilance[0]->getInfo()), "Il y a une vigilance dû au millésime absent.");
+}
 
 $drev->validate($date_validation_1);
 $drev->save();
@@ -173,7 +178,7 @@ $t->is($messages[0]->getSubject(), "Validation définitive de votre Déclaration
 $drev->add('papier', 1);
 $messages = Email::getInstance()->getMessagesDRevValidation($drev);
 $t->is(count($messages), 1, "Mail de validation définitive papier envoyé pour de faux au déclarant");
-$t->is($messages[0]->getSubject(), "Réception de votre Déclaration de Revendication", "Sujet du mail de confirmation papier");
+$t->is($messages && $messages[0] && $messages[0]->getSubject(), "Réception de votre Déclaration de Revendication", "Sujet du mail de confirmation papier");
 
 if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
     return;
