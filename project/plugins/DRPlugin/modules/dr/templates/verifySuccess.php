@@ -16,6 +16,7 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
+            <th></th>
             <th>Produit</th>
             <th>Déclaré</th>
             <th>Recu des apporteurs</th>
@@ -25,15 +26,25 @@
         <tbody>
             <?php foreach ($tableau_comparaison as $produit => $raison_sociale): ?>
                 <tr>
-                    <td class="col-xs-6"><?php echo $produit; ?></td>
-                    <?php $total = 0; foreach($raison_sociale as $raison_sociale => $valeur): ?>
-                        <?php if ($raison_sociale == $dr->getEtablissementObject()->raison_sociale): ?>
-                            <td class="col-xs-3 text-right"><?php echo $valeur ?></td>
-                        <?php else: ?>
-                            <?php $total += $valeur ?>
-                        <?php endif;?>
-                    <?php endforeach; ?>
-                    <td class="col-xs-3 text-right"><?php echo $total; ?></td>
+                    <div class="row">
+                        <td class="col-xs-1"><button type="button" class="center-block glyphicon glyphicon-eye-open" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>"></button></td>
+                        <td class="col-xs-5"><?php echo $produit; ?></td>
+                        <?php $total = 0; foreach($raison_sociale as $raison_sociale => $valeur): ?>
+                            <?php if ($raison_sociale == $dr->getEtablissementObject()->raison_sociale): ?>
+                                <td class="col-xs-3 text-right"><?php echo $valeur ?></td>
+                            <?php else: ?>
+                                <?php $total += $valeur ?>
+                            <?php endif;?>
+                        <?php endforeach; ?>
+                        <td class="col-xs-3 text-right"><?php echo $total; ?></td>
+                    </div>
+                </tr>
+                <tr>
+                    <td colspan="3" style="padding: 0; border: none;">
+                        <div class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
+                            Test
+                        </div>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
