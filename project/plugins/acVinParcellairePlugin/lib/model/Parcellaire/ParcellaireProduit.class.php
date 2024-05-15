@@ -180,7 +180,11 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         if($prefix) {
             $section = $prefix.$section;
         }
-        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle.'-'.sprintf('%02d',$numero_ordre);
+        $section = str_replace('0', '', $section);
+        if (!$section) {
+            $section = '0';
+        }
+        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' .$section. '-' . $numero_parcelle.'-'.sprintf('%02d',$numero_ordre);
         if ($lieu) {
             $key.= '-' . $lieu;
         }
