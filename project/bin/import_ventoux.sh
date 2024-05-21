@@ -107,7 +107,7 @@ php symfony import:parcellaireaffectation-ventoux --application="$ODG" $DATA_DIR
 
 echo "Mise a jour des relations en fonction des documents de production"
 
-curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DR-\|SV11-\|SV12-' | grep '\-2022' | while read id; do php symfony production:import-relation $id --application=centre; done
+curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/declaration/_view/tous\?reduce\=false | cut -d '"' -f 4 | grep 'DR-\|SV11-\|SV12-' | grep '\-2023' | while read id; do php symfony production:import-relation $id --application="$ODG"; done
 
 echo "Mise à jour des tags de compte"
 
