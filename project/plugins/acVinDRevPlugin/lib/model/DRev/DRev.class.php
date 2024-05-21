@@ -1543,7 +1543,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
 	{
-		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter->getParameters());
+		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
         foreach($this->getDeletedLots() as $lot) {
             $volume -= $lot->volume;
         }

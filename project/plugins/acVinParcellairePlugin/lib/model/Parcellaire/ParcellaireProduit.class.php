@@ -138,8 +138,9 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $detail->add('numero_ordre', $numero_ordre);
         if($lieu){
             $lieu = strtoupper($lieu);
+            $lieu = trim($lieu);
         }
-        $detail->lieu = trim($lieu);
+        $detail->lieu = $lieu;
 
         return $detail;
     }

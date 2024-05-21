@@ -48,15 +48,16 @@ foreach($communesDenominations as $lieu => $codeCommunes) {
         break;
     }
 }
-
-$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", $communes[0], '', "A", "1");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[1], '', "A", "12");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[2], '', "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", $communes[2], '', "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", "Paris", '', "C", "99");
+$parcellaire->addParcelle($configProduit->getHash(), $configProduit->cepages_autorises[0], "2010", $communes[0], '', "A", "1");
+$parcellaire->addParcelle($configProduit->getHash(), $configProduit->cepages_autorises[1], "2011", $communes[0], '', "A", "12");
+$parcellaire->addParcelle($configProduit->getHash(), $configProduit->cepages_autorises[1], "2013", $communes[0], '', "B", "24");
+$parcellaire->addParcelle($configProduit->getHash(), $configProduit->cepages_autorises[1], "2016", $communes[0], '', "B", "24");
+$parcellaire->addParcelle($configProduit->getHash(), $configProduit->cepages_autorises[1], "2016", "Paris", '', "C", "99");
 $parcellaire->save();
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, $dateprevious, "DOUANE");
 
 $affectation = ParcellaireAffectationClient::getInstance()->createDoc($viti->identifiant, $yearprevious + 1);
+$affectation->updateParcellesAffectation();
 
 $t->is(count($affectation->getParcelles()), 0, "L'affectation a aucune parcelle car elle n'a pas de declaration d'intention");
 
@@ -69,6 +70,7 @@ $t->is(count($intention->getParcelles()), 4, "L'intention a les 4 parcelles du d
 foreach($intention->getParcelles() as $parcelle) {
     $parcelle->affectation = 1;
 }
+$parcelle = array_shift($intention->getParcelles());
 $parcelle->affectation = 0;
 $intention->save();
 
@@ -92,9 +94,9 @@ $campagne = $year.'-'.($year + 1);
 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, $date, "DOUANE");
 $parcellaire->save();
 $parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", $communes[0], '', "A", "1");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[1], '', "A", "12");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[2], '', "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", "Paris", "C", "99");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[0], '', "A", "12");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[0], '', "B", "24");
+$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", "Paris", '', "C", "99");
 $parcellaire->save();
 
 $t->comment("Parcellaire au $dateprevious : ".$parcellaire->_id);

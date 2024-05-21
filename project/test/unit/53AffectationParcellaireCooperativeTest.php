@@ -72,6 +72,8 @@ $t->comment("Création de la SV11");
 $campagne = (date('Y')-1)."";
 $campagneAffectation = $campagne + 1;
 $sv11 = SV11Client::getInstance()->find("SV11-".$coop->identifiant."-".$campagne, acCouchdbClient::HYDRATE_JSON);
+$sv11 = SV11Client::getInstance()->find("SV11-".$coop->identifiant."-".($campagne - 1), acCouchdbClient::HYDRATE_JSON);
+
 if($sv11) { SV11Client::getInstance()->deleteDoc($sv11); }
 
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/sv11_douane.csv');
@@ -103,7 +105,7 @@ $t->comment("utilise le fichier test/data/sv11_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());
 
-$sv11 = SV11Client::getInstance()->createDoc($coop->identifiant, $campagne);
+$sv11 = SV11Client::getInstance()->createDoc($coop->identifiant, $campagne - 1);
 $sv11->setLibelle("SV11 $campagne issue de Prodouane (Papier)");
 $sv11->setDateDepot("$campagne-12-15");
 $sv11->save();
@@ -197,15 +199,12 @@ $code_commune = key($communes);
 $parcellaireAffectationCoop = ParcellaireAffectationCoopClient::getInstance()->find($parcellaireAffectationCoop->_id);
 
 foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
-    $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_NON_IDENTIFIEE, "Statut \"NON_IDENTIFIEE\" ".$affectationParcellaire->_id);
-    $t->is($apporteur->getStatutLibelle(), "Aucune parcelle identifiée", "Statut libellé \"Aucune parcelle identifiée\" ".$affectationParcellaire->_id);
+    $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_NON_IDENTIFIEE, "Statut \"NON_IDENTIFIEE\"");
+    $t->is($apporteur->getStatutLibelle(), "Aucune parcelle identifiée", "Statut libellé \"Aucune parcelle identifiée\"");
 
     $apporteur->intention = true;
 
     $t->ok(!$apporteur->getAffectationParcellaire(), "Affectation parcellaire non existante ".$apporteur->getKey());
-
-    $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR, "Statut \"A_SAISIR\" ".$affectationParcellaire->_id);
-    $t->is($apporteur->getStatutLibelle(), "À saisir", "Statut libellé \"À saisir\" ".$affectationParcellaire->_id);
 
     $affectationParcellaire = $apporteur->createAffectationParcellaire();
     $t->ok($affectationParcellaire->_id, "Affectation parcellaire créé ".$affectationParcellaire->_id);

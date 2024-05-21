@@ -5,6 +5,7 @@ class ExportDouaneCSV implements InterfaceDeclarationExportCsv
     protected $doc = null;
     protected $header = false;
     protected $region = null;
+    protected $drev_produit_filter = null;
 
     public static function getHeaderCsv()
     {

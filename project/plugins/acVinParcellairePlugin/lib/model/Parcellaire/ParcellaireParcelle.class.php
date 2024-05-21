@@ -71,7 +71,11 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getSection() {
-        return preg_replace('/^0*/', '', $this->_get('section'));
+        $s = $this->_get('section');
+        if ($s) {
+            $s = preg_replace('/^0*/', '', $s);
+        }
+        return $s;
     }
 
     public function setNumeroParcelle($numero_parcelle) {
