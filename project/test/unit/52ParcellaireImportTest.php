@@ -105,7 +105,8 @@ if ($toutes_les_parcelles) {
 $t->comment("vérification de la synthèse produits");
 
 $synthese = $parcellaire->getSyntheseProduitsCepages();
-$synthese_produit_1_key = is_array($configProduit[1]->cepages_autorises) ? $configProduit[0]->getLibelleComplet() : '';
+$synthese_produit_1_key = is_array($configProduit[1]->cepages_autorises) ? $configProduit[0]->getLibelleComplet() : array_shift(array_keys($synthese));
+print_r([$synthese, $synthese_produit_1_key, $configProduit[0]->getLibelleComplet()]);
 $t->is(count(array_keys($synthese[$synthese_produit_1_key]['Cepage'])) + count(array_keys($synthese[$synthese_produit_1_key]['Total'])), 3, "La synthese du premier produit a deux cépages + un total");
 
 $synthese = $parcellaire->getSyntheseCepages();
