@@ -108,11 +108,13 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
 
     $b->get('/societe/'.$societeAutre->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une société de type \"AUTRE\" protégée");
+    $b->resetCurrentException();
 } else {
     $b->get('/societe/'.$societeIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une société protégée");
+    $b->resetCurrentException();
 }
-
+$b->resetCurrentException();
 $t->comment('En mode télédéclarant');
 
 $b->get('/logout');
@@ -129,9 +131,11 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     testVisualisationLimite($b, $societeIdentifiant);
     $b->get('/societe/'.$societeAnnexe->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une autre société protégée");
+    $b->resetCurrentException();
 } else {
     $b->get('/societe/'.$societeIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation de la société protégée");
+    $b->resetCurrentException();
 }
 
 function testVisualisationLimite($b, $societeIdentifiant) {
@@ -147,10 +151,13 @@ function testVisualisationLimite($b, $societeIdentifiant) {
 
     $b->get('/societe-creation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de création protégé");
+    $b->resetCurrentException();
 
     $b->get('/societe/'.$societeIdentifiant.'/modification');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page modification protégé");
+    $b->resetCurrentException();
 
     $b->get('/societe/'.$societeIdentifiant.'/switchStatus');
     $t->is($b->getResponse()->getStatuscode(), 403, "Action d'archivage protégé");
+    $b->resetCurrentException();
 }

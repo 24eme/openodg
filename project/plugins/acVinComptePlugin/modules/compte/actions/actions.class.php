@@ -59,11 +59,10 @@ class compteActions extends sfCredentialActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
-
-            throw new sfError403Exception();
+            throw new sfError403Exception('action secure');
         }
 
-        $this->compte = $this->getRoute()->getCompte(array('allow_admin_odg' => true));
+        $this->compte = $this->getRoute()->getCompte(array('allow_admin_odg' => true, 'allow_stalker' => true, 'allow_habilitation' => true));
         $this->societe = $this->compte->getSociete();
         $this->formAjoutGroupe = new CompteGroupeAjoutForm('INTERPRO-declaration');
         $this->applyRights();
