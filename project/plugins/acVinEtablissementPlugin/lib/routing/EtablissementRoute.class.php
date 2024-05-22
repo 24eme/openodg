@@ -16,7 +16,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin() &&
                 $compteUser->identifiant != $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant) {
 
-            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (drevAdmin)");
         }
 
         $allowed = $myUser->isAdmin();
@@ -37,7 +37,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             }
         }
         if (!$allowed) {
-            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (Etablissement)");
         }
         $module = sfContext::getInstance()->getRequest()->getParameterHolder()->get('module');
 

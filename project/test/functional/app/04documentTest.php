@@ -80,6 +80,7 @@ $t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), nu
 
 $b->get('/fichier/upload/'.$etablissement->identifiant);
 $t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
+$b->resetCurrentException();
 
 $t->comment('En mode habilitation');
 
@@ -92,7 +93,7 @@ $b->isForwardedTo('fichier', 'piecesHistorique');
 $t->is($b->getResponse()->getStatusCode(), 200, 'Page Historique');
 
 $c = new sfDomCssSelector($b->getResponseDom());
-$t->ok($c->matchSingle('.page-header a[href*="/fichier/upload/"]')->getNode(), "Bouton \"Ajouter un document\"");
+$t->ok($c->matchSingle('.page-sidebar a[href*="/fichier/upload/"]')->getNode(), "Bouton \"Ajouter un document\"");
 $t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), null, "Boutons \"Modifier un document\" absent");
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=fichier");
@@ -135,6 +136,7 @@ $fichierIdentificationId = $matches[1];
 
 $b->get('/fichier/upload/'.$etablissement->identifiant."?fichier_id=".$fichierIdentificationId);
 $t->is($b->getResponse()->getStatusCode(), 403, "Page de modification de ce fichier protégé");
+$b->resetCurrentException();
 
 $t->comment('En mode télédéclarant');
 
@@ -144,6 +146,7 @@ $b->restart();
 
 $b->post('/login_no_cas', array('admin' => array('login' => $societe->getIdentifiant())));
 $t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
+$b->resetCurrentException();
 
 $b->get('/documents/'.$etablissement->identifiant);
 $b->isForwardedTo('fichier', 'piecesHistorique');
@@ -155,6 +158,7 @@ $t->is($c->matchSingle('.list-group a[href*="/fichier/upload/"]')->getNode(), nu
 
 $b->get('/fichier/upload/'.$etablissement->identifiant);
 $t->is($b->getResponse()->getStatusCode(), 403, "Page d'upload protégé");
+$b->resetCurrentException();
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=fichier");
 $c = new sfDomCssSelector($b->getResponseDom());
@@ -162,6 +166,7 @@ $t->is($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), null, "Aucu
 
 $b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
 $t->is($b->getResponse()->getStatusCode(), 403, "Téléchargement du fichier protégé");
+$b->resetCurrentException();
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
 $c = new sfDomCssSelector($b->getResponseDom());

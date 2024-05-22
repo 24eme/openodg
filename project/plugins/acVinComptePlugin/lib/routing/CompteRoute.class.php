@@ -37,7 +37,7 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
       {
           return $this->compte;
       }
-      throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+      throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (Compte)");
     }
 
     protected function doConvertObjectToArray($object) {

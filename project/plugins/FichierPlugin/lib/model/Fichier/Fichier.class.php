@@ -23,7 +23,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     }
 
     public function constructId() {
-        if ($this->fichier->isNew()) {
+        if ($this->isNew()) {
             if ($this->categorie == FichierClient::CATEGORIE_DR) {
                 return $this->set('_id', 'DR-' . $this->identifiant . '-' . $this->fichier_id);
             }

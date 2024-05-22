@@ -81,5 +81,5 @@
             </button>
         </div>
     </div>
+    <?php include_partial('drev/popupConfirmationValidation', array('approuver' => true)); ?>
 </form>
-<?php include_partial('drev/popupConfirmationValidation', array('approuver' => true)); ?>
