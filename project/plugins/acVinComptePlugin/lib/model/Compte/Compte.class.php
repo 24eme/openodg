@@ -663,7 +663,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return Anonymization::hideIfNeeded($this->_get('email'));
     }
     public function getEmails(){
-        return explode(';',$this->email);
+        $e = array();
+        if ($this->email)  {
+            $e = explode(';',$this->email);
+        }
+        return $e;
     }
 
     public function getTelephoneDisponible() {

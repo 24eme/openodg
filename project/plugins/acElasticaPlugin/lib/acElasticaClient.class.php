@@ -2,6 +2,8 @@
 
 class acElasticaClient extends Elastica_Client {
 
+  private $dbname = null;
+
   public function __construct($dsn, $dbname) {
     $this->dbname = $dbname;
     if (preg_match('|http://([^:]*):(\d+)|', $dsn, $matches)) {
