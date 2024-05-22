@@ -641,10 +641,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function resetAndImportFromDocumentDouanier() {
       $this->declarant->famille = $this->getEtablissementObject()->famille;
 
-      if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
-          throw new sfException('Superficies déjà saisies');
-      }
-
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
           throw new sfException('Volume déjà déclaré');
       }
