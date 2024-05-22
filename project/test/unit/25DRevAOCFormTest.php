@@ -430,7 +430,7 @@ $t->ok(!isset($erreurs['mutage_ratio']), "Pas de point bloquant concernant le vo
 
 $vigilances = $validation->getPointsByCodes('vigilance');
 $t->is($produitMutage->getVolumeRevendiqueRendement(), 100, "Le volume rendement ne tient pas en compte le volume issu du mutage");
-$t->is($produitMutage->getRendementEffectif(), 30, "Le rendement ne tient pas en compte le volume issu du mutage");
+$t->is($produitMutage->getRendementEffectif(), $produitConfigMutage->getRendement(), "Le rendement ne tient pas en compte le volume issu du mutage");
 
 $produitMutage->volume_revendique_issu_mutage = 10.42;
 $validation = new DRevValidation($drev);
@@ -441,5 +441,5 @@ $produitMutage->volume_revendique_issu_mutage = 10.45;
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $t->is($produitMutage->getVolumeRevendiqueRendement(), 94.55, "Le volume rendement ne tient pas en compte le volume issu du mutage");
-$t->is($produitMutage->getRendementEffectif(), 28.365, "Le rendement ne tient pas en compte le volume issu du mutage");
+$t->is($produitMutage->getRendementEffectif(), 94.55 / $produitMutage->superficie_revendique, "Le rendement ne tient pas en compte le volume issu du mutage");
 $t->ok(isset($erreurs['mutage_ratio']), "Point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte (activé au dessus de 10,42)");
