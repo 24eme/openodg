@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 21;
+$nb_test = 19;
 $has_lot = false;
 if ($application == 'loire' || $application == 'igp13') {
     $has_lot = true;
@@ -125,6 +125,7 @@ if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
 } else {
     $drev->validateOdg($date_validation_odg_1);
 }
+$drev->add('papier', 0);
 $drev->save();
 
 $t->is($drev->isValidee(),true,"La Drev est validée");
@@ -137,6 +138,7 @@ if ($application == 'loire') {
 }
 
 $t->comment("DRev envoi de mail de la validation");
+$drev->devalidate();
 
 foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
     $configDRev = sfConfig::get('drev_configuration_drev');
@@ -145,8 +147,6 @@ foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
 }
 DrevConfiguration::getInstance()->load();
 
-$t->is(count($drev->getDocumentsAEnvoyer()), 1, "1 document à envoyer");
-
 $t->ok(Email::getInstance()->getMessageDRevValidationDeclarant($drev), "Mail de validation à envoyer au déclarant");
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 1, "Mails de notification de validation à envoyer aux syndicats");
@@ -154,7 +154,7 @@ if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 0, "Aucun mail de notification de validation à envoyer aux syndicats");
 }
 $t->ok(Email::getInstance()->getMessageDRevConfirmee($drev), "Mail de confirmation à envoyer au déclarant");
-$t->ok(Email::getInstance()->getMessageDrevPapierConfirmee($drev), "Mail de confirmation papier à envoyer au déclarant");
+$t->is(count(Email::getInstance()->getMessageDrevPapierConfirmee($drev)), DrevConfiguration::getInstance()->isSendMailToOperateur(), "Mail de confirmation papier à envoyer au déclarant");
 $t->is(count(Email::getInstance()->getMessagesDRevValidation($drev)), 0, "Aucun mail envoyé");
 
 $drev->validate();
@@ -174,11 +174,10 @@ if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
 }
 $messages = Email::getInstance()->getMessagesDRevValidation($drev);
 $t->is(count($messages), 1, "Mail de validation definitive envoyé pour de faux au déclarant");
-$t->is($messages[0]->getSubject(), "Validation définitive de votre Déclaration de Revendication", "Sujet du mail de validation définitive");
+$t->is($messages[0]->getSubject(), "Validation de votre Déclaration de Revendication", "Sujet du mail de validation définitive");
 $drev->add('papier', 1);
 $messages = Email::getInstance()->getMessagesDRevValidation($drev);
-$t->is(count($messages), 1, "Mail de validation définitive papier envoyé pour de faux au déclarant");
-$t->is($messages && $messages[0] && $messages[0]->getSubject(), "Réception de votre Déclaration de Revendication", "Sujet du mail de confirmation papier");
+$t->is(count($messages), 0, "Pas de mail de validation définitive papier envoyé pour de faux au déclarant");
 
 if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
     return;

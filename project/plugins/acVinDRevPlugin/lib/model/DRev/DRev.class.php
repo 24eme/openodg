@@ -1117,9 +1117,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 throw new sfExcpetion("le lot ".$lot->unique_id." n'a pas de hash produit");
             }
         }
-        if(RegionConfiguration::getInstance()->hasOdgProduits()) {
-            $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
-        }
+        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
     }
 
     public function delete() {
@@ -1156,6 +1154,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
 
         if(!$this->numero_archive) {
             $this->save();

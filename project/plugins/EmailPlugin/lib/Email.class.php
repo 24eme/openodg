@@ -116,7 +116,7 @@ class Email {
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
         $to = array($drev->declarant->email);
-        $subject = 'Validation définitive de votre Déclaration de Revendication';
+        $subject = 'Validation de votre Déclaration de Revendication';
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drev' => $drev));
         $message = $this->newMailInstance()
                 ->setTo($to)
