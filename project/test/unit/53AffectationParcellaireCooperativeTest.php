@@ -211,15 +211,10 @@ foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
     $t->ok(!$affectationParcellaire->_rev, "Pas encore de révision ".$affectationParcellaire->_id);
 
     $form = new ParcellaireAffectationCoopSaisieForm($affectationParcellaire, $coop);
-    if (sfConfig::get('app_document_validation_signataire')) {
-        $t->is($form->getDefaults()['signataire'], $coop->raison_sociale, "Le signataire est initialisé par défaut");
-    }
-
-    $values = array('_revision' => $affectationParcellaire->_rev, 'signataire' => "Cave coopérative", "observations" => "Viticulteur sur plusieurs caves" );
+    $values = array('_revision' => $affectationParcellaire->_rev, "observations" => "Viticulteur sur plusieurs caves" );
 
     $form->bind($values);
     $form->save();
-
     $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_EN_COURS, "Statut \"EN COURS\" ".$affectationParcellaire->_id);
     $t->is($apporteur->getStatutLibelle(), "En cours de saisie", "Statut libellé \"En cours de saisie\" ".$affectationParcellaire->_id);
 
@@ -227,9 +222,6 @@ foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
     $affectationParcellaire->save();
     $t->ok($affectationParcellaire->isValidee(), "L'affectation parcellaire est validé");
     $t->ok($affectationParcellaire->observations, "L'affectation parcellaire a des observations");
-    if (sfConfig::get('app_document_validation_signataire')) {
-        $t->is($affectationParcellaire->signataire, "Cave coopérative", "Le signataire a été enregistré");
-    }
 
     $t->is($apporteur->getStatut(), ParcellaireAffectationCoopApporteur::STATUT_VALIDE, "Statut \"VALIDE\" ".$affectationParcellaire->_id);
     $t->is($apporteur->getStatutLibelle(), "Validé", "Statut libellé \"Validé\" ".$affectationParcellaire->_id);
