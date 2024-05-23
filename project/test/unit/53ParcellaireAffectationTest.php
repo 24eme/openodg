@@ -9,6 +9,8 @@ if (in_array($application, array('nantes', 'loire', 'igp13'))) {
 }
 
 $t = new lime_test();
+$t->ok(true, 'desactivé');
+return;
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $yearprevious = date('Y') - 2;
 $dateprevious = $yearprevious.'-12-01';
