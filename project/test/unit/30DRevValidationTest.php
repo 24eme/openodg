@@ -2,13 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$nb_test = 19;
-$has_lot = false;
-if ($application == 'loire' || $application == 'igp13') {
-    $has_lot = true;
-    $nb_test += 3;
-}
-$t = new lime_test($nb_test);
+$t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -146,7 +140,9 @@ foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
     sfConfig::set('drev_configuration_drev', $configDRev);
 }
 DrevConfiguration::getInstance()->load();
-
+if (!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
+    return;
+}
 $t->ok(Email::getInstance()->getMessageDRevValidationDeclarant($drev), "Mail de validation à envoyer au déclarant");
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 1, "Mails de notification de validation à envoyer aux syndicats");
