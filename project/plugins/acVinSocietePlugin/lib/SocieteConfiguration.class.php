@@ -40,6 +40,9 @@ class SocieteConfiguration {
     }
 
     public function hasGroupes() {
+        if (!isset($this->configuration['enable_groupes'])) {
+            return [];
+        }
         return $this->configuration['enable_groupes'];
     }
 
