@@ -99,7 +99,6 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/etablissement/'.$etablissementIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation établissement protégé");
     $b->resetCurrentException();
-    $b->end();
 }
 
 $t->comment('En mode télédéclarant');

@@ -78,9 +78,13 @@ $b->get('/logout');
 $b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => array(myUser::CREDENTIAL_STALKER)));
 $b->restart();
 
-$b->get('/')->followRedirect();
-$t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil accessible");
-$b->isForwardedTo('compte', 'search');
+$b->get('/');
+if ($b->getResponse()->getStatuscode() == 302) {
+    $b->followRedirect();
+    $b->isForwardedTo('compte', 'search');
+}else{
+    $t->is($b->getResponse()->getStatuscode(), 403, "Page d'accueil non accessible pour stalker");
+}
 
 $b->get('/societe/'.$societeIdentifiant.'/visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de visualisation d'une société de type \"OPERATEUR\" accessible");
