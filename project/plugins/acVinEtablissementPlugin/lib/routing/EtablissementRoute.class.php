@@ -16,10 +16,13 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin() &&
                 $compteUser->identifiant != $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant) {
 
-            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (drevAdmin)");
         }
 
-        $allowed = $myUser->isAdmin() || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG());
+        $allowed = $myUser->isAdmin();
+        $allowed = $allowed || (isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker'] && $myUser->isStalker());
+        $allowed = $allowed || (isset($this->accesses['allow_habilitation']) && $this->accesses['allow_habilitation'] && $myUser->hasHabilitation());
+        $allowed = $allowed || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG());
 
         if(!$allowed && ( $myUser->hasDrevAdmin() || $myUser->isAdminODG()) ) {
             $region = Organisme::getInstance()->getCurrentRegion();
@@ -34,7 +37,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             }
         }
         if (!$allowed) {
-            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (Etablissement)");
         }
         $module = sfContext::getInstance()->getRequest()->getParameterHolder()->get('module');
 
@@ -53,9 +56,11 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
     }
 
     public function getEtablissement($parameters = null) {
-
-        if (isset($parameters['allow_admin_odg'])) {
-            $this->accesses['allow_admin_odg'] = $parameters['allow_admin_odg'];
+        if (is_array($parameters)) foreach($parameters as $k => $v) {
+            if (strpos($k, 'allow') === false) {
+                continue;
+            }
+            $this->accesses[$k] = $v;
         }
 
 	    if (!$this->etablissement) {

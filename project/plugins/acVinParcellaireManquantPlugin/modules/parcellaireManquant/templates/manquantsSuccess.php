@@ -48,7 +48,7 @@
             	<td style="text-align: center;">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['densite']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['densite']->renderError() ?>
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['densite']->render(array('class' => 'form-control text-right', 'maxlength' => 4, 'size' => 4)) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['densite']->render(array('class' => 'form-control text-right input-integer', 'maxlength' => 4, 'size' => 4)) ?>
                         </div>
             	</td>
                 <td style="text-align: center;">

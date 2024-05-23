@@ -97,8 +97,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $millesime = substr($this->campagne, 0, 4);
+        $habDecla = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant)->declaration;
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
+            foreach ($habDecla as $decla => $infos) {
+                if (strpos($h, $decla) && $infos['activites'][HabilitationClient::ACTIVITE_VINIFICATEUR]['statut'] == HabilitationClient::STATUT_EXTERIEUR) {
+                    continue 2;
+                }
+            }
             $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR().' '.$millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
@@ -606,7 +612,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $drev->remove('declaration');
     	$drev->add('declaration');
         $drev->resetAndImportFromDocumentDouanier();
-        $drev->_rev = "FICTIVE";
+        $drev->add('_rev', "FICTIVE");
     	return $drev;
     }
 
@@ -634,10 +640,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function resetAndImportFromDocumentDouanier() {
       $this->declarant->famille = $this->getEtablissementObject()->famille;
-
-      if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
-          throw new sfException('Superficies déjà saisies');
-      }
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
           throw new sfException('Volume déjà déclaré');
@@ -758,7 +760,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $labelsDouane = array();
-            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE])) {
+            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE]) && $line[DRCsvFile::CSV_LABEL_CALCULEE]) {
                 $labelsDouane = explode("|", $line[DRCsvFile::CSV_LABEL_CALCULEE]);
             }
 
@@ -1112,8 +1114,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
-
-
     }
 
     public function delete() {
@@ -1150,6 +1150,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
 
         if(!$this->numero_archive) {
             $this->save();
@@ -1420,9 +1421,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->generateMouvementsFactures();
         }
 
-        $regions = $this->getRegions();
-        if (count($regions)) {
-            $this->add('region', implode('|', $regions));
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
+            }
         }
 
         $saved = parent::save();
@@ -1535,7 +1538,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
 	{
-		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter->getParameters());
+		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
         foreach($this->getDeletedLots() as $lot) {
             $volume -= $lot->volume;
         }
@@ -2374,7 +2377,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function isValidee() {
 
-        return $this->validation;
+        return boolval($this->validation);
     }
 
     public function isValideeOdg() {

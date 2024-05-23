@@ -5,6 +5,9 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) {
     if (preg_match('/SOCIETE-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
       $soc = SocieteClient::getInstance()->findByIdentifiantSociete($m[1]);
+      if (!$soc) {
+          continue;
+      }
       foreach($soc->getEtablissementsObj() as $k => $etabl) {
         //   foreach (VracClient::getInstance()->retrieveBySoussigne($etabl->etablissement->identifiant)->rows as $k => $vrac) {
         //     $vrac_obj = VracClient::getInstance()->find($vrac->id);
@@ -14,6 +17,9 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
         //     $drm = DRMClient::getInstance()->find($id);
         //     $drm->delete(false);
         //   }
+        if (!$etabl->etablissement) {
+            continue;
+        }
         $etabl->etablissement->delete();
       }
       $soc->delete();

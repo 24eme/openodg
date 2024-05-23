@@ -6,10 +6,10 @@
     <p class="pt-3">Merci d'indiquer vos parcelles ayant des pieds manquants ou morts en cliquant sur la ligne de la parcelle concernée.</p>
     <div class="alert alert-info">
         <p style="margin:10px 0;">
-            <span class="glyphicon glyphicon-info-sign"></span> Il n'est pas nécessaire d'indiquer les parcelles avec moins de 20% de pieds manquants.
+            <span class="glyphicon glyphicon-info-sign"></span> Il n'est pas nécessaire d'indiquer les parcelles avec moins de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants.
             <a style="margin-top:-5px;" href="<?php echo url_for('parcellairemanquant_validation', $parcellaireManquant) ?>" class="btn btn-sm btn-default pull-right">
                 <span class="glyphicon glyphicon-check"></span>
-                Je n'ai pas de parcelle avec plus de 20% de pieds manquants
+                Je n'ai pas de parcelle avec plus de <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>% de pieds manquants
             </a>
         </p>
     </div>

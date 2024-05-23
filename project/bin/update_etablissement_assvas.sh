@@ -25,4 +25,5 @@ if test "$CHECKSUM" = "$(md5sum $CSV_IMPORT)"; then
     exit;
 fi
 
-php symfony import:etablissements-assvas $SYMFONYTASKOPTIONS "$CSV_IMPORT" --trace
+iconv -f iso-8859-15 -t utf-8 "$CSV_IMPORT" | tr "\n" "|" | sed -r 's/(;|\|)(\"[^\"]*)\|([^\"]*\")(;|\|)/\1\2/g' | tr "|" "\n" > "$CSV_IMPORT".utf8
+php symfony import:etablissements-assvas $SYMFONYTASKOPTIONS "$CSV_IMPORT".utf8 --trace

@@ -46,7 +46,7 @@ class generationActions extends sfActions {
             throw new sfException("Vous n'avez pas les droits d'accéder à cette page");
         }
 
-        $region = (RegionConfiguration::hasOdgProduits()) ? Organisme::getCurrentOrganismes() : null;
+        $region = (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null;
 
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_SHELL, 100, $region);
 

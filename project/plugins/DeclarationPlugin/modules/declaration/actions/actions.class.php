@@ -150,6 +150,10 @@ class declarationActions extends sfActions {
             return $this->redirect('declaration_etablissement', $etablissement);
         }
 
+        if($doc_type == "ADELPHE") {
+            return $this->redirect('adelphe_visualisation', array('id' => $doc_id));
+        }
+
         return $this->forward404();
     }
 

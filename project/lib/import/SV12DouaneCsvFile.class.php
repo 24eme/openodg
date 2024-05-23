@@ -25,7 +25,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
            preg_match('/nomination/i', $csvFile->getCsv()[0][1]) &&
            preg_match('/CVI/i', $csvFile->getCsv()[0][3]) &&
            preg_match('/raisin/i', $csvFile->getCsv()[0][5]) &&
-           preg_match('/MOUTS/i', $csvFile->getCsv()[0][6])
+           (preg_match('/MOUTS/i', $csvFile->getCsv()[0][6]) || preg_match('/moûts/i', $csvFile->getCsv()[0][6]))
           ) {
 
             return "CsvVendanges";

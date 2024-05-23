@@ -133,7 +133,7 @@ class DRevConfiguration {
     }
 
     public function isSendMailToOperateur() {
-        return $this->configuration['send_email_operateur'];
+        return isset($this->configuration['send_email_operateur']) ? $this->configuration['send_email_operateur'] : true;
     }
 
     public function hasVolumeSeuil(){

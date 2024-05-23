@@ -52,7 +52,7 @@ $dr->save();
 $drev = DRevClient::getInstance()->createDoc($nego->identifiant, $campagne);
 $drev->save();
 
-$drev->importFromDocumentDouanier();
+$drev->resetAndImportFromDocumentDouanier();
 $drev->save();
 unlink($csvTmpFile);
 $t->is(count($drev->getProduits()), 1, "La DRev a repris 1 produit du csv de la SV12");

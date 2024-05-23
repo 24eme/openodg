@@ -9,7 +9,7 @@ class ParcellaireManquantValidation extends DocumentValidation {
 
     public function configure()
     {
-        $this->addControle(self::TYPE_WARNING, 'pourcentage_inf_20', "Le pourcentage de pied manquant est inférieur à 20%");
+        $this->addControle(self::TYPE_WARNING, 'pourcentage_inf_min', "Le pourcentage de pied manquant est inférieur à ".ParcellaireConfiguration::getInstance()->getManquantPCMin()."%");
         $this->addControle(self::TYPE_ERROR, 'pourcentage_nul', "Le pourcentage de pied manquant ne peut pas être nul ou à zéro");
     }
 
@@ -21,8 +21,8 @@ class ParcellaireManquantValidation extends DocumentValidation {
                 continue;
             }
 
-            if ($parcelle->pourcentage < 20) {
-                $this->addPoint(self::TYPE_WARNING, 'pourcentage_inf_20', "Parcelle n° {$parcelle->section} {$parcelle->numero_parcelle} - Le pourcentage de pied mort est de {$parcelle->pourcentage}%", $this->generateUrl('parcellairemanquant_manquants', $this->document));
+            if ($parcelle->pourcentage < ParcellaireConfiguration::getInstance()->getManquantPCMin()) {
+                $this->addPoint(self::TYPE_WARNING, 'pourcentage_inf_min', "Parcelle n° {$parcelle->section} {$parcelle->numero_parcelle} - Le pourcentage de pied mort est de {$parcelle->pourcentage}%", $this->generateUrl('parcellairemanquant_manquants', $this->document));
             }
         }
     }

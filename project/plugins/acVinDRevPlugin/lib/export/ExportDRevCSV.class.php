@@ -143,8 +143,10 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     }
 
     protected function formatFloat($value) {
-
-        return str_replace(".", ",", $value);
+        if ($value) {
+            $value = str_replace(".", ",", $value);
+        }
+        return $value;
     }
 
     public function setExtraArgs($args) {

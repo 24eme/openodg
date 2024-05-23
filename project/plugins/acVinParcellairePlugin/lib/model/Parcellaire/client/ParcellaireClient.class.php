@@ -331,7 +331,7 @@ class ParcellaireClient extends acCouchdbClient {
             if($parcelle->campagne_plantation == $p->campagne_plantation) {
                 $score += 0.25;
             }
-            if(strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
+            if($parcelle->lieu && $p->lieu && strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
                 $score += 0.25;
             }
             if(abs($parcelle->getSuperficie(self::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) - $p->superficie) < 0.0001) {

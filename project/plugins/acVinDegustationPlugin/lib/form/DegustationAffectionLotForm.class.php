@@ -35,7 +35,7 @@ class DegustationAffectionLotForm extends BaseForm
         }
 
         foreach ($listeDegustations as $degustation_id => $degustation) {
-          $degustations[$degustation_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
+          $degustations[$degustation->_id] = "Degustation du ".$degustation->date." au ".$degustation->lieu;
         }
         return $degustations;
     }

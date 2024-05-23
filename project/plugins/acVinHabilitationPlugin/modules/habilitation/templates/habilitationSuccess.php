@@ -91,7 +91,7 @@ if($etablissement->cvi && count($e) > 1):
                     <?php endif; ?>
                     <?php endif; ?>
             </tr>
-        <?php endforeach; ?>/
+        <?php endforeach; ?>
         </tbody>
     </table>
     <?php endif; ?>

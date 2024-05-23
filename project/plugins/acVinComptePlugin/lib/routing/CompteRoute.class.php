@@ -9,7 +9,11 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
       $this->compte = CompteClient::getInstance()->find(CompteClient::getInstance()->getId($parameters['identifiant']));
 
       $myUser = sfContext::getInstance()->getUser();
-      if ($myUser->isAdmin() || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG())) {
+      $allowed = $myUser->isAdmin();
+      $allowed = $allowed || (isset($this->accesses['allow_stalker']) && $this->accesses['allow_stalker'] && $myUser->isStalker() && ($this->getSociete()->type_societe != SocieteClient::TYPE_AUTRE));
+      $allowed = $allowed || (isset($this->accesses['allow_habilitation']) && $this->accesses['allow_habilitation'] && $myUser->hasHabilitation() && $this->compte->getSociete()->type_societe != SocieteClient::TYPE_AUTRE);
+      $allowed = $allowed || (isset($this->accesses['allow_admin_odg']) && $this->accesses['allow_admin_odg'] && $myUser->isAdminODG());
+      if ($allowed) {
           return $this->compte;
       }
       if ($myUser->isAdminODG() && $this->getSociete()) {
@@ -24,18 +28,16 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
           }
           throw new sfError403RegionException($compteUser);
       }
-      if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin()
-            && $myUser->getCompte()->identifiant != $this->getCompte()->getSociete()->getMasterCompte()->identifiant)
-      {
-            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+      if ($myUser->hasDrevAdmin()) {
+          return $this->compte;
       }
-      if($myUser->hasCredential(myUser::CREDENTIAL_HABILITATION)
-            && $myUser->getCompte()->identifiant != $this->getCompte()->getSociete()->getMasterCompte()->identifiant
-            && $this->getCompte()->getSociete()->type_societe != SocieteClient::TYPE_OPERATEUR)
+      if ($myUser->hasTeledeclaration()
+            && $myUser->getCompte()->identifiant == $this->getCompte()->getSociete()->getMasterCompte()->identifiant
+            && $this->getCompte()->getSociete()->type_societe == SocieteClient::TYPE_OPERATEUR)
       {
-          throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page");
+          return $this->compte;
       }
-      return $this->compte;
+      throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (Compte)");
     }
 
     protected function doConvertObjectToArray($object) {
@@ -50,8 +52,11 @@ class CompteRoute extends sfObjectRoute implements InterfaceCompteRoute {
     }
 
     public function getCompte($parameters = null) {
-      if (isset($parameters['allow_admin_odg'])){
-          $this->accesses['allow_admin_odg'] = $parameters['allow_admin_odg'];
+      if (is_array($parameters)) foreach($parameters as $k => $v) {
+          if (strpos($k, 'allow') === false) {
+              continue;
+          }
+          $this->accesses[$k] = $v;
       }
       if (!$this->compte) {
            $this->compte = $this->getObject();

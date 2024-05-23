@@ -306,15 +306,19 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
 
     public function save() {
         $regions = $this->getRegions();
-        if (count($regions)) {
+        if ($regions && count($regions)) {
             $this->add('region', implode('|', $regions));
         }
         return parent::save();
     }
 
     public function getRegions() {
+        $currentParcellaire = $this->getParcellaireCurrent();
+        if(!$currentParcellaire) {
+            return;
+        }
         $regions = array();
-        foreach ($this->getParcellaireCurrent()->declaration as $key => $value) {
+        foreach ($currentParcellaire->declaration as $key => $value) {
             $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
         }
         return array_filter(array_unique($regions));
@@ -363,7 +367,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Identification des parcelles manquantes '.$complement,
+            'libelle' => 'Identification des parcelles manquantes '.$this->getPeriode().' '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null

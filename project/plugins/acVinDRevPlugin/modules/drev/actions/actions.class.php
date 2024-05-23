@@ -958,7 +958,7 @@ class drevActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
+        $drev = $this->getRoute()->getDRev(['allow_habilitation' => true]);
         $this->secure(DRevSecurity::PDF, $drev);
 
         if (!$drev->validation) {

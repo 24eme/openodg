@@ -7,6 +7,13 @@ class DouaneImportCsvFile {
     protected $campagne = null;
     protected $configuration = null;
 
+    public $cvi = '';
+    public $drev_produit_filter = '';
+    public $etablissement = '';
+    public $identifiant = '';
+    public $raison_sociale = '';
+    public $commune = '';
+
     public function __construct($filePath, $doc = null, $drev_produit_filter = null) {
         $this->filePath = $filePath;
         $this->doc = $doc;

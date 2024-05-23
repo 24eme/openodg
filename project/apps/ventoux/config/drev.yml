@@ -2,6 +2,6 @@ all:
   configuration:
     drev:
       validation_odg: 'admin'
-      denomination_auto: false
-      denomination_biodynamie: false
+      denomination_auto: true
+      denomination_biodynamie: true
       engagement_pdf: true
