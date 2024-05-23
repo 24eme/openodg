@@ -1,6 +1,5 @@
 {
     "_id": "TEMPLATE-FACTURE-AOC-2022",
-    "_rev": "7-29d944bc91f692a89e3ce952de5532b5",
     "type": "TemplateFacture",
     "campagne": 2022,
     "template": "AOC",
