@@ -151,7 +151,7 @@ $t->comment("Validation");
 $date = date('c');
 $drev->validate($date);
 if (DRevConfiguration::getInstance()->hasValidationOdgRegion()) {
-    foreach(DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+    foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
         $drev->validateOdg($date, $region);
     }
 }else {

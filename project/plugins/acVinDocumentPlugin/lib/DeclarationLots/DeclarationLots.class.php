@@ -247,7 +247,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
                   $produit->validateOdg($date);
               }
           } else {
-              foreach (DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+              foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
                   $this->validateOdg($date, $region);
               }
           }
