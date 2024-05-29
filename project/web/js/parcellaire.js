@@ -70,10 +70,10 @@ $(document).ready(function()
                 var somme_superficie = 0;
                 $(this).closest('table').find(".superficie2compute").each(function() {
                     if ($(this).parent().parent().find('.bsswitch:checked').length) {
-                        somme_superficie += parseFloat($(this).html());
+                        somme_superficie += parseFloat($(this).html().replace(',', '.'));
                     }
                 });
-                $(this).html(somme_superficie);
+                $(this).html(somme_superficie.toFixed(4).replace('.', ','));
             });
         }
         $('input.bsswitch').on('update', function () { compute_superficies()});
