@@ -1069,7 +1069,7 @@ abstract class Lot extends acCouchdbDocumentTree
 
     public function isAffectable() {
 
-        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && !preg_match('/^(TOURNEE)/', $this->id_document_affectation);
+        return !$this->isAffecte() && $this->exist('affectable') && $this->affectable && (!$this->id_document_affectation || !preg_match('/^(TOURNEE)/', $this->id_document_affectation));
     }
 
     public function isAffecte() {
@@ -1254,7 +1254,7 @@ abstract class Lot extends acCouchdbDocumentTree
     }
 
     public function getPrelevementDatetime() {
-        if (!$this->_get('prelevement_datetime') && preg_match('/\d+-\d+-\d+/', $this->preleve)) {
+        if (!$this->_get('prelevement_datetime') && $this->preleve && preg_match('/\d+-\d+-\d+/', $this->preleve)) {
             $this->prelevement_datetime = $this->preleve.' 00:00';
         }
         return $this->_get('prelevement_datetime');
