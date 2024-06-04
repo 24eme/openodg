@@ -108,4 +108,11 @@ class DegustationConfiguration {
           return $this->configuration['static_region'];
         }
     }
+
+    public function hasAlwaysIdentifiantTable() {
+        if (!isset($this->configuration['always_identifiant_table'])) {
+            return false;
+        }
+        return $this->configuration['always_identifiant_table'];
+    }
 }
