@@ -1110,7 +1110,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $lot->date = $date;
             }
             if (!$lot->produit_hash) {
-                throw new sfExcpetion("le lot ".$lot->unique_id." n'a pas de hash produit");
+                throw new sfException("le lot ".$lot->unique_id." n'a pas de hash produit");
             }
         }
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
