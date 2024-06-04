@@ -1633,10 +1633,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter){
-        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter->getParameters());
+        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
     }
 
-    private function getInternalVolumeRevendique($lots, $produitFilter) {
+    private function getInternalVolumeRevendique($lots, TemplateFactureCotisationCallbackParameters $produitFilter) {
         $total = 0;
         foreach($lots as $lot) {
             if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
