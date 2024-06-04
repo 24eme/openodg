@@ -2096,6 +2096,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         if (count(array_keys($commission_date)) == 1) {
+            if (!$this->exist('date_commission')) {
+                $this->add('date_commission');
+            }
             $this->date_commission = array_key_first($commission_date);
         }
     }
