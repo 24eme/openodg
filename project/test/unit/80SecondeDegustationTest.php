@@ -24,7 +24,8 @@ $t = new lime_test(65);
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
-$degust1_date_fr = '09/09/'.$annee;
+$drev_date = $annee.'-09-09';
+$degust1_date_fr = '09/10/'.$annee;
 $degust2_date_fr = '11/11/'.$annee;
 $degust1_time_fr = '09:09';
 $degust2_time_fr = '11:11';
@@ -82,12 +83,14 @@ $produit1->recolte->superficie_total = 200;
 $produit1->volume_revendique_issu_recolte = 80;
 $drev->addLot();
 $drev->lots[0]->numero_logement_operateur = '1';
+$drev->lots[0]->produit_hash = $produitconfig_hash1;
 $drev->lots[0]->volume = 1;
-$drev->lots[1] = clone $drev->lots[0];
+$drev->addLot();
 $drev->lots[1]->numero_logement_operateur = '2';
 $drev->lots[1]->volume = 2;
-$drev->validate();
-$drev->validateOdg();
+$drev->lots[1]->produit_hash = $produitconfig_hash1;
+$drev->validate($drev_date);
+$drev->validateOdg($drev_date);
 $drev->save();
 $t->comment($drev->_id);
 

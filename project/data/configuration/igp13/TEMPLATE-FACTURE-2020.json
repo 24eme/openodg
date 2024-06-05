@@ -215,10 +215,10 @@
             "ChgtDenom"
           ],
           "callback": "getVolumeFacturable",
-          "callback_parameters": [
+          "callback_parameters": {
             "appellations": "/appellations/MED",
             "millesime" : "NOT /millesime/courant"
-          ]
+          }
         }
       }
     },
