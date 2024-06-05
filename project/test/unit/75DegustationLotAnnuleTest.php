@@ -53,6 +53,8 @@ foreach($produits as $produit) {
         continue;
     }
     $drev->addProduit($produit->getHash());
+    $lot = $drev->addLot();
+    $lot->produit_hash = $produit->getHash();
     $nbProduit++;
     if ($nbProduit == 2) {
       break;
