@@ -394,8 +394,8 @@ $t->ok($lotFromChgmtRes->getMouvement(Lot::STATUT_NONAFFECTABLE), "statut du lot
 $t->ok(!$lotFromChgmtRes->getMouvement(Lot::STATUT_NONCONFORME), "pas de mouvement du lot non conforme");
 
 $degustProvenance = $lotFromChgmtOrig->getLotProvenance();
-$t->is($degustProvenance->getDocument()->_id, $degustation->_id, 'la provenance du chgt est bien la dégustation '.$degustation->_id);
-$t->ok($degustProvenance->getMouvement(Lot::STATUT_CHANGE_SRC), "statut du lot de la degust à 'revendiqué changé'");
+$t->ok($degustProvenance && ($degustProvenance->getDocument()->_id == $degustation->_id), 'la provenance du chgt est bien la dégustation '.$degustation->_id);
+$t->ok($degustProvenance && $degustProvenance->getMouvement(Lot::STATUT_CHANGE_SRC), "statut du lot de la degust à 'revendiqué changé'");
 
 $chgtDenom->clearMouvementsLots();
 $chgtDenom->clearLots();
