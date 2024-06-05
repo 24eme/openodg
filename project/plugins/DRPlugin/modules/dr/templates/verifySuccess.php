@@ -20,7 +20,7 @@
             <th>Déclaré</th>
             <th>Différence</th>
             <th>Recu des apporteurs</th>
-            <th></th>
+            <th>Détails</th>
         </tr>
     </thead>
     <?php if (isset($tableau_comparaison)): ?>
@@ -52,7 +52,7 @@
         </tbody>
     <?php else: ?>
         <tbody>
-            <tr><td colspan=3><center><i>Pas de données des apporteurs</i></center></td></tr>
+            <tr><td colspan=5><center><i>Pas de données des apporteurs</i></center></td></tr>
         </tbody>
     <?php endif; ?>
 </table>

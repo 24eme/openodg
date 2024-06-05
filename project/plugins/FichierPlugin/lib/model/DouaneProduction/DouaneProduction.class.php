@@ -932,7 +932,27 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->getPeriode() .  '-12-10';
     }
 
-    public function getTableauComparaisonVolSvDr() {
+    public function getTableauComparaisonSvDeclarant() {
+        if (! ($this->type == 'SV11' || $this->type == 'SV12')) {
+            throw new sfException("Ce document n'est pas une SV11 ou une SV12.");
+        }
+        $produits = $this->getProduits();
+        foreach ($this->getDonnees() as $produit) {
+            if (($produit->categorie == '06' || $produit->categorie == '07' || $produit->categorie == '08')) {
+                if (! isset($tableau_comparaison[$produit->produit_libelle][$produit->tiers_cvi])) {
+                    $tableau_comparaison[$produit->produit_libelle][$produit->tiers_cvi] = $produit->valeur;
+                } else {
+                    $tableau_comparaison[$produit->produit_libelle][$produit->tiers_cvi] += $produit->valeur;
+                }
+                if(! isset($tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale])) {
+                    $tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale] = $produits[$produit->produit]['lignes'][$produit->categorie]['val'];
+                }
+            }
+        }
+        return isset($tableau_comparaison) ? $tableau_comparaison : null;
+    }
+
+    public function getTableauComparaisonDrApporteurs() {
         if (! ($this->type == 'SV11' || $this->type == 'SV12')) {
             throw new sfException("Ce document n'est pas une SV11 ou une SV12.");
         }
@@ -942,23 +962,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if (!$dr) {
                 continue;
             }
-            foreach ($dr->donnees as $produit) {
-                if (! (str_replace('ETABLISSEMENT-', '', $produit->tiers) == $this->identifiant)) {
-                    continue;
-                }
-                if (($produit->categorie == '06' || $produit->categorie == '07' || $produit->categorie == '08')) {
-                    if (! isset($tableau_comparaison[$produit->produit_libelle][$apporteur['etablissement']->cvi])) {
-                        $tableau_comparaison[$produit->produit_libelle][$apporteur['etablissement']->cvi] = $produit->valeur;
-                    } else {
-                        $tableau_comparaison[$produit->produit_libelle][$apporteur['etablissement']->cvi] += $produit->valeur;
-                    }
-                    if(! isset($tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale])) {
-                        $tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale] = $produits[$produit->produit]['lignes'][$produit->categorie]['val'];
-                    }
-                }
-            }
-        }
-        return isset($tableau_comparaison) ? $tableau_comparaison : null;
-    }
 
+        }
+    }
 }
