@@ -14,9 +14,20 @@ if ($application == 'loire' || $application == 'nantes') {
     $has_habilitation_inao = 1;
 }
 
+$campagne = (date('Y'))."";
+
 //Suppression des DRev précédentes
-foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
-    DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
+$drevs = array();
+foreach (DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v ) {
+    $drevs[$k] = $k;
+}
+$drevs['DREV-'.$viti->identifiant.'-'.$campagne] = 1;
+$drevs['DREV-'.$viti->identifiant.'-'.($campagne - 1)] = 1;
+foreach(array_keys($drevs) as $k) {
+    $doc = DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON);
+    if ($doc) {
+        DRevClient::getInstance()->deleteDoc($doc);
+    }
     $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON);
     if($dr) { DRClient::getInstance()->deleteDoc($dr); }
     $sv12 = SV12Client::getInstance()->find(str_replace("DREV-", "SV12-", $k), acCouchdbClient::HYDRATE_JSON);
@@ -74,8 +85,6 @@ file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%lib
 $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
 $t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());
-
-$campagne = (date('Y'))."";
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -364,7 +373,6 @@ $validation = new DRevValidation($drevControle);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-print_r($drevControle);
 
 $t->ok(isset($vigilances['declaration_neant']) && count($vigilances['declaration_neant']) > 0, "DRev à néant");
 
@@ -422,7 +430,7 @@ $t->ok(!isset($erreurs['mutage_ratio']), "Pas de point bloquant concernant le vo
 
 $vigilances = $validation->getPointsByCodes('vigilance');
 $t->is($produitMutage->getVolumeRevendiqueRendement(), 100, "Le volume rendement ne tient pas en compte le volume issu du mutage");
-$t->is($produitMutage->getRendementEffectif(), 30, "Le rendement ne tient pas en compte le volume issu du mutage");
+$t->is($produitMutage->getRendementEffectif(), $produitConfigMutage->getRendement(), "Le rendement ne tient pas en compte le volume issu du mutage");
 
 $produitMutage->volume_revendique_issu_mutage = 10.42;
 $validation = new DRevValidation($drev);
@@ -433,5 +441,5 @@ $produitMutage->volume_revendique_issu_mutage = 10.45;
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $t->is($produitMutage->getVolumeRevendiqueRendement(), 94.55, "Le volume rendement ne tient pas en compte le volume issu du mutage");
-$t->is($produitMutage->getRendementEffectif(), 28.365, "Le rendement ne tient pas en compte le volume issu du mutage");
+$t->is($produitMutage->getRendementEffectif(), 94.55 / $produitMutage->superficie_revendique, "Le rendement ne tient pas en compte le volume issu du mutage");
 $t->ok(isset($erreurs['mutage_ratio']), "Point bloquant concernant le volume d'alcool respectant 5% à 10% de la récolte (activé au dessus de 10,42)");

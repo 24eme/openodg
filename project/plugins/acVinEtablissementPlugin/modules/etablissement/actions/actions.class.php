@@ -37,13 +37,13 @@ class etablissementActions extends sfCredentialActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
+        $this->applyRights();
         if(!SocieteConfiguration::getInstance()->isVisualisationTeledeclaration() && !$this->getUser()->hasContact() && !$this->getUser()->isStalker()) {
             return $this->forwardSecure();
         }
 
-        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true, 'allow_stalker' => true, 'allow_habilitation' => true));
         $this->societe = $this->etablissement->getSociete();
-        $this->applyRights();
         $this->compte = $this->etablissement->getMasterCompte();
         if((!$this->compte->lat && !$this->compte->lon) || !$this->compte->hasLatLonChais()){
             $this->needUpdateLatLon = true;

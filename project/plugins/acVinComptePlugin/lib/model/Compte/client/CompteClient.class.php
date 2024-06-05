@@ -299,7 +299,7 @@ class CompteClient extends acCouchdbClient {
         $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
         $url = CompteClient::API_ADRESSE_URL.'?q='.urlencode($adresse." ".$commune."&postcode=".$code_postal."&type=".$type);
 
-        $file = file_get_contents($url, false, stream_context_create(["http"=>["timeout"=>1]]));
+        $file = @file_get_contents($url, false, stream_context_create(["http"=>["timeout"=>1]]));
         $result = json_decode($file);
         if((!$result || !count($result->features)) && $type == "housenumber"){
 

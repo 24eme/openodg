@@ -3,7 +3,7 @@ class MandatSepaConfiguration implements InterfaceMandatSepaPartie {
 
   protected static $_instance;
   protected $configuration;
-
+  protected $organisme;
 
   public static function getInstance() {
       if ( ! isset(self::$_instance)) {

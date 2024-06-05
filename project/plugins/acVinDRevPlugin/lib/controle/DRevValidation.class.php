@@ -160,9 +160,15 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleNeant()
     {
-    	if(count($this->document->getProduits()) > 0) {
-    		return;
-    	}
+        $superficie = 0;
+        $volume = 0;
+        foreach($this->document->getProduits() as $p) {
+            $volume += $p->volume_revendique_total;
+            $superficie += $p->superficie_revendique;
+        }
+        if ($volume) {
+            return;
+        }
 
         if($this->document->exist('lots') && count($this->document->lots) && !$this->document->hasDocumentDouanier()) {
     		return;

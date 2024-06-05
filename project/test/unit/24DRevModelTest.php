@@ -151,7 +151,7 @@ $t->comment("Validation");
 $date = date('c');
 $drev->validate($date);
 if (DRevConfiguration::getInstance()->hasValidationOdgRegion()) {
-    foreach(DrevConfiguration::getInstance()->getOdgRegions() as $region) {
+    foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {
         $drev->validateOdg($date, $region);
     }
 }else {
@@ -219,6 +219,7 @@ if (!DRevConfiguration::getInstance()->isModificativeEnabled()) {
 $t->comment("Génération d'une modificatrice");
 
 $drevM1 = $drev->generateModificative();
+$drevM1->declaration = $drev->declaration;
 $drevM1->save();
 
 $t->is($drevM1->_id, $drev->_id."-M01", "L'id de la drev est ".$drev->_id."-M01");
@@ -273,6 +274,7 @@ $produit2->getConfig()->add('attributs')->add('rendement_reserve_interpro_min', 
 $produit2->getConfig()->clearStorage();
 
 $drevM2 = $drevM1->generateModificative();
+$drevM2->declaration = $drevM1->declaration;
 $drevM2->save();
 $produit2M2 = $drevM2->get($produit2->getHash());
 $produit2M2->volume_revendique_total = $produit2M2->superficie_revendique * 50 + 5;

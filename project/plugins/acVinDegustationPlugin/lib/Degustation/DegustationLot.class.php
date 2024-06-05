@@ -67,7 +67,7 @@ class DegustationLot extends BaseDegustationLot {
     public function anonymize($index)
     {
         $table_anno = '';
-        if ($this->getDocument()->getLastNumeroTable() >= 2) {
+        if (DegustationConfiguration::getInstance()->hasAlwaysIdentifiantTable() || ($this->getDocument()->getLastNumeroTable() >= 2)) {
             $table_anno = $this->getNumeroTableStr();
         }
         $this->numero_anonymat = sprintf(DegustationConfiguration::getInstance()->getFormatAnonymat(), $table_anno, $index + 1);

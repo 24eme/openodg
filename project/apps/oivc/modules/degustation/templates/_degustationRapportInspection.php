@@ -39,7 +39,10 @@
                 <?php echo $etablissement->getRaisonSociale() ?><br/>
                 N° CVI : <?php echo $etablissement->getCvi() ?><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i><i> </i> N° SIRET de l'opérateur : <?php echo formatSIRET($etablissement->getSiret()) ?>
         </td></tr>
-        <tr><td>Catégorie : <?php echoCheck("Producteur viticole", true) ?> <?php echoCheck("Cave coopérative", false) ?> <?php echoCheck("Négociant", false) ?></td></tr>
+        <tr><td>Catégorie :
+            <?php echoCheck("Producteur viticole", in_array($etablissement->famille, [EtablissementFamilles::FAMILLE_PRODUCTEUR, EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR])); ?>
+            <?php echoCheck("Cave coopérative", $etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE); ?>
+            <?php echoCheck("Négociant", in_array($etablissement->famille, [EtablissementFamilles::FAMILLE_NEGOCIANT, EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR])); ?></td></tr>
         <tr><td>Adresse de l'opérateur<br/>
                 <?php echo $etablissement->getAdresse() ?>, <?php echo $etablissement->getCodePostal() ?> <?php echo $etablissement->getCommune() ?><br/>
                 Adresse du site de prélèvement<br/>
@@ -101,7 +104,7 @@
                 </tr>
                 <tr>
                     <td style="width: 40%;">N° lot / logement : <?php echo $lot->numero_logement_operateur ?></td>
-                    <?php if($lot->destination_date): ?>
+                    <?php if($lot->destination_date && !($lot->initial_type == 'VracExport') ): ?>
                     <td style="width: 50%;">Date de transaction/conditionnement : <?php echo DateTimeImmutable::createFromFormat('Y-m-d', $lot->destination_date)->format('d/m/Y') ?></td>
                     <?php endif; ?>
                 </tr>

@@ -108,7 +108,7 @@ class fichierActions extends sfActions
     }
 
     public function executeUpload(sfWebRequest $request) {
-    	$this->etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement(['allow_habilitation' => true]);
 
 		if($request->getParameter('fichier_id') && !$this->getUser()->isAdmin()) {
 
@@ -149,7 +149,7 @@ class fichierActions extends sfActions
 	}
 
 	public function executePiecesHistorique(sfWebRequest $request) {
-		$this->etablissement = $this->getRoute()->getEtablissement();
+		$this->etablissement = $this->getRoute()->getEtablissement(['allow_stalker' => true, 'allow_habilitation' => true]);
 		$this->societe = $this->etablissement->getSociete();
 		$this->secureEtablissement($this->etablissement);
 

@@ -375,7 +375,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
                 case Lot::STATUT_PRELEVE:
                 case Lot::STATUT_ATTENTE_PRELEVEMENT:
-                    if (strpos($lot->id_document_provenance, 'TOURNEE') === false) {
+                    if ($lot->id_document_provenance && strpos($lot->id_document_provenance, 'TOURNEE') === false) {
                         $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ATTENTE_PRELEVEMENT));
                     }
                 case Lot::STATUT_ANNULE:
@@ -389,7 +389,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_ANNULE));
             }
             if($lot->isPreleve()) {
-                if (strpos($lot->id_document_provenance, 'TOURNEE') === false) {
+                if ($lot->id_document_provenance && strpos($lot->id_document_provenance, 'TOURNEE') === false) {
                     $this->addMouvementLot($lot->buildMouvement(Lot::STATUT_PRELEVE, '', $lot->preleve));
                 }
             }

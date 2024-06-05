@@ -641,10 +641,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function resetAndImportFromDocumentDouanier() {
       $this->declarant->famille = $this->getEtablissementObject()->famille;
 
-      if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
-          throw new sfException('Superficies déjà saisies');
-      }
-
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
           throw new sfException('Volume déjà déclaré');
       }
@@ -1114,12 +1110,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $lot->date = $date;
             }
             if (!$lot->produit_hash) {
-                throw new sfExcpetion("le lot ".$lot->unique_id." n'a pas de hash produit");
+                throw new sfException("le lot ".$lot->unique_id." n'a pas de hash produit");
             }
         }
-        if(RegionConfiguration::getInstance()->hasOdgProduits()) {
-            $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
-        }
+        $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
     }
 
     public function delete() {
@@ -1156,6 +1150,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $this->validation_odg = $date;
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
 
         if(!$this->numero_archive) {
             $this->save();
@@ -1543,7 +1538,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
 	{
-		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter->getParameters());
+		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
         foreach($this->getDeletedLots() as $lot) {
             $volume -= $lot->volume;
         }
@@ -1638,10 +1633,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter){
-        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter->getParameters());
+        return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
     }
 
-    private function getInternalVolumeRevendique($lots, $produitFilter) {
+    private function getInternalVolumeRevendique($lots, TemplateFactureCotisationCallbackParameters $produitFilter) {
         $total = 0;
         foreach($lots as $lot) {
             if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
@@ -2101,6 +2096,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         if (count(array_keys($commission_date)) == 1) {
+            if (!$this->exist('date_commission')) {
+                $this->add('date_commission');
+            }
             $this->date_commission = array_key_first($commission_date);
         }
     }

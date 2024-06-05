@@ -62,7 +62,7 @@ $t->is($line[DRCsvFile::CSV_PRODUIT_INAO], $produit1->getCodeDouane(), "Le code 
 $t->is($line[DRCsvFile::CSV_PRODUIT_LIBELLE], $produit1->getLibelleComplet(), "Libelle complet OK");
 
 $t->is($line[SV12CsvFile::CSV_COLONNE_ID], '1', "Colonne colonne id OK");
-$t->is($line[SV12CsvFile::CSV_ORGANISME], $application, "Colonne organisme id OK");
+$t->is($line[SV12CsvFile::CSV_ORGANISME], strtoupper($application), "Colonne organisme id OK");
 $t->is($line[SV12CsvFile::CSV_MILLESIME], $year, "Colonne Millesime $year OK");
 $t->is($line[SV12CsvFile::CSV_FAMILLE_LIGNE_CALCULEE], "CAVE_PARTICULIERE_TOTAL", "Colonne famille calculée OK");
 
