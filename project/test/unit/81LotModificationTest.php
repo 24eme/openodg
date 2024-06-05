@@ -134,7 +134,9 @@ $values['numero_logement_operateur'] = "A";
 $values['millesime'] = "2021";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
-$values['specificite'] = 'bio';
+if (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+    $values['specificite'] = 'bio';
+}
 $values['cepage_0'] = 'CHENIN B';
 $values['repartition_hl_0'] = 11;
 $values['_revision'] = $lot->getDocument()->_rev;
@@ -228,7 +230,9 @@ $values['numero_logement_operateur'] = "A";
 $values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
-$values['specificite'] = 'bio';
+if (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+    $values['specificite'] = 'bio';
+}
 $values['cepage_0'] = 'CHENIN B';
 $values['repartition_hl_0'] = 11;
 $values['_revision'] = $lot->getDocument()->_rev;
@@ -255,7 +259,9 @@ $values['numero_logement_operateur'] = "A";
 $values['millesime'] = ($annee+2)."";
 $values['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $values['destination_date'] = date('d/m/Y');
-$values['specificite'] = 'bio';
+if (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+    $values['specificite'] = 'bio';
+}
 $values['cepage_0'] = 'CHENIN B';
 $values['repartition_hl_0'] = 11;
 $values['_revision'] = $lot->getDocument()->_rev;

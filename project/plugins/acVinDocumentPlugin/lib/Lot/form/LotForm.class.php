@@ -6,8 +6,11 @@ class LotForm extends acCouchdbObjectForm
     private $specificites = null;
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        $this->specificites = [];
         if (isset($options['specificites'])){
-            $this->specificites = $options['specificites'];
+            $this->specificites = (array) $options['specificites'];
+        }elseif (DRevConfiguration::getInstance()->hasSpecificiteLot()) {
+            $this->specificites = DRevConfiguration::getInstance()->getSpecificites();
         }
         parent::__construct($object, $options, $CSRFSecret);
     }
@@ -57,7 +60,7 @@ class LotForm extends acCouchdbObjectForm
         $this->setWidget('destination_type', new bsWidgetFormChoice(array('choices' => $this->getDestinationsType())));
         $this->setValidator('destination_type', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getDestinationsType()))));
 
-        if($this->specificites) {
+        if(count($this->specificites)) {
           $this->setWidget('specificite', new bsWidgetFormChoice(array('choices' => $this->getSpecificites())));
           $this->setValidator('specificite', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getSpecificites()))));
         }
