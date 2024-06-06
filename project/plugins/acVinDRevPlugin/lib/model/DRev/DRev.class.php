@@ -97,12 +97,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $millesime = substr($this->campagne, 0, 4);
-        $habDecla = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant)->declaration;
+        $hab = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
-            foreach ($habDecla as $decla => $infos) {
-                if (strpos($h, $decla) && $infos['activites'][HabilitationClient::ACTIVITE_VINIFICATEUR]['statut'] == HabilitationClient::STATUT_EXTERIEUR) {
-                    continue 2;
+            if ($hab) {
+                foreach ($hab->declaration as $decla => $infos) {
+                    if (strpos($h, $decla) && $infos['activites'][HabilitationClient::ACTIVITE_VINIFICATEUR]['statut'] == HabilitationClient::STATUT_EXTERIEUR) {
+                        continue 2;
+                    }
                 }
             }
             $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR().' '.$millesime;
