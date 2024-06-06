@@ -2,9 +2,9 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if ($application == 'igp13') {
+if ($application == 'igp13' || !DRevConfiguration::getInstance()->isModuleEnabled()) {
     $t = new lime_test(1);
-    $t->ok(true, "pass IGP");
+    $t->pass("no DREV AOC for ".$application);
     return;
 }
 
