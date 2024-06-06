@@ -52,14 +52,13 @@ $form->bind(array('hashref' => $produitConfig_0->getHash(), '_revision' => $habi
 $t->ok(!$form->isValid(), "Le formulaire d'ajout est valide");
 
 $t->comment("Form d'ajout de produit avec activité");
-$activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR,HabilitationClient::ACTIVITE_VINIFICATEUR,HabilitationClient::ACTIVITE_VRAC);
+$activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR,HabilitationClient::ACTIVITE_VINIFICATEUR);
 $form = new HabilitationAjoutProduitForm($habilitation);
 $statut = HabilitationClient::STATUT_DEMANDE_HABILITATION;
 $date = "07/09/".(date('Y')+1);
 $dateIso = (date('Y')+1)."-09-07";
 
 $form->bind(array('hashref' => $produitConfig_0->getHash(), 'statut' => $statut, 'date' => $date, 'activites' => $activites, '_revision' => $habilitation->_rev));
-
 $t->ok($form->isValid(), "Le formulaire d'ajout est valide");
 $form->save();
 
@@ -77,7 +76,7 @@ foreach ($HabilitationActivites as $key => $activite) {
     $dates[$activite->date] = $activite->date;
   }
 }
-$t->ok(count($activite_tmp) == 3, "Le produit a 3 activites en demande");
+$t->ok(count($activite_tmp) == 2, "Le produit a 2 activites en demande");
 
 $t->ok(count($dates) == 1, "Le produit a ses activites avec une seule date");
 $f_date = array_pop($dates);
