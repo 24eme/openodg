@@ -7,7 +7,7 @@ if ($application == 'loire') {
     $t->ok(true, "Pas d'habilitation pour loire");
     return;
 }
-$t = new lime_test(15);
+$t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -18,13 +18,13 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 }
 
 $t->comment("Création des docs");
-$date = '2012-01-01';
+$date = (date('Y')-1).'-01-01';
 $habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, $date);
 $habilitation->save();
 
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc dans le passé est bien construit");
 
-$date = date('Y-m-d');
+$date = (date('Y')-1).'06-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($habilitation->identifiant, $date);
 $habilitation->save();
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc actuel est bien construit");

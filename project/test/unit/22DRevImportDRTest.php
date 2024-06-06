@@ -1,5 +1,11 @@
 <?php require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if (!DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $t = new lime_test();
+    $t->pass("no DREV for ".$application);
+    return;
+}
+
 $t = new lime_test(24);
 $t->comment("test Import DR avec denomination automatique à ".DRevConfiguration::getInstance()->hasDenominationAuto());
 

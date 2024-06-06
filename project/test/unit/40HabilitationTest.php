@@ -18,7 +18,7 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 }
 
 $t->comment("Création d'un doc dans le passé");
-$date = (date('Y')-1).'-10-01';
+$date = (date('Y')-2).'-10-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
 $habilitation->save();
 
@@ -117,7 +117,7 @@ $t->is($habilitationLast->get($produitConfig->getHash())->activites->get($activi
 $t->is(count($habilitationLast->historique), count($habilitationLastBefore->historique), "La ligne d'historique n'a pas été créé dans la dernière habilitation");
 
 $t->comment("Insertion d'une habilitation au début avec perte de logique");
-$date = '2009-10-01';
+$date = (date('Y')-1).'-01-01';
 
 try {
 HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), null, HabilitationClient::STATUT_RETRAIT);
