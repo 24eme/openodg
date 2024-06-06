@@ -58,3 +58,13 @@ dr_enattente_admin:
     type: object
   requirements:
     sf_method: [get]
+
+production_verify:
+  url: /dr/visualisation/:id/verify
+  param: { module: dr, action: verify }
+  class: DRRoute
+  options:
+    model: DR
+    type: object
+  requirements:
+    sf_method: [get]

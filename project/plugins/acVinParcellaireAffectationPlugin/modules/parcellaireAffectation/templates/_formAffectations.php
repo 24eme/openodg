@@ -5,15 +5,17 @@
 <?php echo $form->renderGlobalErrors(); ?>
 
 <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
-<div style="margin-bottom: 1em;" class="row">
-    <div class="col-xs-12">
-        <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
+<?php if ($dgc): ?>
+    <div style="margin-bottom: 1em;" class="row">
+        <div class="col-xs-12">
+            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 	<thead>
     	<tr>
-    		<th class="col-xs-2">Commune</th>
+    		<th class="col-xs-3">Commune</th>
             <th class="col-xs-2">Lieu-dit</th>
             <th class="col-xs-1">Section /<br />N° parcelle</th>
             <th class="col-xs-2">Cépage</th>
@@ -41,18 +43,18 @@
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
             <td class="text-right"><?php echoFloatFr($parcelle->superficie,4); ?></td>
             <td class="text-right">
-                <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span class="pull-right superficie2compute"><?php echoFloatFr($parcelle->superficie_affectation,4); ?></span>
+                <!-- <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
+                <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(); ?>
             </td>
         	<td class="text-center">
             	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
                 	<?php echo $form[$produitKey][$parcelle->getKey()]['affectee']->renderError() ?>
                     <div class="col-xs-12">
-		            	<?php echo $form[$produitKey][$parcelle->getKey()]['affectee']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+		            	<?php echo $form[$produitKey][$parcelle->getKey()]['affectee']->render(array('class' => "bsswitch test", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                     </div>
                 </div>
         	</td>
-            <td class="text-center">
+            <td class="text-center">/
                 <?php if (round($parcelle->superficie_affectation,4) != round($parcelle->superficie,4)): ?>
                     <span>Partielle</span>
                 <?php else: ?><span>Totale</span>

@@ -8,7 +8,7 @@ class PMCValidationForm extends acCouchdbForm
 
     public function isAdmin() {
 
-        return $this->getOption('isAdmin') ? $this->getOption('isAdmin') : false;
+        return ($this->getOption('isAdmin'));
     }
 
     public function configure() {
@@ -25,7 +25,7 @@ class PMCValidationForm extends acCouchdbForm
             }
         }
 
-        if($this->isAdmin()){
+        if($this->isAdmin() && !$this->getDocument()->isValideeODG()){
             $formDegustable = new BaseForm();
             foreach($this->getDocument()->getLotsByCouleur(false) as $couleur => $lots) {
                 foreach ($lots as $lot) {
@@ -36,8 +36,8 @@ class PMCValidationForm extends acCouchdbForm
             $this->embedForm('lots', $formDegustable);
         }
 
-        if(!$this->getDocument()->validation && $this->getDocument()->isPapier()) {
-            $this->setWidget('date', new sfWidgetFormInput());
+        if(!$this->getDocument()->validation && $this->getDocument()->isPapier() && $this->getDocument()->type == PMCClient::TYPE_MODEL) {
+            $this->setWidget('date', new sfWidgetFormInput([], ["required" => "required"]));
             $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
             $this->getWidget('date')->setLabel("Date de réception du document");
             $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");

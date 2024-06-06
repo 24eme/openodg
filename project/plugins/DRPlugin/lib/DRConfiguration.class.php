@@ -32,4 +32,9 @@ class DRConfiguration
     {
         return isset($this->configuration['validation']) && $this->configuration['validation'];
     }
+
+    public function hasVisuTeledeclaration()
+    {
+        return isset($this->configuration['visu_teledeclaration']) && $this->configuration['visu_teledeclaration'];
+    }
 }

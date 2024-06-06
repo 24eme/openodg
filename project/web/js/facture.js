@@ -103,4 +103,31 @@
 
         element.change();
     }
+
+    const inputsSuggestions = document.querySelectorAll('input[list="suggestions"]');
+    inputsSuggestions.forEach(input => {
+      input.addEventListener('input', event => {
+        if (event.data) {
+            if ((event.data).split('|')[1]) {
+              event.target.value = (event.data).split('|')[0];
+              const inputPU = document.getElementById((event.target.id).replace('detail_libelle', 'prix_unitaire'));
+              const inputQuantite = document.getElementById((event.target.id).replace('detail_libelle', 'quantite'));
+              if ((event.data).split('|')[1]) {
+                  inputPU.value = (event.data).split('|')[1];
+                  inputQuantite.focus();
+              }
+            }
+        }
+      });
+    });
+
+    $('.mouvements_facture_delete_row .btn_supprimer_ligne_template').click(function (e)
+    {
+        const row = e.target.closest('.form-group.line.mvt_ligne')
+        if (row) {
+          row.remove()
+        }
+        return false;
+    });
+
 })(jQuery);

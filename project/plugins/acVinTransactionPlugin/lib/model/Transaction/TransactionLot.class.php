@@ -4,6 +4,10 @@
 class TransactionLot extends BaseTransactionLot
 {
     public function getInitialType() {
+        if(is_null($this->_get('initial_type')) && TransactionConfiguration::getInstance()->hasStaticOrigineType()) {
+            $this->initial_type = TransactionConfiguration::getInstance()->getStaticOrigineType();
+        }
+
         if(is_null($this->_get('initial_type'))) {
             $this->initial_type = $this->getDocumentType();
         }

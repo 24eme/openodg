@@ -68,10 +68,10 @@ EOF;
 
             $statut = SocieteClient::STATUT_SUSPENDU;
             foreach(self::$tags as $tagKey => $tagValue) {
-                if($line[$tagKey] == "OUI") {
+                if(strtoupper($line[$tagKey]) == "OUI") {
                     $statut = SocieteClient::STATUT_ACTIF;
                 }
-                if($line[$tagKey] == "EN COURS") {
+                if(strtoupper($line[$tagKey]) == "EN COURS") {
                     $statut = SocieteClient::STATUT_ACTIF;
                 }
             }

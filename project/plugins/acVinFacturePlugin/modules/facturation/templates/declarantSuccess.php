@@ -1,8 +1,8 @@
 <ol class="breadcrumb">
-    <?php if(!$sf_user->isAdmin()): ?>
+    <?php if(!$sf_user->hasFactureAdmin()): ?>
         <li><a href="<?php echo url_for('accueil'); ?>">Accueil</a></li>
     <?php endif; ?>
-  <li><a href="<?php if($sf_user->isAdmin()): ?><?php echo url_for('facturation'); ?><?php else: ?><?php echo url_for('facturation_declarant', $compte); ?><?php endif; ?>">Facturation</a></li>
+  <li><a href="<?php if($sf_user->hasFactureAdmin()): ?><?php echo url_for('facturation'); ?><?php else: ?><?php echo url_for('facturation_declarant', $compte); ?><?php endif; ?>">Facturation</a></li>
   <li class="active"><a href=""><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
 </ol>
 
@@ -16,7 +16,7 @@
     <h2>Espace Facture</h2>
 </div>
 
-<?php if ($sf_user->isAdmin() && isset($formSociete)): ?>
+<?php if (($sf_user->hasFactureAdmin()) && isset($formSociete)): ?>
     <?php include_partial('etablissement/formChoice', array('form' => $formSociete, 'action' => url_for('facturation'), 'noautofocus' => true)); ?>
 </div>
 <?php endif; ?>
@@ -48,12 +48,12 @@
                 <th class="col-xs-2">Type</th>
                 <th class="col-xs-4 text-right">Montant TTC Facture</th>
                 <th class="col-xs-2 text-right">Montant payé</th>
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <th style="witdth: 0;"></th>
+                <?php if($sf_user->hasFactureAdmin()): ?>
+                <th style="width: 0;"></th>
                 <?php endif; ?>
-                <th style="witdth: 0;"></th>
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <th style="witdth: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
+                <th style="width: 0;"></th>
+                <?php if($sf_user->hasFactureAdmin()): ?>
+                <th style="width: 0;"><span title="Téléchargé par l'opérateur" class="glyphicon glyphicon-eye-open"></span></th>
                 <?php endif; ?>
             </tr>
         </thead>
@@ -61,7 +61,7 @@
             <?php foreach ($factures as $facture) : ?>
             <tr>
                 <td><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></td>
-                <td>N°&nbsp;<?php echo $facture->numero_archive ?></td>
+                <td>N°&nbsp;<?php echo $facture->numero_odg ?></td>
                 <td><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></td>
                 <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->total_ttc)); ?>&nbsp;€</td>
                 <td class="text-right">
@@ -69,7 +69,7 @@
                         <a class="<?php if(!$facture->getMontantPaiement()): ?>transparence-xs<?php endif ?>" title="<?php if(!$facture->getMontantPaiement()): ?>Saisir un paiement<?php else: ?>Voir ou modifier le(s) paiements<?php endif ?>" href="<?php echo url_for("facturation_paiements", array("id" => $facture->_id)) ?>"><?php echo echoFloat($facture->getMontantPaiement()*1); ?>&nbsp;€</a>
                     <?php endif; ?>
                 </td>
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                <?php if($sf_user->hasFactureAdmin()): ?>
                 <td class="text-center">
                   <span class="dropdown">
                   <button type="button" class="btn btn-default btn-default-step btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span>&nbsp;<span class="caret"></span></button>
@@ -88,14 +88,15 @@
                       <?php else: ?>
                         <li class="disabled"><a href=""><span class="glyphicon glyphicon-repeat"></span> Créér un avoir</a></li>
                       <?php endif; ?>
+                      <li><a href="<?php echo url_for('facturation_email', array("id" => $facture->_id)) ?>" onclick="return confirm('confirmez-vous l\'envoi de la facture par e-mail ?')"><span class="glyphicon glyphicon-envelope"></span> Envoyer la facture par e-mail</a></li>
                   </ul>
                   </span>
                 </td>
                <?php endif; ?>
                 <td class="text-right">
-                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class=""><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
+                    <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="" style="white-space: nowrap;"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                 </td>
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+                <?php if($sf_user->hasFactureAdmin()): ?>
                     <td><?php if($facture->isTelechargee()): ?><span style="opacity: 0.8;" data-toggle="tooltip" title="La facture a été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-open text-primary"></span><?php else: ?><span style="opacity: 0.2;" data-toggle="tooltip" title="La facture n'a pas encore été téléchargée par l'opérateur" class="glyphicon glyphicon-eye-close text-primary"></span><?php endif; ?></td>
                 <?php endif; ?>
             </tr>
@@ -103,7 +104,7 @@
               if(!count($factures)):
             ?>
             <tr>
-                <td colspan="<?php echo intval($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))*2+6 ?>">Aucune facture éditée</td>
+                <td colspan="<?php echo intval($sf_user->hasFactureAdmin())*2+6 ?>">Aucune facture éditée</td>
             </tr>
           <?php endif; ?>
         </tbody>
@@ -152,11 +153,11 @@
     </table>
     </div>
 </div>
-<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+<?php if($sf_user->hasFactureAdmin()): ?>
   <?php include_partial('facturation/mouvements', array('mouvements' => $mouvements)); ?>
 <?php endif; ?>
 
-<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+<?php if($sf_user->hasFactureAdmin()): ?>
     <div style="margin-top: 30px;">
     <?php include_partial('facturation/generationForm', array('form' => $form, 'massive' => false)); ?>
     </div>

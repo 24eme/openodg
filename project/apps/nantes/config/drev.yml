@@ -6,3 +6,4 @@ all:
       validation_odg: 'auto'
       habilitation_inao: true
       cgu: true
+      send_email_operateur: false

@@ -65,6 +65,7 @@ ParcellaireIrrigable:
                               campagne_plantation: {  }
                               materiel: {  }
                               ressource: {  }
+      region: { required: false }
       observations: {  }
       pieces:
         type: array_collection

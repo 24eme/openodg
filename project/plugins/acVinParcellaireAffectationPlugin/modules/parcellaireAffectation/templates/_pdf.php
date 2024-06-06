@@ -36,10 +36,6 @@
         </table>
 </td></tr></table>
 
-<div class="page-header no-border">
-    <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence</h2>
-</div>
-
 <?php if($parcellesByCommune === false): ?>
     <br />
     <br />

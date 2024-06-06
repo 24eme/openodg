@@ -89,6 +89,9 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
+        if ($lieu && preg_match('/[0-9]/', $lieu)) {
+            throw new sfException('Strange lieu '.$lieu);
+        }
         $produit = $this->addProduit($hashProduit);
         return $produit->addParcelle($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
     }
@@ -216,7 +219,7 @@ class Parcellaire extends BaseParcellaire {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
             $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuilleEnabled() && !$p->hasTroisiemeFeuille()) {
                 $cepage .= ' - jeunes vignes';
             }
             if (!isset($synthese[$cepage])) {
@@ -240,40 +243,45 @@ class Parcellaire extends BaseParcellaire {
             if (!count($libelles)) {
                 $libelles[] = '';
             }
-            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                $libelles = array('jeunes vignes');
+            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuilleEnabled() && !$p->hasTroisiemeFeuille()) {
+                $libelles[] = 'XXXXjeunes vignes';
+                $cepage = 'XXXXjeunes vignes';
             }
+            sort($libelles);
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {
                     $synthese[$libelle] = array();
                     $synthese[$libelle]['Total'] = array();
-                    $synthese[$libelle]['Total']['superficie_min'] = 0;
-                    $synthese[$libelle]['Total']['superficie_max'] = 0;
+                    $synthese[$libelle]['Total']['Total'] = array();
+                    $synthese[$libelle]['Total']['Total']['superficie_min'] = 0;
+                    $synthese[$libelle]['Total']['Total']['superficie_max'] = 0;
                 }
-                if (!isset($synthese[$libelle][$cepage])) {
-                    $synthese[$libelle][$cepage] = array();
-                    $synthese[$libelle][$cepage]['superficie_min'] = 0;
-                    $synthese[$libelle][$cepage]['superficie_max'] = 0;
+                if (!isset($synthese[$libelle]['Cepage'])) {
+                    $synthese[$libelle]['Cepage'] = array();
+                }
+                if (!isset($synthese[$libelle]['Cepage'][$cepage])) {
+                    $synthese[$libelle]['Cepage'][$cepage] = array();
+                    $synthese[$libelle]['Cepage'][$cepage]['superficie_min'] = 0;
+                    $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
                 }
                 if (count($libelles) == 1) {
-                    $synthese[$libelle][$cepage]['superficie_min'] = round($synthese[$libelle][$cepage]['superficie_min'] + $p->superficie, 6);
-                    $synthese[$libelle]['Total']['superficie_min'] = round($synthese[$libelle]['Total']['superficie_min'] + $p->superficie, 6);
+                    $synthese[$libelle]['Cepage'][$cepage]['superficie_min'] = round($synthese[$libelle]['Cepage'][$cepage]['superficie_min'] + $p->superficie, 6);
+                    $synthese[$libelle]['Total']['Total']['superficie_min'] = round($synthese[$libelle]['Total']['Total']['superficie_min'] + $p->superficie, 6);
                 }
-                $synthese[$libelle][$cepage]['superficie_max'] = round($synthese[$libelle][$cepage]['superficie_max'] + $p->superficie, 6);
-                $synthese[$libelle]['Total']['superficie_max'] = round($synthese[$libelle]['Total']['superficie_max'] + $p->superficie, 6);
+                $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = round($synthese[$libelle]['Cepage'][$cepage]['superficie_max'] + $p->superficie, 6);
+                $synthese[$libelle]['Total']['Total']['superficie_max'] = round($synthese[$libelle]['Total']['Total']['superficie_max'] + $p->superficie, 6);
+                ksort($synthese);
             }
         }
 
-        foreach ($synthese as $libelle => &$cepages) {
-            uksort($cepages, function ($cepage1, $cepage2) {
-                if ($cepage1 === "Total") {
-                    return -1;
-                }
-                if ($cepage2 === "Total") {
-                    return 1;
-                }
-                return strcmp($cepage1, $cepage2);
-            });
+        foreach ($synthese as $libelle => &$cepagetotal) {
+            ksort($cepagetotal);
+            foreach($cepagetotal as $l => &$cepages) {
+                ksort($cepages);
+            }
+            if (count($cepagetotal['Cepage']) < 2) {
+                unset($cepagetotal['Total']);
+            }
         }
         return $synthese;
     }
@@ -384,7 +392,7 @@ class Parcellaire extends BaseParcellaire {
                 }
             }
         }
-        
+
         // On ajoute les aires des appelations des communes associées avec la bonne couleur
         foreach ($this->getMergedAires() as $aire) {
             $aireobj = json_decode($aire->getGeojson());
@@ -396,7 +404,7 @@ class Parcellaire extends BaseParcellaire {
                 $feat->properties->stroke = '#000';
                 $feat->properties->{'stroke-width'} = 2;
                 $feat->properties->{'stroke-opacity'} = 0.1;
-                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables. 
+                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables.
                 array_unshift($geojson->features, $feat);
             }
         }

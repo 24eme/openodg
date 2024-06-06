@@ -48,6 +48,14 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
                 $keyproduit = DeclarationExportCsv::getProduitKeysCsv($lot->getConfigProduit());
             }
             $docOrigine = $lot->getDocOrigine();
+
+            $dateDegustationVoulue = null;
+            if($lot->exist('date_degustation_voulue') && $lot->date_degustation_voulue) {
+                $dateDegustationVoulue = $lot->date_degustation_voulue;
+            } elseif($this->document->exist('date_degustation_voulue') && $this->document->date_degustation_voulue) {
+                $dateDegustationVoulue = $this->document->date_degustation_voulue;
+            }
+
             $csv .= $this->document->type.";".
             $this->document->campagne.";".
             $this->document->identifiant.";".
@@ -83,7 +91,7 @@ class ExportDeclarationLotsCSV implements InterfaceDeclarationExportCsv {
             "PAPIER;".
             $docOrigine->validation.";".
             $docOrigine->validation_odg.";".
-            (($docOrigine && $docOrigine->exist('date_degustation_voulue')) ? $docOrigine->date_degustation_voulue : null).";".
+            $dateDegustationVoulue.";".
             (($docOrigine && $docOrigine->exist('envoi_oi')) ? $docOrigine->envoi_oi : null).";".
             (($docOrigine->hasDocumentDouanier()) ? $docOrigine->getDocumentDouanierType() : null).";".
             Organisme::getCurrentOrganisme().";".

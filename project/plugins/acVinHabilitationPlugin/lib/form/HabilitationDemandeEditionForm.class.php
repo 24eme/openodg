@@ -38,7 +38,7 @@ class HabilitationDemandeEditionForm extends acCouchdbForm
             'commentaire' => new sfValidatorString(array("required" => false)),
         ));
 
-        if(sfContext::getInstance()->getUser()->hasCredential(AppUser::CREDENTIAL_HABILITATION)) {
+        if(sfContext::getInstance()->getUser()->hasHabilitation()) {
             $this->setWidget('activites', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getActivites())));
             $this->getWidget('activites')->setLabel('Activités');
             $this->setValidator('activites', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getActivites()))));

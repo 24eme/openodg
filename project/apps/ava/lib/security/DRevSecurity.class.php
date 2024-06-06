@@ -1,6 +1,8 @@
 <?php
 
-class DRevSecurity extends DocumentSecurity implements SecurityInterface {
+/*** AVA ***/
+
+class /*** AVA ***/ DRevSecurity extends DocumentSecurity implements SecurityInterface {
 
     protected $doc;
     protected $user;

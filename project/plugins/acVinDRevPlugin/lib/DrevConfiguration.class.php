@@ -36,7 +36,7 @@ class DRevConfiguration {
         return isset($this->configuration['import_with_mentions_complementaire']) && boolval($this->configuration['import_with_mentions_complementaire']);
     }
 
-    public function hasMentionsCompletaire() {
+    public function hasMentionsComplementaire() {
 
         return isset($this->configuration['mentions_complementaire']) && boolval($this->configuration['mentions_complementaire']);
     }
@@ -123,13 +123,17 @@ class DRevConfiguration {
         return isset($this->configuration['logement_adresse']) && boolval($this->configuration['logement_adresse']);
     }
 
+    public function hasLogementChais() {
+        return isset($this->configuration['logement_chais']) && boolval($this->configuration['logement_chais']);
+    }
+
     public function isRevendicationParLots() {
 
         return ConfigurationClient::getCurrent()->declaration->isRevendicationParLots();
     }
 
     public function isSendMailToOperateur() {
-        return $this->configuration['send_email_operateur'];
+        return isset($this->configuration['send_email_operateur']) ? $this->configuration['send_email_operateur'] : true;
     }
 
     public function hasVolumeSeuil(){

@@ -275,6 +275,22 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
         $this->piece_document->generatePieces();
     }
 
+    public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
+        return parent::save();
+    }
+
+    public function getRegions() {
+        $regions = array();
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
 	public function isValidee(){
 		return $this->validation || $this->validation_odg;
 	}

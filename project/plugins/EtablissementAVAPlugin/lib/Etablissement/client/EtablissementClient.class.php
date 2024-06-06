@@ -4,8 +4,8 @@
 
 class EtablissementClient extends acCouchdbClient {
 
-    const REGION_HORS_CVO = 'REGION_HORS_CVO';
-    const REGION_CVO = 'REGION_CVO';
+    const REGION_HORS_REGION = 'REGION_HORS_REGION';
+    const REGION_IS_REGION = 'REGION_IS_REGION';
     const TYPE_MODEL = "Etablissement";
     const TYPE_COUCHDB = "ETABLISSEMENT";
 
@@ -143,6 +143,6 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public static function getRegionsWithoutHorsInterLoire() {
-        return array(self::REGION_CVO => self::REGION_CVO);
+        return array(self::REGION_IS_REGION => self::REGION_IS_REGION);
     }
 }

@@ -76,7 +76,7 @@
               "docs": [
                 "ChgtDenom"
               ],
-              "callback": "getSecondChgtDenomFacturable",
+              "callback": "getSecondChgtDenomOrDeclassementFacturable",
               "callback_parameters": []
             }
           }

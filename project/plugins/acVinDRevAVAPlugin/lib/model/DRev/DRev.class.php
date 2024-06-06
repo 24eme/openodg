@@ -869,7 +869,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
             if (strpos($hash, '/appellation') === false) {
                 continue;
             }
-            $volume += intval($line[DRCIVACsvFile::CSV_VOLUME]);
+            $volume += floatval($line[DRCIVACsvFile::CSV_VOLUME]);
         }
         return $volume;
     }
@@ -897,14 +897,43 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
 	}
 
     public function getRegistreVCISurfaceFacturable() {
-        $registreVCI = $this->getCurrentRegistreVCI();
-
-        if(!$registreVCI) {
+        if($this->isNonRecoltant() || $this->hasSV()) {
 
             return 0;
         }
 
-        return $registreVCI->getSurfaceFacturable();
+        $superficieFacturable = 0;
+        $lastRegistreVCI = $this->getLastRegistreVCI();
+        foreach($this->declaration->getProduits() as $produit) {
+            $hasVci = false;
+            if($produit->exist('details') && $produit->details->total_vci > 0) {
+                $hasVci = true;
+            }
+            if($lastRegistreVCI) {
+                foreach($lastRegistreVCI->getProduitsWithPseudoAppelations() as $registreProduit) {
+                    if(!$registreProduit || !$registreProduit->isPseudoAppellation()) {
+                        continue;
+                    }
+                    if($registreProduit->getPseudoAppellation()->getHash() != $produit->getAppellation()->getHash()) {
+                        continue;
+                    }
+                    if($registreProduit->rafraichi) {
+                        $hasVci = true;
+                    }
+                }
+            }
+            foreach($produit->getProduitsVCI() as $produitVCI) {
+                if($produitVCI->rafraichi > 0)  {
+                    $hasVci = true;
+                    break;
+                }
+            }
+            if($hasVci) {
+                $superficieFacturable += $produit->superficie_revendique;
+            }
+        }
+
+        return round($superficieFacturable / 100, 4);
     }
 
     public function isAdherentSyndicat() {

@@ -1,0 +1,157 @@
+{
+   "_id": "TEMPLATE-FACTURE-MENETOUSALON-2011",
+   "type": "TemplateFacture",
+   "region": "MENETOUSALON",
+   "campagne": 2011,
+   "libelle": "2011 - Menetou-Salon",
+   "docs": [
+       "DRev"
+   ],
+   "cotisations": {
+       "00_arelfa": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation ADELFA",
+           "code_comptable": "70610000",
+           "details": {
+               "00_volumeRevendique": {
+                   "modele": "CotisationVariable",
+                   "prix": 20,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "01_syndicale": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation Syndicale",
+           "code_comptable": "70620000",
+           "details": {
+               "00_surface": {
+                   "modele": "CotisationVariable",
+                   "prix": 25,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "surface en production",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": {
+                       "round_methode": "ceil"
+                   }
+               },
+               "01_volumeRevendiqueRecolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.05,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "volume revendiqué récolté",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "02_volumeRevendiqueVci": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.05,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "volume revendiqué vci",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueVci",
+                   "callback_parameters": [
+                   ]
+               },
+               "03_recolteVendue": {
+                   "modele": "CotisationVariable",
+                   "prix": 1.05,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "récolte vendue",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeVendue",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "02_oivc": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation OIVC",
+           "code_comptable": "70620000",
+           "details": {
+               "00_surfaceProduction": {
+                   "modele": "CotisationVariable",
+                   "prix": 12,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "surface en production",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": [
+                   ]
+               },
+               "01_volumeRevendiqueRecolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.22,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "volume revendiqué recolté",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendiqueRecolte",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       },
+       "03_degustation": {
+            "modele": "CotisationsCollection",
+            "callback": "",
+            "libelle": "",
+            "code_comptable": "70620000",
+            "details": {
+                "00_lotsPreleves": {
+                    "modele": "Cotisation",
+                    "prix": 33,
+                    "tva": 0,
+                    "unite": "",
+                    "libelle": "Echantillon prélevé pour contrôle produit AOC",
+                    "complement_libelle": "",
+                    "docs": [
+                        "Degustation"
+                    ],
+                    "callback": "buildMouvementsNbLotsDegustes",
+                    "callback_parameters": [
+                    ]
+                }
+            }
+       }
+   }
+}

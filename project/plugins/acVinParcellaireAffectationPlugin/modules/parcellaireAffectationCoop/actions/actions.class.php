@@ -98,6 +98,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             return $this->redirect('parcellaireaffectationcoop_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireAffectation->_id));
         }
 
+        $this->parcellaireAffectation->add('signataire', $this->etablissement->raison_sociale);
 		$this->form = new ParcellaireAffectationCoopSaisieForm($this->parcellaireAffectation, $this->etablissement);
 
         if (!$request->isMethod(sfWebRequest::POST)) {

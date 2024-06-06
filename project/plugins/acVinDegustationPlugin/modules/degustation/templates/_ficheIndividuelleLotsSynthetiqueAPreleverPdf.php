@@ -10,18 +10,6 @@ th {
 }
 
 </style>
-      <table>
-        <tr>
-          <td style="width:33%;"><strong>N° de la tournée :</strong></td>
-          <td style="width:33%;"><strong>Date de la tournée :</strong></td>
-          <td style="width:33%;text-align: right;"><strong>Date d'édition :</strong> <?php echo $date_edition;?></td>
-        </tr>
-      </table>
-      <table>
-        <tr style="line-height: 25em; height:25em;">
-          <td style="text-align: center"><?php echo "Nombre total d'opérateurs : ".count($etablissements)." - Nombre total de lots à Prélever : ".$nbLotTotal; ?></td>
-        </tr>
-      </table>
     <?php $ligne = 1; $table_header = true;
     foreach($lots as $logement => $lots_du_logement):
         $etablissement = $etablissements[$logement];
@@ -35,13 +23,12 @@ th {
       <table border="1px" class="table" cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
         <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Raison sociale</strong></th>
-          <th class="topempty bg-white"style="width:25%;"><?php echo tdStart() ?><strong>Adresse</strong></th>
+          <th class="topempty bg-white"style="width:20%;"><?php echo tdStart() ?><strong>Adresse</strong></th>
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Produit</strong></th>
-          <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>Cuve</strong></th>
-          <th class="topempty bg-white"style="width:7%;"><?php echo tdStart() ?><strong>N° Lot</strong></th>
-          <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Date prélev</strong></th>
+          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>Cuve</strong></th>
+          <th class="topempty bg-white"style="width:10%;"><?php echo tdStart() ?><strong>N° Lot</strong></th>
           <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Observation</strong></th>
-          <th class="topempty bg-white"style="width:8%;"><?php echo tdStart() ?><strong>Signature</strong></th>
+          <th class="topempty bg-white"style="width:15%;"><?php echo tdStart() ?><strong>Date & Signature</strong></th>
         </tr>
     <?php endif;?>
          <tr style="line-height:17px;">
@@ -65,7 +52,9 @@ th {
               <?php echo $lot->getProduitLibelle(); ?> <?php echo $lot->millesime; ?><br/>
               <?php echo $lot->volume; ?> hl</small>
           </td>
-          <td></td><td></td><td></td><td></td><td></td>
+          <td><small><?php echo $lot->getNumeroLogementOperateur() ?></small></td>
+          <td><small><?php echo $lot->getNumeroDossier() ?><br/>/<br/><?php echo $lot->getNumeroArchive() ?></small></td>
+          <td></td><td></td>
          </tr>
          <?php $ligne++; ?>
       <?php endforeach; ?>
@@ -80,7 +69,7 @@ th {
       <?php $nb_cols = 5; ?>
       <tr style="line-height:20px;">
       <?php for ($i=0; $i < $nb_cols; $i++) : ?>
-            <td class="topempty bg-white"style="width:<?php echo (100/5); ?>%;"><?php echo tdStart() ?><strong>Nom du préleveur</strong></td>
+            <td class="topempty bg-white"style="width:<?php echo (100/5); ?>%;"><?php echo tdStart() ?><strong><small>Nom du préleveur</small></strong></td>
         <?php endfor; ?>
         </tr>
         <tr style="line-height:20px;">
@@ -90,7 +79,7 @@ th {
         </tr>
         <tr style="line-height:20px;">
         <?php for ($i=0; $i < $nb_cols; $i++) : ?>
-            <td class="topempty bg-white"><?php echo tdStart() ?><strong>Signature</strong></td>
+            <td class="topempty bg-white"><?php echo tdStart() ?><strong><small>Date et signature</small></strong></td>
         <?php endfor; ?>
         </tr>
         <tr style="line-height:20px;">

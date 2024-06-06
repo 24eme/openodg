@@ -6,6 +6,7 @@ function(doc) {
         doc.type != "DRev" &&
         doc.type != "DR" &&
         doc.type != "DRevMarc" &&
+        doc.type != "ParcellaireManquant" &&
         doc.type != "ParcellaireAffectation" &&
         doc.type != "ParcellaireIntentionAffectation" &&
         doc.type != "ParcellaireIrrigable" &&
@@ -14,9 +15,15 @@ function(doc) {
         doc.type != "Tirage" &&
         doc.type != "Transaction" &&
         doc.type != "TravauxMarc" &&
+        doc.type != "Degustation" &&
         doc.type != "PMC" &&
+        doc.type != "PMCNC" &&
         doc.type != "Adelphe"
     ) {
+        return;
+    }
+
+    if (doc.type == "Degustation" && (doc.etape != "VISUALISATION" || !doc.region) ) {
         return;
     }
 
@@ -31,7 +38,7 @@ function(doc) {
       campagne = campagne + "-" + campagneplusun;
     }
 
-    if(!doc.declarant) {
+    if(!doc.declarant && doc.type != "Degustation") {
 
         return;
     }
@@ -64,9 +71,12 @@ function(doc) {
       validation = doc.date_depot;
     }
 
-    var validation_odg = null;
+    var validation_organisme = null;
     if(doc.validation_odg) {
-    validation_odg = doc.validation_odg;
+    validation_organisme = doc.validation_odg;
+    }
+    if(doc.validation_oi) {
+    validation_organisme = doc.validation_oi;
     }
 
     var etape = null;
@@ -87,6 +97,10 @@ function(doc) {
     var raison_sociale = null;
     if(doc.declarant && doc.declarant.raison_sociale) {
         raison_sociale = doc.declarant.raison_sociale;
+    }
+
+    if(doc.type == "Degustation") {
+        raison_sociale = doc.region.split('|')[0]
     }
 
     var commune = null;
@@ -110,21 +124,21 @@ function(doc) {
         mode = "Importé";
     }
 
-    if(doc.papier) {
+    if(doc.papier || doc.type == "Degustation") {
         mode = "Saisie interne";
     }
 
     var statut = "Brouillon";
     var infos = "Étape " + doc.etape;
-    if(validation_odg) {
+    if(validation_organisme) {
 	    statut = "Approuvé";
         infos = null;
-        if(validation_odg !== false && validation_odg !== true) {
-            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)(T.*)?/, "$3/$2/$1");
+        if(validation_organisme !== false && validation_organisme !== true) {
+            infos = validation_organisme.replace(/([0-9]+)-([0-9]+)-([0-9]+)(T.*)?/, "$3/$2/$1");
         }
     }
 
-    if(validation && !validation_odg) {
+    if(validation && !validation_organisme) {
 	    statut = "À approuver";
         infos = null;
         if(nb_doc_en_attente) {
@@ -135,6 +149,10 @@ function(doc) {
 
      if (doc.statut_odg) {
        statut = doc.statut_odg;
+     }
+     regions = [];
+     if (doc.region) {
+         regions = doc.region.split('|');
      }
 
     var type = doc.type;
@@ -156,6 +174,9 @@ function(doc) {
     if(doc._id.indexOf('INTENTIONCREMANT') > -1) {
 	    type = "Intention Crémant";
     }
+    if(doc._id.indexOf('PARCELLAIREMANQUANT') > -1) {
+	    type = "Manquant";
+    }
 
     var nb_emits = 0;
     if(doc.type == "DRev" && !doc.declaration.certification){
@@ -169,13 +190,38 @@ function(doc) {
                 if(doc.declaration[key][detailKey].statut_odg){
                    statutProduit = doc.declaration[key][detailKey].statut_odg;
                  }
-                emit([type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                emit(['', type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                for (regionid in regions) {
+                      emit([regions[regionid], type, campagne, doc.identifiant, mode, statutProduit, key, date, infos, raison_sociale, commune, email, cvi], 1);
+                }
+
                   nb_emits = nb_emits + 1;
               }
            }
     }
 
+    if(doc.lots){
+      var produitsHash = [];
+      for(lotKey in doc.lots) {
+         var lot = doc.lots[lotKey];
+         if(lot.produit_hash) {
+           var pHash = lot.produit_hash.replace('/declaration/', '');
+           produitsHash[pHash] = pHash;
+         }
+      }
+      for(produitHash in produitsHash) {
+          emit(['', type, campagne, doc.identifiant, mode, statut, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+          for (regionid in regions) {
+              emit([regions[regionid], type, campagne, doc.identifiant, mode, statut, produitHash, date, infos, raison_sociale, commune, email, cvi], 1);
+          }
+          nb_emits = nb_emits + 1;
+      }
+    }
+
     if(!nb_emits){
-        emit([type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        emit(['', type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        for (regionid in regions) {
+            emit([regions[regionid], type, campagne, doc.identifiant, mode, statut, null, date, infos, raison_sociale, commune, email, cvi], 1);
+        }
     }
 }

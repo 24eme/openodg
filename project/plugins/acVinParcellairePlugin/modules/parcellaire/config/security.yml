@@ -1,5 +1,5 @@
 all:
-  credentials: ADMIN
+  credentials: [[ADMIN, ADMIN_ODG]]
 
 declarant:
   credentials: []
@@ -8,6 +8,15 @@ visualisation:
   credentials: []
 
 parcellairePDF:
+  credentials: []
+
+parcellaireExportCSV:
+  credentials: []
+
+parcellaireExportKML:
+  credentials: []
+
+parcellaireExportGeoJson:
   credentials: []
 
 scrape:

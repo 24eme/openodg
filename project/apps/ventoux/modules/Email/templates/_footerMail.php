@@ -1,2 +1,2 @@
 Le Syndicat AOC Ventoux
-<?php echo $organisme->getEmail(); ?>
+<?php echo ($organisme) ? $organisme->getEmail() : ''; ?>
