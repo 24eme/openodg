@@ -903,9 +903,7 @@
         $(this).find('input.num_int').saisieNum(false);
 
         $(this).find(".select2SubmitOnChange").on("change", function (e) {
-            if (e.val || $(this).val()) {
-                $(this).parents('form').submit();
-            }
+            $(this).parents('form').submit();
         });
 
         $(this).find(".select2SubmitOnBlur").on("focusout", function (e) {
