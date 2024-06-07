@@ -221,3 +221,6 @@ $t->is($societeviti->statut , SocieteClient::STATUT_SUSPENDU, "La societé est s
 $t->is($societeviti->getMasterCompte()->statut , SocieteClient::STATUT_SUSPENDU, "Le compte de la societé est suspendu");
 $t->is($etablissementviti->statut , SocieteClient::STATUT_SUSPENDU, "L'établissement est suspendu");
 $t->is($etablissementviti->getMasterCompte()->statut , SocieteClient::STATUT_SUSPENDU, "Le compte de l'établissement est suspendu");
+
+$societeviti->switchStatusAndSave();
+$societeviti->save();
