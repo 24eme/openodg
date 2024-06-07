@@ -38,15 +38,17 @@ $b->deselect('fichier_visibilite')->click('.row-button button[type="submit"]', a
 $b->isForwardedTo('fichier', 'piecesHistorique');
 $t->is($b->getResponse()->getStatusCode(), 200, "Formulaire d'upload d'un document");
 
-$b->get('/documents/'.$etablissement->identifiant);
-$b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
-$b->isForwardedTo('drev', 'PDF');
-$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
+if (DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $b->get('/documents/'.$etablissement->identifiant);
+    $b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
+    $b->isForwardedTo('drev', 'PDF');
+    $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
 
-$b->get('/documents/'.$etablissement->identifiant);
-$b->click('a[href*="/piece/get/DR-"]')->followRedirect();
-$b->isForwardedTo('fichier', 'get');
-$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+    $b->get('/documents/'.$etablissement->identifiant);
+    $b->click('a[href*="/piece/get/DR-"]')->followRedirect();
+    $b->isForwardedTo('fichier', 'get');
+    $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+}
 
 $b->get('/documents/'.$etablissement->identifiant);
 $b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
@@ -103,17 +105,19 @@ $t->ok($c->matchSingle('a[href*="/piece/get/FICHIER-"]')->getNode(), "Fichier pr
 $b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
 $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du fichier");
 
-$b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
-$c = new sfDomCssSelector($b->getResponseDom());
-$t->is($c->matchSingle('a[href*="/drev/visualisation"]')->getNode(), null, "Lien vers la visu de la DREV absent");
-$b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
-$b->isForwardedTo('drev', 'PDF');
-$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
+if (DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
+    $c = new sfDomCssSelector($b->getResponseDom());
+    $t->is($c->matchSingle('a[href*="/drev/visualisation"]')->getNode(), null, "Lien vers la visu de la DREV absent");
+    $b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
+    $b->isForwardedTo('drev', 'PDF');
+    $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
 
-$b->get('/documents/'.$etablissement->identifiant."?categorie=dr");
-$b->click('a[href*="/piece/get/DR-"]')->followRedirect();
-$b->isForwardedTo('fichier', 'get');
-$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+    $b->get('/documents/'.$etablissement->identifiant."?categorie=dr");
+    $b->click('a[href*="/piece/get/DR-"]')->followRedirect();
+    $b->isForwardedTo('fichier', 'get');
+    $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+}
 
 $b->get('/fichier/upload/'.$etablissement->identifiant);
 $t->is($b->getResponse()->getStatusCode(), 200, "Page d'upload accessible");
@@ -168,17 +172,19 @@ $b->get('/piece/get/'.$fichierId.'/0')->followRedirect();
 $t->is($b->getResponse()->getStatusCode(), 403, "Téléchargement du fichier protégé");
 $b->resetCurrentException();
 
-$b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
-$c = new sfDomCssSelector($b->getResponseDom());
-$t->ok($c->matchSingle('a[href*="/drev/visualisation"]')->getNode(), "Lien vers la visu de la DREV");
-$b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
-$b->isForwardedTo('drev', 'PDF');
-$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
+if (DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $b->get('/documents/'.$etablissement->identifiant."?categorie=drev");
+    $c = new sfDomCssSelector($b->getResponseDom());
+    $t->ok($c->matchSingle('a[href*="/drev/visualisation"]')->getNode(), "Lien vers la visu de la DREV");
+    $b->click('a[href*="/piece/get/DREV-"]')->followRedirect();
+    $b->isForwardedTo('drev', 'PDF');
+    $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du PDF de la DREV");
 
-$b->get('/documents/'.$etablissement->identifiant."?categorie=dr");
-$b->click('a[href*="/piece/get/DR-"]')->followRedirect();
-$b->isForwardedTo('fichier', 'get');
-$t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+    $b->get('/documents/'.$etablissement->identifiant."?categorie=dr");
+    $b->click('a[href*="/piece/get/DR-"]')->followRedirect();
+    $b->isForwardedTo('fichier', 'get');
+    $t->is($b->getResponse()->getStatusCode(), 200, "Téléchargement du CSV de la DR");
+}
 
 $b->get('/documents/'.$etablissement->identifiant."?categorie=identification");
 $b->click('a[href*="/piece/get/FICHIER-"]')->followRedirect();
