@@ -20,6 +20,10 @@ class HabilitationConfiguration {
         $this->configuration = sfConfig::get('habilitation_configuration_habilitation', array());
     }
 
+    public function isModuleEnabled() {
+        return in_array('habilitation', sfConfig::get('sf_enabled_modules'));
+    }
+
     public function getActivites() {
         if(!isset($this->configuration['activites'])) {
 

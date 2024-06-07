@@ -24,6 +24,10 @@ class DRevConfiguration {
         $this->load();
     }
 
+    public function isModuleEnabled() {
+        return in_array('drev', sfConfig::get('sf_enabled_modules'));
+    }
+
     public function getSpecificites(){
         if($this->hasSpecificiteLot()){
             return $this->configuration['specificites'];

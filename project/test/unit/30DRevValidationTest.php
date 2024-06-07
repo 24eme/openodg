@@ -3,6 +3,10 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $t = new lime_test();
+if (!DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $t->pass("no DREV for ".$application);
+    return;
+}
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 

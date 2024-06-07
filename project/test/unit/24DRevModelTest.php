@@ -4,6 +4,11 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $igp13 = ($application == 'igp13');
 
+if (!DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $t = new lime_test();
+    $t->pass('no drev for '.$application);
+    return;
+}
 $t = new lime_test(33 + 23 * (DRevConfiguration::getInstance()->isModificativeEnabled()));
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();

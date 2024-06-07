@@ -2,9 +2,9 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if ($application != 'igp13') {
+if (!MandatSepaConfiguration::getInstance()->isActive()) {
     $t = new lime_test(1);
-    $t->ok(true, "Pass AOC");
+    $t->ok(true, "Mandat non actifs");
     return;
 }
 
@@ -72,7 +72,7 @@ $t->is($mandatSepa->debiteur->bic, 'CMBPPFR', 'bic correctement stocké en base'
 
 
 $id = 'MANDATSEPA-'.$societe->getIdentifiant().'-'.date('Ymd');
-$t->is($mandatSepa->_id, $id, 'identifiant de mandat SEPA conforme');
+$t->is($mandatSepa->_id, $id, "identifiant de mandat SEPA conforme ($id)");
 
 //Switch des prélèvement actif et mandat signé voir si ils sont cochés.
 
@@ -84,6 +84,7 @@ $t->is($mandatSepa->is_actif,1,'le prélevement est actif');
 $mandatSepa->switchIsActif();
 $t->is($mandatSepa->is_actif,0,'le prélevement n\'est plus actif');
 $mandatSepa->switchIsActif();
+$t->is($mandatSepa->is_actif,1,'le prélevement est reactif');
 
 $mandatSepa->save();
 

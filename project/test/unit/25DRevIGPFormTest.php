@@ -2,13 +2,13 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if ($application != 'igp13') {
+if ($application != 'igp13' || !DRevConfiguration::getInstance()->isModuleEnabled()) {
     $t = new lime_test(1);
     $t->ok(true, "pass AOC");
     return;
 }
 
-$t = new lime_test(133);
+$t = new lime_test(126);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -113,6 +113,8 @@ next($produits);
 $produit2 = current($produits);
 $produit_hash2 = $produit2->getConfig()->getHash();
 
+$configuration_id = $produit2->getConfig()->getDocument()->_id;
+
 $drev->save();
 
 $t->is($produit1->recolte->superficie_total, 2.4786 * (1 + (DRevConfiguration::getInstance()->hasDenominationAuto())), "La superficie total de la DR pour le produit ".$produit1->getLibelleComplet()." est OK");
@@ -131,6 +133,7 @@ $t->comment("Étape lots");
 $drevConfig = DRevConfiguration::getInstance();
 $t->is($drevConfig->hasSpecificiteLot(), true, "La configuration a des spécificités de Lots");
 $t->ok(count($drevConfig->getSpecificites()), "La configuration retourne bien des spécificités");
+$t->is($drev->getConfiguration()->_id, $configuration_id, "Recupère le bon catalogue produit ($configuration_id)");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_LOTS)) {
     $drev->save();
@@ -147,17 +150,19 @@ $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $drev->_rev,
 );
+$t->ok(isset($valuesRev['lots']['0']['produit_hash']) && ($valuesRev['lots']['0']['produit_hash']), 'Hash produit est présent dans le formulaire');
+
 $valuesRev['lots']['0']['numero_logement_operateur'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$periode;
-$valuesRev['lots']['0']['produit_hash'] = $produit_hash1;
 if($drevConfig->hasSpecificiteLot()){
     $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
 }else{
     $valuesRev['lots']['0']['specificite'] = "";
 }
 $form->bind($valuesRev);
+//print_r($form);
 $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
