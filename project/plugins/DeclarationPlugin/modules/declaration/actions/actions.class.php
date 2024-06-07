@@ -209,11 +209,12 @@ class declarationActions extends sfActions {
         if($request->getParameter('campagne')) {
             $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent());
             $this->periode = preg_replace('/-.*/', '', $this->campagne);
-        }
-        if(!$this->getUser()->hasDrevAdmin() && intval($this->campagne) < intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent()) - 1 ) {
+            if(!$this->getUser()->hasDrevAdmin() && intval($this->campagne) < intval(ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_COMPLET)->getCurrent()) - 1) {
 
-            return $this->forwardSecure();
+                return $this->forwardSecure();
+            }
         }
+
     }
 
     protected function buildSearch(sfWebRequest $request) {
