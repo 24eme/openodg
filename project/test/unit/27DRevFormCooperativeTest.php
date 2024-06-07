@@ -2,6 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if (!DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $t = new lime_test();
+    $t->pass('no drev for '.$application);
+    return;
+}
 $t = new lime_test(9);
 
 $coop =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_coop')->getEtablissement();

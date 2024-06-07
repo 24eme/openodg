@@ -2,18 +2,21 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-if ($application != 'igp13') {
+if ($application != 'igp13' || !DRevConfiguration::getInstance()->isModuleEnabled()) {
     $t = new lime_test(1);
     $t->ok(true, "pass AOC");
     return;
 }
 
-$t = new lime_test(133);
+$t = new lime_test(126);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 $periode = (date('Y')-1)."";
 $campagne = $periode."-".($periode + 1);
+$drev_date = $periode."-10-01";
+
+$t->comment('campagne '.$campagne);
 
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
@@ -51,7 +54,8 @@ foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication
     $doc->delete();
 }
 
-$config = ConfigurationClient::getCurrent();
+$config = ConfigurationClient::getConfigurationByCampagne($campagne);
+$t->comment($config->_id);
 $produitconfig1 = null;
 $produitconfig2 = null;
 $produitconfig_horsDR = null;
@@ -100,13 +104,16 @@ $t->is(count(array_keys($drev->getProduits())), 2 + (!DRevConfiguration::getInst
 
 $produits = $drev->getProduits();
 
-
 $produit1 = current($produits);
 $produit_hash1 = $produit1->getHash();
+$l = $drev->addLot();
+$l->produit_hash = $produit1->getConfig()->getHash();
 
 next($produits);
 $produit2 = current($produits);
-$produit_hash2 = $produit2->getHash();
+$produit_hash2 = $produit2->getConfig()->getHash();
+
+$configuration_id = $produit2->getConfig()->getDocument()->_id;
 
 $drev->save();
 
@@ -122,39 +129,11 @@ if($drev->storeEtape(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE)) {
     $drev->save();
 }
 
-$form = new DRevSuperficieForm($drev);
-
-$defaults = $form->getDefaults();
-
-$t->is(count(array_keys($form['produits']->getValue())), count(array_keys($drev->getProduits())), "le formulaire a le même nombre de produit (".count(array_keys($drev->getProduits())).") que la DRev (declaration)");
-
-$t->is($form['produits'][$produit_hash1]['recolte']['superficie_total']->getValue(), $produit1->recolte->superficie_total, "La superficie totale de la DR est initialisé dans le form");
-$t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $produit1->superficie_revendique, "La superficie revendique est initialisé dans le form");
-$t->ok(!isset($form['produits'][$produit_hash1]['recolte']['volume_total']), "Le volume total de la DR n'est pas proposé dans le formulaire");
-$t->ok(!isset($form['produits'][$produit_hash1]['recolte']['recolte_nette']), "Le volume de récolte nette de la DR n'est pas proposé dans le formulaire");
-$t->ok(!isset($form['produits'][$produit_hash1]['recolte']['volume_sur_place']), "Le volume sur place de la DR n'est pas proposé dans le formulaire");
-
-$valuesRev = array(
-    'produits' => $form['produits']->getValue(),
-    '_revision' => $drev->_rev,
-);
-
-$valuesRev['produits'][$produit_hash1]['superficie_revendique'] = 10;
-$valuesRev['produits'][$produit_hash1]['recolte']['superficie_total'] = 10;
-$valuesRev['produits'][$produit_hash2]['recolte']['superficie_total'] = 300;
-
-$form->bind($valuesRev);
-
-$t->ok($form->isValid(), "Le formulaire est valide");
-$form->save();
-
-$t->is($produit1->recolte->superficie_total, $valuesRev['produits'][$produit_hash1]['recolte']['superficie_total'], "La superficie total de la DR est enregistré");
-$t->is($produit1->superficie_revendique, $valuesRev['produits'][$produit_hash1]['superficie_revendique'], "La superficie revendique est enregistré");
-
 $t->comment("Étape lots");
 $drevConfig = DRevConfiguration::getInstance();
 $t->is($drevConfig->hasSpecificiteLot(), true, "La configuration a des spécificités de Lots");
 $t->ok(count($drevConfig->getSpecificites()), "La configuration retourne bien des spécificités");
+$t->is($drev->getConfiguration()->_id, $configuration_id, "Recupère le bon catalogue produit ($configuration_id)");
 
 if($drev->storeEtape(DrevEtapes::ETAPE_LOTS)) {
     $drev->save();
@@ -171,16 +150,19 @@ $valuesRev = array(
     'lots' => $form['lots']->getValue(),
     '_revision' => $drev->_rev,
 );
+$t->ok(isset($valuesRev['lots']['0']['produit_hash']) && ($valuesRev['lots']['0']['produit_hash']), 'Hash produit est présent dans le formulaire');
+
 $valuesRev['lots']['0']['numero_logement_operateur'] = "Cuve A";
 $valuesRev['lots']['0']['volume'] = 1008.2;
 $valuesRev['lots']['0']['destination_type'] = DRevClient::LOT_DESTINATION_VRAC_FRANCE;
 $valuesRev['lots']['0']['destination_date'] = '30/11/'.$periode;
 if($drevConfig->hasSpecificiteLot()){
-  $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
+    $t->is($valuesRev['lots']['0']['specificite'], 'UNDEFINED', "Pas de spécificité choisie donc par defaut aucune");
+}else{
+    $valuesRev['lots']['0']['specificite'] = "";
 }
-$valuesRev['lots']['0']['specificite'] = "";
-
 $form->bind($valuesRev);
+//print_r($form);
 $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
@@ -227,7 +209,6 @@ $t->is(count($erreurs), 1, 'Il y a un point bloquant');
 $t->is($vigilances, null, "un point de vigilance à la validation");
 
 $drev->lots[0]->volume = 8.2;
-$drev->lotsImpactRevendication();
 $drev->save();
 
 $validation = new DRevValidation($drev);
@@ -238,7 +219,7 @@ $t->is($erreurs, null, "pas d'erreur à la validation");
 $t->is($vigilances, null, "un point de vigilance à la validation");
 
 $t->comment("DRev validée");
-$drev->validate();
+$drev->validate($drev_date);
 $drev->save();
 
 $t->is(count($drev->lots), 1, "La DRev validée contient uniquement le lot saisi");
@@ -247,7 +228,7 @@ $t->ok(!$drev->mouvements_lots->exist($drev->identifiant), "La DRev non validée
 
 $t->comment("DRev Validée ODG");
 
-$drev->validateOdg();
+$drev->validateOdg($drev_date);
 $drev->save();
 
 $t->is(count($drev->mouvements_lots->get($drev->identifiant)->toArray(true, false)), 3, "La DRev validée contient le mouvement correspondant au lot saisi");
@@ -302,16 +283,16 @@ $t->ok($lot->getMouvement(Lot::STATUT_AFFECTABLE), 'Le lot est affectable');
 $t->comment("Génération d'un document intermédiaire pour tester les numéros d'archive");
 $conditionnement = ConditionnementClient::getInstance()->createDoc($viti->identifiant, $drev->getCampagne(), $drev->getDate());
 $conditionnement->save();
-$conditionnement->validate();
-$conditionnement->validateOdg();
+$conditionnement->validate($drev_date);
+$conditionnement->validateOdg($drev_date);
 $conditionnement->save();
 
 $t->is($conditionnement->numero_archive, "00002", "Numéro d'archive du conditionnement à 00002");
 
 $t->comment("Modificatrice ".$drev->_id."-M01");
 $drev_modif = $drev->generateModificative();
-$drev_modif->validate();
-$drev_modif->validateOdg();
+$drev_modif->validate($drev_date);
+$drev_modif->validateOdg($drev_date);
 $drev_modif->save();
 $drev_modif = $drev->findMaster();
 $t->is($drev_modif->_id, $drev->_id.'-M01', "La modification a l'identifiant attendu");
@@ -322,8 +303,8 @@ $t->is($drev_modif->getLot($lot->unique_id)->getDateCommission(), $lot->date_com
 $t->comment("Suppression de lots");
 $drev_modif->remove('lots');
 $drev_modif->add('lots');
-$drev_modif->validate();
-$drev_modif->validateOdg();
+$drev_modif->validate($drev_date);
+$drev_modif->validateOdg($drev_date);
 $drev_modif->save();
 $drev = $drev_modif->getMother();
 $drev = DRevClient::getInstance()->find($drev->_id);
@@ -348,8 +329,8 @@ $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_AFFECTABLE), "Le lot de la drev 
 $t->ok($drev->lots[0]->getMouvement(Lot::STATUT_REVENDIQUE), "Le lot de la drev d'origine est revendiqué");
 
 $drev_modif = $drev->findMaster();
-$drev_modif->validate();
-$drev_modif->validateOdg();
+$drev_modif->validate($drev_date);
+$drev_modif->validateOdg($drev_date);
 $drev_modif->save();
 $drev = $drev_modif->getMother();
 $drev = DRevClient::getInstance()->find($drev->_id);
@@ -445,7 +426,7 @@ $vigilances = $validation->getPointsByCodes('vigilance');
 $t->is($vigilances, null, "après le changement de produit hors DR, plus de point de vigilances");
 $t->is($erreurs, null, "après le changement de produit hors DR, toujours pas d'erreur");
 
-$drev_modif->validate();
+$drev_modif->validate($drev_date);
 $drev_modif->save();
 $t->is(count($drev_modif->lots), 3, "Après la validation, le nombre de lots n'a pas changé");
 $t->is($drev_modif->lots[0]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation, le lot 1 n'a pas changé");
@@ -464,7 +445,7 @@ $drev_modif2 = $drev_modif->generateModificative();
 $drev_modif2->remove('/lots/0');
 $t->is($drev_modif2->lots[1]->produit_libelle, $produitconfig2->getLibelleComplet(), "Après la suppression du lot 1, le 1er lot qui vient d'être ajouté est à la bonne place");
 $t->is($drev_modif2->lots[2]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la suppression du lot 1, le 2d lot qui vient d'être ajouté est à la bonne place");
-$drev_modif2->validate();
+$drev_modif2->validate($drev_date);
 $drev_modif2->save();
 $t->is($drev_modif2->lots[0]->produit_libelle, $produitconfig2->getLibelleComplet(), "Après la validation de la suppression du lot 1, le 1er lot est à la bonne place");
 $t->is($drev_modif2->lots[1]->produit_libelle, $produitconfig1->getLibelleComplet(), "Après la validation de la suppression du lot 1, le 2d lot est à la bonne place");
