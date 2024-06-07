@@ -206,3 +206,18 @@ $t->is($societedegust->getMasterCompte()->tags->automatique->toArray(true, false
 
 $compteDegustateur = $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societedegust);
 $t->isnt($compteDegustateur->identifiant, $societedegust->identifiant, "La societe a un interlocuteur séparé");
+
+$t->comment('On archive la société');
+$etablissementviti = $societeviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
+$etablissementviti->save();
+$t->is($societeviti->statut , SocieteClient::STATUT_ACTIF, "La societé est active");
+$t->is($societeviti->getMasterCompte()->statut , SocieteClient::STATUT_ACTIF, "Le compte de la societé est actif");
+$t->is($etablissementviti->statut , SocieteClient::STATUT_ACTIF, "L'établissement est actif");
+$t->is($etablissementviti->getMasterCompte()->statut , SocieteClient::STATUT_ACTIF, "Le compte de l'établissement est actif");
+$societeviti->switchStatusAndSave();
+$societeviti->save();
+$etablissementviti = $societeviti->getEtablissementPrincipal();
+$t->is($societeviti->statut , SocieteClient::STATUT_SUSPENDU, "La societé est suspendue");
+$t->is($societeviti->getMasterCompte()->statut , SocieteClient::STATUT_SUSPENDU, "Le compte de la societé est suspendu");
+$t->is($etablissementviti->statut , SocieteClient::STATUT_SUSPENDU, "L'établissement est suspendu");
+$t->is($etablissementviti->getMasterCompte()->statut , SocieteClient::STATUT_SUSPENDU, "Le compte de l'établissement est suspendu");
