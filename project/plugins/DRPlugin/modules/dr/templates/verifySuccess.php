@@ -20,6 +20,7 @@
             <th>Volumes issus de la SV</th>
             <th>Volumes issus de la DR</th>
             <th>Différence</th>
+            <th>Détails</th>
         </tr>
     </thead>
     <?php if (isset($tableau_comparaison)): ?>
@@ -28,13 +29,15 @@
             <tbody>
                 <tr>
                     <div class="row">
-                        <td class="col-xs-5"><?php echo $produit; ?></td>
-                        <td class="col-xs-2 text-right"><?php echo $totalDeclarantSV ; ?></td>
-                        <td class="col-xs-2 text-right"><?php echo $totalApporteurDR ; ?></td>
+                        <td class="col-xs-4"><?php echo $produit; ?></td>
+                        <td class="col-xs-3 text-right"><?php echo abs($totalDeclarantSV) ; ?></td>
+                        <td class="col-xs-3 text-right"><?php echo abs($totalApporteurDR) ; ?></td>
                         <td class="col-xs-1 text-center strong <?php if (! $diffSVDR) { echo 'bg-success'; } else { echo 'bg-danger'; }; ?>">
-                            <?php echo $diffSVDR; ?>
+                            <?php echo abs($diffSVDR); ?>
+                        </td>
+                        <td class="col-xs-1 text-center">
                             <?php if ($diffSVDR): ?>
-                                <button type="button" class="center-block glyphicon glyphicon-collapse-down ml-4" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" id="collapseButton"></button>
+                                <button type="button" class="glyphicon glyphicon-collapse-down" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" id="collapseButton"></button>
                             <?php endif; ?>
                         </td>
                     </div>
@@ -45,19 +48,18 @@
                     <tr>
                         <?php if ($cvi == $dr->getEtablissementObject()->cvi) { continue; } ?>
                         <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
-                        <td class="col-xs-2 text-right">
+                        <td colSpan="2" class="col-xs-2 text-right">
                             <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
                             <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
                         </td>
                         <td class="text-right">
-                            <?php echo $valeur['SV']; ?>
+                            <?php echo abs($valeur['SV']); ?>
                         </td>
                         <td class="text-right">
-                            <?php echo $valeur['DR']; ?>
+                            <?php echo abs($valeur['DR']); ?>
                         </td>
                         <td class="text-center">
-                            <?php echo round($valeur['SV'] - $valeur['DR'], 2); ?>
-                            <button type="button" class="center-block glyphicon glyphicon-collapse-down ml-4" style="visibility: hidden;"></button>
+                            <?php echo abs(round($valeur['SV'] - $valeur['DR'], 2)); ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
