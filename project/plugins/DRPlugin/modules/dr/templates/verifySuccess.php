@@ -54,7 +54,7 @@
                     <tr>
                         <?php if ($cvi == $dr->getEtablissementObject()->cvi) { continue; } ?>
                         <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
-                        <td colSpan="2" class="col-xs-2 text-right">
+                        <td class="text-right">
                             <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
                             <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
                         </td>
