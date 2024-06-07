@@ -49,14 +49,30 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getPeriode() {
-        return preg_replace('/-.*/', '', $this->campagne);
+        return substr($this->campagne, 0, 4);
     }
 
-    public function getProduits($region = null) {
+    public function getProduits($region = null, $with_details = true) {
         if (!$this->exist('declaration') || !count($this->get('declaration'))) {
             $this->updateDeclaration();
         }
-        return $this->declaration->getProduits($region);
+        return $this->declaration->getProduits($region, $with_details);
+    }
+
+    public function getRegions()
+    {
+        $regions = [];
+        foreach ($this->getProduits(null, false) as $hash => $p) {
+            $regions[] = $p->getRegion();
+        }
+        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+        if ($docDouanier) {
+            foreach ($docDouanier->getProduits() as $hash => $p) {
+                $regions[] = RegionConfiguration::getInstance()->getOdgRegion($hash);
+            }
+        }
+
+        return array_values(array_unique($regions));
     }
 
     public function getProduitsWithoutLots($region = null) {
@@ -81,8 +97,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         $millesime = substr($this->campagne, 0, 4);
+        $hab = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
         // Parcours dans le noeud declaration
         foreach($this->getProduitsLots() as $h => $p) {
+            if ($hab) {
+                foreach ($hab->declaration as $decla => $infos) {
+                    if (strpos($h, $decla) && $infos['activites'][HabilitationClient::ACTIVITE_VINIFICATEUR]['statut'] == HabilitationClient::STATUT_EXTERIEUR) {
+                        continue 2;
+                    }
+                }
+            }
             $couleur = $p->getConfig()->getCouleur()->getLibelleCompletDR().' '.$millesime;
             if (!isset($couleurs[$couleur])) {
                 $couleurs[$couleur] = array('superficie_totale' => 0, 'superficie_revendiquee' => 0,
@@ -413,15 +437,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $etablissements = $this->getEtablissementObject()->getMeAndLiaisonOfType(EtablissementClient::TYPE_LIAISON_METAYER);
-        $fichiers = array();
-        foreach($etablissements as $e) {
-            $f = $this->getDocumentDouanierEtablissement($ext, null, $e->identifiant, $hydrate);
-            if ($f) {
-                $fichiers[] = $f;
-            }
-        }
-        return $fichiers;
+        return DouaneClient::getInstance()->getDocumentsDouaniers($this->identifiant, $this->periode, $ext);
     }
 
     public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -436,7 +452,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
     }
 
-    protected function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         if (!$identifiant) {
             $identifiant = $this->identifiant;
         }
@@ -578,9 +594,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $csvOrigine->getCsvType().'-'.$this->identifiant.'-'.$this->periode.'.csv';
     	if (!is_dir($path)) {
-    		if (!mkdir($path, 2775)) {
+            umask(0);
+    		if (!mkdir($path, 02775)) {
     			throw new sfException('cannot create '.$path);
     		}
+            chmod($path, 02775);
     	}
     	file_put_contents($path.$filename, $csvContent);
     	$csv = DouaneCsvFile::getNewInstanceFromType($csvOrigine->getCsvType(), $path.$filename);
@@ -596,7 +614,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $drev->remove('declaration');
     	$drev->add('declaration');
         $drev->resetAndImportFromDocumentDouanier();
-        $drev->_rev = "FICTIVE";
+        $drev->add('_rev', "FICTIVE");
     	return $drev;
     }
 
@@ -624,10 +642,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function resetAndImportFromDocumentDouanier() {
       $this->declarant->famille = $this->getEtablissementObject()->famille;
-
-      if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalTotalSuperficie() > 0)  {
-          throw new sfException('Superficies déjà saisies');
-      }
 
       if (count($this->getProduitsWithoutLots()) > 0 && $this->declaration->getTotalVolumeRevendique() > 0)  {
           throw new sfException('Volume déjà déclaré');
@@ -748,7 +762,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $labelsDouane = array();
-            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE])) {
+            if(isset($line[DRCsvFile::CSV_LABEL_CALCULEE]) && $line[DRCsvFile::CSV_LABEL_CALCULEE]) {
                 $labelsDouane = explode("|", $line[DRCsvFile::CSV_LABEL_CALCULEE]);
             }
 
@@ -761,7 +775,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $complement = DRevClient::DENOMINATION_HVE_LIBELLE_AUTO;
             } elseif (DRevConfiguration::getInstance()->hasDenominationAuto() && count($labelsDefault) == 1 && array_key_first($labelsDefault) != DRevClient::DENOMINATION_CONVENTIONNEL) {
                 $complement = DRevClient::getDenominationsAuto()[array_key_first($labelsDefault)];
-            } elseif ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
+            } elseif (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT]) {
                 $complement = $line[DRCsvFile::CSV_PRODUIT_COMPLEMENT];
             }
 
@@ -820,7 +834,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 }
             }
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI_L19) {
-                if ($produitRecolte->volume_sur_place_revendique) {
+                if (!$has_coop_l8){
                     $produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
                     $produit->vci->constitue = $produitRecolte->vci_constitue;
                 }
@@ -831,7 +845,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VSI_L18) {
-                if ($produitRecolte->volume_sur_place_revendique) {
+                if (!$has_coop_l8){
                     if(!$produitRecolte->exist('vsi')) {
                         $produitRecolte->add('vsi');
                     }
@@ -866,10 +880,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         //Si on n'a pas de volume sur place
         foreach ($this->declaration->getProduits() as $hash => $p) {
-            if(!$p->recolte->volume_sur_place) {
-                $p->recolte->vci_constitue = null;
-                $p->vci->constitue = null;
-            }
             if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
     		   $todelete[$hash] = $hash;
                continue;
@@ -961,6 +971,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           }
         }
     	}
+    }
+
+    public function canHaveVCI() {
+        foreach ($this->getProduits() as $produit) {
+            if ($produit->getConfig()->canHaveVCI()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function updateFromDRev($drev) {
@@ -1093,12 +1112,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $lot->date = $date;
             }
             if (!$lot->produit_hash) {
-                throw new sfExcpetion("le lot ".$lot->unique_id." n'a pas de hash produit");
+                throw new sfException("le lot ".$lot->unique_id." n'a pas de hash produit");
             }
         }
         $this->setStatutOdgByRegion(DRevClient::STATUT_SIGNE);
-
-
     }
 
     public function delete() {
@@ -1129,13 +1146,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             throw new sfException("La validation nécessite une région");
         }
 
-        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
-
         if(RegionConfiguration::getInstance()->hasOdgProduits() && $region){
+            $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
             return $this->validateOdgByRegion($date, $region);
         }
 
         $this->validation_odg = $date;
+        $this->setStatutOdgByRegion(DRevClient::STATUT_VALIDATION_ODG, $region);
 
         if(!$this->numero_archive) {
             $this->save();
@@ -1212,6 +1229,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->getMother()->save();
         }
 
+        if(!$this->isFactures()){
+            $this->clearMouvementsFactures();
+            $this->generateMouvementsFactures();
+        }
+
         if(!$allValidate) {
 
             return;
@@ -1224,6 +1246,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       if (!$region) {
           return false;
       }
+
+      if(!count($this->getProduits($region))) {
+           return false;
+      }
+
       foreach ($this->getProduits($region) as $hash => $produit) {
         if(!$produit->isValidateOdg()){
           return false;
@@ -1336,7 +1363,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function constructAdresseLogement(){
-        $completeAdresse = sprintf("%s — %s  %s  %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
+        $completeAdresse = sprintf("%s — %s — %s  %s",$this->declarant->nom,$this->declarant->adresse,$this->declarant->code_postal,$this->declarant->commune);
         $completeAdresse .= $this->declarant->telephone_mobile ? " — ".$this->declarant->telephone_mobile : "";
         $completeAdresse .= $this->declarant->telephone_bureau ? " — ".$this->declarant->telephone_bureau : "";
 
@@ -1394,6 +1421,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if(!$this->isFactures() && $this->isValideeOdg()){
             $this->clearMouvementsFactures();
             $this->generateMouvementsFactures();
+        }
+
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $regions = $this->getRegions();
+            if (count($regions)) {
+                $this->add('region', implode('|', $regions));
+            }
         }
 
         $saved = parent::save();
@@ -1504,7 +1538,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalTotalSuperficie();
 	}
 
-	public function getVolumeFacturable($produitFilter = null)
+	public function getVolumeFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)
 	{
 		$volume = $this->declaration->getTotalVolumeRevendique($produitFilter);
         foreach($this->getDeletedLots() as $lot) {
@@ -1530,19 +1564,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getTotalVolumeRevendiqueVCI();
     }
 
-    public function getVolumeRevendiqueNumeroDossier($produitFilter = null)
+    public function getVolumeRevendiqueNumeroDossier(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
 
         return $this->getVolumeRevendiqueNumeroDossierDiff($produitFilter);
     }
 
-    public function getVolumeRevendiqueNumeroDossierDiff($produitFilter = null)
+    public function getVolumeRevendiqueNumeroDossierDiff(TemplateFactureCotisationCallbackParameters $produitFilter)
     {
         $lots = [];
         $lotsmodifsvolumes = [];
         $volume_mod = 0;
         foreach ($this->getLots() as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
                 continue;
             }
             if ($lot->numero_dossier === $this->numero_archive && $lot->id_document == $this->getDocument()->_id) {
@@ -1557,7 +1591,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         $deleted = false;
         foreach($this->getDeletedLots() as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
                 continue;
             }
             $volume_mod -= $lot->volume;
@@ -1595,19 +1629,24 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return array_unique(array_column($this->lots->toArray(true, false), 'numero_dossier'));
     }
 
-    public function hasVolumeRevendiqueLots($produitFilter = null) {
+    public function hasVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter) {
 
         return $this->getVolumeRevendiqueLots($produitFilter) > 0;
     }
 
-    public function getVolumeRevendiqueLots($produitFilter = null){
+    public function getVolumeRevendiqueLotsWithFilterAppellations(string $appellations){
+        $t = new TemplateFactureCotisationCallbackParameters($this, array('appellations' => $appellations));
+        return $this->getVolumeRevendiqueLots($t);
+    }
+
+    public function getVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter){
         return $this->getInternalVolumeRevendique($this->getLots(), $produitFilter);
     }
 
-    private function getInternalVolumeRevendique($lots, $produitFilter) {
+    private function getInternalVolumeRevendique($lots, TemplateFactureCotisationCallbackParameters $produitFilter) {
         $total = 0;
         foreach($lots as $lot) {
-            if (DRevClient::getInstance()->matchFilter($lot, $produitFilter) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
                 continue;
             }
 
@@ -1616,7 +1655,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $total;
     }
 
-    public function getVolumeVininifieFromDocumentDouanier($produitFilter = null) {
+    public function getVolumeVininifieFromDocumentDouanier(TemplateFactureCotisationCallbackParameters $produitFilter) {
         $docDouanier = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
         if(!$docDouanier) {
             return;
@@ -1652,7 +1691,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
             return null;
         }
-        return $dr->getTotalValeur("15", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL) + $dr->getTotalValeur("14", null, null, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
+        return $dr->getTotalValeur("15", null, $produitFilter, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL) + $dr->getTotalValeur("14", null, $produitFilter, DouaneProduction::FAMILLE_APPORTEUR_COOP_TOTAL);
     }
 
     public function getVolumeIGPSIGFromSV11($produitFilter = null) {
@@ -1688,7 +1727,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             - $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_USAGESIND_L16, null, $produitFilter) ;
     }
 
-    public function getSuperficieHorsApportCoopFromDocumentProduction($produitFilter = null) {
+    public function getSuperficieHorsApportCoopFromDocumentProduction(TemplateFactureCotisationCallbackParameters $produitFilter) {
         $docDouanier = $this->getDocumentDouanierOlderThanMe();
         if (!$docDouanier) {
             return ;
@@ -1709,12 +1748,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
 
-    public function getNbApporteursPlusOneFromDouane($produitFilter = null) {
+    public function getNbApporteursPlusOneFromDouane(TemplateFactureCotisationCallbackParameters $produitFilter) {
         $douane = $this->getDR();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
             return 0;
         }
-        $apporteurs = $douane->getNbApporteurs($produitFilter);
+        $apporteurs = $douane->getNbApporteurs($produitFilter->getParameters('appellations'));
         if (!$apporteurs) {
             return 0;
         }
@@ -1724,7 +1763,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $apporteurs + 1;
     }
 
-    public function getVolumeLotsFacturables($produitFilter = null){
+    public function getVolumeLotsFacturables(TemplateFactureCotisationCallbackParameters $produitFilter){
 
         return $this->getVolumeRevendiqueLots($produitFilter);
     }
@@ -1741,10 +1780,86 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return 1;
     }
 
+    public function getQuantiteVolumeRevendique(TemplateFactureCotisationCallbackParameters $parameters)
+    {
+        $volume = 0;
+        foreach ($this->declaration->getProduitsFilteredBy($parameters) as $produit) {
+            $volume += $produit->getTotalVolumeRevendique();
+        }
+
+        foreach($this->getDeletedLots() as $lot) {
+            $volume -= $lot->volume;
+        }
+
+        return $volume;
+    }
+
+    public function getQuantiteVolumeRevendiqueRecolte(TemplateFactureCotisationCallbackParameters $parameters)
+    {
+        if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
+            return null;
+        }
+        $volume = 0;
+        foreach ($this->declaration->getProduitsFilteredBy($parameters) as $produit) {
+            $volume += $produit->getVolumeRevendiqueIssuRecolte();
+        }
+
+        return $volume;
+    }
+
+    public function getQuantiteVolumeRevendiqueVci(TemplateFactureCotisationCallbackParameters $parameters)
+    {
+        $volume = 0;
+        foreach ($this->declaration->getProduitsFilteredBy($parameters) as $produit) {
+            $volume += $produit->getVolumeRevendiqueIssuVci();
+        }
+
+        return $volume;
+    }
+
+    public function getQuantiteSuperficieRevendique()
+	{
+		return $this->declaration->getTotalTotalSuperficie();
+	}
+
+    public function getQuantiteVolumeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return;
+        }
+
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L5, null, $parameters);
+    }
+
+    public function getQuantiteSuperficeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
+
+        if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
+            return null;
+        }
+        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return;
+        }
+
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_RECOLTE_L4, null, $parameters);
+    }
+
+    public function getQuantiteVolumeVendue(TemplateFactureCotisationCallbackParameters $parameters) {
+        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+        if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
+            return;
+
+        }
+        return $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_RAISINS_L6, null, $parameters) +
+                $docDouanier->getTotalValeur(DRCsvFile::CSV_LIGNE_CODE_ACHETEUR_MOUTS_L7, null, $parameters);
+    }
+
     /**** MOUVEMENTS ****/
 
-    public function getTemplateFacture() {
-        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode());
+    public function getTemplateFacture($region = null) {
+        return TemplateFactureClient::getInstance()->findByCampagne($this->getPeriode(), $region);
     }
 
     public function getMouvementsFactures() {
@@ -1752,8 +1867,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->_get('mouvements');
     }
 
-    public function getMouvementsFacturesCalcule() {
-      $templateFacture = $this->getTemplateFacture();
+    public function getMouvementsFacturesCalcule($region = null) {
+      $templateFacture = $this->getTemplateFacture($region);
       if(!$templateFacture) {
           return array();
       }
@@ -1783,7 +1898,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
           $mouvement->createFromCotisationAndDoc($cotisation, $this);
           $mouvement->detail_libelle = str_replace(array('%millesime_precedent%', '%millesime_courant%'), array($this->getPeriode() - 1, $this->getPeriode()), $mouvement->detail_libelle);
 
-          $cle = str_replace('%detail_identifiant%', $mouvement->detail_identifiant, $cotisation->getHash());
+          $cle = str_replace(['%detail_identifiant%', '%millesime%'], [$mouvement->detail_identifiant, $this->getPeriode()], $cotisation->getHash());
           if(isset($cotisationsPrec[$cle]) && $cotisation->getConfigCallback() != 'getVolumeRevendiqueNumeroDossier') {
               $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cle]->getQuantite();
           }
@@ -1865,7 +1980,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     /**** FCT de FACTURATION ****/
 
-    public function isDeclarantFamille($familleFilter = null){
+    public function isDeclarantFamille(TemplateFactureCotisationCallbackParameters $familleFilter){
         if(!$familleFilter){
 
             return false;
@@ -1874,6 +1989,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             return false;
         }
+
+        $familleFilter = $familleFilter->getParameters('famille');
+
         $familleFilterMatch = preg_replace("/^NOT /", "", $familleFilter, -1, $exclude);
 		$exclude = (bool) $exclude;
         $regexpFilter = "#^(".implode("|", explode(",", $familleFilterMatch)).")$#";
@@ -1985,6 +2103,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         if (count(array_keys($commission_date)) == 1) {
+            if (!$this->exist('date_commission')) {
+                $this->add('date_commission');
+            }
             $this->date_commission = array_key_first($commission_date);
         }
     }
@@ -2266,7 +2387,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function isValidee() {
 
-        return $this->validation;
+        return boolval($this->validation);
     }
 
     public function isValideeOdg() {

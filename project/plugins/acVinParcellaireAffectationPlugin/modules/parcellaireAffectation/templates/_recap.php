@@ -1,10 +1,12 @@
 <?php use_helper('Float') ?>
 <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
-<div class="row">
-    <div class="col-xs-12">
-        <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
+<?php if ($dgc): ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>
         <tr>

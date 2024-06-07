@@ -8,7 +8,7 @@ class PMCEtapes extends Etapes
 
 	public static $etapes = array(
             self::ETAPE_EXPLOITATION => 1,
-			self::ETAPE_LOTS => 2,
+            self::ETAPE_LOTS => 2,
             self::ETAPE_VALIDATION => 3
     );
 
@@ -34,8 +34,8 @@ class PMCEtapes extends Etapes
 		return self::$_instance;
 	}
 
-	protected function filterItems($items) {
-
+    protected function filterItems($items)
+    {
         return $items;
 	}
 

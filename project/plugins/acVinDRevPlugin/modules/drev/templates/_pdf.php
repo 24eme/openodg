@@ -79,7 +79,7 @@
 </table>
 <br /><br />
 Les produits déclarés sont du millésime du VCI
-<?php else: ?>
+<?php elseif($drev->canHaveVCI()): ?>
 <br />
 <em>Aucun stock VCI déclaré</em>
 <?php endif; ?>

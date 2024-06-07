@@ -15,7 +15,11 @@
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $lot->unique_id)); ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Annuler</a>
+            <?php if ($service): ?>
+                <a href="<?php echo $service; ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Annuler</a>
+            <?php else: ?>
+                <a href="<?php echo url_for('degustation_lot_historique', array('identifiant' => $etablissement->identifiant, 'unique_id' => $lot->unique_id)); ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Annuler</a>
+            <?php endif ?>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok

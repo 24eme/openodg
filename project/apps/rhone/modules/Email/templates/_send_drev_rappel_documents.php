@@ -10,12 +10,11 @@ Rappel des documents restant à envoyer :
 
 <?php endforeach; ?>
 
-Le ou les document(s) annexes peuvent nous être envoyés par mail (<gestiondesdonnees@syndicat-cotesdurhone.com>) ou par voie postale :
+Le ou les document(s) annexes peuvent nous être envoyés par mail (<<?php echo $organisme->getEmail(); ?>>) ou par voie postale :
 
 Syndicat Général des Côtes du Rhône
-6 rue des trois faucons
-CS 60093
-84918 AVIGNON Cedex 9
+<?php $organisme->getAdresse(); ?><br />
+<?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?>
 <?php endif; ?>
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>

@@ -1,6 +1,6 @@
 <?php use_helper('Compte') ?>
 <ol class="breadcrumb">
-    <?php if(!$sf_user->hasCredential('contacts')): ?>
+    <?php if(!$sf_user->hasContact()): ?>
         <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>">Contacts</a></li>
     <?php else: ?>
         <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>

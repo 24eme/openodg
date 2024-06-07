@@ -59,6 +59,10 @@ class DRevValidationForm extends acCouchdbForm
         }
 
         if(sfContext::getInstance()->getUser()->isAdmin() && !$this->getDocument()->validation) {
+            $this->setWidget('saisie_papier', new sfWidgetFormInputCheckbox());
+            $this->getWidget('saisie_papier')->setLabel("Saisie papier");
+            $this->setValidator('saisie_papier',  new sfValidatorBoolean(array('required' => false)));
+
             if($this->getDocument()->exist('date_depot') && $this->getDocument()->_get('date_depot')) {
                 $this->setDefault('date_depot', DateTime::createFromFormat('Y-m-d', $this->getDocument()->_get('date_depot'))->format('d/m/Y'));
             } elseif($this->getDocument()->isTeledeclare()) {
@@ -133,15 +137,15 @@ class DRevValidationForm extends acCouchdbForm
 
     public function save() {
        $values = $this->getValues();
-
         if (DrevConfiguration::getInstance()->hasDegustation() && $this->isAdmin) {
             $this->getDocument()->add('date_commission', $values['date_commission']);
         }
 
         if($this->isAdmin){
-          foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
-            $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
-         }
+            $this->getDocument()->add('papier', intval($values['saisie_papier']));
+            foreach ($this->getEmbeddedForm('lots')->getEmbeddedForms() as $key => $embedForm) {
+                $this->getDocument()->lots[$key]->set("affectable", $values['lots'][$key]['affectable']);
+            }
         }
 
         if(isset($values['date_depot']) && $values['date_depot']) {

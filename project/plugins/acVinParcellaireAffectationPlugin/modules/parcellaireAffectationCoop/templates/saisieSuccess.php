@@ -36,8 +36,8 @@
         <div class="col-xs-4"><button type="submit" name="retour" value="1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
         <div class="col-xs-4 text-center">
         </div>
-        <div class="col-xs-4 text-right"><button id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span> Valider la déclaration</button></div>
+        <div class="col-xs-4 text-right"><button id="submit-confirmation-validation" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span> Valider la déclaration</button></div>
     </div>
 
-    <?php include_partial('parcellaireAffectationCoop/popupConfirmationValidation', array('form' => $form, 'parcellaireAffectation' => $parcellaireAffectation)); ?>
+    <?php //include_partial('parcellaireAffectationCoop/popupConfirmationValidation', array('form' => $form, 'parcellaireAffectation' => $parcellaireAffectation)); ?>
 </form>

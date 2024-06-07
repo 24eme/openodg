@@ -74,6 +74,7 @@ testVisualisationLimite($b, $societeIdentifiant, $compte);
 
 $b->get('/compte/'.$compteAutre->getIdentifiant().'/visualisation');
 $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
+$b->resetCurrentException();
 
 $t->comment('En mode habilitation');
 
@@ -84,6 +85,7 @@ $b->restart();
 
 $b->get('/compte/search');
 $t->is($b->getResponse()->getStatuscode(), 403, "Page de recherche de contact protégé");
+$b->resetCurrentException();
 
 if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
@@ -93,9 +95,11 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
 
     $b->get('/compte/'.$compteAutre->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
+    $b->resetCurrentException();
 } else {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur protégé");
+    $b->resetCurrentException();
 }
 
 $t->comment('En mode télédéclarant');
@@ -109,6 +113,7 @@ $t->is($b->getResponse()->getStatuscode(), 302, "Login réussi");
 
 $b->get('/compte/search');
 $t->is($b->getResponse()->getStatuscode(), 403, "Page de recherche de contact protégé");
+$b->resetCurrentException();
 
 if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
@@ -117,9 +122,11 @@ if(SocieteConfiguration::getInstance()->isVisualisationTeledeclaration()) {
     testVisualisationLimite($b, $societeIdentifiant, $compte);
     $b->get('/compte/'.$compteAnnexe->getIdentifiant().'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'un interlocuteur d'une société \"AUTRE\" protégée");
+    $b->resetCurrentException();
 } else {
     $b->get('/compte/'.$compteIdentifiant.'/visualisation');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de visualisation d'une interlocuteur protégée");
+    $b->resetCurrentException();
 }
 
 function testVisualisationLimite($b, $societeIdentifiant, $compte) {
@@ -138,14 +145,18 @@ function testVisualisationLimite($b, $societeIdentifiant, $compte) {
 
     $b->get('/compte/'.$societeIdentifiant.'/nouveau');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page ajouter un interlocuteur protégée");
+    $b->resetCurrentException();
 
     $b->get('/compte/'.$compte->getIdentifiant().'/modification');
     $t->is($b->getResponse()->getStatuscode(), 403, "Page de modification d'un interlocuteur protégée");
+    $b->resetCurrentException();
 
     $b->get('/compte/'.$compte->getIdentifiant().'/switchStatus');
     $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un interlocuteur protégé");
+    $b->resetCurrentException();
 
     $b->get('/compte/'.$compte->getIdentifiant().'/suppression');
     $t->is($b->getResponse()->getStatuscode(), 403, "Action archiver un interlocuteur protégé");
+    $b->resetCurrentException();
 
 }

@@ -32,7 +32,7 @@
 <table style="font-size:12px;"><tr><td style="width: 324px;"><?php echo 'Aix-en-Provence, le ' . format_date(date('Y-m-d'), "P", "fr_FR"); ?></td></tr></table>
 <br/><br/>
 
-<table style="font-size:12px;"><tr><td>Objet : Levée d’un manquement relevé sur le Contrôle organoleptique du produit de l’IGP Pays des Bouches du Rhône, réf. NC Bouches du Rhône - 1416 Aix </td></tr></table>
+<table style="font-size:12px;"><tr><td>Objet : Levée d’un manquement relevé sur le Contrôle organoleptique</td></tr></table>
 <br/><br/><br/>
 
 
@@ -53,7 +53,7 @@
   <tr>
     <th style="font-weight:bold">N° de lot OPERATEUR</th>
     <th style="font-weight:bold">Logement<br/>(Cuve)</th>
-    <th style="font-weight:bold">IGP<br/>Couleur</th>
+    <th style="font-weight:bold">Appellation<br/>Couleur</th>
     <th style="font-weight:bold">Cépage</th>
     <th style="font-weight:bold">Volume<br/>(HI)</th>
     <th style="font-weight:bold">Décision/<br/>Observation</th>

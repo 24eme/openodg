@@ -28,6 +28,7 @@ SV12:
                   bailleur_ppm: { }
                   bailleur_raison_sociale: { }
                   colonneid: { }
+      region: { required: false }
       mouvements:
         type: collection
         definition:

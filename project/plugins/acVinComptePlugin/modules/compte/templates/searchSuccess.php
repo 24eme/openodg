@@ -4,6 +4,27 @@
     <li class="active"><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
 </ol>
 
+<script type="text/javascript">
+  window.onload = function () {
+   $(document).ready(function() {
+   $(".removetag").click(function() {
+       return confirm('Etes vous sur(e) de vouloir supprimer définivement ce tag pour ces <?php echo $nb_results; ?> fiches ?');
+     });
+   $("#contacts_all").click(function () { $('#recherche_contact_form').submit(); });
+
+   $(".plus-tags").click(function(){
+     var siblings = $(this).siblings(".tag_hidden");
+     if(siblings.is(":visible")){
+       siblings.hide();
+       $(this).children("span").addClass('glyphicon-chevron-down').removeClass('glyphicon-chevron-up');
+     }else{
+       siblings.show();
+       $(this).children("span").addClass('glyphicon-chevron-up').removeClass('glyphicon-chevron-down');
+     }
+   });
+   });
+  };
+</script>
 <div class="row">
     <section class="col-xs-12 col-sm-8 col-md-9" id="contenu_etape">
 		<form id="recherche_contact_form">
@@ -118,10 +139,12 @@
 
 </section>
 <section class="col-xs-12 col-sm-4 col-md-3" style="padding-bottom: 20px;">
-    	<a class="btn btn-default btn-default-step btn-block" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherche avancée</a>
         <a href="<?php echo url_for('societe_creation', array()); ?>" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Créer une société</a>
         <a class="btn btn-default btn-block" href="<?php echo url_for('compte_search_csv', array('q' => $q, 'tags' => $args['tags'], 'contacts_all' => ($contacts_all)? 1 : 0)); ?>"<?php if($nb_results > 50000): ?> disabled="disabled"<?php endif;?>> <span class="glyphicon glyphicon-export"></span> Exporter en CSV</a>
+    	<a class="btn btn-default btn-default-step btn-block" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherche avancée</a>
+<?php if (SocieteConfiguration::getInstance()->hasGroupes()): ?>
       <a class="btn btn-default btn-block" href="<?php echo url_for('compte_groupes') ?>" > <span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Gérer les groupes</a>
+<?php endif; ?>
       <p style="margin-top: 10px;"><strong><?php echo $nb_results; ?></strong> résultat(s) trouvé(s)</p>
 
 	<div style="margin-top: 15px;">
@@ -149,8 +172,10 @@
     </div>
     <?php endif; ?>
 
-            <?php $tagsManuels = array();
-            foreach($facets as $type => $ftype): ?>
+            <?php $tagsManuels = array(); ?>
+            <?php $max_tags = 5; ?>
+            <?php foreach($facets as $type => $ftype): ?>
+                <?php $cptTags = 1; ?>
                 <?php if (count($ftype['buckets'])): ?>
                   <?php if($type == 'groupes'){ continue; } ?>
                 <h4>Tags <?php echo $type ?></h4>
@@ -174,13 +199,15 @@
     							$tagsManuels[] = $f['key'];
     						}
     					?>
-                        <a
+                        <a <?php if($cptTags > $max_tags): echo "style='display:none;'"; endif; ?>
                         <?php if($active && !$not): ?>
     					  onclick="if(confirm('Souhaitez-vous voir les comptes sans tag <?php echo $f['key']; ?> ?')){ document.location = '<?php echo url_for('compte_search', $sargs).",!".$type.':'.$f['key']; ?>'; return false; }"
                         <?php endif; ?>
-                        class="list-group-item list-group-item-xs <?php echo $active ?>" href="<?php echo ($active)? url_for('compte_search', $sargs) : url_for('compte_search', $targs); ?>"><?php echo str_replace('_', ' ', $f['key']) ?>
+                        class="list-group-item list-group-item-xs <?php echo $active ?> <?php if($cptTags > $max_tags): echo 'tag_hidden'; endif; ?>" href="<?php echo ($active)? url_for('compte_search', $sargs) : url_for('compte_search', $targs); ?>"><?php echo str_replace('_', ' ', $f['key']) ?>
                             <span class="badge" style="position: absolute; right: 10px;"><?php echo $count; ?></span></a>
+          <?php $cptTags++; ?>
 					<?php endforeach; ?>
+          <a class="list-group-item list-group-item-xs plus-tags text-center pointer"><span class="glyphicon glyphicon-chevron-down"></span></a>
 					</div>
 			    <?php endif; ?>
 			<?php endforeach; ?>

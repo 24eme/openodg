@@ -66,6 +66,7 @@ ParcellaireManquant:
                               campagne_plantation: {  }
                               densite: { }
                               pourcentage: { }
+      region: { required: false }
       observations: {  }
       pieces:
         type: array_collection

@@ -136,7 +136,7 @@ class Elastica_ResultSet implements Iterator, Countable
      *
      * @return int Size of set
      */
-    public function count()
+    public function count(): int
     {
         return sizeof($this->_results);
     }
@@ -146,7 +146,7 @@ class Elastica_ResultSet implements Iterator, Countable
      *
      * @return Elastica_Result|bool Set object or false if not valid (no more entries)
      */
-    public function current()
+    public function current():mixed
     {
         if ($this->valid()) {
             return $this->_results[$this->key()];
@@ -158,7 +158,8 @@ class Elastica_ResultSet implements Iterator, Countable
     /**
      * Sets pointer (current) to the next item of the set
      */
-    public function next()
+     #[\ReturnTypeWillChange]
+     public function next()
     {
         $this->_position++;
 
@@ -170,7 +171,7 @@ class Elastica_ResultSet implements Iterator, Countable
      *
      * @return int Current position
      */
-    public function key()
+    public function key(): int
     {
         return $this->_position;
     }
@@ -180,7 +181,7 @@ class Elastica_ResultSet implements Iterator, Countable
      *
      * @return bool True if object exists
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->_results[$this->key()]);
     }
@@ -188,7 +189,7 @@ class Elastica_ResultSet implements Iterator, Countable
     /**
      * Resets position to 0, restarts iterator
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->_position = 0;
     }

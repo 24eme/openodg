@@ -37,6 +37,8 @@ abstract class Elastica_Transport_Abstract
      */
     protected $_config;
 
+    protected $_request;
+
     /**
      * Construct transport
      *

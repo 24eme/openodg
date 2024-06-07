@@ -1,0 +1,9 @@
+all:
+  configuration:
+    habilitation:
+      activites:
+         PRODUCTEUR: "Producteur"
+         VINIFICATEUR: "Vinificateur"
+         VRAC: "Vrac"
+         CONDITIONNEUR: "Conditionneur"
+         VENTE_A_LA_TIREUSE: "Vente tireuse"

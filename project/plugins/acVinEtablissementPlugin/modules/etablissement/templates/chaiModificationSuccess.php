@@ -76,6 +76,22 @@
                     </div>
                   </div>
                 </div>
+
+
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">Secteur</h4>
+                  </div>
+                  <div class="panel-body">
+                      <div class="row" style="padding-top:10px;">
+                          <div class="form-group">
+                              <?php echo $form['secteur']->renderError() ?>
+                              <?php echo $form['secteur']->renderLabel(null, array('class' => 'col-xs-4  control-label')); ?>
+                              <div class="col-xs-6 text-left checkbox" style="padding-left: 30px;"><?php echo $form['secteur']->render(); ?></div> </div>
+                          </div>
+                        </div>
+                    </div>
+
                 <div class="panel panel-default">
                   <div class="panel-heading">
                     <h4 class="panel-title">Attributs</h4>

@@ -1,4 +1,5 @@
 <?php echo use_helper("Date"); ?>
+<?php echo use_helper("Lot"); ?>
 <ol class="breadcrumb">
     <li><a href="<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?><?php echo url_for('documents'); ?><?php endif; ?>">Documents</a></li>
     <li><a href="<?php echo url_for('pieces_historique', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
@@ -8,7 +9,7 @@
     <h2 style="margin-top: 0; margin-bottom: 20px;">Historique des documents</h2>
     <?php //ATTENTION DUPLIQUÉ pour la version desktop plus bas ?>
     <div class="visible-xs col-xs-6">
-    <?php if ($sf_user->isAdmin() || $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
+    <?php if ($sf_user->isAdmin() || $sf_user->hasHabilitation()): ?>
     <a style="margin-bottom: 20px;" class="btn btn-block btn-sm btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
     <?php endif; ?>
     </div>
@@ -38,9 +39,9 @@
         		<?php if ($category && strtolower($document->key[PieceAllView::KEYS_CATEGORIE]) != $category) { continue; } ?>
                 <tr>
                     <td><?php if($document->key[PieceAllView::KEYS_DATE_DEPOT]): ?><?php echo format_date(preg_replace('/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/', '$1', $document->key[PieceAllView::KEYS_DATE_DEPOT]), "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></td>
-                    <td><?php echo ($document->key[PieceAllView::KEYS_CATEGORIE] == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtoupper($document->key[PieceAllView::KEYS_CATEGORIE]))); ?></td>
+                    <td><?php echo ($document->key[PieceAllView::KEYS_CATEGORIE] == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', clarifieTypeDocumentLibelle(ucfirst(strtoupper($document->key[PieceAllView::KEYS_CATEGORIE])))); ?></td>
                     <td>
-                        <?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) &&  Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+                        <?php if ((!$sf_user->hasHabilitation() || $sf_user->isAdmin()) &&  Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
             				<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
             					<a href="<?php echo $urlVisu ?>" ><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
             				<?php endif; ?>
@@ -70,10 +71,10 @@
                         <?php if (Piece::hasUrlPublic($document->id)): ?>
                         <a style="opacity: 0.3" onclick="navigator.clipboard.writeText(this.href); alert('Le lien a été copié dans le presse papier !'); return false;" title="Lien public pour partage" class="pull-left" href="<?php echo url_for('piece_public_view', array('doc_id' => $document->id, 'source' => $document->key[PieceAllView::KEYS_SOURCE], 'auth' => UrlSecurity::generateAuthKey($document->id.$document->key[PieceAllView::KEYS_SOURCE]))) ?>"><span class="glyphicon glyphicon-link"></span></a>
                         <?php endif; ?>
-                        <?php if (Piece::isPieceEditable($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+                        <?php if (Piece::isPieceEditable($document->id, $sf_user->isAdminODG())): ?>
                 			<a href="<?php echo url_for('edit_fichier', array('id' => $document->id)) ?>"><span class="glyphicon glyphicon-user"></span></a>
                 		<?php endif; ?>
-                		<?php if ((!$sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION) || $sf_user->isAdmin()) && $urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+                		<?php if ((!$sf_user->hasHabilitation() || $sf_user->isAdmin()) && $urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
                             <a href="<?php echo $urlVisu ?>" style="margin: 0 5px;" data-toggle-second="tooltip" title="Modifier le document"><span class="glyphicon glyphicon-edit"></span></a>
                 		<?php endif; ?>
                         <?php if($document->value[PieceAllView::VALUES_FICHIERS] && count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
@@ -104,10 +105,10 @@
     <p class="text-center"><em>Aucun document disponible<?php if ($campagne): ?> pour la campagne <strong><?php echo $campagne ?></strong><?php endif; ?></em></p>
     <?php endif; ?>
     </div>
-    <div class="col-sm-3 col-xs-12">
+    <div class="col-sm-3 col-xs-12 page-sidebar">
     <?php //ATTENTION DUPLIQUÉ pour la version mobile plus haut ?>
     <div class="hidden-xs">
-    <?php if ($sf_user->isAdmin() || $sf_user->hasCredential(myUser::CREDENTIAL_HABILITATION)): ?>
+    <?php if ($sf_user->isAdmin() || $sf_user->hasHabilitation()): ?>
     <a style="margin-bottom: 20px;" class="btn btn-block btn-sm btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>"><span class="glyphicon glyphicon-plus"></span> Ajouter un document</a>
     <?php endif; ?>
     <form>
@@ -123,7 +124,7 @@
     <div class="list-group">
 	<a class="list-group-item <?php if (!$category):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne))?>">Tous<span class="badge" style="position: absolute; right: 10px;"><?php echo count($history) - $decreases ?></span></a>
 	<?php foreach ($categories as $categorie => $nbDoc): ?>
-    <a class="list-group-item <?php if ($category && $category == $categorie):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtoupper($categorie))); ?><span class="badge" style="position: absolute; right: 10px;"><?php echo $nbDoc ?></span></a>
+    <a class="list-group-item <?php if ($category && $category == $categorie):?>active<?php endif; ?>" href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', clarifieTypeDocumentLibelle(ucfirst(strtoupper($categorie)))); ?><span class="badge" style="position: absolute; right: 10px;"><?php echo $nbDoc ?></span></a>
 	<?php endforeach; ?>
     </div>
 </div>

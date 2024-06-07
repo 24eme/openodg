@@ -18,6 +18,10 @@ else
     confname="config."$2".inc"
 fi
 
+if ! test "$SYMFONYTASKOPTIONS" ; then
+    exit;
+fi
+
 cd ../../prodouane_scrapy/
 
 if test "$1"; then

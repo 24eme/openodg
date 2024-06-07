@@ -7,15 +7,21 @@ $societe = $etablissement->getSociete();
 
 $application = getenv('APPLICATION');
 
+$b = new sfTestFunctional(new Browser());
+$t = $b->test();
+
+if (!DRevConfiguration::getInstance()->isModuleEnabled()){
+    $t->pass('No DREV for '.$application);
+    return;
+}
+
 $has_etape_lot = false;
 $has_produit_lot = false;
-$has_vci = true;
 $has_aoc = true;
 
 if ($application == 'igp13') {
     $has_etape_lot = true;
     $has_produit_lot = true;
-    $has_vci = false;
     $has_aoc = false;
 }
 if ($application == 'loire') {
@@ -57,6 +63,8 @@ foreach($config->getProduits() as $produit) {
 }
 
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../../data/dr_douane.csv');
+$has_vci = $produit1->hasRendementVCI();
+
 if (!$has_vci) {
     $csvContentTemplate = preg_replace('/Volume complémentaire individuel .VCI..;;2;0/', 'Volume complémentaire individuel (VCI)";;0;0', $csvContentTemplate);
 }
@@ -65,10 +73,8 @@ if (!$has_vci) {
 $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').'.csv';
 file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($etablissement->cvi, $produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
 
-$b = new sfTestFunctional(new Browser());
-$t = $b->test();
 
-$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' => null, 'app_facture_emetteur' => $facture_emetteur_test));
+$b->setAdditionnalsConfig(array('app_auth_mode' => 'NO_AUTH', 'app_auth_rights' =>  array(myUser::CREDENTIAL_ADMIN), 'app_facture_emetteur' => $facture_emetteur_test));
 
 $t->comment("Saisie d'une DRev");
 
@@ -76,7 +82,7 @@ $b->get('/declarations/'.$etablissement->identifiant);
 $b->isForwardedTo('declaration', 'etablissement');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page declaration");
 
-$b->click('a[href*="/drev/creation-papier/"]')->followRedirect()->followRedirect();
+$b->click('a[href*="/drev/creation"]')->followRedirect()->followRedirect();
 $b->isForwardedTo('drev', 'exploitation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape exploitation");
 
@@ -133,7 +139,9 @@ if($has_aoc) {
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 
-$b->click('button[id="btn-validation-document"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
+$b->click('button[id="submit-confirmation-validation"]', array('date_depot' => array('date' => date('d/m/Y'))));
+$t->is($b->getResponse()->getStatuscode(), 302, "Étape validation");
+$b->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
 
@@ -152,9 +160,11 @@ $b->restart();
 
 $b->get('/declarations/'.$etablissement->identifiant);
 $t->is($b->getResponse()->getStatuscode(), 403, "Page declaration protégé");
+$b->resetCurrentException();
 
 $b->get('/drev/visualisation/'.$drevId);
 $t->is($b->getResponse()->getStatuscode(), 403, "Visu de la DRev protégé");
+$b->resetCurrentException();
 
 $t->comment('En mode télédéclarant');
 

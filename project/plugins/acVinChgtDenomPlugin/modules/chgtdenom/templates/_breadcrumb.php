@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
-  <?php if ($sf_user->getTeledeclarationDrevRegion()): ?>
-  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getTeledeclarationDrevRegion(); ?></a></li>
+  <?php if ($sf_user->getRegion()): ?>
+  <li><a href="<?php echo url_for('accueil'); ?>"><?php echo $sf_user->getRegion(); ?></a></li>
   <?php endif; ?>
   <?php if($chgtDenom->exist('declarant')): ?>
   <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $chgtDenom->identifiant)); ?>"><?php echo $chgtDenom->declarant->getNom() ?> (<?php echo $chgtDenom->identifiant ?> - <?php echo $chgtDenom->declarant->cvi ?>)</a></li>

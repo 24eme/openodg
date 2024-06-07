@@ -52,12 +52,15 @@ class Cotisation
 		return $this->getConfig()->callback;
 	}
 
-	public function getConfigCallbackParameters() {
-		if(!$this->getConfig()->exist('callback_parameters')) {
-			return array();
-		}
-		return $this->getConfig()->callback_parameters->toArray(true, false);
-	}
+    public function getConfigCallbackParameters() {
+        $params = [];
+
+        if($this->getConfig()->exist('callback_parameters')) {
+            $params = $this->getConfig()->callback_parameters->toArray(true, false);
+        }
+
+        return new TemplateFactureCotisationCallbackParameters($this->getConfigDocument(), $params);
+    }
 
     public function getConfigDate() {
 		if(!$this->getConfig()->exist('date')) {

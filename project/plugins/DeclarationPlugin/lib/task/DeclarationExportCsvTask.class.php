@@ -16,6 +16,7 @@ class DeclarationExportCsvTask extends sfBaseTask
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
             new sfCommandOption('no-warnings', null, sfCommandOption::PARAMETER_REQUIRED, 'do not print warnings', false),
             new sfCommandOption('filter-produit', null, sfCommandOption::PARAMETER_REQUIRED, "Produit de destination de l'export (pour les DR/SV11/SV12 de med)", ''),
+            new sfCommandOption('bypass-exclude', null, sfCommandOption::PARAMETER_REQUIRED, "Bypass exclusion de document", false),
         ));
 
         $this->namespace = 'declaration';
@@ -41,8 +42,9 @@ EOF;
             fwrite(STDERR, "WARNING: document non validé, ne sera pas exporté via la tache d'export global\n");
         }
 
-        if(!$options['no-warnings'] && method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
+        if(!$options['no-warnings'] && !$options['bypass-exclude'] && method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
             fwrite(STDERR, "WARNING: document exclu de la tache d'export global (via ".get_class($doc)."::isExcluExportCsv())\n");
+            return ;
         }
 
         if($options["header"]) {

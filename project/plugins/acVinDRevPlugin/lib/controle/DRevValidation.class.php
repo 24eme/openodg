@@ -30,6 +30,7 @@ class DRevValidation extends DeclarationLotsValidation
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_volume', "Le volume revendiqué n'a pas été saisi");
         $this->addControle(self::TYPE_WARNING, 'revendication_incomplete_volume_warn', "Le volume revendiqué n'a pas été saisi");
+        $this->addControle(self::TYPE_WARNING, 'revendication_apporteur_total_warn', "Aucun volume de récolte en cave particulière a été détecté");
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete_superficie', "La superficie revendiquée n'a pas été saisie");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
         $this->addControle(self::TYPE_WARNING, 'revendication_rendement_warn', "Le rendement sur le volume revendiqué n'est pas respecté (peut être lié à un achat de vendange ou l'intégration de VCI stocké chez un négociant)");
@@ -87,7 +88,15 @@ class DRevValidation extends DeclarationLotsValidation
 
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VSI_DESTRUCTION, DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VSI_DESTRUCTION));
 
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
+        if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
+            foreach ($this->document->getProduitsWithoutLots() as $produit_hash => $produit) {
+                $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $produit_hash);
+                foreach($contrats as $k=>$v){
+                    $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$k,DRevDocuments::getEngagementLibelle(DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC).'<strong>'.$v['numero']."</strong> avec un volume proposé de <strong>".$v['volume']." hl</strong>.");
+                }
+            }
+            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION, "<strong>Je n'ai pas l'information</strong>");
+        }
 
         /* Lots */
 
@@ -151,9 +160,15 @@ class DRevValidation extends DeclarationLotsValidation
 
     protected function controleNeant()
     {
-    	if(count($this->document->getProduits()) > 0) {
-    		return;
-    	}
+        $superficie = 0;
+        $volume = 0;
+        foreach($this->document->getProduits() as $p) {
+            $volume += $p->volume_revendique_total;
+            $superficie += $p->superficie_revendique;
+        }
+        if ($volume) {
+            return;
+        }
 
         if($this->document->exist('lots') && count($this->document->lots) && !$this->document->hasDocumentDouanier()) {
     		return;
@@ -278,7 +293,9 @@ class DRevValidation extends DeclarationLotsValidation
         if ($produit->isCleanable()) {
           return;
         }
-        if($produit->getSommeProduitsCepage('superficie_revendique') === null) {
+        if ($produit->recolte && !$produit->recolte->volume_sur_place) {
+            $this->addPoint(self::TYPE_WARNING, 'revendication_apporteur_total_warn', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }elseif($produit->getSommeProduitsCepage('superficie_revendique') === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
         }
         if($produit->getSommeProduitsCepage('volume_revendique_issu_recolte') === null) {
@@ -470,7 +487,7 @@ class DRevValidation extends DeclarationLotsValidation
                 $this->addPoint(self::TYPE_WARNING, 'declaration_superieur_volume_autorise_'.$hash_produit, $produit." (".$volumeTotalSeuilDeclare." hl)", $this->generateUrl('drev_lots', array("id" => $this->document->_id)));
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT.'_'.$hash_produit, '', null, $hash_produit);
             }
-            if($this->document->hasDestionationVrac()){
+            if (VIP2C::hasVolumeSeuil() && $this->document->hasDestionationVrac()) {
                 $contrats = VIP2C::getContratsFromAPI($this->document->declarant->cvi, $this->document->campagne, $hash_produit);
 
                 if(!$contrats){

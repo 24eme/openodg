@@ -36,11 +36,10 @@ $t->ok($communes, "config/communes.yml contient des communes");
 $commune = current($communes);
 $code_commune = key($communes);
 $numero_ordre_key = "00";
-
-$parcelle = $parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT");
-$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", "PEYNIER", "AK", "47", null);
-$parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT",25);
-$parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT",26);
+$parcelle = $parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "", "AB", "52", "LA HAUT");
+$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", "PEYNIER", "", "AK", "47", null);
+$parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "", "AB", "52", "LA HAUT",25);
+$parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "", "AB", "52", "LA HAUT",26);
 $parcellaire->save();
 
 $t->is(count($parcellaire->declaration), 1, "Le parcellaire a un produit");

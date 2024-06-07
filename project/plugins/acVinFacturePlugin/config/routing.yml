@@ -12,9 +12,51 @@ facturation_en_attente:
     sf_method: [get]
   class: FacturationRoute
 
+facturation_historique:
+  url: /facturation/historique
+  param: { module: facturation, action: factureHistorique }
+  requierements:
+    sf_method: [get]
+  class: FacturationRoute
+
 facturation_massive:
   url: /facturation_massive
   param: { module: facturation, action: massive }
+  requirements:
+    sf_method: [get, post]
+  class: FacturationRoute
+
+facturation_libre:
+  url: /facturation_libre
+  param: { module: facturation, action: libre }
+  requirements:
+    sf_method: [get]
+  class: FacturationRoute
+
+facturation_libre_creation:
+  url: /facturation_libre_creation
+  param: { module: facturation, action: creationLibre }
+  requirements:
+    sf_method: [get]
+  class: FacturationRoute
+
+facturation_libre_edition:
+  url: /facturation_libre_edition/:id
+  param: { module: facturation, action: editionLibre }
+  requirements:
+    sf_method: [get, post]
+  class: FacturationRoute
+
+facturation_libre_suppression:
+  url: /facturation_libre_suppression/:id
+  param: { module: facturation, action: suppressionLibre }
+  requirements:
+    sf_method: [get]
+  class: FacturationRoute
+
+facturation_libre_comptabilite:
+  url: /facturation_libre_comptabilite
+  param: { module: facturation, action: comptabiliteLibre }
   requirements:
     sf_method: [get, post]
   class: FacturationRoute
@@ -107,7 +149,7 @@ facturation_regenerate:
     sf_method: [get]
 
 facturation_declarant:
-  url: /facturation/declarant/:id
+  url: /facturation/declarant/:identifiant
   param: { module: facturation, action: declarant }
   class: FacturationDeclarantRoute
   options:
@@ -134,6 +176,14 @@ facturation_template:
 facturation_xml:
   url : /facture/xml/:id
   param: { module:facturation, action: xml }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+
+facturation_email:
+  url : /facture/envoi-email/:id
+  param: { module:facturation, action: envoiEmail }
   class: FactureRoute
   options:
     model:    Facture

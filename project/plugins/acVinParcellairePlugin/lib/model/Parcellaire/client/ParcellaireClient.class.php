@@ -312,7 +312,7 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellesMatch = [];
 
         $selected_parcellaires = [];
-        if ($parcelle->exist('idu') && $parcelle->idu) {
+        if ($parcelle->exist('idu') && $parcelle->idu && isset($parcelles[$parcelle->idu])) {
             $selected_parcellaires = $parcelles[$parcelle->idu];
         }else{
             foreach($parcelles as $idu => $multip) {
@@ -331,7 +331,7 @@ class ParcellaireClient extends acCouchdbClient {
             if($parcelle->campagne_plantation == $p->campagne_plantation) {
                 $score += 0.25;
             }
-            if(strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
+            if($parcelle->lieu && $p->lieu && strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
                 $score += 0.25;
             }
             if(abs($parcelle->getSuperficie(self::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) - $p->superficie) < 0.0001) {

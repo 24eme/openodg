@@ -22,6 +22,7 @@ $list_idu = [];
     <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
 <?php endif; ?>
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
+  <li><span class="text-muted"><?php echo $parcellaire->_id; ?></span></li>
 </ol>
 
 <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm") && isset($form)): ?>
@@ -134,7 +135,7 @@ $list_idu = [];
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
-                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$detail->hasTroisiemeFeuille()) {
+                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuilleEnabled() && !$detail->hasTroisiemeFeuille()) {
                                     $cepage .= ' - jeunes vignes';
                                 }
                             ?>
@@ -258,11 +259,12 @@ $list_idu = [];
 <?php
 
     foreach($synthese as $produit_libelle => $sous_synthese):
-        foreach($sous_synthese as $cepage_libelle => $s): ?>
+        foreach($sous_synthese as $totalcepage => $cepages):
+        foreach($cepages as $cepage_libelle => $s): ?>
         <tr>
-            <?php if ($cepage_libelle == 'Total'): ?>
-                <th><?php echo $produit_libelle ; ?></th>
-                <th><?php echo $cepage_libelle ; ?></th>
+            <?php if ($cepage_libelle == 'Total' || strpos($produit_libelle, 'XXXX') !== false): ?>
+                <th><?php echo str_replace('XXXX', '', $produit_libelle); ?></th>
+                <th><?php echo str_replace('XXXX', '', $cepage_libelle); ?></th>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
                 <th class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></th>
                 <?php else: ?>
@@ -270,7 +272,7 @@ $list_idu = [];
                 <?php endif; ?>
             <?php else: ?>
                 <td><?php echo $produit_libelle ; ?></td>
-                <td><?php echo $cepage_libelle ; ?></td>
+                <th><?php echo str_replace('XXXX', '', $cepage_libelle); ?></th>
                 <?php if ($s['superficie_min'] == $s['superficie_max']): ?>
                 <td class="text-right" colspan="2"><?php echoSuperficie($s['superficie_min']); ?></td>
                 <?php else: ?>
@@ -279,6 +281,7 @@ $list_idu = [];
             <?php endif; ?>
         </tr>
 <?php
+            endforeach;
         endforeach;
     endforeach;
 ?>
@@ -287,8 +290,8 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
+    <div class="row" style="min-height: 370px;">
+        <div class="col-xs-12 text-center">
             <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
         </div>
     </div>
@@ -301,7 +304,7 @@ $list_idu = [];
 <?php if($sf_user->hasTeledeclaration()): ?>
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaire->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
 </div>
 <?php endif;?>

@@ -194,7 +194,7 @@ class parcellaireManquantActions extends sfActions {
 
     	$this->form->save();
 
-    	$this->getUser()->setFlash("notice", "Vos parcelles irrigables ont bien été enregistrées");
+    	$this->getUser()->setFlash("notice", "Vos informations ont bien été enregistrées");
     	return $this->redirect('parcellairemanquant_visualisation', $this->parcellaireManquant);
     }
 
@@ -234,6 +234,9 @@ class parcellaireManquantActions extends sfActions {
     }
 
     protected function secure($droits, $doc) {
+        if ($this->getUser()->isAdminODG()) {
+            return ;
+        }
     	if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
     		return $this->forwardSecure();

@@ -5,7 +5,6 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
 
     public function configure() {
 
-        $this->setWidget('regions', new sfWidgetFormChoice(array('choices' => $this->getRegions(), 'multiple' => true, 'expanded' => true, 'default' => array_keys($this->getRegions()))));
         $this->setWidget('seuil', new sfWidgetFormInput(array(), array('autocomplete' => 'off')));
         $this->setWidget('date_mouvement', new sfWidgetFormInput(array('default' => date('d/m/Y')), array('autocomplete' => 'off')));
         $this->setWidget('date_facturation', new sfWidgetFormInput(array('default' => date('d/m/Y')), array('autocomplete' => 'off')));
@@ -13,7 +12,6 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
         $this->setWidget('modele', new bsWidgetFormChoice(array('choices' => $this->getModeleChoices(), 'expanded' => true), array("required" => "required")));
         $this->setWidget('type_document', new sfWidgetFormChoice(array('choices' => $this->getTypesDocumentFacturant())));
 
-        $this->setValidator('regions', new sfValidatorChoice(array('choices' => array_keys($this->getRegions()), 'multiple' => true, 'required' => false)));
 	    $this->setValidator('seuil', new sfValidatorNumber(array('required' => false)));
         $this->setValidator('date_mouvement', new sfValidatorString());
         $this->setValidator('date_facturation', new sfValidatorString());
@@ -22,7 +20,6 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
         $this->setValidator('type_document', new sfValidatorChoice(array('choices' => array_keys($this->getTypesDocumentFacturant()), 'required' => true)));
 
         $this->widgetSchema->setLabels(array(
-            'regions' => 'Sélectionner des régions à facturer :',
             'seuil_facture' => "Seuil de facturation :",
             'seuil_avoir' => 'Seuil des avoirs :',
             'date_mouvements' => 'Dernière date de prise en compte des mouvements :',
@@ -41,7 +38,8 @@ class FactureGenerationMasseForm extends FactureGenerationForm {
     }
 
     public function getRegions() {
-        return EtablissementClient::getRegionsWithoutHorsInterLoire();
+        $r = Organisme::getCurrentOrganisme();
+        return array($r => $r);
     }
 
     public function getModeleChoices() {

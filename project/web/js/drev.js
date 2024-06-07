@@ -20,6 +20,7 @@
         }
         $('#checkbox_logement_vin').on('change', function() {
             $('#form_logement_vin').find('input').val("");
+            $('#form_logement_vin').find('select').val("");
         });
     }
 
@@ -364,6 +365,27 @@
         $('#form_'+type+'_lots .ligne_lot_cepage input').on('blur', function() { checkBlocsLotCepages(); });
         $('#form_'+type+'_lots .ligne_lot_cepage select').on('blur', function() { checkBlocsLotCepages(); });
 
+
+        $('.modal_lot_specificite input').on('keypress',function(e) {
+            if(e.which == 13 || e.which == 27) {
+                $(this).parents('.modal_lot_specificite').find('a.btn-success').click()
+                return false;
+            }
+        });
+
+        $( ".modal_lot_specificite" ).on('shown.bs.modal', function(e) {
+          $(this).find('input').focus();
+        });
+
+        $('.modal_lot_specificite a.btn-success').on('click',function(e){
+            mention = $(this).parents('.modal_lot_specificite').find('input').val();
+            span_mention = '.checkboxtext_'+$(this).parents('.modal_lot_specificite').attr('id');
+            if(mention) {
+              $(span_mention).html('Mention : '+mention+' <a>(Changer)</a>');
+            }else{
+              $(span_mention).html('Sans mention valorisante <a>(Changer)</a>');
+            }
+        });
 
         //Vérification de la cohérence des saisies dans la popup modal_lot_cepages
         $('.modal_lot_cepages a.btn-success').on('click',function(e){
