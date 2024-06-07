@@ -1,13 +1,19 @@
 <?php use_helper('Date'); ?>
 
-<?php include_partial('dr/breadcrumb', array('dr' => $dr )); ?>
 <?php include_partial('global/flash'); ?>
+
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $dr->identifiant, 'campagne' => $dr->campagne)); ?>"><?php echo $dr->getEtablissementObject()->getNom() ?> (<?php echo $dr->getEtablissementObject()->identifiant ?> - <?php echo $dr->getEtablissementObject()->cvi ?>)</a></li>
+  <li><a class="active" href=""><?php if($dr->isBailleur()) echo "Synthèse bailleur "; else echo $dr->type; ?> de <?php echo $dr->getperiode(); ?></a></li>
+</ol>
+
 
 <div class="page-header no-border clearfix">
     <h2>
         <?php if ($dr->isBailleur()): ?>
             <?php
-                echo 'Synthèse bailleur de Récolte '.$dr->campagne;
+            echo 'Synthèse bailleur de Récolte '.$dr->campagne;
             ?>
         <?php else: echo 'Déclaration'; ?>
             <?php if ($dr->type == 'DR') echo 'de Récolte'; else echo $dr->type; ?> <?= $dr->campagne ?>
