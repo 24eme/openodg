@@ -216,7 +216,7 @@ $t->is($etablissementviti->statut , SocieteClient::STATUT_ACTIF, "L'établisseme
 $t->is($etablissementviti->getMasterCompte()->statut , SocieteClient::STATUT_ACTIF, "Le compte de l'établissement est actif");
 $societeviti->switchStatusAndSave();
 $societeviti->save();
-$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->getId());
+$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
 $t->is($societeviti->statut , SocieteClient::STATUT_SUSPENDU, "La societé est suspendue");
 $t->is($societeviti->getMasterCompte()->statut , SocieteClient::STATUT_SUSPENDU, "Le compte de la societé est suspendu");
 $t->is($etablissementviti->statut , SocieteClient::STATUT_SUSPENDU, "L'établissement est suspendu");
