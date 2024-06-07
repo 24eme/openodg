@@ -13,43 +13,56 @@
 
 <?php use_helper('Float') ?>
 
-<table class="table table-bordered table-striped">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>Produit</th>
-            <th>Déclaré</th>
+            <th>Volumes issus de la SV</th>
+            <th>Volumes issus de la DR</th>
             <th>Différence</th>
-            <th>Recu des apporteurs</th>
-            <th>Détails</th>
         </tr>
     </thead>
     <?php if (isset($tableau_comparaison)): ?>
-        <tbody>
-            <?php foreach ($tableau_comparaison as $produit => $raison_sociale): ?>
+        <?php foreach ($tableau_comparaison as $produit => $cvis): ?>
+            <?php $totalDeclarantSV = $cvis[$dr->getEtablissementObject()->getCvi()]['SV']; $totalApporteurDR = $cvis[$dr->getEtablissementObject()->getCvi()]['DR']; $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2); ?>
+            <tbody>
                 <tr>
                     <div class="row">
                         <td class="col-xs-5"><?php echo $produit; ?></td>
-                        <?php $recu = 0; foreach($raison_sociale as $raison_sociale => $declare): ?>
-                            <?php if ($raison_sociale == $dr->getEtablissementObject()->raison_sociale): ?>
-                                <td class="col-xs-2 text-right"><?php $declareSV = $declare ;echo $declareSV ?></td>
-                            <?php else: ?>
-                                <?php $recu += $declare ?>
-                            <?php endif;?>
-                        <?php endforeach; ?>
-                        <td class="col-xs-2 text-right"><?php echo round($declareSV - $recu, 2); ?></td>
-                        <td class="col-xs-2 text-right"><?php echo $recu; ?></td>
-                        <td class="col-xs-1"><button type="button" class="center-block glyphicon glyphicon-collapse-down" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" id="collapseButton"></button></td>
+                        <td class="col-xs-2 text-right"><?php echo $totalDeclarantSV ; ?></td>
+                        <td class="col-xs-2 text-right"><?php echo $totalApporteurDR ; ?></td>
+                        <td class="col-xs-1 text-center strong <?php if (! $diffSVDR) { echo 'bg-success'; } else { echo 'bg-danger'; }; ?>">
+                            <?php echo $diffSVDR; ?>
+                            <?php if ($diffSVDR): ?>
+                                <button type="button" class="center-block glyphicon glyphicon-collapse-down ml-4" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" id="collapseButton"></button>
+                            <?php endif; ?>
+                        </td>
                     </div>
                 </tr>
-                <tr>
-                    <td colspan="3" style="padding: 0; border: none;">
-                        <div class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
-                            Test
-                        </div>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
+            </tbody>
+            <tbody class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
+                <?php foreach($cvis as $cvi => $valeur): ?>
+                    <tr>
+                        <?php if ($cvi == $dr->getEtablissementObject()->cvi) { continue; } ?>
+                        <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
+                        <td class="col-xs-2 text-right">
+                            <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
+                            <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                        </td>
+                        <td class="text-right">
+                            <?php echo $valeur['SV']; ?>
+                        </td>
+                        <td class="text-right">
+                            <?php echo $valeur['DR']; ?>
+                        </td>
+                        <td class="text-center">
+                            <?php echo round($valeur['SV'] - $valeur['DR'], 2); ?>
+                            <button type="button" class="center-block glyphicon glyphicon-collapse-down ml-4" style="visibility: hidden;"></button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        <?php endforeach; ?>
     <?php else: ?>
         <tbody>
             <tr><td colspan=5><center><i>Pas de données des apporteurs</i></center></td></tr>

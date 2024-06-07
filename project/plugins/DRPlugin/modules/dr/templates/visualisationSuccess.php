@@ -36,7 +36,13 @@
 
 <?php use_helper('Float') ?>
 
-<h3>Détail par produit</h3>
+<div class="row">
+    <h3 class="col-xs-5 text-left">Détail par produit</h3>
+    <a class="col-xs-2 btn btn-default pull-right mr-4" href="<?php echo url_for('dr_verify', array('id' => $dr->_id)) ?>">
+        <i class="glyphicon glyphicon-eye-open"></i> Verifier les volumes
+    </a>
+</div>
+
 
 <table class="table table-bordered table-striped">
     <thead>
