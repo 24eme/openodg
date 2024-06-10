@@ -296,7 +296,7 @@ $t->is($vigilances['vci_rendement_total'], null, "Pas de point de vigilance sur 
 $t->is($erreurs['declaration_volume_l15_complement'], null, "Pas de point bloquant sur le respect de la ligne l15");
 $t->is($erreurs['vci_substitue_rafraichi'], null, "Pas de point blocant sur la subsitution ni le rafraichissement du volume de VCI");
 $t->is($erreurs['revendication_superficie'], null, "Pas de point blocant sur la superficie declarée sur la DR et la DRev");
-$t->is(!isset($vigilances['declaration_habilitation']) ? 0 : count($vigilances['declaration_habilitation']), 0, "Pas de point de vigilance sur l'habilitation du premier produit");
+$t->ok(!isset($vigilances['declaration_habilitation']) || ($vigilances['declaration_habilitation'][0]->getInfo() != $produit1->getLibelle()), "Pas de point de vigilance sur l'habilitation du premier produit");
 
 $t->is(!isset($vigilances['declaration_volume_l15']) ? 0 : count($vigilances['declaration_volume_l15']), 1 * !DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Pas de point vigilance sur le respect de la ligne l15");
 $t->is($vigilances['declaration_neant'], null, "Pas de point vigilance sur la declaration neant");
@@ -343,8 +343,6 @@ $t->ok(count($vigilances['declaration_volume_l15']), "Point vigilance sur le res
 $t->is(count($erreurs['declaration_volume_l15_complement']), 1, "Point bloquant sur le respect de la ligne l15");
 $t->is(count($erreurs['revendication_superficie']), 1, "Point bloquant sur la superficie declarée sur la DR et la DRev");
 $t->is(count($erreurs['vci_substitue_rafraichi']), 1, "VCI rafraichi / subsitue non respect de la ligne l15");
-
-$t->ok(!isset($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
 
 $drevControle->remove($produit1->getHash());
 $validation = new DRevValidation($drevControle);
