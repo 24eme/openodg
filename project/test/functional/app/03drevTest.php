@@ -139,8 +139,9 @@ if($has_aoc) {
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 
-$b->click('button[id="submit-confirmation-validation"]', array('date_depot' => array('date' => date('d/m/Y'))));
+$b->click('button[id="submit-confirmation-validation"]', array('validation' => array('date_depot' => date('d/m/Y'), 'engagement_DEPASSEMENT_CONSEIL' => true)));
 $t->is($b->getResponse()->getStatuscode(), 302, "Étape validation");
+//print_r([$b->getResponse()]);
 $b->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
