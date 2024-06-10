@@ -59,7 +59,9 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         return $apporteur;
     }
 
-    public function buildApporteurs($sv11){
+    public function buildApporteurs(){
+        $sv11 = SV11Client::getInstance()->find("SV11-".$this->identifiant."-".($this->getPeriode() - 1));
+
         $apporteurs = $this->apporteurs;
         $sv11Apporteurs = $sv11->getApporteurs();
         $apporteursArray = array();
