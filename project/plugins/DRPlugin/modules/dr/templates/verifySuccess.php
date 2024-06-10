@@ -1,7 +1,13 @@
 <?php use_helper('Date'); ?>
 
-<?php include_partial('dr/breadcrumb', array('dr' => $dr )); ?>
 <?php include_partial('global/flash'); ?>
+
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $dr->identifiant, 'campagne' => $dr->campagne)); ?>"><?php echo $dr->getEtablissementObject()->getNom() ?> (<?php echo $dr->getEtablissementObject()->identifiant ?> - <?php echo $dr->getEtablissementObject()->cvi ?>)</a></li>
+  <li><a href="<?php echo url_for('dr_visualisation', array('id' => $dr->_id)); ?>"><?php if($dr->isBailleur()) echo "Synthèse bailleur "; else echo $dr->type; ?> de <?php echo $dr->getperiode(); ?></a></li>
+  <li class="active"><a href="">Vérification</a></li>
+</ol>
 
 <div class="page-header no-border clearfix">
     <h2>Tableau de vérification <?php echo $dr->type; ?> <?= $dr->campagne ?></h2>
@@ -13,33 +19,71 @@
 
 <?php use_helper('Float') ?>
 
-<table class="table table-bordered table-striped">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>Produit</th>
-            <th>Déclaré</th>
-            <th>Recu des apporteurs</th>
+            <th>Volumes issus de la SV</th>
+            <th>Volumes issus de la DR</th>
+            <th>Différence</th>
+            <th>Détails</th>
         </tr>
     </thead>
     <?php if (isset($tableau_comparaison)): ?>
-        <tbody>
-            <?php foreach ($tableau_comparaison as $produit => $raison_sociale): ?>
+        <?php foreach ($tableau_comparaison as $produit => $cvis): ?>
+            <?php $totalDeclarantSV = $cvis[$dr->getEtablissementObject()->getCvi()]['SV']; $totalApporteurDR = $cvis[$dr->getEtablissementObject()->getCvi()]['DR']; $diffSVDR = round($totalDeclarantSV - $totalApporteurDR, 2); ?>
+            <tbody>
                 <tr>
-                    <td><?php echo $produit; ?></td>
-                    <?php $total = 0; foreach($raison_sociale as $raison_sociale => $valeur): ?>
-                        <?php if ($raison_sociale == $dr->getEtablissementObject()->raison_sociale): ?>
-                            <td><?php echo $valeur ?></td>
-                        <?php else: ?>
-                            <?php $total += $valeur ?>
-                        <?php endif;?>
-                    <?php endforeach; ?>
-                    <td><?php echo $total; ?></td>
+                    <div class="row">
+                        <td class="col-xs-4"><?php echo $produit; ?></td>
+                        <td class="col-xs-3 text-right"><?php echo abs($totalDeclarantSV) ; ?></td>
+                        <td class="col-xs-3 text-right"><?php echo abs($totalApporteurDR) ; ?></td>
+                        <td class="col-xs-1 text-center strong <?php if (! $diffSVDR) { echo 'bg-success'; } else { echo 'bg-danger'; }; ?>">
+                            <?php echo abs($diffSVDR); ?>
+                        </td>
+                        <td class="col-xs-1 text-center">
+                            <?php if ($diffSVDR): ?>
+                                <button type="button" class="glyphicon glyphicon-collapse-down" data-toggle="collapse" data-target="#collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" aria-expanded="false" aria-controls="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>" id="collapseButton"></button>
+                            <?php endif; ?>
+                        </td>
+                    </div>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
+            </tbody>
+            <tbody class="collapse" id="collapsibleRow_<?php echo KeyInflector::slugify($produit); ?>">
+                <?php foreach($cvis as $cvi => $valeur): ?>
+                    <tr>
+                        <?php if ($cvi == $dr->getEtablissementObject()->cvi) { continue; } ?>
+                        <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
+                        <td class="text-right">
+                            <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
+                            <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                        </td>
+                        <td class="text-right">
+                            <?php echo abs($valeur['SV']); ?>
+                        </td>
+                        <td class="text-right">
+                            <?php echo abs($valeur['DR']); ?>
+                        </td>
+                        <td class="text-center">
+                            <?php echo abs(round($valeur['SV'] - $valeur['DR'], 2)); ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        <?php endforeach; ?>
     <?php else: ?>
         <tbody>
-            <tr><td colspan=3><center><i>Pas de données des apporteurs</i></center></td></tr>
+            <tr><td colspan=5><center><i>Pas de données des apporteurs</i></center></td></tr>
         </tbody>
     <?php endif; ?>
 </table>
+
+<div class="row row-margin row-button">
+    <div class="col-xs-4">
+        <a href="<?= (isset($service) && $service) ?: url_for('dr_visualisation', array('id' => $dr->_id)); ?>"
+            class="btn btn-default"
+            >
+            <i class="glyphicon glyphicon-chevron-left"></i> Retour
+        </a>
+    </div>
+</div>

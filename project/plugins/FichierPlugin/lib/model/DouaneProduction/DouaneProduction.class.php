@@ -932,27 +932,49 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $this->getPeriode() .  '-12-10';
     }
 
-    public function getTableauComparaisonVolSvDr() {
+    public function getTableauComparaison() {
         if (! ($this->type == 'SV11' || $this->type == 'SV12')) {
             throw new sfException("Ce document n'est pas une SV11 ou une SV12.");
         }
         $produits = $this->getProduits();
-        foreach ($this->getApporteurs() as $apporteur) {
-            $dr = DRClient::getInstance()->findByArgs($apporteur['etablissement']->identifiant, $this->campagne);
-            if (!$dr) {
-                continue;
+        $declarant_cvi = $this->getEtablissementObject()->cvi;
+        foreach ($this->getDonnees() as $data) {
+            if (($data->categorie == '06' || $data->categorie == '07' || $data->categorie == '08')) {
+                if (! isset($tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'])) {
+                    $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'] = $data->valeur;
+                } else {
+                    $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'] += $data->valeur;
+                }
+                if(! isset($tableau_comparaison[$data->produit_libelle][$declarant_cvi]['SV'])) {
+                    $tableau_comparaison[$data->produit_libelle][$declarant_cvi]['SV'] = $produits[$data->produit]['lignes'][$data->categorie]['val'];
+                }
             }
-            foreach ($dr->donnees as $produit) {
-                if (! (str_replace('ETABLISSEMENT-', '', $produit->tiers) == $this->identifiant)) {
+        }
+        foreach ($tableau_comparaison as $produit_libelle => $cvis) {
+            $totalDR = 0;
+            foreach ($cvis as $cvi => $valeur) {
+                if ($declarant_cvi == $cvi) {
                     continue;
                 }
-                if (($produit->categorie == '06' || $produit->categorie == '07' || $produit->categorie == '08')) {
-                    $tableau_comparaison[$produit->produit_libelle][$dr->declarant->raison_sociale] = $produit->valeur;
-                    if(! isset($tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale])) {
-                        $tableau_comparaison[$produit->produit_libelle][$this->getEtablissementObject()->raison_sociale] = $produits[$produit->produit]['lignes'][$produit->categorie]['val'];
+                $etab = EtablissementClient::getInstance()->findByCvi($cvi);
+                $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
+                if (! $dr) {
+                    $tableau_comparaison[$produit_libelle][$cvi]['DR'] = 0;
+                } else {
+                    $datas = $dr->getEnhancedDonnees();
+                    foreach ($datas as $data) {
+                        if ($data->tiers_cvi == $declarant_cvi && $data->produit_libelle == $produit_libelle && ($data->categorie == '06' || $data->categorie == '07' || $data->categorie == '08')) {
+                            if (! isset($tableau_comparaison[$produit_libelle][$cvi]['DR'])) {
+                                $tableau_comparaison[$produit_libelle][$cvi]['DR'] = $data->valeur;
+                            } else {
+                                $tableau_comparaison[$produit_libelle][$cvi]['DR'] += $data->valeur;
+                            }
+                            $totalDR += $data->valeur;
+                        }
                     }
                 }
             }
+            $tableau_comparaison[$produit_libelle][$declarant_cvi]['DR'] = $totalDR;
         }
         return isset($tableau_comparaison) ? $tableau_comparaison : null;
     }
