@@ -34,7 +34,7 @@ class ParcellaireAffectationCoopClient extends acCouchdbClient {
         if (!$sv11) {
             throw new sfException('SV11 misssing '."SV11-".$identifiant."-".($periode - 1));
         }
-        $parcellaireAffectationCoop->buildApporteurs($sv11);
+        $parcellaireAffectationCoop->buildApporteurs();
 
         return $parcellaireAffectationCoop;
     }
