@@ -964,8 +964,12 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     $datas = $dr->getEnhancedDonnees();
                     foreach ($datas as $data) {
                         if ($data->tiers_cvi == $declarant_cvi && $data->produit_libelle == $produit_libelle && ($data->categorie == '06' || $data->categorie == '07' || $data->categorie == '08')) {
+                            if (! isset($tableau_comparaison[$produit_libelle][$cvi]['DR'])) {
                                 $tableau_comparaison[$produit_libelle][$cvi]['DR'] = $data->valeur;
-                                $totalDR += $data->valeur;
+                            } else {
+                                $tableau_comparaison[$produit_libelle][$cvi]['DR'] += $data->valeur;
+                            }
+                            $totalDR += $data->valeur;
                         }
                     }
                 }
