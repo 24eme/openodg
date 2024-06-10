@@ -51,9 +51,6 @@ foreach($config->getProduits() as $produit) {
         $produit1 = $produit;
         continue;
     } elseif(!$produit2) {
-        if ($produit->getAppellation()->getHash() == $produit1->getAppellation()->getHash()) {
-            continue;
-        }
         $produit2 = $produit;
         continue;
     }
