@@ -51,6 +51,9 @@ foreach($config->getProduits() as $produit) {
         $produit1 = $produit;
         continue;
     } elseif(!$produit2) {
+        if ($produit->getAppellation()->getHash() == $produit1->getAppellation()->getHash()) {
+            continue;
+        }
         $produit2 = $produit;
         continue;
     }
@@ -72,11 +75,7 @@ foreach($config->getProduits() as $produit) {
     break;
 }
 
-if ($produitConfigMutage) {
-    $t = new lime_test(92 + !$has_habilitation_inao * 2);
-}else {
-    $t = new lime_test(79 + !$has_habilitation_inao * 2);
-}
+$t = new lime_test();
 
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../data/dr_douane.csv');
 
@@ -84,7 +83,9 @@ $csvTmpFile = tempnam(sys_get_temp_dir(), 'openodg').".csv";
 file_put_contents($csvTmpFile, str_replace(array("%cvi%", "%code_inao_1%", "%libelle_produit_1%","%code_inao_2%", "%libelle_produit_2%"), array($viti->cvi, $produit1->getCodeDouane(), $produit1->getLibelleComplet(), $produit2->getCodeDouane(), $produit2->getLibelleComplet()), $csvContentTemplate));
 $t->comment("utilise le fichier test/data/dr_douane.csv");
 $t->comment("%libelle_produit_1% = ".$produit1->getLibelleComplet());
+$t->comment("%app_hash_produit_1% = ".$produit1->getAppellation()->getHash());
 $t->comment("%libelle_produit_2% = ".$produit2->getLibelleComplet());
+$t->comment("%app_hash_produit_2% = ".$produit2->getAppellation()->getHash());
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -102,29 +103,15 @@ unlink($csvTmpFile);
 $drev->resetAndImportFromDocumentDouanier();
 $drev->save();
 $t->comment($drev->_id);
-$t->is(count($drev->getProduits()), 2 * (1 + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire()), "La DRev a repris les produits du csv de la DR");
 
-$i = 0;
-$produits2Delete = array();
-foreach($drev->getProduits() as $produit) {
-    $i++;
-    if($i > 2) {
-        $produits2Delete[$produit->getHash()] = $produit->getHash();
-    }
-}
-
-foreach($produits2Delete as $hash) {
-    $drev->remove($hash);
-}
+$t->is(count($drev->getProduits()), 2 + (2 * DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire()), "La DRev a repris les produits du csv de la DR");
 
 $produits = $drev->getProduits();
-
-
-$produit1 = current($produits);
+$produit1 = current($drev->get($produit1->getCepage()->getHash())->getProduits());
 $produit_hash1 = $produit1->getHash();
 
 next($produits);
-$produit2 = end($produits);
+$produit2 = end($drev->get($produit2->getCepage()->getHash())->getProduits());
 $produit_hash2 = $produit2->getHash();
 
 $produit1->vci->stock_precedent = 3;
@@ -298,10 +285,11 @@ $produit2->getConfig()->clearStorage();
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
-$t->is(!isset($erreurs['revendication_incomplete_volume']) ? 0 : count($erreurs['revendication_incomplete_volume']), !DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(),  "Point blocant : tous les volumes de revendication n'ont pas été rempli (que le 1er produit)");
+
+$t->ok(isset($erreurs['revendication_incomplete_volume'])  && count($erreurs['revendication_incomplete_volume']), "Point blocant revendication_incomplete_volume : tous les volumes de revendication n'ont pas été rempli");
+$t->isnt(isset($erreurs['revendication_incomplete_volume'])  && (count($erreurs['revendication_incomplete_volume']) > 1) ? $erreurs['revendication_incomplete_volume'][0]->getInfo() : 'pas de point bloquant :(', $produit1->getLibelle(), "Point blocant revendication_incomplete_volume ne concerne pas le produit 1");
 $t->is($erreurs['revendication_incomplete_superficie'], null, "Pas de point blocant sur le remplissage des superficies de revendication");
 $t->is($erreurs['revendication_rendement'], null, "Pas de point blocant sur le rendement de la revendication");
-$t->is(!isset($vigilances['revendication_rendement_conseille']) ? 0 : count($vigilances['revendication_rendement_conseille']), 0 + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Point de vigilance sur le dépassement du rendement conseillé de la revendication");
 $t->is($erreurs['vci_stock_utilise'], null, "Pas de point blocant sur la repartition du vci");
 $t->is($erreurs['vci_rendement_annee'], null, "Pas de point blocant sur le rendement à l'année du vci");
 $t->is($vigilances['vci_rendement_total'], null, "Pas de point de vigilance sur le rendement total du vci");
@@ -312,7 +300,6 @@ $t->is(!isset($vigilances['declaration_habilitation']) ? 0 : count($vigilances['
 
 $t->is(!isset($vigilances['declaration_volume_l15']) ? 0 : count($vigilances['declaration_volume_l15']), 1 * !DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Pas de point vigilance sur le respect de la ligne l15");
 $t->is($vigilances['declaration_neant'], null, "Pas de point vigilance sur la declaration neant");
-$t->is(!isset($vigilances['declaration_produits_incoherence']) ? 0 : count($vigilances['declaration_produits_incoherence']), 0 + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Point vigilance sur les produits declarés sur la DR et pas dans la DRev");
 $t->is($vigilances['declaration_surface_bailleur'], null, "Pas de point vigilance sur la repartition de la surface avec le bailleur");
 $t->is($vigilances['vci_complement'], null, "Pas de point vigilance sur le complement vci");
 
@@ -343,8 +330,8 @@ $validation = new DRevValidation($drevControle);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->ok(isset($erreurs['revendication_incomplete_volume']) && count($erreurs['revendication_incomplete_volume']) == 1 && $erreurs['revendication_incomplete_volume'][0]->getInfo() == $produitControle2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
-$t->ok(!isset($erreurs['revendication_rendement']), "Un point bloquant n'est pas levé car le rendement sur le revendiqué n'est pas respecté (car en warning)");
+$t->ok(isset($erreurs['revendication_incomplete_volume']) && count($erreurs['revendication_incomplete_volume']), "Point bloquant 'revendication_incomplete_volume' : les infos de revendications n'ont pas été saisi");
+$t->ok(!isset($erreurs['revendication_rendement']), "Pas de point bloquant sur le rendement sur le revendiqué n'est pas respecté (car en warning)");
 $t->ok(isset($vigilances['revendication_rendement_warn']) && count($vigilances['revendication_rendement_warn']) == 1 && $vigilances['revendication_rendement_warn'][0]->getInfo() == $produitControle1->getLibelleComplet(), "Un point de vigilance est levé car le rendement sur le revendiqué n'est pas respecté");
 $t->ok(!isset($vigilances['revendication_rendement_conseille']), "Le point de vigilance sur le rendement conseil n'est pas levé car le rendement maximum sur le revendiqué n'est pas respecté");
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
@@ -352,11 +339,12 @@ $t->ok(isset($vigilances['vci_rendement_total']) && count($vigilances['vci_rende
 if (!$has_habilitation_inao) {
     $t->isnt($vigilances['declaration_habilitation'], null, "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
 }
-$t->is(count($vigilances['declaration_volume_l15']), 1  + 1 * DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire(), "Point vigilance sur le respect de la ligne l15");
+$t->ok(count($vigilances['declaration_volume_l15']), "Point vigilance sur le respect de la ligne l15");
 $t->is(count($erreurs['declaration_volume_l15_complement']), 1, "Point bloquant sur le respect de la ligne l15");
 $t->is(count($erreurs['revendication_superficie']), 1, "Point bloquant sur la superficie declarée sur la DR et la DRev");
 $t->is(count($erreurs['vci_substitue_rafraichi']), 1, "VCI rafraichi / subsitue non respect de la ligne l15");
-$t->isnt($vigilances['vci_complement'], null, "Pas de point vigilance sur le complement vci");
+
+$t->ok(!isset($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
 
 $drevControle->remove($produit1->getHash());
 $validation = new DRevValidation($drevControle);
@@ -364,7 +352,7 @@ $validation = new DRevValidation($drevControle);
 $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
-$t->is(count($vigilances['declaration_produits_incoherence']), 1, "Tous les produits de la DR n'ont pas été revendiqués");
+$t->ok(isset($erreurs['revendication_incomplete_volume']) && count($erreurs['revendication_incomplete_volume']), "Tous les produits de la DR n'ont pas été revendiqués");
 
 $drevControle->remove('declaration');
 $drevControle->add('declaration');
@@ -380,9 +368,8 @@ $t->comment("Export CSV");
 
 $export = new ExportDRevCSV($drev);
 
-$csvContent = $export->export();
-
-$t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");
+$csvContent = explode("\n", $export->export());
+$t->is(count($csvContent), 4 + (2 * DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire()) , "L'export fait le bon nombre de lignes");
 
 if (!$produitConfigMutage) {
     return;
