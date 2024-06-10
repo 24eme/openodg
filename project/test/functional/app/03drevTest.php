@@ -138,8 +138,11 @@ if($has_aoc) {
 
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
-
-$b->click('button[id="submit-confirmation-validation"]', array('date_depot' => array('date' => date('d/m/Y'))));
+$data_form = array('date_depot' => date('d/m/Y'));
+if (preg_match('/engagement_DEPASSEMENT_CONSEIL/', $b->getResponse()->getContent())) {
+    $data_form['engagement_DEPASSEMENT_CONSEIL'] = true;
+}
+$b->click('button[id="submit-confirmation-validation"]', array('validation' => $data_form));
 $t->is($b->getResponse()->getStatuscode(), 302, "Étape validation");
 $b->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');

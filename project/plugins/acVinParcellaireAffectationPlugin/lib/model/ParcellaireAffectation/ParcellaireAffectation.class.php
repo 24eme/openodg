@@ -97,39 +97,19 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         unset($parcelle['origine_hash']);
         $detail = $item->detail->add($parcelle->getKey(), $parcelle);
         $detail->origine_doc = $intention->_id;
-        if($previous) {
-            $pMatch = $previous->findParcelle($detail);
+	}
+    if($previous) {
+        foreach($previous->getParcelles() as $previousParcelle) {
+            if(!$previousParcelle->affectee) {
+                continue;
+            }
+            $pMatch = $this->findParcelle($previousParcelle);
 
-            if($pMatch && $pMatch->affectee) {
-                $detail->affectee = 1;
+            if($pMatch) {
+                $pMatch->affectee = 1;
             }
         }
 	}
-  }
-
-  public function addParcelleFromParcellaireParcelle($detail) {
-      $produit = $detail->getProduit();
-      $item = $this->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
-      $item->libelle = $produit->libelle;
-      $subitem = $item->detail->add($detail->getKey());
-
-          $subitem->superficie = $detail->superficie;
-          $subitem->commune = $detail->commune;
-          $subitem->code_commune = $detail->code_commune;
-          $subitem->prefix = $detail->prefix;
-          $subitem->section = $detail->section;
-          $subitem->numero_parcelle = $detail->numero_parcelle;
-          $subitem->idu = $detail->idu;
-          $subitem->lieu = $detail->lieu;
-          $subitem->cepage = $detail->cepage;
-          $subitem->active = 1;
-          $subitem->remove('vtsgn');
-          if($detail->exist('vtsgn')) {
-              $subitem->add('vtsgn', (int)$detail->vtsgn);
-          }
-          $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-
-      return $subitem;
   }
 
   public function getParcellesByIdu() {
