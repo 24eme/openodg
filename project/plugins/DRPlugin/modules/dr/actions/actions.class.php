@@ -111,7 +111,11 @@ class drActions extends sfActions
 
     public function executeVerify(sfWebRequest $request) {
         $this->dr = $this->getRoute()->getDR();
-        $this->tableau_comparaison = $this->dr->getTableauComparaison();
+        if ($this->dr->type == 'SV11') {
+            $this->tableau_comparaison = $this->dr->getTableauComparaisonSV11();
+        } else if ($this->dr->type == 'SV12') {
+            $this->tableau_comparaison = $this->dr->getTableauComparaisonSV12();
+        }
     }
 
 }

@@ -42,9 +42,12 @@
 
 <?php use_helper('Float') ?>
 
+<?php if ($dr->type == 'SV11' || $dr->type == 'SV12'): ?>
 <a class="btn btn-sm btn-default pull-right" href="<?php echo url_for('dr_verify', array('id' => $dr->_id)) ?>">
     <i class="glyphicon glyphicon-search"></i> Comparer les volumes avec les DR
 </a>
+<?php endif; ?>
+
 <h3 class="text-left">Détail par produit</h3>
 
 
