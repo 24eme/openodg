@@ -112,6 +112,15 @@ class parcellaireManquantActions extends sfActions {
     		$this->parcellaireManquant->save();
     	}
 
+        $currentParcellaire = $this->parcellaireManquant->getParcellaireCurrent();
+        $this->previousParcelles = [];
+        foreach($this->parcellaireManquant->getParcelles() as $p) {
+            $pMatch = $currentParcellaire->findParcelle($p, 0.75);
+            if($pMatch) {
+                $this->previousParcelles[$pMatch->getHash()] = true;
+            }
+        }
+
     	$this->etablissement = $this->parcellaireManquant->getEtablissementObject();
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
