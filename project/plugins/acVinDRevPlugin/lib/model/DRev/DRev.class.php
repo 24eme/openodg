@@ -1718,7 +1718,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getNbApporteursPlusOneFromDouane($produitFilter = null) {
-        $douane = $this->getDR();
+        $douane = $this->getDocumentDouanierOlderThanMe();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
             return 0;
         }
