@@ -1134,6 +1134,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
         }
+        foreach($this->getRegions() as $region) {
+            foreach ($this->getProduits($region) as $hash => $produit) {
+                $produit->validation_odg = null;
+            }
+        }
+
         $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
     }
 
