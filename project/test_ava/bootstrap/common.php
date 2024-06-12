@@ -1,7 +1,9 @@
 <?php
 
+putenv('APPLICATION=ava');
+
 require_once(dirname(__FILE__).'/../../config/ProjectConfiguration.class.php');
-require_once dirname(__FILE__).'/../../lib/vendor/symfony/test/bootstrap/unit.php';
+require_once sfConfig::get('sf_symfony_lib_dir').'/../test/bootstrap/unit.php';
 
 $application = 'ava';
 

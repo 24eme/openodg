@@ -62,6 +62,12 @@ foreach($config->getProduits() as $produit) {
     break;
 }
 
+if (RegionConfiguration::getInstance()->getOdgRegion($produit1->getHash())) {
+    if (!sfConfig::get('app_region') && RegionConfiguration::getInstance()->getOdgRegion($produit1->getHash())) {
+        sfConfig::set('app_region', RegionConfiguration::getInstance()->getOdgRegion($produit1->getHash()));
+    }
+}
+
 $csvContentTemplate = file_get_contents(dirname(__FILE__).'/../../data/dr_douane.csv');
 $has_vci = $produit1->hasRendementVCI();
 
