@@ -138,6 +138,15 @@ if ($application == 'loire') {
 $t->comment("DRev envoi de mail de la validation");
 $drev->devalidate();
 
+$is_syndicat_devalide = true;
+foreach ($drev->declaration->getSyndicats() as $syndicat) {
+    $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat);
+    if($drev->isValidateOdgByRegion($syndicat)) {
+        $is_syndicat_devalide = false;
+    }
+}
+$t->ok($is_syndicat_devalide, 'Tous les produits sont dévalidés par chacun des syndicats');
+
 foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
     $configDRev = sfConfig::get('drev_configuration_drev');
     $configDRev['odg'][$region]['email_notification'] = 'email@email.email';
