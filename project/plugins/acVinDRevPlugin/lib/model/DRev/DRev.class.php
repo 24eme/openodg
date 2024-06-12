@@ -1748,8 +1748,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
 
-    public function getNbApporteursPlusOneFromDouane(TemplateFactureCotisationCallbackParameters $produitFilter) {
-        $douane = $this->getDR();
+    public function getNbApporteursPlusOneFromDouane($produitFilter = null) {
+        $douane = $this->getDocumentDouanierOlderThanMe();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
             return 0;
         }
