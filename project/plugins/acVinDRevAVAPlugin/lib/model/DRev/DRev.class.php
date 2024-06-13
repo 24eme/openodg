@@ -866,7 +866,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
         $csv = $this->getCIVACsvFile();
         foreach ($csv->getCsv() as $line) {
             $hash = DRCIVACsvFile::getHashProduitByLine($line);
-            if (strpos($hash, '/appellation') === false) {
+            if (!$hash || strpos($hash, '/appellation') === false) {
                 continue;
             }
             $volume += floatval($line[DRCIVACsvFile::CSV_VOLUME]);
