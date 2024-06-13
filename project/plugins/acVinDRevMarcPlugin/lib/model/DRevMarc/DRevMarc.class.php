@@ -95,8 +95,11 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
         return $this->_get('validation_odg');
     }
 
-    public function validateOdg() {
-        $this->validation_odg = date('Y-m-d');
+    public function validateOdg($date = null) {
+        if (!$date) {
+            $date = date('Y-m-d');
+        }
+        $this->validation_odg = $date;
     }
 
     /*

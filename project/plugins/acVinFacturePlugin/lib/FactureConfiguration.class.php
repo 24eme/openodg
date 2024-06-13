@@ -86,14 +86,16 @@ class FactureConfiguration {
 
     public function getExercice() {
         $exercice = ($this->configuration['exercice']) ?: '';
-        try {
-            $hasOdg = RegionConfiguration::getInstance()->hasOdgProduits();
-            $conf = RegionConfiguration::getInstance()->getOdgConfigurationItem(Organisme::getCurrentOrganisme(), 'facture_exercice');
-            if ($hasOdg && $conf) {
-                $exercice = $conf;
+        if (class_exists('RegionConfiguration')) {
+            try {
+                $hasOdg = RegionConfiguration::getInstance()->hasOdgProduits();
+                $conf = RegionConfiguration::getInstance()->getOdgConfigurationItem(Organisme::getCurrentOrganisme(), 'facture_exercice');
+                if ($hasOdg && $conf) {
+                    $exercice = $conf;
+                }
+            } catch(Exception $e) {
+                unset($e);
             }
-        } catch(Exception $e) {
-            unset($e);
         }
         return $exercice;
     }

@@ -842,7 +842,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
      */
      public function getSurfaceFacturable()
      {
-        throw new sfException('Déprécié. Remplacé par getSurfaceRecolteFacturable()');
+        throw new sfException('getSurfaceFacturable() Déprécié. Remplacé par getSurfaceRecolteFacturable()');
      }
 
     public function getSurfaceRecolteFacturable()
