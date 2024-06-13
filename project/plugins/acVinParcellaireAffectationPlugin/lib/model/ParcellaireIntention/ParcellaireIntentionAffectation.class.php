@@ -102,7 +102,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
               continue;
           }
 
-          $affectees[$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
+          $affectees[$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie, 'superficie_affectation' => $parcelle->superficie_affectation);
       }
       $this->remove('declaration');
       $this->add('declaration');
@@ -148,11 +148,14 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       if ($subitem->campagne_plantation > "2004-2005") {
                           $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
                       }
-                      $subitem->superficie_affectation  = $parcelle->superficie;
+                      $subitem->superficie_affectation = $parcelle->superficie;
+                      if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()] && $affectees[$parcelle->getHash()]['superficie'] != $affectees[$parcelle->getHash()]['superficie_affectation']) {
+                          $subitem->superficie_affectation = $affectees[$parcelle->getHash()]['superficie_affectation'];
+                      }
                   } else if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()]) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = $affectees[$parcelle->getHash()]['date'];
-                      $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie'];
+                      $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie_affectation'];
                   } else {
                     $subitem->affectation = 0;
                     $subitem->superficie_affectation = $parcelle->superficie;
