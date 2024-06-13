@@ -5,13 +5,10 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 $t = new lime_test(20);
 
 $vitiCompte =  CompteClient::getInstance()->find('COMPTE-E7523700100');
-$dateFacturation = date('Y-m-d');
-$dateDebut = (date("Y")-1)."-01-01";
-$dateFin = (date("Y")-1)."-12-31";
+$dateFacturation = '2024-04-01';
+$dateDebut = "2024-01-01";
+$dateFin = "2024-12-31";
 $periode = str_replace("-", "", $dateDebut)."-".str_replace("-", "", $dateFin);
-$templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-ABONNEMENT-".$periode);
-$templateCotisationCollection = $templateFacture->cotisations->getFirst();
-$templateCotisation = $templateCotisationCollection->details->getFirst();
 
 foreach(AbonnementClient::getInstance()->getAbonnementsByCompte($vitiCompte->identifiant, acCouchdbClient::HYDRATE_JSON) as $k => $v) {
     $abonnement = AbonnementClient::getInstance()->find($k);
