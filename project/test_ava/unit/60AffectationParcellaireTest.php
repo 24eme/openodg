@@ -29,7 +29,7 @@ foreach (ParcellaireClient::getInstance()->getHistory($viti->identifiant, '9999-
 
 $produits = ConfigurationClient::getCurrent()->getProduits();
 $parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$nouvelle_parcelle = $parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     "RIESLING",
     "1958-1959",
@@ -39,7 +39,7 @@ $nouvelle_parcelle = $parcellaire->addParcelle(
     "MONTMARTRE"
 );
 $nouvelle_parcelle->superficie = 1;
-$nouvelle_parcelle = $parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     "RIESLING",
     "1948-1949",
@@ -49,7 +49,7 @@ $nouvelle_parcelle = $parcellaire->addParcelle(
     "MONTMARTRE"
 );
 $nouvelle_parcelle->superficie = 2;
-$nouvelle_parcelle = $parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
     "AUXERROIS",
     "1968-1969",
@@ -130,7 +130,7 @@ $t->is(current($parcellaireAffectationCremant->getAllParcellesByAppellation($app
 
 $t->comment('Nouveau parcellaire (cvi)');
 $parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne+1);
-$nouvelle_parcelle = $parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     "RIESLING",
     "1958-1959",
@@ -140,7 +140,7 @@ $nouvelle_parcelle = $parcellaire->addParcelle(
     "MONTMARTRE"
 );
 $nouvelle_parcelle->superficie = 1;
-$nouvelle_parcelle = $parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_PG']->getHash(),
     "PINOT GRIS",
     "1999-2000",
@@ -150,7 +150,7 @@ $nouvelle_parcelle = $parcellaire->addParcelle(
     "MONTMARTRE"
 );
 $nouvelle_parcelle->superficie = 4;
-$nouvelle_parcelle = $parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
     "AUXERROIS",
     "1968-1969",
@@ -161,7 +161,7 @@ $nouvelle_parcelle = $parcellaire->addParcelle(
 );
 $nouvelle_parcelle->superficie = 3;
 $nouvelle_parcelle->superficie_cadastrale = 9;
-$nouvelle_parcelle = $parcellaire->addParcelle(
+$nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_AU']->getHash(),
     "AUXERROIS",
     "1968-1969",

@@ -63,7 +63,7 @@ EOF;
                 } else {
                     $produitHash .= '/rouge/cepages/DEFAUT';
                 }
-                $parcelle = $parcellaireTotal->addParcelle($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
+                $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
                 $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
             }
             $affectationParcelle = $this->addParcelleFromParcellaireParcelle($affectation, $parcelle);

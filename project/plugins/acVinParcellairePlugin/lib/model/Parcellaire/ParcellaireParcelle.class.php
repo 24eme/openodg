@@ -12,7 +12,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduit() {
 
-        return $this->document->get(preg_replace('/\/detail\/.*/', '', $this->getHash()));
+        return $this->getParcelleAffectee()->getParent()->getParent();
     }
 
     public function getConfig() {
@@ -51,21 +51,33 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function updateIDU() {
-        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
+        throw new sfException('updateIUD');
+        $this->idu = $this->getDocument()->computeIDU($this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
     }
 
-    public function setCodeCommune($code_commune) {
+    public function splitIDU() {
+        $this->setCodeCommune(substr($this->idu, 0, 5), false);
+        $this->setPrefix(substr($this->idu, 5, 3), false);
+        $this->setSection(substr($this->idu, 8, 2), false);
+        $this->setNumeroParcelle(substr($this->idu, 10, 4), false);
+    }
+
+    public function setCodeCommune($code_commune, $updateIdu = true) {
         $this->_set('code_commune', $code_commune);
 
-        $this->updateIDU();
+        if ($updateIdu) {
+            $this->updateIDU();
+        }
 
         return $this;
     }
 
-    public function setSection($section) {
+    public function setSection($section, $updateIdu = true) {
         $this->_set('section', preg_replace('/^0*/', '', $section));
 
-        $this->updateIDU();
+        if ($updateIdu) {
+            $this->updateIDU();
+        }
 
         return $this;
     }
@@ -78,10 +90,12 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $s;
     }
 
-    public function setNumeroParcelle($numero_parcelle) {
+    public function setNumeroParcelle($numero_parcelle, $updateIdu = true) {
         $this->_set('numero_parcelle', $numero_parcelle);
 
-        $this->updateIDU();
+        if ($updateIdu) {
+            $this->updateIDU();
+        }
 
         return $this;
     }
@@ -258,5 +272,21 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             return null;
         }
         return $iia[$l];
+    }
+
+    public function copy($p) {
+        return ParcellaireClient::CopyParcelle($this, $p);
+    }
+
+    public function getParcelleAffectee() {
+        if (strpos($this->hash, 'declaration') !== false) {
+            return $this;
+        }
+        foreach($this->getDocument()->declaration->getParcelles() as $p) {
+            if ($p->getKey() == $this->getKey()) {
+                return $p;
+            }
+        }
+        throw new sfException('parcelle not found');
     }
 }

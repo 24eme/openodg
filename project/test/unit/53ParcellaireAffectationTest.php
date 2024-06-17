@@ -52,11 +52,11 @@ foreach($communesDenominations as $lieu => $codeCommunes) {
 }
 $cepages_autorises_0 = is_array($configProduit->cepages_autorises) ? $configProduit->cepages_autorises[0] : 'GRENACHE N';
 $cepages_autorises_1 = is_array($configProduit->cepages_autorises) ? $configProduit->cepages_autorises[1] : 'SYRAH N';
-$parcellaire->addParcelle($configProduit->getHash(), $cepages_autorises_0, "2010", $communes[0], '', "A", "1");
-$parcellaire->addParcelle($configProduit->getHash(), $cepages_autorises_1, "2011", $communes[0], '', "A", "12");
-$parcellaire->addParcelle($configProduit->getHash(), $cepages_autorises_1, "2013", $communes[0], '', "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), $cepages_autorises_1, "2016", $communes[0], '', "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), $cepages_autorises_1, "2016", "Paris", '', "C", "99");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_0, "2010", $communes[0], '', "A", "1");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2011", $communes[0], '', "A", "12");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2013", $communes[0], '', "B", "24");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2016", $communes[0], '', "B", "24");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2016", "Paris", '', "C", "99");
 $parcellaire->save();
 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, $dateprevious, "DOUANE");
 
@@ -97,10 +97,10 @@ $date = $year.'-12-01';
 $campagne = $year.'-'.($year + 1);
 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, $date, "DOUANE");
 $parcellaire->save();
-$parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", $communes[0], '', "A", "1");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2011", $communes[0], '', "A", "12");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2013", $communes[0], '', "B", "24");
-$parcellaire->addParcelle($configProduit->getHash(), "Syrah", "2016", "Paris", '', "C", "99");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), "Grenache", "2010", $communes[0], '', "A", "1");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), "Syrah", "2011", $communes[0], '', "A", "12");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), "Syrah", "2013", $communes[0], '', "B", "24");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), "Syrah", "2016", "Paris", '', "C", "99");
 $parcellaire->save();
 
 $t->comment("Parcellaire au $dateprevious : ".$parcellaire->_id);

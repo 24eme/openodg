@@ -73,14 +73,16 @@ $t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
 $t->is($parcellaire->source, "PRODOUANE", "La source des données est PRODOUANE");
 $t->is(count($parcellaire->declaration), ($toutes_les_parcelles) ? 3 : 2, "Le parcellaire a le bon nombre de produits");
 
-$parcelles = $parcellaire->getParcelles();
+$parcelles = $parcellaire->declaration->getParcelles();
 
 $t->is(count($parcelles), ($toutes_les_parcelles) ? 4 : 3, "Le parcellaire contient les bonnes parcelles");
 
 $parcelle = array_shift($parcelles);
 
+$parcelleAffectee = $parcelle->getParcelleAffectee();
+
 $t->is($parcelle->getProduit()->getLibelle(), $configProduit[0]->getLibelleComplet(), "Le libellé du produit est ". $configProduit[0]->getLibelleComplet());
-$t->is($parcelle->getKey(), str_replace(' ', '-', strtoupper($cepages_autorises_0))."-2017-2018-".$commune."-AY-36-".$numero_ordre_key."-SAINT-OUEN", "La clé de la parcelle est bien construite");
+$t->is($parcelleAffectee->getKey(), $code_commune."000AY0036-00", "La clé de la parcelle est bien construite");
 $t->is($parcelle->code_commune, $code_commune, "Le code commune est : $code_commune");
 $t->is($parcelle->campagne_plantation, "2017-2018", "La campagne de plantation a été enregistré");
 $t->is($parcelle->cepage, $cepages_autorises_0, "Le cépage a été enregistré");
@@ -91,14 +93,14 @@ $t->is($parcelle->idu, $code_commune."000AY0036" , "Le code IDU est ".$code_comm
 
 array_shift($parcelles);
 $parcelle3 = array_shift($parcelles);
-$t->is($parcelle3->getKey(), str_replace(' ', '-', strtoupper($cepages_autorises_2))."-2001-2002-PARIS-AM-152-00-MARSEILLE", "La clé de la parcelle 3 est bien construite");
+$t->is($parcelle3->getKey(), '75063000AM0152-00', "La clé de la parcelle 3 est bien construite");
 $t->is($parcelle3->getProduit()->getLibelle(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
 
 if ($toutes_les_parcelles) {
     $parcelle_sans_produit = array_shift($parcelles);
-    $t->is($parcelle_sans_produit->getKey(), str_replace(' ', '-', strtoupper($cepages_autorises_1))."-2001-2002-PARIS-AL-52-00-MARSEILLE", "La clé de la parcelle sans produite est bien construite");
+    $t->is($parcelle_sans_produit->getKey(), '75063000AM0052-00', "La clé de la parcelle sans produite est bien construite");
     $t->is($parcelle_sans_produit->getProduit()->getLibelle(), ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE, "Le libelle du produit est celui de l'absence de produit");
 }
 
@@ -106,7 +108,6 @@ $t->comment("vérification de la synthèse produits");
 
 $synthese = $parcellaire->getSyntheseProduitsCepages();
 $synthese_produit_1_key = is_array($configProduit[1]->cepages_autorises) ? $configProduit[0]->getLibelleComplet() : array_shift(array_keys($synthese));
-print_r([$synthese, $synthese_produit_1_key, $configProduit[0]->getLibelleComplet()]);
 $t->is(count(array_keys($synthese[$synthese_produit_1_key]['Cepage'])) + count(array_keys($synthese[$synthese_produit_1_key]['Total'])), 3, "La synthese du premier produit a deux cépages + un total");
 
 $synthese = $parcellaire->getSyntheseCepages();
@@ -142,7 +143,7 @@ $parcellaire_id = 'PARCELLAIRE-'.$viti->identifiant.'-'.str_replace("-", "", $da
 $t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
 $t->is(count($parcellaire->declaration), 1, "Le nouveau parcellaire n'a qu'un seul produit");
 
-$parcelles = $parcellaire->getParcelles();
+$parcelles = $parcellaire->declaration->getParcelles();
 $t->is(count($parcelles), 2, "Le nouveau parcellaire a deux parcelles");
 
 $t->comment("import d'un fichier sans parcelles $tempfname ");
@@ -181,5 +182,5 @@ $parcellaireLoader = new ParcellaireCsvFile($viti, $csv);
 $parcellaireLoader->convert();
 
 $parcellaire = $parcellaireLoader->getParcellaire();
-$t->is(count($parcellaire->getParcelles()), 4, "Il y a quatre parcelles");
+$t->is(count($parcellaire->declaration->getParcelles()), 4, "Il y a quatre parcelles");
 unlink($tempfname);

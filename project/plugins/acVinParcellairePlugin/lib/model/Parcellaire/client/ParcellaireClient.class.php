@@ -362,4 +362,26 @@ class ParcellaireClient extends acCouchdbClient {
         return null;
     }
 
+    public static function CopyParcelle($p1, $p2) {
+        $p1->idu = $p2->idu;
+        $p1->splitIdu();
+        $p1->campagne_plantation = $p2->campagne_plantation;
+        $p1->commune = $p2->commune;
+        $p1->numero_ordre = $p2->numero_ordre;
+        if($p2->exist('lieu')){
+            $p1->lieu = $p2->lieu;
+        }
+        $p1->cepage = $p2->cepage;
+        $p1->ecart_rang = $p2->ecart_rang;
+        $p1->ecart_pieds = $p2->ecart_pieds;
+        if ($p2->exist('mode_savoirfaire')) {
+            $p1->mode_savoirfaire = $p2->mode_savoirfaire;
+        }
+        if ($p2->exist('porte_greffe')) {
+            $p1->porte_greffe = $p2->porte_greffe;
+        }
+        return $p1;
+
+    }
+
 }
