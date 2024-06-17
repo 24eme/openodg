@@ -76,6 +76,42 @@ $produit2 = $drev->get($produit_hash2);
 $produit1->superficie_revendique = 200;
 $produit2->superficie_revendique = 150;
 
+
+if (RegionConfiguration::getInstance()->getOdgRegion($produit1->getHash())) {
+    if (!sfConfig::get('app_region') && RegionConfiguration::getInstance()->getOdgRegion($produit1->getHash())) {
+        sfConfig::set('app_region', RegionConfiguration::getInstance()->getOdgRegion($produit1->getHash()));
+    }
+    //$infos = sfConfig::get('region_configuration_region');
+    $infos = sfConfig::get('region_configuration_region');
+    $region = RegionConfiguration::getInstance()->getOdgRegion($produit1->getHash());
+    if (!isset($infos['odg'])) {
+        $infos = array('odg' => array());
+    }
+    if (!isset($infos['odg'][$region])) {
+        $infos['odg'] = array($region => array('email_notification' => 'notification@example.org', 'email' => 'email@example.org'));
+    }
+    foreach(array_keys($infos['odg']) as $k) {
+        if (!isset($infos['odg'][$k]['email_notification'])) {
+            $infos['odg'][$k]['email_notification'] = 'notification@example.org';
+            $infos['odg'][$k]['email'] = 'email@example.org';
+        }
+    }
+    sfConfig::set('region_configuration_region', $infos);
+    sfConfig::set('drev_configuration_drev', $infos);
+
+    $infos = sfConfig::get('app_facture_emetteur');
+    if (!isset($infos[$region])) {
+        $infos = array($region => array('email' => 'email@example.org'));
+    }
+    foreach(array_keys($infos) as $k) {
+        if (!isset($infos[$k]['email'])) {
+            $infos[$k]['email'] = 'email@example.org';
+        }
+    }
+    sfConfig::set('app_facture_emetteur', $infos);
+
+}
+
 if ($has_lot) {
     $lot = $drev->addLot();
     $lot->millesime = null;
@@ -138,6 +174,15 @@ if ($application == 'loire') {
 $t->comment("DRev envoi de mail de la validation");
 $drev->devalidate();
 
+$is_syndicat_devalide = true;
+foreach ($drev->declaration->getSyndicats() as $syndicat) {
+    $infos = RegionConfiguration::getInstance()->getOdgRegionInfos($syndicat);
+    if($drev->isValidateOdgByRegion($syndicat)) {
+        $is_syndicat_devalide = false;
+    }
+}
+$t->ok($is_syndicat_devalide, 'Tous les produits sont dévalidés par chacun des syndicats');
+
 foreach (RegionConfiguration::getInstance()->getOdgRegions() as $region) {
     $configDRev = sfConfig::get('drev_configuration_drev');
     $configDRev['odg'][$region]['email_notification'] = 'email@email.email';
@@ -148,7 +193,7 @@ if (!DrevConfiguration::getInstance()->isSendMailToOperateur()) {
     return;
 }
 $t->ok(Email::getInstance()->getMessageDRevValidationDeclarant($drev), "Mail de validation à envoyer au déclarant");
-if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+if(DrevConfiguration::getInstance()->hasValidationOdgRegion() && !DrevConfiguration::getInstance()->hasEmailDisabled()) {
     $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 1, "Mails de notification de validation à envoyer aux syndicats");
 } else {
     $t->is(count(Email::getInstance()->getMessagesDRevValidationNotificationSyndicats($drev)), 0, "Aucun mail de notification de validation à envoyer aux syndicats");
@@ -158,12 +203,14 @@ $t->is(count(Email::getInstance()->getMessageDrevPapierConfirmee($drev)), DrevCo
 $t->is(count(Email::getInstance()->getMessagesDRevValidation($drev)), 0, "Aucun mail envoyé");
 
 $drev->validate();
-$messages = Email::getInstance()->getMessagesDRevValidation($drev);
-$t->is(count($messages), 1, "Mail de validation à envoyer au déclarant");
-if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
-    $t->like($messages[0]->getSubject(), "/Validation de la Déclaration de Revendication/", "Sujet du mail de validation");
-} else {
-    $t->is($messages[0]->getSubject(), "Validation de votre Déclaration de Revendication", "Sujet du mail de validation");
+if (DrevConfiguration::getInstance()->isSendMailToOperateur() && !DRevConfiguration::getInstance()->hasEmailDisabled() && !DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+    $messages = Email::getInstance()->getMessagesDRevValidation($drev);
+    $t->is(count($messages), 1, "Mail de validation à envoyer au déclarant");
+    if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+        $t->like($messages[0]->getSubject(), "/Validation de la Déclaration de Revendication/", "Sujet du mail de validation");
+    } else {
+        $t->is($messages[0]->getSubject(), "Validation de votre Déclaration de Revendication", "Sujet du mail de validation");
+    }
 }
 if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
     foreach(RegionConfiguration::getInstance()->getOdgRegions() as $region) {

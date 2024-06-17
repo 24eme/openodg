@@ -26,6 +26,10 @@ abstract class DocumentSecurity implements SecurityInterface {
             $droits = array($droits);
         }
 
+        if(($this->user->isAdminODG() || ($this->user->hasDrevAdmin()))){
+            return true;
+        }
+
         if(in_array(self::PDF, $droits) && $this->user->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
 
             return true;
