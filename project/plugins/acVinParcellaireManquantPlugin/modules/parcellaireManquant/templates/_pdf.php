@@ -77,9 +77,9 @@
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->numero_parcelle; ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->produit->libelle ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
-            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloat($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo sprintFloatFr($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->densite; ?>&nbsp;</td>
-            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloat($parcelle->pourcentage); ?>&nbsp;%</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo sprintFloatFr($parcelle->pourcentage); ?>&nbsp;%</td>
     	</tr>
 <?php $nbparcelles++; ?>
 <?php endforeach; ?>

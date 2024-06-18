@@ -187,10 +187,11 @@ class parcellaireManquantActions extends sfActions {
 	       	$this->parcellaireManquant->validateOdg();
 	    }
 
-    	$this->form = new ParcellaireManquantValidationForm($this->parcellaireManquant);
+        $this->validation = new ParcellaireManquantValidation($this->parcellaireManquant);
+
+        $this->form = new ParcellaireManquantValidationForm($this->parcellaireManquant, ['engagements' => $this->validation->getEngagements()]);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireManquantValidation($this->parcellaireManquant);
     		return sfView::SUCCESS;
     	}
 
