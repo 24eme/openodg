@@ -842,7 +842,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
      */
      public function getSurfaceFacturable()
      {
-        throw new sfException('Déprécié. Remplacé par getSurfaceRecolteFacturable()');
+        throw new sfException('getSurfaceFacturable() Déprécié. Remplacé par getSurfaceRecolteFacturable()');
      }
 
     public function getSurfaceRecolteFacturable()
@@ -866,7 +866,7 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
         $csv = $this->getCIVACsvFile();
         foreach ($csv->getCsv() as $line) {
             $hash = DRCIVACsvFile::getHashProduitByLine($line);
-            if (strpos($hash, '/appellation') === false) {
+            if (!$hash || strpos($hash, '/appellation') === false) {
                 continue;
             }
             $volume += floatval($line[DRCIVACsvFile::CSV_VOLUME]);
