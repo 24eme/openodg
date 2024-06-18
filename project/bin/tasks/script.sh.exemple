@@ -3,6 +3,8 @@
 # Title: Titre de la tache. Apparaît dans le listing
 # Description: Description de la tâche. Apparaît dans le listing
 
+source "$(dirname $0)/../config.inc"
+
 echo "Script d'exemple"
 
 # Type de commande qui peut être appelé
