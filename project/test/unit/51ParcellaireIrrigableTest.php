@@ -24,10 +24,11 @@ $parcellaireIrrigable->save();
 
 $t->is($parcellaireIrrigable->_id, 'PARCELLAIREIRRIGABLE-'.$viti->identifiant.'-'.$campagne, "L'id du doc est ".'PARCELLAIREIRRIGABLE-'.$viti->identifiant.'-'.$campagne);
 
-$t->is(count($parcellaireIrrigable->getParcellesFromLastParcellaire()->getParcelles()), count($parcellaire->getParcelles()), "Le parcellaire à ".count($parcellaire->getParcelles())." parcelles");
+$t->is(count($parcellaireIrrigable->getParcellesFromParcellaire()), count($parcellaire->getParcelles()), "Le parcellaire à ".count($parcellaire->getParcelles())." parcelles");
 $t->is(count($parcellaireIrrigable->declaration->getParcelles()), 0, "Le parcellaire irrigable n'a pas de parcelle");
 
-$parcellaireIrrigable->addParcellesFromParcellaire(array_keys($parcellaireIrrigable->getParcellaireCurrent()->getParcelles()));
+$pids = array_keys($parcellaireIrrigable->getParcellaire()->declaration->getParcelles());
+$parcellaireIrrigable->addParcellesFromParcellaire($pids);
 $parcellaireIrrigable->save();
 
 $t->is(count($parcellaireIrrigable->declaration->getParcellesByCommune()), 2, "Le parcellaire irrigable a 2 commune de parcelles");

@@ -57,6 +57,7 @@ ParcellaireIrrigue:
                               code_commune: { }
                               section: { }
                               numero_parcelle: { }
+                              numero_ordre: { }
                               idu: { }
                               lieu: {  }
                               prefix: { }
@@ -69,6 +70,8 @@ ParcellaireIrrigue:
                               ressource: {  }
                               irrigation: {  }
                               date_irrigation: {  }
+                              produit_hash: { }
+                              parcelle_id: { }
       required: { required: false }
       observations: {  }
       pieces:

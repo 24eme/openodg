@@ -101,9 +101,6 @@ class Parcellaire extends BaseParcellaire {
                 $this->add('parcelles', null);
             }
             $p = $this->_get('parcelles')->add($id);
-            if (!$dp->produit_hash) {
-                $dp->produit_hash = $dp->getParent()->getParent()->getHash();
-            }
             ParcellaireClient::CopyParcelle($p, $dp);
         }
         return $this->_get('parcelles');

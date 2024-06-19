@@ -8,7 +8,7 @@ if (in_array($application, array('nantes', 'loire'))) {
     return;
 }
 
-$t = new lime_test(18);
+$t = new lime_test(20);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $year = date('Y') - 1;
 $date = $year.'-12-01';
@@ -45,7 +45,10 @@ $parcellaire->save();
 
 $t->is(count($parcellaire->declaration), 1, "Le parcellaire a un produit");
 $t->is(count($parcellaire->getParcelles()), 4, "Le parcellaire 4 parcelles");
-$t->is($parcelle->getProduit()->getLibelle(), $configProduit->getLibelleComplet(), "Le libellé du produit est ". $configProduit->getLibelleComplet());
+$t->is(count($parcellaire->declaration->getParcelles()), 4, "Le parcellaire a des parcelles dans le produit");
+$parcelle = array_values($parcellaire->declaration->getParcelles())[0];
+$t->is($parcelle->produit_hash, '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT', "La première parcelles du produit as bien un produit_hash");
+$t->is($parcelle->getProduit()->getLibelleComplet(), $configProduit->getLibelleComplet(), "Le libellé du produit est ". $configProduit->getLibelleComplet());
 $t->is($parcelle->getKey(), $code_commune."000AB0052-00", "La clé de la parcelle est bien construite");
 $t->is($parcelle->code_commune, $code_commune, "Le code commune est : $code_commune");
 $t->is($parcelle->campagne_plantation, "2005", "La campagne de plantation a été enregistré");

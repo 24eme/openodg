@@ -364,10 +364,11 @@ class ParcellaireClient extends acCouchdbClient {
 
     public static function CopyParcelle($p1, $p2) {
         $p1->idu = $p2->idu;
-        $p1->splitIdu();
+        $p2->splitIdu();
 
         $p1->campagne_plantation = $p2->campagne_plantation;
         $p1->commune = $p2->commune;
+        $p1->code_commune = $p2->code_commune;
         $p1->numero_ordre = $p2->numero_ordre;
         $p1->cepage = $p2->cepage;
         $p1->superficie = $p2->superficie;

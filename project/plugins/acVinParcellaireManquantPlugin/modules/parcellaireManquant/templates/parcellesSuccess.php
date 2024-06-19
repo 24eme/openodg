@@ -17,7 +17,7 @@
 
 <form action="<?php echo url_for("parcellairemanquant_parcelles", $parcellaireManquant) ?>" method="post" class="form-horizontal">
 
-<?php foreach ($parcellaireManquant->getParcellesFromLastParcellaire()->getParcellesByCommune() as $commune => $parcelles): ?>
+<?php foreach ($parcellaireManquant->getParcellesFromParcellaire()->getParcellesByCommune() as $commune => $parcelles): ?>
     <div class="row">
         <div class="col-xs-6">
             <h3><?php echo $commune; ?></h3>

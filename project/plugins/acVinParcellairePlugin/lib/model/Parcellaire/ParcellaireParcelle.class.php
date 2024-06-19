@@ -12,7 +12,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduit() {
         if ($this->produit_hash) {
-            return $this->getConfig()->get($this->produit_hash);
+            return $this->getDocument()->getConfiguration()->get($this->produit_hash);
         }
         return $this->getParcelleAffectee()->getParent()->getParent();
     }
@@ -58,48 +58,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function splitIDU() {
-        $this->setCodeCommune(substr($this->idu, 0, 5), false);
-        $this->setPrefix(substr($this->idu, 5, 3), false);
-        $this->setSection(substr($this->idu, 8, 2), false);
-        $this->setNumeroParcelle(substr($this->idu, 10, 4), false);
-    }
-
-    public function setCodeCommune($code_commune, $updateIdu = true) {
-        $this->_set('code_commune', $code_commune);
-
-        if ($updateIdu) {
-            $this->updateIDU();
-        }
-
-        return $this;
-    }
-
-    public function setSection($section, $updateIdu = true) {
-        $this->_set('section', preg_replace('/^0*/', '', $section));
-
-        if ($updateIdu) {
-            $this->updateIDU();
-        }
-
-        return $this;
-    }
-
-    public function getSection() {
-        $s = $this->_get('section');
-        if ($s) {
-            $s = preg_replace('/^0*/', '', $s);
-        }
-        return $s;
-    }
-
-    public function setNumeroParcelle($numero_parcelle, $updateIdu = true) {
-        $this->_set('numero_parcelle', $numero_parcelle);
-
-        if ($updateIdu) {
-            $this->updateIDU();
-        }
-
-        return $this;
+        $this->setCodeCommune(substr($this->idu, 0, 5));
+        $this->setPrefix(substr($this->idu, 5, 3));
+        $this->setSection(substr($this->idu, 8, 2));
+        $this->setNumeroParcelle(substr($this->idu, 10, 4));
     }
 
     public function getLieuLibelle() {

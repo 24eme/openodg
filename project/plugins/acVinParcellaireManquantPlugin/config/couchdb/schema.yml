@@ -66,6 +66,7 @@ ParcellaireManquant:
                               campagne_plantation: {  }
                               densite: { }
                               pourcentage: { }
+                              parcelle_id: { }
       region: { required: false }
       observations: {  }
       pieces:

@@ -163,7 +163,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
       }
   }
 
-  public function getParcellaireCurrent() {
+  public function getParcellaire() {
 
       return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
   }
@@ -173,66 +173,24 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
         return $this->declaration->getParcelles();
     }
 
-    public function getParcellesFromLastParcellaire() {
-        $parcellaireCurrent = $this->getParcellaireCurrent();
+    public function getParcellesFromParcellaire() {
+        $parcellaireCurrent = $this->getParcellaire();
         if (!$parcellaireCurrent) {
           return;
         }
-
-        return $parcellaireCurrent->declaration;
+        $p = $parcellaireCurrent->declaration->getParcelles();
+        return $p;
     }
 
     public function addParcellesFromParcellaire(array $hashes) {
-      	$parcellaire = $this->getParcellesFromLastParcellaire();
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		foreach ($value->detail as $subkey => $subvalue) {
-      			if (!in_array($subvalue->getHash(), $hashes)) {
-      				$remove[] = $subvalue->getHash();
-      			}
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove(str_replace('/declaration/', '', $r));
-      	}
-      	foreach ($hashes as $hash) {
-      		$hash = str_replace('/declaration/', '', $hash);
-    	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-    	  		$detail = $parcellaire->get($hash);
-    	  		$produit = $detail->getProduit();
-    	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
-    	  		$item->libelle = $produit->libelle;
-    	  		$subitem = $item->detail->add($detail->getKey());
-
-    	  		$subitem->superficie = $detail->superficie;
-    	  		$subitem->commune = $detail->commune;
-                $subitem->code_commune = $detail->code_commune;
-    	  		$subitem->prefix = $detail->prefix;
-    	  		$subitem->section = $detail->section;
-    	  		$subitem->numero_parcelle = $detail->numero_parcelle;
-                $subitem->idu = $detail->idu;
-    	  		$subitem->lieu = $detail->lieu;
-    	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->active = 1;
-
-                $subitem->remove('vtsgn');
-                if($detail->exist('vtsgn')) {
-                    $subitem->add('vtsgn', (int)$detail->vtsgn);
-                }
-    	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-    	  	}
-      	}
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		if (!count($value->detail)) {
-      			$remove[] = $key;
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove($r);
-      	}
+      	$parcellaires = $this->getParcellesFromParcellaire();
+        foreach($hashes as $h) {
+            $t = explode('/detail/', str_replace('/declaration/', $h));
+            $d = $this->declaration->add($t[0])->detail->add($t[1]);
+            ParcellaireClient::CopyParcelle($d, $parcellaires[$h]);
+            $d->active = 1;
+        }
     }
-
 
     public function getDeclarantSiret(){
         $siret = "";
