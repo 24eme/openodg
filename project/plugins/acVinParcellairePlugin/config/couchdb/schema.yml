@@ -74,7 +74,9 @@ Parcellaire:
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
                               prefix: { }
+                              produit_hash: { }
                               parcelle_id: { }
+
       parcelles:
         type: collection
         definition:
@@ -103,6 +105,7 @@ Parcellaire:
                   mode_savoirfaire: { required: false }
                   porte_greffe: { required: false }
                   prefix: { }
+                  produit_hash: { }
                   parcelle_id: {}
       pieces:
         type: array_collection

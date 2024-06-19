@@ -11,7 +11,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     private $geoparcelle = null;
 
     public function getProduit() {
-
+        if ($this->produit_hash) {
+            return $this->getConfig()->get($this->produit_hash);
+        }
         return $this->getParcelleAffectee()->getParent()->getParent();
     }
 
@@ -295,6 +297,20 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             }
         }
         return $this->_get('parcelle_id');
+    }
+
+    public function getTheoriticalDgs() {
+        $communesDenominations = sfConfig::get('app_communes_denominations');
+        $dgcs = [];
+        foreach ($communesDenominations as $dgc_h => $communes) {
+            $dgc_l = $this->getDocument()->getConfiguration()->get($dgc_h)->getLibelle();
+            foreach($communes as $commune) {
+                if ($this->code_commune == $commune) {
+                    $dgcs[$dgc_h] = $dgc_l;
+                }
+            }
+        }
+        return $dgcs;
     }
 
 }

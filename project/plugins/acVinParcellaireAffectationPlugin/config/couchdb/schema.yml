@@ -69,6 +69,8 @@ ParcellaireAffectation:
                               affectation: { type: integer }
                               date_affectation: {  }
                               affectee: { type: integer }
+                              produit_hash: { }
+                              parcelle_id: { }
       region: { required: false }
       observations: {  }
       pieces:
@@ -183,10 +185,13 @@ ParcellaireIntentionAffectation:
                               lieu: {  }
                               cepage: {  }
                               prefix: { }
+                              numero_ordre: { }
                               departement: { required: false }
                               active: { type: integer }
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
                               affectation: { type: integer }
                               date_affectation: {  }
+                              produit_hash: { }
+                              parcelle_id: { }
       observations: {  }
