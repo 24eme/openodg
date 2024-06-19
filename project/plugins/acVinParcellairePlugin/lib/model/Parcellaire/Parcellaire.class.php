@@ -131,7 +131,7 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null) {
-        $pid = $this->getParcelleId($idu, $cepage, $campagne_plantation, $produit);
+        $pid = $this->getNextParcelleId($idu, $cepage, $campagne_plantation, $produit);
         $p = $this->parcelles->add($pid);
         $p->idu = $idu;
         $p->add('parcelle_id', $pid);
