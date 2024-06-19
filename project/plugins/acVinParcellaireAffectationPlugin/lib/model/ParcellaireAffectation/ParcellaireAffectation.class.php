@@ -331,7 +331,14 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     public function getParcellesByDgc() {
         $parcelles = array();
         foreach($this->getParcellesFromParcellaire() as $p) {
+            if (!$p->produit_hash) {
+                continue;
+            }
+            $lieu_hash = preg_replace('/\/lieux\/.*/', '', $p->produit_hash);
             foreach($p->getTheoriticalDgs() as $h => $d) {
+                if (strpos($h, $lieu_hash) === false) {
+                    continue;
+                }
                 if (!isset($parcelles[$d])) {
                     $parcelles[$d] = array();
                 }
