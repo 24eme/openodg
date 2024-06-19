@@ -7,6 +7,7 @@ ParcellaireAffectation:
       type: { }
       campagne: { }
       identifiant: { }
+      parcellaire_origine: {}
       etape: { }
       validation: { }
       validation_odg: { }
@@ -128,6 +129,7 @@ ParcellaireIntentionAffectation:
       type: { }
       campagne: { }
       identifiant: { }
+      parcellaire_origine: {}
       etape: { }
       validation: { }
       validation_odg: { }
