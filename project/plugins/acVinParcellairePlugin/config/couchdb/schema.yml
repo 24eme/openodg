@@ -74,9 +74,9 @@ Parcellaire:
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
                               prefix: { }
+                              parcelle_id: { }
       parcelles:
         type: collection
-        class: ParcellaireDeclaration
         definition:
           fields:
             '*':

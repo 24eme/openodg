@@ -116,7 +116,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
     public function affecteParcelle($p) {
         $k = $p->getKey();
         $detail = $this->detail->add($k);
-        return $detail->copy($p);
+        return ParcellaireClient::CopyParcelle($detail, $p);
     }
 
     public function isAffectee($lieu = null) {

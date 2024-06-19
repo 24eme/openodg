@@ -89,23 +89,33 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getParcelles() {
-        $p = $this->_get('parcelles');
-        if (count($p)) {
-            return $this->_get('parcelles');
+        if ($this->exist('parcelles')) {
+            $p = $this->_get('parcelles');
+            if (count($p)) {
+                return $this->_get('parcelles');
+            }
         }
         foreach($this->declaration->getParcelles() as $dp) {
-            $p = $this->parcelles->add($p->getParcelleId($dp->idu, $dp->cepage, $dp->campagne_plantation));
+            $id = $this->getNextParcelleId($dp->idu, $dp->cepage, $dp->campagne_plantation);
+            if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
+                $this->add('parcelles', null);
+            }
+            $p = $this->_get('parcelles')->add($id);
             ParcellaireClient::CopyParcelle($p, $dp);
         }
         return $this->_get('parcelles');
     }
 
-    public function getParcelleId($idu, $cepage, $campagne_plantation, $produit = null) {
+    public function getNextParcelleId($idu, $cepage, $campagne_plantation, $produit = null) {
         if (!$idu) {
             throw new sfException('Empty idu not allowed');
         }
         $pid = $idu.'-00';
-        if (!count($this->parcelles) || !$this->parcelles->exist($pid)) {
+        if (
+            !$this->exist('parcelles') ||
+            !count($this->_get('parcelles')->toArray()) ||
+            !$this->parcelles->exist($pid)
+        ) {
             return $pid;
         }
         for ($i = 1 ; $i < 10 ; $i++) {
@@ -156,6 +166,16 @@ class Parcellaire extends BaseParcellaire {
             throw new sfException('Wrong numero parcelle : '.$numero_parcelle);
         }
         return sprintf('%05s%03s%02s%04s', $code_commune, $prefix, $section, $numero_parcelle);
+    }
+
+    public function getParcelleFromParcellaireId($id) {
+        if (!$id) {
+            throw new sfException('id needed');
+        }
+        if (!count($this->parcelles)) {
+            throw new sfException('no parcelles with id');
+        }
+        return $this->parcelles[$id];
     }
 
     public function getParcellesByIdu() {

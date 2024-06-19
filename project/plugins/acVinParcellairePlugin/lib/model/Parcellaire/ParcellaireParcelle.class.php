@@ -274,10 +274,6 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $iia[$l];
     }
 
-    public function copy($p) {
-        return ParcellaireClient::CopyParcelle($this, $p);
-    }
-
     public function getParcelleAffectee() {
         if (strpos($this->hash, 'declaration') !== false) {
             return $this;
@@ -289,4 +285,16 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         throw new sfException('parcelle not found');
     }
+
+    public function getParcelleId() {
+        if (!$this->_get('parcelle_id')) {
+            if (strlen($this->getKey()) == 17){
+                $this->_set('parcelle_id', $this->getKey());
+            }else{
+                return $this->idu.'-00';
+            }
+        }
+        return $this->_get('parcelle_id');
+    }
+
 }
