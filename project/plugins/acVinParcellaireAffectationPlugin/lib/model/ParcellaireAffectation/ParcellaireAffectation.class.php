@@ -325,7 +325,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getParcellesFromParcellaire() {
-        return $this->getParcellaire()->getParcelles();
+        return $this->getParcellaire()->declaration->getParcelles();
     }
 
     public function getParcellesByDgc() {
