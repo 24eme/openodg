@@ -152,7 +152,12 @@ class Parcellaire extends BaseParcellaire {
             throw new sfException('Strange lieu '.$lieu);
         }
         $produit = $this->addProduit($hashProduit);
-        $code_commune = CommunesConfiguration::getInstance()->findCodeCommune($commune);
+        if (preg_match('/^[0-9]+$/', $commune)) {
+            $code_commune = $commune;
+            $commune = CommunesConfiguration::getInstance()->getCommuneByCode($code_commune);
+        }else {
+            $code_commune = CommunesConfiguration::getInstance()->findCodeCommune($commune);
+        }
         $idu = $this->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
         $parcelle  = $this->addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
         return $produit->affecteParcelle($parcelle);
