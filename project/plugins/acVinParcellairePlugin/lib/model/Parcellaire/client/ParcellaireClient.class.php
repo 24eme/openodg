@@ -366,6 +366,8 @@ class ParcellaireClient extends acCouchdbClient {
         $p1->idu = $p2->idu;
         $p2->splitIdu();
 
+        $p1->section = $p2->section;
+        $p1->numero_parcelle = $p2->numero_parcelle;
         $p1->campagne_plantation = $p2->campagne_plantation;
         $p1->commune = $p2->commune;
         $p1->code_commune = $p2->code_commune;
