@@ -9,6 +9,8 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
     const CSV_SURFACE = 9;
     const CSV_CEPAGE = 11;
 
+    const DATE_VALIDATION = "2023-04-15";
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -70,17 +72,17 @@ EOF;
 
             $affectationParcelle->affectee = 1;
             $affectationParcelle->superficie_affectation = (float) $data[self::CSV_SURFACE];
-            $affectationParcelle->date_affectation = "2023-04-30";
+            $affectationParcelle->date_affectation = self::DATE_VALIDATION;
 
             try {
                 if(!$affectation->isValidee()) {
-                    $affectation->validate("2023-04-30");
+                    $affectation->validate(self::DATE_VALIDATION);
                 }
                 $affectation->save();
             } catch(Exception $e) {
                 sleep(60);
                 if(!$affectation->isValidee()) {
-                    $affectation->validate("2023-04-30");
+                    $affectation->validate(self::DATE_VALIDATION);
                 }
                 $affectation->save();
             }

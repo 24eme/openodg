@@ -11,6 +11,8 @@ class ImportParcellaireManquantVentouxTask extends sfBaseTask
     const CSV_POURCENTAGE_MANQUANT = 15;
     const CSV_DENSITE = 12;
 
+    const DATE_VALIDATION = "2023-04-15";
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -78,13 +80,13 @@ EOF;
 
             try {
                 if(!$manquant->isValidee()) {
-                    $manquant->validate("2023-12-10");
+                    $manquant->validate(self::DATE_VALIDATION);
                 }
                 $manquant->save();
             } catch(Exception $e) {
                 sleep(60);
                 if(!$manquant->isValidee()) {
-                    $manquant->validate("2023-12-10");
+                    $manquant->validate(self::DATE_VALIDATION);
                 }
                 $manquant->save();
             }
