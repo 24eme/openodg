@@ -6,8 +6,8 @@
     foreach ($parcellairesLies as $type => $item):
         $parcellaireLie = $item['obj'];
     ?>
-    <div class="col-sm-6 col-md-3 col-xs-12">
-        <div class="panel panel-<?php if ($parcellaireLie && $parcellaireLie->isValidee()): ?>success<?php elseif($parcellaireLie && !$parcellaireLie->isValidee()): ?>warning<?php else: ?>default<?php endif; ?>">
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div style="margin-bottom:0px;" class="panel panel-<?php if ($parcellaireLie && $parcellaireLie->isValidee()): ?>success<?php elseif($parcellaireLie && !$parcellaireLie->isValidee()): ?>warning<?php else: ?>default<?php endif; ?>">
             <div class="panel-heading">
                 <h3 class="panel-title"><span class="glyphicon glyphicon-<?php echo ($parcellaireLie && $parcellaireLie->isValidee())? 'check' : 'unchecked'; ?>"></span> <?php echo $item['libelle'] ?></h3>
             </div>
