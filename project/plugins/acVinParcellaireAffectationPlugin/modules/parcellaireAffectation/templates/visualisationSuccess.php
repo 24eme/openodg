@@ -2,6 +2,8 @@
 
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
+<?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireAffectation)); ?>
+
 <div class="page-header no-border">
     <h2>Déclaration d'affectation parcellaire
     <?php if($parcellaireAffectation->isAuto()): ?>
@@ -30,7 +32,7 @@
         Cette déclaration est en <strong>attente de validation</strong> par l'ODG
     </div>
 <?php endif; ?>
-<?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireAffectation)); ?>
+
 <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
 <?php if($parcellaireAffectation->observations): ?>
