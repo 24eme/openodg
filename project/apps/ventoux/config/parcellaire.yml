@@ -14,3 +14,4 @@ all:
           color: "#ab3f97"
           denomination_id: "01363"
       declarations_liees: true
+      parcelles_from_affectationparcellaire: true
