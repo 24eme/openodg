@@ -21,6 +21,19 @@ class ParcellaireManquantValidationForm extends acCouchdbObjectForm {
         $this->setWidget('observations',new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
         $this->setValidator('observations',new sfValidatorString(array('required' => false)));
 
+        $engagements = $this->getOption('engagements');
+        foreach ($engagements as $engagement) {
+            $this->setWidget('engagement_'.$engagement->getCode(), new sfWidgetFormInputCheckbox());
+            $this->setValidator('engagement_'.$engagement->getCode(), new sfValidatorBoolean(array('required' => true)));
+        }
+        if ($this->getObject()->getDocument()->exist('documents')) {
+            foreach($this->getObject()->getDocument()->documents as $k => $v) {
+                if (isset($this->widgetSchema['engagement_'.$k])) {
+                    $this->setDefault('engagement_'.$k, 1);
+                }
+            }
+        }
+
         $this->widgetSchema->setNameFormat('parcellaire_validation[%s]');
     }
 

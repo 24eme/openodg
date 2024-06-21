@@ -34,6 +34,8 @@
 
     <?php include_partial('parcellaireManquant/recap', array('parcellaireManquant' => $parcellaireManquant)); ?>
 
+    <?php include_partial('parcellaireManquant/engagements', array('parcellaireManquant' => $parcellaireManquant, 'validation' => $validation, 'form' => $form)); ?>
+
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">

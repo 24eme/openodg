@@ -1134,6 +1134,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if($this->exist("envoi_oi")){
          $this->envoi_oi = null;
         }
+        if(DrevConfiguration::getInstance()->hasValidationOdgRegion()) {
+            foreach($this->getRegions() as $region) {
+                foreach ($this->getProduits($region) as $hash => $produit) {
+                    $produit->validation_odg = null;
+                }
+            }
+        }
+
         $this->setStatutOdgByRegion(DRevClient::STATUT_BROUILLON);
     }
 
@@ -1748,16 +1756,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         throw new sfException("type de document douanier $type n'est pas supporté");
     }
 
-    public function getNbApporteursPlusOneFromDouane(TemplateFactureCotisationCallbackParameters $produitFilter) {
-        $douane = $this->getDR();
+    public function getNbApporteursPlusOneFromDouane($produitFilter = null) {
+        $douane = $this->getDocumentDouanierOlderThanMe();
         if (!$douane || $douane->type == DRClient::TYPE_COUCHDB ) {
             return 0;
         }
         $apporteurs = $douane->getNbApporteurs($produitFilter->getParameters('appellations'));
         if (!$apporteurs) {
-            return 0;
-        }
-        if (!$this->validation || explode('T', $this->validation)[0] < date('Y').'-06-15') {
             return 0;
         }
         return $apporteurs + 1;

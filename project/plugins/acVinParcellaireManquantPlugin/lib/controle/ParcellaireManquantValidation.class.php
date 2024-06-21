@@ -11,6 +11,9 @@ class ParcellaireManquantValidation extends DocumentValidation {
     {
         $this->addControle(self::TYPE_WARNING, 'pourcentage_inf_min', "Le pourcentage de pied manquant est inférieur à ".ParcellaireConfiguration::getInstance()->getManquantPCMin()."%");
         $this->addControle(self::TYPE_ERROR, 'pourcentage_nul', "Le pourcentage de pied manquant ne peut pas être nul ou à zéro");
+        $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_rendement_maximal', "Ne pas produit pas produire le rendement maximal sur les parcelles déclarés ayant des pieds manquants");
+        $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_vci', "Ne pas faire de VCI sur les parcelles déclarés ayant des pieds manquants");
+        $this->addControle(self::TYPE_ENGAGEMENT, 'engagement_transmission', "À envoyer ce document à mes unités de vinication pour les coopérateurs et les vendeurs de vendange fraîche");
     }
 
     public function controle()
@@ -25,5 +28,9 @@ class ParcellaireManquantValidation extends DocumentValidation {
                 $this->addPoint(self::TYPE_WARNING, 'pourcentage_inf_min', "Parcelle n° {$parcelle->section} {$parcelle->numero_parcelle} - Le pourcentage de pied mort est de {$parcelle->pourcentage}%", $this->generateUrl('parcellairemanquant_manquants', $this->document));
             }
         }
+
+        $this->addPoint(self::TYPE_ENGAGEMENT, 'engagement_rendement_maximal', null);
+        $this->addPoint(self::TYPE_ENGAGEMENT, 'engagement_vci', null);
+        $this->addPoint(self::TYPE_ENGAGEMENT, 'engagement_transmission', null);
     }
 }
