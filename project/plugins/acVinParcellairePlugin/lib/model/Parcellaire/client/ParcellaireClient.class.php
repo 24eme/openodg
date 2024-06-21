@@ -331,10 +331,10 @@ class ParcellaireClient extends acCouchdbClient {
         foreach($selected_parcellaires as $p) {
             $score = 0;
 
-            if(strtolower($parcelle->getCepageLibelle()) == strtolower($p->getCepageLibelle())) {
+            if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($parcelle->getCepageLibelle())) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
                 $score += 0.25;
             }
-            if($parcelle->campagne_plantation == $p->campagne_plantation) {
+            if(strpos($p->campagne_plantation, $parcelle->campagne_plantation) !== false) {
                 $score += 0.25;
             }
             if($parcelle->lieu && $p->lieu && strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
