@@ -107,17 +107,21 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
   }
 
+  public function getParcellaireAffectation() {
+      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+  }
+
     public function getParcelles() {
 
         return $this->declaration->getParcelles();
     }
 
     public function getParcellesFromParcellaire() {
-        $parcellaireCurrent = $this->getParcellaire();
+        $parcellaireCurrent = (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire())? $this->getParcellaireAffectation() : $this->getParcellaire();
         if (!$parcellaireCurrent) {
-          return array();
+          return null;
         }
-        return $parcellaireCurrent->declaration->getParcelles();
+        return $parcellaireCurrent->declaration;
     }
 
     public function addParcellesFromParcellaire(array $hashes) {
@@ -232,6 +236,10 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
   public function getValidationOdg() {
 
       return $this->_get('validation_odg');
+  }
+
+  public function isValidee(){
+      return $this->validation;
   }
     /*** FIN DECLARATION DOCUMENT ***/
 

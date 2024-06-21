@@ -277,6 +277,12 @@ class ParcellaireClient extends acCouchdbClient {
         return $doc;
     }
 
+    public function getLastByCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $date = ConfigurationClient::getInstance()->getCampagneVinicole()->getDateFinByCampagne($campagne);
+
+        return $this->findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate);
+    }
+
     public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
         $history = $this->getHistory($identifiant, $hydrate);
 
@@ -325,10 +331,10 @@ class ParcellaireClient extends acCouchdbClient {
         foreach($selected_parcellaires as $p) {
             $score = 0;
 
-            if(strtolower($parcelle->getCepageLibelle()) == strtolower($p->getCepageLibelle())) {
+            if(preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($parcelle->getCepageLibelle())) == preg_replace('/ (b|n|blanc|rouge)$/', '', strtolower($p->getCepageLibelle()))) {
                 $score += 0.25;
             }
-            if($parcelle->campagne_plantation == $p->campagne_plantation) {
+            if(strpos($p->campagne_plantation, $parcelle->campagne_plantation) !== false) {
                 $score += 0.25;
             }
             if($parcelle->lieu && $p->lieu && strtoupper($parcelle->lieu) == strtoupper($p->lieu)) {
@@ -364,7 +370,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     public static function CopyParcelle($p1, $p2) {
         $p1->idu = $p2->idu;
-        $p2->splitIdu();
+        $p1->splitIdu();
 
         $p1->campagne_plantation = $p2->campagne_plantation;
         $p1->commune = $p2->commune;

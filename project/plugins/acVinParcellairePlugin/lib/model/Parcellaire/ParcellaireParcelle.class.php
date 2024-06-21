@@ -60,8 +60,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     public function splitIDU() {
         $this->setCodeCommune(substr($this->idu, 0, 5));
         $this->setPrefix(substr($this->idu, 5, 3));
-        $this->setSection(substr($this->idu, 8, 2));
-        $this->setNumeroParcelle(substr($this->idu, 10, 4));
+        $this->setSection(preg_replace('/^0+/', '', substr($this->idu, 8, 2)));
+        $this->setNumeroParcelle(preg_replace('/^0+/', '', substr($this->idu, 10, 4)));
     }
 
     public function getLieuLibelle() {

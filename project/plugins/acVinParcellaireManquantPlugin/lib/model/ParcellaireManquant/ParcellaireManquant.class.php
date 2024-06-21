@@ -108,13 +108,17 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
   }
 
+  public function getParcellaireAffectation() {
+      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+  }
+
     public function getParcelles() {
 
         return $this->declaration->getParcelles();
     }
 
     public function getParcellesFromParcellaire() {
-        $parcellaireCurrent = $this->getParcellaire();
+        $parcellaireCurrent = (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire())? $this->getParcellaireAffectation() : $this->getParcellaire();
         if (!$parcellaireCurrent) {
           return;
         }

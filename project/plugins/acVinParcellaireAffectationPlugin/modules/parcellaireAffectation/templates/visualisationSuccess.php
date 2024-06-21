@@ -2,6 +2,8 @@
 
 <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
 
+<?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireAffectation)); ?>
+
 <div class="page-header no-border">
     <h2>Déclaration d'affectation parcellaire
     <?php if($parcellaireAffectation->isAuto()): ?>
