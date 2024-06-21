@@ -11,8 +11,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     private $geoparcelle = null;
 
     public function getProduit() {
-
-        return $this->document->get(preg_replace('/\/detail\/.*/', '', $this->getHash()));
+        if ($this->produit_hash) {
+            return $this->getDocument()->getConfiguration()->get($this->produit_hash);
+        }
+        return $this->getParcelleAffectee()->getParent()->getParent();
     }
 
     public function getConfig() {
@@ -51,39 +53,15 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function updateIDU() {
-        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
+        throw new sfException('updateIUD');
+        $this->idu = $this->getDocument()->computeIDU($this->code_commune, $this->prefix, $this->section, $this->numero_parcelle);
     }
 
-    public function setCodeCommune($code_commune) {
-        $this->_set('code_commune', $code_commune);
-
-        $this->updateIDU();
-
-        return $this;
-    }
-
-    public function setSection($section) {
-        $this->_set('section', preg_replace('/^0*/', '', $section));
-
-        $this->updateIDU();
-
-        return $this;
-    }
-
-    public function getSection() {
-        $s = $this->_get('section');
-        if ($s) {
-            $s = preg_replace('/^0*/', '', $s);
-        }
-        return $s;
-    }
-
-    public function setNumeroParcelle($numero_parcelle) {
-        $this->_set('numero_parcelle', $numero_parcelle);
-
-        $this->updateIDU();
-
-        return $this;
+    public function splitIDU() {
+        $this->setCodeCommune(substr($this->idu, 0, 5));
+        $this->setPrefix(substr($this->idu, 5, 3));
+        $this->setSection(substr($this->idu, 8, 2));
+        $this->setNumeroParcelle(substr($this->idu, 10, 4));
     }
 
     public function getLieuLibelle() {
@@ -259,4 +237,42 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         return $iia[$l];
     }
+
+    public function getParcelleAffectee() {
+        if (strpos($this->hash, 'declaration') !== false) {
+            return $this;
+        }
+        foreach($this->getDocument()->declaration->getParcelles() as $p) {
+            if ($p->getKey() == $this->getKey()) {
+                return $p;
+            }
+        }
+        throw new sfException('parcelle not found');
+    }
+
+    public function getParcelleId() {
+        if (!$this->_get('parcelle_id')) {
+            if (strlen($this->getKey()) == 17){
+                $this->_set('parcelle_id', $this->getKey());
+            }else{
+                return $this->idu.'-00';
+            }
+        }
+        return $this->_get('parcelle_id');
+    }
+
+    public function getTheoriticalDgs() {
+        $communesDenominations = sfConfig::get('app_communes_denominations');
+        $dgcs = [];
+        foreach ($communesDenominations as $dgc_h => $communes) {
+            $dgc_l = $this->getDocument()->getConfiguration()->get($dgc_h)->getLibelle();
+            foreach($communes as $commune) {
+                if ($this->code_commune == $commune) {
+                    $dgcs[$dgc_h] = $dgc_l;
+                }
+            }
+        }
+        return $dgcs;
+    }
+
 }

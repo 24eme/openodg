@@ -34,40 +34,10 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $this->validation_odg = $this->date;
   }
 
-  public function storeParcelles() {
-    $lieux = $this->getConfiguration()->getLieux();
-    $lieuxArr = array();
-    foreach ($lieux as $cLieu => $lLieu) {
-        if ($this->existDgcFromParcellaire($cLieu)) {
-            $lieuxArr[] = $cLieu;
-        }
-    }
-    $this->addParcellesFromParcellaire($lieuxArr);
-    if ($parcellaireIntentionAffectation = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode)) {
- 		foreach ($this->getParcelles() as $hash => $parcelle) {
-			            $hashWithoutNumeroOrdre = preg_replace("/(-[0-9]+)-[0-9]{2}(-?)/", '\1\2', $hash);
-			                   $parcellesMatch = array();
-				                   foreach($parcellaireIntentionAffectation->getParcelles() as $h => $p) {
-					                if($hashWithoutNumeroOrdre != preg_replace("/(-[0-9]+)-[0-9]{2}/", '\1', $h)) {
-					                         continue;
-					                 }
-			                       $parcellesMatch[] = $h;
-			            }
-                
-            if(count($parcellesMatch) == 1) {
-                $hash = $parcellesMatch[0];
-            }		
-			if ($parcellaireIntentionAffectation->exist($hash) && $parcellaireIntentionAffectation->get($hash)->affectation) {
-  		        $parcelle->affectation = 1;
-  		        $parcelle->date_affectation = $parcellaireIntentionAffectation->get($hash)->date_affectation;
-  		        $parcelle->superficie_affectation = $parcellaireIntentionAffectation->get($hash)->superficie_affectation;
-  		    }
-  		}
-  	}
-  }
-
   public function updateParcelles() {
-      $this->addParcellesFromParcellaire(array_keys($this->getDgc()));
+      foreach($this->declaration->getParcelles() as $p) {
+          $p->updateFromParcellaire();
+      }
   }
 
   public function getDenominationAire() {
@@ -75,7 +45,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
 
   public function addParcellesFromParcellaire(array $lieux) {
-      $parcellaire = $this->getParcellesFromLastParcellaire();
+      $parcellaire = $this->getParcellesFromParcellaire();
       if (!$parcellaire) {
           return;
       }
@@ -106,7 +76,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
               continue;
           }
 
-          $affectees[$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie_affectation);
+          $affectees[$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie, 'superficie_affectation' => $parcelle->superficie_affectation);
       }
       $this->remove('declaration');
       $this->add('declaration');
@@ -152,11 +122,14 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                       if ($subitem->campagne_plantation > "2004-2005") {
                           $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
                       }
-                      $subitem->superficie_affectation  = $parcelle->superficie;
+                      $subitem->superficie_affectation = $parcelle->superficie;
+                      if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()] && $affectees[$parcelle->getHash()]['superficie'] != $affectees[$parcelle->getHash()]['superficie_affectation']) {
+                          $subitem->superficie_affectation = $affectees[$parcelle->getHash()]['superficie_affectation'];
+                      }
                   } else if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()]) {
                       $subitem->affectation = 1;
                       $subitem->date_affectation = $affectees[$parcelle->getHash()]['date'];
-                      $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie'];
+                      $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie_affectation'];
                   } else {
                     $subitem->affectation = 0;
                     $subitem->superficie_affectation = $parcelle->superficie;
@@ -169,40 +142,6 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
   }
 
-  public function getParcellesFromLastParcellaire() {
-      $parcellaireCurrent = $this->getParcellaireCurrent();
-      if (!$parcellaireCurrent) {
-          return;
-      }
-  
-      return $parcellaireCurrent->declaration;
-  }
-  
-  public function getParcellaireCurrent() {
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-  
-  public function hasParcellaire() {
-      return ($this->getParcellaireCurrent())? true : false;
-  }
-
-  public function existDgcFromParcellaire($dgc) {
-      $parcellaire = $this->getParcellesFromLastParcellaire();
-      if (!$parcellaire) {
-          return;
-      }
-      $communesDenominations = sfConfig::get('app_communes_denominations');
-      if (isset($communesDenominations[$dgc])) {
-          $codesInsee = $communesDenominations[$dgc];
-          foreach ($parcellaire->getParcelles() as $parcelle) {
-              if (in_array($parcelle->code_commune, $codesInsee)) {
-                  return true;
-              }
-          }
-      }
-      return false;
-  }
-  
   public function getDocumentDefinitionModel() {
       return 'ParcellaireIntentionAffectation';
   }

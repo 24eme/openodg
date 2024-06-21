@@ -112,7 +112,7 @@ class parcellaireManquantActions extends sfActions {
     		$this->parcellaireManquant->save();
     	}
 
-        $currentParcellaire = $this->parcellaireManquant->getParcellaireCurrent();
+        $currentParcellaire = $this->parcellaireManquant->getParcellaire();
         $this->previousParcelles = [];
         foreach($this->parcellaireManquant->getParcelles() as $p) {
             $pMatch = $currentParcellaire->findParcelle($p, 0.75);
@@ -187,10 +187,11 @@ class parcellaireManquantActions extends sfActions {
 	       	$this->parcellaireManquant->validateOdg();
 	    }
 
-    	$this->form = new ParcellaireManquantValidationForm($this->parcellaireManquant);
+        $this->validation = new ParcellaireManquantValidation($this->parcellaireManquant);
+
+        $this->form = new ParcellaireManquantValidationForm($this->parcellaireManquant, ['engagements' => $this->validation->getEngagements()]);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireManquantValidation($this->parcellaireManquant);
     		return sfView::SUCCESS;
     	}
 

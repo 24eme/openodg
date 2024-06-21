@@ -136,7 +136,7 @@ class habilitationActions extends sfActions {
             throw new sfError403Exception();
         }
 
-        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true));
+        $this->etablissement = $this->getRoute()->getEtablissement(array('allow_admin_odg' => true, 'allow_habilitation' => true));
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);

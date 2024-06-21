@@ -280,24 +280,20 @@ class ParcellaireCsvFile
             $prefix = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 5, 3);
 
             $new_parcelle = $this->parcellaire->addParcelle(
-                $hash,
+                $parcelle[self::CSV_FORMAT_IDU - $is_old_format],
                 $parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_CAMPAGNE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_COMMUNE - $is_old_format],
-                $prefix,
-                $parcelle[self::CSV_FORMAT_SECTION - $is_old_format],
-                $parcelle[self::CSV_FORMAT_NUMERO_PARCELLE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_LIEU_DIT - $is_old_format]
             );
-            if ($parcelle[self::CSV_FORMAT_IDU - $is_old_format] && substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 2)) {
-                $new_parcelle->code_commune = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 5);
-                $new_parcelle->idu = $parcelle[self::CSV_FORMAT_IDU - $is_old_format];
-            }
+
             $new_parcelle->ecart_rang = (float) $parcelle[self::CSV_FORMAT_ECART_RANG - $is_old_format];
             $new_parcelle->ecart_pieds = (float) $parcelle[self::CSV_FORMAT_ECART_PIED - $is_old_format];
             $new_parcelle->superficie = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format]);
             $new_parcelle->superficie_cadastrale = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format]);
             $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR - $is_old_format]);
+
+            $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
 
             if (! $this->check($new_parcelle)) {
                 $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");

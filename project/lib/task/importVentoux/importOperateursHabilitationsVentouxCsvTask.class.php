@@ -151,6 +151,7 @@ EOF;
         }
 
         $etablissement->cvi = $cvi;
+        $etablissement->commentaire = trim($data[self::CSV_OBSERVATION]) ? $data[self::CSV_OBSERVATION] : null;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
         $etablissement->save();
@@ -166,9 +167,8 @@ EOF;
         $date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_SAISIE_IDENTIFICATION])[0])->format('Y-m-d') : null;
         $date_decision = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_HABILITATION])[0])->format('Y-m-d') : null;
 
-        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date_demande);
-        $produit = $habilitation->addProduit(self::hash_produit);
-        $activites = $produit->add('activites');
+        $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
+        $activites = [];
 
         foreach ([
             self::CSV_PRODUCTION_RAISINS => $data[self::CSV_PRODUCTION_RAISINS],
@@ -178,17 +178,23 @@ EOF;
             self::CSV_TIREUSE => $data[self::CSV_TIREUSE]
         ] as $key => $activite) {
             if (strtoupper($activite) === "X") {
-                if ($date_demande) {
+                $activites[] = self::activites[$key];
+                /*if ($date_demande) {
                     $activites->add(self::activites[$key])->updateHabilitation(HabilitationClient::STATUT_DEMANDE_HABILITATION, null, $date_demande);
                 }
 
                 $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
                 $activites->add(self::activites[$key])
-                          ->updateHabilitation($statut, null, $date_decision);
+                          ->updateHabilitation($statut, null, $date_decision);*/
             }
         }
 
-        $habilitation->save();
-        echo "Habilitation mise à jour : ".$habilitation->_id.PHP_EOL;
+        if($date_demande && $date_demande < $date_decision) {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION);
+        }
+
+        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
+
+        echo "Habilitation mise à jour : ".$identifiant.PHP_EOL;
     }
 }

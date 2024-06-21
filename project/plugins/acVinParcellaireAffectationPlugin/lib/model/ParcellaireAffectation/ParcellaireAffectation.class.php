@@ -9,6 +9,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $declarant_document = null;
   protected $piece_document = null;
   protected $parcelles_idu = null;
+  protected $parcellaire = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -313,6 +314,56 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public static function isPieceEditable($admin = false) {
         return false;
+    }
+
+    public function getParcelleFromParcelleParcellaire($p) {
+        foreach($this->declaration->getParcelles() as $d) {
+            if ($p->parcelle_id == $d->parcelle_id) {
+                return $d;
+            }
+        }
+    }
+
+    public function getParcellesFromParcellaire() {
+        return $this->getParcellaire()->declaration->getParcelles();
+    }
+
+    public function getParcellesByDgc() {
+        $parcelles = array();
+        foreach($this->getParcellesFromParcellaire() as $p) {
+            if (!$p->produit_hash) {
+                continue;
+            }
+            $lieu_hash = preg_replace('/\/lieux\/.*/', '', $p->produit_hash);
+            foreach($p->getTheoriticalDgs() as $h => $d) {
+                if (strpos($h, $lieu_hash) === false) {
+                    continue;
+                }
+                if (!isset($parcelles[$d])) {
+                    $parcelles[$d] = array();
+                }
+                $p->produit_hash = $h;
+                $parcelles[$d][] = $p;
+            }
+        }
+        return $parcelles;
+    }
+
+    public function getParcellaire() {
+        if (!$this->parcellaire) {
+            $date_end = explode('-', $this->campagne)[1].'-07-31';
+            $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date_end);
+            $this->parcellaire_origine = $this->parcellaire->_id;
+        }
+        return $this->parcellaire;
+    }
+
+    public function hasParcellaire() {
+        return ($this->getParcellaire())? true : false;
+    }
+
+    public function getParcelleFromParcellaire($id) {
+        return $this->getParcellaire()->getParcelleFromParcellaireId($id);
     }
 
 }

@@ -53,6 +53,11 @@ class Parcellaire extends BaseParcellaire {
         return ConfigurationClient::getInstance()->getConfiguration($this->date);
     }
 
+    public function affecteParcelleToHashProduit($hash, $parcelle) {
+        $p = $this->addProduit($hash);
+        return $p->affecteParcelle($parcelle);
+    }
+
     public function addProduit($hash) {
         $pseudo_produit = false;
         if (!$hash && !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
@@ -84,43 +89,98 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getParcelles() {
-
-        return $this->declaration->getParcelles();
+        if ($this->exist('parcelles')) {
+            $p = $this->_get('parcelles');
+            if (count($p)) {
+                return $this->_get('parcelles');
+            }
+        }
+        foreach($this->declaration->getParcelles() as $dp) {
+            $id = $this->getNextParcelleId($dp->idu, $dp->cepage, $dp->campagne_plantation);
+            if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
+                $this->add('parcelles', null);
+            }
+            $p = $this->_get('parcelles')->add($id);
+            ParcellaireClient::CopyParcelle($p, $dp);
+        }
+        return $this->_get('parcelles');
     }
 
-    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
-        if ($lieu && preg_match('/[0-9]/', $lieu)) {
+    public function getNextParcelleId($idu, $cepage, $campagne_plantation, $produit = null) {
+        if (!$idu) {
+            throw new sfException('Empty idu not allowed');
+        }
+        $pid = $idu.'-00';
+        if (
+            !$this->exist('parcelles') ||
+            !count($this->_get('parcelles')->toArray()) ||
+            !$this->parcelles->exist($pid)
+        ) {
+            return $pid;
+        }
+        for ($i = 1 ; $i < 10 ; $i++) {
+            $pid = sprintf('%s-%02d', $idu, $i);
+            if (!$this->parcelles->exist($pid)) {
+                return $pid;
+            }
+        }
+        throw new sfException('pid not found for '.$uid);
+    }
+
+    public function addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null) {
+        $pid = $this->getNextParcelleId($idu, $cepage, $campagne_plantation, $produit);
+        $p = $this->parcelles->add($pid);
+        $p->idu = $idu;
+        $p->add('parcelle_id', $pid);
+        $p->cepage = $cepage;
+        $p->campagne_plantation = $campagne_plantation;
+        $p->commune = $commune;
+        if($lieu){
+            $lieu = strtoupper($lieu);
+            $lieu = trim($lieu);
+            $p->lieu = $lieu;
+        }
+        $p->numero_ordre = explode('-', $pid)[1];
+        if ($produit) {
+            $p->produit = $produit;
+        }
+        return $p;
+    }
+
+    public function addParcelleWithProduit($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
+        if ($lieu && preg_match('/[0-9]/', $lieu) && !preg_match('/ /', $lieu)) {
             throw new sfException('Strange lieu '.$lieu);
         }
         $produit = $this->addProduit($hashProduit);
-        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
+        if (preg_match('/^[0-9]+$/', $commune)) {
+            $code_commune = $commune;
+            $commune = CommunesConfiguration::getInstance()->getCommuneByCode($code_commune);
+        }else {
+            $code_commune = CommunesConfiguration::getInstance()->findCodeCommune($commune);
+        }
+        $idu = $this->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
+        $parcelle  = $this->addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
+        return $produit->affecteParcelle($parcelle);
     }
 
-    public function countSameParcelle($commune, $prefix, $section, $numero_parcelle, $lieu, $hashProduit = null, $cepage = null, $campagne_plantation = null){
-        $sameParcelle = 0;
-
-        foreach ($this->getParcelles() as $parcelleExistante) {
-            if ($parcelleExistante->section !== preg_replace('/^0*/', '', $section)) {
-                continue;
-            }
-
-            if ($parcelleExistante->numero_parcelle !== $numero_parcelle) {
-                continue;
-            }
-
-            if (KeyInflector::slugify($parcelleExistante->lieu) !== KeyInflector::slugify($lieu)) {
-                continue;
-            }
-
-            if (KeyInflector::slugify($parcelleExistante->commune) !== KeyInflector::slugify($commune)) {
-                continue;
-            }
-
-            $sameParcelle++;
+    public function computeIDU($code_commune, $prefix, $section, $numero_parcelle) {
+        if (!intval($code_commune)) {
+            throw new sfException('Wrong code commune : '.$code_commune);
         }
+        if (!intval($numero_parcelle)) {
+            throw new sfException('Wrong numero parcelle : '.$numero_parcelle);
+        }
+        return sprintf('%05s%03s%02s%04s', $code_commune, $prefix, $section, $numero_parcelle);
+    }
 
-        return $sameParcelle;
-
+    public function getParcelleFromParcellaireId($id) {
+        if (!$id) {
+            throw new sfException('id needed');
+        }
+        if (!count($this->parcelles)) {
+            throw new sfException('no parcelles with id');
+        }
+        return $this->parcelles[$id];
     }
 
     public function getParcellesByIdu() {

@@ -9,7 +9,7 @@
 
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
 
-<?php foreach ($parcellaireIrrigable->getParcellesFromLastParcellaire()->getParcellesByCommune() as $commune => $parcelles): ?>
+<?php foreach ($parcellaireIrrigable->getParcellesFromParcellaire()->getParcellesByCommune() as $commune => $parcelles): ?>
     <div class="row">
         <div class="col-xs-6">
             <h3><?php echo $commune; ?></h3>

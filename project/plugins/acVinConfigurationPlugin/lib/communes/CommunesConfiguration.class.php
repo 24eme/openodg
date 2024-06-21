@@ -43,6 +43,11 @@ class CommunesConfiguration {
         return $this->communes;
     }
 
+    public function getCommuneByCode($c) {
+
+        return $this->communes[$c];
+    }
+
     public function findCodeCommune($commune) {
         if(!isset($this->communes_reverse[$commune])) {
 

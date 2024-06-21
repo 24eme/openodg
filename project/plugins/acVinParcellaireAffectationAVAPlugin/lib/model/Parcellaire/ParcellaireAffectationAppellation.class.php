@@ -71,7 +71,7 @@ class ParcellaireAffectationAppellation extends BaseParcellaireAffectationAppell
         return false;
     }
 
-    public function addParcelle($parcelleKey,$commune,$section,$numero_parcelle) {
+    public function addParcelleWithProduit($parcelleKey,$commune,$section,$numero_parcelle) {
        $parcelle = $this->parcelles->add($parcelleKey);
        $parcelle->commune = $commune;
        $parcelle->section = $section;

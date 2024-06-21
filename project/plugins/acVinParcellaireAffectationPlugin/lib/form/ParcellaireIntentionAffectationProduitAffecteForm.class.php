@@ -10,7 +10,7 @@ class ParcellaireIntentionAffectationProduitAffecteForm extends acCouchdbObjectF
 
     	$this->setValidators(array(
     			'affectation' => new ValidatorBoolean(),
-    			'superficie_affectation'=> new sfValidatorNumber(array('required' => false, 'max' => $this->getObject()->superficie))
+    			'superficie_affectation'=> new sfValidatorNumber(array('required' => false))
     	));
         $this->widgetSchema->setNameFormat('parcellaire_affectation[%s]');
     }

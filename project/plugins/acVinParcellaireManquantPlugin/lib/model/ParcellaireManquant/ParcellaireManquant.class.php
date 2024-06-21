@@ -103,9 +103,13 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       }
   }
 
-  public function getParcellaireCurrent() {
+  public function getParcellaire() {
 
       return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+  }
+
+  public function getParcellaireAffectation() {
+      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
   }
 
     public function getParcelles() {
@@ -113,45 +117,13 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         return $this->declaration->getParcelles();
     }
 
-    public function getParcellesFromLastParcellaire() {
-        $parcellaireCurrent = $this->getParcellaireCurrent();
+    public function getParcellesFromParcellaire() {
+        $parcellaireCurrent = (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire())? $this->getParcellaireAffectation() : $this->getParcellaire();
         if (!$parcellaireCurrent) {
           return;
         }
 
         return $parcellaireCurrent->declaration;
-    }
-
-    public function addParcellesFromParcellaire(array $hashes) {
-      	$parcellaire = $this->getParcellesFromLastParcellaire();
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		foreach ($value->detail as $subkey => $subvalue) {
-      			if (!in_array($subvalue->getHash(), $hashes)) {
-      				$remove[] = $subvalue->getHash();
-      			}
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove(str_replace('/declaration/', '', $r));
-      	}
-      	foreach ($hashes as $hash) {
-      		$hash = str_replace('/declaration/', '', $hash);
-    	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-    	  		$this->addParcelleFromParcellaireParcelle($parcellaire->get($hash));
-            }else{
-                $this->updateParcelleFromParcellaireParcelle($parcellaire->get($hash));
-            }
-      	}
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		if (!count($value->detail)) {
-      			$remove[] = $key;
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove($r);
-      	}
     }
 
     public function addParcelleFromParcellaireParcelle($detail) {
@@ -313,7 +285,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
     }
 
     public function getRegions() {
-        $currentParcellaire = $this->getParcellaireCurrent();
+        $currentParcellaire = $this->getParcellaire();
         if(!$currentParcellaire) {
             return;
         }

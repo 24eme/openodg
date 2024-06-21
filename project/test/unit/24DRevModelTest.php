@@ -189,11 +189,14 @@ $t->is($drev->validation, NULL, "La DRev n'est plus validée");
 $drev->validate();
 $drev->save();
 
-
+$region = null;
+if ($drev->getRegions()) {
+    $region = $drev->getRegions()[0];
+}
 $nbMvtsAttendu = 0;
 if(FactureConfiguration::getInstance()->isActive()) {
-    $template = $drev->getTemplateFacture();
-    $t->isnt($drev->getTemplateFacture(), null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
+    $template = $drev->getTemplateFacture($region);
+    $t->isnt($template, null, "getTemplateFacture de la DRev doit retourner un template de facture pour la campagne ".$drev->campagne." (pour pouvoir avoir des mouvements)");
     $drev->generateMouvementsFactures();
     $mouvements = $drev->mouvements->add($viti->identifiant);
     foreach ($template->cotisations as $type => $cot) {

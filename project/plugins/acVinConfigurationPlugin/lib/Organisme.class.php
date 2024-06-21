@@ -73,7 +73,7 @@ class Organisme
                    ? sfConfig::get('app_'.$this->type.'_emetteur')
                    : sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
 
-       if (!array_key_exists($this->region, $infos)) {
+       if (!$infos || !array_key_exists($this->region, $infos)) {
            $infos = sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
            return $infos;
        }
