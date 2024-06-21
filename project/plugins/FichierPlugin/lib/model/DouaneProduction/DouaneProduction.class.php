@@ -937,33 +937,41 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             throw new sfException("Ce document n'est pas une SV11.");
         }
         $produits = $this->getProduits();
-        $declarant_cvi = $this->getEtablissementObject()->cvi;
+        $etab_declarant =  $this->getEtablissementObject();
         foreach ($this->getDonnees() as $data) {
             if (($data->categorie == '06' || $data->categorie == '07' || $data->categorie == '08')) {
                 if (! isset($tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'])) {
                     $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'] = $data->valeur;
+                    $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['DR'] = 0;
                 } else {
                     $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'] += $data->valeur;
                 }
-                if(! isset($tableau_comparaison[$data->produit_libelle][$declarant_cvi]['SV'])) {
-                    $tableau_comparaison[$data->produit_libelle][$declarant_cvi]['SV'] = $produits[$data->produit]['lignes'][$data->categorie]['val'];
+                if(! isset($tableau_comparaison[$data->produit_libelle][$etab_declarant->cvi]['SV'])) {
+                    $tableau_comparaison[$data->produit_libelle][$etab_declarant->cvi]['SV'] = $produits[$data->produit]['lignes'][$data->categorie]['val'];
                 }
             }
         }
         foreach ($tableau_comparaison as $produit_libelle => $cvis) {
             $totalDR = 0;
             foreach ($cvis as $cvi => $valeur) {
-                if ($declarant_cvi == $cvi) {
+                if ($etab_declarant->cvi == $cvi) {
                     continue;
                 }
                 $etab = EtablissementClient::getInstance()->findByCvi($cvi);
                 $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
+
                 if (! $dr) {
                     $tableau_comparaison[$produit_libelle][$cvi]['DR'] = 0;
                 } else {
                     $datas = $dr->getEnhancedDonnees();
                     foreach ($datas as $data) {
-                        if ($data->tiers_cvi == $declarant_cvi && $data->produit_libelle == $produit_libelle && ($data->categorie == '06' || $data->categorie == '07' || $data->categorie == '08')) {
+                        if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
+                            continue;
+                        }
+                        if ($data->produit_libelle != $produit_libelle && $dr->getConfiguration()->declaration->get($data->produit)->getLibelleFormat() != $produit_libelle) {
+                            continue;
+                        }
+                        if ($data->categorie == '06' || $data->categorie == '07' || $data->categorie == '08') {
                             if (! isset($tableau_comparaison[$produit_libelle][$cvi]['DR'])) {
                                 $tableau_comparaison[$produit_libelle][$cvi]['DR'] = $data->valeur;
                             } else {
@@ -974,7 +982,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     }
                 }
             }
-            $tableau_comparaison[$produit_libelle][$declarant_cvi]['DR'] = $totalDR;
+            $tableau_comparaison[$produit_libelle][$etab_declarant->cvi]['DR'] = $totalDR;
         }
         return isset($tableau_comparaison) ? $tableau_comparaison : null;
     }
@@ -984,23 +992,24 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             throw new sfException("Ce document n'est pas une SV12.");
         }
         $produits = $this->getProduits();
-        $declarant_cvi = $this->getEtablissementObject()->cvi;
+        $etab_declarant =  $this->getEtablissementObject();
         foreach ($this->getDonnees() as $data) {
             if ($data->categorie == '15') {
                 if (! isset($tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'])) {
                     $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'] = $data->valeur;
+                    $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['DR'] = 0;
                 } else {
                     $tableau_comparaison[$data->produit_libelle][$data->tiers_cvi]['SV'] += $data->valeur;
                 }
-                if(! isset($tableau_comparaison[$data->produit_libelle][$declarant_cvi]['SV'])) {
-                    $tableau_comparaison[$data->produit_libelle][$declarant_cvi]['SV'] = $produits[$data->produit]['lignes'][$data->categorie]['val'];
+                if(! isset($tableau_comparaison[$data->produit_libelle][$etab_declarant->cvi]['SV'])) {
+                    $tableau_comparaison[$data->produit_libelle][$etab_declarant->cvi]['SV'] = $produits[$data->produit]['lignes'][$data->categorie]['val'];
                 }
             }
         }
         foreach ($tableau_comparaison as $produit_libelle => $cvis) {
             $totalDR = 0;
             foreach ($cvis as $cvi => $valeur) {
-                if ($declarant_cvi == $cvi) {
+                if ($etab_declarant->cvi == $cvi) {
                     continue;
                 }
                 $etab = EtablissementClient::getInstance()->findByCvi($cvi);
@@ -1010,7 +1019,13 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 } else {
                     $datas = $dr->getEnhancedDonnees();
                     foreach ($datas as $data) {
-                        if ($data->tiers_cvi == $declarant_cvi && $data->produit_libelle == $produit_libelle && ($data->categorie == '06' || $data->categorie == '07')) {
+                        if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
+                            continue;
+                        }
+                        if ($data->produit_libelle != $produit_libelle && $dr->getConfiguration()->declaration->get($data->produit)->getLibelleFormat() != $produit_libelle) {
+                            continue;
+                        }
+                        if ($data->categorie == '06' || $data->categorie == '07') {
                             if (! isset($tableau_comparaison[$produit_libelle][$cvi]['DR'])) {
                                 $tableau_comparaison[$produit_libelle][$cvi]['DR'] = $data->valeur;
                             } else {
@@ -1021,7 +1036,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                     }
                 }
             }
-            $tableau_comparaison[$produit_libelle][$declarant_cvi]['DR'] = $totalDR;
+            $tableau_comparaison[$produit_libelle][$etab_declarant->cvi]['DR'] = $totalDR;
         }
         return isset($tableau_comparaison) ? $tableau_comparaison : null;
     }

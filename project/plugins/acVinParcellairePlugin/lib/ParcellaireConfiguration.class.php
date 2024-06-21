@@ -114,4 +114,10 @@ class ParcellaireConfiguration {
         }
         return $this->configuration['ecart_pieds_max'];
     }
+    public function hasDeclarationsLiees() {
+        return (isset($this->configuration['declarations_liees']))? $this->configuration['declarations_liees'] : false;
+    }
+    public function isParcellesFromAffectationparcellaire() {
+        return (isset($this->configuration['parcelles_from_affectationparcellaire']))? $this->configuration['parcelles_from_affectationparcellaire'] : false;
+    }
 }
