@@ -237,6 +237,10 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
       return $this->_get('validation_odg');
   }
+
+  public function isValidee(){
+      return $this->validation;
+  }
     /*** FIN DECLARATION DOCUMENT ***/
 
     /*** PIECE DOCUMENT ***/
