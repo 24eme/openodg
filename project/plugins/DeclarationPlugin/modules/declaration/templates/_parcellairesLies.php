@@ -1,5 +1,6 @@
 <?php use_helper('Date') ?>
-<p>Déclarations <?php echo $obj->periode ?> relatives à vos parcelles :</p>
+<?php if (ParcellaireConfiguration::getInstance()->hasDeclarationsLiees()): ?>
+<p class="text-center">Déclarations <?php echo $obj->periode ?> relatives à vos parcelles</p>
 <div class="row">
     <?php
     foreach ($parcellairesLies as $type => $item):
@@ -23,3 +24,4 @@
     </div>
     <?php endforeach; ?>
 </div>
+<?php endif; ?>

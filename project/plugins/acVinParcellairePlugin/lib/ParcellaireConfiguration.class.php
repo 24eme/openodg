@@ -114,4 +114,7 @@ class ParcellaireConfiguration {
         }
         return $this->configuration['ecart_pieds_max'];
     }
+    public function hasDeclarationsLiees() {
+        return (isset($this->configuration['declarations_liees']))? $this->configuration['declarations_liees'] : false;
+    }
 }
