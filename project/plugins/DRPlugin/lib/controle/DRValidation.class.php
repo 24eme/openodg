@@ -19,6 +19,9 @@ class DRValidation extends DocumentValidation
             $this->addControle(self::TYPE_WARNING, 'pied_mort_present', "Déclaration de pied mort présente");
             $this->addControle(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort");
         }
+        if (class_exists(ParcellaireAffectation::class)) {
+            $this->addControle(self::TYPE_WARNING, 'parcellaire_manquant', "Il manque la déclaration d'affectation parcellaire");
+        }
         $this->addControle(self::TYPE_ERROR, 'non_habilite', "L'apporteur n'est pas habilité.");
         $this->addControle(self::TYPE_ERROR, 'pas_habilitation', "L'apporteur n'a pas d'habilitation.");
     }
@@ -116,6 +119,20 @@ class DRValidation extends DocumentValidation
                 $this->addPoint(self::TYPE_ERROR, 'pied_mort_manquant', "Il manque la déclaration de pied mort pour cette campagne");
             } else {
                 $this->addPoint(self::TYPE_WARNING, 'pied_mort_present', "N'oubliez pas de vérifier que les rendements prennent en compte les informations déclarées");
+            }
+        }
+
+        if (class_exists(ParcellaireAffectation::class)) {
+            if ($this->document->getType() !== DRClient::TYPE_MODEL) {
+                return false;
+            }
+
+            $dap = ParcellaireAffectationClient::getInstance()->find(
+                ParcellaireAffectationClient::getInstance()->buildId($this->document->getIdentifiant(), $this->document->getPeriode())
+            );
+
+            if ($dap === null || $dap->periode !== $this->document->campagne) {
+                $this->addPoint(self::TYPE_WARNING, 'parcellaire_manquant', "Il manque la déclaration d'affectation parcellaire pour cette campagne");
             }
         }
     }
