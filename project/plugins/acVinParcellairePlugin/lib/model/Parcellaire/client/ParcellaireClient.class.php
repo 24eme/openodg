@@ -277,6 +277,12 @@ class ParcellaireClient extends acCouchdbClient {
         return $doc;
     }
 
+    public function getLastByCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $date = ConfigurationClient::getInstance()->getCampagneVinicole()->getDateFinByCampagne($campagne);
+
+        return $this->findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate);
+    }
+
     public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
         $history = $this->getHistory($identifiant, $hydrate);
 
