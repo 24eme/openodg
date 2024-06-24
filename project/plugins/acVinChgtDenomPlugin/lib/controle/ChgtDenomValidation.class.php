@@ -77,7 +77,7 @@ class ChgtDenomValidation extends DocumentValidation
         $synthese = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, array($this->document->campagne));
         preg_match('/([\w ]+) (Rouge|Rosé|Blanc)/u', $this->document->changement_produit_libelle, $matches);
         $volume_produit = $synthese[$matches[1]][$this->document->changement_millesime][$matches[2]];
-        if ($seuil > 0 && ($volume_produit['DRev'] + $this->document->changement_volume) > $seuil) {
+        if ($seuil > 0 && ($volume_produit + $this->document->changement_volume) > $seuil) {
             if(sfContext::getInstance()->getUser()->hasChgtDenomAdmin()) {
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION,"");
             }
@@ -87,7 +87,7 @@ class ChgtDenomValidation extends DocumentValidation
                 return false;
             }
 
-            $this->addPoint(self::TYPE_WARNING, 'vip2c_volume_seuil', 'Vous avez déjà commercialisé <strong>'.($volume_produit['DRev'] + $this->document->changement_volume).'</strong> hl sur votre seuil attribué de <strong>'.$seuil.'</strong> hl');
+            $this->addPoint(self::TYPE_WARNING, 'vip2c_volume_seuil', 'Vous avez déjà commercialisé <strong>'.($volume_produit + $this->document->changement_volume).'</strong> hl sur votre seuil attribué de <strong>'.$seuil.'</strong> hl');
 
             foreach ($this->contrats as $contrat_id => $contrat_info) {
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONTRAT_VENTE_EN_VRAC."_".$contrat_id, "");
