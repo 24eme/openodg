@@ -81,11 +81,11 @@ class ChgtDenomValidation extends DocumentValidation
         if ($seuil > 0 && ($volume_produit + $this->document->changement_volume) > $seuil) {
             if(sfContext::getInstance()->getUser()->hasChgtDenomAdmin()) {
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION,"");
+                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT, "");
             }
 
             if (! $this->contrats) {
                 $this->addPoint(self::TYPE_ERROR, 'vip2c_pas_de_contrats', null, $this->generateUrl('chgtdenom_edition', array("id" => $this->document->_id)) );
-                $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_CONDITIONNEMENT, "");
                 return false;
             }
 
