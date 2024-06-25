@@ -66,7 +66,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
                $parcellesByPage[] = $currentPage;
                $currentPage = array();
                $unite = 0;
-               $libelleTableau = $commune . " (suite)";
+               $libelleTableau = $parcelle->commune . " (suite)";
                $currentPage[$libelleTableau] = array();
                $unite += $uniteTableau;
            }
