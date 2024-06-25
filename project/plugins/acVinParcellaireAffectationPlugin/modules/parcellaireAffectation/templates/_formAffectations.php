@@ -63,10 +63,5 @@
         </tr>
     <?php  endif; endforeach; ?>
     </tbody>
-    <tfoot>
-        <td colspan="6" class="text-right"><b>Superficie totale :</b></td>
-        <td colspan="" class="total_superficie text-right"></td>
-        <td colspan="3" class="text-left"></td>
-    </tfoot>
 </table>
 <?php endforeach; ?>
