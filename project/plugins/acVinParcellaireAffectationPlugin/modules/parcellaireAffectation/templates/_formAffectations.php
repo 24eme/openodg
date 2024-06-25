@@ -55,7 +55,7 @@
                 </div>
         	</td>
             <td class="text-center">/
-                <?php if (round($parcelle->superficie_affectation,4) != round($parcelle->superficie,4)): ?>
+                <?php if (round($parcelle->superficie_affectation,4) < round($parcelle->superficie,4)): ?>
                     <span>Partielle</span>
                 <?php else: ?><span>Totale</span>
             <?php endif; ?>
