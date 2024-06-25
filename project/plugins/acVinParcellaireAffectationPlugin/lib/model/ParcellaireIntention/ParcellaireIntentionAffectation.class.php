@@ -80,6 +80,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $this->remove('declaration');
       $this->add('declaration');
+
       foreach ($parcellaire as $parcelle) {
           $hash = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
           if (isset($denominations[$parcelle->code_commune])) {
@@ -154,7 +155,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
     }
-    
+
     protected function doSave() {
     	if ($this->isNew()) {
     		if ($last = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant)) {

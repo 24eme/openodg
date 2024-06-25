@@ -1,6 +1,6 @@
 <?php
 
-class ImportParcellaireAffectationVentouxTask extends sfBaseTask
+class ImportParcellaireIrrigueVentouxTask extends sfBaseTask
 {
     const CSV_CVI = 2;
     const CSV_NOM_COMMUNE = 4;
@@ -8,6 +8,10 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
     const CSV_NUM_PARCELLE = 8;
     const CSV_SURFACE = 9;
     const CSV_CEPAGE = 11;
+
+    const CSV_IRRIGABLE = 16;
+    const CSV_MATERIEL = 18;
+    const CSV_IRRIGUE = 19;
 
     const DATE_VALIDATION = "2023-04-15";
 
@@ -24,8 +28,8 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
         ));
 
         $this->namespace = 'import';
-        $this->name = 'parcellaireaffectation-ventoux';
-        $this->briefDescription = 'Import des affectations parcellaire';
+        $this->name = 'parcellaireirrigue-ventoux';
+        $this->briefDescription = 'Import des parcellaires irrigués';
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -38,6 +42,10 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
+            if (! $data[self::CSV_IRRIGUE] || ! $data[self::CSV_IRRIGABLE] || $data[self::CSV_IRRIGABLE] === 'NON') {
+                continue;
+            }
+
             $etablissement = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI]);
             if (!$etablissement) {
                 echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé\n";
@@ -48,7 +56,10 @@ EOF;
                 $parcellaireTotal = new Parcellaire();
                 echo "Parcellaire non trouvé;".$line;
             }
-            $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
+
+            $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
+            $irrigue = ParcellaireIrrigueClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
+
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
                 if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
@@ -68,30 +79,48 @@ EOF;
                 $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
                 $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
             }
-            $affectationParcelle = $this->addParcelleFromParcellaireParcelle($affectation, $parcelle);
 
-            $affectationParcelle->affectee = 1;
-            $affectationParcelle->superficie_affectation = (float) $data[self::CSV_SURFACE];
-            $affectationParcelle->date_affectation = self::DATE_VALIDATION;
+            $parcelleIrrigableAjoutee = $this->addParcelleFromParcellaireParcelle($irrigable, $parcelle);
+            $parcelleIrrigableAjoutee->materiel = $data[self::CSV_MATERIEL] ?: '';
+            $parcelleIrrigableAjoutee->ressource = $parcelleIrrigableAjoutee->materiel;
+
+            $parcelleIrrigueAjoutee = $this->addParcelleFromParcellaireParcelle($irrigue, $parcelle);
+            $parcelleIrrigueAjoutee->materiel = $data[self::CSV_MATERIEL] ?: '';
+            $parcelleIrrigueAjoutee->ressource = $parcelleIrrigueAjoutee->materiel;
+            $parcelleIrrigueAjoutee->irrigation = $data[self::CSV_IRRIGUE] ? 1 : 0;
+            $parcelleIrrigueAjoutee->date_irrigation = $parcelleIrrigueAjoutee->irrigation ? self::DATE_VALIDATION : null;
 
             try {
-                if(!$affectation->isValidee()) {
-                    $affectation->validate(self::DATE_VALIDATION);
+                if(!$irrigable->isValidee()) {
+                    $irrigable->validate(self::DATE_VALIDATION);
                 }
-                $affectation->save();
+                $irrigable->save();
             } catch(Exception $e) {
                 sleep(60);
-                if(!$affectation->isValidee()) {
-                    $affectation->validate(self::DATE_VALIDATION);
+                if(!$irrigable->isValidee()) {
+                    $irrigable->validate(self::DATE_VALIDATION);
                 }
-                $affectation->save();
+                $irrigable->save();
+            }
+
+            try {
+                if(!$irrigue->isValidee()) {
+                    $irrigue->validate(self::DATE_VALIDATION);
+                }
+                $irrigue->save();
+            } catch(Exception $e) {
+                sleep(60);
+                if(!$irrigue->isValidee()) {
+                    $irrigue->validate(self::DATE_VALIDATION);
+                }
+                $irrigue->save();
             }
         }
     }
 
-    protected function addParcelleFromParcellaireParcelle($affectation, $detail) {
+    protected function addParcelleFromParcellaireParcelle($declaration, $detail) {
         $produit = $detail->getProduit();
-        $item = $affectation->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
+        $item = $declaration->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
         $item->libelle = $produit->libelle;
         $subitem = $item->detail->add($detail->getKey());
 
