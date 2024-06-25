@@ -1,8 +1,4 @@
 <?php
-/**
- * Model for ParcellaireAffectation
- *
- */
 
 class ParcellaireAffectation extends BaseParcellaireAffectation implements InterfaceDeclaration {
 

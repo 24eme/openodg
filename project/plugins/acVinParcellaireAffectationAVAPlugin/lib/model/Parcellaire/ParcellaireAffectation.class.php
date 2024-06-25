@@ -1,10 +1,8 @@
 <?php
 
-/**
- * Model for Parcellaire
- *
- */
-class ParcellaireAffectation extends BaseParcellaireAffectation implements InterfaceDeclaration, InterfacePieceDocument {
+/*** AVA ***/
+
+class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation implements InterfaceDeclaration, InterfacePieceDocument {
 
     protected $declarant_document = null;
     protected $piece_document = null;
