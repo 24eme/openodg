@@ -49,7 +49,7 @@ class AireClient extends acCouchdbClient {
     public static function getCommunesArrayFromDenominationId($denom_id) {
         $url = "https://raw.githubusercontent.com/24eme/opendatawine/master/denominations/".sprintf('%05d', $denom_id).".json";
         $contents = @file_get_contents($url);
-        return json_decode($contents);
+        return json_decode($contents, JSON_OBJECT_AS_ARRAY);
 
     }
 
