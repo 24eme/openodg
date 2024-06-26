@@ -89,27 +89,12 @@ EOF;
         }
     }
 
-    protected function addParcelleFromParcellaireParcelle($affectation, $detail) {
-        $produit = $detail->getProduit();
+    protected function addParcelleFromParcellaireParcelle($affectation, $parcelle) {
+        $produit = $parcelle->getProduit();
         $item = $affectation->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
         $item->libelle = $produit->libelle;
-        $subitem = $item->detail->add($detail->getKey());
-
-            $subitem->superficie = $detail->superficie;
-            $subitem->commune = $detail->commune;
-            $subitem->code_commune = $detail->code_commune;
-            $subitem->prefix = $detail->prefix;
-            $subitem->section = $detail->section;
-            $subitem->numero_parcelle = $detail->numero_parcelle;
-            $subitem->idu = $detail->idu;
-            $subitem->lieu = $detail->lieu;
-            $subitem->cepage = $detail->cepage;
-            $subitem->active = 1;
-            $subitem->remove('vtsgn');
-            if($detail->exist('vtsgn')) {
-                $subitem->add('vtsgn', (int)$detail->vtsgn);
-            }
-            $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
+        $subitem = $item->detail->add($parcelle->getKey());
+        ParcellaireClient::CopyParcelle($subitem, $parcelle);
 
         return $subitem;
     }

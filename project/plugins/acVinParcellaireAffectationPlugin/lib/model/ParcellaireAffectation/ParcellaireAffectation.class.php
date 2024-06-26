@@ -356,7 +356,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $cm = new CampagneManager('08-01');
             $date_end = $cm->getDateFinByDate($this->date);
             $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date_end);
-            $this->parcellaire_origine = $this->parcellaire->_id;
+            $this->parcellaire_origine = ($this->parcellaire) ? $this->parcellaire->_id : null;
         }
         return $this->parcellaire;
     }
