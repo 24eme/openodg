@@ -118,13 +118,13 @@ class Parcellaire extends BaseParcellaire {
         ) {
             return $pid;
         }
-        for ($i = 1 ; $i < 10 ; $i++) {
+        for ($i = 1 ; $i < 100 ; $i++) {
             $pid = sprintf('%s-%02d', $idu, $i);
             if (!$this->parcelles->exist($pid)) {
                 return $pid;
             }
         }
-        throw new sfException('pid not found for '.$uid);
+        throw new sfException('pid not found for '.$idu);
     }
 
     public function addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null) {

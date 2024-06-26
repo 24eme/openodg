@@ -4,15 +4,18 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 
-<?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
-<?php if ($dgc): ?>
+<?php foreach ($parcellaireAffectation->declaration->getGroupedParcelles() as $group => $parcelles): ?>
+<?php if ($group): ?>
     <div style="margin-bottom: 1em;" class="row">
-        <div class="col-xs-12">
-            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
+        <div class="col-xs-6">
+            <h3><?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>Dénomination complémentaire <?php endif; ?><?php echo str_replace("-", " ", $group); ?></h3>
         </div>
+        <div class="col-xs-6">
+           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+       </div>
     </div>
 <?php endif; ?>
-<table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+<table id="parcelles_<?php echo $group; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 	<thead>
     	<tr>
     		<th class="col-xs-3">Commune</th>
@@ -55,7 +58,7 @@
                 </div>
         	</td>
             <td class="text-center">/
-                <?php if (round($parcelle->superficie_affectation,4) != round($parcelle->superficie,4)): ?>
+                <?php if (round($parcelle->superficie_affectation,4) < round($parcelle->superficie,4)): ?>
                     <span>Partielle</span>
                 <?php else: ?><span>Totale</span>
             <?php endif; ?>
@@ -63,10 +66,5 @@
         </tr>
     <?php  endif; endforeach; ?>
     </tbody>
-    <tfoot>
-        <td colspan="6" class="text-right"><b>Superficie totale :</b></td>
-        <td colspan="" class="total_superficie text-right"></td>
-        <td colspan="3" class="text-left"></td>
-    </tfoot>
 </table>
 <?php endforeach; ?>
