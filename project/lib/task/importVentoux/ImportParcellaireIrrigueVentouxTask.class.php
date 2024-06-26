@@ -15,6 +15,9 @@ class ImportParcellaireIrrigueVentouxTask extends sfBaseTask
 
     const DATE_VALIDATION = "2023-04-15";
 
+    protected $materiels;
+    protected $ressources;
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -38,6 +41,9 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+
+        $this->materiels = sfConfig::get('app_parcellaire_irrigable_materiels');
+        $this->ressources = sfConfig::get('app_parcellaire_irrigable_ressources');
 
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
@@ -81,12 +87,12 @@ EOF;
             }
 
             $parcelleIrrigableAjoutee = $this->addParcelleFromParcellaireParcelle($irrigable, $parcelle);
-            $parcelleIrrigableAjoutee->materiel = $data[self::CSV_MATERIEL] ?: '';
-            $parcelleIrrigableAjoutee->ressource = $parcelleIrrigableAjoutee->materiel;
+            $parcelleIrrigableAjoutee->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
+            $parcelleIrrigableAjoutee->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
 
             $parcelleIrrigueAjoutee = $this->addParcelleFromParcellaireParcelle($irrigue, $parcelle);
-            $parcelleIrrigueAjoutee->materiel = $data[self::CSV_MATERIEL] ?: '';
-            $parcelleIrrigueAjoutee->ressource = $parcelleIrrigueAjoutee->materiel;
+            $parcelleIrrigueAjoutee->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
+            $parcelleIrrigueAjoutee->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
             $parcelleIrrigueAjoutee->irrigation = $data[self::CSV_IRRIGUE] ? 1 : 0;
             $parcelleIrrigueAjoutee->date_irrigation = $parcelleIrrigueAjoutee->irrigation ? self::DATE_VALIDATION : null;
 
@@ -141,5 +147,47 @@ EOF;
             $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
 
         return $subitem;
+    }
+
+    protected function parseRessource($value)
+    {
+        if (! $value) {
+            return null;
+        }
+
+        if ($value === "SCP" || $value === "scp") {
+            $value = "Canal de Provence";
+        }
+
+        if (strpos($value, " SS ") !== false) {
+            $value = str_replace(" SS ", " SOUS ", $value);
+        }
+
+        if (strpos(strtoupper($value), "CANAL D") === false && strlen($value) > 5 && strpos(strtoupper($value), "CANAL") !== strlen($value) - 5) {
+            $value = str_replace("CANAL", "CANAL DE", strtoupper($value));
+        }
+
+        $value = str_replace('GOUTTE A', 'GOUTTE À', strtoupper($value));
+
+        // Si match exact
+        foreach ($this->ressources as $ressource) {
+            if (mb_strtoupper($ressource) === mb_strtoupper($value)) {
+                return $ressource;
+            }
+        }
+
+        foreach ($this->materiels as $ressource) {
+            if (mb_strtoupper($ressource) === mb_strtoupper($value)) {
+                return $ressource;
+            }
+        }
+
+        $value = ucfirst(mb_strtolower($value));
+
+        return str_replace(
+            ['ouveze', 'ventoux', 'Asa', 'Reseau', 'prive', 'Neant'],
+            ['Ouveze', 'Ventoux', 'ASA', 'Réseau', 'privé', 'Néant'],
+            $value
+        );
     }
 }
