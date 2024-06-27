@@ -73,10 +73,13 @@ ls $DATA_DIR/drev*.xlsx | sort -r | while read drev_file; do
     xlsx2csv -l '\r\n' -d ";" $drev_file | tr -d "\n" | tr "\r" "\n" >> $DATA_DIR/drev.csv
 done;
 echo -n > $DATA_DIR/vci.csv
-ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
-    MILLESIME=$(echo -n $vci_file | sed -r 's|^.*/vci_||' | sed 's/\.xlsx//')
-    xlsx2csv -l '\r\n' -d ";" $vci_file | tr -d "\n" | tr "\r" "\n" | sed "s/^/$MILLESIME;/" >> $DATA_DIR/vci.csv
-done;
+for vci_file in "$DATA_DIR"/03_declarations/vci_*; do
+    tail -n +2 "$vci_file" >> "$DATA_DIR"/vci.csv
+done
+# ls $DATA_DIR/03_declarations/vci_* | while read vci_file; do
+#     MILLESIME=$(echo -n $vci_file | sed -r 's|^.*/vci_||' | sed 's/\.xlsx//')
+#     xlsx2csv -l '\r\n' -d ";" $vci_file | tr -d "\n" | tr "\r" "\n" | sed "s/^/$MILLESIME;/" >> $DATA_DIR/vci.csv
+# done;
 
 bash bin/updateviews.sh
 
