@@ -144,7 +144,7 @@ class Parcellaire extends BaseParcellaire {
         if ($produit) {
             $p->produit = $produit;
         }
-        $p->splitIDU();
+        ParcellaireClient::parcelleSplitIDU($p);
 
         return $p;
     }
