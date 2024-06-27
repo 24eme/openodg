@@ -105,8 +105,8 @@ EOF;
             }
 
             $drevProduit = $drev->addProduit($produit->getHash(), isset($data[self::CSV_MENTION_VALORISANTE]) ? $data[self::CSV_MENTION_VALORISANTE] : null);
-            $drevProduit->volume_revendique_issu_recolte = $volume;
-            $drevProduit->superficie_revendique = round($superficie / 10000, 4);
+            $drevProduit->volume_revendique_issu_recolte += $volume;
+            $drevProduit->superficie_revendique += round($superficie / 10000, 4);
             $drevProduit->update();
 
             try {
