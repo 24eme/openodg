@@ -95,15 +95,15 @@ php symfony parcellaire:update-aire --application="$ODG" --trace
 
 curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?reduce=false | cut -d '"' -f 4 | while read id; do php symfony import:parcellaire-douanier $id --application="$ODG" --noscrapping=1; done
 
+echo "Import des declarations de affections parcellaire"
+
+php symfony import:parcellaireaffectation-ventoux --application="$ODG" $DATA_DIR/parcellaire_manquant_2023.csv
+
 echo "Import des declarations de pieds manquants"
 
 #xlsx2csv -l '\r\n' -d ";" $DATA_DIR/parcellaire_manquant_2023.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/parcellaire_manquant_2023.csv
 
 php symfony import:parcellairemanquant-ventoux --application="$ODG" $DATA_DIR/parcellaire_manquant_2023.csv
-
-echo "Import des declarations de affections parcellaire"
-
-php symfony import:parcellaireaffectation-ventoux --application="$ODG" $DATA_DIR/parcellaire_manquant_2023.csv
 
 echo "Import des declarations de parcellaire irrigué"
 
