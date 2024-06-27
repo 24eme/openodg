@@ -58,7 +58,7 @@ EOF;
             }
 
             $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
-            $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, "2023");
+            $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, "2023", true, self::DATE_VALIDATION);
 
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
@@ -114,36 +114,17 @@ EOF;
                 }
                 $irrigue->save();
             } catch(Exception $e) {
-                sleep(60);
-                if(!$irrigue->isValidee()) {
-                    $irrigue->validate(self::DATE_VALIDATION);
-                }
-                $irrigue->save();
+                echo $e->getMessage().";".$line;
             }
         }
     }
 
-    protected function addParcelleFromParcellaireParcelle($declaration, $detail) {
-        $produit = $detail->getProduit();
-        $item = $declaration->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
+    protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
+        $produit = $parcelle->getProduit();
+        $item = $doc->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
         $item->libelle = $produit->libelle;
-        $subitem = $item->detail->add($detail->getKey());
-
-            $subitem->superficie = $detail->superficie;
-            $subitem->commune = $detail->commune;
-            $subitem->code_commune = $detail->code_commune;
-            $subitem->prefix = $detail->prefix;
-            $subitem->section = $detail->section;
-            $subitem->numero_parcelle = $detail->numero_parcelle;
-            $subitem->idu = $detail->idu;
-            $subitem->lieu = $detail->lieu;
-            $subitem->cepage = $detail->cepage;
-            $subitem->active = 1;
-            $subitem->remove('vtsgn');
-            if($detail->exist('vtsgn')) {
-                $subitem->add('vtsgn', (int)$detail->vtsgn);
-            }
-            $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
+        $subitem = $item->detail->add($parcelle->getKey());
+        ParcellaireClient::CopyParcelle($subitem, $parcelle);
 
         return $subitem;
     }
