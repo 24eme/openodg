@@ -1,8 +1,4 @@
 <?php
-/**
- * Model for ParcellaireAffectation
- *
- */
 
 class ParcellaireAffectation extends BaseParcellaireAffectation implements InterfaceDeclaration {
 
@@ -71,9 +67,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     if($this->validation){
         return;
     }
-    $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant);
+    $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode);
+
     if (!$intention) {
-        $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->campagne);
+        $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode);
         if (!count($intention->declaration)) {
             $intention = null;
         }
@@ -325,7 +322,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getParcellesFromParcellaire() {
-        return $this->getParcellaire()->declaration->getParcelles();
+        if(!$this->getParcellaire()) {
+
+            return [];
+        }
+
+        return $this->getParcellaire()->add('declaration')->getParcelles();
     }
 
     public function getParcellesByDgc() {
@@ -354,7 +356,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             $cm = new CampagneManager('08-01');
             $date_end = $cm->getDateFinByDate($this->date);
             $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date_end);
-            $this->parcellaire_origine = $this->parcellaire->_id;
+            $this->parcellaire_origine = ($this->parcellaire) ? $this->parcellaire->_id : null;
         }
         return $this->parcellaire;
     }

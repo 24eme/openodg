@@ -136,6 +136,10 @@ EOF;
             }
         }
 
+        if($famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR && preg_match('/^COOP/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+        }
+
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
         $etablissement->nom = $raison_sociale;
 

@@ -80,63 +80,65 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       }
       $this->remove('declaration');
       $this->add('declaration');
-      foreach ($parcellaire as $hash => $parcelle) {
-              if (isset($denominations[$parcelle->code_commune])) {
-                foreach ($denominations[$parcelle->code_commune] as $lieu) {
-                  $hashWithLieu = preg_replace('/lieux\/[a-zA-Z0-9]+\/couleurs\/[a-zA-Z0-9]+\/cepages\/[a-zA-Z0-9]+$/', 'lieux/'.$lieu, $hash);
-                  if (!$this->getConfiguration()->declaration->exist($hashWithLieu)) {
-                      continue;
+
+      foreach ($parcellaire as $parcelle) {
+          $hash = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
+          if (isset($denominations[$parcelle->code_commune])) {
+            foreach ($denominations[$parcelle->code_commune] as $lieu) {
+              $hashWithLieu = preg_replace('/lieux\/[a-zA-Z0-9]+\/couleurs\/[a-zA-Z0-9]+\/cepages\/[a-zA-Z0-9]+$/', 'lieux/'.$lieu, $hash);
+              if (!$this->getConfiguration()->declaration->exist($hashWithLieu)) {
+                  continue;
+              }
+              if (!isset($libelleProduits[$hashWithLieu])) {
+                  $libelleProduits[$hashWithLieu] = $this->getConfiguration()->declaration->get($hashWithLieu)->getLibelleFormat();
+              }
+              if ($this->declaration->exist($hashWithLieu)) {
+                  $item = $this->declaration->get($hashWithLieu);
+              } else {
+                  $item = $this->declaration->add($hashWithLieu);
+                  $item->libelle = $libelleProduits[$hashWithLieu];
+              }
+              if ($item->detail->exist($parcelle->getKey())) {
+                  continue;
+              }
+              $subitem = $item->detail->add($parcelle->getKey());
+              $subitem->superficie = $parcelle->superficie;
+              $subitem->commune = $parcelle->commune;
+              $subitem->code_commune = $parcelle->code_commune;
+              $subitem->prefix = $parcelle->prefix;
+              $subitem->section = $parcelle->section;
+              $subitem->numero_parcelle = $parcelle->numero_parcelle;
+              $subitem->idu = $parcelle->idu;
+              $subitem->lieu = $parcelle->lieu;
+              $subitem->cepage = $parcelle->cepage;
+              $subitem->active = 1;
+              $subitem->remove('vtsgn');
+              if($parcelle->exist('vtsgn')) {
+                  $subitem->add('vtsgn', (int)$parcelle->vtsgn);
+              }
+              $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
+              if (in_array($parcelle->isInDenominationLibelle($this->getDenominationAire()), [AireClient::PARCELLAIRE_AIRE_TOTALEMENT, AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT])) {
+                  $subitem->affectation = 1;
+                  $subitem->date_affectation = "2004-05-29";
+                  if ($subitem->campagne_plantation > "2004-2005") {
+                      $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
                   }
-                  if (!isset($libelleProduits[$hashWithLieu])) {
-                      $libelleProduits[$hashWithLieu] = $this->getConfiguration()->declaration->get($hashWithLieu)->getLibelleFormat();
+                  $subitem->superficie_affectation = $parcelle->superficie;
+                  if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()] && $affectees[$parcelle->getHash()]['superficie'] != $affectees[$parcelle->getHash()]['superficie_affectation']) {
+                      $subitem->superficie_affectation = $affectees[$parcelle->getHash()]['superficie_affectation'];
                   }
-                  if ($this->declaration->exist($hashWithLieu)) {
-                      $item = $this->declaration->get($hashWithLieu);
-                  } else {
-                      $item = $this->declaration->add($hashWithLieu);
-                      $item->libelle = $libelleProduits[$hashWithLieu];
-                  }
-                  if ($item->detail->exist($parcelle->getKey())) {
-                      continue;
-                  }
-                  $subitem = $item->detail->add($parcelle->getKey());
-                  $subitem->superficie = $parcelle->superficie;
-                  $subitem->commune = $parcelle->commune;
-                  $subitem->code_commune = $parcelle->code_commune;
-                  $subitem->prefix = $parcelle->prefix;
-                  $subitem->section = $parcelle->section;
-                  $subitem->numero_parcelle = $parcelle->numero_parcelle;
-                  $subitem->idu = $parcelle->idu;
-                  $subitem->lieu = $parcelle->lieu;
-                  $subitem->cepage = $parcelle->cepage;
-                  $subitem->active = 1;
-                  $subitem->remove('vtsgn');
-                  if($parcelle->exist('vtsgn')) {
-                      $subitem->add('vtsgn', (int)$parcelle->vtsgn);
-                  }
-                  $subitem->campagne_plantation = ($parcelle->exist('campagne_plantation'))? $parcelle->campagne_plantation : null;
-                  if (in_array($parcelle->isInDenominationLibelle($this->getDenominationAire()), [AireClient::PARCELLAIRE_AIRE_TOTALEMENT, AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT])) {
-                      $subitem->affectation = 1;
-                      $subitem->date_affectation = "2004-05-29";
-                      if ($subitem->campagne_plantation > "2004-2005") {
-                          $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
-                      }
-                      $subitem->superficie_affectation = $parcelle->superficie;
-                      if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()] && $affectees[$parcelle->getHash()]['superficie'] != $affectees[$parcelle->getHash()]['superficie_affectation']) {
-                          $subitem->superficie_affectation = $affectees[$parcelle->getHash()]['superficie_affectation'];
-                      }
-                  } else if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()]) {
-                      $subitem->affectation = 1;
-                      $subitem->date_affectation = $affectees[$parcelle->getHash()]['date'];
-                      $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie_affectation'];
-                  } else {
-                    $subitem->affectation = 0;
-                    $subitem->superficie_affectation = $parcelle->superficie;
-                  }
-                  $subitem->origine_doc = $parcelle->getDocument()->_id;
-                  $subitem->origine_hash = $parcelle->getHash();
-                }
-             }
+              } else if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()]) {
+                  $subitem->affectation = 1;
+                  $subitem->date_affectation = $affectees[$parcelle->getHash()]['date'];
+                  $subitem->superficie_affectation  = $affectees[$parcelle->getHash()]['superficie_affectation'];
+              } else {
+                $subitem->affectation = 0;
+                $subitem->superficie_affectation = $parcelle->superficie;
+              }
+              $subitem->origine_doc = $parcelle->getDocument()->_id;
+              $subitem->origine_hash = $parcelle->getHash();
+            }
+         }
       }
   }
 
@@ -153,7 +155,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
     }
-    
+
     protected function doSave() {
     	if ($this->isNew()) {
     		if ($last = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant)) {

@@ -22,7 +22,9 @@ $list_idu = [];
     <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
 <?php endif; ?>
   <li><a href="<?php echo url_for('parcellaire_declarant', $etablissement); ?>">Parcellaire de <?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>) </a></li>
+  <?php if($parcellaire): ?>
   <li><span class="text-muted"><?php echo $parcellaire->_id; ?></span></li>
+  <?php endif; ?>
 </ol>
 
 <?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm") && isset($form)): ?>
