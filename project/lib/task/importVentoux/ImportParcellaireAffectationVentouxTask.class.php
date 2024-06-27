@@ -49,6 +49,7 @@ EOF;
                 echo "Parcellaire non trouvé;".$line;
             }
             $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
+            $affectation->parcellaire_origine = $parcellaireTotal->_id;
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
                 if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
