@@ -58,7 +58,7 @@ EOF;
             }
 
             $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
-            $irrigue = ParcellaireIrrigueClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
+            $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, "2023");
 
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
@@ -76,8 +76,13 @@ EOF;
                 } else {
                     $produitHash .= '/rouge/cepages/DEFAUT';
                 }
-                $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
-                $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
+                try {
+                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
+                    $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
+                } catch (Exception $e) {
+                    echo $e->getMessage().";".$line;
+                    continue;
+                }
             }
 
             $parcelleIrrigableAjoutee = $this->addParcelleFromParcellaireParcelle($irrigable, $parcelle);
