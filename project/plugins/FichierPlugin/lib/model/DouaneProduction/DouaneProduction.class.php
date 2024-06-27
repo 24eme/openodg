@@ -1052,21 +1052,23 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         $dap = ParcellaireAffectationClient::getInstance()->find('PARCELLAIREAFFECTATION-'.$this->identifiant.'-'.$this->campagne);
         $total_superficie_affectation = 0;
         $round = 0;
-        foreach ($dap->getParcelles(true) as $hash => $parcelle) {
-            $libelle = $parcelle->getProduit()->getConfig()->getLibelleFormat();
-            if (! isset($tableau_comparaison[$libelle])) {
-                $tableau_comparaison[$libelle]['DAP'] = $parcelle['superficie_affectation'];
-            } else {
-                $tableau_comparaison[$libelle]['DAP'] += $parcelle['superficie_affectation'];
-            }
-            $total_valeur_dr = 0;
-            $hash_cible = $parcelle->getProduit()->getHash();
-            foreach ($this->getEnhancedDonnees() as $data) {
-                if (strpos($data->produit, str_replace('/declaration/', '', $hash_cible)) !== false && $data->categorie == '04b') {
-                    $total_valeur_dr += $data->valeur;
+        if ($dap) {
+            foreach ($dap->getParcelles(true) as $hash => $parcelle) {
+                $libelle = $parcelle->getProduit()->getConfig()->getLibelleFormat();
+                if (! isset($tableau_comparaison[$libelle])) {
+                    $tableau_comparaison[$libelle]['DAP'] = $parcelle['superficie_affectation'];
+                } else {
+                    $tableau_comparaison[$libelle]['DAP'] += $parcelle['superficie_affectation'];
                 }
+                $total_valeur_dr = 0;
+                $hash_cible = $parcelle->getProduit()->getHash();
+                foreach ($this->getEnhancedDonnees() as $data) {
+                    if (strpos($data->produit, str_replace('/declaration/', '', $hash_cible)) !== false && $data->categorie == '04b') {
+                        $total_valeur_dr += $data->valeur;
+                    }
+                }
+                $tableau_comparaison[$libelle]['DR'] = $total_valeur_dr;
             }
-            $tableau_comparaison[$libelle]['DR'] = $total_valeur_dr;
         }
 
         return isset($tableau_comparaison) ? $tableau_comparaison : null;

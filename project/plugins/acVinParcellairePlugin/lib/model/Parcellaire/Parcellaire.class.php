@@ -160,6 +160,9 @@ class Parcellaire extends BaseParcellaire {
         }else {
             $code_commune = CommunesConfiguration::getInstance()->findCodeCommune($commune);
         }
+        if (!intval($code_commune)) {
+            throw new sfException('Wrong code commune : '.$code_commune.'/'.$commune);
+        }
         $idu = $this->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
         $parcelle  = $this->addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
         return $produit->affecteParcelle($parcelle);
