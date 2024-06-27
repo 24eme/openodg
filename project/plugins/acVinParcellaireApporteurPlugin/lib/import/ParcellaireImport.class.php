@@ -23,6 +23,11 @@ class ParcellaireImport
         }
     }
 
+    public function getCsv()  {
+
+        return $this->datas;
+    }
+
     public function verification() {
 
         $erreurs = [];
@@ -31,14 +36,14 @@ class ParcellaireImport
             $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if (!$etablissement) {
                 foreach($datas as $numLigne => $data) {
-                    $erreurs[] = ['message' => "Etablissement non trouvé",  'numLigne' => $numLigne, 'ligne' => &$data];
+                    $erreurs[$numLigne] = ['message' => "Etablissement non trouvé",  'numLigne' => $numLigne, 'ligne' => $data];
                 }
                 continue;
             }
             $parcellaireTotal = ParcellaireClient::getInstance()->getLastByCampagne($etablissement->identifiant, '2024-2025');
             if (!$parcellaireTotal) {
                 foreach($datas as $numLigne => $data) {
-                    $erreurs[] = ['message' => "Pas de parcellaire",  'numLigne' => $numLigne, 'ligne' => &$data];
+                    $erreurs[$numLigne] = ['message' => "Pas de parcellaire",  'numLigne' => $numLigne, 'ligne' => $data];
                 }
                 continue;
             }
@@ -48,7 +53,7 @@ class ParcellaireImport
 
                 $data[self::CSV_SURFACE] = str_replace(',', '.', trim($data[self::CSV_SURFACE]));
                 if(!preg_match('/^[0-9\.]+$/', $data[self::CSV_SURFACE])) {
-                    $erreurs[] = ['message' => "Surface invalide",  'numLigne' => $numLigne];
+                    $erreurs[$numLigne] = ['message' => "Surface invalide",  'numLigne' => $numLigne];
                     continue;
                 }
                 $parcelleToFind = ParcellaireParcelle::freeInstance($parcellaireTotal);
@@ -58,11 +63,19 @@ class ParcellaireImport
                 $parcelleToFind->superficie = round(floatval($data[self::CSV_SURFACE]), 4);
                 $parcelleToFind->cepage = trim($data[self::CSV_CEPAGE]);
                 $parcelleToFind->campagne_plantation =  intval(explode("/", $data[self::CSV_ANNEE_PLANTATION])[0]);
-                $parcelleFinded = $parcellaireTotal->findParcelle($parcelleToFind, 1);
+                $parcelleFindedStrict = $parcellaireTotal->findParcelle($parcelleToFind, 1);
+                $parcelleFindedLaxiste = $parcellaireTotal->findParcelle($parcelleToFind, 0.75);
 
-                if (!$parcelleFinded) {
-                    $erreurs[] = ['message' => "Parcelle non trouvé",  'numLigne' => $numLigne, 'ligne' => &$data];
+                if($parcelleFindedStrict) {
                     continue;
+                }
+
+                if (!$parcelleFindedLaxiste) {
+                    $erreurs[$numLigne] = ['message' => "Parcelle non trouvé",  'numLigne' => $numLigne, 'ligne' => $data];
+                }
+
+                if ($parcelleFindedLaxiste) {
+                    $erreurs[$numLigne] = ['message' => "Parcelle ambigües",  'numLigne' => $numLigne, 'ligne' => $data];
                 }
             }
         }
