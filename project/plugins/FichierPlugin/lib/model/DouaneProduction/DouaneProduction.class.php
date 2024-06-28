@@ -957,8 +957,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 if ($etab_declarant->cvi == $cvi) {
                     continue;
                 }
+                $dr = null;
                 $etab = EtablissementClient::getInstance()->findByCvi($cvi);
-                $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
+                if ($etab) {
+                    $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
+                }
 
                 if (! $dr) {
                     $tableau_comparaison[$produit_libelle][$cvi]['DR'] = 0;
