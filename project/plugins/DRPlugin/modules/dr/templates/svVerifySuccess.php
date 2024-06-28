@@ -56,7 +56,14 @@
                         <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                         <td class="text-right">
                             <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
-                            <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                            <?php $dr_apporteur = DRClient::getInstance()->find('DR-'.$etablissement->identifiant.'-'.$dr->campagne); ?>
+                            <?php if ($dr_apporteur): ?>
+                                <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                            <?php else: ?>
+                                <a href="<?php echo url_for('declaration_etablissement', ['identifiant' => $etablissement->identifiant]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                                <br/>
+                                <small>DR absente</small>
+                            <?php endif; ?>
                         </td>
                         <td class="text-right">
                             <?php echo abs($valeur['SV']); ?>
