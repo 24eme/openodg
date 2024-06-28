@@ -26,6 +26,9 @@ class ParcellaireIntentionClient {
       }
 
       public function createIntentionAuto($identifiant, $periode, $date) {
+          if ($periode > 9000) {
+              $periode = date('Y');
+          }
           $intentionAuto = new ParcellaireIntentionAuto();
           $intentionAuto->initDoc($identifiant, $periode, $date);
           return $intentionAuto;

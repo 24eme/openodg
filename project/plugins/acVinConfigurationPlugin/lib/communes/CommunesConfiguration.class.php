@@ -50,7 +50,13 @@ class CommunesConfiguration {
 
     public function findCodeCommune($commune) {
         if(!isset($this->communes_reverse[$commune])) {
-
+            $commune = preg_replace('/[^A−Z]/', '', strtolower($commune));
+            foreach($this->communes_reverse as $c => $v) {
+                $c = preg_replace('/[^A−Z]/', '', strtolower($c));
+                if (strpos($c, $commune) !== false) {
+                    return $v;
+                }
+            }
             return null;
         }
 

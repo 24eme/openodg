@@ -148,6 +148,16 @@ parcellaireaffectationcoop_liste:
   requirements:
     sf_method: [get]
 
+parcellaireaffectationcoop_import:
+  url: /parcellaire-affectation-coop/import/:id
+  param: { module: parcellaireAffectationCoop, action: import }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaireaffectationcoop_saisie:
   url: /parcellaire-affectation-coop/saisie/:id/:apporteur
   param: { module: parcellaireAffectationCoop, action: saisie }
