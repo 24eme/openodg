@@ -194,7 +194,7 @@ class ParcellaireCsvFile
             $libelle = str_replace("FAYE-D'ANJOU", 'FAYE', $libelle);
             $libelle = str_replace('LOIRELOIRE', 'LOIRE LOIRE', $libelle);
             $libelle = str_replace(' RS', ' Rosé', $libelle);
-            $libelle = str_replace([' grenat', ' rouge sec'], ' Rouge', $libelle);
+            $libelle = str_replace([' GRENAT', ' ROUGE SEC'], ' ROUGE', $libelle);
 
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":
