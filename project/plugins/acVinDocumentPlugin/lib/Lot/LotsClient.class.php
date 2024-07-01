@@ -133,7 +133,8 @@ class LotsClient
 
             if( ($lot->statut == Lot::STATUT_MANQUEMENT_EN_ATTENTE) ||
                 ($lot->statut == Lot::STATUT_DECLASSE) ||
-                ($lot->statut == Lot::STATUT_CONFORME_APPEL) ) {
+                ($lot->statut == Lot::STATUT_CONFORME_APPEL) ||
+                ($lot->statut == Lot::STATUT_NONCONFORME_LEVEE) ) {
                 $d = [];
                 $d['DATE'] = $lot->date;
                 $d['STATUT'] = $lot->statut;
