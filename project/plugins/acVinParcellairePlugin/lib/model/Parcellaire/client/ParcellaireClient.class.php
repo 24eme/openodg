@@ -369,13 +369,19 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public static function parcelleSplitIDU($parcelle) {
-            $parcelle->setCodeCommune(substr($parcelle->idu, 0, 5));
-            $parcelle->setPrefix(substr($parcelle->idu, 5, 3));
-            $parcelle->setSection(preg_replace('/^0+/', '', substr($parcelle->idu, 8, 2)));
-            $parcelle->setNumeroParcelle(preg_replace('/^0+/', '', substr($parcelle->idu, 10, 4)));
+        if (!$parcelle->idu) {
+            return;
+        }
+        $parcelle->setCodeCommune(substr($parcelle->idu, 0, 5));
+        $parcelle->setPrefix(substr($parcelle->idu, 5, 3));
+        $parcelle->setSection(preg_replace('/^0+/', '', substr($parcelle->idu, 8, 2)));
+        $parcelle->setNumeroParcelle(preg_replace('/^0+/', '', substr($parcelle->idu, 10, 4)));
     }
 
     public static function CopyParcelle($p1, $p2) {
+        if (!$p2) {
+            throw new sfException('2d parcelle should not be empty');
+        }
         $p1->idu = $p2->idu;
         self::parcelleSplitIDU($p1);
         $p1->campagne_plantation = $p2->campagne_plantation;

@@ -126,15 +126,19 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         if (!$parcellaireCurrent) {
           return null;
         }
-        return $parcellaireCurrent->declaration;
+        return $parcellaireCurrent->getParcelles();
     }
 
     public function addParcellesFromParcellaire(array $hashes) {
-      	$parcellaires = $this->getParcellesFromParcellaire();
+      	$parcelles = $this->getParcellesFromParcellaire();
+        if (!$parcelles || !count($parcelles)) {
+            throw new sfException('pas de parcelles du parcellaire');
+        }
         foreach($hashes as $h) {
             $t = explode('/detail/', str_replace('/declaration/', '', $h));
-            $d = $this->declaration->add($t[0])->detail->add($t[1]);
-            ParcellaireClient::CopyParcelle($d, $parcellaires[$h]);
+            $p = $this->declaration->add($t[0]);
+            $d = $p->detail->add($t[1]);
+            ParcellaireClient::CopyParcelle($d, $parcelles[$t[1]]);
             $d->active = 1;
         }
     }
