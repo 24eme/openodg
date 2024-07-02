@@ -219,6 +219,14 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->geoparcelle;
     }
 
+    public function getCodeCommune() {
+        $c = $this->code_commune;
+        if (!$c) {
+            $c = substr($this->idu, 0, 5);
+        }
+        return $c;
+    }
+
     public function getIsInAires() {
         return AireClient::getInstance()->getIsInAiresFromCommuneAndGeoParcelle($this->code_commune, $this);
     }
