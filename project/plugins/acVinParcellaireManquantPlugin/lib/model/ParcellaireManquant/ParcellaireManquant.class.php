@@ -104,12 +104,11 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
   }
 
   public function getParcellaire() {
-
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
   }
 
   public function getParcellaireAffectation() {
-      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
   }
 
     public function getParcelles() {
@@ -117,13 +116,23 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
         return $this->declaration->getParcelles();
     }
 
-    public function getParcellesFromParcellaire() {
-        $parcellaireCurrent = (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire())? $this->getParcellaireAffectation() : $this->getParcellaire();
-        if (!$parcellaireCurrent) {
-          return;
+    public function getParcellaire2Reference() {
+        $parcellaireCurrent = null;
+        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire()) {
+            $parcellaireCurrent = $this->getParcellaireAffectation();
         }
+        if (!$parcellaireCurrent) {
+            $parcellaireCurrent = $this->getParcellaire();
+        }
+        return $parcellaireCurrent;
+    }
 
-        return $parcellaireCurrent->declaration;
+    public function getParcellesFromParcellaire() {
+        $parcellaireCurrent = $this->getParcellaire2Reference();
+        if (!$parcellaireCurrent) {
+            return array();
+        }
+        return $parcellaireCurrent->declaration->getParcelles();
     }
 
     public function addParcelleFromParcellaireParcelle($detail) {

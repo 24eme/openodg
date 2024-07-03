@@ -36,7 +36,21 @@ class ParcellaireAffectationClient extends acCouchdbClient {
           return $this->findPreviousByIdentifiantAndDate($identifiant, $max_annee, $hydrate);
       }
 
-      public function findPreviousByIdentifiantAndDate($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+      public function findPreviousByIdentifiantAndDate($identifiant, $date = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $max_annee = '9999';
+          if (!$date) {
+              $max_annee = date('Y');
+          }
+          if (strlen($date) == 4) {
+              $max_annee = $date;
+          }
+          if (preg_match('/(....)-(..-..)/', $date, $m)) {
+              if ($m[2] < '08-01') {
+                  $max_annee = $m[1] - 1;
+              }else{
+                  $max_annee = $m[1];
+              }
+          }
           $h = $this->getHistory($identifiant, $max_annee, $hydrate);
           if (!count($h)) {
               return null;
