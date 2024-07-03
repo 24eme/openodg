@@ -220,7 +220,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getCodeCommune() {
-        $c = $this->code_commune;
+        $c = null;
+        if (isset($this->code_commune)) {
+            $c = $this->code_commune;
+        }
         if (!$c) {
             $c = substr($this->idu, 0, 5);
         }
