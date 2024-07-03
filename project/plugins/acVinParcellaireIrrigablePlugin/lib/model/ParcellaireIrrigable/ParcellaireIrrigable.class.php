@@ -116,15 +116,21 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         return $this->declaration->getParcelles();
     }
 
-    public function getParcellesFromParcellaire() {
+    public function getParcellaire2Reference() {
+        $parcellaireCurrent = null;
         if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire()) {
             $parcellaireCurrent = $this->getParcellaireAffectation();
         }
         if (!$parcellaireCurrent){
             $parcellaireCurrent = $this->getParcellaire();
         }
+        return $parcellaireCurrent;
+    }
+
+    public function getParcellesFromParcellaire() {
+        $parcellaireCurrent = $this->getParcellaire2Reference();
         if (!$parcellaireCurrent) {
-          return null;
+          return array();
         }
         return $parcellaireCurrent->getParcelles();
     }

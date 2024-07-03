@@ -9,7 +9,7 @@
 
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
 
-<?php foreach ($parcellaireIrrigable->getParcellesFromParcellaire()->getParcellesByCommune() as $commune => $parcelles): ?>
+<?php foreach ($parcellaireIrrigable->getParcellaire2Reference()->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
     <div class="row">
         <div class="col-xs-6">
             <h3><?php echo $commune; ?></h3>
@@ -39,7 +39,7 @@
                 <td><?php echo $parcelle->numero_parcelle; ?></td>
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-                <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
+                <td class="text-right"><?php echoFloatFr($parcelle->superficie_affectation, 4); ?></td>
 				<td class="text-center"><input <?php if ($parcellaireIrrigable->findParcelle($parcelle)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>
