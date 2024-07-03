@@ -880,7 +880,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         if ($this->getDocumentDefinitionModel() == 'DR') {
             return array();
         }
-        return $this->getTiers();
+        return $this->getTiers($include_non_reconnu);
     }
 
     public function getTiers($include_non_reconnu = false, $relation_voulue = null, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
@@ -919,6 +919,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if(is_string($etablissement)) {
                 if ($include_non_reconnu) {
                     $etablissements[$cvi] = array('etablissement' => null , "cvi" => $cvi, 'raison_sociale' => $etablissement);
+                    $etablissements[$cvi] = str_replace('"', '', $etablissements[$cvi]);
                 }
                 continue;
             }
