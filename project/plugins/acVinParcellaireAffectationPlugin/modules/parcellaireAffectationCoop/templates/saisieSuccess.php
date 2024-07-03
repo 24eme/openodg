@@ -2,7 +2,7 @@
 <?php include_partial('parcellaireAffectationCoop/step', array('step' => 'saisies', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration d'affectation parcellaire 2021 de <?php echo $parcellaireAffectation->declarant->raison_sociale ?></h2>
+    <h2>Déclaration d'affectation parcellaire <?php echo $parcellaireAffectation->periode ?> de <?php echo $parcellaireAffectation->declarant->raison_sociale ?></h2>
 </div>
 <form id="validation-form" action="" method="post" >
     <?php if($parcellaireAffectation->isMultiApporteur()): ?>
