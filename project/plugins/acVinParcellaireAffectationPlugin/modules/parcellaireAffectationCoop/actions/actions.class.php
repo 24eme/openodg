@@ -77,19 +77,6 @@ class parcellaireAffectationCoopActions extends sfActions {
     	}
     }
 
-    public function executeImport(sfWebRequest $request) {
-        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
-        $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->parcellaireImport = new ParcellaireImport('/tmp/parcellaire_mont_ventoux.csv');
-
-        $this->erreurs = $this->parcellaireImport->verification();
-        $this->erreursRecap = [];
-
-        foreach($this->erreurs as $erreur) {
-            $this->erreursRecap[$erreur['message']][] = $erreur["numLigne"];
-        }
-    }
-
     public function executeSwitch(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();

@@ -5,15 +5,6 @@
     <h2>Saisie des affectations parcellaires par apporteur</h2>
 </div>
 
-
-<div class="form-group">
-    <label for="exampleInputFile">Importer les données depuis un fichier csv</label>
-    <input type="file" id="exampleInputFile">
-</div>
-
-<a href="<?php echo url_for("parcellaireaffectationcoop_import", $parcellaireAffectationCoop) ?>" class="btn btn-default">Importer</a>
-<hr />
-
 <div class="row">
     <div class="form-group col-xs-12">
       <input id="hamzastyle" type="hidden" data-placeholder="Rechercher dans la liste par nom, cvi ou statut" data-hamzastyle-container=".table_affectations" data-hamzastyle-mininput="0" class="hamzastyle form-control">
