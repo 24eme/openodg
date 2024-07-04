@@ -29,7 +29,7 @@ $t->is(count($parcellaireIrrigable->getParcellesFromParcellaire()), count($parce
 $t->is(count($parcellaireIrrigable->declaration->getParcelles()), 0, "Le parcellaire irrigable n'a pas de parcelle");
 
 $pids = array_keys($parcellaireIrrigable->getParcellaire()->declaration->getParcelles());
-$parcellaireIrrigable->addParcellesFromParcellaire($pids);
+$parcellaireIrrigable->setParcellesFromParcellaire($pids);
 $parcellaireIrrigable->save();
 
 $t->is(count($parcellaireIrrigable->declaration->getParcellesByCommune()), 2, "Le parcellaire irrigable a 2 commune de parcelles");

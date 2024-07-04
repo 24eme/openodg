@@ -80,7 +80,10 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return null;
     }
 
-    public function addParcellesFromParcellaire(array $hashes) {
+    public function setParcellesFromParcellaire(array $hashes) {
+        $this->remove('declaration');
+        $this->add('declaration');
+
       	$parcelles = $this->getParcellesFromParcellaire();
         if (!$parcelles || !count($parcelles)) {
             throw new sfException('pas de parcelles du parcellaire');

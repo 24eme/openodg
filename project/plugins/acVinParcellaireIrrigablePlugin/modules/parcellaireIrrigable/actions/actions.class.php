@@ -118,9 +118,7 @@ class parcellaireIrrigableActions extends sfActions {
 
     		return sfView::SUCCESS;
     	}
-        $this->parcellaireIrrigable->remove('declaration');
-        $this->parcellaireIrrigable->add('declaration');
-    	$this->parcellaireIrrigable->addParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
+    	$this->parcellaireIrrigable->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
     	$this->parcellaireIrrigable->save();
         if($request->getParameter('saveandquit')) {
 
