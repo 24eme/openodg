@@ -126,6 +126,26 @@ class parcellaireAffectationCoopActions extends sfActions {
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
+    public function executeSaisieManquant(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->parcellaireManquant = ParcellaireManquantClient::getInstance()->findOrCreate($request->getParameter('apporteur'), substr($this->parcellaireAffectationCoop->campagne, 0, 4));
+
+        if($this->parcellaireManquant->isValidee()) {
+            return $this->redirect('parcellaireaffectationcoop_manquant_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireManquant->_id));
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->parcellaireManquant->save();
+
+        return $this->redirect('parcellaireaffectationcoop_manquant_saisie_infos', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireManquant->_id));
+    }
+
     public function executeSaisieIrrigable(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();

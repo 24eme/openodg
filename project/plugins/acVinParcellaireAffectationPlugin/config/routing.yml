@@ -189,8 +189,8 @@ parcellaireaffectationcoop_irrigable_saisie_infos:
     sf_method: [get, post]
 
 parcellaireaffectationcoop_manquant_saisie:
-  url: /parcellaire-affectation-coop/irrigable/saisie/:id/:apporteur
-  param: { module: parcellaireAffectationCoop, action: saisieIrrigable }
+  url: /parcellaire-affectation-coop/manquant/saisie/:id/:apporteur
+  param: { module: parcellaireAffectationCoop, action: saisieManquant }
   class: ParcellaireAffectationCoopRoute
   options:
     model:    ParcellaireAffectationCoop
