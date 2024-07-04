@@ -77,19 +77,6 @@ class parcellaireAffectationCoopActions extends sfActions {
     	}
     }
 
-    public function executeImport(sfWebRequest $request) {
-        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
-        $this->etablissement = $this->getRoute()->getEtablissement();
-        $this->parcellaireImport = new ParcellaireImport('/tmp/parcellaire_mont_ventoux.csv');
-
-        $this->erreurs = $this->parcellaireImport->verification();
-        $this->erreursRecap = [];
-
-        foreach($this->erreurs as $erreur) {
-            $this->erreursRecap[$erreur['message']][] = $erreur["numLigne"];
-        }
-    }
-
     public function executeSwitch(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
@@ -139,11 +126,95 @@ class parcellaireAffectationCoopActions extends sfActions {
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
+    public function executeSaisieManquant(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->parcellaireManquant = ParcellaireManquantClient::getInstance()->findOrCreate($request->getParameter('apporteur'), substr($this->parcellaireAffectationCoop->campagne, 0, 4));
+
+        if($this->parcellaireManquant->isValidee()) {
+            return $this->redirect('parcellaireaffectationcoop_manquant_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireManquant->_id));
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->parcellaireManquant->save();
+
+        return $this->redirect('parcellaireaffectationcoop_manquant_saisie_infos', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireManquant->_id));
+    }
+
+    public function executeSaisieIrrigable(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($request->getParameter('apporteur'), substr($this->parcellaireAffectationCoop->campagne, 0, 4));
+
+        if($this->parcellaireIrrigable->isValidee()) {
+            return $this->redirect('parcellaireaffectationcoop_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireIrrigable->_id));
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+        	return sfView::SUCCESS;
+        }
+
+        $this->parcellaireIrrigable->save();
+
+        return $this->redirect('parcellaireaffectationcoop_irrigable_saisie_infos', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireIrrigable->_id));
+    }
+
+    public function executeSaisieIrrigableInfos(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find($request->getParameter('id_document'));
+
+        if($this->parcellaireIrrigable->isValidee()) {
+            return $this->redirect('parcellaireaffectationcoop_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireIrrigable->_id));
+        }
+
+        $this->form = new ParcellaireIrrigableProduitsForm($this->parcellaireIrrigable);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+        	return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+    	if (!$this->form->isValid()) {
+
+    		return sfView::SUCCESS;
+    	}
+
+    	$this->form->save();
+
+        if(!array_key_exists('retour', $_POST)) {
+            $this->parcellaireIrrigable->validate();
+            $this->parcellaireIrrigable->validateOdg();
+            $this->parcellaireIrrigable->save();
+        } else {
+            return $this->redirect('parcellaireaffectationcoop_irrigable_saisie', ['sf_subject' => $this->parcellaireAffectationCoop, 'apporteur' => $this->parcellaireIrrigable->identifiant]);
+        }
+
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
 
         $this->parcellaireAffectation = ParcellaireAffectationClient::getInstance()->find($request->getParameter('id_document'));
+    }
+
+    public function executeVisualisationIrrigable(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find($request->getParameter('id_document'));
     }
 
     public function executeRecap(sfWebRequest $request) {
