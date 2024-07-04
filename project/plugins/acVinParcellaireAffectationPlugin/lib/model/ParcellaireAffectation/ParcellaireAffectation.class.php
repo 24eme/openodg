@@ -93,7 +93,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $item->libelle = $produit->libelle;
         $parcelle->origine_doc = $intention->_id;
         unset($parcelle['origine_hash']);
-        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
+        $detail = $item->detail->add($parcelle->getParcelleId(), $parcelle);
         $detail->origine_doc = $intention->_id;
 	}
     if($previous) {
