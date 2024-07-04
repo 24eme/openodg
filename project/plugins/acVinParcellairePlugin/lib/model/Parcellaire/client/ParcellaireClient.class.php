@@ -387,10 +387,11 @@ class ParcellaireClient extends acCouchdbClient {
         $p1->campagne_plantation = $p2->campagne_plantation;
         $p1->commune = $p2->commune;
         $p1->code_commune = $p2->code_commune;
-        $p1->numero_ordre = $p2->numero_ordre;
         $p1->cepage = $p2->cepage;
         $p1->superficie = $p2->superficie;
-        $p1->produit_hash = $p2->produit_hash;
+        if ($p1->exist('produit_hash')) {
+            $p1->produit_hash = $p2->produit_hash;
+        }
         if($p2->exist('lieu')){
             $p1->lieu = $p2->lieu;
         }
@@ -408,6 +409,15 @@ class ParcellaireClient extends acCouchdbClient {
         }
         if ($p1->exist('porte_greffe')) {
             $p1->porte_greffe = $p2->porte_greffe;
+        }
+        $p1->parcelle_id = $p2->getParcelleId();
+        if ($p1->exist('numero_ordre')) {
+            $p1->numero_ordre = explode('-', $p1->parcelle_id)[1];
+        }
+        if (strpos($p2->getHash(), 'declaration') !== false) {
+            if (!$p1->produit_hash) {
+                $p1->produit_hash = $p2->getParent()->getParent()->getHash();
+            }
         }
         return $p1;
 

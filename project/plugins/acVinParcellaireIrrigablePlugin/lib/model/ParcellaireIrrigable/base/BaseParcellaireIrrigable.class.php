@@ -49,8 +49,8 @@
  * @method acCouchdbJson setPieces()
  
  */
- 
-abstract class BaseParcellaireIrrigable extends acCouchdbDocument {
+
+abstract class BaseParcellaireIrrigable extends DeclarationParcellaire {
 
     public function getDocumentDefinitionModel() {
         return 'ParcellaireIrrigable';

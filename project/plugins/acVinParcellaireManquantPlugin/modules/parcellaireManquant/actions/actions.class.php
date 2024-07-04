@@ -117,7 +117,7 @@ class parcellaireManquantActions extends sfActions {
         foreach($this->parcellaireManquant->getParcelles() as $p) {
             $pMatch = $currentParcellaire->findParcelle($p, 0.75);
             if($pMatch) {
-                $this->previousParcelles[$pMatch->getHash()] = true;
+                $this->previousParcelles[$pMatch->getParcelleId()] = true;
             }
         }
 

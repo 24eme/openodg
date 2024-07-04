@@ -15,15 +15,22 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
 
         return $this->getProduit()->getLibelle();
     }
-    
+
+    public function getProduitHash() {
+        if ($this->_get('produit_hash')) {
+            return $this->_get('produit_hash');
+        }
+        return $this->getParent()->getParent()->getHash();
+    }
+
     public function getIdentificationParcelleLibelle() {
     	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
     }
-    
+
     public function getIdentificationCepageLibelle() {
     	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
     }
-    
+
     public function getDgc() {
         $communesDenominations = sfConfig::get('app_communes_denominations');
         $dgcFinal = null;

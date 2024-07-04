@@ -47,8 +47,8 @@
                 <td><?php echo $parcelle->numero_parcelle; ?></td>
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-                <td class="text-right"><?php echoFloatFr($parcelle->superficie_affectation, 4); ?></td>
-				<td class="text-center"><input <?php if (array_key_exists($parcelle->getHash(), $previousParcelles->getRawValue())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+                <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
+				<td class="text-center"><input <?php if (array_key_exists($parcelle->getParcelleId(), $previousParcelles->getRawValue())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>
         </tbody>
