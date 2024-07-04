@@ -44,7 +44,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       return "AOC Sainte-Victoire";
   }
 
-  public function addParcellesFromParcellaire(array $lieux) {
+  public function updateIntentionFromParcellaireAndLieux(array $lieux) {
       $parcellaire = $this->getParcellesFromParcellaire();
       if (!$parcellaire) {
           return;
