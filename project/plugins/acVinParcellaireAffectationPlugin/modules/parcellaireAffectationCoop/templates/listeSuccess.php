@@ -25,9 +25,9 @@
         <tr>
             <th class="col-xs-1">CVI</th>
             <th>Nom</th>
-            <th class="col-xs-2">Affectation</th>
-            <th class="col-xs-2">Manquant</th>
-            <th class="col-xs-2">Irrigation</th>
+            <th class="col-xs-2 text-center">Affectation</th>
+            <th class="col-xs-2 text-center">Manquant</th>
+            <th class="col-xs-2 text-center">Irrigation</th>
         </tr>
     <?php foreach ($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur): ?>
         <tr class="hamzastyle-item <?php if($apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_NON_IDENTIFIEE): ?>text-muted<?php endif; ?>" data-words='<?php echo json_encode(array($apporteur->nom, $apporteur->cvi), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>' >
@@ -39,11 +39,13 @@
                     <a class="text-success" href="<?php echo url_for('parcellaireaffectationcoop_visualisation', array('sf_subject' => $parcellaireAffectationCoop, 'id_document' => $apporteur->getDeclaration($type)->_id)) ?>">Voir la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span>
                 <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_EN_COURS): ?>
                     <a href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Continuer la déclaration</a><br/><br/>
-                <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR): ?>
+                <?php elseif($type == ParcellaireAffectationClient::TYPE_MODEL && $apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR): ?>
                     <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Saisir la déclaration</a>
                     <br/>
                     <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "0")) ?>">Pas cette année</a>
-                <?php else: ?>
+                <?php elseif($type != ParcellaireAffectationClient::TYPE_MODEL && $apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_A_SAISIR && $apporteur->getDeclarationStatut(ParcellaireAffectationClient::TYPE_MODEL) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
+                    <a class="btn_saisie_affectation_parcellaire" href="<?php echo url_for('parcellaireaffectationcoop_saisie', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant())) ?>">Saisir la déclaration</a>
+                <?php elseif($type == ParcellaireAffectationClient::TYPE_MODEL): ?>
                     Aucune parcelle identifiée
                     <br/>
                     <a class="btn_saisie_affectation_parcellaire text-muted" href="<?php echo url_for('parcellaireaffectationcoop_switch', array('sf_subject' => $parcellaireAffectationCoop, 'apporteur' => $apporteur->getEtablissementIdentifiant(), "sens" => "1")) ?>">
