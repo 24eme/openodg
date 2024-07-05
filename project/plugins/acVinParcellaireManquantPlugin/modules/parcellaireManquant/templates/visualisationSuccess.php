@@ -2,6 +2,8 @@
 
 <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
 
+<?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireManquant)); ?>
+
 <div class="page-header no-border">
     <h2>Déclaration de pieds morts ou manquants
     <?php if($parcellaireManquant->isPapier()): ?>

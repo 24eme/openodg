@@ -62,6 +62,7 @@ ParcellaireManquant:
                               cepage: {  }
                               departement: { required: false }
                               active: { type: integer }
+                              produit_hash: { }
                               vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
                               densite: { }

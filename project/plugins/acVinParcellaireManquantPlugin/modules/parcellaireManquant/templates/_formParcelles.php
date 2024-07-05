@@ -1,13 +1,7 @@
 <?php use_helper('Float'); ?>
 <?php
 $parcellaire = $parcellaireManquant->getParcellaire2Reference();
-$previousParcelles = [];
-foreach($parcellaireManquant->getParcelles() as $p) {
-    $pMatch = $parcellaire->findParcelle($p, 0.75);
-    if($pMatch) {
-        $previousParcelles[$pMatch->getParcelleId()] = true;
-    }
-}
+$previousParcelles = $parcellaireManquant->getDeclarationParcelles()->getRawValue();
 ?>
 <?php if ($parcellaire) foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
     <div class="row">

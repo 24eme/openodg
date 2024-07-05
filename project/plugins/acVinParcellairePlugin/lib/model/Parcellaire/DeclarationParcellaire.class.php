@@ -39,6 +39,10 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $this->parcellaire;
     }
 
+    public function getParcellaireAffectation() {
+        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
+    }
+
     protected $parcelles_idu = null;
 
     public function getParcellesByIdu() {
@@ -57,8 +61,13 @@ class DeclarationParcellaire extends acCouchdbDocument {
     }
 
     public function getParcellaire2Reference() {
-        return $this->getParcellaire();
+        $parcellaire = $this->getParcellaire();
+        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() && ($this->type != ParcellaireAffectationClient::TYPE_MODEL)) {
+            $parcellaire = $this->getParcellaireAffectation();
+        }
+        return $parcellaire;
     }
+
 
     public function getParcellesFromReference() {
         $parcellaireCurrent = $this->getParcellaire2Reference();
