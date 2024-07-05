@@ -6,7 +6,7 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
     }
 
     public function updateParcelles() {
-        $this->addParcellesFromParcellaire(["DEFAUT"]);
+        $this->updateIntentionFromParcellaireAndLieux(["DEFAUT"]);
     }
 
     public function getDenominationAire() {

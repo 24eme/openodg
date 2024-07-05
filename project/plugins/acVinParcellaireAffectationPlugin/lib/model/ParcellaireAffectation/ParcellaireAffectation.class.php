@@ -5,7 +5,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $declarant_document = null;
   protected $piece_document = null;
   protected $parcelles_idu = null;
-  protected $parcellaire = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -93,7 +92,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $item->libelle = $produit->libelle;
         $parcelle->origine_doc = $intention->_id;
         unset($parcelle['origine_hash']);
-        $detail = $item->detail->add($parcelle->getKey(), $parcelle);
+        $detail = $item->detail->add($parcelle->getParcelleId());
+        ParcellaireClient::CopyParcelle($detail, $parcelle);
         $detail->origine_doc = $intention->_id;
 	}
     if($previous) {
@@ -110,35 +110,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 	}
   }
 
-  public function getParcellesByIdu() {
-      if(is_array($this->parcelles_idu)) {
-
-          return $this->parcelles_idu;
-      }
-
-      $this->parcelles_idu = [];
-
-      foreach($this->getParcelles() as $parcelle) {
-          $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-      }
-
-      return $this->parcelles_idu;
-  }
-
-  public function findParcelle($parcelle, $with_cepage_match = false) {
-
-      return ParcellaireClient::findParcelle($this, $parcelle, 0.5, $with_cepage_match);
-  }
-
   public function getConfiguration() {
 
       return ConfigurationClient::getInstance()->getConfiguration($this->periode.'-03-01');
   }
-
-    public function getParcelles($onlyAffectes = false) {
-
-        return $this->declaration->getParcelles();
-    }
 
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
@@ -219,7 +194,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $parcelles = $this->getParcelles();
         $find = array();
         foreach ($parcelles as $parcelle) {
-            if ($parcelle->idu == $idu && round($parcelle->superficie_affectation,4) == round($surface,4)) {
+            if ($parcelle->idu == $idu && round($parcelle->superficie,4) == round($surface,4)) {
                 $find[] = $parcelle;
             }
         }
@@ -313,26 +288,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
-    public function getParcelleFromParcelleParcellaire($p) {
-        foreach($this->declaration->getParcelles() as $d) {
-            if ($p->parcelle_id == $d->parcelle_id) {
-                return $d;
-            }
-        }
-    }
-
-    public function getParcellesFromParcellaire() {
-        if(!$this->getParcellaire()) {
-
-            return [];
-        }
-
-        return $this->getParcellaire()->add('declaration')->getParcelles();
-    }
-
     public function getParcellesByDgc() {
         $parcelles = array();
-        foreach($this->getParcellesFromParcellaire() as $p) {
+        foreach($this->getParcellesFromReference() as $p) {
             if (!$p->produit_hash) {
                 continue;
             }
@@ -349,16 +307,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
         }
         return $parcelles;
-    }
-
-    public function getParcellaire() {
-        if (!$this->parcellaire) {
-            $cm = new CampagneManager('08-01');
-            $date_end = $cm->getDateFinByDate($this->date);
-            $this->parcellaire = ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date_end);
-            $this->parcellaire_origine = ($this->parcellaire) ? $this->parcellaire->_id : null;
-        }
-        return $this->parcellaire;
     }
 
     public function hasParcellaire() {

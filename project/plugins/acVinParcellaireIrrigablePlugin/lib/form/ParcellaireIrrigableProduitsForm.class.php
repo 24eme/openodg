@@ -3,24 +3,22 @@
 class ParcellaireIrrigableProduitsForm extends acCouchdbObjectForm {
 
     public function configure() {
-		foreach ($this->getObject()->declaration as $key => $value) {
-			$this->embedForm($key, new ParcellaireIrrigableProduitIrrigationsForm($value));
-		}
-
+        foreach ($this->getObject()->getParcelles() as $p) {
+            $this->embedForm($p->getParcelleId(), new ParcellaireIrrigableProduitIrrigationForm($p));
+        }
         $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
 
     protected function doUpdateObject($values) {
-    	foreach ($values as $produit => $value) {
-    		if (!is_array($value)) continue;
-    		foreach ($value as $detail => $items) {
-    			$node = $this->getObject()->declaration->get($produit);
-    			$node = $node->detail->get($detail);
-    			foreach ($items as $k => $v) {
-    				$node->add($k, $v);
-    			}
-    		}
-    	}
+        $parcelles = $this->getObject()->getParcelles();
+        foreach ($values as $pid => $value) {
+            if (!isset($parcelles[$pid])) {
+                continue;
+            }
+            $node = $parcelles[$pid];
+            foreach ($value as $k => $v) {
+                $node->add($k, $v);
+            }
+        }
     }
-
 }

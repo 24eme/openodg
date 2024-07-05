@@ -77,7 +77,7 @@ EOF;
             $affectationParcelle = $this->addParcelleFromParcellaireParcelle($affectation, $parcelle);
 
             $affectationParcelle->affectee = 1;
-            $affectationParcelle->superficie_affectation = (float) $data[self::CSV_SURFACE];
+            $affectationParcelle->superficie = (float) $data[self::CSV_SURFACE];
             $affectationParcelle->date_affectation = self::DATE_VALIDATION;
 
             try {

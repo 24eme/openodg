@@ -26,18 +26,18 @@
         $nbParcelles = 0;
         $totalSurface = 0;
         foreach ($parcelles as $parcelle):
-    ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie_affectation,4) ?>
+    ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie,4) ?>
         <tr class="vertical-center">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
             <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
             <td><?php echo $parcelle->cepage; ?></td>
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-            <td class="text-right"><span><?php echoFloatFr($parcelle->superficie_affectation, 4); ?></span></td>
+            <td class="text-right"><span><?php echoFloatFr($parcelle->superficie, 4); ?></span></td>
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>
             <td style="text-align: center;">
-                    <?php if (round($parcelle->superficie_affectation,4) != round($parcelle->superficie,4)): ?>
+                    <?php if (round($parcelle->superficie,4) != round($parcelle->getSuperficieParcellaire(),4)): ?>
                         <span>Partielle</span>
                     <?php else: ?><span>Totale</span>
                 <?php endif; ?>
