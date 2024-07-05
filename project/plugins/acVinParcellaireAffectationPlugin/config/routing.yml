@@ -208,6 +208,16 @@ parcellaireaffectationcoop_manquant_saisie:
   requirements:
     sf_method: [get, post]
 
+parcellaireaffectationcoop_manquant_saisie_infos:
+  url: /parcellaire-affectation-coop/manquant/saisie_infos/:id/:id_document
+  param: { module: parcellaireAffectationCoop, action: saisieManquantInfos }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireaffectationcoop_switch:
   url: /parcellaire-affectation-coop/switch/:id/:apporteur/:sens
   param: { module: parcellaireAffectationCoop, action: switch }
@@ -239,8 +249,8 @@ parcellaireaffectationcoop_irrigable_visualisation:
     sf_method: [get]
 
 parcellaireaffectationcoop_manquant_visualisation:
-  url: /parcellaire-affectation-coop/visualisation/:id/:id_document
-  param: { module: parcellaireAffectationCoop, action: visualisation }
+  url: /parcellaire-affectation-coop/manquant/visualisation/:id/:id_document
+  param: { module: parcellaireAffectationCoop, action: visualisationManquant }
   class: ParcellaireAffectationCoopRoute
   options:
     model:    ParcellaireAffectationCoop

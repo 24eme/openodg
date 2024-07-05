@@ -194,7 +194,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $parcelles = $this->getParcelles();
         $find = array();
         foreach ($parcelles as $parcelle) {
-            if ($parcelle->idu == $idu && round($parcelle->superficie_affectation,4) == round($surface,4)) {
+            if ($parcelle->idu == $idu && round($parcelle->superficie,4) == round($surface,4)) {
                 $find[] = $parcelle;
             }
         }
@@ -290,7 +290,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function getParcellesByDgc() {
         $parcelles = array();
-        foreach($this->getParcellesFromParcellaire() as $p) {
+        foreach($this->getParcellesFromReference() as $p) {
             if (!$p->produit_hash) {
                 continue;
             }

@@ -88,6 +88,14 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
+    public function getDeclarationParcelles() {
+        $parcelles = [];
+        foreach($this->declaration->getParcelles() as $k => $p) {
+            $parcelles[$p->getParcelleId()] = $p;
+        }
+        return $parcelles;
+    }
+
     public function getParcelles() {
         if ($this->exist('parcelles')) {
             $p = $this->_get('parcelles');
@@ -96,7 +104,7 @@ class Parcellaire extends BaseParcellaire {
             }
         }
         foreach($this->declaration->getParcelles() as $dp) {
-            $id = $this->getNextParcelleId($dp->idu, $dp->cepage, $dp->campagne_plantation);
+            $id = $dp->getParcelleId();
             if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
                 $this->add('parcelles', null);
             }

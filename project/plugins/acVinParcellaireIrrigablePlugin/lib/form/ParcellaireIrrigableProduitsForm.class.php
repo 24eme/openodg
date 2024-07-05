@@ -11,7 +11,6 @@ class ParcellaireIrrigableProduitsForm extends acCouchdbObjectForm {
 
     protected function doUpdateObject($values) {
         $parcelles = $this->getObject()->getParcelles();
-        print_r([$values]);
         foreach ($values as $pid => $value) {
             if (!isset($parcelles[$pid])) {
                 continue;

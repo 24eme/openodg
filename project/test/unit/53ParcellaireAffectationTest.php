@@ -69,7 +69,7 @@ $intention = ParcellaireIntentionClient::getInstance()->createDoc($viti->identif
 
 $t->comment("Intention Parcellaire au $dateprevious : ".$intention->_id);
 
-$t->is(count($intention->getParcellesFromParcellaire()), 5, "L'intention a bien accès au 4 parcelles du parcellaire");
+$t->is(count($intention->getParcellesFromReference()), 5, "L'intention a bien accès au 4 parcelles du parcellaire");
 $t->is(count($intention->getParcelles()), 4, "L'intention a les 4 parcelles du dernier parcellaire");
 foreach($intention->getParcelles() as $parcelle) {
     $parcelle->affectation = 1;

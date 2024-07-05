@@ -96,10 +96,6 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       return true;
   }
 
-  public function getParcellaireAffectation() {
-      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
-  }
-
     public function addParcelleFromParcellaireParcelle($detail) {
         $produit = $detail->getProduit();
         $item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));

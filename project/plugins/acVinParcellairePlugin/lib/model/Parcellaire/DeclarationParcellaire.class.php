@@ -39,6 +39,10 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $this->parcellaire;
     }
 
+    public function getParcellaireAffectation() {
+        return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
+    }
+
     protected $parcelles_idu = null;
 
     public function getParcellesByIdu() {
@@ -57,10 +61,15 @@ class DeclarationParcellaire extends acCouchdbDocument {
     }
 
     public function getParcellaire2Reference() {
-        return $this->getParcellaire();
+        $parcellaire = $this->getParcellaire();
+        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() && ($this->type != ParcellaireAffectationClient::TYPE_MODEL)) {
+            $parcellaire = $this->getParcellaireAffectation();
+        }
+        return $parcellaire;
     }
 
-    public function getParcellesFromParcellaire() {
+
+    public function getParcellesFromReference() {
         $parcellaireCurrent = $this->getParcellaire2Reference();
         if (!$parcellaireCurrent) {
           $parcellaireCurrent = $this->getParcellaire();
@@ -68,23 +77,32 @@ class DeclarationParcellaire extends acCouchdbDocument {
         if (!$parcellaireCurrent) {
             return [];
         }
-        return $parcellaireCurrent->getParcelles();
+        return $parcellaireCurrent->getDeclarationParcelles();
     }
 
-    public function getParcelleFromParcelleParcellaire($p) {
-        foreach($this->declaration->getParcelles() as $d) {
-            if ($p->parcelle_id == $d->parcelle_id) {
-                return $d;
-            }
+    public function getDeclarationParcelles() {
+        $parcelles = [];
+        foreach($this->declaration->getParcelles() as $k => $p) {
+            $parcelles[$p->getParcelleId()] = $p;
         }
-        return null;
+        return $parcelles;
+    }
+
+    public function getParcelleFromParcelleReference($p) {
+        $parcelles = $this->getDeclarationParcelles();
+        if (!isset($parcelles[$p->getParcelleId()])) {
+            return null;
+        }
+        return $parcelles[$p->getParcelleId()];
     }
 
     public function setParcellesFromParcellaire(array $hashes) {
+        $parcelles_orig = $this->getDeclarationParcelles();
+
         $this->remove('declaration');
         $this->add('declaration');
 
-      	$parcelles = $this->getParcellesFromParcellaire();
+      	$parcelles = $this->getParcellesFromReference();
         if (!$parcelles || !count($parcelles)) {
             throw new sfException('pas de parcelles du parcellaire');
         }
@@ -94,7 +112,6 @@ class DeclarationParcellaire extends acCouchdbDocument {
                 $t = explode('/detail/', str_replace('/declaration/', '', $h));
                 $pid = $t[1];
             }
-            print_r($pid);
             if (!$parcelles[$pid]) {
                 throw new sfException('parcelle '.$pid.' not found');
                 continue;
@@ -104,7 +121,11 @@ class DeclarationParcellaire extends acCouchdbDocument {
                 throw new sfException('To affect parcelle '.$pid.' produit_hash is needed');
             }
             $p = $this->declaration->add(str_replace('/declaration/', '', $p_orig->produit_hash));
-            $d = $p->detail->add($pid);
+            if (isset($parcelles_orig[$pid])) {
+                $d = $p->detail->add($pid, $parcelles_orig[$pid]);
+            }else{
+                $d = $p->detail->add($pid);
+            }
             ParcellaireClient::CopyParcelle($d, $p_orig);
             if ($d->exist('active')) {
                 $d->active = 1;

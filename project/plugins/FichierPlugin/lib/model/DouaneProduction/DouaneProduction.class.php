@@ -1052,17 +1052,15 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         if ($this->type != 'DR') {
             throw new sfException("Ce document n'est pas une DR.");
         }
-        $tableau_comparaison = null;
+        $tableau_comparaison = [];
         $dap = ParcellaireAffectationClient::getInstance()->find('PARCELLAIREAFFECTATION-'.$this->identifiant.'-'.$this->campagne);
-        $total_superficie_affectation = 0;
-        $round = 0;
         if ($dap) {
             foreach ($dap->getParcelles(true) as $hash => $parcelle) {
                 $libelle = $parcelle->getProduit()->getConfig()->getLibelleFormat();
                 if (! isset($tableau_comparaison[$libelle])) {
-                    $tableau_comparaison[$libelle]['DAP'] = $parcelle['superficie_affectation'];
+                    $tableau_comparaison[$libelle]['DAP'] = $parcelle['superficie'];
                 } else {
-                    $tableau_comparaison[$libelle]['DAP'] += $parcelle['superficie_affectation'];
+                    $tableau_comparaison[$libelle]['DAP'] += $parcelle['superficie'];
                 }
                 $total_valeur_dr = 0;
                 $hash_cible = $parcelle->getProduit()->getHash();

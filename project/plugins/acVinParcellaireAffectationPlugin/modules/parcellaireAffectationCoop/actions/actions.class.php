@@ -172,6 +172,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->parcellaireManquant->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
         $this->parcellaireManquant->save();
 
         return $this->redirect('parcellaireaffectationcoop_manquant_saisie_infos', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireManquant->_id));
@@ -192,6 +193,7 @@ class parcellaireAffectationCoopActions extends sfActions {
         	return sfView::SUCCESS;
         }
 
+        $this->parcellaireIrrigable->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
         $this->parcellaireIrrigable->save();
 
         return $this->redirect('parcellaireaffectationcoop_irrigable_saisie_infos', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireIrrigable->_id));
@@ -204,7 +206,7 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find($request->getParameter('id_document'));
 
         if($this->parcellaireIrrigable->isValidee()) {
-            return $this->redirect('parcellaireaffectationcoop_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireIrrigable->_id));
+            return $this->redirect('parcellaireaffectationcoop_irrigable_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireIrrigable->_id));
         }
 
         $this->form = new ParcellaireIrrigableProduitsForm($this->parcellaireIrrigable);
@@ -234,6 +236,43 @@ class parcellaireAffectationCoopActions extends sfActions {
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
+    public function executeSaisieManquantInfos(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->parcellaireManquant = ParcellaireManquantClient::getInstance()->find($request->getParameter('id_document'));
+
+        if($this->parcellaireManquant->isValidee()) {
+            return $this->redirect('parcellaireaffectationcoop_manquant_visualisation', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireManquant->_id));
+        }
+
+        $this->form = new ParcellaireManquantInfosForm($this->parcellaireManquant);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+        	return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+    	if (!$this->form->isValid()) {
+
+    		return sfView::SUCCESS;
+    	}
+
+    	$this->form->save();
+
+        if(!array_key_exists('retour', $_POST)) {
+            $this->parcellaireManquant->validate();
+            $this->parcellaireManquant->validateOdg();
+            $this->parcellaireManquant->save();
+        } else {
+            return $this->redirect('parcellaireaffectationcoop_manquant_saisie', ['sf_subject' => $this->parcellaireAffectationCoop, 'apporteur' => $this->parcellaireManquant->identifiant]);
+        }
+
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
@@ -246,6 +285,13 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
 
         $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find($request->getParameter('id_document'));
+    }
+
+    public function executeVisualisationManquant(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->parcellaireManquant = ParcellaireManquantClient::getInstance()->find($request->getParameter('id_document'));
     }
 
     public function executeRecap(sfWebRequest $request) {
