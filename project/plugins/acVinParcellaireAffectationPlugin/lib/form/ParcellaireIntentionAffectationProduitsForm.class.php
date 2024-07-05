@@ -38,13 +38,13 @@ class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
                 if (!$node->date_affectation) {
                     $node->date_affectation = date('Y-m-d');
                 }
-				if ($value['superficie_affectation']) {
-                    $node->superficie_affectation = $value['superficie_affectation'];
-				}else{
-                    $node->superficie_affectation = $value->superficie;
+                if ($value['superficie']) {
+                    $node->superficie = $value['superficie'];
+                }else{
+                    $node->superficie = $value->getSuperficieParcellaire();
                 }
-    		}
-    	}
+            }
+        }
     }
 
 }

@@ -44,10 +44,10 @@
             <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
             <td><?php echo $parcelle->cepage; ?></td>
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-            <td class="text-right"><?php echoFloatFr($parcelle->superficie,4); ?></td>
+            <td class="text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
             <td class="text-right">
-                <!-- <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie_affectation / $parcelle->superficie); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
-                <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(); ?>
+                <!-- <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie / $parcelle->getSuperficieParcellaire()); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
+                <?php echo $form[$produitKey][$parcelle->getKey()]['superficie']->render(); ?>
             </td>
         	<td class="text-center">
             	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectee']->hasError()): ?>has-error<?php endif; ?>">
@@ -57,8 +57,8 @@
                     </div>
                 </div>
         	</td>
-            <td class="text-center">/
-                <?php if (round($parcelle->superficie_affectation,4) < round($parcelle->superficie,4)): ?>
+            <td class="text-center">
+                <?php if (round($parcelle->superficie,4) < round($parcelle->getSuperficieParcellaire(),4)): ?>
                     <span>Partielle</span>
                 <?php else: ?><span>Totale</span>
             <?php endif; ?>

@@ -63,10 +63,10 @@
                     </div>
             	</td>
             	<td class="text-center"><?php echo ($parcelle->exist('date_affectation')) ? $parcelle->getDateAffectationFr() : '' ?></td>
-                <td class="text-center <?php if($form[$formkey]['superficie_affectation']->renderError()): ?>has-error<?php endif; ?>">
+                <td class="text-center <?php if($form[$formkey]['superficie']->renderError()): ?>has-error<?php endif; ?>">
                     <div style="margin-bottom: 0;" id = "surface" class="form-group">
                         <div class="col-xs-12">
-                            <?php echo $form[$formkey]['superficie_affectation']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie, 'value' => $parcelle->superficie)); ?>
+                            <?php echo $form[$formkey]['superficie']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie, 'value' => $parcelle->superficie)); ?>
                         </div>
                     </div>
                 </td>

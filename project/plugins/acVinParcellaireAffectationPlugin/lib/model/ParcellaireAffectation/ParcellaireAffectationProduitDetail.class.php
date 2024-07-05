@@ -83,7 +83,25 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
             return null;
         }
         $date = new DateTime($this->date_affectation);
-    
+
         return $date->format('d/m/Y');
+    }
+
+    public function getSuperficie() {
+        if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
+            return $this->_get('superficie_affectation');
+        }
+        if ($this->_get('superficie')) {
+            return $this->_get('superficie');
+        }
+        return $this->getSuperficieParcellaire();
+    }
+
+    public function getSuperficieParcellaire() {
+        $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
+        if (!$p) {
+            return $this->superficie;
+        }
+        return $p->superficie;
     }
 }

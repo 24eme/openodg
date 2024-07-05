@@ -104,7 +104,7 @@ class Parcellaire extends BaseParcellaire {
             }
         }
         foreach($this->declaration->getParcelles() as $dp) {
-            $id = $this->getNextParcelleId($dp->idu, $dp->cepage, $dp->campagne_plantation);
+            $id = $dp->getParcelleId();
             if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
                 $this->add('parcelles', null);
             }
