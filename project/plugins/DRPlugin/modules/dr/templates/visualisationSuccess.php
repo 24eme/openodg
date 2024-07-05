@@ -73,7 +73,7 @@
 <?php endif ?>
                         <span title="Rendement L15" style="cursor: help">
                             <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?php echoFloatFr( round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ) ;?>
+                                <?php echoFloatFr( round( ($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ) ;?>
                             <?php else: echoFloatFr(0); ?>
                             <?php endif ?>
                         </span> hl/ha
