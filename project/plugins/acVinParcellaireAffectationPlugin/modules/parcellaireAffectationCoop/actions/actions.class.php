@@ -141,6 +141,7 @@ class parcellaireAffectationCoopActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->parcellaireManquant->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
         $this->parcellaireManquant->save();
 
         return $this->redirect('parcellaireaffectationcoop_manquant_saisie_infos', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireManquant->_id));
@@ -161,6 +162,7 @@ class parcellaireAffectationCoopActions extends sfActions {
         	return sfView::SUCCESS;
         }
 
+        $this->parcellaireIrrigable->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
         $this->parcellaireIrrigable->save();
 
         return $this->redirect('parcellaireaffectationcoop_irrigable_saisie_infos', array('sf_subject' => $this->parcellaireAffectationCoop, 'id_document' => $this->parcellaireIrrigable->_id));
