@@ -95,21 +95,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return true;
   }
 
-  public function getParcellaireAffectation() {
-      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-
-    public function getParcellaire2Reference() {
-        $parcellaireCurrent = null;
-        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire()) {
-            $parcellaireCurrent = $this->getParcellaireAffectation();
-        }
-        if (!$parcellaireCurrent){
-            $parcellaireCurrent = $this->getParcellaire();
-        }
-        return $parcellaireCurrent;
-    }
-
     public function getDeclarantSiret(){
         $siret = "";
         if($this->declarant->siret){
