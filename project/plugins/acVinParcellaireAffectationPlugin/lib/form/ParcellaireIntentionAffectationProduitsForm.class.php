@@ -5,7 +5,7 @@ class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
     public function configure() {
 		foreach ($this->getObject()->getParcellesByDgc() as $key => $values) {
             foreach($values as $value)  {
-                $parcelle = $this->getObject()->getParcelleFromParcelleParcellaire($value);
+                $parcelle = $this->getObject()->getParcelleFromParcelleReference($value);
                 if (!$parcelle) {
                     $parcelle = $value;
                 }

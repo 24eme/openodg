@@ -60,7 +60,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return $this->getParcellaire();
     }
 
-    public function getParcellesFromParcellaire() {
+    public function getParcellesFromReference() {
         $parcellaireCurrent = $this->getParcellaire2Reference();
         if (!$parcellaireCurrent) {
           $parcellaireCurrent = $this->getParcellaire();
@@ -68,10 +68,14 @@ class DeclarationParcellaire extends acCouchdbDocument {
         if (!$parcellaireCurrent) {
             return [];
         }
-        return $parcellaireCurrent->getParcelles();
+        $parcelles = [];
+        foreach($parcellaireCurrent->declaration->getParcelles() as $k => $p) {
+            $parcelles[$p->getParcelleId()] = $p;
+        }
+        return $parcelles;
     }
 
-    public function getParcelleFromParcelleParcellaire($p) {
+    public function getParcelleFromParcelleReference($p) {
         foreach($this->declaration->getParcelles() as $d) {
             if ($p->parcelle_id == $d->parcelle_id) {
                 return $d;
@@ -84,7 +88,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
         $this->remove('declaration');
         $this->add('declaration');
 
-      	$parcelles = $this->getParcellesFromParcellaire();
+      	$parcelles = $this->getParcellesFromReference();
         if (!$parcelles || !count($parcelles)) {
             throw new sfException('pas de parcelles du parcellaire');
         }
