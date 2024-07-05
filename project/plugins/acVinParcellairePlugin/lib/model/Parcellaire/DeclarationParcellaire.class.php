@@ -94,7 +94,6 @@ class DeclarationParcellaire extends acCouchdbDocument {
                 $t = explode('/detail/', str_replace('/declaration/', '', $h));
                 $pid = $t[1];
             }
-            print_r($pid);
             if (!$parcelles[$pid]) {
                 throw new sfException('parcelle '.$pid.' not found');
                 continue;
