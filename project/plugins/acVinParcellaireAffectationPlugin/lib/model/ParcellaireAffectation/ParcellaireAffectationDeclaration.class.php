@@ -17,7 +17,7 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         return $this->getParcellesByCommune($onlyAffectee);
     }
 
-    public function getParcellesByCommune($onlyAffectee = false) {
+    public function getParcellesByCommune($onlyAffectee = true) {
         $parcelles = array();
 
         foreach($this->getParcelles() as $hash => $parcelle) {

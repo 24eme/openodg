@@ -4,7 +4,7 @@
  * Model for ParcellaireDeclaration
  *
  */
-class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
+class /* AVA */ ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
     public function getChildrenNode() {
         return $this->getCertifications();

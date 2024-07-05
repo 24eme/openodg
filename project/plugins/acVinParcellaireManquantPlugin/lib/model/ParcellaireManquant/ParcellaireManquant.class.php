@@ -96,35 +96,9 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       return true;
   }
 
-
-  public function initProduitFromLastParcellaire() {
-      if (count($this->declaration) == 0) {
-          $this->importProduitsFromLastParcellaire();
-      }
-  }
-
-  public function getParcellaire() {
-
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-
   public function getParcellaireAffectation() {
-      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
+      return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, ($this->periode + 1).'-07-31');
   }
-
-    public function getParcelles() {
-
-        return $this->declaration->getParcelles();
-    }
-
-    public function getParcellesFromParcellaire() {
-        $parcellaireCurrent = (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire())? $this->getParcellaireAffectation() : $this->getParcellaire();
-        if (!$parcellaireCurrent) {
-          return;
-        }
-
-        return $parcellaireCurrent->declaration;
-    }
 
     public function addParcelleFromParcellaireParcelle($detail) {
         $produit = $detail->getProduit();
@@ -154,86 +128,6 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
             $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
 
         return $subitem;
-    }
-
-    public function updateParcelleFromParcellaireParcelle($detail) {
-        $produit = $detail->getProduit();
-        $hash = str_replace('/declaration/', null, $produit->getHash());
-        if (!$this->declaration->exist($hash)) {
-            return;
-        }
-        $item = $this->declaration->get($hash);
-        $item->libelle = $produit->libelle;
-        $subitem = $item->detail->add($detail->getKey());
-        $subitem->superficie = $detail->superficie;
-        $subitem->lieu = $detail->lieu;
-        $subitem->cepage = $detail->cepage;
-        $subitem->active = 1;
-        if ($detail->ecart_pieds && $detail->ecart_rang) {
-            $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
-        } else {
-            $subitem->densite = 0;
-        }
-        $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-
-        return $subitem;
-    }
-
-    public function getParcellesByIdu() {
-        if(is_array($this->parcelles_idu)) {
-
-            return $this->parcelles_idu;
-        }
-
-        $this->parcelles_idu = [];
-
-        foreach($this->getParcelles() as $parcelle) {
-            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-        }
-
-        return $this->parcelles_idu;
-    }
-
-    public function findParcelle($parcelle) {
-        $parcelles = $this->getParcellesByIdu();
-
-        if(!isset($parcelles[$parcelle->idu])) {
-
-            return null;
-        }
-
-        $parcellesMatch = [];
-
-        foreach($parcelles[$parcelle->idu] as $p) {
-            $score = 0;
-            if($parcelle->cepage == $p->cepage) {
-                $score += 0.25;
-            }
-            if($parcelle->campagne_plantation == $p->campagne_plantation) {
-                $score += 0.25;
-            }
-            if($parcelle->lieu == $p->lieu) {
-                $score += 0.25;
-            }
-            if($parcelle->superficie == $p->superficie) {
-                $score += 0.25;
-            }
-
-            if($score < 0.75) {
-                continue;
-            }
-
-            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
-        }
-
-        krsort($parcellesMatch);
-
-        foreach($parcellesMatch as $key => $pMatch) {
-
-            return $pMatch;
-        }
-
-        return null;
     }
 
     public function getDeclarantSiret(){

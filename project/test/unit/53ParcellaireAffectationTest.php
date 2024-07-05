@@ -56,10 +56,9 @@ $parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autoris
 $parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2011", $communes[0], '', "A", "12");
 $parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2013", $communes[0], '', "B", "24");
 $parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2016", $communes[0], '', "B", "24");
-$parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2016", "Paris", '', "C", "99");
+$parcellaire->addParcelleWithProduit($configProduit->getHash(), $cepages_autorises_1, "2016", "75036", '', "C", "99");
 $parcellaire->save();
 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, $dateprevious, "DOUANE");
-
 $affectation = ParcellaireAffectationClient::getInstance()->createDoc($viti->identifiant, $yearprevious + 1);
 $affectation->updateParcellesAffectation();
 
@@ -70,6 +69,7 @@ $intention = ParcellaireIntentionClient::getInstance()->createDoc($viti->identif
 
 $t->comment("Intention Parcellaire au $dateprevious : ".$intention->_id);
 
+$t->is(count($intention->getParcellesFromParcellaire()), 5, "L'intention a bien accès au 4 parcelles du parcellaire");
 $t->is(count($intention->getParcelles()), 4, "L'intention a les 4 parcelles du dernier parcellaire");
 foreach($intention->getParcelles() as $parcelle) {
     $parcelle->affectation = 1;

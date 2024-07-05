@@ -64,7 +64,6 @@ $parcellaire->save();
 $t->comment("Création d'une déclaration d'affectation parcellaire");
 
 $parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne);
-$parcellaireAffectation->initProduitFromLastParcellaire();
 $parcellaireAffectation->save();
 
 $t->is($parcellaireAffectation->_id, "PARCELLAIREAFFECTATION-".$viti->identifiant."-".$campagne, "ID de l'affectation parcellaire : ".$parcellaireAffectation->_id);

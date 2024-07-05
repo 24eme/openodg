@@ -8,7 +8,7 @@ if (in_array($application, array('nantes', 'loire'))) {
     return;
 }
 
-$t = new lime_test(5);
+$t = new lime_test(6);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $campagne = date('Y');
 
@@ -24,11 +24,12 @@ $parcellaireIrrigable->save();
 
 $t->is($parcellaireIrrigable->_id, 'PARCELLAIREIRRIGABLE-'.$viti->identifiant.'-'.$campagne, "L'id du doc est ".'PARCELLAIREIRRIGABLE-'.$viti->identifiant.'-'.$campagne);
 
+$t->ok($parcellaireIrrigable->getParcellesFromParcellaire(), "le parcellaire irrigué peut récupérer les parcelles du parcellaire");
 $t->is(count($parcellaireIrrigable->getParcellesFromParcellaire()), count($parcellaire->getParcelles()), "Le parcellaire à ".count($parcellaire->getParcelles())." parcelles");
 $t->is(count($parcellaireIrrigable->declaration->getParcelles()), 0, "Le parcellaire irrigable n'a pas de parcelle");
 
 $pids = array_keys($parcellaireIrrigable->getParcellaire()->declaration->getParcelles());
-$parcellaireIrrigable->addParcellesFromParcellaire($pids);
+$parcellaireIrrigable->setParcellesFromParcellaire($pids);
 $parcellaireIrrigable->save();
 
 $t->is(count($parcellaireIrrigable->declaration->getParcellesByCommune()), 2, "Le parcellaire irrigable a 2 commune de parcelles");
