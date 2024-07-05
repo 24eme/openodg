@@ -68,6 +68,37 @@ class parcellaireAffectationCoopActions extends sfActions {
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
+    public function executeAjoutApporteurs(sfWebRequest $request) {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+
+        $this->form = new ParcellaireAffectationCoopAjoutApporteursForm($this->parcellaireAffectationCoop);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+    		return sfView::SUCCESS;
+    	}
+        $this->form->bind($request->getParameter($this->form->getName()));
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $etablissement = EtablissementClient::getInstance()->findByCvi($this->form->getValues()['cviApporteur']);
+        if (! $etablissement) {
+            $this->getUser()->setFlash("error", "Le CVI est invalide.");
+            return $this->redirect('parcellaireaffectationcoop_ajout_apporteurs', $this->parcellaireAffectationCoop);
+        } elseif ((in_array($etablissement->_id, $this->parcellaireAffectationCoop->getApporteursChoisis()))) {
+            $this->getUser()->setFlash("error", "Cet apporteur est déjà dans la liste.");
+            return $this->redirect('parcellaireaffectationcoop_ajout_apporteurs', $this->parcellaireAffectationCoop);
+        } else {
+            $this->parcellaireAffectationCoop->addApporteur($etablissement->_id);
+            $this->getUser()->setFlash("success", "Apporteur ajouté avec succès.");
+            $this->parcellaireAffectationCoop->save();
+        }
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
+    }
+
     public function executeListe(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();

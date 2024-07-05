@@ -38,7 +38,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         return $apporteurs;
     }
 
-    protected function addApporteur($id_etablissement) {
+    public function addApporteur($id_etablissement) {
         if($this->apporteurs->exist($id_etablissement)) {
 
             return $this->apporteurs->get($id_etablissement);
@@ -115,7 +115,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if($apporteur->getEtablissementObject()->isSuspendu()) {
                 continue;
             }
-          
+
             $retires[] = $apporteur;
         }
         $ajoutes = array();
@@ -126,7 +126,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if(isset($liaisons[$apporteur->getEtablissementId()])) {
                 continue;
             }
-          
+
             $ajoutes[] = $apporteur;
         }
 
