@@ -112,11 +112,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
             $subitem->lieu = $detail->lieu;
             $subitem->cepage = $detail->cepage;
             $subitem->active = 1;
-            if ($detail->ecart_pieds && $detail->ecart_rang) {
-                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
-            } else {
-                $subitem->densite = 0;
-            }
+            $subitem->densite = $detail->getDensite();
             $subitem->remove('vtsgn');
             if($detail->exist('vtsgn')) {
                 $subitem->add('vtsgn', (int)$detail->vtsgn);
@@ -124,6 +120,17 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
             $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
 
         return $subitem;
+    }
+
+    public function setParcellesFromParcellaire(array $hashes) {
+        parent::setParcellesFromParcellaire($hashes);
+        $parcellaireparcelles = $this->getParcellaire()->getParcelles();
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            $parcelle = $parcellaireparcelles[$pid];
+            if ($parcelle) {
+                $p->densite = $parcelle->getDensite();
+            }
+        }
     }
 
     public function getDeclarantSiret(){
