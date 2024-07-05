@@ -88,6 +88,14 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
+    public function getDeclarationParcelles() {
+        $parcelles = [];
+        foreach($this->declaration->getParcelles() as $k => $p) {
+            $parcelles[$p->getParcelleId()] = $p;
+        }
+        return $parcelles;
+    }
+
     public function getParcelles() {
         if ($this->exist('parcelles')) {
             $p = $this->_get('parcelles');

@@ -68,23 +68,28 @@ class DeclarationParcellaire extends acCouchdbDocument {
         if (!$parcellaireCurrent) {
             return [];
         }
+        return $parcellaireCurrent->getDeclarationParcelles();
+    }
+
+    public function getDeclarationParcelles() {
         $parcelles = [];
-        foreach($parcellaireCurrent->declaration->getParcelles() as $k => $p) {
+        foreach($this->declaration->getParcelles() as $k => $p) {
             $parcelles[$p->getParcelleId()] = $p;
         }
         return $parcelles;
     }
 
     public function getParcelleFromParcelleReference($p) {
-        foreach($this->declaration->getParcelles() as $d) {
-            if ($p->parcelle_id == $d->parcelle_id) {
-                return $d;
-            }
+        $parcelles = $this->getDeclarationParcelles();
+        if (!isset($parcelles[$p->getParcelleId()])) {
+            return null;
         }
-        return null;
+        return $parcelles[$p->getParcelleId()];
     }
 
     public function setParcellesFromParcellaire(array $hashes) {
+        $parcelles_orig = $this->getDeclarationParcelles();
+
         $this->remove('declaration');
         $this->add('declaration');
 
@@ -107,7 +112,11 @@ class DeclarationParcellaire extends acCouchdbDocument {
                 throw new sfException('To affect parcelle '.$pid.' produit_hash is needed');
             }
             $p = $this->declaration->add(str_replace('/declaration/', '', $p_orig->produit_hash));
-            $d = $p->detail->add($pid);
+            if (isset($parcelles_orig[$pid])) {
+                $d = $p->detail->add($pid, $parcelles_orig[$pid]);
+            }else{
+                $d = $p->detail->add($pid);
+            }
             ParcellaireClient::CopyParcelle($d, $p_orig);
             if ($d->exist('active')) {
                 $d->active = 1;
