@@ -1,15 +1,14 @@
 <?php use_helper('Float'); ?>
 <?php
-$currentParcellaire = $parcellaireManquant->getParcellaire();
+$parcellaire = $parcellaireManquant->getParcellaire2Reference();
 $previousParcelles = [];
 foreach($parcellaireManquant->getParcelles() as $p) {
-    $pMatch = $currentParcellaire->findParcelle($p, 0.75);
+    $pMatch = $parcellaire->findParcelle($p, 0.75);
     if($pMatch) {
-        $previousParcelles[$pMatch->getHash()] = true;
+        $previousParcelles[$pMatch->getParcelleId()] = true;
     }
 }
 ?>
-<?php $parcellaire = $parcellaireManquant->getParcellaire2Reference(); ?>
 <?php if ($parcellaire) foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
     <div class="row">
         <div class="col-xs-6">
@@ -40,8 +39,8 @@ foreach($parcellaireManquant->getParcelles() as $p) {
                 <td><?php echo $parcelle->numero_parcelle; ?></td>
                 <td><span class="text-muted"><?php echo $parcelle->getProduitLibelle(); ?></span> <?php echo $parcelle->cepage; ?></td>
                 <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
-                <td class="text-right"><?php echoFloatFr($parcelle->superficie_affectation, 4); ?></td>
-				<td class="text-center"><input <?php if (array_key_exists($parcelle->getHash(), $previousParcelles)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+                <td class="text-right"><?php echoFloatFr($parcelle->superficie, 4); ?></td>
+				<td class="text-center"><input <?php if (array_key_exists($parcelle->getParcelleId(), $previousParcelles)): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getParcelleId() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>
         </tbody>

@@ -95,26 +95,9 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return true;
   }
 
-
-  public function initProduitFromLastParcellaire() {
-      if (count($this->declaration) == 0) {
-          $this->importProduitsFromLastParcellaire();
-      }
-  }
-
-  public function getParcellaire() {
-
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-
   public function getParcellaireAffectation() {
       return ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
   }
-
-    public function getParcelles() {
-
-        return $this->declaration->getParcelles();
-    }
 
     public function getParcellaire2Reference() {
         $parcellaireCurrent = null;
@@ -125,48 +108,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
             $parcellaireCurrent = $this->getParcellaire();
         }
         return $parcellaireCurrent;
-    }
-
-    public function getParcellesFromParcellaire() {
-        $parcellaireCurrent = $this->getParcellaire2Reference();
-        if (!$parcellaireCurrent) {
-          return array();
-        }
-        return $parcellaireCurrent->getParcelles();
-    }
-
-    public function addParcellesFromParcellaire(array $hashes) {
-      	$parcelles = $this->getParcellesFromParcellaire();
-        if (!$parcelles || !count($parcelles)) {
-            throw new sfException('pas de parcelles du parcellaire');
-        }
-        foreach($hashes as $h) {
-            $t = explode('/detail/', str_replace('/declaration/', '', $h));
-            $p = $this->declaration->add($t[0]);
-            $d = $p->detail->add($t[1]);
-            ParcellaireClient::CopyParcelle($d, $parcelles[$t[1]]);
-            $d->active = 1;
-        }
-    }
-
-    public function getParcellesByIdu() {
-        if(is_array($this->parcelles_idu)) {
-
-            return $this->parcelles_idu;
-        }
-
-        $this->parcelles_idu = [];
-
-        foreach($this->getParcelles() as $parcelle) {
-            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-        }
-
-        return $this->parcelles_idu;
-    }
-
-    public function findParcelle($parcelle) {
-
-        return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
     }
 
     public function getDeclarantSiret(){

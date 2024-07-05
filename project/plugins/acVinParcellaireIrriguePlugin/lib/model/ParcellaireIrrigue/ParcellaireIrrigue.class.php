@@ -131,66 +131,10 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
     }
   }
 
-  public function findParcelle($parcelle) {
-
-      return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
-  }
-
-  public function getParcellesByIdu() {
-      if(is_array($this->parcelles_idu)) {
-
-          return $this->parcelles_idu;
-      }
-
-      $this->parcelles_idu = [];
-
-      foreach($this->getParcelles() as $parcelle) {
-          $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-      }
-
-      return $this->parcelles_idu;
-  }
-
   public function getConfiguration() {
 
       return ConfigurationClient::getInstance()->getConfiguration($this->periode.'-03-01');
   }
-
-
-  public function initProduitFromLastParcellaire() {
-      if (count($this->declaration) == 0) {
-          $this->importProduitsFromLastParcellaire();
-      }
-  }
-
-  public function getParcellaire() {
-
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-
-    public function getParcelles() {
-
-        return $this->declaration->getParcelles();
-    }
-
-    public function getParcellesFromParcellaire() {
-        $parcellaireCurrent = $this->getParcellaire();
-        if (!$parcellaireCurrent) {
-          return;
-        }
-        $p = $parcellaireCurrent->declaration->getParcelles();
-        return $p;
-    }
-
-    public function addParcellesFromParcellaire(array $hashes) {
-      	$parcellaires = $this->getParcellesFromParcellaire();
-        foreach($hashes as $h) {
-            $t = explode('/detail/', str_replace('/declaration/', $h));
-            $d = $this->declaration->add($t[0])->detail->add($t[1]);
-            ParcellaireClient::CopyParcelle($d, $parcellaires[$h]);
-            $d->active = 1;
-        }
-    }
 
     public function getDeclarantSiret(){
         $siret = "";

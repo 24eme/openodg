@@ -119,7 +119,7 @@ class parcellaireManquantActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
-    	$this->parcellaireManquant->addParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
+    	$this->parcellaireManquant->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
 
     	$this->parcellaireManquant->save();
 
