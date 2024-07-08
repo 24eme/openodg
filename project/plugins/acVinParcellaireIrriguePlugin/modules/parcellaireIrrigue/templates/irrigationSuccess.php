@@ -102,7 +102,7 @@
                 </a>
             <?php endif; ?>
         </div>
-        <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper transparence-lg"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right"><button type="button" class="btn btn-primary btn-upper transparence-lg"  id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigue-confirmation-validation">Valider</button></div>
     </div>
     <?php include_partial('parcellaireIrrigue/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
