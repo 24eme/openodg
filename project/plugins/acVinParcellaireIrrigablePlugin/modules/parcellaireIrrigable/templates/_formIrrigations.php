@@ -1,3 +1,4 @@
+<?php use_helper('Float'); ?>
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 
