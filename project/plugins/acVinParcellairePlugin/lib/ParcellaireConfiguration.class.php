@@ -41,7 +41,10 @@ class ParcellaireConfiguration {
     }
 
     public function isJeunesVignes3emeFeuille() {
-        return true;
+        if(!isset($this->configuration['troisieme_feuille'])) {
+            return false;
+        }
+        return $this->configuration['troisieme_feuille'];
     }
 
     public function isAres()
