@@ -140,6 +140,14 @@ EOF;
             $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
         }
 
+        if(preg_match('/CP/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+        }
+
+        if(preg_match('/PREST/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        }
+
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
         $etablissement->nom = $raison_sociale;
 
