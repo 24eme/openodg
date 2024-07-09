@@ -81,7 +81,7 @@ $parcelle = array_shift($parcelles);
 
 $parcelleAffectee = $parcelle->getParcelleAffectee();
 
-$t->is($parcelle->getProduit()->getLibelleComplet(), $configProduit[0]->getLibelleComplet(), "Le libellé du produit est ". $configProduit[0]->getLibelleComplet());
+$t->is($parcelle->getConfig()->getLibelleComplet(), $configProduit[0]->getLibelleComplet(), "Le libellé du produit est ". $configProduit[0]->getLibelleComplet());
 $t->is($parcelleAffectee->getKey(), $code_commune."000AY0036-00", "La clé de la parcelle est bien construite");
 $t->is($parcelle->code_commune, $code_commune, "Le code commune est : $code_commune");
 $t->is($parcelle->campagne_plantation, "2017-2018", "La campagne de plantation a été enregistré");
@@ -94,7 +94,7 @@ $t->is($parcelle->idu, $code_commune."000AY0036" , "Le code IDU est ".$code_comm
 array_shift($parcelles);
 $parcelle3 = array_shift($parcelles);
 $t->is($parcelle3->getKey(), '75063000AM0152-00', "La clé de la parcelle 3 est bien construite");
-$t->is($parcelle3->getProduit()->getLibelleComplet(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
+$t->is($parcelle3->getConfig()->getLibelleComplet(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
 

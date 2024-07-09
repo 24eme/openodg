@@ -282,6 +282,7 @@ class ParcellaireCsvFile
 
             $new_parcelle = $this->parcellaire->addParcelle(
                 $parcelle[self::CSV_FORMAT_IDU - $is_old_format],
+                $libelle,
                 $parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_CAMPAGNE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_COMMUNE - $is_old_format],
