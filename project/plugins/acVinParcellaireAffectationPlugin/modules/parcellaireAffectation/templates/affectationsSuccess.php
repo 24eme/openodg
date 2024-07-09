@@ -4,6 +4,7 @@
 <?php include_partial('parcellaireAffectation/step', array('step' => 'affectations', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 <div class="page-header no-border">
     <h2>Affectation de vos parcelles</h2>
+    <h3 style="font-size: 14px;">Les parcelles listées ci-dessous sont reprises depuis le parcellaire douanier</h3>
 </div>
 <form id="validation-form" action="<?php echo url_for("parcellaireaffectation_affectations", $parcellaireAffectation) ?>" method="post" class="form-horizontal">
     <?php include_partial("parcellaireAffectation/formAffectations", array('parcellaireAffectation' => $parcellaireAffectation, 'form' => $form)); ?>
