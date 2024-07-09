@@ -143,7 +143,6 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             if ($previous_drev) {
                 $drev->set('chais', $previous_drev->chais->toArray(true, false));
             }
-            $drev->updateVCIFromPrecedente();
         }
 
         return $drev;

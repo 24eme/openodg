@@ -2,7 +2,7 @@
 <?php include_partial('parcellaireAffectationCoop/step', array('step' => 'saisies', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
 
 <div class="page-header no-border mt-0">
-    <h2>Déclarations des apporteurs</h2>
+    <h2>Déclarations des apporteurs - Campagne <?php echo $parcellaireAffectationCoop->getCampagne() ?> </h2>
 </div>
 
 <div class="row">
