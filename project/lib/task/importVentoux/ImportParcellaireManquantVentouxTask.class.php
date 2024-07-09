@@ -43,27 +43,34 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
-            if(!$data[self::CSV_POURCENTAGE_MANQUANT]) {
-                $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
-                if(!$manquant->isValidee()) {
-                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
-                }
-                $manquant->save();
-
-                continue;
-            }
-
             $etablissement = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI]);
             if (!$etablissement) {
                 echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé\n";
                 continue;
             }
+
+            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+            if(!$manquant->isValidee()) {
+                $manquant->validate($periode.'-'.self::DATE_VALIDATION);
+            }
+            try {
+                $manquant->save();
+            } catch(Exception $e) {
+                sleep(60);
+                $manquant->save();
+            }
+
+            if(!$data[self::CSV_POURCENTAGE_MANQUANT]) {
+
+                continue;
+            }
+
             $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
             if (!$parcellaireTotal) {
                 $parcellaireTotal = new Parcellaire();
                 echo "Parcellaire non trouvé;".$line;
             }
-            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
                 if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
@@ -93,15 +100,9 @@ EOF;
             $manquantParcelle->pourcentage = (int)$data[self::CSV_POURCENTAGE_MANQUANT];
 
             try {
-                if(!$manquant->isValidee()) {
-                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
-                }
                 $manquant->save();
             } catch(Exception $e) {
                 sleep(60);
-                if(!$manquant->isValidee()) {
-                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
-                }
                 $manquant->save();
             }
         }
