@@ -7,7 +7,7 @@
         </div>
     </div>
 <?php endif; ?>
-<table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+<table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>
         <tr>
         	<th class="col-xs-2">Commune</th>
@@ -25,8 +25,21 @@
         ksort($parcelles);
         $nbParcelles = 0;
         $totalSurface = 0;
+
+        $nomCommune = null;
+        $parcellesCommune = 0;
+        $superficieCommune = 0;
         foreach ($parcelles as $parcelle):
-    ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie,4) ?>
+    ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie,4); ?>
+        <?php if ($nomCommune != $parcelle->commune && $nbParcelles != 1): ?>
+            <tr class="total-commune">
+                <td colspan="5" class="text-right">
+                    <strong>Total des <?php echo $parcellesCommune ?> parcelles de <?php echo $nomCommune ?></strong>
+                </td>
+                <td class="text-right"><strong><?php echoFloatFr($superficieCommune, 4) ?></strong></td>
+            </tr>
+            <?php $parcellesCommune = 0; $nomCommune = $parcelle->commune; $superficieCommune = 0 ?>
+        <?php endif ?>
         <tr class="vertical-center">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
@@ -43,7 +56,16 @@
                 <?php endif; ?>
             </td>
         </tr>
+
+        <?php $parcellesCommune++; $nomCommune = $parcelle->commune; $superficieCommune += $parcelle->superficie  ?>
+
     <?php endif; endforeach; ?>
+        <tr class="total-commune">
+            <td colspan="5" class="text-right">
+                <strong>Total des <?php echo $parcellesCommune ?> parcelles de <?php echo $nomCommune ?></strong>
+            </td>
+            <td class="text-right"><strong><?php echoFloatFr($superficieCommune, 4) ?></strong></td>
+        </tr>
         <tr class="vertical-center">
             <td colspan="5" style="text-align: right; font-weight: bold;">Surface affectable totale <?php echo ($nbParcelles > 1 )? "des $nbParcelles parcelles sélectionnées" : " de la parcelle sélectionnée"; ?></td>
             <td style="text-align: right; font-weight: bold;"><?php echoFloatFr($totalSurface,4); ?></td>
