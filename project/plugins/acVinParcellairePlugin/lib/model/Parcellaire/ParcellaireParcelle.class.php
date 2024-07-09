@@ -84,7 +84,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduitLibelle() {
         if (!$this->isRealProduit()) {
-            return ' - PRODUIT NON RECONNU - ';
+            return 'PRODUIT NON GÉRÉ ('.$this->source_produit_libelle.')';
         }
         return $this->getProduit()->getLibelle();
     }
