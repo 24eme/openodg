@@ -314,14 +314,25 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getParcelleFromParcellaire($id) {
-        return $this->getParcellaire()->getParcelleFromParcellaireId($id);
+        $parcellaire = $this->getParcellaire();
+
+        if(!$parcellaire) {
+
+            return null;
+        }
+
+        return $parcellaire->getParcelleFromParcellaireId($id);
     }
 
     public function getGeoJson() {
-        if (!$this->getParcellaire()) {
+        $parcellaire = $this->getParcellaire();
+
+        if(!$parcellaire) {
+
             return "";
         }
-        return $this->getParcellaire()->getGeoJson();
+
+        return $parcellaire->getGeoJson();
     }
 
 }
