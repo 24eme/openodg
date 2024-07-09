@@ -4,6 +4,10 @@
 
 <?php include_partial('parcellaireAffectation/step', array('step' => 'validation', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
 
+<?php if (isset($validation) && $validation->hasPoints()): ?>
+    <?php include_partial('parcellaireAffectation/pointsAttentions', ['validation' => $validation]); ?>
+<?php endif; ?>
+
 <form role="form" action="<?php echo url_for('parcellaireaffectation_validation', $parcellaireAffectation) ?>" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>

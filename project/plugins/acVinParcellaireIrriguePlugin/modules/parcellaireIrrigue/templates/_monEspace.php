@@ -1,8 +1,6 @@
-<?php use_helper('Date'); ?>
+<?php if($etablissement->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)): return; endif; ?>
 
-<?php if ($etablissement->famille === EtablissementFamilles::FAMILLE_COOPERATIVE): ?>
-    <?php return; ?>
-<?php endif ?>
+<?php use_helper('Date'); ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
