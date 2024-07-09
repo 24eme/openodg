@@ -84,6 +84,11 @@ $list_idu = [];
             <div class="form-group">
                 <input id="hamzastyle" onchange="filterMap()" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
             </div>
+            <?php if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()): ?>
+            <div class="form-group">
+                <input type=checkbox id="voirnongere" onchange="if(document.querySelector('#voirnongere').checked){console.log('checked'); document.querySelector('.produitnongere').classList.remove('hidden');}else{document.querySelector('.produitnongere').classList.add('hidden');}; console.log(document.querySelector('.produitnongere')); "> <label for="voirnongere">Voir toutes les parcelles (même celles déclarées au CVI sous une dénomination non gérée)</label>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
     <?php endif; ?>
@@ -127,6 +132,9 @@ $list_idu = [];
                             if ($detail->hasProblemCepageAutorise()) {
                               $classline .= ' danger';
                               $classcepage .= ' text-danger strong hasProblemCepageAutorise';
+                            }
+                            if (!$detail->isRealProduit()) {
+                                $classline .= ' hidden produitnongere';
                             }
                             ?>
                             <?php
@@ -295,7 +303,7 @@ $list_idu = [];
 <?php else: ?>
     <div class="row" style="min-height: 370px;">
         <div class="col-xs-12 text-center">
-            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+            <p>Aucune parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
         </div>
     </div>
 <?php endif; ?>
