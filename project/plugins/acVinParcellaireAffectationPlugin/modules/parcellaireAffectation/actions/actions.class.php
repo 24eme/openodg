@@ -43,7 +43,7 @@ class parcellaireAffectationActions extends sfActions {
     	$parcellaireAffectation->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => ($parcellaireAffectation->periode - 1).'-'.$parcellaireAffectation->periode));
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireAffectation->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {
