@@ -1,4 +1,5 @@
 <?php include_partial('parcellaireAffectationCoop/breadcrumb', array('parcellaireAffectationCoop' => $parcellaireAffectationCoop)); ?>
+<?php include_partial('parcellaireAffectationCoop/step', array('step' => 'saisies', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
 
 <div class="page-header no-border mt-0">
     <h2>Déclarations des apporteurs</h2>

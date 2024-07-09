@@ -1,4 +1,6 @@
 <?php include_partial('parcellaireAffectationCoop/breadcrumb', array('parcellaireAffectationCoop' => $parcellaireAffectationCoop, 'declaration' => $parcellaireIrrigable)); ?>
+<?php include_partial('parcellaireAffectationCoop/step', array('step' => 'saisies', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
+
 <form id="validation-form" action="" method="post" >
 <div class="panel panel-default">
     <div class="panel-heading">
