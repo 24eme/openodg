@@ -94,7 +94,7 @@ EOF;
                     continue;
                 }
             }
-            $manquantParcelle = $manquant->addParcelleFromParcellaireParcelle($parcelle);
+            $manquantParcelle = $this->addParcelleFromParcellaireParcelle($manquant, $parcelle);
             $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
             $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE]);
             $manquantParcelle->pourcentage = (int)$data[self::CSV_POURCENTAGE_MANQUANT];
@@ -106,5 +106,15 @@ EOF;
                 $manquant->save();
             }
         }
+    }
+
+    protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
+        $produit = $parcelle->getProduit();
+        $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
+        $item->libelle = $produit->libelle;
+        $subitem = $item->detail->add($parcelle->getKey());
+        ParcellaireClient::CopyParcelle($subitem, $parcelle);
+
+        return $subitem;
     }
 }

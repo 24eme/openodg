@@ -98,9 +98,9 @@ EOF;
         }
     }
 
-    protected function addParcelleFromParcellaireParcelle($affectation, $parcelle) {
+    protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
         $produit = $parcelle->getProduit();
-        $item = $affectation->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
+        $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
         $item->libelle = $produit->libelle;
         $subitem = $item->detail->add($parcelle->getKey());
         ParcellaireClient::CopyParcelle($subitem, $parcelle);
