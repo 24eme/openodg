@@ -51,6 +51,9 @@ EOF;
 
     public function setTiersRelation($etablissement_source, $tiers, $relation) {
         foreach ($tiers as $etablissement) {
+            if(!$etablissement['etablissement']) {
+                continue;
+            }
             $etablissement_source->addLiaison($relation, EtablissementClient::getInstance()->find($etablissement['etablissement']->_id), true);
         }
         $etablissement_source->save();

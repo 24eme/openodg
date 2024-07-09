@@ -3,7 +3,7 @@ all:
     communes:
       "84003": "APT"
       "84004": "AUBIGNAN"
-      "84008": "BARROUX"
+      "84008": "LE BARROUX"
       "84011": "BEAUCET"
       "84015": "BEAUMONT-DU-VENTOUX"
       "84017": "BEDOIN"
@@ -34,7 +34,7 @@ all:
       "84085": "MURS"
       "84088": "PERNES-LES-FONTAINES"
       "84099": "ROBION"
-      "84101": "ROQUE-SUR-PERNES"
+      "84101": "LA ROQUE-SUR-PERNES"
       "84102": "ROUSSILLON"
       "84103": "RUSTREL"
       "84105": "SAIGNON"

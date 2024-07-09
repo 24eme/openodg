@@ -88,14 +88,14 @@ EOF;
                 $drev = new DRev();
                 $drev->initDoc($etablissement->identifiant, $periode);
                 $drev->storeDeclarant();
-                /*try {
+                try {
                     $drev->resetAndImportFromDocumentDouanier();
                     foreach($drev->getProduits() as $p) {
                         $p->superficie_revendique = null;
                     }
                 } catch(Exception $e) {
                     continue;
-                }*/
+                }
             }
 
             if(!$data[self::CSV_VOLUME] && !$data[self::CSV_SUPERFICIE]) {

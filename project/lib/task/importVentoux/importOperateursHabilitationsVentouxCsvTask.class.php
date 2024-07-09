@@ -141,7 +141,7 @@ EOF;
         }
 
         if(preg_match('/CP/', $data[self::CSV_CODE_LEGENDE])) {
-            $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
         }
 
         if(preg_match('/PREST/', $data[self::CSV_CODE_LEGENDE])) {

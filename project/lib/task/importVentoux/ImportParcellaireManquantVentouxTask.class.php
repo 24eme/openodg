@@ -43,21 +43,34 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
-            if(!$data[self::CSV_POURCENTAGE_MANQUANT]) {
-                continue;
-            }
-
             $etablissement = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI]);
             if (!$etablissement) {
                 echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé\n";
                 continue;
             }
+
+            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+            if(!$manquant->isValidee()) {
+                $manquant->validate($periode.'-'.self::DATE_VALIDATION);
+            }
+            try {
+                $manquant->save();
+            } catch(Exception $e) {
+                sleep(60);
+                $manquant->save();
+            }
+
+            if(!$data[self::CSV_POURCENTAGE_MANQUANT]) {
+
+                continue;
+            }
+
             $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
             if (!$parcellaireTotal) {
                 $parcellaireTotal = new Parcellaire();
                 echo "Parcellaire non trouvé;".$line;
             }
-            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
                 if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
@@ -81,23 +94,27 @@ EOF;
                     continue;
                 }
             }
-            $manquantParcelle = $manquant->addParcelleFromParcellaireParcelle($parcelle);
+            $manquantParcelle = $this->addParcelleFromParcellaireParcelle($manquant, $parcelle);
             $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
             $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE]);
             $manquantParcelle->pourcentage = (int)$data[self::CSV_POURCENTAGE_MANQUANT];
 
             try {
-                if(!$manquant->isValidee()) {
-                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
-                }
                 $manquant->save();
             } catch(Exception $e) {
                 sleep(60);
-                if(!$manquant->isValidee()) {
-                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
-                }
                 $manquant->save();
             }
         }
+    }
+
+    protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
+        $produit = $parcelle->getProduit();
+        $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
+        $item->libelle = $produit->libelle;
+        $subitem = $item->detail->add($parcelle->getKey());
+        ParcellaireClient::CopyParcelle($subitem, $parcelle);
+
+        return $subitem;
     }
 }
