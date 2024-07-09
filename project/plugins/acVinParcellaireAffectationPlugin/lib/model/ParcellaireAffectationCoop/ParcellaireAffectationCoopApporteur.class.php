@@ -92,7 +92,11 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
 
     public function getNbParcelles() {
         if (!$this->exist('nb_parcelles_identifiees') || is_null($this->_get('nb_parcelles_identifiees'))) {
-            $this->updateParcelles();
+            try {
+                $this->updateParcelles();
+            }catch(sfException $e) {
+                return 0;
+            }
         }
         return $this->_get('nb_parcelles_identifiees');
     }

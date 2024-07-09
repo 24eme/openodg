@@ -11,12 +11,13 @@ class ImportParcellaireManquantVentouxTask extends sfBaseTask
     const CSV_POURCENTAGE_MANQUANT = 15;
     const CSV_DENSITE = 12;
 
-    const DATE_VALIDATION = "2023-04-15";
+    const DATE_VALIDATION = "04-15";
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv")
+            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv"),
+            new sfCommandArgument('periode', sfCommandArgument::REQUIRED, "Période")
         ));
 
         $this->addOptions(array(
@@ -37,6 +38,8 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $periode = $arguments['periode'];
+
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
@@ -54,7 +57,7 @@ EOF;
                 $parcellaireTotal = new Parcellaire();
                 echo "Parcellaire non trouvé;".$line;
             }
-            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
+            $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
                 if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
@@ -85,13 +88,13 @@ EOF;
 
             try {
                 if(!$manquant->isValidee()) {
-                    $manquant->validate(self::DATE_VALIDATION);
+                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
                 }
                 $manquant->save();
             } catch(Exception $e) {
                 sleep(60);
                 if(!$manquant->isValidee()) {
-                    $manquant->validate(self::DATE_VALIDATION);
+                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
                 }
                 $manquant->save();
             }

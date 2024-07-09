@@ -2,6 +2,8 @@
 
 <?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
 
+<?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireIrrigable)); ?>
+
 <div class="page-header no-border">
     <h2>Identification des parcelles irrigables
     <?php if($parcellaireIrrigable->isAuto()): ?>

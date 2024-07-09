@@ -279,4 +279,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $dgcs;
     }
 
+    public function getDensite() {
+        if ($this->ecart_pieds && $this->ecart_rang) {
+            return round(10000 / (($this->ecart_pieds / 100) * ($this->ecart_rang / 100)), 0);
+        }
+        return 0;
+    }
 }

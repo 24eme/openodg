@@ -138,6 +138,16 @@ parcellaireaffectationcoop_apporteurs:
   requirements:
     sf_method: [get, post]
 
+parcellaireaffectationcoop_ajout_apporteurs:
+  url: /parcellaire-affectation-coop/apporteurs/:id/ajout
+  param: { module: parcellaireAffectationCoop, action: ajoutApporteurs }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireaffectationcoop_liste:
   url: /parcellaire-affectation-coop/liste/:id
   param: { module: parcellaireAffectationCoop, action: liste }
