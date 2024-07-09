@@ -13,7 +13,7 @@
             </div>
             <div class="panel-body">
                 <?php if ($parcellaireLie && $parcellaireLie->isValidee()): ?>
-                    <a class="btn btn-sm btn-default"s href="<?php echo url_for(strtolower($type).'_visualisation', ['id' => ($item['id'])]); ?>"style="margin-bottom:2px;">Déclaration validée le <?php echo format_date($parcellaireLie->validation, "dd/MM/yyyy", "fr_FR"); ?></a>
+                    <a class="btn btn-xs btn-block btn-default" href="<?php echo url_for(strtolower($type).'_visualisation', ['id' => ($item['id'])]); ?>"style="margin-bottom:2px;">Déclaration validée le <?php echo format_date($parcellaireLie->validation, "dd/MM/yyyy", "fr_FR"); ?></a>
 
                 <?php elseif ($parcellaireLie && !$parcellaireLie->isValidee()): ?>
                     <a href="<?php echo url_for(strtolower($type).'_edit', $parcellaireLie); ?>" class="btn btn-xs btn-block btn-default">Continuer la déclaration</a>
