@@ -138,7 +138,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function findParcelle($parcelle) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
+        return ParcellaireClient::findParcelle($this, $parcelle, 1);
     }
 
 }

@@ -38,10 +38,10 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
             return self::STATUT_EN_COURS;
         }
 
-        if(!$this->getNbParcelles()) {
+        /*if(!$this->getNbParcelles()) {
 
             return self::STATUT_NON_IDENTIFIEE;
-        }
+        }*/
         if(!$this->intention) {
 
             return self::STATUT_DESACTIVE;
