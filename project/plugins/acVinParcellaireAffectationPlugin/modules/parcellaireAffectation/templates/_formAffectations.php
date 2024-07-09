@@ -45,7 +45,7 @@
             <td><?php echo $parcelle->cepage; ?></td>
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
             <td class="text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
-            <td class="text-right">
+            <td class="text-right edit">
                 <?php echo $form[$produitKey][$parcelle->getKey()]['superficie']->render(); ?>
             </td>
         	<td class="text-center">
@@ -64,6 +64,46 @@
             </td>
         </tr>
     <?php  endif; endforeach; ?>
+    <tr class="commune-total">
+        <td colspan="6" class="text-right"><strong>Total <?php echo $group ?></strong></td>
+        <td class="text-right"></td>
+        <td class="text-right"></td>
+        <td></td>
+    </tr>
     </tbody>
 </table>
 <?php endforeach; ?>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function (e) {
+        updateTotal = function (table) {
+            let superficie = 0
+            let checked = 0
+
+            table.querySelectorAll("tbody tr:not(.commune-total)").forEach(function (tr) {
+                if (tr.querySelector('.bsswitch:checked')) {
+                    superficie += parseFloat(tr.querySelector('td:nth-child(0n+7) input').value)
+                    checked ++
+                }
+            })
+            table.querySelector('tr.commune-total td:nth-child(0n+2)').innerText = parseFloat(superficie, 4).toFixed(4)
+            table.querySelector('tr.commune-total td:nth-child(0n+3)').innerText = checked
+        };
+
+        (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
+            el.addEventListener('change', function (event) {
+                const table = event.target.closest('table')
+                updateTotal(table)
+            })
+        });
+
+        (document.querySelectorAll('table[id^=parcelles_]') || []).forEach(function (el) {
+            updateTotal(el)
+        });
+
+        $('.bsswitch').on('switchChange.bootstrapSwitch', function (event, state) {
+            const table = event.target.closest('table')
+            updateTotal(table)
+        });
+    });
+</script>
