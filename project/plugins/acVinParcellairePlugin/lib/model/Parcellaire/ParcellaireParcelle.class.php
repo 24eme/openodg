@@ -190,8 +190,13 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 
-    public function hasTroisiemeFeuille() {
-        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - 2;
+    public function hasJeunesVignes() {
+        //Troisième ou Quatrieme feuille
+        $annee = 3;
+        if (ParcellaireConfiguration::getInstance()->isJeunesVignes3emeFeuille()) {
+            $annee = 2;
+        }
+        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - $annee;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
     }
@@ -228,6 +233,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             $c = substr($this->idu, 0, 5);
         }
         return $c;
+    }
+
+    public function getPcAire($nom_aire) {
+        return AireClient::getInstance()->getPcFromCommuneGeoParcelleAndAire($this->code_commune, $this, $nom_aire);
     }
 
     public function getIsInAires() {

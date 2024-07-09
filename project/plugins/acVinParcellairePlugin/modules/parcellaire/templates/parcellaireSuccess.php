@@ -137,7 +137,7 @@ $list_idu = [];
                                 $ecart_pieds = ($detail->exist('ecart_pieds')) ? $detail->get('ecart_pieds'):'&nbsp;';
                                 $ecart_rang = ($detail->exist('ecart_rang')) ? $detail->get('ecart_rang'):'&nbsp;';
                                 $cepage = $detail->cepage;
-                                if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuilleEnabled() && !$detail->hasTroisiemeFeuille()) {
+                                if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$detail->hasJeunesVignes()) {
                                     $cepage .= ' - jeunes vignes';
                                 }
                             ?>
@@ -165,6 +165,7 @@ $list_idu = [];
                                             echo "Hors de l'aire ".$nom;
                                         } elseif($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) {
                                             echo "Partiellement ".$nom;
+                                            printf(' (%d&percnt; hors de l\'aire)', (1 - $detail->getPcAire($nom)) * 100);
                                         } elseif($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) {
                                             echo "Erreur interne sur ".$nom;
                                         } else {
