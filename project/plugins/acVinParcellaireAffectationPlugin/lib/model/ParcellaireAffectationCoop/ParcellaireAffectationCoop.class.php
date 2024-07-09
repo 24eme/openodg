@@ -89,7 +89,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function updateApporteurs() {
         foreach($this->getApporteursChoisis() as $apporteur) {
-            if($apporteur->getAffectationParcellaire()) {
+            if($apporteur->getDocument(ParcellaireAffectationClient::TYPE_MODEL)) {
                 continue;
             }
             try {

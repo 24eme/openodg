@@ -45,9 +45,9 @@
     <?php return; ?>
 <?php endif; ?>
 
-<?php foreach($parcellesByCommune as $dgc => $parcelles): ?>
+<?php foreach($parcellesByCommune as $group => $parcelles): ?>
 <br />
-<div><span class="h3">&nbsp;Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?>&nbsp;</span></div>
+<div><span class="h3">&nbsp;<?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>Dénomination complémentaire <?php endif; ?><?php echo str_replace("-", " ", $group); ?>&nbsp;</span></div>
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
@@ -60,7 +60,7 @@
         <th class="th" style="text-align: center; width: 100px;">Surface</th>
     </tr>
     <?php foreach ($parcelles as $parcelle):
-            if($parcelle->affectation):
+            if(!$parcelle->affectee): continue; endif;
                 $date_affectation = new DateTime($parcelle->date_affectation);
          ?>
     	<tr>
@@ -72,9 +72,7 @@
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $parcelle->superficie); ?>&nbsp;<small>ha</small>&nbsp;</td>
     	</tr>
-    <?php
-    endif;
-    endforeach; ?>
+    <?php endforeach; ?>
 </table>
 <?php endforeach; ?>
 
