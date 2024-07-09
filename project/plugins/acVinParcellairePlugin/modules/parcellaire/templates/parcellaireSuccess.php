@@ -165,6 +165,7 @@ $list_idu = [];
                                             echo "Hors de l'aire ".$nom;
                                         } elseif($a == AireClient::PARCELLAIRE_AIRE_PARTIELLEMENT) {
                                             echo "Partiellement ".$nom;
+                                            printf(' (%d&percnt; hors de l\'aire)', (1 - $detail->getPcAire($nom)) * 100);
                                         } elseif($a == AireClient::PARCELLAIRE_AIRE_EN_ERREUR) {
                                             echo "Erreur interne sur ".$nom;
                                         } else {

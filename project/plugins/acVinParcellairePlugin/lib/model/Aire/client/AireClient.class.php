@@ -137,6 +137,17 @@ class AireClient extends acCouchdbClient {
         return $pseudo_aires;
     }
 
+    public function getPcFromCommuneGeoParcelleAndAire($commune_insee, ParcellaireParcelle $parcelle, $aire_nom) {
+        foreach($this->getAiresForInseeCommunes(array($commune_insee)) as $a) {
+            if ($a->denomination_libelle != $aire_nom) {
+                continue;
+            }
+            $geoparcelle = $parcelle->getGeoParcelle();
+            return $a->getPcInAire($geoparcelle);
+        }
+        return 1;
+    }
+
     public function getIsInAiresFromCommuneAndGeoParcelle($commune_insee, ParcellaireParcelle $parcelle) {
         $is_in_aires = array();
         try {

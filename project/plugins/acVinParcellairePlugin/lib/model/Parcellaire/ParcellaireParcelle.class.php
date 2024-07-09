@@ -230,6 +230,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $c;
     }
 
+    public function getPcAire($nom_aire) {
+        return AireClient::getInstance()->getPcFromCommuneGeoParcelleAndAire($this->code_commune, $this, $nom_aire);
+    }
+
     public function getIsInAires() {
         return AireClient::getInstance()->getIsInAiresFromCommuneAndGeoParcelle($this->code_commune, $this);
     }
