@@ -155,7 +155,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
         $parcellaire = $this->getParcellaire();
         foreach ($parcellaire->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
-                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                if (!$CVIParcelle->hasJeunesVignes()) {
                     continue;
                 }
                 foreach($CVIParcelle->getIsInAires() as $nom => $statut) {
@@ -216,7 +216,7 @@ class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation imple
 
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
-                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                if (!$CVIParcelle->hasJeunesVignes()) {
                     continue;
                 }
                 $c = false;

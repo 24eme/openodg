@@ -36,7 +36,11 @@ class ParcellaireConfiguration {
      * Seules les parcelles ayant au moins une troisième feuille sont prises
      * en compte dans les synthèse
      */
-    public function isTroisiemeFeuilleEnabled() {
+    public function isJeunesVignesEnabled() {
+        return true;
+    }
+
+    public function isJeunesVignes3emeFeuille() {
         return true;
     }
 
