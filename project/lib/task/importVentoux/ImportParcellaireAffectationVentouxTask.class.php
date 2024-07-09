@@ -70,7 +70,7 @@ EOF;
                     $produitHash .= '/rouge/cepages/DEFAUT';
                 }
                 try {
-                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
+                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
                 } catch (Exception $e) {
                     echo $e->getMessage().";".$line;
                     continue;

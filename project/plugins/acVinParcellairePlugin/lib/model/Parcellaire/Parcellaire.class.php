@@ -135,7 +135,7 @@ class Parcellaire extends BaseParcellaire {
         throw new sfException('pid not found for '.$idu);
     }
 
-    public function addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null) {
+    public function addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null) {
         $pid = $this->getNextParcelleId($idu, $cepage, $campagne_plantation, $produit);
         $p = $this->parcelles->add($pid);
         $p->idu = $idu;
@@ -143,6 +143,7 @@ class Parcellaire extends BaseParcellaire {
         $p->cepage = $cepage;
         $p->campagne_plantation = $campagne_plantation;
         $p->commune = $commune;
+        $p->source_produit_libelle = $source_produit_libelle;
         if($lieu){
             $lieu = strtoupper($lieu);
             $lieu = trim($lieu);
@@ -157,7 +158,7 @@ class Parcellaire extends BaseParcellaire {
         return $p;
     }
 
-    public function addParcelleWithProduit($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
+    public function addParcelleWithProduit($hashProduit, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
         if ($lieu && preg_match('/[0-9]/', $lieu) && !preg_match('/ /', $lieu)) {
             throw new sfException('Strange lieu '.$lieu);
         }
@@ -172,7 +173,7 @@ class Parcellaire extends BaseParcellaire {
             throw new sfException('Wrong code commune : '.$code_commune.'/'.$commune);
         }
         $idu = $this->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
-        $parcelle  = $this->addParcelle($idu, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
+        $parcelle  = $this->addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
         return $produit->affecteParcelle($parcelle);
     }
 
