@@ -9,12 +9,13 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
     const CSV_SURFACE = 9;
     const CSV_CEPAGE = 11;
 
-    const DATE_VALIDATION = "2023-04-15";
+    const DATE_VALIDATION = "04-15";
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv")
+            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv"),
+            new sfCommandArgument('periode', sfCommandArgument::REQUIRED, "Période")
         ));
 
         $this->addOptions(array(
@@ -35,6 +36,8 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $periode = $arguments['periode'];
+
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
@@ -48,7 +51,7 @@ EOF;
                 $parcellaireTotal = new Parcellaire();
                 echo "Parcellaire non trouvé;".$line;
             }
-            $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
+            $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
             $affectation->parcellaire_origine = $parcellaireTotal->_id;
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
@@ -78,17 +81,17 @@ EOF;
 
             $affectationParcelle->affectee = 1;
             $affectationParcelle->superficie = (float) $data[self::CSV_SURFACE];
-            $affectationParcelle->date_affectation = self::DATE_VALIDATION;
+            $affectationParcelle->date_affectation = $periode.'-'.self::DATE_VALIDATION;
 
             try {
                 if(!$affectation->isValidee()) {
-                    $affectation->validate(self::DATE_VALIDATION);
+                    $affectation->validate($periode.'-'.self::DATE_VALIDATION);
                 }
                 $affectation->save();
             } catch(Exception $e) {
                 sleep(60);
                 if(!$affectation->isValidee()) {
-                    $affectation->validate(self::DATE_VALIDATION);
+                    $affectation->validate($periode.'-'.self::DATE_VALIDATION);
                 }
                 $affectation->save();
             }

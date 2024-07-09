@@ -13,7 +13,7 @@ class ImportParcellaireIrrigueVentouxTask extends sfBaseTask
     const CSV_MATERIEL = 18;
     const CSV_IRRIGUE = 19;
 
-    const DATE_VALIDATION = "2023-04-15";
+    const DATE_VALIDATION = "04-15";
 
     protected $materiels;
     protected $ressources;
@@ -21,7 +21,8 @@ class ImportParcellaireIrrigueVentouxTask extends sfBaseTask
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv")
+            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv"),
+            new sfCommandArgument('periode', sfCommandArgument::REQUIRED, "Période")
         ));
 
         $this->addOptions(array(
@@ -41,6 +42,8 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
+
+        $periode = $arguments['periode'];
 
         $this->materiels = sfConfig::get('app_parcellaire_irrigable_materiels');
         $this->ressources = sfConfig::get('app_parcellaire_irrigable_ressources');
@@ -63,8 +66,8 @@ EOF;
                 echo "Parcellaire non trouvé;".$line;
             }
 
-            $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
-            $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, "2023", true, self::DATE_VALIDATION);
+            $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+            $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, $periode, true, $periode.'-'.self::DATE_VALIDATION);
 
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
@@ -99,24 +102,24 @@ EOF;
             $parcelleIrrigueAjoutee->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
             $parcelleIrrigueAjoutee->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
             $parcelleIrrigueAjoutee->irrigation = $data[self::CSV_IRRIGUE] ? 1 : 0;
-            $parcelleIrrigueAjoutee->date_irrigation = $parcelleIrrigueAjoutee->irrigation ? self::DATE_VALIDATION : null;
+            $parcelleIrrigueAjoutee->date_irrigation = $parcelleIrrigueAjoutee->irrigation ? $periode.'-'.self::DATE_VALIDATION : null;
 
             try {
                 if(!$irrigable->isValidee()) {
-                    $irrigable->validate(self::DATE_VALIDATION);
+                    $irrigable->validate($periode.'-'.self::DATE_VALIDATION);
                 }
                 $irrigable->save();
             } catch(Exception $e) {
                 sleep(60);
                 if(!$irrigable->isValidee()) {
-                    $irrigable->validate(self::DATE_VALIDATION);
+                    $irrigable->validate($periode.'-'.self::DATE_VALIDATION);
                 }
                 $irrigable->save();
             }
 
             try {
                 if(!$irrigue->isValidee()) {
-                    $irrigue->validate(self::DATE_VALIDATION);
+                    $irrigue->validate($periode.'-'.self::DATE_VALIDATION);
                 }
                 $irrigue->save();
             } catch(Exception $e) {
