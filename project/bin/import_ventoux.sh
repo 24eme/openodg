@@ -103,15 +103,15 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?
 for annee in 2023 2024; do
     echo "Import des declarations d'affections parcellaire"
 
-    php symfony import:parcellaireaffectation-ventoux --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
+    php symfony import:parcellaireaffectation-ventoux --env="prod" --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
 
     echo "Import des declarations de pieds manquants"
 
-    php symfony import:parcellairemanquant-ventoux --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
+    php symfony import:parcellairemanquant-ventoux --env="prod" --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
 
     echo "Import des declarations de parcellaire irrigué"
 
-    php symfony import:parcellaireirrigue-ventoux --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
+    php symfony import:parcellaireirrigue-ventoux --env="prod" --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
 done
 
 echo "Mise a jour des relations en fonction des documents de production"
