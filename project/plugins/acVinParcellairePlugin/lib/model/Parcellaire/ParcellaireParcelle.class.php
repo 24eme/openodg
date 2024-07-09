@@ -11,14 +11,11 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     private $geoparcelle = null;
 
     public function getProduit() {
-        if ($this->produit_hash) {
-            return $this->getDocument()->getConfiguration()->get($this->produit_hash);
-        }
         return $this->getParcelleAffectee()->getParent()->getParent();
     }
 
     public function getConfig() {
-      return $this->getProduit()->getConfig();
+        return $this->getDocument()->getConfiguration()->get($this->produit_hash);
     }
 
     public function addAcheteur($acheteur) {
@@ -176,11 +173,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function isRealProduit() {
-        try {
-            return $this->getProduit()->isRealProduit();
-        }catch(sfException $e) {
-            return false;
-        }
+        return $this->getProduit()->isRealProduit();
     }
 
     public function hasProblemCepageAutorise() {
