@@ -44,6 +44,12 @@ EOF;
             $data = str_getcsv($line, ';');
 
             if(!$data[self::CSV_POURCENTAGE_MANQUANT]) {
+                $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+                if(!$manquant->isValidee()) {
+                    $manquant->validate($periode.'-'.self::DATE_VALIDATION);
+                }
+                $manquant->save();
+
                 continue;
             }
 

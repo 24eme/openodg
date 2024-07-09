@@ -87,13 +87,7 @@ bash bin/updateviews.sh
 
 xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev_ventoux.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev_ventoux.csv
 
-php symfony import:drev-ventoux $DATA_DIR/drev.csv --application="$ODG" --trace
-
-echo "Contacts"
-
-xlsx2csv -l '\r\n' -d ";" $DATA_DIR/contacts.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/contacts.csv
-sed -i 's/Choisir Ville//' $DATA_DIR/contacts.csv
-php symfony import:contact-ia $DATA_DIR/contacts.csv --application="$ODG" --trace
+php symfony import:drev-ventoux $DATA_DIR/drev_ventoux.csv --application="$ODG" --trace
 
 echo "Parcellaire"
 
