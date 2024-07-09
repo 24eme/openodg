@@ -41,7 +41,6 @@ class ParcellaireIrrigueProduitsForm extends acCouchdbObjectForm {
     	}
         $parcelles = $this->getObject()->getParcelles();
         foreach ($values as $pid => $items) {
-            print_r(['pid', $pid]);
             if (!isset($parcelles[$pid])) {
                 continue;
             }

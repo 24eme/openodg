@@ -4,7 +4,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcelles() {
         $parcelles = [];
-        if ($this->declaration) foreach ($this->declaration->getParcelles() as $p) {
+        if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles() as $p) {
             $parcelles[$p->getParcelleId()] = $p;
         }
         return $parcelles;
@@ -62,7 +62,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcellaire2Reference() {
         $parcellaire = $this->getParcellaire();
-        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() && ($this->type != ParcellaireAffectationClient::TYPE_MODEL)) {
+        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() && !in_array($this->type, [ParcellaireAffectationClient::TYPE_MODEL, ParcellaireIntentionAffectationClient::TYPE_MODEL])) {
             $parcellaire = $this->getParcellaireAffectation();
         }
         return $parcellaire;
