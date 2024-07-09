@@ -4,7 +4,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcelles() {
         $parcelles = [];
-        foreach ($this->declaration->getParcelles() as $p) {
+        if ($this->declaration) foreach ($this->declaration->getParcelles() as $p) {
             $parcelles[$p->getParcelleId()] = $p;
         }
         return $parcelles;

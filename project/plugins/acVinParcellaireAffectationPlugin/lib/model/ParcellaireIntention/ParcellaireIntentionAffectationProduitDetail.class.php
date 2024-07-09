@@ -17,7 +17,10 @@ class ParcellaireIntentionAffectationProduitDetail extends ParcellaireAffectatio
 
     public function getParcelleId() {
         if (!$this->_get('parcelle_id')) {
-            $p = ParcellaireClient::getInstance()->findParcelle($this->getDocument()->getParcellaire(), $this, 0);
+            $p = null;
+            if ($this->getDocument()->getParcellaire()) {
+                $p = ParcellaireClient::getInstance()->findParcelle($this->getDocument()->getParcellaire(), $this, 0);
+            }
             if (!$p) {
                 throw new sfException('no parcelle id found for '.$this->getHash());
             }
