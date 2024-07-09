@@ -46,7 +46,6 @@
             <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
             <td class="text-right"><?php echoFloatFr($parcelle->getSuperficieParcellaire(),4); ?></td>
             <td class="text-right">
-                <!-- <span  class="text-muted pull-left"><?php $percent = 100*($parcelle->superficie / $parcelle->getSuperficieParcellaire()); echo floor($percent)."%"; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
                 <?php echo $form[$produitKey][$parcelle->getKey()]['superficie']->render(); ?>
             </td>
         	<td class="text-center">
