@@ -18,7 +18,7 @@ class ParcellaireAffectationCoopEtapes extends Etapes {
 
     public static $libelles = array(
         self::ETAPE_APPORTEURS => 'Adhérents',
-        self::ETAPE_SAISIES => 'Saisies des affectations parcellaires'
+        self::ETAPE_SAISIES => 'Déclarations des apporteurs'
     );
 
     public static function getInstance() {
