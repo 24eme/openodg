@@ -117,6 +117,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return false;
     }
 
+    public function getSuperficieParcellaire() {
+        return $this->superficie;
+    }
 
     public function getVtsgn() {
         $v = $this->_get('vtsgn');

@@ -45,7 +45,8 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
 
   public function updateIntentionFromParcellaireAndLieux(array $lieux) {
-      $parcellesFromParcellaire = $this->getParcellesFromReference();
+      $parcellaire = $this->getParcellaire();
+      $parcellesFromParcellaire = $this->getParcellaire()->getParcelles();
       if (!$parcellesFromParcellaire || !count($parcellesFromParcellaire)) {
           return;
       }

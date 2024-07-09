@@ -3,24 +3,29 @@
 class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
 
     public function configure() {
-		foreach ($this->getObject()->declaration as $key => $value) {
-			$this->embedForm($key, new ParcellaireAffectationProduitAffectesForm($value));
+		foreach ($this->getParcelles() as $key => $value) {
+			$this->embedForm($key, new ParcellaireAffectationProduitAffecteForm($value));
 		}
 
         $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
 
+    public function getParcelles() {
+        return $this->getObject()->getParcelles();
+    }
 
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
-        foreach ($values as $produit => $value) {
-            if (!is_array($value)) continue;
-            foreach ($value as $detail => $items) {
-                $node = $this->getObject()->declaration->get($produit);
-                $node = $node->detail->get($detail);
-                foreach ($items as $k => $v) {
-                    $node->add($k, $v);
-                }
+        $parcelles = $this->getParcelles();
+        foreach ($values as $pid => $items) {
+            if (!isset($parcelles[$pid])){
+                continue;
+            }
+            $parcelle = $parcelles[$pid];
+            $node = $this->getObject()->declaration->get(str_replace('/declaration/', '', $parcelle->produit_hash));
+            $node = $node->detail->get($pid);
+            foreach ($items as $k => $v) {
+                $node->add($k, $v);
             }
         }
     }
