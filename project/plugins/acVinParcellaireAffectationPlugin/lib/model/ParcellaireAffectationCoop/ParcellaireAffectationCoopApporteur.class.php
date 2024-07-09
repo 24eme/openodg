@@ -67,11 +67,6 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
         return $this->declarations[$type];
     }
 
-    public function getAffectationParcellaire($hydrate = acCouchdbClient::HYDRATE_JSON) {
-
-        return $this->getDeclaration("ParcellaireAffectation", $hydrate);
-    }
-
     public function createAffectationParcellaire() { // Dépréciée mais encore utilisée dans les tests
         $this->affectationParcellaire = ParcellaireAffectationClient::getInstance()->createDoc($this->getEtablissementIdentifiant(), substr($this->getDocument()->campagne, 0, 4));
 
