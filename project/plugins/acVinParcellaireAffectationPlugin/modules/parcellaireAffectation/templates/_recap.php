@@ -7,7 +7,7 @@
         </div>
     </div>
 <?php endif; ?>
-<table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+<table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
     <thead>
         <tr>
         	<th class="col-xs-2">Commune</th>
