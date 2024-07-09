@@ -83,8 +83,11 @@ done
 
 bash bin/updateviews.sh
 
-php symfony import:drev-ia $DATA_DIR/drev.csv $DATA_DIR/vci.csv --application="$ODG" --trace
+#php symfony import:drev-ia $DATA_DIR/drev.csv $DATA_DIR/vci.csv --application="$ODG" --trace
 
+xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev_ventoux.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev_ventoux.csv
+
+php symfony import:drev-ventoux $DATA_DIR/drev.csv --application="$ODG" --trace
 
 echo "Contacts"
 
