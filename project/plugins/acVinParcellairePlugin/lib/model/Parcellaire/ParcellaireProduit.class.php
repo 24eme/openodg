@@ -114,7 +114,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
     }
 
     public function affecteParcelle($p) {
-        $k = $p->getKey();
+        $k = $p->getParcelleId();
         $detail = $this->detail->add($k);
         $detail->produit_hash = $this->getHash();
         $r = ParcellaireClient::CopyParcelle($detail, $p);
@@ -155,7 +155,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
     }
 
     public function isRealProduit() {
-        return $this->getHash() != ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH;
+        return ($this->getConfig()) != null;
     }
 
 }

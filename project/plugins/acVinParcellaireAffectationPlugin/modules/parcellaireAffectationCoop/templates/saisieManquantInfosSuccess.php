@@ -14,11 +14,14 @@
     <?php include_partial('parcellaireManquant/formManquants', ['parcellaireManquant' => $parcellaireManquant, 'form' => $form]); ?>
 </div>
 <div class="panel-footer">
-    <div class="row row-margin row-button">
+    <div class="row row-margin row-button" style="display:flex; justify-content: center;">
         <div class="col-xs-4"><button type="submit" name="retour" value="1" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retour à l'étape précédente</button></div>
         <div class="col-xs-4 text-center">
         </div>
-        <div class="col-xs-4 text-right"><button id="submit-confirmation-validation" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span> Valider la déclaration</button></div>
+        <div class="col-xs-6 text-right"><button id="submit-confirmation-validation" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span>  Valider la déclaration et revenir à la liste des apporteurs</button>
+
+        <button id="submit-confirmation-validation" class="btn btn-default mt-4" name="decla-manquant-a-irrigable"><span class="glyphicon glyphicon-arrow-right"></span> Valider la déclaration et déclarer les irriguables</button></div>
+    </div>
     </div>
 </div>
 </div>

@@ -11,11 +11,18 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     private $geoparcelle = null;
 
     public function getProduit() {
-        return $this->getParcelleAffectee()->getParent()->getParent();
+        if ($this->getParcelleAffectee()) {
+            return $this->getParcelleAffectee()->getParent()->getParent();
+        }
+        return null;
     }
 
     public function getConfig() {
-        return $this->getDocument()->getConfiguration()->get($this->produit_hash);
+        try {
+            return $this->getDocument()->getConfiguration()->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+        }catch(sfException $e) {
+            return null;
+        }
     }
 
     public function addAcheteur($acheteur) {
@@ -176,7 +183,13 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function isRealProduit() {
-        return $this->getProduit()->isRealProduit();
+        if (!$this->produit_hash) {
+            return false;
+        }
+        if (!$this->getConfig()) {
+            return false;
+        }
+        return true;
     }
 
     public function hasProblemCepageAutorise() {
@@ -248,7 +261,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getParcelleAffectee() {
-        if (strpos($this->hash, 'declaration') !== false) {
+        if (strpos($this->getHash(), 'declaration') !== false) {
             return $this;
         }
         foreach($this->getDocument()->declaration->getParcelles() as $p) {
