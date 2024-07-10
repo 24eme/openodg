@@ -4,9 +4,11 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
 {
     const CSV_CVI = 2;
     const CSV_NOM_COMMUNE = 4;
+    const CSV_LIEUDIT = 5;
     const CSV_SECTION = 7;
     const CSV_NUM_PARCELLE = 8;
     const CSV_SURFACE = 9;
+    const CSV_ANNEE_PLANTATION = 10;
     const CSV_CEPAGE = 11;
 
     const DATE_VALIDATION = "04-15";
@@ -53,16 +55,9 @@ EOF;
             }
             $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
             $affectation->parcellaire_origine = $parcellaireTotal->_id;
-            $found = false;
-            foreach($parcellaireTotal->getParcelles() as $parcelle) {
-                if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
-                    $parcelle->numero_parcelle == $data[self::CSV_NUM_PARCELLE]) {
-                    $found = true;
-                    break;
-                }
-            }
+            $parcelle = $this->findParcelle($parcellaireTotal, $data);
 
-            if (!$found) {
+            if (!$parcelle) {
                 $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
                 if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
                     $produitHash .= '/blanc/cepages/DEFAUT';
@@ -70,7 +65,7 @@ EOF;
                     $produitHash .= '/rouge/cepages/DEFAUT';
                 }
                 try {
-                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
+                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], $data[self::CSV_ANNEE_PLANTATION], $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE], $data[self::CSV_LIEUDIT]);
                 } catch (Exception $e) {
                     echo $e->getMessage().";".$line;
                     continue;
@@ -106,5 +101,28 @@ EOF;
         ParcellaireClient::CopyParcelle($subitem, $parcelle);
 
         return $subitem;
+    }
+
+    public function findParcelle($parcellaireTotal, $data) {
+        $parcelleToFind = ParcellaireParcelle::freeInstance($parcellaireTotal);
+        $parcelleToFind->lieu = strtoupper(trim($data[self::CSV_LIEUDIT]));
+        $parcelleToFind->section = strtoupper(trim($data[self::CSV_SECTION]));
+        $parcelleToFind->numero_parcelle = trim($data[self::CSV_NUM_PARCELLE]);
+        $parcelleToFind->superficie = round(floatval(str_replace(',', '.', trim($data[self::CSV_SURFACE]))), 4);
+        $parcelleToFind->cepage = trim($data[self::CSV_CEPAGE]);
+        $parcelleToFind->campagne_plantation =  intval(explode("/", $data[self::CSV_ANNEE_PLANTATION])[0]);
+        $parcelleFindedStrict = $parcellaireTotal->findParcelle($parcelleToFind, 1);
+        $parcelleFindedLaxiste = $parcellaireTotal->findParcelle($parcelleToFind, 0.75);
+
+        if($parcelleFindedStrict) {
+            return $parcelleFindedStrict;
+        }
+
+        if ($parcelleFindedLaxiste) {
+            //$erreurs[$numLigne] = ['message' => "Parcelle ambigües",  'numLigne' => $numLigne, 'ligne' => $data];
+            return $parcelleFindedLaxiste;
+        }
+
+        return null;
     }
 }
