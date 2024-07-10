@@ -129,6 +129,12 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->form->save();
 
+        if($request->getParameter('saveandquit')) {
+
+            return $this->redirect('declaration_etablissement', $this->parcellaireAffectation->getEtablissementObject());
+        }
+
+
         return $this->redirect('parcellaireaffectation_validation', $this->parcellaireAffectation);
 
     }
