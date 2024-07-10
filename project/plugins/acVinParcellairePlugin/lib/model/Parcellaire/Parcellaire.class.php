@@ -150,8 +150,11 @@ class Parcellaire extends BaseParcellaire {
             $p->lieu = $lieu;
         }
         $p->numero_ordre = explode('-', $pid)[1];
+        if (!$produit) {
+            $produit = $this->getConfiguration()->identifyProductByLibelle($source_produit_libelle);
+        }
         if ($produit) {
-            $p->produit = $produit;
+            $p->produit_hash = $produit->getHash();
         }
         ParcellaireClient::parcelleSplitIDU($p);
 
