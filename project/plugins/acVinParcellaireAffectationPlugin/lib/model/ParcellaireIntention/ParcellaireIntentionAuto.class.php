@@ -11,6 +11,9 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
 
     public function updateParcelles() {
         $parcellaire = $this->getParcellaire2Reference();
+        if (!$parcellaire) {
+            return ;
+        }
         $parcelles = $parcellaire->getParcelles();
         $this->remove('declaration');
         $this->add('declaration');
