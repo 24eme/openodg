@@ -1,5 +1,4 @@
-<?php if($etablissement->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)): return; endif; ?>
-
+<?php if(strpos($etablissement->famille, EtablissementFamilles::FAMILLE_PRODUCTEUR) === false): return; endif; ?>
 <?php use_helper('Date'); ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
