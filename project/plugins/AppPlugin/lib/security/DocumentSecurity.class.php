@@ -41,6 +41,12 @@ abstract class DocumentSecurity implements SecurityInterface {
             }
         }
 
+        if (in_array(self::VISUALISATION, $droits)) {
+            if ($this->user->getEtablissement()->hasCooperateur($this->doc->declarant->cvi)) {
+                return true;
+            }
+        }
+
         if(!$this->isAdminODG() && $this->user->getCompte() && !preg_match("/^".$this->user->getCompte()->identifiant."/", $this->doc->identifiant)) {
 
             $lienSymbolique = null;

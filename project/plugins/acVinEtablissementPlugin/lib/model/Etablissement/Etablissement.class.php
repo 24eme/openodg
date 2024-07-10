@@ -525,6 +525,21 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $liaisons;
     }
 
+    public function hasCooperateur($cvi)
+    {
+        if (! $this->hasFamille(EtablissementFamilles::FAMILLE_COOPERATIVE)) {
+            return false;
+        }
+
+        $cooperateurs = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATEUR);
+
+        $cooperateurs = array_map(function ($cooperateur) {
+            return is_object($cooperateur) ? $cooperateur->cvi : $cooperateur['cvi'];
+        }, $cooperateurs);
+
+        return in_array($cvi, $cooperateurs);
+    }
+
     public function getLaboLibelle() {
         $labos = $this->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_LABO);
         if (!count($labos)) {

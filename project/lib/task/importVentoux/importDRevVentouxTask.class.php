@@ -42,6 +42,7 @@ class ImportDRevVentouxTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('csv_drev', sfCommandArgument::REQUIRED, "Fichier csv de la drev"),
+            new sfCommandArgument('periode', sfCommandArgument::REQUIRED, "Période"),
         ));
 
         $this->addOptions(array(
@@ -62,7 +63,7 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $periode = "2023";
+        $periode = $arguments['periode'];
 
         //$this->initProduitsCepages();
 
