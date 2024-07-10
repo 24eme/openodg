@@ -268,6 +268,16 @@ parcellaireaffectationcoop_parcellairemanquant_reconduction:
   requirements:
     sf_method: [get]
 
+parcellaireaffectationcoop_parcellaireirrigable_reconduction:
+  url: /parcellaire-affectation-coop/:id/irrigable/:apporteur/reconduction
+  param: { module: parcellaireAffectationCoop, action: reconductionIrrigable }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaireaffectationcoop_recap:
   url: /parcellaire-affectation-coop/recap/:id
   param: { module: parcellaireAffectationCoop, action: recap }
