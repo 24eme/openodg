@@ -18,7 +18,11 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getConfig() {
-        return $this->getDocument()->getConfiguration()->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+        try {
+            return $this->getDocument()->getConfiguration()->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+        }catch(sfException $e) {
+            return null;
+        }
     }
 
     public function addAcheteur($acheteur) {
