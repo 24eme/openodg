@@ -54,7 +54,7 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
-    <?php $parcellesByCommune = $parcellaire->declaration->getParcellesByCommune();
+    <?php $parcellesByCommune = $parcellaire->getParcellesByCommune(ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration());
     $import = $parcellaire->getGeoJson(); ?>
 
     <?php if($parcellaire && $parcellaire->getGeoJson() != false): ?>

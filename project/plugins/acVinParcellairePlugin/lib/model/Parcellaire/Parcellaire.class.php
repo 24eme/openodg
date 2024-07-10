@@ -61,8 +61,7 @@ class Parcellaire extends BaseParcellaire {
     public function addProduit($hash) {
         $pseudo_produit = false;
         if (!$hash && !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
-            $hash = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH;
-            $pseudo_produit = true;
+            return;
         }
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
@@ -112,6 +111,13 @@ class Parcellaire extends BaseParcellaire {
             ParcellaireClient::CopyParcelle($p, $dp);
         }
         return $this->_get('parcelles');
+    }
+
+    public function getParcellesByCommune($only_affectee = false) {
+        if ($only_affectee) {
+            return $this->declaration->getParcellesByCommune();
+        }
+        return ParcellaireClient::organizeParcellesByCommune($this->getParcelles());
     }
 
     public function getNextParcelleId($idu, $cepage, $campagne_plantation, $produit = null) {
