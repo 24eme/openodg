@@ -258,6 +258,26 @@ parcellaireaffectationcoop_manquant_visualisation:
   requirements:
     sf_method: [get]
 
+parcellaireaffectationcoop_parcellairemanquant_reconduction:
+  url: /parcellaire-affectation-coop/:id/manquant/:apporteur/reconduction
+  param: { module: parcellaireAffectationCoop, action: reconductionManquant }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireaffectationcoop_parcellaireirrigable_reconduction:
+  url: /parcellaire-affectation-coop/:id/irrigable/:apporteur/reconduction
+  param: { module: parcellaireAffectationCoop, action: reconductionIrrigable }
+  class: ParcellaireAffectationCoopRoute
+  options:
+    model:    ParcellaireAffectationCoop
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaireaffectationcoop_recap:
   url: /parcellaire-affectation-coop/recap/:id
   param: { module: parcellaireAffectationCoop, action: recap }

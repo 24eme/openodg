@@ -132,6 +132,12 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectation->add('signataire', $this->etablissement->raison_sociale);
 		$this->form = new ParcellaireAffectationCoopSaisieForm($this->parcellaireAffectation, $this->etablissement);
 
+        if(isset($_POST['decla-affect-a-manquant'])) {
+            $identifiantApporteur = $this->parcellaireAffectation->getEtablissementObject()->_id;
+
+            return $this->redirect('parcellaireaffectationcoop_manquant_saisie', array('id' => $this->parcellaireAffectationCoop->_id, 'apporteur' => str_replace("ETABLISSEMENT-", "", $identifiantApporteur)));
+        }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
         	return sfView::SUCCESS;
@@ -269,6 +275,43 @@ class parcellaireAffectationCoopActions extends sfActions {
         } else {
             return $this->redirect('parcellaireaffectationcoop_manquant_saisie', ['sf_subject' => $this->parcellaireAffectationCoop, 'apporteur' => $this->parcellaireManquant->identifiant]);
         }
+
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
+    }
+
+    public function executeReconductionManquant(sfWebRequest $request)
+    {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->apporteur = $request->getParameter('apporteur');
+
+        $doc = ParcellaireManquantClient::getInstance()->createDoc($this->apporteur, $this->parcellaireAffectationCoop->periode);
+
+        if ($last = ParcellaireManquantClient::getInstance()->getLast($this->apporteur)) {
+            $parcellesids = array_keys($last->getParcelles());
+            $doc->setParcellesFromParcellaire($parcellesids);
+        }
+
+        $doc->validate();
+        $doc->validateOdg();
+        $doc->save();
+
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
+    }
+
+    public function executeReconductionIrrigable(sfWebRequest $request)
+    {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->apporteur = $request->getParameter('apporteur');
+
+        $doc = ParcellaireIrrigableClient::getInstance()->createDoc($this->apporteur, $this->parcellaireAffectationCoop->periode);
+        if ($last = ParcellaireIrrigableClient::getInstance()->getLast($this->apporteur)) {
+            $parcellesids = array_keys($last->getParcelles());
+            $doc->setParcellesFromParcellaire($parcellesids);
+        }
+
+        $doc->validate();
+        $doc->validateOdg();
+        $doc->save();
 
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
