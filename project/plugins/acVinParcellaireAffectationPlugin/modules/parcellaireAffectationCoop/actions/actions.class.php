@@ -254,6 +254,10 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $this->form = new ParcellaireManquantInfosForm($this->parcellaireManquant);
 
+        if(isset($_POST['decla-manquant-a-irrigable'])) {
+            return $this->redirect('parcellaireaffectationcoop_irrigable_saisie', array('id' => $this->parcellaireAffectationCoop->_id, 'apporteur' => $this->parcellaireManquant->identifiant));
+        }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
         	return sfView::SUCCESS;
@@ -353,7 +357,7 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $header = true;
         foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
-            $doc = $apporteur->getAffectationParcellaire(acCouchdbClient::HYDRATE_DOCUMENT);
+            $doc = $apporteur->getDeclaration(ParcellaireAffectationClient::TYPE_MODEL, acCouchdbClient::HYDRATE_DOCUMENT);
             if(!$doc) {
                 continue;
             }

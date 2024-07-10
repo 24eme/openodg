@@ -8,7 +8,7 @@ if (in_array($application, array('nantes', 'loire'))) {
     return;
 }
 
-$t = new lime_test(22);
+$t = new lime_test();
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $year = date('Y') - 1;
 $date = $year.'-12-01';
@@ -61,6 +61,7 @@ $t->is($parcelle->numero_ordre, 0, "Le numéro d'ordre a été enregistré");
 $t->is($parcelle->commune, $commune, "La commune est : " . $commune);
 $t->is($parcelle->lieu, "LA HAUT", "La lieu est : LA HAUT");
 $t->is($parcelle->idu, $code_commune."000AB0052" , "Le code IDU est ".$code_commune."000AB0052");
+$t->is($parcelle->isRealProduit(), true , "Le produit est un produit géré");
 
 $parcelles = $parcellaire->getParcelles()->toArray();
 array_shift($parcelles);
@@ -73,3 +74,26 @@ $parcelle4 = array_shift($parcelles);
 $t->is($parcelle4->getKey(), $code_commune."000AB0052-02", "La clé de la parcelle 4 est bien construite : elle a pour numéro d'ordre '26'");
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
+
+$t->comment("import de cvs parcellaire (mimique le résultat du scrapping)");
+
+$csv_path = "/tmp/parcellaire-".$viti->cvi.".csv";
+$csv_file = fopen($csv_path, 'w');
+fwrite($csv_file, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;IDU;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut;Date MaJ\n");
+fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."000AM0049;".$commune.";CROSAN;AM;49;".$configProduit->getLibelleComplet().";GRENACHE N;0.2903;0.797;1968-1969;130;225;;Fermier;\n");
+fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."000AM0049;".$commune.";CROSAN;AM;49;".$configProduit->getLibelleComplet().";GRENACHE N;0.182;0.797;1977-1978;130;225;;Fermier;\n");
+fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."000AM0049;".$commune.";CROSAN;AM;49;".$configProduit->getLibelleComplet().";CARIGNAN N;0.214;0.797;2014-2015;140;225;;Fermier;\n");
+fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."000AM0049;".$commune.";CROSAN;AM;49;".$configProduit->getLibelleComplet().";GRENACHE N;0.1107;0.797;2014-2015;130;225;;Fermier;\n");
+fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."0000C0027;".$commune.";BARE;C;27;".$configProduit->getLibelleComplet().";SYRAH N;0.466;0.466;1977-1978;130;225;;Fermier;\n");
+fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."000AB0009;".$commune.";VERSAN;AB;9;;LIVAL N;0.3;;1980-1981;130;225;;Fermier;\n");
+fclose($csv_file);
+$csv = new CSV($csv_path);
+$import = new ParcellaireCsvFile($viti, $csv);
+$import->convert();
+$parcellaire = $import->getParcellaire();
+$parcelles = $parcellaire->getParcelles();
+$t->is(count($parcelles), 6, "L'import permet bien d'avoir 6 parcelles dans le noeuds parcelles");
+$t->is($parcelles[$code_commune.'000AM0049-00']->produit_hash, $configProduit->getHash(), "La première parcelle a le bon produit (".$configProduit->getHash().")");
+$t->ok($parcelles[$code_commune.'000AM0049-00']->getParcelleAffectee(), "On trouve la première parcelle dans le noeud déclaration");
+$t->is($parcelles[$code_commune.'000AM0049-00']->isRealProduit(), true, "La première parcelle est un produit géré");
+$t->is(count($parcellaire->getDeclarationParcelles()), 5, "Il y a 5 parcelles dans les produits gérés");

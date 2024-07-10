@@ -426,4 +426,23 @@ class ParcellaireClient extends acCouchdbClient {
 
     }
 
+    public static function organizeParcellesByCommune($parcelles) {
+        $res = array();
+
+        foreach($parcelles as $pid => $parcelle) {
+            if(!isset($res[$parcelle->commune])) {
+                $res[$parcelle->commune] = array();
+            }
+            $res[$parcelle->commune][$parcelle->getHash()] = $parcelle;
+        }
+        foreach ($res as $key => $parcelleByCommune) {
+            uasort($parcelleByCommune, "ParcellaireClient::sortParcellesForCommune");
+            $res[$key] = $parcelleByCommune;
+        }
+        ksort($res);
+
+        return $res;
+
+    }
+
 }
