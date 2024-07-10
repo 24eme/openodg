@@ -1,17 +1,7 @@
 <?php
 
-class ImportParcellaireManquantVentouxTask extends sfBaseTask
+class ImportParcellaireManquantVentouxTask extends ImportParcellaireAffectationVentouxTask
 {
-    const CSV_CVI = 2;
-    const CSV_NOM_COMMUNE = 4;
-    const CSV_SECTION = 7;
-    const CSV_NUM_PARCELLE = 8;
-    const CSV_SURFACE = 9;
-    const CSV_CEPAGE = 11;
-    const CSV_POURCENTAGE_MANQUANT = 15;
-    const CSV_DENSITE = 12;
-
-    const DATE_VALIDATION = "04-15";
 
     protected function configure()
     {
@@ -61,43 +51,19 @@ EOF;
             }
 
             if(!$data[self::CSV_POURCENTAGE_MANQUANT]) {
-
                 continue;
             }
 
-            $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
-            if (!$parcellaireTotal) {
-                $parcellaireTotal = new Parcellaire();
-                echo "Parcellaire non trouvé;".$line;
+            $manquantParcelle = $this->addParcelleFromData($manquant, $data);
+            if(!$manquantParcelle) {
+                continue;
             }
+            print_r($manquantParcelle);
+            echo "ligne importé;".$line;
 
-            $found = false;
-            foreach($parcellaireTotal->getParcelles() as $parcelle) {
-                if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
-                    $parcelle->numero_parcelle == $data[self::CSV_NUM_PARCELLE]) {
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
-                $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
-                if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
-                    $produitHash .= '/blanc/cepages/DEFAUT';
-                } else {
-                    $produitHash .= '/rouge/cepages/DEFAUT';
-                }
-                try {
-                $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
-                } catch (Exception $e) {
-                    echo $e->getMessage().";".$line;
-                    continue;
-                }
-            }
-            $manquantParcelle = $this->addParcelleFromParcellaireParcelle($manquant, $parcelle);
             $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
             $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE]);
-            $manquantParcelle->pourcentage = (int)$data[self::CSV_POURCENTAGE_MANQUANT];
+            $manquantParcelle->pourcentage = round((float)($data[self::CSV_POURCENTAGE_MANQUANT])*100, 2);
 
             try {
                 $manquant->save();
@@ -106,15 +72,5 @@ EOF;
                 $manquant->save();
             }
         }
-    }
-
-    protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
-        $produit = $parcelle->getProduit();
-        $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
-        $item->libelle = $produit->libelle;
-        $subitem = $item->detail->add($parcelle->getKey());
-        ParcellaireClient::CopyParcelle($subitem, $parcelle);
-
-        return $subitem;
     }
 }
