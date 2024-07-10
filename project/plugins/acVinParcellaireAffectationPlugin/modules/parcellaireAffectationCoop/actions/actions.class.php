@@ -273,6 +273,25 @@ class parcellaireAffectationCoopActions extends sfActions {
         return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
     }
 
+    public function executeReconductionManquant(sfWebRequest $request)
+    {
+        $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
+        $this->apporteur = $request->getParameter('apporteur');
+
+        $doc = ParcellaireManquantClient::getInstance()->createDoc($this->apporteur, $this->parcellaireAffectationCoop->periode);
+
+        if ($last = ParcellaireManquantClient::getInstance()->getLast($this->apporteur)) {
+            $parcellesids = array_keys($last->getParcelles());
+            $doc->setParcellesFromParcellaire($parcellesids);
+        }
+
+        $doc->validate();
+        $doc->validateOdg();
+        $doc->save();
+
+        return $this->redirect('parcellaireaffectationcoop_liste', $this->parcellaireAffectationCoop);
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
         $this->parcellaireAffectationCoop = $this->getRoute()->getObject();
         $this->etablissement = $this->getRoute()->getEtablissement();
