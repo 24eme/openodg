@@ -22,6 +22,7 @@ class ParcellaireIntentionAuto extends ParcellaireIntentionAffectation {
                 continue;
             }
             $node = $this->declaration->add($this->getDenominationAireHash());
+            $node->libelle = $this->getDenominationAire();
             $node = $node->detail->add($pid);
             ParcellaireClient::CopyParcelle($node, $parcelle);
             $parcelle->produit_hash = $this->getDenominationAireHash();
