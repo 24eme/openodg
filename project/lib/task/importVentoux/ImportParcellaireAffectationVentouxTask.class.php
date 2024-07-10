@@ -12,6 +12,9 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
     const CSV_CEPAGE = 11;
     const CSV_DENSITE = 12;
     const CSV_POURCENTAGE_MANQUANT = 15;
+    const CSV_IRRIGABLE = 16;
+    const CSV_MATERIEL = 18;
+    const CSV_IRRIGUE = 19;
 
     const DATE_VALIDATION = "04-15";
 

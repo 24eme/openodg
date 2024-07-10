@@ -58,8 +58,6 @@ EOF;
             if(!$manquantParcelle) {
                 continue;
             }
-            print_r($manquantParcelle);
-            echo "ligne importé;".$line;
 
             $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
             $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE]);
