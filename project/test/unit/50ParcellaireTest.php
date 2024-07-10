@@ -8,7 +8,7 @@ if (in_array($application, array('nantes', 'loire'))) {
     return;
 }
 
-$t = new lime_test(21);
+$t = new lime_test(22);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $year = date('Y') - 1;
 $date = $year.'-12-01';
@@ -40,11 +40,14 @@ $numero_ordre_key = "00";
 $parcelle = $parcellaire->addParcelleWithProduit($configProduit->getHash(), $configProduit->getLibelleComplet(), "Sirah N", "2005", $commune, "", "AB", "52", "LA HAUT");
 $parcellaire->addParcelleWithProduit($configProduit->getHash(), $configProduit->getLibelleComplet(), "Grenache", "2010", $commune2, "", "AK", "47", null);
 $parcellaire->addParcelleWithProduit($configProduit->getHash(), $configProduit->getLibelleComplet(), "Sirah N", "2005", $commune, "", "AB", "52", "LA HAUT",25);
-$parcellaire->addParcelleWithProduit($configProduit->getHash(), $configProduit->getLibelleComplet(), "Sirah N", "2005", $commune, "", "AB", "52", "LA HAUT",26);
+$p = $parcellaire->addParcelle($code_commune.'000AB0052', $configProduit->getLibelleComplet(), "Sirah N", "2005", $commune, "LA HAUT");
+$new_parcelle = $parcellaire->affecteParcelleToHashProduit($configProduit->getHash(), $p);
+$p = $parcellaire->addParcelle($code_commune.'000AB0055', "VSIG", "Sirah N", "2005", $commune, "LA HAUT");
+
 $parcellaire->save();
 
 $t->is(count($parcellaire->declaration), 1, "Le parcellaire a un produit");
-$t->is(count($parcellaire->getParcelles()), 4, "Le parcellaire 4 parcelles");
+$t->is(count($parcellaire->getParcelles()), 5, "Le parcellaire 4 parcelles");
 $t->is(count($parcellaire->declaration->getParcelles()), 4, "Le parcellaire a des parcelles dans le produit");
 $parcelle = array_values($parcellaire->declaration->getParcelles())[0];
 $t->is($parcelle->produit_hash, '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT', "La première parcelles du produit as bien un produit_hash");
@@ -64,6 +67,7 @@ array_shift($parcelles);
 array_shift($parcelles);
 $parcelle3 = array_shift($parcelles);
 $t->is($parcelle3->getKey(), $code_commune."000AB0052-01", "La clé de la parcelle 3 est bien construite");
+$t->is($parcelle3->produit_hash, '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT', "la parcelle provenant de parcelle a bien une bonne hash produit");
 
 $parcelle4 = array_shift($parcelles);
 $t->is($parcelle4->getKey(), $code_commune."000AB0052-02", "La clé de la parcelle 4 est bien construite : elle a pour numéro d'ordre '26'");
