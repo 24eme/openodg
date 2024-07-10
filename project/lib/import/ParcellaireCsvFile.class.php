@@ -294,8 +294,9 @@ class ParcellaireCsvFile
             $new_parcelle->superficie = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format]);
             $new_parcelle->superficie_cadastrale = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format]);
             $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR - $is_old_format]);
-
-            $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
+            if ($new_parcelle->isRealProduit()) {
+                $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
+            }
 
             if (! $this->check($new_parcelle)) {
                 $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");
