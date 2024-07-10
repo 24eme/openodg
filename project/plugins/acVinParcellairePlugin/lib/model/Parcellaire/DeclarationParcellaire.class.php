@@ -126,6 +126,9 @@ class DeclarationParcellaire extends acCouchdbDocument {
             }else{
                 $d = $p->detail->add($pid);
             }
+            if (! $p->libelle) {
+                $p->libelle = $p_orig->getProduit()->getLibelle();
+            }
             ParcellaireClient::CopyParcelle($d, $p_orig);
             if ($d->exist('active')) {
                 $d->active = 1;
