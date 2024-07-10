@@ -357,7 +357,7 @@ class parcellaireAffectationCoopActions extends sfActions {
 
         $header = true;
         foreach($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur) {
-            $doc = $apporteur->getAffectationParcellaire(acCouchdbClient::HYDRATE_DOCUMENT);
+            $doc = $apporteur->getDeclaration(ParcellaireAffectationClient::TYPE_MODEL, acCouchdbClient::HYDRATE_DOCUMENT);
             if(!$doc) {
                 continue;
             }
