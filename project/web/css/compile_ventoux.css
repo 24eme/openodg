@@ -220,7 +220,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: rgb(131, 50, 22);
+  color: #826;
   text-decoration: underline;
 }
 a:focus {
@@ -1965,8 +1965,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #ffffff;
-  background-color: rgb(131, 50, 22);
-  border-color: rgb(147, 0, 70);
+  background-color: #826;
+  border-color: #c39;
 }
 .btn-primary:active,
 .btn-primary.active,
