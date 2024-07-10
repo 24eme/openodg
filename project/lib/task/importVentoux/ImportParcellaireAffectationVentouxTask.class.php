@@ -53,11 +53,19 @@ EOF;
                 $parcellaireTotal = new Parcellaire();
                 echo "Parcellaire non trouvé;".$line;
             }
+            $data[self::CSV_ANNEE_PLANTATION] = str_replace('/', '-', $data[self::CSV_ANNEE_PLANTATION]);
+            if(preg_match('/^[0-9]{4}$/', $data[self::CSV_ANNEE_PLANTATION])) {
+                $data[self::CSV_ANNEE_PLANTATION] = $data[self::CSV_ANNEE_PLANTATION].'-'.($data[self::CSV_ANNEE_PLANTATION]+1);
+            }
+            $data[self::CSV_SECTION] = trim($data[self::CSV_SECTION]);
+            $data[self::CSV_NUM_PARCELLE] = trim($data[self::CSV_NUM_PARCELLE]);
+
             $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
             $affectation->parcellaire_origine = $parcellaireTotal->_id;
             $parcelle = $this->findParcelle($parcellaireTotal, $data);
 
             if (!$parcelle) {
+                echo "Parcelle non trouvé elle sera importé manuellement;".$line;
                 $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
                 if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
                     $produitHash .= '/blanc/cepages/DEFAUT';

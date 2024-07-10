@@ -68,7 +68,6 @@ EOF;
 
             $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
             $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, $periode, true, $periode.'-'.self::DATE_VALIDATION);
-
             $found = false;
             foreach($parcellaireTotal->getParcelles() as $parcelle) {
                 if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
