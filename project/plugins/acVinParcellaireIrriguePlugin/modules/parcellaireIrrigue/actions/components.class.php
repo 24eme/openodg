@@ -3,7 +3,7 @@
 class parcellaireIrrigueComponents extends sfComponents {
 
     public function executeMonEspace(sfWebRequest $request) {
-        if(strpos($this->etablissement->famille, EtablissementFamilles::FAMILLE_PRODUCTEUR) === false) {
+        if(strpos($this->etablissement->famille, 'PRODUCTEUR') === false) {
             return;
         }
         $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($this->etablissement->identifiant, $this->periode);

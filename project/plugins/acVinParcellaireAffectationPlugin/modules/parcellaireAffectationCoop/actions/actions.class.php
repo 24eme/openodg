@@ -132,6 +132,12 @@ class parcellaireAffectationCoopActions extends sfActions {
         $this->parcellaireAffectation->add('signataire', $this->etablissement->raison_sociale);
 		$this->form = new ParcellaireAffectationCoopSaisieForm($this->parcellaireAffectation, $this->etablissement);
 
+        if(isset($_POST['decla-affect-a-manquant'])) {
+            $identifiantApporteur = $this->parcellaireAffectation->getEtablissementObject()->_id;
+
+            return $this->redirect('parcellaireaffectationcoop_manquant_saisie', array('id' => $this->parcellaireAffectationCoop->_id, 'apporteur' => str_replace("ETABLISSEMENT-", "", $identifiantApporteur)));
+        }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
         	return sfView::SUCCESS;
