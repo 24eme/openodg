@@ -197,5 +197,6 @@ ParcellaireIntentionAffectation:
                               affectation: { type: integer }
                               date_affectation: {  }
                               produit_hash: { }
+                              source_produit_libelle: { }
                               parcelle_id: { }
       observations: {  }

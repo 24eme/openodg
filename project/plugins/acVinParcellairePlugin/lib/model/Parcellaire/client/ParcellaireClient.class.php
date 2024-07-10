@@ -419,8 +419,8 @@ class ParcellaireClient extends acCouchdbClient {
                 $p1->produit_hash = $p2->getParent()->getParent()->getHash();
             }
         }
-        if ($p1->exist('source_produit_libelle') && $p2->exist('source_produit_libelle') && $p2->source_produit_libelle) {
-            $p1->source_produit_libelle = $p2->source_produit_libelle;
+        if ($p2->exist('source_produit_libelle') && $p2->source_produit_libelle) {
+            $p1->add('source_produit_libelle', $p2->source_produit_libelle);
         }
         return $p1;
 
