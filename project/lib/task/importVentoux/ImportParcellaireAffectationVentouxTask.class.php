@@ -136,19 +136,9 @@ EOF;
         $parcelleToFind->numero_parcelle = trim($data[self::CSV_NUM_PARCELLE]);
         $parcelleToFind->superficie = round(floatval(str_replace(',', '.', trim($data[self::CSV_SURFACE]))), 4);
         $parcelleToFind->cepage = trim($data[self::CSV_CEPAGE]);
-        $parcelleToFind->campagne_plantation =  intval(explode("/", $data[self::CSV_ANNEE_PLANTATION])[0]);
+        $parcelleToFind->campagne_plantation = explode("-", $data[self::CSV_ANNEE_PLANTATION])[0];
         $parcelleFindedStrict = $parcellaireTotal->findParcelle($parcelleToFind, 1);
-        $parcelleFindedLaxiste = $parcellaireTotal->findParcelle($parcelleToFind, 0.75);
 
-        if($parcelleFindedStrict) {
-            return $parcelleFindedStrict;
-        }
-
-        if ($parcelleFindedLaxiste && $parcelleToFind->section == $parcelleFindedLaxiste->section && $parcelleToFind->numero_parcelle == $parcelleFindedLaxiste->numero_parcelle) {
-            //$erreurs[$numLigne] = ['message' => "Parcelle ambigües",  'numLigne' => $numLigne, 'ligne' => $data];
-            return $parcelleFindedLaxiste;
-        }
-
-        return null;
+        return $parcelleFindedStrict;
     }
 }
