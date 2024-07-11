@@ -86,7 +86,7 @@ $list_idu = [];
             </div>
             <?php if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()): ?>
             <div class="form-group">
-                <input type=checkbox id="voirnongere" onchange="if(document.querySelector('#voirnongere').checked){console.log('checked'); document.querySelector('.produitnongere').classList.remove('hidden');}else{document.querySelector('.produitnongere').classList.add('hidden');}; console.log(document.querySelector('.produitnongere')); "> <label for="voirnongere">Voir toutes les parcelles (même celles déclarées au CVI sous une dénomination non gérée)</label>
+                <input type=checkbox id="voirnongere" onchange="if(document.querySelector('#voirnongere').checked){console.log('checked');document.querySelectorAll('.produitnongere').forEach(e => e.classList.remove('hidden'));}else{document.querySelectorAll('.produitnongere').forEach(e => e.classList.add('hidden'));}; console.log(document.querySelector('.produitnongere')); "> <label for="voirnongere">Voir toutes les parcelles (même celles déclarées au CVI sous une dénomination non gérée)</label>
             </div>
             <?php endif; ?>
         </div>

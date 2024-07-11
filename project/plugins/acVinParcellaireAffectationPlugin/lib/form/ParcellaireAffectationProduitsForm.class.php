@@ -17,16 +17,21 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
         $parcelles = $this->getParcelles();
+        $this->getObject()->remove('declaration');
+        $this->getObject()->add('declaration');
         foreach ($values as $pid => $items) {
             if (!isset($parcelles[$pid])){
                 continue;
             }
-            $parcelle = $parcelles[$pid];
-            $node = $this->getObject()->declaration->get(str_replace('/declaration/', '', $parcelle->produit_hash));
-            $node = $node->detail->get($pid);
-            foreach ($items as $k => $v) {
-                $node->add($k, $v);
+            if (!isset($items['affectee']) || !$items['affectee']) {
+                continue;
             }
+            $parcelle = $parcelles[$pid];
+            $node = $this->getObject()->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
+            $node->libelle = $node->getConfig()->getLibelleComplet();
+            $node = $node->detail->add($pid, $parcelle);
+            $node->add('affectee', 1);
+            $node->add('superficie', $items['superficie']);
         }
     }
 
