@@ -120,9 +120,8 @@ EOF;
     }
 
     protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
-        $produit = $parcelle->getProduit();
         $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
-        $item->libelle = $produit->libelle;
+        $item->libelle = "Ventoux";
         $subitem = $item->detail->add($parcelle->getKey());
         ParcellaireClient::CopyParcelle($subitem, $parcelle);
 
