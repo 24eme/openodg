@@ -157,6 +157,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (is_file($fileCsv)) {
             $parcellaire->storeAttachment($fileCsv, 'text/csv', "import-cadastre-$cvi-parcelles.csv");
             $parcellaire->save();
+            $returncsv = true;
         }
 
         $this->loadParcellaireCSV($parcellaire);
