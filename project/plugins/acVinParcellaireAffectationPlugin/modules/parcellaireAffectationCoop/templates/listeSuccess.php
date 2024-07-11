@@ -1,9 +1,14 @@
 <?php include_partial('parcellaireAffectationCoop/breadcrumb', array('parcellaireAffectationCoop' => $parcellaireAffectationCoop)); ?>
 <?php include_partial('parcellaireAffectationCoop/step', array('step' => 'saisies', 'parcellaireAffectationCoop' => $parcellaireAffectationCoop)) ?>
 
-<div class="page-header no-border mt-0">
-    <h2>Déclarations des apporteurs - Campagne <?php echo $parcellaireAffectationCoop->getCampagne() ?> </h2>
+<div class="page-header no-border mt-04" style="display:flex; align-items: center; justify-content:space-between;">
+    <h2 style="margin:0;">Déclarations des apporteurs - Campagne <?php echo $parcellaireAffectationCoop->getCampagne() ?> </h2>
+
+    <h3 class="pull-right" style="margin:0; font-size:20px;">
+    Vous avez <?php echo count($parcellaireAffectationCoop->getApporteursChoisis()) ?> coopérateurs
+    </h3>
 </div>
+
 
 <div class="row">
     <div class="form-group col-xs-12">
