@@ -393,17 +393,17 @@ class Parcellaire extends BaseParcellaire {
         return $superficie;
     }
 
-    public function getParcellairePDFKey() {
+    public function getParcellaireFileKey($type) {
         foreach ($this->_attachments as $key => $attachement) {
-            if ($attachement->content_type == 'application/pdf') {
+            if (strpos($attachement->content_type, $type) !== false) {
                 return $key;
             }
         }
         return null;
     }
 
-    public function getParcellairePDFUri() {
-        $key = $this->getParcellairePDFKey();
+    public function getParcellaireFileUri($type) {
+        $key = $this->getParcellaireFileKey($type);
 
         if(!$key) {
 
@@ -423,12 +423,23 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function hasParcellairePDF() {
-        return ($this->getParcellairePDFUri());
+        return ($this->getParcellaireFileUri('pdf'));
+    }
+
+    public function hasParcellaireCSV() {
+        return ($this->getParcellaireFileUri('csv'));
     }
 
     public function getParcellairePDF() {
         if ($this->hasParcellairePDF()) {
-            return file_get_contents($this->getParcellairePDFUri());
+            return file_get_contents($this->getParcellaireFileUri('pdf'));
+        }
+        return null;
+    }
+
+    public function getParcellaireCSV() {
+        if ($this->hasParcellaireCSV()) {
+            return file_get_contents($this->getParcellaireFileUri('csv'));
         }
         return null;
     }
