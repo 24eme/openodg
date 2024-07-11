@@ -8,10 +8,16 @@
 </div>
 <form id="validation-form" action="<?php echo url_for("parcellaireaffectation_affectations", $parcellaireAffectation) ?>" method="post" class="form-horizontal">
     <?php include_partial("parcellaireAffectation/formAffectations", array('parcellaireAffectation' => $parcellaireAffectation, 'form' => $form)); ?>
-    <div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("parcellaireaffectation_exploitation", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
-        <div class="col-xs-4 text-center">
+    <div class="row row-margin row-button"  style="display:flex; justify-content: space-evenly;">
+        <div class="col-xs-4"><a href="<?php echo url_for("parcellaireaffectation_exploitation", $parcellaireAffectation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
+
+        <div class="col-xs-4" style="display:flex; justify-content:center;"> <button type="submit" name="saveandquit" value="1" class="btn btn-default">Enregistrer en brouillon</button>
         </div>
+
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+
+        </div>
+
+
     </div>
 </form>

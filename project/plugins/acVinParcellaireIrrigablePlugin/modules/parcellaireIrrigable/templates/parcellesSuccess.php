@@ -14,6 +14,6 @@
         <div class="col-xs-4 text-center">
             <button type="submit" name="saveandquit" value="1" class="btn btn-default">Enregistrer en brouillon</button>
         </div>
-        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
 </form>

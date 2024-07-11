@@ -1,4 +1,5 @@
 <?php use_helper('Date') ?>
+<?php use_helper('Float') ?>
 
 <?php include_partial('parcellaireIrrigue/breadcrumb', array('parcellaireIrrigue' => $parcellaireIrrigue)); ?>
 
@@ -71,7 +72,7 @@
                 <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
+                <td style="text-align: right;"><?php echoFloatFr($parcelle->superficie); ?></td>
             	<td><?php echo $parcelle->materiel; ?></td>
             	<td><?php echo $parcelle->ressource; ?></td>
             	<?php if($parcelle->irrigation && (!$parcellaireIrrigue->exist('papier') || !$parcellaireIrrigue->papier)): ?>

@@ -201,7 +201,7 @@ class Parcellaire extends BaseParcellaire {
             throw new sfException('id needed');
         }
         if (!count($this->parcelles)) {
-            throw new sfException('no parcelles with id');
+            return null;
         }
         if(!isset($this->parcelles[$id])) {
             return null;

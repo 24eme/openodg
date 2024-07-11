@@ -10,6 +10,11 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
     const CSV_SURFACE = 9;
     const CSV_ANNEE_PLANTATION = 10;
     const CSV_CEPAGE = 11;
+    const CSV_DENSITE = 12;
+    const CSV_POURCENTAGE_MANQUANT = 15;
+    const CSV_IRRIGABLE = 16;
+    const CSV_MATERIEL = 18;
+    const CSV_IRRIGUE = 19;
 
     const DATE_VALIDATION = "04-15";
 
@@ -48,31 +53,14 @@ EOF;
                 echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé\n";
                 continue;
             }
-            $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
-            if (!$parcellaireTotal) {
-                $parcellaireTotal = new Parcellaire();
-                echo "Parcellaire non trouvé;".$line;
-            }
-            $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
-            $affectation->parcellaire_origine = $parcellaireTotal->_id;
-            $parcelle = $this->findParcelle($parcellaireTotal, $data);
 
-            if (!$parcelle) {
-                $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
-                if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
-                    $produitHash .= '/blanc/cepages/DEFAUT';
-                } else {
-                    $produitHash .= '/rouge/cepages/DEFAUT';
-                }
-                try {
-                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], $data[self::CSV_ANNEE_PLANTATION], $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE], $data[self::CSV_LIEUDIT]);
-                } catch (Exception $e) {
-                    echo $e->getMessage().";".$line;
-                    continue;
-                }
-                $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
+            $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+
+            $affectationParcelle = $this->addParcelleFromData($affectation, $data);
+
+            if(!$affectationParcelle) {
+                continue;
             }
-            $affectationParcelle = $this->addParcelleFromParcellaireParcelle($affectation, $parcelle);
 
             $affectationParcelle->affectee = 1;
             $affectationParcelle->superficie = (float) $data[self::CSV_SURFACE];
@@ -93,10 +81,47 @@ EOF;
         }
     }
 
+    protected function addParcelleFromData($doc, $data) {
+        $parcellaireTotal = ParcellaireClient::getInstance()->getLast($doc->identifiant);
+        if (!$parcellaireTotal) {
+            $parcellaireTotal = new Parcellaire();
+            echo "Parcellaire non trouvé elle sera importée manuellement;".implode(";", $data)."\n";
+        }
+        $data[self::CSV_ANNEE_PLANTATION] = str_replace('/', '-', $data[self::CSV_ANNEE_PLANTATION]);
+        if(preg_match('/^[0-9]{4}$/', $data[self::CSV_ANNEE_PLANTATION])) {
+            $data[self::CSV_ANNEE_PLANTATION] = $data[self::CSV_ANNEE_PLANTATION].'-'.($data[self::CSV_ANNEE_PLANTATION]+1);
+        }
+        $data[self::CSV_SECTION] = trim($data[self::CSV_SECTION]);
+        $data[self::CSV_NUM_PARCELLE] = trim($data[self::CSV_NUM_PARCELLE]);
+
+        if($doc->exist('parcellaire_origine')) {
+            $doc->parcellaire_origine = $parcellaireTotal->_id;
+        }
+        $parcelle = $this->findParcelle($parcellaireTotal, $data);
+
+        if (!$parcelle) {
+            echo "Parcelle dans le parcellaire non trouvé elle sera importée manuellement;".implode(";", $data)."\n";
+            $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
+            if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
+                $produitHash .= '/blanc/cepages/DEFAUT';
+            } else {
+                $produitHash .= '/rouge/cepages/DEFAUT';
+            }
+            try {
+                $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], $data[self::CSV_ANNEE_PLANTATION], $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE], $data[self::CSV_LIEUDIT]);
+            } catch (Exception $e) {
+                echo $e->getMessage().";".implode(";", $data)."\n";
+                return null;
+            }
+            $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
+        }
+
+        return $this->addParcelleFromParcellaireParcelle($doc, $parcelle);
+    }
+
     protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
-        $produit = $parcelle->getProduit();
         $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
-        $item->libelle = $produit->libelle;
+        $item->libelle = "Ventoux";
         $subitem = $item->detail->add($parcelle->getKey());
         ParcellaireClient::CopyParcelle($subitem, $parcelle);
 
@@ -110,19 +135,9 @@ EOF;
         $parcelleToFind->numero_parcelle = trim($data[self::CSV_NUM_PARCELLE]);
         $parcelleToFind->superficie = round(floatval(str_replace(',', '.', trim($data[self::CSV_SURFACE]))), 4);
         $parcelleToFind->cepage = trim($data[self::CSV_CEPAGE]);
-        $parcelleToFind->campagne_plantation =  intval(explode("/", $data[self::CSV_ANNEE_PLANTATION])[0]);
+        $parcelleToFind->campagne_plantation = explode("-", $data[self::CSV_ANNEE_PLANTATION])[0];
         $parcelleFindedStrict = $parcellaireTotal->findParcelle($parcelleToFind, 1);
-        $parcelleFindedLaxiste = $parcellaireTotal->findParcelle($parcelleToFind, 0.75);
 
-        if($parcelleFindedStrict) {
-            return $parcelleFindedStrict;
-        }
-
-        if ($parcelleFindedLaxiste) {
-            //$erreurs[$numLigne] = ['message' => "Parcelle ambigües",  'numLigne' => $numLigne, 'ligne' => $data];
-            return $parcelleFindedLaxiste;
-        }
-
-        return null;
+        return $parcelleFindedStrict;
     }
 }
