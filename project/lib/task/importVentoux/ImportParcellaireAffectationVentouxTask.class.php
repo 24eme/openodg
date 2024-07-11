@@ -109,6 +109,8 @@ EOF;
             }
             try {
                 $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], $data[self::CSV_ANNEE_PLANTATION], $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE], $data[self::CSV_LIEUDIT]);
+                $parcelle->parcelle_id = preg_replace('/-[0-9]{1}([0-9]{1})$/', '-X\1', $parcelle->parcelle_id);
+                $parcelle->numero_ordre = explode('-', $parcelle->parcelle_id)[1];
             } catch (Exception $e) {
                 echo $e->getMessage().";".implode(";", $data)."\n";
                 return null;

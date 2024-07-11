@@ -18,9 +18,10 @@
 
         <link href="<?php echo public_path("/components/opensans/opensans.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
-        <link href="<?php echo public_path("/css/compile_centre.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/compile_ventoux.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link media="print" href="<?php echo public_path("/css/print.css").'?'.$gitcommit; ?>" type="text/css" rel="stylesheet"  />
         <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
-        <link href="/css/style_ventoux.css" rel="stylesheet" type="text/css">
+        <link href="<?php echo public_path("/css/style_ventoux.css").'?'.$gitcommit; ?>" type="text/css" rel="stylesheet" >
 
         <?php include_stylesheets() ?>
 
