@@ -154,6 +154,8 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->storeAttachment($filePdf, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
             $parcellaire->save();
             $return = true;
+        }else{
+            $errors['pdf'] = 'Pas de PDF issu du scrapping trouvé';
         }
 
         $returncsv = false;
@@ -161,6 +163,8 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellaire->storeAttachment($fileCsv, 'text/csv', "import-cadastre-$cvi-parcelles.csv");
             $parcellaire->save();
             $returncsv = true;
+        }else{
+            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé';
         }
 
         $this->loadParcellaireCSV($parcellaire);
