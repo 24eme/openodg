@@ -18,7 +18,7 @@
 
         <link href="<?php echo public_path("/components/opensans/opensans.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
-        <link href="<?php echo public_path("/css/compile_centre.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/compile_ventoux.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="/css/style_ventoux.css" rel="stylesheet" type="text/css">
 
