@@ -55,6 +55,7 @@ body {
 }
 
 .breadcrumb {
+    margin-top: 7px;
     padding-left: 0;
     padding-bottom: 0;
 }
