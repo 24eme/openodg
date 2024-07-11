@@ -87,9 +87,15 @@ fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$c
 fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."0000C0027;".$commune.";BARE;C;27;".$configProduit->getLibelleComplet().";SYRAH N;0.466;0.466;1977-1978;130;225;;Fermier;\n");
 fwrite($csv_file , $viti->cvi.";".$viti->siret.";".$viti->raison_sociale.";;".$code_commune.";".$commune.";;".$code_commune."000AB0009;".$commune.";VERSAN;AB;9;;LIVAL N;0.3;;1980-1981;130;225;;Fermier;\n");
 fclose($csv_file);
-$csv = new CSV($csv_path);
-$import = new ParcellaireCsvFile($viti, $csv);
+
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate(
+    $viti->identifiant,
+    date('Y-m-d'),
+    'PRODOUANE'
+);
+$import = new ParcellaireCsvFile($parcellaire, $csv_path);
 $import->convert();
+$import->save();
 $parcellaire = $import->getParcellaire();
 $parcelles = $parcellaire->getParcelles();
 $t->is(count($parcelles), 6, "L'import permet bien d'avoir 6 parcelles dans le noeuds parcelles");
@@ -97,3 +103,4 @@ $t->is($parcelles[$code_commune.'000AM0049-00']->produit_hash, $configProduit->g
 $t->ok($parcelles[$code_commune.'000AM0049-00']->getParcelleAffectee(), "On trouve la première parcelle dans le noeud déclaration");
 $t->is($parcelles[$code_commune.'000AM0049-00']->isRealProduit(), true, "La première parcelle est un produit géré");
 $t->is(count($parcellaire->getDeclarationParcelles()), 5, "Il y a 5 parcelles dans les produits gérés");
+$parcellaire->save();
