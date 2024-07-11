@@ -130,9 +130,11 @@ class ParcellaireClient extends acCouchdbClient {
     public function saveParcellaire(Etablissement $etablissement, Array &$errors, $contextInstance = null, $scrapping = true)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$etablissement->cvi.'.csv';
+        $cvi = $etablissement->cvi;
 
-        $fileCsv = $this->scrapeParcellaireCSV($etablissement->cvi, $scrapping, $contextInstance);
+        $fileCsv = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/parcellaire-'.$cvi.'.csv';
+
+        $fileCsv = $this->scrapeParcellaireCSV($cvi, $scrapping, $contextInstance);
         $filePdf = str_replace('.csv', '-parcellaire.pdf', $fileCsv);
 
         $lastParcellaire = $this->getLast($etablissement->identifiant);
@@ -142,7 +144,7 @@ class ParcellaireClient extends acCouchdbClient {
         }
 
         $parcellaire = ParcellaireClient::getInstance()->findOrCreate(
-            $etablissement,
+            $etablissement->identifiant,
             date('Y-m-d'),
             'PRODOUANE'
         );
@@ -160,12 +162,12 @@ class ParcellaireClient extends acCouchdbClient {
         $this->loadParcellaireCSV($parcellaire);
 
         if ($returncsv) {
-            $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$etablissement->cvi.'-parcelles.json';
+            $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$cvi.'-parcelles.json';
             if($scrapping) {
-                $fileJson = $this->scrapeParcellaireJSON($etablissement->cvi, $contextInstance);
+                $fileJson = $this->scrapeParcellaireJSON($cvi, $contextInstance);
             }
             if (is_file($fileJson)) {
-                $parcellaire->storeAttachment($fileJson, 'text/json', "import-cadastre-".$etablissement->cvi."-parcelles.json");
+                $parcellaire->storeAttachment($fileJson, 'text/json', "import-cadastre-$cvi-parcelles.json");
                 $parcellaire->save();
             }
         }

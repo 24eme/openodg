@@ -57,7 +57,7 @@ class ParcellaireCsvFile
      *
      * @throws Exception Si le CVI n'est rattaché à aucun établissement
      */
-    public function __construct(Parcellaire $parcellaire, $file_path, $contextInstance = null)
+    public function __construct(Parcellaire $parcellaire, $file_path = null, $contextInstance = null)
     {
         $this->etablissement = $parcellaire->identifiant;
         $this->parcellaire = $parcellaire;
