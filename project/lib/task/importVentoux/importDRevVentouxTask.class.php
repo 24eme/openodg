@@ -139,7 +139,7 @@ EOF;
                     $libelleDenom = null;
                 }
 
-                $drevProduit = $drev->addProduit("/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs/".strtolower($data[self::CSV_COULEUR])."/cepages/DEFAUT", $libelleDenom);
+                $drevProduit = $drev->addProduit("/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs/".strtolower(KeyInflector::slugify($data[self::CSV_COULEUR]))."/cepages/DEFAUT", $libelleDenom);
                 $drevProduit->volume_revendique_issu_recolte = $volume;
                 $drevProduit->superficie_revendique = $superficies[$label];
                 $drevProduit->update();
