@@ -167,7 +167,7 @@ class Parcellaire extends BaseParcellaire {
         return $p;
     }
 
-    public function addParcelleWithProduit($hashProduit, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
+    public function addParcelleWithProduit($hashProduit, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null) {
         if ($lieu && preg_match('/[0-9]/', $lieu) && !preg_match('/ /', $lieu)) {
             throw new sfException('Strange lieu '.$lieu);
         }
