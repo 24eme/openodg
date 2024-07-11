@@ -57,7 +57,9 @@
                   <?php if ($sf_user->isAdmin()): ?>
                           <a class="btn btn-default btn-block <?php if($parcellaireIrrigue): ?>btn-primary<?php endif; ?>" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'Irrigué<?php endif; ?></a>
                   <?php endif; ?>
-                        <a class="btn btn-block btn-xs btn-default" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Voir la déclaration « Irrigable »</a>
+                        <div class="panel-success mt-2">
+                        <a class="panel-heading btn btn-block btn-xs p-1" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Voir la déclaration « Irrigable »</a>
+                    </div>
               </div>
               </div>
           </div>
