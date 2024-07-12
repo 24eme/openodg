@@ -215,6 +215,17 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return true;
     }
 
+    public function hasProblemProduitCVI() {
+        $a = $this->getIsInAires();
+        if (! count($a)) {
+            return true;
+        }
+        if (isset($a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) && $a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) {
+            return true;
+        }
+        return false;
+    }
+
     public function hasProblemCepageAutorise() {
       if (!$this->getConfig()) {
           return false;

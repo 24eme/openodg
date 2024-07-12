@@ -366,5 +366,13 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return false;
     }
 
+    public function hasProblemProduitCVI() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemProduitCVI()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

@@ -1,5 +1,10 @@
 <?php use_helper('Float') ?>
 
+<?php if ($parcellaireAffectation->hasProblemProduitCVI()): ?>
+    <p class="alert alert-warning">
+    Les parcelles mises en valeur pourrait rencontrer des problèmes de dénomination déclarée au CVI.
+    </p>
+<?php endif; ?>
 <?php if ($parcellaireAffectation->hasProblemEcartPieds()): ?>
     <p class="alert alert-warning">Les parcelles dont la superficie en mise en valeur pourrait rencontrer des problèmes de densité d'après l'analyse du CVI.</p>
 <?php endif; ?>
@@ -8,7 +13,7 @@
 <?php endif; ?>
 <?php if ($parcellaireAffectation->hasProblemParcellaire()): ?>
     <p class="alert alert-warning">
-    Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer des problèmes de dénomination déclaré au CVI.
+    Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer de conformité avec votre parcellaire CVI.
     </p>
 <?php endif; ?>
 
@@ -54,7 +59,7 @@
             </tr>
             <?php $parcellesCommune = 0; $nomCommune = $parcelle->commune; $superficieCommune = 0 ?>
         <?php endif ?>
-        <tr class="vertical-center">
+        <tr class="vertical-center<?php if ($parcelle->hasProblemProduitCVI()) echo ' warning' ?>">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
             <td class="text-center<?php if (!$parcelle->existsInParcellaire()) echo ' warning text-danger'; ?>">
