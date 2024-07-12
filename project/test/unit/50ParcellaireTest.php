@@ -50,7 +50,7 @@ $t->is(count($parcellaire->declaration), 1, "Le parcellaire a un produit");
 $t->is(count($parcellaire->getParcelles()), 5, "Le parcellaire 4 parcelles");
 $t->is(count($parcellaire->declaration->getParcelles()), 4, "Le parcellaire a des parcelles dans le produit");
 $parcelle = array_values($parcellaire->declaration->getParcelles())[0];
-$t->is($parcelle->produit_hash, '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT', "La première parcelles du produit as bien un produit_hash");
+$t->is($parcelle->produit_hash, $configProduit->getHash(), "La première parcelles du produit as bien un produit_hash");
 $t->is($parcelle->getConfig()->getLibelleComplet(), $configProduit->getLibelleComplet(), "Le libellé du produit est ". $configProduit->getLibelleComplet());
 $t->is($parcelle->source_produit_libelle, $configProduit->getLibelleComplet(), "Le libellé source du produit est ". $configProduit->getLibelleComplet());
 $t->is($parcelle->getKey(), $code_commune."000AB0052-00", "La clé de la parcelle est bien construite");
