@@ -43,7 +43,9 @@
         <tr class="vertical-center">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
-            <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
+            <td class="text-center<?php if (!$parcelle->existsInParcellaire()) echo ' danger'; ?>">
+                <?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?>
+            </td>
             <td<?php if ($parcelle->hasProblemCepageAutorise()) echo ' class="danger"'; ?>>
                 <?php echo $parcelle->cepage; ?>
             </td>

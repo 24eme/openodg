@@ -182,18 +182,34 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return false;
     }
 
+    public function getParcelleParcellaire() {
+        $p = $this->getDocument()->getParcellaire()->getDeclarationParcelles();
+        if (!isset($p[$this->getParcelleId()])) {
+            return null;
+        }
+        return $p[$this->getParcelleId()];
+    }
+
+    public function existsInParcellaire() {
+        return ($this->getParcelleParcellaire() != null);
+    }
+
     public function isRealProduit() {
-        if (!$this->produit_hash) {
+        $p = $this->getParcelleParcellaire();
+        if (!$p) {
             return false;
         }
-        if (!$this->getConfig()) {
+        if (!$p->produit_hash) {
+            return false;
+        }
+        if (!$p->getConfig()) {
             return false;
         }
         return true;
     }
 
     public function hasProblemCepageAutorise() {
-      if (!$this->isRealProduit()) {
+      if (!$this->getConfig()) {
           return false;
       }
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
