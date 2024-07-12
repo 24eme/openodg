@@ -1,6 +1,10 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
+<?php endif; ?>
 
 <?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireIrrigable)); ?>
 
@@ -70,3 +74,8 @@
         <?php endif; ?>
     </div>
 </div>
+
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireIrrigable]); ?>
+<?php endif; ?>

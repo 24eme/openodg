@@ -148,6 +148,10 @@ abstract class DocumentValidation
 
     protected function generateUrl($route, $params = array(), $absolute = false)
     {
+        if(is_object($params)) {
+            $params = ['sf_subject' => $params];
+        }
+
         return sfContext::getInstance()->getRouting()->generate($route, $params, $absolute);
     }
 
