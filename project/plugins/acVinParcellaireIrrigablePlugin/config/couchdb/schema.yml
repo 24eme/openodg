@@ -68,6 +68,7 @@ ParcellaireIrrigable:
                               ressource: {  }
                               produit_hash: { }
                               parcelle_id: { }
+                              source_produit_libelle: { }
       region: { required: false }
       observations: {  }
       pieces:
