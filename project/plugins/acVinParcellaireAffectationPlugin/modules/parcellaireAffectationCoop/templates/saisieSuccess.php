@@ -46,7 +46,7 @@
 
             <div class="col-xs-6 text-right"><button id="submit-confirmation-validation" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span> Valider la déclaration et revenir à la liste des apporteurs</button>
 
-            <button id="submit-confirmation-validation" class="btn btn-default mt-4" name="decla-affect-a-manquant"><span class="glyphicon glyphicon-arrow-right"></span> Valider la déclaration et déclarer les manquants</button></div>
+            <button id="submit-confirmation-validation" class="btn btn-default mt-3" name="decla-affect-a-manquant"><span class="glyphicon glyphicon-arrow-right"></span> Valider la déclaration et déclarer les manquants</button></div>
 
 
         </div>
