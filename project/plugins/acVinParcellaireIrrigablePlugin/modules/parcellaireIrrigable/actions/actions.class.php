@@ -33,6 +33,11 @@ class parcellaireIrrigableActions extends sfActions {
     		return $this->redirect('parcellaireirrigable_' . $parcellaireIrrigable->etape, $parcellaireIrrigable);
     	}
 
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellaireirrigable_parcelles', $parcellaireIrrigable);
+        }
+
     	return $this->redirect('parcellaireirrigable_exploitation', $parcellaireIrrigable);
     }
     public function executeDelete(sfWebRequest $request) {

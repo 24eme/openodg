@@ -33,6 +33,11 @@ class parcellaireManquantActions extends sfActions {
     		return $this->redirect('parcellairemanquant_' . $parcellaireManquant->etape, $parcellaireManquant);
     	}
 
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellairemanquant_parcelles', $parcellaireManquant);
+        }
+
     	return $this->redirect('parcellairemanquant_exploitation', $parcellaireManquant);
     }
     public function executeDelete(sfWebRequest $request) {

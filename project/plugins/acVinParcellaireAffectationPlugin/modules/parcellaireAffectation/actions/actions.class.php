@@ -33,6 +33,11 @@ class parcellaireAffectationActions extends sfActions {
     		return $this->redirect('parcellaireaffectation_' . $parcellaireAffectation->etape, $parcellaireAffectation);
     	}
 
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellaireaffectation_affectations', $parcellaireAffectation);
+        }
+
     	return $this->redirect('parcellaireaffectation_exploitation', $parcellaireAffectation);
     }
     public function executeDelete(sfWebRequest $request) {
