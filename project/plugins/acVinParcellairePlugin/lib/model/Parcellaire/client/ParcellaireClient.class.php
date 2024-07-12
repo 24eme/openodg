@@ -190,6 +190,9 @@ class ParcellaireClient extends acCouchdbClient {
             $parcellairecsv->convert();
         } catch (Exception $e) {
             $contextInstance->getLogger()->info("loadParcellaireCSV() : exception ".$e->getMessage());
+            if (sfConfig::get('sf_environment') == 'dev') {
+                throw $e;
+            }
             $error = $e->getMessage();
             return false;
         }

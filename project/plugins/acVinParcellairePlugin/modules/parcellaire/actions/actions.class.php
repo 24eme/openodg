@@ -82,6 +82,9 @@ class parcellaireActions extends sfActions {
                 $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {
+            if (sfConfig::get('sf_environment') == 'dev') {
+                throw $e;
+            }
             $msg = $e->getMessage();
         }
 
