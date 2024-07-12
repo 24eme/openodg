@@ -77,6 +77,8 @@ class ParcellaireCsvFile
 
             $this->parcellaire->remove('declaration');
             $this->parcellaire->add('declaration');
+            $this->parcellaire->remove('parcelles');
+            $this->parcellaire->add('parcelles');
         }
     }
 

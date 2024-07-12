@@ -67,12 +67,13 @@ class ParcellaireClient extends acCouchdbClient {
     public function scrapeParcellaireCSV($cvi, $scrappe = true, $contextInstance = null)
     {
         $contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
-        $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
+
         $status = 0;
-        if ($scrappe) {
+        if ($scrappe && is_file(ProdouaneScrappyClient::getScrapyBin().'/download_parcellaire.sh')) {
             $status = ProdouaneScrappyClient::exec("download_parcellaire.sh", "$cvi", $output);
         }
 
+        $scrapydocs = ProdouaneScrappyClient::getDocumentPath($contextInstance);
         $file = $scrapydocs.'/parcellaire-'.$cvi.'.csv';
 
         if (empty($file)) {
@@ -80,7 +81,6 @@ class ParcellaireClient extends acCouchdbClient {
         }
         if ($status != 0) {
             $contextInstance->getLogger()->info("scrapeParcellaireCSV() : retour du scrap problématique : $status");
-            throw new sfException(end($output));
         }
 
         return $file;
@@ -149,18 +149,26 @@ class ParcellaireClient extends acCouchdbClient {
             'PRODOUANE'
         );
 
+        $return = false;
         if (is_file($filePdf)) {
             $parcellaire->storeAttachment($filePdf, 'application/pdf', "import-cadastre-$cvi-parcelles.pdf");
             $parcellaire->save();
+            $return = true;
+        }else{
+            $errors['pdf'] = 'Pas de PDF issu du scrapping trouvé';
         }
 
+        $returncsv = false;
         if (is_file($fileCsv)) {
             $parcellaire->storeAttachment($fileCsv, 'text/csv', "import-cadastre-$cvi-parcelles.csv");
             $parcellaire->save();
             $returncsv = true;
+        }else{
+            $errors['csv'] = 'Pas de CSV issu du scrapping trouvé';
         }
 
         $this->loadParcellaireCSV($parcellaire);
+        $parcellaire->save();
 
         if ($returncsv) {
             $fileJson = ProdouaneScrappyClient::getDocumentPath($contextInstance).'/cadastre-'.$cvi.'-parcelles.json';
