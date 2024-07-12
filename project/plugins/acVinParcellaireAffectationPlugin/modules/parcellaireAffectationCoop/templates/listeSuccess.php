@@ -30,7 +30,7 @@
             <td><?php echo $apporteur->cvi; ?></td>
             <td><a href=""><?php echo $apporteur->nom; ?></a></td>
             <?php foreach(["ParcellaireAffectation" => "parcellaireaffectationcoop", "ParcellaireManquant" => "parcellaireaffectationcoop_manquant", "ParcellaireIrrigable" => "parcellaireaffectationcoop_irrigable"] as $type => $baseurl): ?>
-            <td class="text-center <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>bg-success text-success<?php endif; ?>">
+            <td class="text-center <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>success text-success<?php endif; ?>">
                 <?php if($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_VALIDE): ?>
                     <a class="text-success" href="<?php echo url_for($baseurl.'_visualisation', array('sf_subject' => $parcellaireAffectationCoop, 'id_document' => $apporteur->getDeclaration($type)->_id)) ?>">Voir la déclaration</a><br/><span class="glyphicon glyphicon-ok-sign"></span>
                 <?php elseif($apporteur->getDeclarationStatut($type) == ParcellaireAffectationCoopApporteur::STATUT_EN_COURS): ?>
