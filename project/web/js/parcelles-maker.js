@@ -12,7 +12,8 @@ function parseString(dlmString){
     return mydlm;
 }
 
-var map = L.map('map');
+var map = new L.map('map');
+map.scrollWheelZoom.disable();
 map.on('click', function(e) { if(e.target && e.target.feature) { return; } clearParcelleSelected() });
 
 L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
