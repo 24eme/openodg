@@ -1,4 +1,18 @@
 <?php use_helper('Float') ?>
+
+<?php if ($parcellaireAffectation->hasProblemEcartPieds()): ?>
+    <p class="alert alert-warning">Les parcelles dont la superficie en mise en valeur pourrait rencontrer des problèmes de densité d'après l'analyse du CVI.</p>
+<?php endif; ?>
+<?php if ($parcellaireAffectation->hasProblemCepageAutorise()): ?>
+    <p class="alert alert-warning">Les parcelles dont le cépage est mis en valeur pourrait rencontrer des problèmes de conformité avec le cahier des charges.</p>
+<?php endif; ?>
+<?php if ($parcellaireAffectation->hasProblemParcellaire()): ?>
+    <p class="alert alert-warning">
+    Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer des problèmes de dénomination déclaré au CVI.
+    </p>
+<?php endif; ?>
+
+
 <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
 <?php if ($dgc): ?>
     <div class="row">
@@ -43,13 +57,13 @@
         <tr class="vertical-center">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
-            <td class="text-center<?php if (!$parcelle->existsInParcellaire()) echo ' danger'; ?>">
+            <td class="text-center<?php if (!$parcelle->existsInParcellaire()) echo ' warning text-danger'; ?>">
                 <?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?>
             </td>
-            <td<?php if ($parcelle->hasProblemCepageAutorise()) echo ' class="danger"'; ?>>
+            <td<?php if ($parcelle->hasProblemCepageAutorise()) echo ' class="warning text-danger"'; ?>>
                 <?php echo $parcelle->cepage; ?>
             </td>
-            <td class="text-center<?php if ($parcelle->hasProblemEcartPieds()) echo ' danger'; ?>"><?php echo $parcelle->campagne_plantation; ?></td>
+            <td class="text-center<?php if ($parcelle->hasProblemEcartPieds()) echo ' warning text-danger'; ?>"><?php echo $parcelle->campagne_plantation; ?></td>
             <td class="text-right"><span><?php echoFloatFr($parcelle->superficie, 4); ?></span></td>
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>

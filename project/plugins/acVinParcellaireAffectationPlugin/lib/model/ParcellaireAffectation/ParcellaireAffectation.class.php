@@ -339,4 +339,32 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $parcellaire->getGeoJson();
     }
 
+    public function hasProblemCepageAutorise() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemCepageAutorise()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemEcartPieds() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemEcartPieds()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemParcellaire() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemParcellaire()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

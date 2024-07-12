@@ -208,6 +208,13 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return true;
     }
 
+    public function hasProblemParcellaire() {
+        if ($this->existsInParcellaire()){
+            return false;
+        }
+        return true;
+    }
+
     public function hasProblemCepageAutorise() {
       if (!$this->getConfig()) {
           return false;
