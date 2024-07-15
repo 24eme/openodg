@@ -109,6 +109,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             if($pMatch) {
                 $pMatch->affectee = 1;
+                if ($previousParcelle->isPartielle()) {
+                    $pMatch->superficie = $previousParcelle->superficie;
+                }
             }
         }
 	}
