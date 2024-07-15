@@ -73,7 +73,7 @@
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>
             <td class="text-center">
-                    <?php if (round($parcelle->superficie,4) != round($parcelle->getSuperficieParcellaire(),4)): ?>
+                    <?php if ($parcelle->isPartielle()): ?>
                         <span>Partielle</span>
                     <?php else: ?><span>Totale</span>
                 <?php endif; ?>

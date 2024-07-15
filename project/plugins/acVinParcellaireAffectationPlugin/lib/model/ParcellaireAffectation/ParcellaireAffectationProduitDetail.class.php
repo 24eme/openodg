@@ -96,4 +96,8 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         }
         return $p->superficie;
     }
+
+    public function isPartielle() {
+        return round($this->superficie,4) != round($this->getSuperficieParcellaire(),4);
+    }
 }
