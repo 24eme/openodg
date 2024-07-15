@@ -92,9 +92,15 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     public function getSuperficieParcellaire() {
         $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
         if (!$p) {
-            return $this->superficie;
+            if (!$this->_get('superficie_cadastrale')) {
+                $this->_set('superficie_cadastrale', $this->superficie);
+            }
+        } else {
+            if ($this->_get('superficie_cadastrale') != $p->superficie) {
+                $this->_set('superficie_cadastrale', $p->superficie);
+            }
         }
-        return $p->superficie;
+        return $this->_get('superficie_cadastrale');
     }
 
     public function isPartielle() {

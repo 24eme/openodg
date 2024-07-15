@@ -54,6 +54,7 @@ ParcellaireAffectation:
                             fields:
                               origine_doc: { }
                               superficie: { type: float }
+                              superficie_cadastrale: { type: float }
                               superficie_affectation: { type: float, required: false }
                               commune: { }
                               code_commune: { }
@@ -180,6 +181,7 @@ ParcellaireIntentionAffectation:
                               origine_doc: { }
                               origine_hash: { }
                               superficie: { type: float }
+                              superficie_cadastrale: { type: float }
                               superficie_affectation: { type: float, required: false }
                               commune: { }
                               code_commune: { }
