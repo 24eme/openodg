@@ -36,10 +36,10 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
     }
 
     public function fillFromCotisation($cotisation) {
-        $this->categorie = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getCollectionKey()) : '';
+        $this->categorie = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getCollectionKey()) : $cotisation->getCollectionKey();
         $this->type_hash = $cotisation->getDetailKey();
-        $this->type_libelle = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigCollection()->libelle) : '';
-        $this->detail_libelle = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigLibelle()) : '';
+        $this->type_libelle = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigCollection()->libelle) : $cotisation->getConfigCollection()->libelle;
+        $this->detail_libelle = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigLibelle()) : $cotisation->getConfigLibelle();
         $this->quantite = $cotisation->getQuantite();
         $this->taux = $cotisation->getPrix();
         $this->tva = $cotisation->getTva();

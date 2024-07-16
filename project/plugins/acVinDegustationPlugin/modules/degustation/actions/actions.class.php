@@ -459,7 +459,6 @@ class degustationActions extends sfActions {
         $this->forward403IfLotsAffectes();
 
         if ($this->degustation->hasLotsSansProvenance() === false) {
-            $this->getUser()->setFlash('warning', 'Vous avez été redirigé car tout les lots de la tournée ont une provenance');
             return $this->redirect(DegustationEtapes::getInstance()->getNextLink(TourneeDegustationEtapes::ETAPE_SAISIE), $this->degustation);
         }
 
