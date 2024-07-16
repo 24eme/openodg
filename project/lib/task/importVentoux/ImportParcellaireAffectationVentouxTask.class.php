@@ -54,6 +54,11 @@ EOF;
                 continue;
             }
 
+            if(!$data[self::CSV_SURFACE]) {
+                echo "Pas de superficie la parcelle n'est pas importée;".implode(";", $data)."\n";
+                continue;
+            }
+
             $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
 
             $affectationParcelle = $this->addParcelleFromData($affectation, $data);
