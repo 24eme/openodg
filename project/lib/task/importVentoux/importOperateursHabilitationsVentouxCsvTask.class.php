@@ -140,12 +140,12 @@ EOF;
             $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
         }
 
-        if(preg_match('/CP/', $data[self::CSV_CODE_LEGENDE])) {
-            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
-        }
-
         if(preg_match('/PREST/', $data[self::CSV_CODE_LEGENDE])) {
             $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        }
+
+        if(preg_match('/CP/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
         }
 
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
@@ -153,13 +153,7 @@ EOF;
 
         $cvi = null;
         if (isset($data[self::CSV_CVI])){
-            $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
-            for($i = strlen($cvi) ; $i < 10 ;  $i++) {
-                $cvi = $cvi."0";
-            }
-            if(!intval($cvi)) {
-                $cvi = '';
-            }
+            $cvi = EtablissementClient::repairCVI($data[self::CSV_CVI]);
         }
 
         $etablissement->cvi = $cvi;

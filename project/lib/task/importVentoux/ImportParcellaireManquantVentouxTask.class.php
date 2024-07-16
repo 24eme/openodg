@@ -33,9 +33,10 @@ EOF;
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
-            $etablissement = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI]);
-            if (!$etablissement) {
-                echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé\n";
+            $etablissement = $this->findEtablissement($data);
+
+            if(!$etablissement) {
+                echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé;".implode(";", $data)."\n";
                 continue;
             }
 

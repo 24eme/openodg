@@ -3,6 +3,7 @@
 class ImportParcellaireAffectationVentouxTask extends sfBaseTask
 {
     const CSV_CVI = 2;
+    const CSV_RAISON_SOCIALE = 3;
     const CSV_NOM_COMMUNE = 4;
     const CSV_LIEUDIT = 5;
     const CSV_SECTION = 7;
@@ -17,6 +18,10 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
     const CSV_IRRIGUE = 19;
 
     const DATE_VALIDATION = "04-15";
+
+
+    protected $currentEtablissementKey = null;
+    protected $currentEtablissement = null;
 
     protected function configure()
     {
@@ -45,12 +50,14 @@ EOF;
 
         $periode = $arguments['periode'];
 
+
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
-            $etablissement = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI]);
-            if (!$etablissement) {
-                echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé\n";
+            $etablissement = $this->findEtablissement($data);
+
+            if(!$etablissement) {
+                echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé;".implode(";", $data)."\n";
                 continue;
             }
 
@@ -117,7 +124,7 @@ EOF;
                 $parcelle->parcelle_id = preg_replace('/-[0-9]{1}([0-9]{1})$/', '-X\1', $parcelle->parcelle_id);
                 $parcelle->numero_ordre = explode('-', $parcelle->parcelle_id)[1];
             } catch (Exception $e) {
-                echo $e->getMessage().";".implode(";", $data)."\n";
+                echo $e->getMessage()." non importé;".implode(";", $data)."\n";
                 return null;
             }
             $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
@@ -146,5 +153,31 @@ EOF;
         $parcelleFindedStrict = $parcellaireTotal->findParcelle($parcelleToFind, 1);
 
         return $parcelleFindedStrict;
+    }
+
+    public function findEtablissement($data) {
+        $etablissement = null;
+        if($this->currentEtablissementKey == $data[self::CSV_CVI].$data[self::CSV_RAISON_SOCIALE]) {
+            $etablissement = $this->currentEtablissement;
+        }
+
+        if(!$etablissement) {
+            $etablissement = EtablissementClient::getInstance()->findByCvi(EtablissementClient::repairCVI($data[self::CSV_CVI]));
+        }
+        if (!$etablissement && $data[self::CSV_RAISON_SOCIALE]) {
+            $etablissement = EtablissementClient::getInstance()->findByRaisonSociale($data[self::CSV_RAISON_SOCIALE]);
+        }
+        if (!$etablissement && count(explode(" ", $data[self::CSV_RAISON_SOCIALE])) == 2) {
+            $etablissement = EtablissementClient::getInstance()->findByRaisonSociale(explode(" ", $data[self::CSV_RAISON_SOCIALE])[1]." ".explode(" ", $data[self::CSV_RAISON_SOCIALE])[0]);
+        }
+        if(!$etablissement) {
+
+            return null;
+        }
+
+        $this->currentEtablissementKey = $data[self::CSV_CVI].$data[self::CSV_RAISON_SOCIALE];
+        $this->currentEtablissement = $etablissement;
+
+        return $etablissement;
     }
 }
