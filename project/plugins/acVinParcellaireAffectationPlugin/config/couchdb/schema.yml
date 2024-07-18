@@ -54,6 +54,7 @@ ParcellaireAffectation:
                             fields:
                               origine_doc: { }
                               superficie: { type: float }
+                              superficie_cadastrale: { type: float }
                               superficie_affectation: { type: float, required: false }
                               commune: { }
                               code_commune: { }
@@ -72,6 +73,7 @@ ParcellaireAffectation:
                               date_affectation: {  }
                               affectee: { type: integer }
                               produit_hash: { }
+                              source_produit_libelle: { }
                               parcelle_id: { }
       region: { required: false }
       observations: {  }
@@ -179,6 +181,7 @@ ParcellaireIntentionAffectation:
                               origine_doc: { }
                               origine_hash: { }
                               superficie: { type: float }
+                              superficie_cadastrale: { type: float }
                               superficie_affectation: { type: float, required: false }
                               commune: { }
                               code_commune: { }
@@ -196,5 +199,6 @@ ParcellaireIntentionAffectation:
                               affectation: { type: integer }
                               date_affectation: {  }
                               produit_hash: { }
+                              source_produit_libelle: { }
                               parcelle_id: { }
       observations: {  }

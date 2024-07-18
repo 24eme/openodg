@@ -4,7 +4,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcelles() {
         $parcelles = [];
-        foreach ($this->declaration->getParcelles() as $p) {
+        if ($this->declaration && count($this->declaration)) foreach ($this->declaration->getParcelles() as $p) {
             $parcelles[$p->getParcelleId()] = $p;
         }
         return $parcelles;
@@ -62,7 +62,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function getParcellaire2Reference() {
         $parcellaire = $this->getParcellaire();
-        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() && ($this->type != ParcellaireAffectationClient::TYPE_MODEL)) {
+        if (ParcellaireConfiguration::getInstance()->isParcellesFromAffectationparcellaire() && !in_array($this->type, [ParcellaireAffectationClient::TYPE_MODEL, ParcellaireIntentionAffectationClient::TYPE_MODEL])) {
             $parcellaire = $this->getParcellaireAffectation();
         }
         return $parcellaire;
@@ -126,6 +126,9 @@ class DeclarationParcellaire extends acCouchdbDocument {
             }else{
                 $d = $p->detail->add($pid);
             }
+            if (! $p->libelle) {
+                $p->libelle = $p_orig->getProduit()->getLibelle();
+            }
             ParcellaireClient::CopyParcelle($d, $p_orig);
             if ($d->exist('active')) {
                 $d->active = 1;
@@ -138,7 +141,7 @@ class DeclarationParcellaire extends acCouchdbDocument {
 
     public function findParcelle($parcelle) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
+        return ParcellaireClient::findParcelle($this, $parcelle, 1);
     }
 
 }

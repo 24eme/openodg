@@ -1,8 +1,16 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+<?php endif; ?>
 
 <?php include_partial('parcellaireAffectation/step', array('step' => 'validation', 'parcellaireAffectation' => $parcellaireAffectation)) ?>
+
+<?php if (isset($validation) && $validation->hasPoints()): ?>
+    <?php include_partial('parcellaireAffectation/pointsAttentions', ['validation' => $validation]); ?>
+<?php endif; ?>
 
 <form role="form" action="<?php echo url_for('parcellaireaffectation_validation', $parcellaireAffectation) ?>" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
@@ -59,13 +67,18 @@
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider vos affectations</button>
+            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireaffectation-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider votre déclaration</button>
         </div>
     </div>
     <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
 	<?php include_partial('parcellaireAffectation/popupConfirmationValidation', array('form' => $form)); ?>
 	<?php endif; ?>
 </form>
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
+<?php endif; ?>
+
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">
 $('#parcellaireaffectation-confirmation-validation').modal('show')

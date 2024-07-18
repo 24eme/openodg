@@ -143,7 +143,7 @@ tr:hover .show-on-tr-hover {
 
 .checkboxlots input:not(:checked) { display: none; }
 
-.block_declaration .panel-body{ height: 175px; max-height: 175px }
+.block_declaration .panel-body{ height: 180px; max-height: 180px }
 .block_declaration .explications{ height: 80px; max-height: 80px }
 .block_declaration .actions{ height: 75px; max-height: 75px }
 
@@ -280,4 +280,10 @@ Licence : MIT
     margin: 0 !important;
     padding: 0 !important;
     z-index: 1000;
+}
+
+@media (min-width: 768px) {
+    .modal-dialog.modal-xxl {
+        width: 1140px;
+    }
 }

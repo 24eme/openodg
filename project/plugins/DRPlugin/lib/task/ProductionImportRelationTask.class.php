@@ -51,6 +51,9 @@ EOF;
 
     public function setTiersRelation($etablissement_source, $tiers, $relation) {
         foreach ($tiers as $etablissement) {
+            if(!$etablissement['etablissement']) {
+                continue;
+            }
             $etablissement_source->addLiaison($relation, EtablissementClient::getInstance()->find($etablissement['etablissement']->_id), true);
         }
         $etablissement_source->save();
@@ -66,10 +69,9 @@ EOF;
                     echo "Erreur bailleur non reconnu: [".$etablissement['raison_sociale']."] n'existe pas. PPM = [".$etablissement['ppm']."]".PHP_EOL;
                     continue;
                 }
-                $etab = EtablissementClient::getInstance()->find($etab_target);
-                $etab->ppm = $etablissement['ppm'];
-                $etablissement_id = $etab->_id;
-                $etab->save();
+                $etab_target->ppm = $etablissement['ppm'];
+                $etablissement_id = $etab_target->_id;
+                $etab_target->save();
             }
             $etablissement_source->addLiaison("BAILLEUR", EtablissementClient::getInstance()->find($etablissement_id), true);
         }

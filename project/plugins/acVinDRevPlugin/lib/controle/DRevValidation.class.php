@@ -48,6 +48,8 @@ class DRevValidation extends DeclarationLotsValidation
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieure à celle qui figure sur votre déclaration douanière en L4');
         $this->addControle(self::TYPE_WARNING, 'revendication_superficie_warn', 'Vous revendiquez une superficie supérieure à celle qui figure sur votre déclaration douanière en L4');
 
+        $this->addControle(self::TYPE_WARNING, 'parcellaire_affectation_superficie_sup', 'La superficie revendiquée est supérieure à celle qui figure sur votre affectation parcellaire');
+
         $this->addControle(self::TYPE_WARNING, 'dr_recolte_rendement', "Vous dépassez le rendement dans votre DR (L5)");
         $this->addControle(self::TYPE_WARNING, 'sv12_recolte_rendement', "Vous dépassez le rendement dans votre SV12");
         $this->addControle(self::TYPE_WARNING, 'sv11_recolte_rendement', "Vous dépassez le rendement dans votre SV11");

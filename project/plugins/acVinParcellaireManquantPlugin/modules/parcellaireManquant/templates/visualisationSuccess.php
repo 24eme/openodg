@@ -1,6 +1,10 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireManquant]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
+<?php endif; ?>
 
 <?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireManquant)); ?>
 
@@ -66,3 +70,7 @@
         <?php endif; ?>
     </div>
 </div>
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireManquant]); ?>
+<?php endif; ?>

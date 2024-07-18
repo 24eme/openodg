@@ -1,4 +1,8 @@
-<?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireManquant]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireManquant/breadcrumb', array('parcellaireManquant' => $parcellaireManquant)); ?>
+<?php endif; ?>
 
 <?php include_partial('parcellaireManquant/step', array('step' => 'validation', 'parcellaireManquant' => $parcellaireManquant)) ?>
 <div class="page-header no-border">
@@ -68,6 +72,11 @@
 	<?php include_partial('parcellaireManquant/popupConfirmationValidation', array('form' => $form)); ?>
 	<?php endif; ?>
 </form>
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireManquant]); ?>
+<?php endif; ?>
+
 <?php if(isset($form["signataire"]) && $form["signataire"]->hasError()): ?>
 <script type="text/javascript">
 $('#ParcellaireManquant-confirmation-validation').modal('show')

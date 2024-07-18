@@ -74,8 +74,16 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
       return preg_replace('/-.*/', '', $this->campagne);
   }
 
+  public function getParcellaireIrrigue() {
+      return ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant, $this->periode);
+  }
+
+  public function getParcellaire2Reference() {
+      return $this->getParcellaireIrrigue();
+  }
+
   public function storeParcelles() {
-  	if ($parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant, $this->periode)) {
+  	if ($parcellaireIrrigable = $this->getParcellaireIrrigue()) {
   		foreach ($parcellaireIrrigable->declaration as $key => $parcelle) {
   			$item = $this->declaration->add($key);
   			$item->libelle = $parcelle->libelle;
@@ -97,6 +105,8 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   				$subitem->campagne_plantation = $detail->campagne_plantation;
   				$subitem->materiel = $detail->materiel;
   				$subitem->ressource = $detail->ressource;
+  				$subitem->parcelle_id = $detail->getParcelleId();
+  				$subitem->produit_hash = $item->getHash();
   			}
   		}
   	}

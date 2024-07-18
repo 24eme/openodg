@@ -4,6 +4,7 @@ class ParcellaireAffectationClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireAffectation";
       const TYPE_COUCHDB = "PARCELLAIREAFFECTATION";
+      const TYPE_LIBELLE = "Déclaration d'affection parcellaire";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("ParcellaireAffectation");

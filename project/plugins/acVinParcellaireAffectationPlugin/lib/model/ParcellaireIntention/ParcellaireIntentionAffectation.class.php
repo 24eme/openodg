@@ -45,8 +45,9 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
   }
 
   public function updateIntentionFromParcellaireAndLieux(array $lieux) {
-      $parcellaire = $this->getParcellesFromReference();
-      if (!$parcellaire) {
+      $parcellaire = $this->getParcellaire();
+      $parcellesFromParcellaire = $this->getParcellaire()->getParcelles();
+      if (!$parcellesFromParcellaire || !count($parcellesFromParcellaire)) {
           return;
       }
       $communesDenominations = sfConfig::get('app_communes_denominations');
@@ -70,7 +71,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
               continue;
           }
 
-          $pMatch = $parcellaire->getDocument()->findParcelle($parcelle);
+          $pMatch = $parcellesFromParcellaire->getDocument()->findParcelle($parcelle);
 
           if(!$pMatch) {
               continue;
@@ -81,7 +82,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
       $this->remove('declaration');
       $this->add('declaration');
 
-      foreach ($parcellaire as $parcelle) {
+      foreach ($parcellesFromParcellaire as $parcelle) {
           $hash = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
           if (isset($denominations[$parcelle->code_commune])) {
             foreach ($denominations[$parcelle->code_commune] as $lieu) {
@@ -102,15 +103,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                   continue;
               }
               $subitem = $item->detail->add($parcelle->getKey());
-              $subitem->superficie = $parcelle->superficie;
-              $subitem->commune = $parcelle->commune;
-              $subitem->code_commune = $parcelle->code_commune;
-              $subitem->prefix = $parcelle->prefix;
-              $subitem->section = $parcelle->section;
-              $subitem->numero_parcelle = $parcelle->numero_parcelle;
-              $subitem->idu = $parcelle->idu;
-              $subitem->lieu = $parcelle->lieu;
-              $subitem->cepage = $parcelle->cepage;
+              ParcellaireClient::CopyParcelle($subitem, $parcelle);
               $subitem->active = 1;
               $subitem->remove('vtsgn');
               if($parcelle->exist('vtsgn')) {

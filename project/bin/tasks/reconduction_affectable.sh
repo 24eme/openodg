@@ -1,7 +1,7 @@
 #! /bin/bash
 #
 # Title: Reconduction des affectations
-# Description: Reconduit les affectations parcellaires depuis la déclaration de l'année précédente
+# Description: Reconduit les affectations parcellaires depuis la déclaration de l'année précédente à faire en fin de période déclarative vers le 15 juin
 
 source "$(dirname $0)/../config.inc"
 

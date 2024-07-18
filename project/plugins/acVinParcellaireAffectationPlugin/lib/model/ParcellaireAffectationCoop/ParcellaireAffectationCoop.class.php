@@ -63,7 +63,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         $sv11 = SV11Client::getInstance()->find("SV11-".$this->identifiant."-".($this->getPeriode() - 1));
 
         $apporteurs = $this->apporteurs;
-        $sv11Apporteurs = $sv11->getApporteurs();
+        $sv11Apporteurs = $sv11 ? $sv11->getApporteurs() : [];
         $apporteursArray = array();
 
         // Depuis les liaisons
@@ -89,11 +89,15 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function updateApporteurs() {
         foreach($this->getApporteursChoisis() as $apporteur) {
-            if($apporteur->getAffectationParcellaire()) {
+            if($apporteur->getDocument(ParcellaireAffectationClient::TYPE_MODEL)) {
                 continue;
             }
-            $apporteur->updateParcelles();
-            $apporteur->intention = ($apporteur->nb_parcelles_identifiees);
+            try {
+                $apporteur->updateParcelles();
+                $apporteur->intention = ($apporteur->nb_parcelles_identifiees);
+            }catch(sfException $e) {
+
+            }
         }
     }
 

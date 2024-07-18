@@ -38,10 +38,10 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
             return self::STATUT_EN_COURS;
         }
 
-        if(!$this->getNbParcelles()) {
+        /*if(!$this->getNbParcelles()) {
 
             return self::STATUT_NON_IDENTIFIEE;
-        }
+        }*/
         if(!$this->intention) {
 
             return self::STATUT_DESACTIVE;
@@ -67,11 +67,6 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
         return $this->declarations[$type];
     }
 
-    public function getAffectationParcellaire($hydrate = acCouchdbClient::HYDRATE_JSON) {
-
-        return $this->getDeclaration("ParcellaireAffectation", $hydrate);
-    }
-
     public function createAffectationParcellaire() { // Dépréciée mais encore utilisée dans les tests
         $this->affectationParcellaire = ParcellaireAffectationClient::getInstance()->createDoc($this->getEtablissementIdentifiant(), substr($this->getDocument()->campagne, 0, 4));
 
@@ -92,7 +87,11 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
 
     public function getNbParcelles() {
         if (!$this->exist('nb_parcelles_identifiees') || is_null($this->_get('nb_parcelles_identifiees'))) {
-            $this->updateParcelles();
+            try {
+                $this->updateParcelles();
+            }catch(sfException $e) {
+                return 0;
+            }
         }
         return $this->_get('nb_parcelles_identifiees');
     }

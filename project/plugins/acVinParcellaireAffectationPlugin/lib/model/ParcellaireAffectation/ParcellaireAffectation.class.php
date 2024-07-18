@@ -62,18 +62,22 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return preg_replace('/-.*/', '', $this->campagne);
   }
 
+  public function getParcellaire2Reference() {
+      $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode);
+      if (!$intention) {
+          $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode);
+          if (!count($intention->declaration)) {
+              $intention = null;
+          }
+      }
+      return $intention;
+  }
+
   public function updateParcellesAffectation() {
     if($this->validation){
         return;
     }
-    $intention = ParcellaireIntentionClient::getInstance()->getLast($this->identifiant, $this->periode);
-
-    if (!$intention) {
-        $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->identifiant, $this->periode);
-        if (!count($intention->declaration)) {
-            $intention = null;
-        }
-    }
+    $intention = $this->getParcellaire2Reference();
     $previous = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
     if(!$intention) {
         return;
@@ -90,7 +94,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
         $item = $this->declaration->add($hash);
         $item->libelle = $produit->libelle;
-        $parcelle->origine_doc = $intention->_id;
         unset($parcelle['origine_hash']);
         $detail = $item->detail->add($parcelle->getParcelleId());
         ParcellaireClient::CopyParcelle($detail, $parcelle);
@@ -105,6 +108,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             if($pMatch) {
                 $pMatch->affectee = 1;
+                if ($previousParcelle->isPartielle()) {
+                    $pMatch->superficie = $previousParcelle->superficie;
+                }
             }
         }
 	}
@@ -314,7 +320,61 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function getParcelleFromParcellaire($id) {
-        return $this->getParcellaire()->getParcelleFromParcellaireId($id);
+        $parcellaire = $this->getParcellaire();
+
+        if(!$parcellaire) {
+
+            return null;
+        }
+
+        return $parcellaire->getParcelleFromParcellaireId($id);
+    }
+
+    public function getGeoJson() {
+        $parcellaire = $this->getParcellaire();
+
+        if(!$parcellaire) {
+
+            return "";
+        }
+
+        return $parcellaire->getGeoJson();
+    }
+
+    public function hasProblemCepageAutorise() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemCepageAutorise()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemEcartPieds() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemEcartPieds()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemParcellaire() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemParcellaire()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemProduitCVI() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemProduitCVI()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

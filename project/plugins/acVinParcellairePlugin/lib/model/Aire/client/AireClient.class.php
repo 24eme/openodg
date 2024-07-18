@@ -5,6 +5,9 @@ class AireClient extends acCouchdbClient {
     const PARCELLAIRE_AIRE_TOTALEMENT = 'OUI';
     const PARCELLAIRE_AIRE_PARTIELLEMENT = 'PARTIEL';
     const PARCELLAIRE_AIRE_EN_ERREUR = 'ERREUR';
+
+    const PARCELLAIRE_AIRE_GENERIC_AIRE = 'aire';
+
     const PARCELLAIRE_AIRE_HORSDELAIRE = false;
 
     private $cache_find = array();
@@ -137,12 +140,26 @@ class AireClient extends acCouchdbClient {
         return $pseudo_aires;
     }
 
+    public function getPcFromCommuneGeoParcelleAndAire($commune_insee, ParcellaireParcelle $parcelle, $aire_nom) {
+        foreach($this->getAiresForInseeCommunes(array($commune_insee)) as $a) {
+            if ($a->denomination_libelle != $aire_nom) {
+                continue;
+            }
+            $geoparcelle = $parcelle->getGeoParcelle();
+            return $a->getPcInAire($geoparcelle);
+        }
+        return 1;
+    }
+
     public function getIsInAiresFromCommuneAndGeoParcelle($commune_insee, ParcellaireParcelle $parcelle) {
         $is_in_aires = array();
         try {
           $geoparcelle = $parcelle->getGeoParcelle();
           foreach($this->getAiresForInseeCommunes(array($commune_insee)) as $a) {
             try {
+                if (!count($geoparcelle->getComponents())) {
+                    $is_in_aires[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
+                }
                 $iia = $a->isInAire($geoparcelle);
                 if ($iia == AireClient::PARCELLAIRE_AIRE_HORSDELAIRE) {
                     continue;
@@ -155,7 +172,7 @@ class AireClient extends acCouchdbClient {
                 if ($a->exist('denomination_libelle')) {
                     $is_in_aires[$a->denomination_libelle] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
                 }else{
-                    $is_in_aires['aire'] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
+                    $is_in_aires[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE] = AireClient::PARCELLAIRE_AIRE_EN_ERREUR;
                 }
             }
           }

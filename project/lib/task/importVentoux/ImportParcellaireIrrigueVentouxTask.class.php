@@ -1,27 +1,15 @@
 <?php
 
-class ImportParcellaireIrrigueVentouxTask extends sfBaseTask
+class ImportParcellaireIrrigueVentouxTask extends ImportParcellaireAffectationVentouxTask
 {
-    const CSV_CVI = 2;
-    const CSV_NOM_COMMUNE = 4;
-    const CSV_SECTION = 7;
-    const CSV_NUM_PARCELLE = 8;
-    const CSV_SURFACE = 9;
-    const CSV_CEPAGE = 11;
-
-    const CSV_IRRIGABLE = 16;
-    const CSV_MATERIEL = 18;
-    const CSV_IRRIGUE = 19;
-
-    const DATE_VALIDATION = "2023-04-15";
-
     protected $materiels;
     protected $ressources;
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv")
+            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Fichier csv"),
+            new sfCommandArgument('periode', sfCommandArgument::REQUIRED, "Période")
         ));
 
         $this->addOptions(array(
@@ -42,97 +30,68 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        $periode = $arguments['periode'];
+
         $this->materiels = sfConfig::get('app_parcellaire_irrigable_materiels');
         $this->ressources = sfConfig::get('app_parcellaire_irrigable_ressources');
 
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
 
+            $etablissement = $this->findEtablissement($data);
+
+            if(!$etablissement) {
+                echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé;".implode(";", $data)."\n";
+                continue;
+            }
+
+            $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+            if(!$irrigable->isValidee()) {
+                $irrigable->validate($periode.'-'.self::DATE_VALIDATION);
+            }
+            try {
+                $irrigable->save();
+            } catch(Exception $e) {
+                sleep(60);
+                $irrigable->save();
+            }
             if (! $data[self::CSV_IRRIGUE] || ! $data[self::CSV_IRRIGABLE] || $data[self::CSV_IRRIGABLE] === 'NON') {
                 continue;
             }
 
-            $etablissement = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI]);
-            if (!$etablissement) {
-                echo "Error: Etablissement ".$data[self::CSV_CVI]." non trouvé\n";
+            $irrigableParcelle = $this->addParcelleFromData($irrigable, $data);
+            if(!$irrigableParcelle) {
                 continue;
             }
-            $parcellaireTotal = ParcellaireClient::getInstance()->getLast($etablissement->identifiant);
-            if (!$parcellaireTotal) {
-                $parcellaireTotal = new Parcellaire();
-                echo "Parcellaire non trouvé;".$line;
-            }
 
-            $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, "2023");
-            $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, "2023", true, self::DATE_VALIDATION);
-
-            $found = false;
-            foreach($parcellaireTotal->getParcelles() as $parcelle) {
-                if ($parcelle->getSection() == strtoupper($data[self::CSV_SECTION]) &&
-                    $parcelle->numero_parcelle == $data[self::CSV_NUM_PARCELLE]) {
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
-                $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
-                if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
-                    $produitHash .= '/blanc/cepages/DEFAUT';
-                } else {
-                    $produitHash .= '/rouge/cepages/DEFAUT';
-                }
-                try {
-                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, $data[self::CSV_CEPAGE], null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
-                    $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
-                } catch (Exception $e) {
-                    echo $e->getMessage().";".$line;
-                    continue;
-                }
-            }
-
-            $parcelleIrrigableAjoutee = $this->addParcelleFromParcellaireParcelle($irrigable, $parcelle);
-            $parcelleIrrigableAjoutee->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
-            $parcelleIrrigableAjoutee->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
-
-            $parcelleIrrigueAjoutee = $this->addParcelleFromParcellaireParcelle($irrigue, $parcelle);
-            $parcelleIrrigueAjoutee->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
-            $parcelleIrrigueAjoutee->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
-            $parcelleIrrigueAjoutee->irrigation = $data[self::CSV_IRRIGUE] ? 1 : 0;
-            $parcelleIrrigueAjoutee->date_irrigation = $parcelleIrrigueAjoutee->irrigation ? self::DATE_VALIDATION : null;
-
+            $irrigableParcelle->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
+            $irrigableParcelle->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
             try {
-                if(!$irrigable->isValidee()) {
-                    $irrigable->validate(self::DATE_VALIDATION);
-                }
                 $irrigable->save();
             } catch(Exception $e) {
                 sleep(60);
-                if(!$irrigable->isValidee()) {
-                    $irrigable->validate(self::DATE_VALIDATION);
-                }
                 $irrigable->save();
             }
 
+            $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, $periode, true, $periode.'-'.self::DATE_VALIDATION);
+            $irrigueParcelle = $this->addParcelleFromData($irrigue, $data);
+            if(!$irrigueParcelle) {
+                continue;
+            }
+            if(!$data[self::CSV_IRRIGUE]) {
+                continue;
+            }
+            $irrigueParcelle->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
+            $irrigueParcelle->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
+            $irrigueParcelle->irrigation = 1;
+            $irrigueParcelle->date_irrigation = $periode.'-'.self::DATE_VALIDATION;
             try {
-                if(!$irrigue->isValidee()) {
-                    $irrigue->validate(self::DATE_VALIDATION);
-                }
                 $irrigue->save();
             } catch(Exception $e) {
-                echo $e->getMessage().";".$line;
+                sleep(60);
+                $irrigue->save();
             }
         }
-    }
-
-    protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
-        $produit = $parcelle->getProduit();
-        $item = $doc->declaration->add(str_replace('/declaration/', null, preg_replace('|/couleurs/.*$|', '', $produit->getHash())));
-        $item->libelle = $produit->libelle;
-        $subitem = $item->detail->add($parcelle->getKey());
-        ParcellaireClient::CopyParcelle($subitem, $parcelle);
-
-        return $subitem;
     }
 
     protected function parseRessource($value)

@@ -59,7 +59,6 @@ EOF;
             }
 
         	$i++;
-        	echo "PROCESSUS;".$i.'/'.$nb.' => '.floor($i / $nb * 100)."\n";
 
         	if ($etablissement = EtablissementClient::getInstance()->find($item->id)) {
         		$ddType = $this->getDocumentDouanierType($etablissement);

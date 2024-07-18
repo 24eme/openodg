@@ -11,14 +11,18 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     private $geoparcelle = null;
 
     public function getProduit() {
-        if ($this->produit_hash) {
-            return $this->getDocument()->getConfiguration()->get($this->produit_hash);
+        if ($this->getParcelleAffectee()) {
+            return $this->getParcelleAffectee()->getParent()->getParent();
         }
-        return $this->getParcelleAffectee()->getParent()->getParent();
+        return null;
     }
 
     public function getConfig() {
-      return $this->getProduit()->getConfig();
+        try {
+            return $this->getDocument()->getConfiguration()->get(preg_replace('/\/detail\/.*/', '', $this->produit_hash));
+        }catch(sfException $e) {
+            return null;
+        }
     }
 
     public function addAcheteur($acheteur) {
@@ -87,7 +91,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduitLibelle() {
         if (!$this->isRealProduit()) {
-            return ' - PRODUIT NON RECONNU - ';
+            return 'PRODUIT NON GÉRÉ ('.$this->source_produit_libelle.')';
         }
         return $this->getProduit()->getLibelle();
     }
@@ -107,19 +111,14 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->getProduit()->getConfig()->getLieu();
     }
 
-    public function getIdentificationParcelleLibelle() {
-    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
-    }
-
-    public function getIdentificationCepageLibelle() {
-    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
-    }
-
     public function cleanNode() {
 
         return false;
     }
 
+    public function getSuperficieParcellaire() {
+        return $this->superficie;
+    }
 
     public function getVtsgn() {
         $v = $this->_get('vtsgn');
@@ -175,23 +174,64 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return false;
     }
 
+    public function getParcelleParcellaire() {
+        $p = $this->getDocument()->getParcellaire()->getDeclarationParcelles();
+        if (!isset($p[$this->getParcelleId()])) {
+            return null;
+        }
+        return $p[$this->getParcelleId()];
+    }
+
+    public function existsInParcellaire() {
+        return ($this->getParcelleParcellaire() != null);
+    }
+
     public function isRealProduit() {
-        try {
-            return $this->getProduit()->isRealProduit();
-        }catch(sfException $e) {
+        $p = $this->getParcelleParcellaire();
+        if (!$p) {
             return false;
         }
+        if (!$p->produit_hash) {
+            return false;
+        }
+        if (!$p->getConfig()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function hasProblemParcellaire() {
+        if ($this->existsInParcellaire()){
+            return false;
+        }
+        return true;
+    }
+
+    public function hasProblemProduitCVI() {
+        $a = $this->getIsInAires();
+        if (! count($a)) {
+            return true;
+        }
+        if (isset($a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) && $a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) {
+            return true;
+        }
+        return false;
     }
 
     public function hasProblemCepageAutorise() {
-      if (!$this->isRealProduit()) {
+      if (!$this->getConfig()) {
           return false;
       }
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 
-    public function hasTroisiemeFeuille() {
-        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - 2;
+    public function hasJeunesVignes() {
+        //Troisième ou Quatrieme feuille
+        $annee = 3;
+        if (ParcellaireConfiguration::getInstance()->isJeunesVignes3emeFeuille()) {
+            $annee = 2;
+        }
+        $year = ConfigurationClient::getInstance()->getCampagneParcellaire()->getCurrentAnneeRecolte() - $annee;
         $campagne_troisieme_feuille = $year.'-'.($year + 1);
         return ($this->campagne_plantation < $campagne_troisieme_feuille);
     }
@@ -230,6 +270,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $c;
     }
 
+    public function getPcAire($nom_aire) {
+        return AireClient::getInstance()->getPcFromCommuneGeoParcelleAndAire($this->code_commune, $this, $nom_aire);
+    }
+
     public function getIsInAires() {
         return AireClient::getInstance()->getIsInAiresFromCommuneAndGeoParcelle($this->code_commune, $this);
     }
@@ -243,7 +287,7 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function getParcelleAffectee() {
-        if (strpos($this->hash, 'declaration') !== false) {
+        if (strpos($this->getHash(), 'declaration') !== false) {
             return $this;
         }
         foreach($this->getDocument()->declaration->getParcelles() as $p) {

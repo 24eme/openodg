@@ -75,6 +75,7 @@ Parcellaire:
                               porte_greffe: { required: false }
                               prefix: { }
                               produit_hash: { }
+                              source_produit_libelle: { }
                               parcelle_id: { }
 
       parcelles:
@@ -106,6 +107,7 @@ Parcellaire:
                   porte_greffe: { required: false }
                   prefix: { }
                   produit_hash: { }
+                  source_produit_libelle: { }
                   parcelle_id: {}
       pieces:
         type: array_collection

@@ -31,6 +31,7 @@ class ParcellaireIntentionClient {
           }
           $intentionAuto = new ParcellaireIntentionAuto();
           $intentionAuto->initDoc($identifiant, $periode, $date);
+          $intentionAuto->updateParcelles();
           return $intentionAuto;
       }
 

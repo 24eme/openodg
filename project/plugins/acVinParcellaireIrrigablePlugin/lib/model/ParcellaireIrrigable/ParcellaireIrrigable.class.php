@@ -95,6 +95,25 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return true;
   }
 
+    public function setParcellesFromParcellaire(array $hashes) {
+        parent::setParcellesFromParcellaire($hashes);
+
+        $last = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant);
+
+        if (! $last) {
+            return;
+        }
+
+        $lastParcelles = $last->getParcelles();
+        foreach ($this->getDeclarationParcelles() as $pid => $p) {
+            $parcelle = $lastParcelles[$pid];
+            if ($parcelle) {
+                $p->materiel = $parcelle->materiel;
+                $p->ressource = $parcelle->ressource;
+            }
+        }
+    }
+
     public function getDeclarantSiret(){
         $siret = "";
         if($this->declarant->siret){
