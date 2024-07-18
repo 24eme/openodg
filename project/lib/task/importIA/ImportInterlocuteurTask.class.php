@@ -221,7 +221,7 @@ EOF;
             }
             $compte->updateNomAAfficher();
             if($compte->isNew()) {
-                echo "Compte créé : ".$compte->nom_a_afficher." (".$societe->_id." ".$societe->raison_sociale.")\n";
+                //echo "Compte créé : ".$compte->nom_a_afficher." (".$societe->_id." ".$societe->raison_sociale.")\n";
             }
 
             $compte->save();
