@@ -64,9 +64,11 @@ cat $DATA_DIR/contacts.csv | awk -F ";" '{ if($1 == $7) { $7 = "" } if(($6 && $7
 
 php symfony import:interlocuteur-ia $DATA_DIR/contacts_formates.csv --nocreatesociete=1 --application="$ODG"
 
-echo "Import DRev"
+echo "Import des documents de production"
 
 for annee in 2023 2022 2021 2020 2019 2018; do php symfony import:documents-douaniers "$annee" --dateimport="$annee-12-10" --application="$ODG"; done
+
+echo "Import des drev"
 
 echo -n > $DATA_DIR/drev.csv
 ls $DATA_DIR/drev*.xlsx | sort -r | while read drev_file; do
