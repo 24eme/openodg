@@ -71,7 +71,7 @@ for annee in 2023 2022 2021 2020 2019 2018; do php symfony import:documents-doua
 echo "Import des drev"
 
 echo -n > $DATA_DIR/drev.csv
-ls $DATA_DIR/drev*.xlsx | sort -r | while read drev_file; do
+ls $DATA_DIR/drev_2.xlsx | sort -r | while read drev_file; do
     xlsx2csv -l '\r\n' -d ";" $drev_file | tr -d "\n" | tr "\r" "\n" >> $DATA_DIR/drev.csv
 done;
 echo -n > $DATA_DIR/vci.csv

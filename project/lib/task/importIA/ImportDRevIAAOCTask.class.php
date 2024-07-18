@@ -182,7 +182,6 @@ EOF;
             }
             $drev->validateOdg($periode."-12-10", RegionConfiguration::getInstance()->getOdgRegion($produit->getHash()));
             $drev->save();
-            echo $drev."\n";
         }
     }
 
