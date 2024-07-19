@@ -77,7 +77,7 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
               continue;
           }
 
-          $affectees[$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie);
+          $affectees[$parcelle->getProduit()->getHash()][$pMatch->getHash()] = array('date' => $parcelle->date_affectation, 'superficie' => $parcelle->superficie);
       }
       $this->remove('declaration');
       $this->add('declaration');
@@ -116,13 +116,13 @@ class ParcellaireIntentionAffectation extends ParcellaireAffectation {
                   if ($subitem->campagne_plantation > "2004-2005") {
                       $subitem->date_affectation = substr($subitem->campagne_plantation, 6, 4). "-08-01";
                   }
-                  if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()] && $parcelle->getSuperficieParcellaire() != $affectees[$parcelle->getHash()]['superficie']) {
-                      $subitem->superficie = $affectees[$parcelle->getHash()]['superficie'];
+                  if (isset($affectees[$item->getHash()][$parcelle->getHash()]) && $affectees[$item->getHash()][$parcelle->getHash()] && $parcelle->getSuperficieParcellaire() != $affectees[$item->getHash()][$parcelle->getHash()]['superficie']) {
+                      $subitem->superficie = $affectees[$item->getHash()][$parcelle->getHash()]['superficie'];
                   }
-              } else if (isset($affectees[$parcelle->getHash()]) && $affectees[$parcelle->getHash()]) {
+              } else if (isset($affectees[$item->getHash()][$parcelle->getHash()]) && $affectees[$item->getHash()][$parcelle->getHash()]) {
                   $subitem->affectation = 1;
-                  $subitem->date_affectation = $affectees[$parcelle->getHash()]['date'];
-                  $subitem->superficie  = $affectees[$parcelle->getHash()]['superficie'];
+                  $subitem->date_affectation = $affectees[$item->getHash()][$parcelle->getHash()]['date'];
+                  $subitem->superficie  = $affectees[$item->getHash()][$parcelle->getHash()]['superficie'];
               } else {
                 $subitem->affectation = 0;
                 $subitem->superficie = $parcelle->superficie;
