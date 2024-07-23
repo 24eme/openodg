@@ -199,7 +199,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (! $date) {
             $date = date('Ymd');
         }
-        $parcellaire = $this->getLast($identifiant);
+        $parcellaire = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
         if ($parcellaire && $parcellaire->date == $date) {
             return $parcellaire;
         }

@@ -101,17 +101,9 @@ curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/etablissement/_view/all?
 for annee in 2023 2024; do
     #xlsx2csv -l '\r\n' -d ";" $DATA_DIR/parcellaire_"$annee".xlsx | tr -d "\n" | tr "\r" "\n" | sed -f $DATA_DIR/cvis_correspondances > $DATA_DIR/parcellaire_"$annee".csv
 
-    echo "Import des declarations d'affections parcellaire"
+    echo "Import des declarations d'affections parcellaire, manquant et irrigations"
 
     php symfony import:parcellaireaffectation-ventoux --env="prod" --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
-
-    echo "Import des declarations de pieds manquants"
-
-    php symfony import:parcellairemanquant-ventoux --env="prod" --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
-
-    echo "Import des declarations de parcellaire irrigué"
-
-    php symfony import:parcellaireirrigue-ventoux --env="prod" --application="$ODG" $DATA_DIR/parcellaire_"$annee".csv "$annee"
 done
 
 echo "Mise a jour des relations en fonction des documents de production"
