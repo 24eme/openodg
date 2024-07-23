@@ -32,6 +32,13 @@ class parcellaireIrrigueActions extends sfActions {
         return $this->redirect('parcellaireirrigue_edit', array('sf_subject' => $this->etablissement, 'periode' => $this->periode, 'papier' => $this->papier));
     }
 
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->parcellaireIrrigue = $this->getRoute()->getParcellaireIrrigue();
+        $this->coop = $request->getParameter('coop');
+        $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigue);
+
+        return $this->redirect('parcellaireirrigue_edit', ['identifiant' => $this->parcellaireIrrigue->identifiant, 'periode' => $this->parcellaireIrrigue->periode]);
+    }
 
     protected function secure($droits, $doc) {
     	if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
