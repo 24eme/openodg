@@ -63,17 +63,18 @@
                     <small class="pull-right text-muted">
 <?php if ($dr->getDocumentDefinitionModel() == 'DR'): ?>
                         <span title="Rendement L5" style="cursor: help">
+                            <!-- Calcul rendement L5 : Si quelqu'un demande a soustraire la L16 a la L5, il faut faire un point pour trouver le besoin. Derniere modif faite pour igp var -->
                             <?php if ($produit['lignes']['05']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round(intval($produit['lignes']['05']['val']) / $produit['lignes']['04']['val'], 2) ?>
-                            <?php else: echo 0 ?>
+                                <?php echoFloatFr(round( ($produit['lignes']['05']['val'] * 1) / $produit['lignes']['04']['val'], 2)); ?>
+                            <?php else: echoFloatFr(0) ?>
                             <?php endif ?>
                         </span> hl/ha
                         |
 <?php endif ?>
                         <span title="Rendement L15" style="cursor: help">
                             <?php if ($produit['lignes']['15']['val'] > 0 && $produit['lignes']['04']['val'] > 0): ?>
-                                <?= round(intval($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ?>
-                            <?php else: echo 0 ?>
+                                <?php echoFloatFr( round( ($produit['lignes']['15']['val']) / $produit['lignes']['04']['val'], 2) ) ;?>
+                            <?php else: echoFloatFr(0); ?>
                             <?php endif ?>
                         </span> hl/ha
                     </small>
