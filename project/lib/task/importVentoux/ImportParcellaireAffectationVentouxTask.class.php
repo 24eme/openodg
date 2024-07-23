@@ -204,7 +204,7 @@ EOF;
             sleep(60);
             $irrigable->save();
         }
-        if (! $data[self::CSV_IRRIGUE] || ! $data[self::CSV_IRRIGABLE] || $data[self::CSV_IRRIGABLE] === 'NON') {
+        if ($data[self::CSV_IRRIGABLE] !== 'OUI' && !$data[self::CSV_IRRIGUE]) {
             return;
         }
 
