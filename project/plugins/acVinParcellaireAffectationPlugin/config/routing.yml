@@ -158,99 +158,9 @@ parcellaireaffectationcoop_liste:
   requirements:
     sf_method: [get]
 
-parcellaireaffectationcoop_import:
-  url: /parcellaire-affectation-coop/import/:id
-  param: { module: parcellaireAffectationCoop, action: import }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    Etablissement
-    type:     object
-  requirements:
-    sf_method: [get]
-
-parcellaireaffectationcoop_saisie:
-  url: /parcellaire-affectation-coop/saisie/:id/:apporteur
-  param: { module: parcellaireAffectationCoop, action: saisie }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-parcellaireaffectationcoop_irrigable_saisie:
-  url: /parcellaire-affectation-coop/irrigable/saisie/:id/:apporteur
-  param: { module: parcellaireAffectationCoop, action: saisieIrrigable }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-parcellaireaffectationcoop_irrigable_saisie_infos:
-  url: /parcellaire-affectation-coop/irrigable/saisie_infos/:id/:id_document
-  param: { module: parcellaireAffectationCoop, action: saisieIrrigableInfos }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-parcellaireaffectationcoop_manquant_saisie:
-  url: /parcellaire-affectation-coop/manquant/saisie/:id/:apporteur
-  param: { module: parcellaireAffectationCoop, action: saisieManquant }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-parcellaireaffectationcoop_manquant_saisie_infos:
-  url: /parcellaire-affectation-coop/manquant/saisie_infos/:id/:id_document
-  param: { module: parcellaireAffectationCoop, action: saisieManquantInfos }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
 parcellaireaffectationcoop_switch:
   url: /parcellaire-affectation-coop/switch/:id/:apporteur/:sens
   param: { module: parcellaireAffectationCoop, action: switch }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get]
-
-parcellaireaffectationcoop_visualisation:
-  url: /parcellaire-affectation-coop/visualisation/:id/:id_document
-  param: { module: parcellaireAffectationCoop, action: visualisation }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get]
-
-parcellaireaffectationcoop_irrigable_visualisation:
-  url: /parcellaire-affectation-coop/irrigable/visualisation/:id/:id_document
-  param: { module: parcellaireAffectationCoop, action: visualisationIrrigable }
-  class: ParcellaireAffectationCoopRoute
-  options:
-    model:    ParcellaireAffectationCoop
-    type:     object
-  requirements:
-    sf_method: [get]
-
-parcellaireaffectationcoop_manquant_visualisation:
-  url: /parcellaire-affectation-coop/manquant/visualisation/:id/:id_document
-  param: { module: parcellaireAffectationCoop, action: visualisationManquant }
   class: ParcellaireAffectationCoopRoute
   options:
     model:    ParcellaireAffectationCoop

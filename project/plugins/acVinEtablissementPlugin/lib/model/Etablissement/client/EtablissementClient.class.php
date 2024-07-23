@@ -280,16 +280,15 @@ class EtablissementClient extends acCouchdbClient {
         $json = array();
         foreach($e as $key => $etablissement) {
             $text = EtablissementAllView::getInstance()->makeLibelle($etablissement);
-            if (Search::matchTerm($raison_sociale, $text)) {
+            if ($text && Search::matchTerm($raison_sociale, $text)) {
                 $json[EtablissementClient::getInstance()->getId($etablissement->id)] = $text;
             }
-
             if (count($json) >= 2) {
                 break;
             }
         }
-        if (array_key_exists(0, $json)) {
-            return array_keys($json)[0];
+        if (array_key_exists(0, array_keys($json))) {
+            return EtablissementClient::getInstance()->find(array_keys($json)[0]);
         }
         else {
             return null;
@@ -451,5 +450,17 @@ class EtablissementClient extends acCouchdbClient {
 
     public static function cleanCivilite($nom) {
         return preg_replace("/^(M|MME|EARL|SCEA|SARL|SDF|GAEC|MLLE|SA|SAS|Mme|M\.|STEF|MEMR|MM|IND|EURL|SCA|EI|SCI|MMES|SASU|SC|SCV|Melle|ASSO|GFA)[,]? /", "", $nom);
+    }
+
+    public static function repairCVI($cvi) {
+        $cvi = preg_replace('/[^A-Z0-9]+/', "", $cvi);
+        for($i = strlen($cvi) ; $i < 10 ;  $i++) {
+            $cvi = $cvi."0";
+        }
+        if(!intval($cvi)) {
+            $cvi = '';
+        }
+
+        return $cvi;
     }
 }

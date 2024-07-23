@@ -111,14 +111,6 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->getProduit()->getConfig()->getLieu();
     }
 
-    public function getIdentificationParcelleLibelle() {
-    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
-    }
-
-    public function getIdentificationCepageLibelle() {
-    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
-    }
-
     public function cleanNode() {
 
         return false;
@@ -182,18 +174,52 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
       return false;
     }
 
+    public function getParcelleParcellaire() {
+        $p = $this->getDocument()->getParcellaire()->getDeclarationParcelles();
+        if (!isset($p[$this->getParcelleId()])) {
+            return null;
+        }
+        return $p[$this->getParcelleId()];
+    }
+
+    public function existsInParcellaire() {
+        return ($this->getParcelleParcellaire() != null);
+    }
+
     public function isRealProduit() {
-        if (!$this->produit_hash) {
+        $p = $this->getParcelleParcellaire();
+        if (!$p) {
             return false;
         }
-        if (!$this->getConfig()) {
+        if (!$p->produit_hash) {
+            return false;
+        }
+        if (!$p->getConfig()) {
             return false;
         }
         return true;
     }
 
+    public function hasProblemParcellaire() {
+        if ($this->existsInParcellaire()){
+            return false;
+        }
+        return true;
+    }
+
+    public function hasProblemProduitCVI() {
+        $a = $this->getIsInAires();
+        if (! count($a)) {
+            return true;
+        }
+        if (isset($a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) && $a[AireClient::PARCELLAIRE_AIRE_GENERIC_AIRE]) {
+            return true;
+        }
+        return false;
+    }
+
     public function hasProblemCepageAutorise() {
-      if (!$this->isRealProduit()) {
+      if (!$this->getConfig()) {
           return false;
       }
       return (count($this->getConfig()->getCepagesAutorises())) && !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));

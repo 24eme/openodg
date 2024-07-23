@@ -23,14 +23,6 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         return $this->getParent()->getParent()->getHash();
     }
 
-    public function getIdentificationParcelleLibelle() {
-    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
-    }
-
-    public function getIdentificationCepageLibelle() {
-    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
-    }
-
     public function getDgc() {
         $communesDenominations = sfConfig::get('app_communes_denominations');
         $dgcFinal = null;
@@ -91,7 +83,7 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
             return $this->_get('superficie_affectation');
         }
-        if ($this->_get('superficie')) {
+        if ($this->_get('superficie') != null) {
             return $this->_get('superficie');
         }
         return $this->getSuperficieParcellaire();
@@ -100,8 +92,18 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     public function getSuperficieParcellaire() {
         $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
         if (!$p) {
-            return $this->superficie;
+            if (!$this->_get('superficie_cadastrale')) {
+                $this->_set('superficie_cadastrale', $this->superficie);
+            }
+        } else {
+            if ($this->_get('superficie_cadastrale') != $p->superficie) {
+                $this->_set('superficie_cadastrale', $p->superficie);
+            }
         }
-        return $p->superficie;
+        return $this->_get('superficie_cadastrale');
+    }
+
+    public function isPartielle() {
+        return round($this->superficie,4) != round($this->getSuperficieParcellaire(),4);
     }
 }

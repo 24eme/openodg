@@ -141,7 +141,7 @@ class declarationActions extends sfActions {
         // Doc sans page de visu
         if($doc_type == "PARCELLAIREIRRIGUE") {
 
-            return $this->redirect('pieces_historique', array('sf_subject' => $etablissement, 'categorie' => 'parcellaireirrigue'));
+            return $this->redirect("parcellaireirrigue_visualisation", array("id" => $doc_id));
         }
 
         // Doc sans page de visu et ne remontant pas dans les documents
@@ -190,6 +190,11 @@ class declarationActions extends sfActions {
     }
 
     public function executeEtablissement(sfWebRequest $request) {
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellaireaffectationcoop_liste', ['id' => $request->getParameter('coop')]);
+        }
+
         $usurpation = $request->getParameter('usurpation',null);
         $login = $request->getParameter('login',null);
         if($usurpation && $login){

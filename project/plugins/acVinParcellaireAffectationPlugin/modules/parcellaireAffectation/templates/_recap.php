@@ -1,4 +1,23 @@
 <?php use_helper('Float') ?>
+
+<?php if ($parcellaireAffectation->hasProblemProduitCVI()): ?>
+    <p class="alert alert-warning">
+    Les parcelles mises en valeur pourrait rencontrer des problèmes de dénomination déclarée au CVI.
+    </p>
+<?php endif; ?>
+<?php if ($parcellaireAffectation->hasProblemEcartPieds()): ?>
+    <p class="alert alert-warning">Les parcelles dont la superficie en mise en valeur pourrait rencontrer des problèmes de densité d'après l'analyse du CVI.</p>
+<?php endif; ?>
+<?php if ($parcellaireAffectation->hasProblemCepageAutorise()): ?>
+    <p class="alert alert-warning">Les parcelles dont le cépage est mis en valeur pourrait rencontrer des problèmes de conformité avec le cahier des charges.</p>
+<?php endif; ?>
+<?php if ($parcellaireAffectation->hasProblemParcellaire()): ?>
+    <p class="alert alert-warning">
+    Les parcelles dont l'identifiant est mis en valeur pourrait rencontrer de conformité avec votre parcellaire CVI.
+    </p>
+<?php endif; ?>
+
+
 <?php foreach ($parcellaireAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
 <?php if ($dgc): ?>
     <div class="row">
@@ -40,17 +59,21 @@
             </tr>
             <?php $parcellesCommune = 0; $nomCommune = $parcelle->commune; $superficieCommune = 0 ?>
         <?php endif ?>
-        <tr class="vertical-center">
+        <tr class="vertical-center<?php if ($parcelle->hasProblemProduitCVI()) echo ' warning' ?>">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
-            <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
-            <td><?php echo $parcelle->cepage; ?></td>
-            <td class="text-center"><?php echo $parcelle->campagne_plantation; ?></td>
+            <td class="text-center<?php if (!$parcelle->existsInParcellaire()) echo ' warning text-danger'; ?>">
+                <?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?>
+            </td>
+            <td<?php if ($parcelle->hasProblemCepageAutorise()) echo ' class="warning text-danger"'; ?>>
+                <?php echo $parcelle->cepage; ?>
+            </td>
+            <td class="text-center<?php if ($parcelle->hasProblemEcartPieds()) echo ' warning text-danger'; ?>"><?php echo $parcelle->campagne_plantation; ?></td>
             <td class="text-right"><span><?php echoFloatFr($parcelle->superficie, 4); ?></span></td>
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>
-            <td style="text-align: center;">
-                    <?php if (round($parcelle->superficie,4) != round($parcelle->getSuperficieParcellaire(),4)): ?>
+            <td class="text-center">
+                    <?php if ($parcelle->isPartielle()): ?>
                         <span>Partielle</span>
                     <?php else: ?><span>Totale</span>
                 <?php endif; ?>

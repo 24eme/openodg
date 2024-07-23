@@ -94,7 +94,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
         $item = $this->declaration->add($hash);
         $item->libelle = $produit->libelle;
-        $parcelle->origine_doc = $intention->_id;
         unset($parcelle['origine_hash']);
         $detail = $item->detail->add($parcelle->getParcelleId());
         ParcellaireClient::CopyParcelle($detail, $parcelle);
@@ -109,6 +108,9 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             if($pMatch) {
                 $pMatch->affectee = 1;
+                if ($previousParcelle->isPartielle()) {
+                    $pMatch->superficie = $previousParcelle->superficie;
+                }
             }
         }
 	}
@@ -337,6 +339,42 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
 
         return $parcellaire->getGeoJson();
+    }
+
+    public function hasProblemCepageAutorise() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemCepageAutorise()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemEcartPieds() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemEcartPieds()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemParcellaire() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemParcellaire()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasProblemProduitCVI() {
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            if ($p->hasProblemProduitCVI()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

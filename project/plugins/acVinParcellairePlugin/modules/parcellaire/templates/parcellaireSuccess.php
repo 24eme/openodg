@@ -100,6 +100,8 @@ $list_idu = [];
             <?php
                 $superficie = 0;
                 $nb_parcelles = 0;
+                $superficie_tout = 0;
+                $nb_parcelles_tout = 0;
                 ?>
                 <table class="table table-bordered table-condensed table-striped tableParcellaire">
                   <thead>
@@ -197,11 +199,21 @@ $list_idu = [];
                                 </td>
                                 <?php endif; ?>
                             </tr>
-                            <?php $superficie = $superficie + $detail->superficie; ?>
-                            <?php $nb_parcelles++; ?>
+                            <?php
+                                if ($detail->isRealProduit()) {
+                                    $superficie = $superficie + $detail->superficie;
+                                    $nb_parcelles++;
+                                }
+                                $superficie_tout += $detail->superficie;
+                                $nb_parcelles_tout++;
+                            ?>
                             <?php endforeach; ?>
                     </tbody>
-                    <tr><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoSuperficie($superficie); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
+                    <?php if (!$nb_parcelles): ?>
+                        <tr><td colspan="10"  style="text-align: center;"><i>L'opérateur ne possède pas sur cette commune de parcelle déclarée au CVI à un produit géré</i></td></tr>
+                    <?php endif; ?>
+                    <tr class="produitgere"><th colspan="4"  style="text-align: right;">Superficie des produits gérés</th><td style="text-align: right;"><strong><?php echoSuperficie($superficie); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
+                    <tr class="hidden produitnongere"><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoSuperficie($superficie_tout); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles_tout; ?> parcelles</td></tr>
                 </table>
     <?php endforeach; ?>
         </div>
