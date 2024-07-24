@@ -51,7 +51,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-5">
-        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireManquant->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireManquant->identifiant, 'campagne' => $parcellaireManquant->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
     <div class="col-xs-2 text-center">
             <a href="<?php echo url_for('parcellairemanquant_export_pdf', $parcellaireManquant) ?>" class="btn btn-success">
