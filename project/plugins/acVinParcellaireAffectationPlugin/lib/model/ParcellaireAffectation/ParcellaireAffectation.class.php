@@ -85,6 +85,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   }
 
   public function isAllPreviousParcellesExists() {
+      if(!$this->getPreviousDocument()) {
+
+          return true;
+      }
       foreach($this->getPreviousDocument()->getParcelles() as $previousParcelle) {
           if(!$previousParcelle->affectee) {
               continue;
