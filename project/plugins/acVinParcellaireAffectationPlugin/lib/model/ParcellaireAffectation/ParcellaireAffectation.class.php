@@ -5,6 +5,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $declarant_document = null;
   protected $piece_document = null;
   protected $parcelles_idu = null;
+  protected $previous_document = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -73,12 +74,35 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return $intention;
   }
 
+  public function getPreviousDocument() {
+      if($this->previous_document) {
+         return $this->previous_document;
+      }
+
+      $this->previous_document = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+
+      return $this->previous_document;
+  }
+
+  public function isAllPreviousParcellesExists() {
+      foreach($this->getPreviousDocument()->getParcelles() as $previousParcelle) {
+          if(!$previousParcelle->affectee) {
+              continue;
+          }
+          if(!$this->findParcelle($previousParcelle)) {
+              return false;
+          }
+      }
+
+      return true;
+  }
+
   public function updateParcellesAffectation() {
     if($this->validation){
         return;
     }
     $intention = $this->getParcellaire2Reference();
-    $previous = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+    $previous = $this->getPreviousDocument();
     if(!$intention) {
         return;
     }

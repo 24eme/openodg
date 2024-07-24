@@ -12,6 +12,13 @@
     <h2>Affectation de vos parcelles</h2>
     <h3 style="font-size: 14px;">Les parcelles listées ci-dessous sont reprises depuis le parcellaire douanier</h3>
 </div>
+
+<?php if(!$parcellaireAffectation->isAllPreviousParcellesExists()): ?>
+    <div class="alert alert-warning">
+        Toutes les parcelles affectées issues de <a href="<?php echo url_for('parcellaireaffectation_visualisation', $parcellaireAffectation->getPreviousDocument()) ?>">la déclaration de la précédente campagne</a> n'ont pas pu être reprises, il est conseillé de vérifier l'ensemble des parcelles affectées.
+    </div>
+<?php endif; ?>
+
 <form id="validation-form" action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
