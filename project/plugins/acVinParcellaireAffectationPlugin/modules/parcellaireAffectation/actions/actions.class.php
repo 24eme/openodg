@@ -120,7 +120,7 @@ class parcellaireAffectationActions extends sfActions {
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
-		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation);
+		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->coop);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

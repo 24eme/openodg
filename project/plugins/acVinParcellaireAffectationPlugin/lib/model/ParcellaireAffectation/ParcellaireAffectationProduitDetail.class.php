@@ -79,7 +79,12 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
         return $date->format('d/m/Y');
     }
 
-    public function getSuperficie() {
+    public function getSuperficie($identifiant = null) {
+        if($identifiant && $this->exist('destinations/'.$identifiant)) {
+
+            return $this->get('destinations/'.$identifiant.'/superficie');
+        }
+
         if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
             return $this->_get('superficie_affectation');
         }
@@ -105,5 +110,27 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
 
     public function isPartielle() {
         return round($this->superficie,4) != round($this->getSuperficieParcellaire(),4);
+    }
+
+    public function updateAffectations() {
+        if(!$this->exist('destinations')) {
+            return;
+        }
+
+        $this->superficie = 0;
+        foreach($this->destinations as $destination) {
+            $this->superficie = $this->_get('superficie') + $destination->superficie;
+        }
+
+        $this->affectee = intval(boolval($this->superficie));
+    }
+
+    public function affecter($superficie, Etablissement $etablissement) {
+        $this->affectee = 1;
+        $destination = $this->add('destinations')->add($etablissement->identifiant);
+        $destination->identifiant = $etablissement->identifiant;
+        $destination->cvi = $etablissement->cvi;
+        $destination->superficie = $superficie;
+        $this->updateAffectations();
     }
 }
