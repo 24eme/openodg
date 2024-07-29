@@ -8,7 +8,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Dénomination complémentaire;Surface identifiée;Signataire;Date de validation;Type de declaration\n";
+        return "Campagne;Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Dénomination complémentaire;Surface identifiée;Signataire;Date de validation;Type de declaration;Pseudo production id;doc id\n";
     }
 
     public function __construct($doc, $header = true, $region = null) {
@@ -72,7 +72,10 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
             	$this->formatFloat($parcelle->superficie),
                 $this->doc->exist('signataire') ? $this->protectStr($this->doc->signataire) : null,
             	$this->doc->validation,
-            	$mode);
+            	$mode,
+                str_replace(' PARCELLAIREAFFECTATION-', '', $this->doc->_id),
+                $this->doc->_id
+                );
         	}
         }
 
