@@ -1,14 +1,16 @@
 <?php
 
 class ParcellaireAffectationProduitAffecteForm extends acCouchdbObjectForm {
-    protected $etablissement = null;
-    public function __construct(acCouchdbJson $object, $etablissement, $options = array(), $CSRFSecret = null) {
-        $this->etablissement = $etablissement;
+    protected $destinataire = null;
+    public function __construct(acCouchdbJson $object, $destinataire, $options = array(), $CSRFSecret = null) {
+        $this->destinataire = $destinataire;
         parent::__construct($object, $options, $CSRFSecret);
     }
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        $this->setDefault('superficie', $this->getObject()->getSuperficie($this->etablissement->identifiant));
+        $superficie = $this->getObject()->getSuperficie($this->destinataire->identifiant);
+        $this->setDefault('affectee', boolval($superficie));
+        $this->setDefault('superficie', ($superficie !== null) ? $superficie : $this->getObject()->getSuperficieParcellaireAffectable());
     }
     public function configure() {
 

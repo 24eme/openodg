@@ -34,8 +34,9 @@
             <th class="col-xs-1">Section /<br />N° parcelle</th>
             <th class="col-xs-2">Cépage</th>
             <th class="col-xs-1">Année plantat°</th>
-            <th class="col-xs-1" style="text-align: right;">Surf. affectable&nbsp;<span class="text-muted small">(ha)</span></th>
+            <th class="col-xs-1" style="text-align: right;">Superficie affectable&nbsp;<span class="text-muted small">(ha)</span></th>
             <th class="col-xs-1">Affectation</th>
+            <th class="col-xs-2">Destination</th>
         </tr>
     </thead>
     <tbody>
@@ -73,11 +74,9 @@
             <?php if($parcellaireAffectation->isValidee()): ?>
             <?php endif; ?>
             <td class="text-center">
-                    <?php if ($parcelle->isPartielle()): ?>
-                        <span>Partielle</span>
-                    <?php else: ?><span>Totale</span>
-                <?php endif; ?>
+                <?php if ($parcelle->isPartielle()): ?>Partielle<?php else: ?>Totale<?php endif; ?>
             </td>
+            <td><?php echo implode(", ", $parcelle->getDestinatairesNom()) ?></td>
         </tr>
 
         <?php $parcellesCommune++; $nomCommune = $parcelle->commune; $superficieCommune += $parcelle->superficie  ?>

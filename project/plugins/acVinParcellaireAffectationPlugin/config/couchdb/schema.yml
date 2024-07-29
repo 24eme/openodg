@@ -85,6 +85,7 @@ ParcellaireAffectation:
                                       definition:
                                         fields:
                                           identifiant: { }
+                                          nom: { }
                                           cvi: { }
                                           superficie: { }
       region: { required: false }
