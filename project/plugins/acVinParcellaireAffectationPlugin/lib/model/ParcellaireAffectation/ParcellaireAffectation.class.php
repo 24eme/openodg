@@ -5,6 +5,8 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
   protected $declarant_document = null;
   protected $piece_document = null;
   protected $parcelles_idu = null;
+  protected $previous_document = null;
+  protected $etablissement = null;
 
   public function isAdresseLogementDifferente() {
       return false;
@@ -39,8 +41,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
   public function getEtablissementObject() {
-
-      return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+      if(!$this->etablissement) {
+          $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+      }
+      return $this->etablissement;
   }
 
   public function constructId() {
@@ -73,31 +77,51 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       return $intention;
   }
 
+  public function getPreviousDocument() {
+      if($this->previous_document) {
+         return $this->previous_document;
+      }
+
+      $this->previous_document = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+
+      return $this->previous_document;
+  }
+
+  public function isAllPreviousParcellesExists() {
+      if(!$this->getPreviousDocument()) {
+
+          return true;
+      }
+      foreach($this->getPreviousDocument()->getParcelles() as $previousParcelle) {
+          if(!$previousParcelle->affectee) {
+              continue;
+          }
+          if(!$this->findParcelle($previousParcelle)) {
+              return false;
+          }
+      }
+
+      return true;
+  }
+
   public function updateParcellesAffectation() {
     if($this->validation){
         return;
     }
     $intention = $this->getParcellaire2Reference();
-    $previous = ParcellaireAffectationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $this->periode-1);
+    $previous = $this->getPreviousDocument();
     if(!$intention) {
         return;
     }
     $intention->updateParcelles();
 	foreach ($intention->getParcelles() as $parcelle) {
-	    $produit = $parcelle->getProduit();
-        $hash = str_replace('/declaration/', '', $produit->getHash());
         if (!$parcelle->affectation) {
             continue;
         }
         if($this->findParcelle($parcelle, true)) {
             continue;
         }
-        $item = $this->declaration->add($hash);
-        $item->libelle = $produit->libelle;
-        unset($parcelle['origine_hash']);
-        $detail = $item->detail->add($parcelle->getParcelleId());
-        ParcellaireClient::CopyParcelle($detail, $parcelle);
-        $detail->origine_doc = $intention->_id;
+        $this->addParcelle($parcelle);
 	}
     if($previous) {
         foreach($previous->getParcelles() as $previousParcelle) {
@@ -108,9 +132,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
             if($pMatch) {
                 $pMatch->affectee = 1;
-                if ($previousParcelle->isPartielle()) {
-                    $pMatch->superficie = $previousParcelle->superficie;
-                }
+                $pMatch->superficie = $previousParcelle->superficie;
             }
         }
 	}
@@ -207,12 +229,18 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $find;
     }
 
-    public function isMultiApporteur(){
-        return count($this->getCaveCooperatives()) > 1;
-    }
+    public function getDestinataires() {
+        $destinataires = [$this->getEtablissementObject()->_id => ['libelle_etablissement' => "Cave particulière"]];
 
-    public function getCaveCooperatives(){
-        return $this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE);
+        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_COOPERATIVE) as $liaison) {
+            $destinataires[$liaison->id_etablissement] = $liaison;
+        }
+
+        foreach($this->getEtablissementObject()->getLiaisonOfType(EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN) as $liaison) {
+            $destinataires[$liaison->id_etablissement] = $liaison;
+        }
+
+        return $destinataires;
     }
 
   /*** DECLARATION DOCUMENT ***/
@@ -375,6 +403,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
             }
         }
         return false;
+    }
+
+    public function addParcelle($parcelle) {
+        $produit = $this->declaration->add(str_replace('/declaration/', '', preg_replace('|/couleurs/.*$|', '', $parcelle->produit_hash)));
+        $produit->libelle = $produit->getConfig()->getLibelleComplet();
+        if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
+
+            return $produit->detail->add($parcelle->getParcelleId(), $parcelle);
+        }
+        $detail = $produit->detail->add($parcelle->getParcelleId());
+        ParcellaireClient::CopyParcelle($detail, $parcelle);
+        $detail->origine_doc = $parcelle->getDocument()->_id;
+        $detail->superficie = null;
+        return $detail;
     }
 
 }

@@ -2,9 +2,17 @@
 
 class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
 
+    protected $destinataire = null;
+
+    public function __construct(acCouchdbJson $object, $destinataire, $options = array(), $CSRFSecret = null) {
+        $this->destinataire = EtablissementClient::getInstance()->find($destinataire);
+
+        parent::__construct($object, $options, $CSRFSecret);
+    }
+
     public function configure() {
 		foreach ($this->getParcelles() as $key => $value) {
-			$this->embedForm($key, new ParcellaireAffectationProduitAffecteForm($value));
+			$this->embedForm($key, new ParcellaireAffectationProduitAffecteForm($value, $this->destinataire));
 		}
 
         $this->widgetSchema->setNameFormat('parcelles[%s]');
@@ -17,21 +25,23 @@ class ParcellaireAffectationProduitsForm extends acCouchdbObjectForm {
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
         $parcelles = $this->getParcelles();
+        foreach($parcelles as $parcelle) {
+            $parcelle->desaffecter($this->destinataire);
+        }
         $this->getObject()->remove('declaration');
         $this->getObject()->add('declaration');
-        foreach ($values as $pid => $items) {
+        foreach ($parcelles as $pid => $parcelle) {
+            $items = $values[$pid];
             if (!isset($parcelles[$pid])){
                 continue;
             }
-            if (!isset($items['affectee']) || !$items['affectee']) {
+            if (isset($values[$pid]['affectee']) && $values[$pid]['affectee']) {
+                $parcelle->affecter($items['superficie'], $this->destinataire);
+            }
+            if(!$parcelle->isAffectee()) {
                 continue;
             }
-            $parcelle = $parcelles[$pid];
-            $node = $this->getObject()->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
-            $node->libelle = $node->getConfig()->getLibelleComplet();
-            $node = $node->detail->add($pid, $parcelle);
-            $node->add('affectee', 1);
-            $node->add('superficie', $items['superficie']);
+            $this->getObject()->addParcelle($parcelle);
         }
     }
 

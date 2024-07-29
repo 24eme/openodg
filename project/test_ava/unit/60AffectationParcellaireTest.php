@@ -28,7 +28,7 @@ foreach (ParcellaireClient::getInstance()->getHistory($viti->identifiant, '9999-
 }
 
 $produits = ConfigurationClient::getCurrent()->getProduits();
-$parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, $campagne."-08-01");
 $nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getLibelleComplet(),
@@ -66,7 +66,7 @@ $parcellaire->save();
 
 $t->comment("Création d'une déclaration d'affectation parcellaire");
 
-$parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne);
+$parcellaireAffectation = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne."-08-01");
 $parcellaireAffectation->save();
 
 $t->is($parcellaireAffectation->_id, "PARCELLAIREAFFECTATION-".$viti->identifiant."-".$campagne, "ID de l'affectation parcellaire : ".$parcellaireAffectation->_id);
@@ -104,7 +104,7 @@ $t->pass("Fomulaire étape Validation");
 ////////////////////////////
 $t->comment("Création d'une déclaration d'affectation parcellaire crémant");
 
-$parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
+$parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne."-08-01", ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
 $parcellaireAffectationCremant->initProduitsFromCVI();
 $parcellaireAffectationCremant->updateAffectationCremantFromLastAffectation();
 $parcellaireAffectationCremant->save();
@@ -131,7 +131,7 @@ $t->is(array_keys($parcellaireAffectationCremant->getAllParcellesByAppellation($
 $t->is(current($parcellaireAffectationCremant->getAllParcellesByAppellation($appellation))->superficie, 3, "On retrouve la superficie");
 
 $t->comment('Nouveau parcellaire (cvi)');
-$parcellaire = ParcellaireClient::getInstance()->createDoc($viti->identifiant, $campagne+1);
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate($viti->identifiant, ($campagne+1)."-08-01");
 $nouvelle_parcelle = $parcellaire->addParcelleWithProduit(
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getHash(),
     $produits['/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur/cepage_RI']->getLibelleComplet(),
@@ -186,7 +186,7 @@ $intentionCremant = ParcellaireAffectationClient::getInstance()->createDoc($viti
 $intentionCremant->declaration = $parcellaireAffectationCremant->declaration;
 $intentionCremant->save();
 
-$parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, $campagne+1, ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
+$parcellaireAffectationCremant = ParcellaireAffectationClient::getInstance()->findOrCreate($viti->identifiant, ($campagne+1)."-08-01", ParcellaireAffectationClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT);
 $parcellaireAffectationCremant->initOrUpdateProduitsFromCVI();
 $parcellaireAffectationCremant->updateCremantFromLastParcellaire();
 $parcellaireAffectationCremant->save();

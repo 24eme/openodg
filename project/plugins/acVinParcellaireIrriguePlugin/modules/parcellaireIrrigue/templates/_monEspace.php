@@ -20,6 +20,14 @@
               <?php endif; ?>
           </div>
       </div>
+      <?php elseif ($needAffectation): ?>
+      <div class="panel-body">
+          <p class="explications">Cette déclaration s'appuie sur l'affectation parcellaire qui n'a pas encore été saisie et approuvée pour la période <?php echo $periode ?>.</p>
+      </div>
+      <?php elseif (!$parcellaire): ?>
+      <div class="panel-body">
+          <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer vos pieds morts ou manquants : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
+      </div>
       <?php else:  ?>
     <div class="panel-body">
         <p class="explications">Identifier ou mettre à jour vos parcelles<br />irrigables.</p>

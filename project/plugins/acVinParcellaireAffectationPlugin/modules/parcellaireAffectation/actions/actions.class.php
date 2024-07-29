@@ -110,6 +110,7 @@ class parcellaireAffectationActions extends sfActions {
     public function executeAffectations(sfWebRequest $request) {
         $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
         $this->coop = $request->getParameter('coop');
+        $this->destinataire = $request->getParameter('destinataire', $this->parcellaireAffectation->getEtablissementObject()->_id);
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS))) {
@@ -120,7 +121,9 @@ class parcellaireAffectationActions extends sfActions {
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
-		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation);
+		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire);
+
+        $this->destinataires = $this->parcellaireAffectation->getDestinataires();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -141,6 +144,29 @@ class parcellaireAffectationActions extends sfActions {
             return $this->redirect('declaration_etablissement', $this->parcellaireAffectation->getEtablissementObject());
         }
 
+        $finded = false;
+        $previous = null;
+        foreach($this->destinataires as $dId => $d) {
+            if($dId == $this->destinataire && $request->getParameter('previous')) {
+                break;
+            }
+            $previous = $dId;
+            if($finded) {
+                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId]);
+            }
+            if($dId == $this->destinataire && !$request->getParameter('previous')) {
+                $finded = true;
+            }
+
+
+        }
+        if($request->getParameter('previous') && $previous) {
+            return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $previous]);
+        }
+
+        if($request->getParameter('previous')) {
+            $this->redirect('parcellaireaffectation_exploitation', ['sf_subject' => $this->parcellaireAffectation]);
+        }
 
         return $this->redirect('parcellaireaffectation_validation', ['sf_subject' => $this->parcellaireAffectation]);
 

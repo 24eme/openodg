@@ -22,6 +22,9 @@ class ImportParcellaireAffectationVentouxTask extends sfBaseTask
 
     protected $currentEtablissementKey = null;
     protected $currentEtablissement = null;
+    protected $periode = null;
+    protected $materiels;
+    protected $ressources;
 
     protected function configure()
     {
@@ -48,8 +51,9 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $periode = $arguments['periode'];
-
+        $this->periode = $arguments['periode'];
+        $this->materiels = sfConfig::get('app_parcellaire_irrigable_materiels');
+        $this->ressources = sfConfig::get('app_parcellaire_irrigable_ressources');
 
         foreach(file($arguments['csv']) as $line) {
             $data = str_getcsv($line, ';');
@@ -66,39 +70,23 @@ EOF;
                 continue;
             }
 
-            $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $periode);
+            $parcelle = $this->createParcelle($etablissement->identifiant, $data);
 
-            $affectationParcelle = $this->addParcelleFromData($affectation, $data);
-
-            if(!$affectationParcelle) {
+            if(!$parcelle) {
                 continue;
             }
 
-            $affectationParcelle->affectee = 1;
-            $affectationParcelle->superficie = (float) $data[self::CSV_SURFACE];
-            $affectationParcelle->date_affectation = $periode.'-'.self::DATE_VALIDATION;
+            $this->createAffectation($etablissement, $parcelle, $data);
+            $this->createManquant($etablissement, $parcelle, $data);
+            $this->createIrrigation($etablissement, $parcelle, $data);
 
-            try {
-                if(!$affectation->isValidee()) {
-                    $affectation->validate($periode.'-'.self::DATE_VALIDATION);
-                }
-                $affectation->save();
-            } catch(Exception $e) {
-                sleep(60);
-                if(!$affectation->isValidee()) {
-                    $affectation->validate($periode.'-'.self::DATE_VALIDATION);
-                }
-                $affectation->save();
-            }
+
         }
     }
 
-    protected function addParcelleFromData($doc, $data) {
-        $parcellaireTotal = ParcellaireClient::getInstance()->getLast($doc->identifiant);
-        if (!$parcellaireTotal) {
-            $parcellaireTotal = new Parcellaire();
-            echo "Parcellaire non trouvé elle sera importée manuellement;".implode(";", $data)."\n";
-        }
+    protected function createParcelle($identifiant, $data) {
+        $parcellaireTotal = ParcellaireClient::getInstance()->findOrCreate($identifiant, $this->periode.'-'.self::DATE_VALIDATION, 'IMPORT');
+
         $data[self::CSV_ANNEE_PLANTATION] = str_replace('/', '-', $data[self::CSV_ANNEE_PLANTATION]);
         if(preg_match('/^[0-9]{4}$/', $data[self::CSV_ANNEE_PLANTATION])) {
             $data[self::CSV_ANNEE_PLANTATION] = $data[self::CSV_ANNEE_PLANTATION].'-'.($data[self::CSV_ANNEE_PLANTATION]+1);
@@ -106,34 +94,42 @@ EOF;
         $data[self::CSV_SECTION] = trim($data[self::CSV_SECTION]);
         $data[self::CSV_NUM_PARCELLE] = trim($data[self::CSV_NUM_PARCELLE]);
 
-        if($doc->exist('parcellaire_origine')) {
-            $doc->parcellaire_origine = $parcellaireTotal->_id;
+        $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
+        if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
+            $produitHash .= '/blanc/cepages/DEFAUT';
+        } else {
+            $produitHash .= '/rouge/cepages/DEFAUT';
         }
-        $parcelle = $this->findParcelle($parcellaireTotal, $data);
-
-        if (!$parcelle) {
-            echo "Parcelle dans le parcellaire non trouvé elle sera importée manuellement;".implode(";", $data)."\n";
-            $produitHash = '/declaration/certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT/couleurs';
-            if(preg_match('/ B$/', $data[self::CSV_CEPAGE])) {
-                $produitHash .= '/blanc/cepages/DEFAUT';
-            } else {
-                $produitHash .= '/rouge/cepages/DEFAUT';
-            }
-            try {
-                $parcelle = $parcellaireTotal->addParcelleWithProduit($produitHash, 'Ventoux', $data[self::CSV_CEPAGE], $data[self::CSV_ANNEE_PLANTATION], $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE], $data[self::CSV_LIEUDIT]);
-                $parcelle->parcelle_id = preg_replace('/-[0-9]{1}([0-9]{1})$/', '-X\1', $parcelle->parcelle_id);
-                $parcelle->numero_ordre = explode('-', $parcelle->parcelle_id)[1];
-            } catch (Exception $e) {
-                echo $e->getMessage()." non importé;".implode(";", $data)."\n";
-                return null;
-            }
-            $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
+        $produit = $parcellaireTotal->addProduit($produitHash);
+        $commune = $data[self::CSV_NOM_COMMUNE];
+        $code_commune = CommunesConfiguration::getInstance()->findCodeCommune($data[self::CSV_NOM_COMMUNE]);
+        $prefix = null;
+        $section = $data[self::CSV_SECTION];
+        $numero_parcelle = $data[self::CSV_NUM_PARCELLE];
+        $cepage = $data[self::CSV_CEPAGE];
+        $lieu = $data[self::CSV_LIEUDIT];
+        $campagne_plantation = $data[self::CSV_ANNEE_PLANTATION];
+        try {
+            $idu = $parcellaireTotal->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
+            $parcelle  = $parcellaireTotal->addParcelle($idu, "Ventoux", $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle(), "X%02d");
+        } catch (Exception $e) {
+            echo $e->getMessage().";non importé;".implode(";", $data)."\n";
+            return null;
         }
+        $parcelle->numero_ordre = explode('-', $parcelle->parcelle_id)[1];
+        $parcelle->superficie = (float)($data[self::CSV_SURFACE]);
+        $parcelle->superficie_cadastrale = (float)($data[self::CSV_SURFACE]);
+        $parcelle = $produit->affecteParcelle($parcelle);
+        $parcellaireTotal->save();
 
-        return $this->addParcelleFromParcellaireParcelle($doc, $parcelle);
+        return $parcelle;
     }
 
     protected function addParcelleFromParcellaireParcelle($doc, $parcelle) {
+        $parcellaireTotal = $parcelle->getDocument();
+        if($doc->exist('parcellaire_origine')) {
+            $doc->parcellaire_origine = $parcellaireTotal->_id;
+        }
         $item = $doc->declaration->add('certifications/AOC/genres/TRANQ/appellations/VTX/mentions/DEFAUT/lieux/DEFAUT');
         $item->libelle = "Ventoux";
         $subitem = $item->detail->add($parcelle->getKey());
@@ -142,17 +138,154 @@ EOF;
         return $subitem;
     }
 
-    public function findParcelle($parcellaireTotal, $data) {
-        $parcelleToFind = ParcellaireParcelle::freeInstance($parcellaireTotal);
-        $parcelleToFind->lieu = strtoupper(trim($data[self::CSV_LIEUDIT]));
-        $parcelleToFind->section = strtoupper(trim($data[self::CSV_SECTION]));
-        $parcelleToFind->numero_parcelle = trim($data[self::CSV_NUM_PARCELLE]);
-        $parcelleToFind->superficie = round(floatval(str_replace(',', '.', trim($data[self::CSV_SURFACE]))), 4);
-        $parcelleToFind->cepage = trim($data[self::CSV_CEPAGE]);
-        $parcelleToFind->campagne_plantation = explode("-", $data[self::CSV_ANNEE_PLANTATION])[0];
-        $parcelleFindedStrict = $parcellaireTotal->findParcelle($parcelleToFind, 1);
+    public function createAffectation($etablissement, $parcelle, $data) {
+        $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
 
-        return $parcelleFindedStrict;
+        $affectationParcelle = $this->addParcelleFromParcellaireParcelle($affectation, $parcelle);
+
+        $affectationParcelle->affectee = 1;
+        $affectationParcelle->date_affectation = $this->periode.'-'.self::DATE_VALIDATION;
+        if(!$affectation->isValidee()) {
+            $affectation->validate($this->periode.'-'.self::DATE_VALIDATION);
+            $affectation->validation_odg = $affectation->validation;
+        }
+
+        try {
+            $affectation->save();
+        } catch(Exception $e) {
+            sleep(60);
+            $affectation->save();
+        }
+    }
+
+    public function createManquant($etablissement, $parcelle, $data) {
+        $manquant = ParcellaireManquantClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
+        if(!$manquant->isValidee()) {
+            $manquant->validate($this->periode.'-'.self::DATE_VALIDATION);
+            $manquant->validation_odg = $manquant->validation;
+        }
+        try {
+            $manquant->save();
+        } catch(Exception $e) {
+            sleep(60);
+            $manquant->save();
+        }
+
+        if(!$data[self::CSV_POURCENTAGE_MANQUANT]) {
+            return;
+        }
+
+        $manquantParcelle = $this->addParcelleFromParcellaireParcelle($manquant, $parcelle);
+        if(!$manquantParcelle) {
+            return;
+        }
+
+        $manquantParcelle->densite = (int)$data[self::CSV_DENSITE];
+        $manquantParcelle->superficie = (float)($data[self::CSV_SURFACE]);
+        $manquantParcelle->pourcentage = round((float)($data[self::CSV_POURCENTAGE_MANQUANT])*100, 2);
+
+        try {
+            $manquant->save();
+        } catch(Exception $e) {
+            sleep(60);
+            $manquant->save();
+        }
+    }
+
+    public function createIrrigation($etablissement, $parcelle, $data) {
+        $irrigable = ParcellaireIrrigableClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
+        if(!$irrigable->isValidee()) {
+            $irrigable->validate($this->periode.'-'.self::DATE_VALIDATION);
+            $irrigable->validation_odg = $irrigable->validation;
+        }
+        try {
+            $irrigable->save();
+        } catch(Exception $e) {
+            sleep(60);
+            $irrigable->save();
+        }
+        if ($data[self::CSV_IRRIGABLE] !== 'OUI' && !$data[self::CSV_IRRIGUE]) {
+            return;
+        }
+
+        $irrigableParcelle = $this->addParcelleFromParcellaireParcelle($irrigable, $parcelle);
+        if(!$irrigableParcelle) {
+            return;
+        }
+
+        $irrigableParcelle->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
+        $irrigableParcelle->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
+        try {
+            $irrigable->save();
+        } catch(Exception $e) {
+            sleep(60);
+            $irrigable->save();
+        }
+
+        if(!$data[self::CSV_IRRIGUE]) {
+            return;
+        }
+        $irrigue = ParcellaireIrrigueClient::getInstance()->createOrGetDocFromIdentifiantAndDate($etablissement->identifiant, $this->periode, true, $this->periode.'-'.self::DATE_VALIDATION);
+        $irrigueParcelle = $this->addParcelleFromParcellaireParcelle($irrigue, $parcelle);
+        if(!$irrigueParcelle) {
+            return;
+        }
+        $irrigueParcelle->materiel = $this->parseRessource($data[self::CSV_MATERIEL]);
+        $irrigueParcelle->ressource = $this->parseRessource($data[self::CSV_MATERIEL]);
+        $irrigueParcelle->irrigation = 1;
+        $irrigueParcelle->date_irrigation = $this->periode.'-'.self::DATE_VALIDATION;
+        if(!$irrigue->isValidee()) {
+            $irrigue->validate($this->periode.'-'.self::DATE_VALIDATION);
+            $irrigue->validation_odg = $irrigue->validation;
+        }
+        try {
+            $irrigue->save();
+        } catch(Exception $e) {
+            sleep(60);
+            $irrigue->save();
+        }
+    }
+
+    protected function parseRessource($value)
+    {
+        if (! $value) {
+            return null;
+        }
+
+        if ($value === "SCP" || $value === "scp") {
+            $value = "Canal de Provence";
+        }
+
+        if (strpos($value, " SS ") !== false) {
+            $value = str_replace(" SS ", " SOUS ", $value);
+        }
+
+        if (strpos(strtoupper($value), "CANAL D") === false && strlen($value) > 5 && strpos(strtoupper($value), "CANAL") !== strlen($value) - 5) {
+            $value = str_replace("CANAL", "CANAL DE", strtoupper($value));
+        }
+
+        $value = str_replace('GOUTTE A', 'GOUTTE À', strtoupper($value));
+
+        // Si match exact
+        foreach ($this->ressources as $ressource) {
+            if (mb_strtoupper($ressource) === mb_strtoupper($value)) {
+                return $ressource;
+            }
+        }
+
+        foreach ($this->materiels as $ressource) {
+            if (mb_strtoupper($ressource) === mb_strtoupper($value)) {
+                return $ressource;
+            }
+        }
+
+        $value = ucfirst(mb_strtolower($value));
+
+        return str_replace(
+            ['ouveze', 'ventoux', 'Asa', 'Reseau', 'prive', 'Neant'],
+            ['Ouveze', 'Ventoux', 'ASA', 'Réseau', 'privé', 'Néant'],
+            $value
+        );
     }
 
     public function findEtablissement($data) {

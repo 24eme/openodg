@@ -26,23 +26,6 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     /**
-     * Créé un nouveau document de type Parcellaire
-     *
-     * @param string $identifiant L'identifiant etablissement du parcellaire
-     * @param string La date de campagne du parcellaire
-     * @param string Le type de document
-     *
-     * @return Le document créé
-     */
-    public function createDoc($identifiant, $campagne, $type = self::TYPE_COUCHDB)
-    {
-        $parcellaire = new Parcellaire();
-        $parcellaire->initDoc($identifiant, $campagne, $type);
-
-        return $parcellaire;
-    }
-
-    /**
      * Recherche une entrée dans les documents existants
      *
      * @param string $identifiant L'identifiant etablissement du parcellaire
@@ -216,7 +199,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (! $date) {
             $date = date('Ymd');
         }
-        $parcellaire = $this->getLast($identifiant);
+        $parcellaire = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
         if ($parcellaire && $parcellaire->date == $date) {
             return $parcellaire;
         }

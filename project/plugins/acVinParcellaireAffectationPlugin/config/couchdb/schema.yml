@@ -75,6 +75,19 @@ ParcellaireAffectation:
                               produit_hash: { }
                               source_produit_libelle: { }
                               parcelle_id: { }
+                              destinations:
+                                type: collection
+                                required: false
+                                definition:
+                                  fields:
+                                    '*':
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          identifiant: { }
+                                          nom: { }
+                                          cvi: { }
+                                          superficie: { }
       region: { required: false }
       observations: {  }
       pieces:
