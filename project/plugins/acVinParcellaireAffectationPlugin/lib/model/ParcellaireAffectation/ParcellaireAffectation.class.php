@@ -60,6 +60,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
       $this->constructId();
       $this->storeDeclarant();
       $this->updateParcellesAffectation();
+      $this->recoverPreviousParcelles();
   }
 
   public function getPeriode() {
@@ -92,11 +93,12 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
           return true;
       }
+      $parcellaire2reference = $this->getParcellaire2Reference();
       foreach($this->getPreviousDocument()->getParcelles() as $previousParcelle) {
           if(!$previousParcelle->affectee) {
               continue;
           }
-          if(!$this->findParcelle($previousParcelle)) {
+          if(!$parcellaire2reference->findParcelle($previousParcelle)) {
               return false;
           }
       }
@@ -109,7 +111,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return;
     }
     $intention = $this->getParcellaire2Reference();
-    $previous = $this->getPreviousDocument();
+
     if(!$intention) {
         return;
     }
@@ -123,20 +125,30 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         }
         $this->addParcelle($parcelle);
 	}
-    if($previous) {
+  }
+
+    public function recoverPreviousParcelles() {
+        $previous = $this->getPreviousDocument();
+        if(!$previous) {
+            return;
+        }
         foreach($previous->getParcelles() as $previousParcelle) {
-            if(!$previousParcelle->affectee) {
+            if(!$previousParcelle->isAffectee()) {
                 continue;
             }
-            $pMatch = $this->findParcelle($previousParcelle);
 
+            $pMatch = $this->findParcelle($previousParcelle);
             if($pMatch) {
                 $pMatch->affectee = 1;
                 $pMatch->superficie = $previousParcelle->superficie;
+                if($previousParcelle->exist('destinations')) {
+                    $pMatch->remove('destinations');
+                    $pMatch->add('destinations', $previousParcelle->destinations);
+                    $pMatch->updateAffectations();
+                }
             }
         }
-	}
-  }
+    }
 
   public function getConfiguration() {
 
@@ -406,6 +418,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
     }
 
     public function addParcelle($parcelle) {
+        $this->parcelles_idu = null;
         $produit = $this->declaration->add(str_replace('/declaration/', '', preg_replace('|/couleurs/.*$|', '', $parcelle->produit_hash)));
         $produit->libelle = $produit->getConfig()->getLibelleComplet();
         if(get_class($parcelle) == "ParcellaireAffectationProduitDetail") {
