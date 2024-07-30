@@ -57,7 +57,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
             	$lieu = $configProduit->getLieu()->getKey();
 
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
-            	$csv .= sprintf("%s;Parcellaire Affectation;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+            	$csv .= sprintf("%s;Parcellaire Affectation;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
             	$certification,$genre,$appellation,$mention,$lieu,$libelle_complet,
             	$this->protectStr($parcelle->idu),
             	$parcelle->code_commune,
@@ -73,7 +73,7 @@ class ExportParcellaireAffectationCSV implements InterfaceDeclarationExportCsv {
                 $this->doc->exist('signataire') ? $this->protectStr($this->doc->signataire) : null,
             	$this->doc->validation,
             	$mode,
-                str_replace(' PARCELLAIREAFFECTATION-', '', $this->doc->_id),
+                str_replace(explode('-', $this->doc->_id)[0].'-', '', $this->doc->_id),
                 $this->doc->_id
                 );
         	}
