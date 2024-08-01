@@ -197,7 +197,7 @@ ParcellaireIntentionAffectation:
                               superficie: { type: float }
                               superficie_parcellaire: { type: float }
                               superficie_cadastrale: { type: float, required: false } # remplacé par superficie_parcellaire à supprimer
-                              superficie_affectation: { type: float, required: false }
+                              superficie_affectation: { type: float, required: false } # Déprécié mais encore utilisé à provence
                               commune: { }
                               code_commune: { }
                               section: { }
