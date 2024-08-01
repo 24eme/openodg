@@ -79,7 +79,7 @@ EOF;
             $etablissement = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI]);
 
             if (!$etablissement) {
-               echo "WARNING;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import;$line\n";
+               echo "Error;établissement non trouvé ".$data[self::CSV_RAISON_SOCIALE].";pas d'import:$line\n";
                continue;
             }
 

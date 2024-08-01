@@ -112,7 +112,6 @@ EOF;
 
         try {
             $societe->save();
-            echo "Societe saved : ".$societe->_id.PHP_EOL;
         } catch (Exception $e) {
             echo "$societe->_id save error :".$e->getMessage()."\n";
             return false;
@@ -162,8 +161,6 @@ EOF;
         $societe->pushContactTo($etablissement);
         $etablissement->save();
 
-        echo "Etablissement saved : ".$etablissement->_id.PHP_EOL;
-
         return $etablissement;
     }
 
@@ -185,13 +182,6 @@ EOF;
         ] as $key => $activite) {
             if (strtoupper($activite) === "X") {
                 $activites[] = self::activites[$key];
-                /*if ($date_demande) {
-                    $activites->add(self::activites[$key])->updateHabilitation(HabilitationClient::STATUT_DEMANDE_HABILITATION, null, $date_demande);
-                }
-
-                $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
-                $activites->add(self::activites[$key])
-                          ->updateHabilitation($statut, null, $date_decision);*/
             }
         }
 
@@ -200,7 +190,5 @@ EOF;
         }
 
         HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
-
-        echo "Habilitation mise à jour : ".$identifiant.PHP_EOL;
     }
 }

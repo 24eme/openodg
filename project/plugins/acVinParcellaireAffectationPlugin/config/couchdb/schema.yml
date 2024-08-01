@@ -54,8 +54,9 @@ ParcellaireAffectation:
                             fields:
                               origine_doc: { }
                               superficie: { type: float }
-                              superficie_cadastrale: { type: float }
-                              superficie_affectation: { type: float, required: false }
+                              superficie_parcellaire: { type: float }
+                              superficie_cadastrale: { type: float, required: false } # remplacé par superficie_parcellaire à supprimer
+                              superficie_affectation: { type: float, required: false } # Déprécié mais encore utilisé à provence
                               commune: { }
                               code_commune: { }
                               section: { }
@@ -75,6 +76,19 @@ ParcellaireAffectation:
                               produit_hash: { }
                               source_produit_libelle: { }
                               parcelle_id: { }
+                              destinations:
+                                type: collection
+                                required: false
+                                definition:
+                                  fields:
+                                    '*':
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          identifiant: { }
+                                          nom: { }
+                                          cvi: { }
+                                          superficie: { }
       region: { required: false }
       observations: {  }
       pieces:
@@ -181,7 +195,8 @@ ParcellaireIntentionAffectation:
                               origine_doc: { }
                               origine_hash: { }
                               superficie: { type: float }
-                              superficie_cadastrale: { type: float }
+                              superficie_parcellaire: { type: float }
+                              superficie_cadastrale: { type: float, required: false } # remplacé par superficie_parcellaire à supprimer
                               superficie_affectation: { type: float, required: false }
                               commune: { }
                               code_commune: { }

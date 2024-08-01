@@ -26,23 +26,6 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     /**
-     * Créé un nouveau document de type Parcellaire
-     *
-     * @param string $identifiant L'identifiant etablissement du parcellaire
-     * @param string La date de campagne du parcellaire
-     * @param string Le type de document
-     *
-     * @return Le document créé
-     */
-    public function createDoc($identifiant, $campagne, $type = self::TYPE_COUCHDB)
-    {
-        $parcellaire = new Parcellaire();
-        $parcellaire->initDoc($identifiant, $campagne, $type);
-
-        return $parcellaire;
-    }
-
-    /**
      * Recherche une entrée dans les documents existants
      *
      * @param string $identifiant L'identifiant etablissement du parcellaire
@@ -216,7 +199,7 @@ class ParcellaireClient extends acCouchdbClient {
         if (! $date) {
             $date = date('Ymd');
         }
-        $parcellaire = $this->getLast($identifiant);
+        $parcellaire = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
         if ($parcellaire && $parcellaire->date == $date) {
             return $parcellaire;
         }
@@ -301,7 +284,7 @@ class ParcellaireClient extends acCouchdbClient {
             if(KeyInflector::slugify($parcelle->lieu) == KeyInflector::slugify($p->lieu)) {
                 $score += 0.25;
             }
-            if(abs($parcelle->getSuperficie(self::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE) - $p->superficie) < 0.0001) {
+            if(abs($parcelle->getSuperficieParcellaire() - $p->getSuperficieParcellaire()) < 0.0001) {
                 $score += 0.25;
             }
             if (($parcelle->idu == $p->idu) || !$parcelle->getIDU(false) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->getPrefix()) == intval($p->prefix))) ) {
@@ -355,7 +338,10 @@ class ParcellaireClient extends acCouchdbClient {
         if($p2->exist('lieu')){
             $p1->lieu = $p2->lieu;
         }
-        if ($p1->exist('superficie_cadastrale')) {
+        if ($p1->exist('superficie_parcellaire')) {
+            $p1->superficie_parcellaire = $p2->getSuperficieParcellaire();
+        }
+        if ($p1->exist('superficie_cadastrale') && $p2->exist('superficie_cadastrale')) {
             $p1->superficie_cadastrale = $p2->superficie_cadastrale;
         }
         if ($p1->exist('ecart_rang')) {

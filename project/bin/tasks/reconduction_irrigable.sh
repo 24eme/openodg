@@ -1,7 +1,7 @@
 #! /bin/bash
 #
 # Title: Reconduction des irrigables
-# Description: Reconduit les parcellaires irrigables depuis la déclaration de l'année précédente
+# Description: Reconduit les parcellaires irrigables depuis la déclaration de l'année précédente à faire en fin de période déclarative vers le 15 septembre
 
 source "$(dirname $0)/../config.inc"
 

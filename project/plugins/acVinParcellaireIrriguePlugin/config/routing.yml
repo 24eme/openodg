@@ -8,6 +8,16 @@ parcellaireirrigue_edit:
   requirements:
     sf_method: [get, post]
 
+parcellaireirrigue_visualisation:
+  url: /parcellaire-irrigue/visualisation/:id
+  param: { module: parcellaireIrrigue, action: visualisation }
+  class: ParcellaireIrrigueRoute
+  options:
+    model:    ParcellaireIrrigue
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaireirrigue_export_pdf:
   url: /parcellaire-irrigue/pdf/:id
   param: { module: parcellaireIrrigue, action: PDF }
