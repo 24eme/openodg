@@ -303,7 +303,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             if (strlen($this->getKey()) == 17){
                 $this->_set('parcelle_id', $this->getKey());
             }else{
-                return $this->idu.'-00';
+                $parcelle_id = sprintf('%s-%02d', $this->idu, $this->getDocument()->getNbUDIAlreadySeen($this->idu));
+                $this->_set('parcelle_id', $parcelle_id);
             }
         }
         return $this->_get('parcelle_id');
