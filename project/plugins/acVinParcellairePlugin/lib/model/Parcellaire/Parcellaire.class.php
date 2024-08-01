@@ -100,6 +100,17 @@ class Parcellaire extends BaseParcellaire {
         return $parcelles;
     }
 
+    private $idunumbers = null;
+    public function getNbUDIAlreadySeen($idu) {
+        if (!$this->idunumbers) {
+            $this->idunumbers = [];
+        }
+        if (!isset($this->idunumbers[$idu])) {
+            $this->idunumbers[$idu] = 0;
+        }
+        return $this->idunumbers[$idu]++;
+    }
+
     public function getParcelles() {
         if ($this->exist('parcelles')) {
             $p = $this->_get('parcelles');
