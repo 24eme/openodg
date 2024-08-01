@@ -9,7 +9,14 @@ class parcellaireIrrigueActions extends sfActions {
 		$this->papier = $request->getParameter('papier', false);
 		$this->periode = $request->getParameter('periode');
 
-        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier);
+        $errors = array();
+        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier, null, $errors);
+
+        if (count($errors)) {
+            foreach($errors as $err => $details) {
+                $this->getUser()->setFlash('warning', "$err : $details");
+            }
+        }
 
         $this->form = new ParcellaireIrrigueProduitsForm($this->parcellaireIrrigue);
 

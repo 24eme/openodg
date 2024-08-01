@@ -102,7 +102,7 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   	}
   }
 
-  public function updateParcelles() {
+  public function updateParcelles( & $error_parcelles = null) {
   	$irrigations = array();
   	foreach ($this->getParcelles() as $key => $parcelle) {
 		if (!$parcelle->date_irrigation) {
@@ -125,9 +125,8 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
 
         unset($irrigations[$hash]);
   	}
-
-    if(count($irrigations) > 0) {
-        throw new Exception("Des parcelles déja irrigués disparaissent : ".$this->_id." ".implode(", ", array_keys($irrigations)));
+    if(count($irrigations) > 0 && $error_parcelles !== null) {
+        $error_parcelles["Des parcelles déja irrigués n'existent plus dans le parcellaire"] =  implode(", ", array_keys($irrigations));
     }
   }
 
