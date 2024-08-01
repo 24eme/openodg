@@ -83,6 +83,25 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
+    public function getDeclarationParcelles() {
+        $parcelles = [];
+        foreach($this->declaration->getParcelles() as $k => $p) {
+            $parcelles[$p->getParcelleId()] = $p;
+        }
+        return $parcelles;
+    }
+
+    private $idunumbers = null;
+    public function getNbUDIAlreadySeen($idu) {
+        if (!$this->idunumbers) {
+            $this->idunumbers = [];
+        }
+        if (!isset($this->idunumbers[$idu])) {
+            $this->idunumbers[$idu] = 0;
+        }
+        return $this->idunumbers[$idu]++;
+    }
+
     public function getParcelles() {
 
         return $this->declaration->getParcelles();
@@ -384,7 +403,7 @@ class Parcellaire extends BaseParcellaire {
                 }
             }
         }
-        
+
         // On ajoute les aires des appelations des communes associées avec la bonne couleur
         foreach ($this->getMergedAires() as $aire) {
             $aireobj = json_decode($aire->getGeojson());
@@ -396,7 +415,7 @@ class Parcellaire extends BaseParcellaire {
                 $feat->properties->stroke = '#000';
                 $feat->properties->{'stroke-width'} = 2;
                 $feat->properties->{'stroke-opacity'} = 0.1;
-                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables. 
+                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables.
                 array_unshift($geojson->features, $feat);
             }
         }

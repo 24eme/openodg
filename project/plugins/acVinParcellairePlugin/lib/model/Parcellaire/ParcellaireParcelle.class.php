@@ -240,4 +240,49 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         }
         return $iia[$l];
     }
+
+    public function getParcelleAffectee() {
+        if (strpos($this->getHash(), 'declaration') !== false) {
+            return $this;
+        }
+        foreach($this->getDocument()->declaration->getParcelles() as $p) {
+            if ($p->getParcelleId() == $this->getParcelleId()) {
+                return $p;
+            }
+        }
+        throw new sfException('parcelle not found');
+    }
+
+    public function getParcelleId() {
+        if (!$this->_get('parcelle_id')) {
+            if (strlen($this->getKey()) == 17){
+                $this->_set('parcelle_id', $this->getKey());
+            }else{
+                $parcelle_id = sprintf('%s-%02d', $this->idu, $this->getDocument()->getNbUDIAlreadySeen($this->idu));
+                $this->_set('parcelle_id', $parcelle_id);
+            }
+        }
+        return $this->_get('parcelle_id');
+    }
+
+    public function getTheoriticalDgs() {
+        $communesDenominations = sfConfig::get('app_communes_denominations');
+        $dgcs = [];
+        foreach ($communesDenominations as $dgc_h => $communes) {
+            $dgc_l = $this->getDocument()->getConfiguration()->get($dgc_h)->getLibelle();
+            foreach($communes as $commune) {
+                if ($this->code_commune == $commune) {
+                    $dgcs[$dgc_h] = $dgc_l;
+                }
+            }
+        }
+        return $dgcs;
+    }
+
+    public function getDensite() {
+        if ($this->ecart_pieds && $this->ecart_rang) {
+            return round(10000 / (($this->ecart_pieds / 100) * ($this->ecart_rang / 100)), 0);
+        }
+        return 0;
+    }
 }
