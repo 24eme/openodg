@@ -81,10 +81,7 @@
                     </div>
             	</td>
                 <td class="text-center">
-                    <?php if (round($parcelle->superficie,4) < round($parcelle->getSuperficieParcellaire(),4)): ?>
-                        <span>Partielle</span>
-                    <?php else: ?><span>Totale</span>
-                <?php endif; ?>
+                    <?php if ($parcelle->isPartielle()): ?><span>Partielle</span><?php else: ?><span>Totale</span><?php endif; ?>
                 </td>
             </tr>
         <?php  endif; endforeach; ?>

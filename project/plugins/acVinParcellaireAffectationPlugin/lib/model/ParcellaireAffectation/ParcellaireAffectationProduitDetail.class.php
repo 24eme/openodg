@@ -118,7 +118,11 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     }
 
     public function isPartielle() {
-        return round($this->superficie,4) != round($this->getSuperficieParcellaire(),4);
+        if(!$this->superficie) {
+            return false;
+        }
+
+        return round($this->superficie,4) < round($this->getSuperficieParcellaire(),4);
     }
 
     public function updateAffectations() {
