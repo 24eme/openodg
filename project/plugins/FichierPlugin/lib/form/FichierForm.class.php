@@ -7,7 +7,7 @@ class FichierForm extends BaseForm
 	public function __construct($fichier, $defaults = array(), $options = array(), $CSRFSecret = null)
 	{
 		$this->fichier = $fichier;
-		if (!$this->fichier->isNew()) {
+		if ($this->fichier && !$this->fichier->isNew()) {
 			$defaults['libelle'] = $this->fichier->getLibelle();
 			$defaults['categorie'] = $this->fichier->getCategorie();
 			$defaults['date_depot'] = $this->fichier->getDateDepotFormat();
