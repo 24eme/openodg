@@ -29,7 +29,7 @@ class FichierForm extends BaseForm
      		'date_depot' => new sfWidgetFormInput(array(), array("data-date-defaultDate" => date('Y-m-d'))),
      		'visibilite' => new sfWidgetFormInputCheckbox()
      	));
-     	$fileRequired = ($this->fichier->isNew())? true : false;
+     	$fileRequired = (!$this->fichier || $this->fichier->isNew())? true : false;
      	$this->setValidators(array(
      		'file' => new sfValidatorFile(array('required' => $fileRequired, 'path' => sfConfig::get('sf_cache_dir'))),
      		'libelle' => new sfValidatorString(array('required' => true)),
