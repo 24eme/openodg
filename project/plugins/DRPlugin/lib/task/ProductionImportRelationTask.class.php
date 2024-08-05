@@ -35,16 +35,16 @@ EOF;
             $this->getBailleurRelation($etablissement_source, $etablissements_bailleur);
         }
         if ($declaration_production->isApporteur()) {
-            $tiers = $declaration_production->getTiers(false, "NEGOCIANT_VINIFICATEUR");
-            $this->setTiersRelation($etablissement_source, $tiers, "NEGOCIANT_VINIFICATEUR");
+            $tiers = $declaration_production->getTiers(false, EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR);
+            $this->setTiersRelation($etablissement_source, $tiers, EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR);
         }
         if ($declaration_production->hasApporteurs()) {
             $tiers = $declaration_production->getApporteurs(true);
             if ($declaration_production["type"] === "SV11") {
-                $this->setTiersRelation($etablissement_source, $tiers, "COOPERATEUR");
+                $this->setTiersRelation($etablissement_source, $tiers, EtablissementClient::TYPE_LIAISON_COOPERATEUR);
             }
             if ($declaration_production["type"] === "SV12") {
-                $this->setTiersRelation($etablissement_source, $tiers, "APPORTEUR_RAISIN");
+                $this->setTiersRelation($etablissement_source, $tiers, EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN);
             }
         }
     }

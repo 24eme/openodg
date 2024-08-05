@@ -47,6 +47,10 @@ class HabilitationAjoutProduitForm extends acCouchdbForm
                 $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
+        if (count($this->produits) == 1) {
+           return $this->produits;
+        }
+
         return array_merge(array('' => ''), $this->produits);
     }
 

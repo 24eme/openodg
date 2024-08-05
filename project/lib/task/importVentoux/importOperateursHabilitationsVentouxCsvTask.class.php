@@ -88,7 +88,7 @@ EOF;
 
     private function importSocieteEtablissement($data)
     {
-        $raison_sociale = implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM], $data[self::CSV_PRENOM]]));
+        $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM], $data[self::CSV_PRENOM]])));
         $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_ENREGISTREMENT]);
 
         $societe = SocieteClient::getInstance()->find($newSociete->_id);

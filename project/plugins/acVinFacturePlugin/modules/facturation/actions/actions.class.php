@@ -48,7 +48,7 @@ class facturationActions extends sfActions
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
-              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee(), $this->getCurrentRegion()));
+              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), $this->getCurrentRegion()));
               $generation->save();
 
               return $this->redirect('generation_view', ['id' => $generation->_id]);
@@ -180,7 +180,7 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee(), strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')))));
+            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')))));
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));

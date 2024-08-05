@@ -100,6 +100,17 @@ class Parcellaire extends BaseParcellaire {
         return $parcelles;
     }
 
+    private $idunumbers = null;
+    public function getNbUDIAlreadySeen($idu) {
+        if (!$this->idunumbers) {
+            $this->idunumbers = [];
+        }
+        if (!isset($this->idunumbers[$idu])) {
+            $this->idunumbers[$idu] = 0;
+        }
+        return $this->idunumbers[$idu]++;
+    }
+
     public function getParcelles() {
         if ($this->exist('parcelles')) {
             $p = $this->_get('parcelles');
@@ -125,11 +136,11 @@ class Parcellaire extends BaseParcellaire {
         return ParcellaireClient::organizeParcellesByCommune($this->getParcelles());
     }
 
-    public function getNextParcelleId($idu, $cepage, $campagne_plantation, $produit = null) {
+    public function getNextParcelleId($idu, $cepage, $campagne_plantation, $produit = null, $formatNumeroOrdre = "%02d") {
         if (!$idu) {
             throw new sfException('Empty idu not allowed');
         }
-        $pid = $idu.'-00';
+        $pid = sprintf('%s-'.$formatNumeroOrdre, $idu, 0);
         if (
             !$this->exist('parcelles') ||
             !count($this->_get('parcelles')->toArray()) ||
@@ -138,7 +149,7 @@ class Parcellaire extends BaseParcellaire {
             return $pid;
         }
         for ($i = 1 ; $i < 100 ; $i++) {
-            $pid = sprintf('%s-%02d', $idu, $i);
+            $pid = sprintf('%s-'.$formatNumeroOrdre, $idu, $i);
             if (!$this->parcelles->exist($pid)) {
                 return $pid;
             }
@@ -146,8 +157,8 @@ class Parcellaire extends BaseParcellaire {
         throw new sfException('pid not found for '.$idu);
     }
 
-    public function addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null) {
-        $pid = $this->getNextParcelleId($idu, $cepage, $campagne_plantation, $produit);
+    public function addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null, $formatNumeroOrdre = "%02d") {
+        $pid = $this->getNextParcelleId($idu, $cepage, $campagne_plantation, $produit, $formatNumeroOrdre);
         $p = $this->parcelles->add($pid);
         $p->idu = $idu;
         $p->add('parcelle_id', $pid);
