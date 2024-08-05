@@ -117,7 +117,10 @@ class fichierActions extends sfActions
 
     	$this->fichier_id = $request->getParameter('fichier_id');
 
-    	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
+    	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : null;
+        if (!$this->fichier) {
+            $this->fichier = FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
+        }
 
 		$categories = null;
 
