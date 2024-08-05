@@ -38,6 +38,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
         public function getDateFormat($format = 'Y-m-d') {
+            if ($this->validation) {
+                return explode('T', $this->validation)[0];
+            }
             if (!$this->date) {
                 return date($format);
             }
