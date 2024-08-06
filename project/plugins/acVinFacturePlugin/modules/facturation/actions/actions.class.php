@@ -157,7 +157,7 @@ class facturationActions extends sfActions
             $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne, null, sfConfig::get('app_region', null));
 
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
-            if (class_exists('RegionConfiguration')) {
+            if (class_exists('RegionConfiguration') && $this->getCurrentRegion()) {
                 $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $this->getCurrentRegion());
             }
 

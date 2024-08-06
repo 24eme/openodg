@@ -1,7 +1,7 @@
 all:
   configuration:
     parcellaire:
-      limit_produits_configuration: true
+      show_filter_produits_configuration: true
       unit: "hectares"
       aires:
     manquant:
