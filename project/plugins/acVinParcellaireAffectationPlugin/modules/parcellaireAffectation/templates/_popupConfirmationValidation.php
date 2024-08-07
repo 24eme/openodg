@@ -3,7 +3,7 @@
 		<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Validation de votre affectations</h4>
+					<h4 class="modal-title" id="myModalLabel">Validation de votre déclaration d'affectation parcellaire</h4>
 				</div>
 				<div class="modal-body">
 					<?php if(isset($form["signataire"])): ?>

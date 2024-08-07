@@ -24,22 +24,34 @@ class PMCLot extends BasePMCLot
         return $c;
     }
 
-    public function getIntialType() {
-        if(is_null($this->_get('initial_type'))) {
-            $this->initial_type = $this->getDocumentType();
+    public function getInitialType() {
+        $initial_type = '';
+        if ($this->getDocument()->type == PMCClient::TYPE_MODEL) {
+            $initial_type = PMCClient::TYPE_MODEL;
+        }else{
+            if ($this->id_document_provenance && $this->getLotProvenance() && isset($this->getLotProvenance()->initial_type)) {
+                $initial_type =  $this->getLotProvenance()->initial_type.':'.LotsClient::INITIAL_TYPE_NC;
+            }else{
+                $initial_type = PMCNCClient::TYPE_MODEL;
+            }
         }
-
-        return $this->_get('initial_type');
+        $this->_set('initial_type', $initial_type);
+        return $initial_type;
     }
 
     public function getDocumentType() {
 
-        return PMCClient::TYPE_MODEL;
+        return $this->getDocument()->getType();
     }
 
     public function getDocumentOrdre() {
-        $this->_set('document_ordre', '01');
-        return "01";
+        if ($this->getDocument()->getType() === PMCClient::TYPE_MODEL) {
+            $this->_set('document_ordre', "01");
+        } else {
+            $this->_set('document_ordre', $this->getDocumentOrdreCalcule());
+        }
+
+        return $this->_get('document_ordre');
     }
 
     public function getMouvementFreeInstance() {

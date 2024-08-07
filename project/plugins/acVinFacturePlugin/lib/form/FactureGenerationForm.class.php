@@ -45,7 +45,7 @@ class FactureGenerationForm extends BaseForm {
         $generation->arguments->add('date_mouvement', $values['date_mouvement']);
         $generation->arguments->add('type_document', $values['type_document']);
         $generation->arguments->add('message_communication', $values['message_communication']);
-        $generation->arguments->add('region', strtoupper(sfConfig::get('sf_app')));
+        $generation->arguments->add('region', strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app'))));
         return $generation;
     }
 }

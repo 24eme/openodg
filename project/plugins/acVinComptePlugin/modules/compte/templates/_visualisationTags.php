@@ -1,6 +1,7 @@
 <?php $hasManuel = false; ?>
 <?php $modifiable = !isset($modifiable) || $modifiable; ?>
     <div style="margin-bottom: 10px;">
+      <?php if (SocieteConfiguration::getInstance()->hasGroupes()): ?>
       <div class="row" style="margin-bottom: 10px;">
         <div class="col-xs-2 text-muted">Groupes&nbsp;:</div>
         <div class="col-xs-10">
@@ -37,6 +38,7 @@
              <?php endif; ?>
         </div>
       </div>
+      <?php endif; ?>
       <?php foreach ($compte->tags as $type_tag => $tags) :
         if ($type_tag == 'groupes') {continue;}
         ?>

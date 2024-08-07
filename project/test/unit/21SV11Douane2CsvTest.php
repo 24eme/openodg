@@ -73,7 +73,7 @@ $t->is($line[SV11CsvFile::CSV_LIGNE_LIBELLE], "16. Vol. vin dépassement du rdt 
 $t->is(round(str_replace(",", ".", $line[SV11CsvFile::CSV_VALEUR]), 4), 2.70, "Valeur");
 
 $t->is($line[SV11CsvFile::CSV_COLONNE_ID], '1', "Colonne colonne id OK");
-$t->is($line[SV11CsvFile::CSV_ORGANISME], $application, "Colonne organisme id OK");
+$t->is($line[SV11CsvFile::CSV_ORGANISME], strtoupper($application), "Colonne organisme id OK");
 $t->is($line[SV11CsvFile::CSV_MILLESIME], $year, "Colonne Millesime $year OK");
 $t->is($line[SV11CsvFile::CSV_FAMILLE_LIGNE_CALCULEE], "COOPERATIVE", "Colonne famille calculée OK");
 

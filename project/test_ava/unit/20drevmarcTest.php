@@ -6,13 +6,9 @@ $t = new lime_test(21);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
-$campagne = (date('Y')-2)."";
-$dateFacturation = date('Y-m-d');
-
-$templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-MARC-".$campagne);
-$t->ok($templateFacture, "On a bien un template facture pour le MARC $campagne");
-$templateCotisationCollection = $templateFacture->cotisations->getFirst();
-$templateCotisation = $templateCotisationCollection->details->getFirst();
+$campagne = '2023';
+$dateDrev = '2023-12-01';
+$dateFacturation = '2024-01-15';
 
 foreach(DRevMarcClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drevMarc = DRevMarcClient::getInstance()->find($k);
@@ -21,8 +17,8 @@ foreach(DRevMarcClient::getInstance()->getHistory($viti->identifiant, acCouchdbC
 
 $t->comment("Création d'une drev marc");
 
-$dateDebutDistillation = date("Y")."-03-01";
-$dateFinDistillation = date("Y")."-03-31";
+$dateDebutDistillation = "2024-03-01";
+$dateFinDistillation = "2024-03-31";
 
 $drevMarc = DRevMarcClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drevMarc->debut_distillation = $dateDebutDistillation;
@@ -31,13 +27,13 @@ $drevMarc->fin_distillation = $dateFinDistillation;
 $drevMarc->qte_marc = 4575;
 $drevMarc->volume_obtenu = 	2.46;
 $drevMarc->titre_alcool_vol = 62.7;
-$drevMarc->validate();
-$drevMarc->validateOdg();
+$drevMarc->validate($dateDrev);
+$drevMarc->validateOdg($dateDrev);
 $drevMarc->save();
 
 $t->ok($drevMarc->_rev, "La drev marc ".$drevMarc->_id." a une révision ");
-$t->is($drevMarc->validation, date('Y-m-d'), "La date de validation est renseigné");
-$t->is($drevMarc->validation_odg, date('Y-m-d'), "La date de validation ODG est renseigné");
+$t->is($drevMarc->validation, $dateDrev, "La date de validation est renseigné");
+$t->is($drevMarc->validation_odg, $dateDrev, "La date de validation ODG est renseigné");
 $t->is(count($drevMarc->mouvements), 0, "Les mouvements n'ont pas été générés");
 
 $drevMarc->generateMouvementsFactures();
@@ -45,6 +41,12 @@ $drevMarc->save();
 
 $t->ok($drevMarc->mouvements->exist($vitiCompte->identifiant), "Le noeud mouvements existe");
 $t->is(count($drevMarc->mouvements->get($vitiCompte->identifiant)), 2, "2 mouvements ont été générés");
+
+$template = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
+
+$templateCotisationCollection = $template->cotisations['07_marc_alsace_gewurztraminer'];
+$templateCotisation = $templateCotisationCollection->details['00_marc_fixe'];
+
 
 $mouvement = $drevMarc->mouvements->get($vitiCompte->identifiant)->getFirst();
 $t->is($mouvement->categorie, $templateCotisationCollection->getKey(), "La categorie du mouvement est ".$templateCotisationCollection->getKey());
@@ -55,8 +57,17 @@ $t->is($mouvement->type_libelle, $templateCotisation->libelle, "Le libelle est "
 
 $t->comment("Génération de la facture");
 
-$f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $vitiCompte, $dateFacturation);
-$f->save();
+$generation = new Generation();
+$generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+$generation->arguments->add('date_facturation', $dateFacturation);
+$generation->arguments->add('date_mouvement', $dateFacturation);
+$model = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($campagne);
+$generation->arguments->add('modele', $model);
+$g = FactureClient::getInstance()->createFacturesBySoc(array($viti->getCompte()->identifiant => $mouvements), $dateFacturation, null, $generation);
+$g->save();
+$t->ok($g->_rev, "Generation générée ".$g->_id);
+$f = FactureClient::getInstance()->find($g->documents[0]);
+$t->ok($f->_rev, "Facture existe ".$f->_id);
 
 $t->ok($f->_rev, "La facture ".$f->_id." a une révision ");
 $t->ok(count($f->lignes) == 1 && count($f->lignes->getFirst()->details) == 2, "La facture à une seule ligne");

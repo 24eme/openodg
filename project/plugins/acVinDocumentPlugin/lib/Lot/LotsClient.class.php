@@ -6,6 +6,7 @@ class LotsClient
     protected $mouvements_declarant = [];
 
     const INITIAL_TYPE_CHANGE = "Changé";
+    const INITIAL_TYPE_NC = "NC";
 
     public static function getInstance() {
         if(is_null(self::$self)) {
@@ -184,8 +185,12 @@ class LotsClient
             DRevClient::TYPE_MODEL => "01",
             ConditionnementClient::TYPE_MODEL => "01",
             TransactionClient::TYPE_MODEL => "01",
-            DegustationClient::TYPE_MODEL => "02",
-            ChgtDenomClient::TYPE_MODEL => "02",
+            PMCClient::TYPE_MODEL => "01",
+            TourneeClient::TYPE_MODEL => "02",
+            DegustationClient::TYPE_MODEL => "03",
+            CourrierClient::TYPE_MODEL => "04",
+            PMCNCClient::TYPE_MODEL => "05",
+            ChgtDenomClient::TYPE_MODEL => "05",
         );
 
         $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByUniqueId($declarantIdentifiant, $uniqueId);
@@ -195,7 +200,7 @@ class LotsClient
             if(in_array($mouvement->id, $documents)) {
                 continue;
             }
-            $documents[$typePriorites[$mouvement->value->document_type].$mouvement->value->date.$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
+            $documents[$mouvement->value->date.$typePriorites[$mouvement->value->document_type].$mouvement->key[MouvementLotHistoryView::KEY_DOC_ORDRE].$mouvement->id] = $mouvement->id;
         }
 
         ksort($documents);
@@ -337,36 +342,38 @@ class LotsClient
         }
     }
 
-    public function getSyntheseLots($identifiant, $campagne, $isadmin)
+    public function getSyntheseLots($identifiant, $campagnes, $region = null)
     {
-        $mouvements = MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows;
+        if(!is_array($campagnes)) {
+            $campagnes = [$campagnes];
+        }
+        $mouvements = [];
+        foreach($campagnes as $campagne) {
+            $mouvements = array_merge($mouvements, MouvementLotHistoryView::getInstance()->getMouvementsByDeclarant($identifiant, $campagne)->rows);
+        }
 
-        $syntheseLots = [];
-        foreach ($mouvements as $mouvementLot) {
-            # Démo: https://regex101.com/r/c3TWNq/1
-            preg_match('/([\w -]+)(?: (\w+))? (moelleux|Doux| )*(\d{4})/uU', $mouvementLot->value->libelle, $matches);
-            $libelle = $matches[0];
-            $produit = $matches[1];
-            $couleur = $matches[2];
-            $millesime = $matches[4];
+        if ($region) {
+            $mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($mouvements, $region);
+        }
 
-            if (array_key_exists($produit, $syntheseLots) === false) {
-                $syntheseLots[$produit] = [];
-                ksort($syntheseLots);
+        $syntheseLots = MouvementLotHistoryView::getInstance()->buildSyntheseLots($mouvements);
+
+        foreach($campagnes as $campagne) {
+            $drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($identifiant, $campagne);
+
+            if($drev) {
+                foreach($drev->declaration->getProduitsWithoutLots() as $produit) {
+                    if($region && $produit->getRegion() != $region) {
+                        continue;
+                    }
+                    @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_issu_recolte;
+                    if($produit->volume_revendique_issu_vci) {
+                        @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode - 1][$produit->getConfig()->getCouleur()->getLibelle()]["DRev"] += $produit->volume_revendique_issu_vci;
+                        @$syntheseLots[$produit->getConfig()->getAppellation()->getLibelle()][$drev->periode - 1][$produit->getConfig()->getCouleur()->getLibelle()]["DREVVCI"] += $produit->volume_revendique_issu_vci;
+                    }
+                }
             }
-
-            if (array_key_exists($millesime, $syntheseLots[$produit]) === false) {
-                $syntheseLots[$produit][$millesime] = [];
-                ksort($syntheseLots[$produit]);
-            }
-
-            if (array_key_exists($couleur, $syntheseLots[$produit][$millesime]) === false) {
-                $syntheseLots[$produit][$millesime][$couleur] = 0;
-                ksort($syntheseLots[$produit][$millesime]);
-            }
-
-            $syntheseLots[$produit][$millesime][$couleur] += $mouvementLot->value->volume;
-        };
+        }
 
         return $syntheseLots;
     }
@@ -384,5 +391,9 @@ class LotsClient
         }
 
         return $this->mouvements_declarant;
+    }
+
+    public function saisieMentionCepageActive() {
+        return sfConfig::get('app_donnees_viticoles_lot_saisie_mention_cepage_active', true);
     }
 }

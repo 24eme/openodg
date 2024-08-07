@@ -35,34 +35,34 @@
      <table border="1px" class="table" id="table_fiche_<?php echo $table_num ?>" $cellspacing=0 cellpadding=0 style="text-align: center;border-collapse:collapse;" scope="colgroup" >
        <tr style="line-height:20px;">
           <th class="topempty bg-white"style="width:5%; "><?php echo tdStart() ?><strong>Anon</strong></th>
-          <th class="topempty bg-white" style="width:34%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
-         <th colspan="4"style="width:20%;"><?php echo tdStart() ?><strong>NOTATION</strong></th>
-          <th class="bg-white" colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Avis</strong></th>
-          <th class="bg-white"  colspan="2"style="width:8%;"><?php echo tdStart() ?><strong>Typicité cépage</strong></th>
-          <th class="topempty bg-white" style="width:25%;"><strong>Motifs (si non conforme)</strong></th>
+          <th class="topempty bg-white" style="width:20%; "><?php echo tdStart() ?><strong>Produit millesime cépage</strong></th>
+          <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Visuelles</strong></th>
+          <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Olfactives</strong></th>
+          <th class="bg-white" colspan="2" style="width:10%;"><?php echo tdStart() ?><strong>Gustatives</strong></th>
+          <th class="bg-white" colspan="4" style="width:45%;"><strong>Conclusions</strong></th>
        </tr>
        <tr style="line-height:13px;">
-         <th class="empty bg-white"></th>
-         <th class="empty bg-white"></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Visuel<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Olfactif<br><?php if($notation): ?>/12<?php endif ?></small></strong></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>Gustatif<br><?php if($notation): ?>/24<?php endif ?></small></strong></th>
-         <th style="width:5%;"><?php echo tdStart() ?><strong><small>TOTAL<br><?php if($notation): ?>/48<?php endif ?></small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
-         <th class="bg-white" style="width:4%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
-         <th class="empty bg-white"></th>
+         <th class="empty bg-white" style="width:5%;"></th>
+         <th class="empty bg-white" style="width:20%;"></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>S *</small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>NS *</small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>S *</small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>NS *</small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>S *</small></strong></th>
+         <th style="width:5%;"><?php echo tdStart() ?><strong><small>NS *</small></strong></th>
+         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>Fav.</small></strong></th>
+         <th class="bg-white" style="width:5%;"><?php echo tdStart() ?><strong><small>Def.</small></strong></th>
+         <th class="empty bg-white"  style="width:35%;">Motifs</th>
        </tr>
    <?php endif;?>
 
     <tr style="line-height:30px; height:32px">
       <td><?php echo tdStart() ?>&nbsp;<strong><?php echo $lotInfo->getNumeroAnonymat() ?></strong></td>
       <td style="text-align:left;"><?php echo tdStart() ?><span style="line-height: 16px;"> <?php echo showOnlyProduit($lotInfo, false, 'span') ?> <?php echo showOnlyCepages($lotInfo, false) ?></span></td>
-      <td><?php echo tdStart() ?></td>
-      <td><?php echo tdStart() ?></td>
-      <td><?php echo tdStart() ?></td>
-      <td><?php echo tdStart() ?></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
+      <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
       <td><?php echo tdStart() ?><span class="zap">o</span></td>
@@ -72,3 +72,5 @@
     <?php $i++; ?>
   <?php endforeach; ?>
 </table>
+<p>L’avis favorable signifie que le lot représenté par l’échantillon dispose des caractéristiques du cahier des charges de l’AOC, ne présente pas de défaut, est acceptable au sein de son appellation. Les conclusions de ma dégustation sont effectuées en toute impartialité.</p>
+<p>* S = Satisfaisant - NS = Non Satisfaisant</p>

@@ -1,10 +1,11 @@
 <?php
+
 /**
- * Model for Degustation
+ * Classe dégustation de l'AVA
  *
  */
 
-class Degustation extends BaseDegustation implements InterfacePieceDocument {
+class /***AVA***/Degustation extends BaseDegustation implements InterfacePieceDocument {
 
 	protected $piece_document = null;
 

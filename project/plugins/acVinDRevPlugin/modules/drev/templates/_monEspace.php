@@ -15,7 +15,7 @@
         </div>
         <?php if ($drev && $drev->validation): ?>
             <div class="panel-body">
-                <p class="explications">Votre déclaration de revendication a été validée pour cette année.</p>
+                <p class="explications">Votre déclaration de revendication a été validée pour cette année<?php if (! $drev->validation_odg): ?> et est en attente d'approbation par votre organisme<?php endif ?>.</p>
                 <div class="actions">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser la déclaration</a>
                 </div>
@@ -38,7 +38,6 @@
                 <div class="actions">
                 <?php if ($sf_user->isAdmin()): ?>
                     <a class="btn btn-default btn-block" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
-                    <a class="btn btn-xs btn-default btn-block" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
                 <?php endif; ?>
                 </div>
             </div>
@@ -47,9 +46,6 @@
                 <p class="explications">Votre déclaration de revendication viticole pour cette année n'a pas encore été déclarée.</p>
                 <div class="actions">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('drev_create', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>">Démarrer la télédéclaration</a>
-                    <?php if ($sf_user->isAdmin() || $sf_user->hasDrevAdmin()): ?>
-                        <a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('drev_create_papier', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisie papier</a>
-                    <?php endif; ?>
                 </div>
             </div>
         <?php endif; ?>

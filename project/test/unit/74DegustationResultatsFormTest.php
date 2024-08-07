@@ -11,7 +11,8 @@ if ($application != 'igp13') {
 $t = new lime_test(23);
 
 $campagne = (date('Y')-1)."";
-$degust_date = $campagne.'-09-01 12:45';
+$drev_date = $campagne.'-09-01';
+$degust_date = $campagne.'-10-01 12:45';
 $docid = "DEGUSTATION-".str_replace("-", "", preg_replace("/(.+) (.+):(.+)$/","$1$2$3",$degust_date));
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -52,6 +53,8 @@ foreach($produits as $produit) {
         continue;
     }
     $drev->addProduit($produit->getHash());
+    $lot = $drev->addLot();
+    $lot->produit_hash = $produit->getHash();
     $nbProduit++;
     if ($nbProduit == 2) {
       break;
@@ -69,8 +72,8 @@ $lot->destination_date = ($campagne+1).'-'.sprintf("%02d", 1).'-'.sprintf("%02d"
 $lot->destination_type = DRevClient::LOT_DESTINATION_VRAC_EXPORT;
 $i++;
 }
-$drev->validate();
-$drev->validateOdg();
+$drev->validate($drev_date);
+$drev->validateOdg($drev_date);
 $drev->save();
 
 $lots = [];

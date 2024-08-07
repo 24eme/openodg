@@ -7,6 +7,13 @@ class DouaneImportCsvFile {
     protected $campagne = null;
     protected $configuration = null;
 
+    public $cvi = '';
+    public $drev_produit_filter = '';
+    public $etablissement = '';
+    public $identifiant = '';
+    public $raison_sociale = '';
+    public $commune = '';
+
     public function __construct($filePath, $doc = null, $drev_produit_filter = null) {
         $this->filePath = $filePath;
         $this->doc = $doc;
@@ -190,7 +197,7 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
-        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|biodynami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIODYNAMIE] = DRevClient::DENOMINATION_BIODYNAMIE;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BIOLOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;

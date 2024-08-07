@@ -4,7 +4,7 @@ class TravauxMarcRoute extends EtablissementRoute implements InterfaceDeclaratio
 
     protected $travauxMarc = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
 
         $this->travauxMarc = TravauxMarcClient::getInstance()->find($parameters['id']);
         if (!$this->travauxMarc) {
@@ -28,7 +28,7 @@ class TravauxMarcRoute extends EtablissementRoute implements InterfaceDeclaratio
         return $this->travauxMarc;
     }
 
-    public function getEtablissement() {
+    public function getEtablissement($parameters = null) {
 
         return $this->getTravauxMarc()->getEtablissementObject();
     }

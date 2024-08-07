@@ -2,3 +2,4 @@ all:
   configuration:
     dr:
       validation: false
+      visu_teledeclaration: false

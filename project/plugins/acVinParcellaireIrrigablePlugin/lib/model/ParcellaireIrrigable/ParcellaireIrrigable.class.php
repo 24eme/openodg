@@ -95,101 +95,23 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return true;
   }
 
+    public function setParcellesFromParcellaire(array $hashes) {
+        parent::setParcellesFromParcellaire($hashes);
 
-  public function initProduitFromLastParcellaire() {
-      if (count($this->declaration) == 0) {
-          $this->importProduitsFromLastParcellaire();
-      }
-  }
+        $last = ParcellaireIrrigableClient::getInstance()->getLast($this->identifiant);
 
-  public function getParcellaireCurrent() {
-
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-
-    public function getParcelles() {
-
-        return $this->declaration->getParcelles();
-    }
-
-    public function getParcellesFromLastParcellaire() {
-        $parcellaireCurrent = $this->getParcellaireCurrent();
-        if (!$parcellaireCurrent) {
-          return;
+        if (! $last) {
+            return;
         }
 
-        return $parcellaireCurrent->declaration;
-    }
-
-    public function addParcellesFromParcellaire(array $hashes) {
-      	$parcellaire = $this->getParcellesFromLastParcellaire();
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		foreach ($value->detail as $subkey => $subvalue) {
-      			if (!in_array($subvalue->getHash(), $hashes)) {
-      				$remove[] = $subvalue->getHash();
-      			}
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove(str_replace('/declaration/', '', $r));
-      	}
-      	foreach ($hashes as $hash) {
-      		$hash = str_replace('/declaration/', '', $hash);
-    	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-    	  		$detail = $parcellaire->get($hash);
-    	  		$produit = $detail->getProduit();
-    	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
-    	  		$item->libelle = $produit->libelle;
-    	  		$subitem = $item->detail->add($detail->getKey());
-
-    	  		$subitem->superficie = $detail->superficie;
-    	  		$subitem->commune = $detail->commune;
-                $subitem->code_commune = $detail->code_commune;
-                $subitem->prefix = $detail->prefix;
-    	  		$subitem->section = $detail->section;
-    	  		$subitem->numero_parcelle = $detail->numero_parcelle;
-                $subitem->idu = $detail->idu;
-    	  		$subitem->lieu = $detail->lieu;
-    	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->active = 1;
-
-                $subitem->remove('vtsgn');
-                if($detail->exist('vtsgn')) {
-                    $subitem->add('vtsgn', (int)$detail->vtsgn);
-                }
-    	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-    	  	}
-      	}
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		if (!count($value->detail)) {
-      			$remove[] = $key;
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove($r);
-      	}
-    }
-
-    public function getParcellesByIdu() {
-        if(is_array($this->parcelles_idu)) {
-
-            return $this->parcelles_idu;
+        $lastParcelles = $last->getParcelles();
+        foreach ($this->getDeclarationParcelles() as $pid => $p) {
+            $parcelle = $lastParcelles[$pid];
+            if ($parcelle) {
+                $p->materiel = $parcelle->materiel;
+                $p->ressource = $parcelle->ressource;
+            }
         }
-
-        $this->parcelles_idu = [];
-
-        foreach($this->getParcelles() as $parcelle) {
-            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-        }
-
-        return $this->parcelles_idu;
-    }
-
-    public function findParcelle($parcelle) {
-
-        return ParcellaireClient::findParcelle($this, $parcelle, 0.75);
     }
 
     public function getDeclarantSiret(){
@@ -227,6 +149,22 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         $this->piece_document->generatePieces();
     }
 
+    public function save() {
+        $regions = $this->getRegions();
+        if (count($regions)) {
+            $this->add('region', implode('|', $regions));
+        }
+        return parent::save();
+    }
+
+    public function getRegions() {
+        $regions = array();
+        foreach ($this->declaration as $key => $value) {
+            $regions[] = RegionConfiguration::getInstance()->getOdgRegion($value->getHash());
+        }
+        return array_filter(array_unique($regions));
+    }
+
   /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {
@@ -258,6 +196,10 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
   public function getValidationOdg() {
 
       return $this->_get('validation_odg');
+  }
+
+  public function isValidee(){
+      return $this->validation;
   }
     /*** FIN DECLARATION DOCUMENT ***/
 

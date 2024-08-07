@@ -23,7 +23,7 @@ class ExportParcellairePotentielProductionODS extends ExportCalculPPODS {
 
         // Rempli le tableau avec les superficie des cepages qu'on a
         foreach ($parcellaire->getParcelles() as $p) {
-            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
                 continue;
             }
 

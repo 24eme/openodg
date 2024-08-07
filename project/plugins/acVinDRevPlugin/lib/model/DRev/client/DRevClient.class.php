@@ -14,11 +14,15 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_HVE = "HVE";
     const DENOMINATION_HVE_LIBELLE_AUTO = "HVE";
     const DENOMINATION_CONVERSION_BIO = "CONVERSION_BIO";
+    const DENOMINATION_CONVERSION_BIO_LIBELLE_AUTO = "Bio en conversion";
     const DENOMINATION_JEUNE_VIGNE = "JEUNE_VIGNE";
     const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_CONDITIONNEMENT';
+    const LOT_DESTINATION_VRAC = 'VRAC';
     const LOT_DESTINATION_VRAC_FRANCE = 'VRAC_FRANCE';
     const LOT_DESTINATION_VRAC_EXPORT = 'VRAC_EXPORT';
+    const LOT_DESTINATION_CONDITIONNEMENT_ENCOURS = 'CONDITIONNEMENT_ENCOURS';
     const LOT_DESTINATION_CONDITIONNEMENT = 'CONDITIONNEMENT';
+    const LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE = 'CONDITIONNEMENT_CONSERVATOIRE';
     const LOT_DESTINATION_TRANSACTION = 'VRAC_EXPORT';
     const LOT_DESTINATION_VRAC_FRANCE_ET_VRAC_EXPORT = "VRAC_FRANCE_VRAC_EXPORT";
     const LOT_DESTINATION_VRAC_EXPORT_ET_CONDITIONNEMENT = "VRAC_EXPORT_CONDITIONNEMENT";
@@ -32,6 +36,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     public static function getDenominationsAuto() {
         $denom = array(
             self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
+            self::DENOMINATION_CONVERSION_BIO => self::DENOMINATION_CONVERSION_BIO_LIBELLE_AUTO,
             self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
             self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
         );
@@ -43,6 +48,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public static $lotDestinationsType = array(
         DRevClient::LOT_DESTINATION_CONDITIONNEMENT => "Conditionnement",
+        DRevClient::LOT_DESTINATION_CONDITIONNEMENT_CONSERVATOIRE => "Conditionnement sur conservatoire",
         DRevClient::LOT_DESTINATION_TRANSACTION => "Vrac Export",
         DRevClient::LOT_DESTINATION_VRAC_FRANCE => "Vrac France",
         DRevClient::LOT_DESTINATION_VRAC_EXPORT => "Vrac Export",
@@ -137,7 +143,6 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             if ($previous_drev) {
                 $drev->set('chais', $previous_drev->chais->toArray(true, false));
             }
-            $drev->updateVCIFromPrecedente();
         }
 
         return $drev;
@@ -226,25 +231,62 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
       return null;
     }
 
-    public function matchFilter($lot, $produitFilter)
+    public function matchFilterDrev($drev, TemplateFactureCotisationCallbackParameters $filterparameters)
     {
-        $filters = [];
-        if ($produitFilter) {
-            $filters = explode(" AND ", $produitFilter);
+        $match = true;
+
+        if ($filterparameters === null) {
+            $filters = [];
+        }else{
+            $filters = $filterparameters->getParameters();
         }
+        foreach ($filters as $type => $filter) {
+            if ($type === 'appellations') {
+                throw new sfException('not implemented');
+            } elseif ($type === 'millesime') {
+                throw new sfException('not implemented');
+            } elseif ($type === 'deja') {
+                throw new sfException('not implemented');
+            } elseif ($type === 'region') {
+                if ($drev->exist('region')) {
+                    $region = str_replace('/region/', '', $filter);
+                    $match = $match && strpos($drev->region, $region) !== false;
+                }
+            } elseif($type === 'famille') {
+                $matchfamille = strpos($filter, $drev->declarant->famille) !== false;
+                if (strpos($filter, 'NOT ') === 0) {
+                    $match = $match && !$matchfamille;
+                }else{
+                    $match = $match && $matchfamille;
+                }
+            }
+        }
+
+        return $match;
+    }
+
+    public function matchFilterLot($lot, TemplateFactureCotisationCallbackParameters $produitFilter = null)
+    {
         $etablissements = [];
         $match = true;
 
-        foreach ($filters as $filter) {
-            if (strpos($filter, 'appellations') !== false) {
+        if ($produitFilter === null) {
+            $produitFilter = [];
+        }
+
+        foreach ($produitFilter as $type => $filter) {
+            if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($lot, $filter);
-            } elseif (strpos($filter, 'millesime') !== false) {
+            } elseif ($type === 'millesime') {
                 $match = $match && $this->matchFilterMillesime($lot, $filter);
-            } elseif (strpos($filter, 'deja') !== false) {
+            } elseif ($type === 'deja') {
                 // On gère que l'option (NOT)? /deja/CONFORME pour le moment
                 // Pas NONCONFORME
                 $match = $match && $this->matchFilterConformite($lot, $filter);
-            } elseif($filter) {
+            } elseif ($type === 'region') {
+                $region = str_replace('/region/', '', $filter);
+                $match = $match && RegionConfiguration::getInstance()->isHashProduitInRegion($region, $lot->getProduitHash());
+            } elseif($type === 'famille') {
                 if (array_key_exists($lot->declarant_identifiant, $etablissements) === false) {
                     $etablissements[$lot->declarant_identifiant] = EtablissementClient::getInstance()->find($lot->declarant_identifiant);
                 }
@@ -256,7 +298,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $match;
     }
 
-    private function matchFilterFamille($famille, $familleFilter)
+    public function matchFilterFamille($famille, $familleFilter)
     {
         if(! $famille){
             return false;

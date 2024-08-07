@@ -372,6 +372,14 @@ class ConfigurationClient extends acCouchdbClient {
 			return $oldHashProduit;
 		}
 
+    public function isOpenODG() {
+        return ! $this->isGiilda();
+    }
+
+    public function isGiilda() {
+        return class_exists("DRMConfiguration");
+    }
+
 }
 
 class ConfigurationClientCache {

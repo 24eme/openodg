@@ -1,5 +1,11 @@
 <?php require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if (!DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $t = new lime_test();
+    $t->pass("no DREV for ".$application);
+    return;
+}
+
 $t = new lime_test(24);
 $t->comment("test Import DR avec denomination automatique à ".DRevConfiguration::getInstance()->hasDenominationAuto());
 
@@ -45,7 +51,7 @@ unlink($csvTmpFile);
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
-  $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_TOTAL_DEPRECATED);
+  $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO);
 }
 $drev->importCSVDouane($csv);
 $drev->save();
@@ -64,12 +70,14 @@ $nb_produits_csv = count(array_keys($produits));
 $t->is(count($drev->getProduits()), $nb_produits_csv, $nb_produits_csv." produits");
 $drev->delete();
 
-$drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_TOTAL_DEPRECATED);
+$t->comment("DREV avec que BIO de coché");
+$drev->add('denomination_auto', DRevClient::DENOMINATION_BIO);
 $t->is($drev->getDenominationAuto(), array(DRevClient::DENOMINATION_BIO), "On conserve la compatibilité avec le mode de déclaration des BIO_TOTAL déprécié");
 $t->ok($drev->hasDenominationAuto(DRevClient::DENOMINATION_BIO), 'un déclaration de bio total provoque une appartenance au bio');
 $t->ok(!$drev->hasDenominationAuto(DRevClient::DENOMINATION_CONVENTIONNEL), 'un déclaration de bio total ne provoque pas une appartenance au conventionnel');
 $t->ok(!$drev->hasDenominationAuto(DRevClient::DENOMINATION_HVE), 'un déclaration de bio total ne provoque pas une appartenance au hve');
 
+$t->comment("DREV avec que BIO et conventionnel de coché");
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $periode);
 $drev->add('denomination_auto', DRevClient::DENOMINATION_BIO_PARTIEL_DEPRECATED);
 $t->is($drev->getDenominationAuto(), array(DRevClient::DENOMINATION_BIO, DRevClient::DENOMINATION_CONVENTIONNEL), "On conserve la compatibilité avec le mode de déclaration des BIO_PARTIEL déprécié");
@@ -77,8 +85,10 @@ $t->ok($drev->hasDenominationAuto(DRevClient::DENOMINATION_BIO), 'un déclaratio
 $t->ok($drev->hasDenominationAuto(DRevClient::DENOMINATION_CONVENTIONNEL), 'un déclaration de bio et conventionnel provoque une appartenance au conventionnel');
 $t->ok(!$drev->hasDenominationAuto(DRevClient::DENOMINATION_HVE), 'un déclaration de bio et conventionnel ne provoque pas une appartenance au hve');
 
+//On met le premier produit en Bio
 for($i = 0 ; $i < 15 ; $i++) {
-    $csv[$i][18] = "vin bio";
+    $csv[$i][DRCsvFile::CSV_PRODUIT_COMPLEMENT] = "vin bio";
+    $csv[$i][DRCsvFile::CSV_LABEL_CALCULEE] = DRevClient::DENOMINATION_BIO;
 }
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $drev->add('denomination_auto', array(DRevClient::DENOMINATION_BIO, DRevClient::DENOMINATION_CONVENTIONNEL));
@@ -215,8 +225,10 @@ if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
   $drev->add('denomination_auto', array(DRevClient::DENOMINATION_BIO, DRevClient::DENOMINATION_CONVENTIONNEL, DRevClient::DENOMINATION_HVE));
 }
 $csv = $csvorig;
+//On met le premier produit en HVE
 for($i = 0 ; $i < 15 ; $i++) {
-    $csv[$i][18] = "hve";
+    $csv[$i][DRCsvFile::CSV_PRODUIT_COMPLEMENT] = "hve";
+    $csv[$i][DRCsvFile::CSV_LABEL_CALCULEE] = DRevClient::DENOMINATION_HVE;
 }
 $drev->importCSVDouane($csv);
 $drev->save();
@@ -235,9 +247,9 @@ foreach ($drev->declaration as $hash => $details) {
 }
 $nb_produits_csv_doublons = $nb_produits_csv;
 if (DRevConfiguration::getInstance()->hasDenominationAuto()) {
-    $t->is($nb, $nb_produits_csv_doublons, "si les dénom ne sont que bio et hve alors que ces produits ($nb_produits_csv)");
+    $t->is($nb, 3, "Il y a 3 produits (HVE pour le premier et Bio et concventionnel pour le 2d)");
     $t->is($ddetailfirst->denomination_complementaire, DRevClient::DENOMINATION_HVE_LIBELLE_AUTO, "le 2d détail est HVE comme dans le CSV");
-    $t->is($ddetaillast->denomination_complementaire, "", "le premier détail est conventionnel");
+    $t->is($ddetaillast->denomination_complementaire, DRevClient::DENOMINATION_BIO_LIBELLE_AUTO, "le dernier détail est bio");
 } else {
     $t->pass();
     $t->pass();

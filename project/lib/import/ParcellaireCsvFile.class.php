@@ -57,33 +57,28 @@ class ParcellaireCsvFile
      *
      * @throws Exception Si le CVI n'est rattaché à aucun établissement
      */
-    public function __construct(Etablissement $etablissement, Csv $file, $contextInstance = null)
+    public function __construct(Parcellaire $parcellaire, $file_path = null, $contextInstance = null)
     {
-        $this->etablissement = $etablissement->identifiant;
-        $this->file = $file;
+        $this->etablissement = $parcellaire->identifiant;
+        $this->parcellaire = $parcellaire;
         $this->contextInstance = ($contextInstance)? $contextInstance : sfContext::getInstance();
 
-        list(,$this->cvi) = explode('-', pathinfo($file->getFilename(), PATHINFO_FILENAME));
-
-
-        if ($etablissement->cvi !== $this->cvi) {
-            $m = sprintf("Les cvi de l'établissement et du nom du fichier ne correspondent pas : %s ≠ %s",
-                $etablissement->cvi,
-                $this->cvi
-            );
-            throw new Exception($m);
+        if ($file_path)  {
+            $this->parcellaire->storeAttachment($file_path, 'text/csv', "import-cadastre-".$this->parcellaire->declarant->cvi."-parcelles.csv");
         }
 
-        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate(
-            $this->etablissement,
-            date('Y-m-d'),
-            'PRODOUANE'
-        );
-        
+        $tempfname = tempnam('/tmp', $this->parcellaire->_id);
+        $handle = fopen($tempfname, 'w');
+        fwrite($handle, $this->parcellaire->getParcellaireCSV());
+        fclose($handle);
+        $this->file = new Csv($tempfname);
+
         if ($this->parcellaire->getParcelles()) {
 
             $this->parcellaire->remove('declaration');
             $this->parcellaire->add('declaration');
+            $this->parcellaire->remove('parcelles');
+            $this->parcellaire->add('parcelles');
         }
     }
 
@@ -193,6 +188,9 @@ class ParcellaireCsvFile
             $libelle = str_replace('COTEAUX LAYON', 'COTEAUX DU LAYON', $libelle);
             $libelle = str_replace("FAYE-D'ANJOU", 'FAYE', $libelle);
             $libelle = str_replace('LOIRELOIRE', 'LOIRE LOIRE', $libelle);
+            $libelle = str_replace(' RS', ' Rosé', $libelle);
+            $libelle = str_replace([' GRENAT', ' ROUGE SEC'], ' ROUGE', $libelle);
+
             switch ($libelle) {
                 case "CREMANT D'ALS ROSE":
                 case "CRéM ALSACE ROSé":
@@ -269,33 +267,27 @@ class ParcellaireCsvFile
                 $nb_reconnaissance++;
             }
 
-            if (!$produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
-                $this->contextInstance->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format] );
-                continue;
-            }
             $hash = ($produit) ? $produit->getHash() : null ;
 
             $prefix = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 5, 3);
 
             $new_parcelle = $this->parcellaire->addParcelle(
-                $hash,
+                $parcelle[self::CSV_FORMAT_IDU - $is_old_format],
+                $libelle,
                 $parcelle[self::CSV_FORMAT_CEPAGE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_CAMPAGNE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_COMMUNE - $is_old_format],
-                $prefix,
-                $parcelle[self::CSV_FORMAT_SECTION - $is_old_format],
-                $parcelle[self::CSV_FORMAT_NUMERO_PARCELLE - $is_old_format],
                 $parcelle[self::CSV_FORMAT_LIEU_DIT - $is_old_format]
             );
-            if ($parcelle[self::CSV_FORMAT_IDU - $is_old_format] && substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 2)) {
-                $new_parcelle->code_commune = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 0, 5);
-                $new_parcelle->idu = $parcelle[self::CSV_FORMAT_IDU - $is_old_format];
-            }
+
             $new_parcelle->ecart_rang = (float) $parcelle[self::CSV_FORMAT_ECART_RANG - $is_old_format];
             $new_parcelle->ecart_pieds = (float) $parcelle[self::CSV_FORMAT_ECART_PIED - $is_old_format];
             $new_parcelle->superficie = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE - $is_old_format]);
             $new_parcelle->superficie_cadastrale = (float) str_replace(',', '.', $parcelle[self::CSV_FORMAT_SUPERFICIE_CADASTRALE - $is_old_format]);
             $new_parcelle->set('mode_savoirfaire',$parcelle[self::CSV_FORMAT_FAIRE_VALOIR - $is_old_format]);
+            if ($new_parcelle->produit_hash && strpos($new_parcelle->produit_hash, ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH) === false) {
+                $new_parcelle = $this->parcellaire->affecteParcelleToHashProduit($hash, $new_parcelle);
+            }
 
             if (! $this->check($new_parcelle)) {
                 $this->contextInstance->getLogger()->info("La parcelle ".$new_parcelle->getKey()." n'est pas conforme");

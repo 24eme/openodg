@@ -24,7 +24,7 @@ class ParcellaireRoute extends EtablissementRoute implements InterfaceDeclaratio
         return $this->parcellaire;
     }
 
-    public function getEtablissement() {
+    public function getEtablissement($parameters = null) {
 
         return $this->getParcellaire()->getEtablissementObject();
     }

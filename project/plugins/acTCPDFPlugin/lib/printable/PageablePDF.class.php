@@ -23,21 +23,23 @@ class PageablePDF extends PageableOutput {
         $this->pdf->SetSubject($config->subject);
         $this->pdf->SetKeywords($config->keywords);
 
-        $this->pdf->SetHeaderData($config->header_logo, $config->header_logo_width, $config->header_title, $config->header_string);
+        if ($config->header_enabled) {
+            $this->pdf->SetHeaderData($config->header_logo, $config->header_logo_width, $config->header_title, $config->header_string, array(0,0,0), array(255,255,255));
+            $this->pdf->setHeaderFont(Array($config->font_name_main, '',  $config->font_size_main));
+            $this->pdf->SetHeaderMargin($config->margin_header);
+        }else {
+            $this->pdf->setPrintHeader(false);
+        }
 
         $this->pdf->SetFooterData(array(0,0,0), array(0,0,0), $config->footer_text);
-
-        // set header and footer fonts
-        $this->pdf->setHeaderFont(Array($config->font_name_main, '',  $config->font_size_main));
         $this->pdf->setFooterFont(Array($config->font_name_data, '', $config->font_size_data));
+        $this->pdf->SetFooterMargin($config->margin_footer);
 
         // set default monospaced font
         $this->pdf->SetDefaultMonospacedFont($config->font_monospaced);
         //set margins
 
         $this->pdf->SetMargins($config->margin_left, $config->margin_top, $config->margin_right);
-        $this->pdf->SetHeaderMargin($config->margin_header);
-        $this->pdf->SetFooterMargin($config->margin_footer);
 
         //set auto page breaks
         $this->pdf->SetAutoPageBreak(TRUE, $config->margin_bottom);

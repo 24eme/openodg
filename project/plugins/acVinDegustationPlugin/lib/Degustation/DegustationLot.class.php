@@ -66,8 +66,18 @@ class DegustationLot extends BaseDegustationLot {
 
     public function anonymize($index)
     {
-        $this->numero_anonymat = sprintf("%s%02d", $this->getNumeroTableStr(), $index + 1);
-        $this->statut = Lot::STATUT_ANONYMISE;
+        $table_anno = '';
+        if (DegustationConfiguration::getInstance()->hasAlwaysIdentifiantTable() || ($this->getDocument()->getLastNumeroTable() >= 2)) {
+            $table_anno = $this->getNumeroTableStr();
+        }
+        $this->numero_anonymat = sprintf(DegustationConfiguration::getInstance()->getFormatAnonymat(), $table_anno, $index + 1);
+    }
+
+    public function setNumeroAnonymat($numero) {
+        $this->_set('numero_anonymat', $numero);
+        if($numero && !$this->conformite) {
+            $this->statut = Lot::STATUT_ANONYMISE;
+        }
     }
 
     public function recoursOc($date = null){
@@ -171,6 +181,9 @@ class DegustationLot extends BaseDegustationLot {
         if($this->isAnnule()) {
             return false;
         }
+        if($this->isDiffere()) {
+            return false;
+        }
 
         return true;
     }
@@ -184,12 +197,18 @@ class DegustationLot extends BaseDegustationLot {
         return $this->volume === 0;
     }
 
-    public function getDocumentType() {
-
-        return DegustationClient::TYPE_MODEL;
+    public function getDocumentType()
+    {
+        return $this->getDocument()->getType();
     }
 
     public function getDocumentOrdre() {
+        if ($this->getDocument()->getType() == TourneeClient::TYPE_MODEL && in_array($this->initial_type, array_keys(TourneeClient::$lotTourneeChoices)) && !$this->id_document_provenance) {
+            $this->_set('document_ordre', "01");
+        } else {
+            $this->_set('document_ordre', $this->getDocumentOrdreCalcule());
+        }
+
         return $this->_get('document_ordre');
     }
 

@@ -7,8 +7,11 @@ all:
     nom: "Syndicat Général des Vignerons Réunis des Côtes du Rhône"
   elasticversion: '2.4.6'
   parcellaire_irrigable:
-    ressources: ["Forage", "Etang", "Retenue collinaire","Réseau urbain"]
+    ressources: ["Canal de Carpentras", "Canal de Provence", "Canal du ventoux","Réseau urbain", "Lac privé", "Source", "Forage"]
     materiels: ["Goutte à goutte", "Canon", "Système enterré"]
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
+  communes:
+    denominations:
+      DEFAUT : [84003,84004,84008,84011,84015,84017,84018,84020,84025,84030,84031,84032,84040,84041,84044,84046,84047,84048,84050,84051,84057,84062,84066,84067,84069,84070,84072,84075,84077,84082,84085,84088,84099,84101,84102,84103,84105,84108,84109,84112,84114,84115,84118,84124,84143,84144,84145,84148]

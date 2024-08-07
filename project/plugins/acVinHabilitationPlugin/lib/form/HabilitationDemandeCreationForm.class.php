@@ -10,6 +10,14 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
 
         $demandes = $this->getDemandes();
         $produits = $this->getProduits();
+        $region = Organisme::getCurrentRegion();
+        if ($region) {
+            foreach($this->getProduits() as $hash_produit => $libelle) {
+                if(!RegionConfiguration::getInstance()->isHashProduitInRegion($region, $hash_produit)) {
+                    unset($produits[$hash_produit]);
+                }
+            }
+        }
         $activites = $this->getActivites();
         $sites = $this->getSites();
 

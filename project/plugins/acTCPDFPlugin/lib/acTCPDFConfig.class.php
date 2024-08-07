@@ -9,6 +9,38 @@ class acTCPDFConfig
 
     const PAGE_FORMAT = 'A4';
 
+    public $author = null;
+    public $creator = null;
+    public $font_monospaced = null;
+    public $font_name_data = null;
+    public $font_name = null;
+    public $font_name_main = null;
+    public $font_size_data = null;
+    public $font_size = null;
+    public $font_size_main = null;
+    public $footer_text = null;
+    public $header_enabled = null;
+    public $header_logo = null;
+    public $header_logo_width = null;
+    public $header_string = null;
+    public $header_title = null;
+    public $image_scale = null;
+    public $keywords = null;
+    public $margin_bottom = null;
+    public $margin_footer = null;
+    public $margin_header = null;
+    public $margin_left = null;
+    public $margin_right = null;
+    public $margin_top = null;
+    public $orientation = null;
+    public $page_format = null;
+    public $path_images = null;
+    public $subject = null;
+    public $title = null;
+    public $unit = null;
+
+
+
     public function __construct() {
         $this->orientation = PDF_PAGE_ORIENTATION;
         $this->page_format = PDF_PAGE_FORMAT;
@@ -38,5 +70,6 @@ class acTCPDFConfig
         $this->title = '';
         $this->subject = '';
         $this->keywords = '';
+        $this->header_enabled = true;
     }
 }

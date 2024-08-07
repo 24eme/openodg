@@ -39,11 +39,18 @@ class MouvementFactureView extends acCouchdbView
 	  ->getView($this->design, $this->view)->rows;
     }
 
-    public function getMouvementsFacturesEnAttente()
+    public function getMouvementsFacturesEnAttente($region = null)
     {
-        return $this->client->startkey([0, 1])
+        $rows = array();
+        foreach( $this->client->startkey([0, 1])
                             ->endkey([0, 1, []])
                             ->reduce(false)
-                            ->getView($this->design, $this->view)->rows;
+                            ->getView($this->design, $this->view)->rows as $r) {
+            if ($region && $r->value->region != $region ) {
+                continue;
+            }
+            $rows[] = $r;
+        }
+        return $rows;
     }
 }

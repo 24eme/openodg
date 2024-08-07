@@ -1,0 +1,6 @@
+all:
+  configuration:
+    transaction:
+      static_region: OIVC
+      static_origine_type: VracExport
+      validation_odg: true

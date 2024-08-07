@@ -1,4 +1,4 @@
-<h3>Revendication AOP</h3>
+<h3>Revendication AOC</h3>
 
 <table class="table table-bordered table-striped">
   <thead>
@@ -35,6 +35,20 @@
             <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_total') ?>"><?php if($produit->volume_revendique_total): ?><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small><?php endif; ?></td>
           </tr>
         <?php endforeach; ?>
+
+        <tr>
+            <td class="text-right"><strong>Total</strong></td>
+            <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->superficie_revendique; return $tot; }, 0)) ?> <small class="text-muted">ha</small></td>
+            <?php if (($drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) || ($drev->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11)): ?>
+                <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_issu_vci; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
+            <?php endif ?>
+            <?php if ($drev->hasVSI()): ?>
+                <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_issu_vsi; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
+            <?php endif ?>
+            <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_issu_recolte; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
+            <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_total; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
+        </td>
+
       </tbody>
     </table>
     <?php $bailleurs = $drev->getBailleurs(true)->getRawValue(); ?>

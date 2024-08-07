@@ -9,7 +9,14 @@ class parcellaireIrrigueActions extends sfActions {
 		$this->papier = $request->getParameter('papier', false);
 		$this->periode = $request->getParameter('periode');
 
-        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier);
+        $errors = array();
+        $this->parcellaireIrrigue = ParcellaireIrrigueClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier, null, $errors);
+
+        if (count($errors)) {
+            foreach($errors as $err => $details) {
+                $this->getUser()->setFlash('warning', "$err : $details");
+            }
+        }
 
         $this->form = new ParcellaireIrrigueProduitsForm($this->parcellaireIrrigue);
 
@@ -32,6 +39,13 @@ class parcellaireIrrigueActions extends sfActions {
         return $this->redirect('parcellaireirrigue_edit', array('sf_subject' => $this->etablissement, 'periode' => $this->periode, 'papier' => $this->papier));
     }
 
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->parcellaireIrrigue = $this->getRoute()->getParcellaireIrrigue();
+        $this->coop = $request->getParameter('coop');
+        $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigue);
+
+        return $this->redirect('parcellaireirrigue_edit', ['identifiant' => $this->parcellaireIrrigue->identifiant, 'periode' => $this->parcellaireIrrigue->periode]);
+    }
 
     protected function secure($droits, $doc) {
     	if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {

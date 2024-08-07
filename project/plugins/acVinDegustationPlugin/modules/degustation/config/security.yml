@@ -1,5 +1,5 @@
 all:
-  credentials: [ADMIN]
+  credentials: [[ADMIN, ADMIN_ODG]]
 
 lotsListe:
   is_secure: true

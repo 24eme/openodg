@@ -7,7 +7,7 @@ if ($application == 'loire') {
     $t->ok(true, "Pas d'habilitation pour loire");
     return;
 }
-$t = new lime_test(15);
+$t = new lime_test();
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -18,13 +18,13 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 }
 
 $t->comment("Création des docs");
-$date = '2012-01-01';
+$date = (date('Y')-1).'-01-01';
 $habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, $date);
 $habilitation->save();
 
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc dans le passé est bien construit");
 
-$date = date('Y-m-d');
+$date = (date('Y')-1).'06-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($habilitation->identifiant, $date);
 $habilitation->save();
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc actuel est bien construit");
@@ -52,14 +52,13 @@ $form->bind(array('hashref' => $produitConfig_0->getHash(), '_revision' => $habi
 $t->ok(!$form->isValid(), "Le formulaire d'ajout est valide");
 
 $t->comment("Form d'ajout de produit avec activité");
-$activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR,HabilitationClient::ACTIVITE_VINIFICATEUR,HabilitationClient::ACTIVITE_VRAC);
+$activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR,HabilitationClient::ACTIVITE_VINIFICATEUR);
 $form = new HabilitationAjoutProduitForm($habilitation);
 $statut = HabilitationClient::STATUT_DEMANDE_HABILITATION;
 $date = "07/09/".(date('Y')+1);
 $dateIso = (date('Y')+1)."-09-07";
 
 $form->bind(array('hashref' => $produitConfig_0->getHash(), 'statut' => $statut, 'date' => $date, 'activites' => $activites, '_revision' => $habilitation->_rev));
-
 $t->ok($form->isValid(), "Le formulaire d'ajout est valide");
 $form->save();
 
@@ -77,7 +76,7 @@ foreach ($HabilitationActivites as $key => $activite) {
     $dates[$activite->date] = $activite->date;
   }
 }
-$t->ok(count($activite_tmp) == 3, "Le produit a 3 activites en demande");
+$t->ok(count($activite_tmp) == 2, "Le produit a 2 activites en demande");
 
 $t->ok(count($dates) == 1, "Le produit a ses activites avec une seule date");
 $f_date = array_pop($dates);

@@ -251,6 +251,23 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation;
         }
 
+        public function getRegionsHabilites($identifiant) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+
+            if(!$habilitation) {
+
+                return [];
+            }
+
+            $regions = [];
+
+            foreach($habilitation->getProduits() as $produit) {
+                $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+            }
+
+            return array_unique($regions);
+        }
+
         public function isRegionInHabilitation($identifiant, $region) {
             $habilitation = $this->getLastHabilitation($identifiant);
             if(!$habilitation) {

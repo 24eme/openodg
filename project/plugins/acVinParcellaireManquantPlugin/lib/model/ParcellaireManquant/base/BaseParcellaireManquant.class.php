@@ -50,7 +50,7 @@
 
  */
 
-abstract class BaseParcellaireManquant extends acCouchdbDocument {
+abstract class BaseParcellaireManquant extends DeclarationParcellaire {
 
     public function getDocumentDefinitionModel() {
         return 'ParcellaireManquant';

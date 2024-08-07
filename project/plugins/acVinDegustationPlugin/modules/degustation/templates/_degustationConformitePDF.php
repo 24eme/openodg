@@ -44,8 +44,8 @@
 
 <table border="0.5" class="" cellspacing=0 cellpadding=0 style="width:100%;text-align:center;">
   <tr>
-    <th style="width: 15%">N° Dos / N° Lot ODG</th>
-    <th style="width: 15%">N°Lot OP</th>
+    <th style="width: 15%">N° Dos / N° Lot</th>
+    <th style="width: 15%">N°Lgt OP</th>
     <th style="width: 40%">Produit</th>
     <th style="width: 10%">Volume<br/>(hl)</th>
     <th style="width: 20%">Observation</th>

@@ -9,6 +9,7 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
     {
         $this->produits = array();
         $this->table = (isset($options['table'])) ? $options['table'] : null;
+
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -24,19 +25,26 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $this->setWidgets(array(
             'hashref' => new sfWidgetFormChoice(array('choices' => $produits)),
             'cepages' => new sfWidgetFormTextarea(),
-            'millesime' => new sfWidgetFormInput()
+            'millesime' => new sfWidgetFormInput(),
+            'commentaire' => new sfWidgetFormTextarea([], [
+                'rows' => 1,
+                'class' => 'form-control',
+                'placeholder' => 'Informations complémentaires'
+            ])
         ));
 
         $this->widgetSchema->setLabels(array(
-            'hashref' => 'Appellation: ',
-            'cepages' => 'Cépages: ',
-            'millesime' => 'Millésime: '
+            'hashref' => 'Appellation : ',
+            'cepages' => 'Cépages : ',
+            'millesime' => 'Millésime : ',
+            'commentaire' => 'Commentaire : '
         ));
 
         $this->setValidators(array(
             'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie.")),
             'cepages' => new sfValidatorString(array('required' => false)),
-            'millesime' => new sfValidatorInteger(['min' => 0, 'required' => true])
+            'millesime' => new sfValidatorInteger(['min' => 0, 'required' => true]),
+            'commentaire' => new sfValidatorString(['required' => false])
         ));
 
         $this->setDefault('millesime', ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent());
@@ -73,9 +81,11 @@ class DegustationAjoutLeurreForm extends acCouchdbObjectForm
         $hash = ($values['hashref']) ?: null;
         $cepages = ($values['cepages']) ?: null;
         $millesime = $values['millesime'];
+        $commentaire = ($values['commentaire']) ?: null;
 
         if (isset($hash) && !empty($hash) && array_key_exists($hash, $this->getProduits())) {
             $leurre = $degust->addLeurre($hash, $cepages, $millesime, $values['table']);
+            $leurre->numero_logement_operateur = ($commentaire) ?: null;
         }
     }
 

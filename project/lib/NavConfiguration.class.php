@@ -25,8 +25,8 @@ class NavConfiguration {
         $regions = array();
         if (sfContext::getInstance()->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && class_exists("RegionConfiguration")) {
             $regions = RegionConfiguration::getInstance()->getOdgRegions();
-        }elseif (sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion()) {
-            $regions = array(sfContext::getInstance()->getUser()->getTeledeclarationDrevRegion());
+        }elseif (sfContext::getInstance()->getUser()->getRegion()) {
+            $regions = array(sfContext::getInstance()->getUser()->getRegion());
         }
         if (count($regions)) {
             $this->nav_configuration['stats'][] = array('name' => 'Export Crus', 'url' => '#', 'title' => 1);

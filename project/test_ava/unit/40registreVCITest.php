@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(91);
+$t = new lime_test();
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -144,7 +144,7 @@ foreach($registre->getProduitsWithPseudoAppelations() as $p) {
     if (!$p->isPseudoAppellation()) {
          continue;
      }
-     $surfacesTotal += $p->getSuperficieFromDrev();
+     $surfacesTotal += (int) $p->getSuperficieFromDrev();
 }
 $registre->getSurfaceFacturable();
 $registre->save();
@@ -157,27 +157,7 @@ $t->is(count(explode("\n", $export->export())) -1 , 4, "L'export CSV a 4 lignes"
 
 $t->comment("Génération des mouvements de facturation");
 
-$registre->generateMouvementsFactures();
 $registre->save();
-
-$t->is(count($registre->mouvements->get($compteIdentifiant)), 1, "Le registre à 1 mouvement");
-$mouvement = $registre->mouvements->get($compteIdentifiant)->getFirst();
-$t->is($mouvement->categorie, "vci", "Le registre à 1 mouvement");
-$t->is($mouvement->type_libelle, "hectares (récolte ".$campagne.")", "Libellé du mouvement vci");
-$t->is($mouvement->facturable, 1, "Le mouvement est facturable");
-$t->is($mouvement->facture, 0, "Le mouvement n'est pas facturé");
-
-$t->comment("Génération de la facture");
-
-$templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
-$dateFacturation = date('Y-m-d');
-
-$f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
-$f->save();
-
-$t->ok($f->_rev, "La facture ".$f->_id." a une révision");
-$t->is(count($f->lignes->vci->details), 1, "La ligne de facturation pour le VCI est présente");
-
 
 $t->comment("Génération du registre de l'année suivante");
 

@@ -4,7 +4,42 @@ all:
       activites:
         PRODUCTEUR: "Producteur de raisins"
         PRODUCTEUR_MOUTS: "Producteur de moût"
-        CONDITIONNEUR: "Conditionneur"
-        ELEVEUR_DGC: "Éleveur de DGC"
         VINIFICATEUR: "Vinificateur"
-        VRAC: "Détenteur de vin en vrac"
+        CONDITIONNEUR: "Conditionneur"
+        ELEVEUR: "Éleveur"
+        NEGOCIANT: "Négociant"
+      demande:
+        statuts:
+          DEPOT: "Dépôt"
+          COMPLET: "Complet"
+          ENREGISTREMENT: "Enregistrement"
+          TRANSMIS_INAO: "Transmis à l'INAO"
+          VALIDE_INAO: "Validé par l'INAO"
+          REFUSE_INAO: "Refusé par l'INAO"
+          SUSPENDU_INAO: "Suspendu par l'INAO"
+          VALIDE: "Validé"
+          REFUSE: "Refusé"
+          ANNULE: "Annulé"
+        automatique:
+          COMPLET: ENREGISTREMENT
+          VALIDE_INAO: VALIDE
+          REFUSE_INAO: REFUSE
+        habilitations:
+          HABILITATION:
+            COMPLET: DEMANDE_HABILITATION
+            VALIDE: HABILITE
+            REFUSE: REFUS
+            ANNULE: ANNULÉ
+            SUSPENDU_INAO: SUSPENDU
+          RETRAIT:
+            COMPLET: DEMANDE_RETRAIT
+            VALIDE: RETRAIT
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+            SUSPENDU_INAO: SUSPENDU
+          RESILIATION:
+            COMPLET: DEMANDE_RESILIATION
+            VALIDE: RESILIE
+            REFUSE: HABILITE
+            ANNULE: HABILITE
+            SUSPENDU_INAO: SUSPENDU

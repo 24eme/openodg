@@ -18,7 +18,8 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
         return $parameters;
     }
 
-    public function getDRev() {
+    public function getDRev($parameters = null) {
+        $this->getEtablissement($parameters);
         if (!$this->drev) {
             $this->getObject();
         }

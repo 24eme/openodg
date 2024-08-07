@@ -12,24 +12,7 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
   	}
 
     public function getParcellesByCommune() {
-        $parcelles = array();
-
-        foreach($this as $produit) {
-            foreach ($produit->detail as $parcelle) {
-                if(!isset($parcelles[$parcelle->commune])) {
-                    $parcelles[$parcelle->commune] = array();
-                }
-                $parcelles[$parcelle->commune][$parcelle->getHash()] = $parcelle;
-            }
-        }
-        foreach ($parcelles as $key => $parcelleByCommune) {
-            uasort($parcelleByCommune, "ParcellaireClient::sortParcellesForCommune");
-            $parcelles[$key] = $parcelleByCommune;
-        }
-
-        ksort($parcelles);
-
-        return $parcelles;
+        return ParcellaireClient::organizeParcellesByCommune($this->getParcelles());
     }
 
     public function getParcelles() {

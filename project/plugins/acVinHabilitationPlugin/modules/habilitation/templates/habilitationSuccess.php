@@ -84,14 +84,14 @@ if($etablissement->cvi && count($e) > 1):
                 <td><?php echo $d->getStatutLibelle() ?></td>
                 <td class="text-center">
                     <?php if($habilitation->isLastOne()): ?>
-                    <?php if($sf_user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
+                    <?php if($sf_user->hasHabilitation() && (!$filtre || preg_match("/".$filtre."/i", $d->getStatut()))): ?>
                         <a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a></td>
                     <?php else: ?>
                         <a href="<?php echo url_for('habilitation_demande_visualisation', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir</a></td>
                     <?php endif; ?>
                     <?php endif; ?>
             </tr>
-        <?php endforeach; ?>/
+        <?php endforeach; ?>
         </tbody>
     </table>
     <?php endif; ?>
@@ -120,7 +120,11 @@ if($etablissement->cvi && count($e) > 1):
             <td><?php echo preg_replace('/"([^"]+)"/', '<code>\1</code>', $historiqueDoc->getRawValue()->description); ?><?php if($historiqueDoc->commentaire): ?> <small class="text-muted">(<?php echo $historiqueDoc->commentaire; ?>)</small><?php endif ?>
             </td>
             <td><?php if(isset($historiqueDoc->statut) && $historiqueDoc->statut): ?><?php echo HabilitationClient::getInstance()->getLibelleStatut($historiqueDoc->statut); ?> <?php endif ?></td>
-            <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => preg_replace("/:.+/", "", $historiqueDoc->iddoc))); ?>">Voir</a></td>
+            <td class="text-center">
+                <?php if ($historiqueDoc->iddoc != $habilitation->_id): ?>
+                <a href="<?php echo url_for('habilitation_visualisation', array('id' => preg_replace("/:.+/", "", $historiqueDoc->iddoc))); ?>">Voir</a>
+                <?php endif; ?>
+            </td>
           </tr>
           <?php $cpt++;?>
         <?php endforeach; ?>

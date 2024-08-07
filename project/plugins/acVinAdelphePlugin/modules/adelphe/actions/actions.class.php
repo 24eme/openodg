@@ -89,7 +89,6 @@ class adelpheActions extends sfActions {
 
   public function executeVisualisation(sfWebRequest $request) {
       $this->adelphe = $this->getRoute()->getAdelphe();
-      $this->secureEtablissement(AdelpheSecurity::DROIT_ADELPHE, $this->adelphe->getEtablissementObject());
   }
 
   public function executeDelete(sfWebRequest $request) {

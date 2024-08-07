@@ -16,7 +16,7 @@ class ParcellaireSecurity extends DocumentSecurity implements SecurityInterface 
         }
 
         $authorized = parent::isAuthorized($droits);
-    
+
         if(!$authorized) {
 
             return false;

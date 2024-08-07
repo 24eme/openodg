@@ -72,9 +72,11 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeDeguste",
-                   "callback_parameters": [
-                       "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "NOT /appellations/MED",
+                       "deja": "NOT /deja/CONFORME",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -96,9 +98,11 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeDeguste",
-                   "callback_parameters": [
-                       "/appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED",
+                       "deja": "NOT /deja/CONFORME",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -119,9 +123,11 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeDeguste",
-                   "callback_parameters": [
-                       "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "NOT /appellations/MED",
+                       "deja": "NOT /deja/CONFORME",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -142,9 +148,11 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeDeguste",
-                   "callback_parameters": [
-                       "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "NOT /appellations/MED",
+                       "deja": "NOT /deja/CONFORME",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -165,9 +173,11 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeDeguste",
-                   "callback_parameters": [
-                       "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "NOT /appellations/MED",
+                       "deja": "NOT /deja/CONFORME",
+                       "famille": "NOT NEGOCIANT"
+                   }
                },
                "inao_med": {
                    "modele": "Cotisation",
@@ -180,9 +190,11 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeDeguste",
-                   "callback_parameters": [
-                       "/appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED",
+                       "deja": "NOT /deja/CONFORME",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -202,9 +214,10 @@
                        "ChgtDenom"
                    ],
                    "callback": "getFirstChgtDenomFacturable",
-                   "callback_parameters": [
-                       "/appellations/MED AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -224,9 +237,9 @@
                        "ChgtDenom"
                    ],
                    "callback": "getFirstChgtDenomFacturable",
-                   "callback_parameters": [
-                       "NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "famille": "NEGOCIANT"
+                   }
                }
            }
        },
@@ -247,9 +260,10 @@
                        "ChgtDenom"
                    ],
                    "callback": "getVolumeFacturable",
-                   "callback_parameters": [
-                       "/appellations/MED AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -270,9 +284,11 @@
                        "ChgtDenom"
                    ],
                    "callback": "getVolumeFacturable",
-                   "callback_parameters": [
-                       "/origine/MED AND /appellations/VAR,/appellations/MAU,/appellations/MCA AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "origine": "/origine/MED",
+                       "appellations": "/appellations/VAR,/appellations/MAU,/appellations/MCA",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -315,9 +331,11 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeRedeguste",
-                   "callback_parameters": [
-                       "NOT /appellations/MED AND NOT /deja/CONFORME AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "NOT /appellations/MED",
+                       "deja": "NOT /deja/CONFORME",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        },
@@ -339,9 +357,10 @@
                        "Degustation"
                    ],
                    "callback": "buildMouvementsFacturesVolumeRedeguste",
-                   "callback_parameters": [
-                       "/appellations/MED AND NOT NEGOCIANT"
-                   ]
+                   "callback_parameters": {
+                       "appellations": "/appellations/MED",
+                       "famille": "NOT NEGOCIANT"
+                   }
                }
            }
        }

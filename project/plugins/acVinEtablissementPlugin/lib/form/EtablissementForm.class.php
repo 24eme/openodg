@@ -63,6 +63,16 @@ class EtablissementForm extends acCouchdbObjectForm
 			unset($this->validatorSchema['chais_telephone']);
 		}
 
+		if(DRevConfiguration::getInstance()->hasLogementChais()) {
+            $chais = $this->getObject()->getDocument()->getEtablissementObject()->getAllChais();
+            if (count($chais) > 0) {
+                $chais = [null => null] + $chais;
+            }
+            $this->setWidget('chai', new bsWidgetFormChoice(array('choices' => $chais)));
+            $this->widgetSchema->setLabel('chai', 'Logement :');
+            $this->setValidator('chai', new sfValidatorChoice(array('required' => false, 'choices' => array_keys($chais))));
+		}
+
         if(!$this->getOption("use_email")) {
             $this->getValidator('email')->setOption('required', false);
         }
@@ -92,6 +102,10 @@ class EtablissementForm extends acCouchdbObjectForm
 			$this->setDefault('chais_code_postal', $this->getObject()->getDocument()->chais->code_postal);
 			$this->setDefault('chais_telephone', $this->getObject()->getDocument()->chais->telephone);
 		}
+
+        if (DRevConfiguration::getInstance()->hasLogementChais() && $this->getObject()->getDocument()->getDocument()->exist('chais')) {
+            $this->setDefault('chai', $this->getObject()->getDocument()->getEtablissementObject()->getKeyChai($this->getObject()->getDocument()->chais));
+        }
     }
 
     public function save($con = null) {
@@ -108,19 +122,39 @@ class EtablissementForm extends acCouchdbObjectForm
     		}
     	}
 		parent::doUpdateObject($values);
+
         if (DRevConfiguration::getInstance()->hasLogementAdresse() && $this->getObject()->getDocument()->exist('chais')) {
             $this->getObject()->getDocument()->chais->nom = $values['chais_nom'];
 			$this->getObject()->getDocument()->chais->adresse = $values['chais_adresse'];
 			$this->getObject()->getDocument()->chais->commune = $values['chais_commune'];
 			$this->getObject()->getDocument()->chais->code_postal = $values['chais_code_postal'];
 			$this->getObject()->getDocument()->chais->telephone = $values['chais_telephone'];
-
-			if(!$this->getObject()->getDocument()->isAdresseLogementDifferente()) {
-			    $this->getObject()->getDocument()->remove('chais');
-			    $this->getObject()->getDocument()->add('chais');
-			}
         }
 
+        if(!$this->getObject()->getDocument()->isAdresseLogementDifferente() && $this->getObject()->getDocument()->exist('chais')) {
+            $this->getObject()->getDocument()->remove('chais');
+            $this->getObject()->getDocument()->add('chais');
+        }
+
+        if (DRevConfiguration::getInstance()->hasLogementChais() && $this->getObject()->getDocument()->exist('chais')) {
+            $chai = $this->getObject()->getDocument()->getEtablissementObject()->getChai($values['chai']);
+            if (!$chai) {
+                $key = $this->getObject()->getDocument()->getEtablissementObject()->getKeyChai($this->getObject());
+                $chai = $this->getObject()->getDocument()->getEtablissementObject()->getChai($key);
+            }
+            if ($chai) {
+                $this->getObject()->getDocument()->chais->nom = $chai->nom;
+    			$this->getObject()->getDocument()->chais->adresse = $chai->adresse;
+    			$this->getObject()->getDocument()->chais->commune = $chai->commune;
+    			$this->getObject()->getDocument()->chais->code_postal = $chai->code_postal;
+                if ($this->getObject()->getDocument()->chais->exist('secteur') && $chai->exist('secteur')) {
+                    $this->getObject()->getDocument()->chais->secteur = $chai->secteur;
+                }
+            } else {
+                $this->getObject()->getDocument()->remove('chais');
+                $this->getObject()->getDocument()->add('chais');
+			}
+        }
 	}
 
     public function getUpdatedValues()

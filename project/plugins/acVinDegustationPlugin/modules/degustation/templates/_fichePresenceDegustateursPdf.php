@@ -46,4 +46,4 @@
       </tbody>
     </table>
 
-  <p>Nom, prénom et signature du responsable de l'ODG : </p>
+  <p>Nom, prénom et signature du responsable : </p>
