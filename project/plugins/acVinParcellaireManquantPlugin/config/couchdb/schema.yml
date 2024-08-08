@@ -52,6 +52,7 @@ ParcellaireManquant:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_parcellaire: { type: float }
                               commune: { }
                               code_commune: { }
                               prefix: { }
