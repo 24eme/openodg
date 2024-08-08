@@ -437,7 +437,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return DouaneClient::getInstance()->getDocumentsDouaniers($this->identifiant, $this->periode, $ext);
+        return DouaneClient::getInstance()->getDocumentsDouaniers($this->getEtablissementObject(), $this->periode, $ext);
     }
 
     public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -449,10 +449,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return $this->getDocumentDouanierEtablissement($ext, $periode, null, $hydrate);
+        return $this->getDocumentDouanierEtablissement($ext, $periode, $this->getEtablissementObject(), $hydrate);
     }
 
-    public function getDocumentDouanierEtablissement($ext = null, $periode = null, $identifiant = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getDocumentDouanierEtablissement($ext = null, $periode = null, $etablissement = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $identifiant = null;
+        if ($etablissement) {
+            $identifiant = $etablissement->identifiant;
+        }
         if (!$identifiant) {
             $identifiant = $this->identifiant;
         }
@@ -461,7 +465,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $periode = $this->periode;
         }
 
-        foreach(array("DR", "SV12", "SV11") as $type) {
+        $choices = array("DR", "SV12", "SV11");
+        if ($etablissement) switch ($etablissement->famille) {
+            case EtablissementFamilles::FAMILLE_NEGOCIANT:
+            case EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR:
+                $choices = array("SV12", "SV11", "DR");
+                break;
+            case EtablissementFamilles::FAMILLE_COOPERATIVE:
+                $choices = array("SV11", "SV12", "DR");
+                break;
+            case EtablissementFamilles::FAMILLE_PRODUCTEUR:
+            case EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR:
+            case EtablissementFamilles::FAMILLE_AUTRE:
+            default:
+                break;
+        }
+        foreach($choices as $type) {
             $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $periode);
             if (!$fichier) {
                 continue;
@@ -476,12 +495,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ($this->getDocumentDouanierOlderThanMe());
     }
 
+    private $cache_has_document_douanier = null;
     public function hasDocumentDouanier() {
+        if (!is_null($this->cache_has_document_douanier)) {
+            return $this->cache_has_document_douanier;
+        }
         $a = $this->getDocumentsDouaniers();
         if (!$a) {
-            return false;
+            $this->cache_has_document_douanier = false;
+        }else {
+            $this->cache_has_document_douanier = count($a);
         }
-        return count($a);
+        return $this->cache_has_document_douanier;
     }
 
     public function getDocumentDouanierType() {
@@ -549,7 +574,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function initDoc($identifiant, $periode) {
         $this->identifiant = $identifiant;
         $this->campagne = ConfigurationClient::getInstance()->buildCampagneFromYearOrCampagne($periode);
-        $etablissement = $this->getEtablissementObject();
+        $this->etablissement = $this->getEtablissementObject();
         $this->constructId();
     }
 
