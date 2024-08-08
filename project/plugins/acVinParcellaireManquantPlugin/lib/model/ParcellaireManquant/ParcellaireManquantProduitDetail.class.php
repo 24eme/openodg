@@ -39,4 +39,31 @@ class ParcellaireManquantProduitDetail extends BaseParcellaireManquantProduitDet
     {
         $this->_set('pourcentage', round($pourcentage, 2));
     }
+
+    public function getParcelleParcellaire() {
+        $parc = $this->getDocument()->getParcellaire();
+        if ($id = $this->_get('parcelle_id')) {
+            return $parc->getParcelleFromParcellaireId($id);
+        }
+        $p = ParcellaireClient::findParcelle($parc, $this);
+        $this->set('parcelle_id', $p->parcelle_id);
+        return $p;
+    }
+
+    public function getSuperficieParcellaire() {
+        return $this->superficie;
+    }
+
+    public function getParcelleId() {
+        if ($i = $this->_get('parcelle_id')) {
+            return $i;
+        }
+        $p = $this->getParcelleParcellaire();
+        if (!$p) {
+            return null;
+        }
+        $id = $p->getParcelleId();
+        $this->set('parcelle_id', $id);
+        return $id;
+    }
 }

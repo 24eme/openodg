@@ -191,6 +191,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function isRealProduit() {
+        if (!$this->getDocument()->_exist('parcelles')) {
+            return true;
+        }
         $p = $this->getParcelleParcellaire();
         if (!$p) {
             return false;
@@ -333,5 +336,14 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
             return round(10000 / (($this->ecart_pieds / 100) * ($this->ecart_rang / 100)), 0);
         }
         return 0;
+    }
+
+    public function getProduitHash() {
+        if ($h = $this->_get('produit_hash')) {
+            return $h;
+        }
+        $h = preg_replace('/\/detail\/.*/', '', $this->getHash());
+        $this->_set('produit_hash', $h);
+        return $h;
     }
 }
