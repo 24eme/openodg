@@ -467,18 +467,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ($this->getDocumentDouanierOlderThanMe());
     }
 
-    private $cache_has_document_douanier = null;
     public function hasDocumentDouanier() {
-        if (!is_null($this->cache_has_document_douanier)) {
-            return $this->cache_has_document_douanier;
-        }
         $a = $this->getDocumentsDouaniers();
         if (!$a) {
-            $this->cache_has_document_douanier = false;
-        }else {
-            $this->cache_has_document_douanier = count($a);
+            return false;
         }
-        return $this->cache_has_document_douanier;
+        return count($a);
     }
 
     public function getDocumentDouanierType() {
