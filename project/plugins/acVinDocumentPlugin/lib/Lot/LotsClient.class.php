@@ -342,6 +342,13 @@ class LotsClient
         }
     }
 
+    /*************
+     *
+     * return: [Appellation Libelle][periode][CouleurLibelle][DocType]
+     *
+     * DocType a été introduit pour centre loire : l'index "Lot" rend le résultat retourné précédemment
+     *************/
+
     public function getSyntheseLots($identifiant, $campagnes, $region = null)
     {
         if(!is_array($campagnes)) {
