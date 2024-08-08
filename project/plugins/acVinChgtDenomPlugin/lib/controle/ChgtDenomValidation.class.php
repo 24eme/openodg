@@ -77,7 +77,7 @@ class ChgtDenomValidation extends DocumentValidation
 
         $synthese = LotsClient::getInstance()->getSyntheseLots($this->document->identifiant, array($this->document->campagne));
         preg_match('/([\w ]+) (Rouge|Rosé|Blanc)/u', $this->document->changement_produit_libelle, $matches);
-        $volume_produit = $synthese[$matches[1]][$this->document->changement_millesime][$matches[2]];
+        $volume_produit = $synthese[$matches[1]][$this->document->changement_millesime][$matches[2]]['Lot'];
         if ($seuil > 0 && ($volume_produit + $this->document->changement_volume) > $seuil) {
             if(sfContext::getInstance()->getUser()->hasChgtDenomAdmin()) {
                 $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VIP2C_OU_PAS_INFORMATION,"");

@@ -284,7 +284,7 @@ class FactureClient extends acCouchdbClient {
                         continue;
                       }
 
-                      if(isset($parameters['region']) && $parameters['region'] && $parameters['region'] != $mouvement->value->region) {
+                      if(isset($parameters['region']) && $parameters['region'] && isset($mouvement->value->region) && $parameters['region'] != $mouvement->value->region) {
                         unset($mouvements[$key]);
                         $mouvementsBySoc[$identifiant] = $mouvements;
                         continue;

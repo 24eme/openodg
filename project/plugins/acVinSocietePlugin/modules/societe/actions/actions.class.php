@@ -150,8 +150,10 @@ class societeActions extends sfCredentialActions {
         $this->societe_compte = $this->societe->getMasterCompte();
         if(!$this->societe_compte->lat && !$this->societe_compte->lon){
           $compte = CompteClient::getInstance()->find($this->societe_compte->_id);
-          $compte->updateCoordonneesLongLat();
-          $compte->save();
+          if ($compte) {
+              $compte->updateCoordonneesLongLat();
+              $compte->save();
+          }
         }
 
         $this->modifiable = $this->getUser()->hasContact();

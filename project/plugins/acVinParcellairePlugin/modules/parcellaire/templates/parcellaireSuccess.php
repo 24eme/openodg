@@ -54,7 +54,7 @@ $list_idu = [];
 <?php endif; ?>
 
 <?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
-    <?php $parcellesByCommune = $parcellaire->getParcellesByCommune(ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration());
+    <?php $parcellesByCommune = $parcellaire->getParcellesByCommune(false);
     $import = $parcellaire->getGeoJson(); ?>
 
     <?php if($parcellaire && $parcellaire->getGeoJson() != false): ?>
@@ -84,7 +84,7 @@ $list_idu = [];
             <div class="form-group">
                 <input id="hamzastyle" onchange="filterMap()" type="hidden" data-placeholder="Saisissez un Cépage, un numéro parcelle ou une compagne :" data-hamzastyle-container=".tableParcellaire" data-mode="OR" class="hamzastyle form-control" />
             </div>
-            <?php if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()): ?>
+            <?php if (ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration()): ?>
             <div class="form-group">
                 <input type=checkbox id="voirnongere" onchange="if(document.querySelector('#voirnongere').checked){console.log('checked');document.querySelectorAll('.produitnongere').forEach(e => e.classList.remove('hidden'));}else{document.querySelectorAll('.produitnongere').forEach(e => e.classList.add('hidden'));}; console.log(document.querySelector('.produitnongere')); "> <label for="voirnongere">Voir toutes les parcelles (même celles déclarées au CVI sous une dénomination non gérée)</label>
             </div>
@@ -135,7 +135,7 @@ $list_idu = [];
                               $classline .= ' danger';
                               $classcepage .= ' text-danger strong hasProblemCepageAutorise';
                             }
-                            if (!$detail->isRealProduit()) {
+                            if (!$detail->isRealProduit() && ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration()) {
                                 $classline .= ' hidden produitnongere';
                             }
                             ?>
@@ -155,12 +155,12 @@ $list_idu = [];
                             <?php $list_idu[]=$detail->idu; $list_communes[$detail["code_commune"]] = $detail["code_commune"]; ?>
                                 <td><?php echo $lieu; ?></td>
                                 <td class="" style="text-align: center;">
-                                    <?php echo $section; ?> <?php echo $num_parcelle; ?></br>
+                                    <?php echo $section; ?> <?php echo $num_parcelle; ?><br/>
                                     <span class="text-muted"><?php echo $detail->idu; ?></span>
                                 </td>
                                 <td class="<?php echo $classcepage; ?>">
                                     <span class="text-muted"><?php echo $detail->getProduitLibelle(); ?></span> <?php echo $cepage; ?><br/>
-                                    <?php $aires = $detail->getIsInAires(); if ($aires): ?>
+                                    <?php $aires = $detail->getIsInAires()->getRawValue(); if ($aires): ?>
                                     <span class="text-muted">Aire(s):</span>
                                     <?php
                                     $separateur = '';
@@ -209,11 +209,15 @@ $list_idu = [];
                             ?>
                             <?php endforeach; ?>
                     </tbody>
+                <?php if (ParcellaireConfiguration::getInstance()->hasShowFilterProduitsConfiguration()): ?>
                     <?php if (!$nb_parcelles): ?>
                         <tr><td colspan="10"  style="text-align: center;"><i>L'opérateur ne possède pas sur cette commune de parcelle déclarée au CVI à un produit géré</i></td></tr>
                     <?php endif; ?>
                     <tr class="produitgere"><th colspan="4"  style="text-align: right;">Superficie des produits gérés</th><td style="text-align: right;"><strong><?php echoSuperficie($superficie); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles; ?> parcelles</td></tr>
                     <tr class="hidden produitnongere"><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoSuperficie($superficie_tout); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles_tout; ?> parcelles</td></tr>
+                <?php else: ?>
+                    <tr><th colspan="4"  style="text-align: right;">Superficie totale</th><td style="text-align: right;"><strong><?php echoSuperficie($superficie_tout); ?></strong></td><td colspan="4" style="text-align: left;"><?php echo $nb_parcelles_tout; ?> parcelles</td></tr>
+                <?php endif; ?>
                 </table>
     <?php endforeach; ?>
         </div>

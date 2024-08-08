@@ -28,7 +28,7 @@
     </div>
 <?php endif; ?>
 <div class="row">
-<?php if ($compte->getSociete()->getMasterCompte()->hasAlternativeLogins()) : ?>
+<?php if ($compte->getSociete()->getMasterCompte() && $compte->getSociete()->getMasterCompte()->hasAlternativeLogins()) : ?>
 <div style="margin-bottom: 5px;" class="col-xs-3  text-muted">Logins Interpro&nbsp;:</div>
 <div style="margin-bottom: 5px;" class="col-xs-9"><?php echo implode(', ', $compte->getSociete()->getMasterCompte()->alternative_logins->getRawValue()->toArray()); ?></div>
 </div>

@@ -91,7 +91,11 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
 
     public function getProduitLibelle() {
         if (!$this->isRealProduit()) {
-            return 'PRODUIT NON GÉRÉ ('.$this->source_produit_libelle.')';
+            $lib = 'PRODUIT NON GÉRÉ';
+            if ($this->source_produit_libelle) {
+                $lib .= ' ('.$this->source_produit_libelle.')';
+            }
+            return $lib;
         }
         return $this->getProduit()->getLibelle();
     }

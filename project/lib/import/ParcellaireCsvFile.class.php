@@ -267,10 +267,6 @@ class ParcellaireCsvFile
                 $nb_reconnaissance++;
             }
 
-            if (!$produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
-                $this->contextInstance->getLogger()->info("ParcellaireCsvFile : produit non reconnu : ".$parcelle[self::CSV_FORMAT_PRODUIT - $is_old_format] );
-                continue;
-            }
             $hash = ($produit) ? $produit->getHash() : null ;
 
             $prefix = substr($parcelle[self::CSV_FORMAT_IDU - $is_old_format], 5, 3);

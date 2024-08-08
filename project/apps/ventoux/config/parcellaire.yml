@@ -15,5 +15,5 @@ all:
           denomination_id: "01363"
       declarations_liees: true
       parcelles_from_affectationparcellaire: true
-      limit_produits_configuration: false
+      show_filter_produits_configuration: true
       troisieme_feuille: false #en 4ème feuille
