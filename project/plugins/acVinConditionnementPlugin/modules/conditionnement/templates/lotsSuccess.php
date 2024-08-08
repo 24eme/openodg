@@ -172,7 +172,7 @@
                                                 <div class="input-group-addon">%</div>
                                             </div>
                                             <div class="input-group input-group-hl" >
-                                                <?php echo $lot['repartition_'.$i]->render(); ?>
+                                                <?php echo $lot['repartition_hl_'.$i]->render(); ?>
                                                 <div class="input-group-addon">hl</div>
                                             </div>
                                         </div>
