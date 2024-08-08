@@ -342,6 +342,12 @@ class LotsClient
         }
     }
 
+    /*************
+     *
+     * return: [Appellation Libelle][periode][CouleurLibelle][DocType]
+     *
+     *************/
+
     public function getSyntheseLots($identifiant, $campagnes, $region = null)
     {
         if(!is_array($campagnes)) {
