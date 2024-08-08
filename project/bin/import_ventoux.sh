@@ -36,6 +36,7 @@ done
 
 echo "Import des Opérateurs et Habilitations"
 
+#xlsx2csv -l '\r\n' -d ";" $DATA_DIR/ventoux-operateurs-habilites.xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/ventoux-operateurs-habilites.csv
 php symfony import:operateur-habilitation-ventoux $DATA_DIR/ventoux-operateurs-habilites.csv  --application="$ODG" --trace
 
 echo "Import des opérateurs archivés"
@@ -88,7 +89,7 @@ bash bin/updateviews.sh
 php symfony import:drev-ia $DATA_DIR/drev.csv $DATA_DIR/vci.csv --application="$ODG" --trace
 
 for annee in 2020 2021 2022 2023; do
-    xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev_ventoux_"$annee".xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev_ventoux_"$annee".csv
+    #xlsx2csv -l '\r\n' -d ";" $DATA_DIR/drev_ventoux_"$annee".xlsx | tr -d "\n" | tr "\r" "\n" > $DATA_DIR/drev_ventoux_"$annee".csv
     php symfony import:drev-ventoux $DATA_DIR/drev_ventoux_"$annee".csv "$annee" --application="$ODG" --trace
 done
 
