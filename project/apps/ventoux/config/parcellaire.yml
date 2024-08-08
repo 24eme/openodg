@@ -13,3 +13,7 @@ all:
           name: "Ventoux"
           color: "#ab3f97"
           denomination_id: "01363"
+      declarations_liees: true
+      parcelles_from_affectationparcellaire: true
+      show_filter_produits_configuration: true
+      troisieme_feuille: false #en 4ème feuille

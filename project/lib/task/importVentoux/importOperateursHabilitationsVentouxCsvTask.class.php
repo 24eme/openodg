@@ -88,7 +88,7 @@ EOF;
 
     private function importSocieteEtablissement($data)
     {
-        $raison_sociale = implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM], $data[self::CSV_PRENOM]]));
+        $raison_sociale = trim(implode(' ', array_map('trim', [$data[self::CSV_INTITULE], $data[self::CSV_NOM], $data[self::CSV_PRENOM]])));
         $newSociete = SocieteClient::getInstance()->createSociete($raison_sociale, SocieteClient::TYPE_OPERATEUR, $data[self::CSV_NUMERO_ENREGISTREMENT]);
 
         $societe = SocieteClient::getInstance()->find($newSociete->_id);
@@ -112,7 +112,6 @@ EOF;
 
         try {
             $societe->save();
-            echo "Societe saved : ".$societe->_id.PHP_EOL;
         } catch (Exception $e) {
             echo "$societe->_id save error :".$e->getMessage()."\n";
             return false;
@@ -136,26 +135,31 @@ EOF;
             }
         }
 
+        if($famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR && preg_match('/^COOP/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_COOPERATIVE;
+        }
+
+        if(preg_match('/PREST/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+        }
+
+        if(preg_match('/CP/', $data[self::CSV_CODE_LEGENDE])) {
+            $famille = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+        }
+
         $etablissement = EtablissementClient::getInstance()->createEtablissementFromSociete($societe, $famille);
         $etablissement->nom = $raison_sociale;
 
         $cvi = null;
         if (isset($data[self::CSV_CVI])){
-            $cvi = preg_replace('/[^A-Z0-9]+/', "", $data[self::CSV_CVI]);
-            for($i = strlen($cvi) ; $i < 10 ;  $i++) {
-                $cvi = $cvi."0";
-            }
-            if(!intval($cvi)) {
-                $cvi = '';
-            }
+            $cvi = EtablissementClient::repairCVI($data[self::CSV_CVI]);
         }
 
         $etablissement->cvi = $cvi;
+        $etablissement->commentaire = trim($data[self::CSV_OBSERVATION]) ? $data[self::CSV_OBSERVATION] : null;
         $societe->pushAdresseTo($etablissement);
         $societe->pushContactTo($etablissement);
         $etablissement->save();
-
-        echo "Etablissement saved : ".$etablissement->_id.PHP_EOL;
 
         return $etablissement;
     }
@@ -166,9 +170,8 @@ EOF;
         $date_demande  = ($data[self::CSV_DATE_SAISIE_IDENTIFICATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_SAISIE_IDENTIFICATION])[0])->format('Y-m-d') : null;
         $date_decision = ($data[self::CSV_DATE_HABILITATION]) ? DateTime::createFromFormat('d/m/Y', explode(" ", $data[self::CSV_DATE_HABILITATION])[0])->format('Y-m-d') : null;
 
-        $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $date_demande);
-        $produit = $habilitation->addProduit(self::hash_produit);
-        $activites = $produit->add('activites');
+        $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
+        $activites = [];
 
         foreach ([
             self::CSV_PRODUCTION_RAISINS => $data[self::CSV_PRODUCTION_RAISINS],
@@ -178,17 +181,14 @@ EOF;
             self::CSV_TIREUSE => $data[self::CSV_TIREUSE]
         ] as $key => $activite) {
             if (strtoupper($activite) === "X") {
-                if ($date_demande) {
-                    $activites->add(self::activites[$key])->updateHabilitation(HabilitationClient::STATUT_DEMANDE_HABILITATION, null, $date_demande);
-                }
-
-                $statut = self::status[trim(strtolower($data[self::CSV_ETAT_HABILITATION]))];
-                $activites->add(self::activites[$key])
-                          ->updateHabilitation($statut, null, $date_decision);
+                $activites[] = self::activites[$key];
             }
         }
 
-        $habilitation->save();
-        echo "Habilitation mise à jour : ".$habilitation->_id.PHP_EOL;
+        if($date_demande && $date_demande < $date_decision) {
+            HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_demande, $activites, [], HabilitationClient::STATUT_DEMANDE_HABILITATION);
+        }
+
+        HabilitationClient::getInstance()->updateAndSaveHabilitation($identifiant, self::hash_produit, $date_decision, $activites, [], $statut);
     }
 }

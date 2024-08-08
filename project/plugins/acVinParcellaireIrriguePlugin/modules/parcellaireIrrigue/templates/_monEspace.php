@@ -1,6 +1,8 @@
+<?php if(strpos($etablissement->famille, 'PRODUCTEUR') === false): return; endif; ?>
 <?php use_helper('Date'); ?>
+
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel <?php if($parcellaireIrrigue): ?>panel-primary<?php elseif($parcellaireIrrigable && !$parcellaireIrrigable->validation): ?>panel-primary<?php else: ?>panel-default<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Déclarations d'irrigation <?php echo $periode ?></h3>
         </div>
@@ -8,7 +10,7 @@
     <?php if (!ParcellaireIrrigableClient::getInstance()->isOpen()): ?>
       <div class="panel-body">
           <?php if(date('Y-m-d') > ParcellaireIrrigableClient::getInstance()->getDateOuvertureFin()): ?>
-          <p class="explications">Le Téléservice « Irrigable » est fermé. Pour toute question, veuillez contacter directement l'ODG.</p>
+          <p class="explications">Le Téléservice « Irrigable » est fermé.</p>
           <?php else: ?>
           <p class="explications">Le Téléservice « Irrigable » sera ouvert à partir du <?php echo format_date(ParcellaireIrrigableClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
           <?php endif; ?>
@@ -17,6 +19,14 @@
                   <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigable_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigable): ?>Démarrer la déclaration « Irrigable »<?php else: ?>Voir ou continuer l'Irrigable<?php endif; ?></a>
               <?php endif; ?>
           </div>
+      </div>
+      <?php elseif ($needAffectation): ?>
+      <div class="panel-body">
+          <p class="explications">Cette déclaration s'appuie sur l'affectation parcellaire qui n'a pas encore été saisie et approuvée pour la période <?php echo $periode ?>.</p>
+      </div>
+      <?php elseif (!$parcellaire): ?>
+      <div class="panel-body">
+          <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer vos pieds morts ou manquants : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
       </div>
       <?php else:  ?>
     <div class="panel-body">
@@ -43,17 +53,21 @@
 <?php elseif ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
     <?php if (!ParcellaireIrrigueClient::getInstance()->isOpen()): ?>
           <div class="panel-body">
+              <p class="explications">
               <?php if(date('Y-m-d') > ParcellaireIrrigueClient::getInstance()->getDateOuvertureFin()): ?>
-              <p class="explications">Le Téléservice « Irrigué » est fermé. Pour toute question, veuillez contacter directement l'ODG.</p>
+              Le Téléservice « Irrigué » est fermé. Pour toute question, veuillez contacter directement l'ODG.
               <?php else: ?>
-              <p class="explications">Le Téléservice « Irrigué »  sera ouvert à partir du <?php echo format_date(ParcellaireIrrigueClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
+                  Le Téléservice « Irrigué »  sera ouvert à partir du <?php echo format_date(ParcellaireIrrigueClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>
               <?php endif; ?>
+              </p>
               <div class="actions">
                   <div class="actions">
-                      <a class="btn btn-block btn-primary" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Voir la déclaration « Irrigable »</a>
                   <?php if ($sf_user->isAdmin()): ?>
-                          <a class="btn btn-default btn-block" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'Irrigué<?php endif; ?></a>
+                          <a class="btn btn-default btn-block <?php if($parcellaireIrrigue): ?>btn-primary<?php endif; ?>" href="<?php echo url_for('parcellaireirrigue_edit', array('sf_subject' => $etablissement, 'periode' => $periode)) ?>"><?php if(!$parcellaireIrrigue): ?>Démarrer un « Irrigué »<?php else: ?>Visualiser et continuer l'Irrigué<?php endif; ?></a>
                   <?php endif; ?>
+                        <div class="panel-success mt-2">
+                        <a class="panel-heading btn btn-block btn-xs p-1" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Voir la déclaration « Irrigable »</a>
+                    </div>
               </div>
               </div>
           </div>

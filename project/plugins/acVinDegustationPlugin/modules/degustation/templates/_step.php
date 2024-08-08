@@ -7,4 +7,6 @@ $active = ($active) ? $active : $etapes->getFirst();
 <?php include_partial('global/step', array('object' => $degustation, 'etapes' => $etapes, 'step' => $active)); ?>
 </div>
 
-<?php include_partial('global/flash'); ?>
+<div style="margin-top: 1rem">
+    <?php include_partial('global/flash'); ?>
+</div>

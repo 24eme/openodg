@@ -30,7 +30,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
       $dgcs = $this->parcellaireAffectation->getDgc(true);
 
-      $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
+      $parcellesByDgc = $this->parcellaireAffectation->declaration->getGroupedParcelles();
 
       if(count($parcellesByDgc) == 0) {
          $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
@@ -66,7 +66,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
                $parcellesByPage[] = $currentPage;
                $currentPage = array();
                $unite = 0;
-               $libelleTableau = $commune . " (suite)";
+               $libelleTableau = $parcelle->commune . " (suite)";
                $currentPage[$libelleTableau] = array();
                $unite += $uniteTableau;
            }

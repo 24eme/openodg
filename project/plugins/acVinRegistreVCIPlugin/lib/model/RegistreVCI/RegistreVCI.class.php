@@ -153,8 +153,10 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       public function getRegions() {
           $regions = array();
-          foreach ($this->getProduits() => $produit) {
-              $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+          if (class_exists('RegionConfiguration')) {
+              foreach ($this->getProduits() as $produit) {
+                  $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+              }
           }
           return array_filter(array_unique($regions));
       }

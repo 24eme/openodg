@@ -50,6 +50,19 @@
         </tr>
     <?php endforeach; ?>
 </table>
+
+<br />
+<div><span class="h3">&nbsp;Total Revendication&nbsp;</span></div>
+<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <tr>
+        <td class="td" style="text-align: right;width: 400px"><?php echo tdStart() ?> </td>
+        <td class="td" style="text-align: right;width: 137px"><?php echo tdStart() ?> <?php echo sprintFloatFr(array_reduce($drev->declaration->getProduitsWithoutLots($region)->getRawValue(), function ($tot, $p) { $tot += $p->superficie_revendique; return $tot; }, 0)) ?> <small>ha</small>&nbsp;&nbsp;&nbsp;</td>
+        <td class="td" style="text-align: right;width: 137px"><?php echo tdStart() ?> <?php echo sprintFloatFr(array_reduce($drev->declaration->getProduitsWithoutLots($region)->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_issu_vci; return $tot; }, 0)) ?> <small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+        <td class="td" style="text-align: right;width: 137px"><?php echo tdStart() ?> <?php echo sprintFloatFr(array_reduce($drev->declaration->getProduitsWithoutLots($region)->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_issu_recolte; return $tot; }, 0)) ?> <small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+        <td class="td" style="text-align: right;width: 137px"><?php echo tdStart() ?> <?php echo sprintFloatFr(array_reduce($drev->declaration->getProduitsWithoutLots($region)->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_total; return $tot; }, 0)) ?> <small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+</table>
+
 <br />
 <?php if(count($drev->declaration->getProduitsVci($region))): ?>
 <div><span class="h3 font-size-16-pt">&nbsp;Gestion du VCI&nbsp;</span></div>

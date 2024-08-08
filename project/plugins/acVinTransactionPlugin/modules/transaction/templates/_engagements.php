@@ -16,7 +16,7 @@
                 	<?php echo $form['engagement_' . $engagement->getCode()]->render(); ?>
 
                     <?php echo $engagement->getRawValue()->getMessage() ?>
-                    <?php echo ($engagement->getRawValue()->getInfo()) ? " : <strong>".$engagement->getRawValue()->getInfo() : '</strong>'; ?>
+                    <?php echo ($engagement->getRawValue()->getInfo()) ? " : <strong>".$engagement->getRawValue()->getInfo() . '</strong>' : ''; ?>
                 </label>
             </div>
             </div>

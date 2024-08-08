@@ -1,10 +1,8 @@
 <?php
 
-/**
- * Model for Parcellaire
- *
- */
-class ParcellaireAffectation extends BaseParcellaireAffectation implements InterfaceDeclaration, InterfacePieceDocument {
+/*** AVA ***/
+
+class ParcellaireAffectation/***AVA***/ extends BaseParcellaireAffectation implements InterfaceDeclaration, InterfacePieceDocument {
 
     protected $declarant_document = null;
     protected $piece_document = null;
@@ -157,7 +155,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $parcellaire = $this->getParcellaire();
         foreach ($parcellaire->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
-                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                if (!$CVIParcelle->hasJeunesVignes()) {
                     continue;
                 }
                 foreach($CVIParcelle->getIsInAires() as $nom => $statut) {
@@ -218,7 +216,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
         foreach (ParcellaireClient::getInstance()->getLast($this->identifiant)->declaration as $CVIAppellation) {
             foreach ($CVIAppellation->detail as $CVIParcelle) {
-                if (!$CVIParcelle->hasTroisiemeFeuille()) {
+                if (!$CVIParcelle->hasJeunesVignes()) {
                     continue;
                 }
                 $c = false;
@@ -307,31 +305,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                 $parcelle->vtsgn = $prevParcelle->vtsgn;
             }
         }
-    }
-
-    public function getParcelles() {
-
-        return $this->declaration->getProduitsCepageDetails();
-    }
-
-    public function findParcelle($parcelle) {
-
-        return ParcellaireClient::findParcelle($this, $parcelle, 0.5);
-    }
-
-    public function getParcellesByIdu() {
-        if(is_array($this->parcelles_idu)) {
-
-            return $this->parcelles_idu;
-        }
-
-        $this->parcelles_idu = [];
-
-        foreach($this->getParcelles() as $parcelle) {
-            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-        }
-
-        return $this->parcelles_idu;
     }
 
     public function getAffectationLastCampagne($type = null) {

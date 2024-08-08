@@ -96,172 +96,15 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
       return true;
   }
 
-
-  public function initProduitFromLastParcellaire() {
-      if (count($this->declaration) == 0) {
-          $this->importProduitsFromLastParcellaire();
-      }
-  }
-
-  public function getParcellaireCurrent() {
-
-      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
-  }
-
-    public function getParcelles() {
-
-        return $this->declaration->getParcelles();
-    }
-
-    public function getParcellesFromLastParcellaire() {
-        $parcellaireCurrent = $this->getParcellaireCurrent();
-        if (!$parcellaireCurrent) {
-          return;
-        }
-
-        return $parcellaireCurrent->declaration;
-    }
-
-    public function addParcellesFromParcellaire(array $hashes) {
-      	$parcellaire = $this->getParcellesFromLastParcellaire();
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		foreach ($value->detail as $subkey => $subvalue) {
-      			if (!in_array($subvalue->getHash(), $hashes)) {
-      				$remove[] = $subvalue->getHash();
-      			}
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove(str_replace('/declaration/', '', $r));
-      	}
-      	foreach ($hashes as $hash) {
-      		$hash = str_replace('/declaration/', '', $hash);
-    	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-    	  		$this->addParcelleFromParcellaireParcelle($parcellaire->get($hash));
-            }else{
-                $this->updateParcelleFromParcellaireParcelle($parcellaire->get($hash));
+    public function setParcellesFromParcellaire(array $hashes) {
+        parent::setParcellesFromParcellaire($hashes);
+        $parcellaireparcelles = $this->getParcellaire()->getParcelles();
+        foreach($this->getDeclarationParcelles() as $pid => $p) {
+            $parcelle = $parcellaireparcelles[$pid];
+            if ($parcelle) {
+                $p->densite = $parcelle->getDensite();
             }
-      	}
-      	$remove = array();
-      	foreach ($this->declaration as $key => $value) {
-      		if (!count($value->detail)) {
-      			$remove[] = $key;
-      		}
-      	}
-      	foreach ($remove as $r) {
-      		$this->declaration->remove($r);
-      	}
-    }
-
-    public function addParcelleFromParcellaireParcelle($detail) {
-        $produit = $detail->getProduit();
-        $item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
-        $item->libelle = $produit->libelle;
-        $subitem = $item->detail->add($detail->getKey());
-
-            $subitem->superficie = $detail->superficie;
-            $subitem->commune = $detail->commune;
-            $subitem->code_commune = $detail->code_commune;
-            $subitem->prefix = $detail->prefix;
-            $subitem->section = $detail->section;
-            $subitem->numero_parcelle = $detail->numero_parcelle;
-            $subitem->idu = $detail->idu;
-            $subitem->lieu = $detail->lieu;
-            $subitem->cepage = $detail->cepage;
-            $subitem->active = 1;
-            if ($detail->ecart_pieds && $detail->ecart_rang) {
-                $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
-            } else {
-                $subitem->densite = 0;
-            }
-            $subitem->remove('vtsgn');
-            if($detail->exist('vtsgn')) {
-                $subitem->add('vtsgn', (int)$detail->vtsgn);
-            }
-            $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-
-        return $subitem;
-    }
-
-    public function updateParcelleFromParcellaireParcelle($detail) {
-        $produit = $detail->getProduit();
-        $hash = str_replace('/declaration/', null, $produit->getHash());
-        if (!$this->declaration->exist($hash)) {
-            return;
         }
-        $item = $this->declaration->get($hash);
-        $item->libelle = $produit->libelle;
-        $subitem = $item->detail->add($detail->getKey());
-        $subitem->superficie = $detail->superficie;
-        $subitem->lieu = $detail->lieu;
-        $subitem->cepage = $detail->cepage;
-        $subitem->active = 1;
-        if ($detail->ecart_pieds && $detail->ecart_rang) {
-            $subitem->densite = round(10000 / (($detail->ecart_pieds / 100) * ($detail->ecart_rang / 100)), 0);
-        } else {
-            $subitem->densite = 0;
-        }
-        $subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-
-        return $subitem;
-    }
-
-    public function getParcellesByIdu() {
-        if(is_array($this->parcelles_idu)) {
-
-            return $this->parcelles_idu;
-        }
-
-        $this->parcelles_idu = [];
-
-        foreach($this->getParcelles() as $parcelle) {
-            $this->parcelles_idu[$parcelle->idu][] = $parcelle;
-        }
-
-        return $this->parcelles_idu;
-    }
-
-    public function findParcelle($parcelle) {
-        $parcelles = $this->getParcellesByIdu();
-
-        if(!isset($parcelles[$parcelle->idu])) {
-
-            return null;
-        }
-
-        $parcellesMatch = [];
-
-        foreach($parcelles[$parcelle->idu] as $p) {
-            $score = 0;
-            if($parcelle->cepage == $p->cepage) {
-                $score += 0.25;
-            }
-            if($parcelle->campagne_plantation == $p->campagne_plantation) {
-                $score += 0.25;
-            }
-            if($parcelle->lieu == $p->lieu) {
-                $score += 0.25;
-            }
-            if($parcelle->superficie == $p->superficie) {
-                $score += 0.25;
-            }
-
-            if($score < 0.75) {
-                continue;
-            }
-
-            $parcellesMatch[sprintf("%03d", $score*100)."_".$p->getKey()] = $p;
-        }
-
-        krsort($parcellesMatch);
-
-        foreach($parcellesMatch as $key => $pMatch) {
-
-            return $pMatch;
-        }
-
-        return null;
     }
 
     public function getDeclarantSiret(){
@@ -313,7 +156,7 @@ class ParcellaireManquant extends BaseParcellaireManquant implements InterfaceDe
     }
 
     public function getRegions() {
-        $currentParcellaire = $this->getParcellaireCurrent();
+        $currentParcellaire = $this->getParcellaire();
         if(!$currentParcellaire) {
             return;
         }

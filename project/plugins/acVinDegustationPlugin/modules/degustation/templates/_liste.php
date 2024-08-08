@@ -17,7 +17,7 @@
         <td><?php echo str_replace(" ", "&nbsp;", ucfirst(format_date($d->date, "EEEE d MMMM yyyy", "fr_FR"))) ?></td>
         <td class="text-center text-muted"><?php echo format_date($d->date, 'HH') ?>h<?php echo format_date($d->date, 'mm') ?></td>
         <td class="text-center"><span class="text-muted"><?php echo substr($d->campagne, 0, 4) ?> - </span><?php echo sprintf("%03d", $d->numero_archive); ?></td>
-        <td><?php echo ($d->region) ? preg_replace('/\|.*/', '', $d->region).' - ' : '' ; ?><?php echo preg_replace("/[ ]*—.+/", "", $d->lieu); ?> <small class="text-muted"> - <?php echo preg_replace("/.+—[ ]*/", "", $d->lieu); ?></small></td>
+        <td><?php echo (isset($d->region) && $d->region) ? preg_replace('/\|.*/', '', $d->region).' - ' : '' ; ?><?php echo preg_replace("/[ ]*—.+/", "", $d->lieu); ?> <small class="text-muted"> - <?php echo preg_replace("/.+—[ ]*/", "", $d->lieu); ?></small></td>
         <td class="text-right">
             <?php echo $nbLots ?> <span class="text-muted">lots</span>
         </td>

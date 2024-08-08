@@ -8,9 +8,7 @@ if (in_array($application, array('nantes', 'loire'))) {
     return;
 }
 
-$toutes_les_parcelles = !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration();
-
-$t = new lime_test(25 + $toutes_les_parcelles * 2);
+$t = new lime_test();
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = date('Y-m-d');
 
@@ -54,15 +52,19 @@ $array = [
 
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-7 day"))."-");
 $handle = fopen($tempfname, 'w');
+fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut\n");
 foreach ($array as $line) {
     fputcsv($handle, $line, ';');
 }
 fclose($handle);
 
 $t->comment("import $tempfname ");
-
-$csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate(
+    $viti->identifiant,
+    date('Y-m-d'),
+    'PRODOUANE'
+);
+$parcellaireloader = new ParcellaireCsvFile($parcellaire, $tempfname);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -71,16 +73,16 @@ $parcellaire = $parcellaireloader->getParcellaire();
 $parcellaire_id = 'PARCELLAIRE-'.$viti->identifiant.'-'.str_replace("-", "", $date);
 $t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
 $t->is($parcellaire->source, "PRODOUANE", "La source des données est PRODOUANE");
-$t->is(count($parcellaire->declaration), ($toutes_les_parcelles) ? 3 : 2, "Le parcellaire a le bon nombre de produits");
+$t->is(count($parcellaire->getDeclarationParcelles()), 3, "Le parcellaire contient les bonnes parcelles");
 
-$parcelles = $parcellaire->getParcelles();
-
-$t->is(count($parcelles), ($toutes_les_parcelles) ? 4 : 3, "Le parcellaire contient les bonnes parcelles");
+$parcelles = array_values($parcellaire->getParcelles()->toArray());
+$t->is(count($parcelles), 4, "Le parcellaire a enregistré toutes les parcelles dans le noeud parcelles");
 
 $parcelle = array_shift($parcelles);
+$parcelleAffectee = $parcelle->getParcelleAffectee();
 
-$t->is($parcelle->getProduit()->getLibelle(), $configProduit[0]->getLibelleComplet(), "Le libellé du produit est ". $configProduit[0]->getLibelleComplet());
-$t->is($parcelle->getKey(), str_replace(' ', '-', strtoupper($cepages_autorises_0))."-2017-2018-".$commune."-AY-36-".$numero_ordre_key."-SAINT-OUEN", "La clé de la parcelle est bien construite");
+$t->is($parcelle->getConfig()->getLibelleComplet(), $configProduit[0]->getLibelleComplet(), "Le libellé du produit est ". $configProduit[0]->getLibelleComplet());
+$t->is($parcelleAffectee->getKey(), $code_commune."000AY0036-00", "La clé de la parcelle est bien construite");
 $t->is($parcelle->code_commune, $code_commune, "Le code commune est : $code_commune");
 $t->is($parcelle->campagne_plantation, "2017-2018", "La campagne de plantation a été enregistré");
 $t->is($parcelle->cepage, $cepages_autorises_0, "Le cépage a été enregistré");
@@ -91,22 +93,18 @@ $t->is($parcelle->idu, $code_commune."000AY0036" , "Le code IDU est ".$code_comm
 
 array_shift($parcelles);
 $parcelle3 = array_shift($parcelles);
-$t->is($parcelle3->getKey(), str_replace(' ', '-', strtoupper($cepages_autorises_2))."-2001-2002-PARIS-AM-152-00-MARSEILLE", "La clé de la parcelle 3 est bien construite");
-$t->is($parcelle3->getProduit()->getLibelle(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
+$t->is($parcelle3->getParcelleId(), '75063000AM0152-00', "La clé de la parcelle 3 est bien construite");
+$t->is($parcelle3->getConfig()->getLibelleComplet(), $configProduit[1]->getLibelleComplet(), "Le libelle du produit est " . $configProduit[1]->getLibelleComplet());
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
 
-if ($toutes_les_parcelles) {
-    $parcelle_sans_produit = array_shift($parcelles);
-    $t->is($parcelle_sans_produit->getKey(), str_replace(' ', '-', strtoupper($cepages_autorises_1))."-2001-2002-PARIS-AL-52-00-MARSEILLE", "La clé de la parcelle sans produite est bien construite");
-    $t->is($parcelle_sans_produit->getProduit()->getLibelle(), ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE, "Le libelle du produit est celui de l'absence de produit");
-}
+$parcelle_sans_produit = array_shift($parcelles);
+$t->is($parcelle_sans_produit->getKey(), '75063000AM0052-00', "La clé de la parcelle sans produite est bien construite");
 
 $t->comment("vérification de la synthèse produits");
 
 $synthese = $parcellaire->getSyntheseProduitsCepages();
 $synthese_produit_1_key = is_array($configProduit[1]->cepages_autorises) ? $configProduit[0]->getLibelleComplet() : array_shift(array_keys($synthese));
-print_r([$synthese, $synthese_produit_1_key, $configProduit[0]->getLibelleComplet()]);
 $t->is(count(array_keys($synthese[$synthese_produit_1_key]['Cepage'])) + count(array_keys($synthese[$synthese_produit_1_key]['Total'])), 3, "La synthese du premier produit a deux cépages + un total");
 
 $synthese = $parcellaire->getSyntheseCepages();
@@ -125,14 +123,18 @@ $array = [
 unlink($tempfname);
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-6 day"))."-");
 $handle = fopen($tempfname, 'w');
+fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut\n");
 foreach ($array as $line) {
     fputcsv($handle, $line, ';');
 }
 fclose($handle);
-
-
-$csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
+$parcellaire->delete();
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate(
+    $viti->identifiant,
+    date('Y-m-d'),
+    'PRODOUANE'
+);
+$parcellaireloader = new ParcellaireCsvFile($parcellaire, $tempfname);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 
@@ -142,18 +144,22 @@ $parcellaire_id = 'PARCELLAIRE-'.$viti->identifiant.'-'.str_replace("-", "", $da
 $t->is($parcellaire->_id, $parcellaire_id, "L'id du doc est $parcellaire_id");
 $t->is(count($parcellaire->declaration), 1, "Le nouveau parcellaire n'a qu'un seul produit");
 
-$parcelles = $parcellaire->getParcelles();
+$parcelles = $parcellaire->declaration->getParcelles();
 $t->is(count($parcelles), 2, "Le nouveau parcellaire a deux parcelles");
 
 $t->comment("import d'un fichier sans parcelles $tempfname ");
 unlink($tempfname);
 $tempfname = tempnam('/tmp', "PARCELLAIRE-$viti->cvi-".date('Ymd', strtotime("-5 day"))."-");
 $handle = fopen($tempfname, 'w');
-fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut");
+fwrite($handle, "CVI Operateur;Siret Operateur;Nom Operateur;Adresse Operateur;CP Operateur;Commune Operateur;Email Operateur;Commune;Lieu dit;Section;Numero parcelle;Produit;Cepage;Superficie;Superficie cadastrale;Campagne;Ecart pied;Ecart rang;Mode savoir faire;Statut\n");
 fclose($handle);
-
-$csv_test = new Csv($tempfname, ';', false);
-$parcellaireloader = new ParcellaireCsvFile($viti, $csv_test);
+$parcellaire->delete(false);
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate(
+    $viti->identifiant,
+    date('Y-m-d'),
+    'PRODOUANE'
+);
+$parcellaireloader = new ParcellaireCsvFile($parcellaire, $tempfname);
 $parcellaireloader->convert();
 $parcellaireloader->save();
 $parcellaire = $parcellaireloader->getParcellaire();
@@ -176,10 +182,16 @@ foreach ($array as $l) {
 }
 fclose($handle);
 
-$csv = new Csv($csv_same_parcelles, ';');
-$parcellaireLoader = new ParcellaireCsvFile($viti, $csv);
+$parcellaire->delete(false);
+$parcellaire = ParcellaireClient::getInstance()->findOrCreate(
+    $viti->identifiant,
+    date('Y-m-d'),
+    'PRODOUANE'
+);
+$parcellaireLoader = new ParcellaireCsvFile($parcellaire, $csv_same_parcelles);
 $parcellaireLoader->convert();
 
 $parcellaire = $parcellaireLoader->getParcellaire();
-$t->is(count($parcellaire->getParcelles()), 4, "Il y a quatre parcelles");
+$parcellaire->save();
+$t->is(count($parcellaire->declaration->getParcelles()), 4, "Il y a quatre parcelles");
 unlink($tempfname);

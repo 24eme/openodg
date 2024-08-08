@@ -50,8 +50,8 @@
             </tr>
           <?php endforeach; ?>
         <?php endforeach; ?>
-        <?php if(!isset($public) || !$public): ?>
-            <tr data-hide="1" style="display:none;">
+        <?php if(!isset($public) && !$public && $has_ajoutForm): ?>
+            <tr>
                 <td colspan="6" class="text-right">
                     <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
                 </td>

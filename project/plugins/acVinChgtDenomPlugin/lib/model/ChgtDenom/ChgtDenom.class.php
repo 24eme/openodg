@@ -38,6 +38,9 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
     }
 
         public function getDateFormat($format = 'Y-m-d') {
+            if ($this->validation) {
+                return explode('T', $this->validation)[0];
+            }
             if (!$this->date) {
                 return date($format);
             }
@@ -828,6 +831,16 @@ class ChgtDenom extends BaseChgtDenom implements InterfaceDeclarantDocument, Int
         }
 
         return $this->getFirstChgtDenomOrDeclassementFacturable($produitFilter);
+    }
+
+    public function getNbLots(TemplateFactureCotisationCallbackParameters $produitFilter) {
+        if ($this->validation_odg) {
+            return 0;
+        }
+        if (!$this->matchFilter($produitFilter->getParameters())) {
+            return 0;
+        }
+        return 1;
     }
 
     public function getFirstChgtDenomOrDeclassementFacturable(TemplateFactureCotisationCallbackParameters $produitFilter)

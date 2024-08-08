@@ -4,6 +4,7 @@ class ParcellaireManquantClient extends acCouchdbClient {
 
       const TYPE_MODEL = "ParcellaireManquant";
       const TYPE_COUCHDB = "PARCELLAIREMANQUANT";
+      const TYPE_LIBELLE = "Déclaration de pieds manquants";
 
       public static function getInstance() {
           return acCouchdbManager::getClient("ParcellaireManquant");

@@ -157,7 +157,7 @@ class FactureClient extends acCouchdbClient {
         if (!$region) {
             $region = Organisme::getCurrentRegion();
         }
-        $facture->identifiant = $compte->getSociete()->identifiant;
+        $facture->identifiant = method_exists($compte, 'getSociete') ? $compte->getSociete()->identifiant : $compte->identifiant;
         $facture->region = $region;
         $facture->constructIds();
         $facture->storeEmetteur();
@@ -284,7 +284,7 @@ class FactureClient extends acCouchdbClient {
                         continue;
                       }
 
-                      if(isset($parameters['region']) && $parameters['region'] && $parameters['region'] != $mouvement->value->region) {
+                      if(isset($parameters['region']) && $parameters['region'] && isset($mouvement->value->region) && $parameters['region'] != $mouvement->value->region) {
                         unset($mouvements[$key]);
                         $mouvementsBySoc[$identifiant] = $mouvements;
                         continue;

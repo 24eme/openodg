@@ -16,14 +16,6 @@ class ParcellaireManquantProduitDetail extends BaseParcellaireManquantProduitDet
         return $this->getProduit()->getLibelle();
     }
 
-    public function getIdentificationParcelleLibelle() {
-    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
-    }
-
-    public function getIdentificationCepageLibelle() {
-    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
-    }
-
     public function getLieuLibelle() {
         if ($this->lieu) {
 
@@ -46,5 +38,32 @@ class ParcellaireManquantProduitDetail extends BaseParcellaireManquantProduitDet
     public function setPourcentage($pourcentage)
     {
         $this->_set('pourcentage', round($pourcentage, 2));
+    }
+
+    public function getParcelleParcellaire() {
+        $parc = $this->getDocument()->getParcellaire();
+        if ($id = $this->_get('parcelle_id')) {
+            return $parc->getParcelleFromParcellaireId($id);
+        }
+        $p = ParcellaireClient::findParcelle($parc, $this);
+        $this->set('parcelle_id', $p->parcelle_id);
+        return $p;
+    }
+
+    public function getSuperficieParcellaire() {
+        return $this->superficie;
+    }
+
+    public function getParcelleId() {
+        if ($i = $this->_get('parcelle_id')) {
+            return $i;
+        }
+        $p = $this->getParcelleParcellaire();
+        if (!$p) {
+            return null;
+        }
+        $id = $p->getParcelleId();
+        $this->set('parcelle_id', $id);
+        return $id;
     }
 }

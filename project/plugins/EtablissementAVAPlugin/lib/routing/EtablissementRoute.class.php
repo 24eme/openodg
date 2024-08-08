@@ -2,11 +2,11 @@
 
 /*** AVA ***/
 
-class /***AVA***/EtablissementRoute extends sfObjectRoute {
+class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissementRoute {
 
     protected $etablissement = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
         $this->etablissement = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$parameters['identifiant']);
 
         if (!EtablissementSecurity::getInstance(sfContext::getInstance()->getUser(), $this->etablissement)->isAuthorized(array())) {
@@ -26,7 +26,7 @@ class /***AVA***/EtablissementRoute extends sfObjectRoute {
         return $parameters;
     }
 
-    public function getEtablissement() {
+    public function getEtablissement($parameters = null) {
         if (!$this->etablissement) {
             $this->getObject();
         }

@@ -47,14 +47,11 @@ EOF;
         }
         foreach($denominations as $d) {
             if (!$arguments['commune_insee']) {
-                $communes = array();
-                foreach(AireClient::getInstance()->getCommunesArrayFromDenominationId($d) as $c) {
-                    $communes[$c] = $c;
-                }
+                $communes = AireClient::getInstance()->getCommunesArrayFromDenominationId($d);
             }
-            foreach($communes as $c) {
+            foreach($communes as $insee => $libelle) {
                 try {
-                    $aire = AireClient::getInstance()->createOrUpdateAireFromHttp($c, $d);
+                    $aire = AireClient::getInstance()->createOrUpdateAireFromHttp($insee, $d);
                     $aire->isInAire($aire->getGeoParcelle());
                     $aire->save();
                     echo "DEBUG: ".$aire->denomination_libelle." (".$aire->denomination_identifiant.") for ".$aire->commune_libelle." (".$aire->commune_identifiant.") imported\n";

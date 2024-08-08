@@ -127,37 +127,24 @@ class LotsClient
                 $suivi['ISSUE'] = $d;
             }
 
-            if($lot->statut == Lot::STATUT_MANQUEMENT_EN_ATTENTE) {
+            if($lot->statut == Lot::STATUT_DECLASSE_OLD) {
+                $lot->statut = Lot::STATUT_DECLASSE;
+            }
+
+            if( ($lot->statut == Lot::STATUT_MANQUEMENT_EN_ATTENTE) ||
+                ($lot->statut == Lot::STATUT_DECLASSE) ||
+                ($lot->statut == Lot::STATUT_CONFORME_APPEL) ||
+                ($lot->statut == Lot::STATUT_NONCONFORME_LEVEE) ) {
                 $d = [];
                 $d['DATE'] = $lot->date;
                 $d['STATUT'] = $lot->statut;
                 $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
                 $d['VOLUME'] = $lot->volume;
                 $suivi['ISSUE'] = $d;
-                break;
-            }
-
-            if($lot->statut == Lot::STATUT_CONFORME_APPEL) {
-                $d = [];
-                $d['DATE'] = $lot->date;
-                $d['STATUT'] = $lot->statut;
-                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut($lot->statut);
-                $d['VOLUME'] = $lot->volume;
-                $suivi['ISSUE'] = $d;
 
                 break;
             }
 
-            if($lot->statut == Lot::STATUT_DECLASSE || $lot->statut == Lot::STATUT_DECLASSE_OLD) {
-                $d = [];
-                $d['DATE'] = $lot->date;
-                $d['STATUT'] = Lot::STATUT_DECLASSE;
-                $d['STATUT_LIBELLE'] = Lot::getLibelleStatut(Lot::STATUT_DECLASSE);
-                $d['VOLUME'] = $lot->volume;
-                $suivi['ISSUE'] = $d;
-
-                break;
-            }
         }
 
         if(empty($suivi['ISSUE'])) {
@@ -354,6 +341,13 @@ class LotsClient
             $doc->save();
         }
     }
+
+    /*************
+     *
+     * return: [Appellation Libelle][periode][CouleurLibelle][DocType]
+     *
+     * DocType a été introduit pour centre loire : l'index "Lot" rend le résultat retourné précédemment
+     *************/
 
     public function getSyntheseLots($identifiant, $campagnes, $region = null)
     {

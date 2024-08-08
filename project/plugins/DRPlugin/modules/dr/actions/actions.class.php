@@ -109,13 +109,18 @@ class drActions extends sfActions
         return $this->redirect('declaration_etablissement', array('identifiant' => $identifiant, 'campagne' => $campagne));
     }
 
-    public function executeVerify(sfWebRequest $request) {
+    public function executeSvVerify(sfWebRequest $request) {
         $this->dr = $this->getRoute()->getDR();
         if ($this->dr->type == 'SV11') {
             $this->tableau_comparaison = $this->dr->getTableauComparaisonSV11();
         } else if ($this->dr->type == 'SV12') {
             $this->tableau_comparaison = $this->dr->getTableauComparaisonSV12();
         }
+    }
+
+    public function executeDrVerify(sfWebRequest $request) {
+        $this->dr = $this->getRoute()->getDR();
+        $this->tableau_comparaison = $this->dr->getTableauComparaisonDrDap();
     }
 
 }

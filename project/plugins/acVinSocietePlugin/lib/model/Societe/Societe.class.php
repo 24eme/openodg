@@ -648,13 +648,17 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique, Interface
 
     /*** TODO : Fonctions à retirer après le merge ****/
 
-
+    private $cache_master_compte = null;
     public function getMasterCompte() {
+        if ($this->cache_master_compte) {
+            return $this->cache_master_compte;
+        }
         if (!$this->compte_societe) {
 
             return null;
         }
-        return $this->getCompte($this->compte_societe);
+        $this->cache_master_compte = $this->getCompte($this->compte_societe);
+        return $this->cache_master_compte;
     }
 
     public function getSiret() {

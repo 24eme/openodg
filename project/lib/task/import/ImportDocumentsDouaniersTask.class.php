@@ -59,7 +59,6 @@ EOF;
             }
 
         	$i++;
-        	echo "PROCESSUS;".$i.'/'.$nb.' => '.floor($i / $nb * 100)."\n";
 
         	if ($etablissement = EtablissementClient::getInstance()->find($item->id)) {
         		$ddType = $this->getDocumentDouanierType($etablissement);
@@ -107,7 +106,9 @@ EOF;
                         if(isset($options['dateimport']) && $options['dateimport']) {
                             $fichier->date_import = $options['dateimport'];
                             $fichier->date_depot = $options['dateimport'];
-                            $fichier->add('validation_odg', $options['dateimport']);
+                            if (DRConfiguration::getInstance()->hasValidationDR()) {
+                                $fichier->add('validation_odg', $options['dateimport']);
+                            }
                             $fichier->save();
                         }
 			            echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $fichier->type, $etablissement->_id, $etablissement->cvi);

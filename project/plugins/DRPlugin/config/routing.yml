@@ -59,9 +59,19 @@ dr_enattente_admin:
   requirements:
     sf_method: [get]
 
+sv_verify:
+  url: /dr/visualisation/:id/verify/sv
+  param: { module: dr, action: svVerify }
+  class: DRRoute
+  options:
+    model: DR
+    type: object
+  requirements:
+    sf_method: [get]
+
 dr_verify:
-  url: /dr/visualisation/:id/verify
-  param: { module: dr, action: verify }
+  url: /dr/visualisation/:id/verify/dr
+  param: { module: dr, action: drVerify }
   class: DRRoute
   options:
     model: DR

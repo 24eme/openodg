@@ -1218,7 +1218,8 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
 
             $regions = array_unique(array_merge([$this->region], $this->getRegionsFromProduits()));
             foreach($regions as $region) {
-                $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.'_'.strtolower($region));
+                $region_postfix = ($region)  ? '_'.strtolower($region) : '';
+                $comptes_degustateurs = CompteTagsView::getInstance()->listByTags('automatique', $college.$region_postfix );
             }
             if (count($comptes_degustateurs) > 0) {
                 foreach ($comptes_degustateurs as $compte) {
@@ -1747,9 +1748,22 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
             return $mouvement;
         }
 
+        public function getFacturationLotRecours($cotisation, TemplateFactureCotisationCallbackParameters $filters){
+            $mouvements = array();
+            $detailKey = $cotisation->getDetailKey();
+			foreach ($this->getLots() as $lot) {
+                if(!$lot->isLotEnRecours()){
+                    continue;
+                }
+                $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $this->creationMouvementFactureFromLot($cotisation, $lot);
+            }
+            return $mouvements;
+        }
+
         public function getRedegustationForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             return $this->buildMouvementsFacturesRedegustationForfait($cotisation,$filters);
         }
+
 	    public function buildMouvementsFacturesRedegustationForfait($cotisation, TemplateFactureCotisationCallbackParameters $filters){
             $mouvements = array();
             $detailKey = $cotisation->getDetailKey();
@@ -1796,9 +1810,9 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument, Int
                 if(!$lot->isSecondPassage()){
                     continue;
                 }
-				if ($filters && DRevClient::getInstance()->matchFilterLot($lot, $filters->getParameters()) === false) {
-					continue;
-				}
+                if ($filters && DRevClient::getInstance()->matchFilterLot($lot, $filters) === false) {
+                    continue;
+                }
                 $mvtFacture = $this->creationMouvementFactureFromLot($cotisation, $lot);
                 $mvtFacture->detail_identifiant = $lot->getNumeroDossier();
                 $mouvements[$lot->declarant_identifiant][$lot->getUnicityKey().':'.$detailKey] = $mvtFacture;

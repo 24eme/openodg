@@ -14,6 +14,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     const DENOMINATION_HVE = "HVE";
     const DENOMINATION_HVE_LIBELLE_AUTO = "HVE";
     const DENOMINATION_CONVERSION_BIO = "CONVERSION_BIO";
+    const DENOMINATION_CONVERSION_BIO_LIBELLE_AUTO = "Conversion en Bio";
     const DENOMINATION_JEUNE_VIGNE = "JEUNE_VIGNE";
     const LOT_DESTINATION_VRAC_FRANCE_ET_CONDITIONNEMENT = 'VRAC_FRANCE_CONDITIONNEMENT';
     const LOT_DESTINATION_VRAC = 'VRAC';
@@ -34,7 +35,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
     public static function getDenominationsAuto() {
         $denom = array(
-            self::DENOMINATION_CONVENTIONNEL => "Conventionnel ou en conversion",
+            self::DENOMINATION_CONVENTIONNEL => "Conventionnel",
+            self::DENOMINATION_CONVERSION_BIO => self::DENOMINATION_CONVERSION_BIO_LIBELLE_AUTO,
             self::DENOMINATION_HVE => self::DENOMINATION_HVE_LIBELLE_AUTO,
             self::DENOMINATION_BIO => self::DENOMINATION_BIO_LIBELLE_AUTO,
         );
@@ -141,7 +143,6 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             if ($previous_drev) {
                 $drev->set('chais', $previous_drev->chais->toArray(true, false));
             }
-            $drev->updateVCIFromPrecedente();
         }
 
         return $drev;

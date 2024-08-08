@@ -1,4 +1,4 @@
-<?php if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) && !$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)): return; endif; ?>
+<?php if(strpos($etablissement->famille, 'PRODUCTEUR') === false): return; endif; ?>
 
 <?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
@@ -6,7 +6,11 @@
         <div class="panel-heading">
             <h3 class="panel-title">Déclaration&nbsp;de&nbsp;pieds&nbsp;manquants&nbsp;<?php echo $periode ?></h3>
         </div>
-        <?php if (!$parcellaireManquant && !$parcellaire): ?>
+        <?php if (!$parcellaireManquant && $needAffectation): ?>
+        <div class="panel-body">
+            <p class="explications">Cette déclaration s'appuie sur l'affectation parcellaire qui n'a pas encore été saisie et approuvée pour la période <?php echo $periode ?>.</p>
+        </div>
+        <?php elseif (!$parcellaireManquant && !$parcellaire): ?>
         <div class="panel-body">
             <p class="explications">Les données de votre parcellaire ne sont pas présente sur la plateforme.<br/><br/>Il ne vous est donc pas possible de déclarer vos pieds morts ou manquants : <a href="<?php echo url_for("parcellaire_declarant", $etablissement) ?>">Voir le parcellaire</a></p>
         </div>

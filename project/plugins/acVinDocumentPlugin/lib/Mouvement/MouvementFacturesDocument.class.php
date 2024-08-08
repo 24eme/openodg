@@ -21,7 +21,7 @@ class MouvementFacturesDocument
         $this->document->clearMouvementsFactures();
         $mouvements = [];
 
-        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+        if (class_exists('RegionConfiguration') && RegionConfiguration::getInstance()->hasOdgProduits()) {
             foreach ($this->document->getRegions() as $r) {
                 $mouvements = array_merge_recursive($mouvements, $this->document->getMouvementsFacturesCalcule($r));
             }

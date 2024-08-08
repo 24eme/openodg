@@ -17,7 +17,6 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
     protected $mouvement_document = null;
     protected $declarant_document = null;
     protected $enhanced_donnees = null;
-    protected static $cvi2tiers = null;
 
 
     public function getPeriode() {
@@ -216,6 +215,17 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return false;
     }
 
+    private $bailleuretablissements = null;
+    public function getBailleurEtablissement($id){
+        if (is_null($this->bailleuretablissements)) {
+            $this->bailleuretablissements = array();
+        }
+        if (!isset($this->bailleuretablissements[$id])) {
+            $this->bailleuretablissements[$id] = EtablissementClient::getInstance()->find($id);
+        }
+        return $this->bailleuretablissements[$id];
+    }
+
     public function getEnhancedDonnees($drev_produit_filter = null) {
         if (isset($this->enhanced_donnees)) {
             return $this->enhanced_donnees;
@@ -229,7 +239,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             $d = (object) $donnee->toArray();
             $d->produit_conf = $this->configuration->declaration->get($donnee->produit);
             $p = array();
-            if ($donnee->bailleur && $d->bailleur_etablissement = EtablissementClient::getInstance()->find($donnee->bailleur)) {
+            if ($donnee->bailleur && $d->bailleur_etablissement = $this->getBailleurEtablissement($donnee->bailleur)) {
                 $p[] = $d->bailleur_etablissement->raison_sociale.' ('.$donnee->bailleur.')';
                 $p[] = $d->bailleur_etablissement->ppm;
             } else {
@@ -351,6 +361,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
 
     public function addDonnee($data) {
+
         if (!$data || !isset($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION]) || empty($data[DouaneCsvFile::CSV_PRODUIT_CERTIFICATION])) {
             return null;
         }
@@ -391,6 +402,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         return $item;
     }
 
+    protected static $cvi2tiers = null;
     public static function fillItemWithTiersData(&$item, $tiers_cvi, $tiers_libelle) {
         if (!self::$cvi2tiers) {
             self::$cvi2tiers = array();
@@ -880,7 +892,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         if ($this->getDocumentDefinitionModel() == 'DR') {
             return array();
         }
-        return $this->getTiers();
+        return $this->getTiers($include_non_reconnu);
     }
 
     public function getTiers($include_non_reconnu = false, $relation_voulue = null, $hydrate = acCouchdbClient::HYDRATE_JSON): array {
@@ -919,6 +931,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if(is_string($etablissement)) {
                 if ($include_non_reconnu) {
                     $etablissements[$cvi] = array('etablissement' => null , "cvi" => $cvi, 'raison_sociale' => $etablissement);
+                    $etablissements[$cvi] = str_replace('"', '', $etablissements[$cvi]);
                 }
                 continue;
             }
@@ -957,8 +970,11 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 if ($etab_declarant->cvi == $cvi) {
                     continue;
                 }
+                $dr = null;
                 $etab = EtablissementClient::getInstance()->findByCvi($cvi);
-                $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
+                if ($etab) {
+                    $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
+                }
 
                 if (! $dr) {
                     $tableau_comparaison[$produit_libelle][$cvi]['DR'] = 0;
@@ -991,6 +1007,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
         if (! ($this->type == 'SV12')) {
             throw new sfException("Ce document n'est pas une SV12.");
         }
+        $tableau_comparaison = null;
         $produits = $this->getProduits();
         $etab_declarant =  $this->getEtablissementObject();
         foreach ($this->getDonnees() as $data) {
@@ -1006,38 +1023,68 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                 }
             }
         }
-        foreach ($tableau_comparaison as $produit_libelle => $cvis) {
-            $totalDR = 0;
-            foreach ($cvis as $cvi => $valeur) {
-                if ($etab_declarant->cvi == $cvi) {
-                    continue;
-                }
-                $etab = EtablissementClient::getInstance()->findByCvi($cvi);
-                $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
-                if (! $dr) {
-                    $tableau_comparaison[$produit_libelle][$cvi]['DR'] = 0;
-                } else {
-                    $datas = $dr->getEnhancedDonnees();
-                    foreach ($datas as $data) {
-                        if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
-                            continue;
-                        }
-                        if ($data->produit_libelle != $produit_libelle && $dr->getConfiguration()->declaration->get($data->produit)->getLibelleFormat() != $produit_libelle) {
-                            continue;
-                        }
-                        if ($data->categorie == '06' || $data->categorie == '07') {
-                            if (! isset($tableau_comparaison[$produit_libelle][$cvi]['DR'])) {
-                                $tableau_comparaison[$produit_libelle][$cvi]['DR'] = $data->valeur;
-                            } else {
-                                $tableau_comparaison[$produit_libelle][$cvi]['DR'] += $data->valeur;
+        if ($tableau_comparaison) {
+            foreach ($tableau_comparaison as $produit_libelle => $cvis) {
+                $totalDR = 0;
+                foreach ($cvis as $cvi => $valeur) {
+                    if ($etab_declarant->cvi == $cvi) {
+                        continue;
+                    }
+                    $etab = EtablissementClient::getInstance()->findByCvi($cvi);
+                    $dr = DRClient::getInstance()->find('DR-'.$etab['identifiant'].'-'.$this->campagne);
+                    if (! $dr) {
+                        $tableau_comparaison[$produit_libelle][$cvi]['DR'] = 0;
+                    } else {
+                        $datas = $dr->getEnhancedDonnees();
+                        foreach ($datas as $data) {
+                            if ($data->tiers_cvi != $etab_declarant->cvi && substr($data->tiers, 0, -2) != substr($etab_declarant->_id, 0, -2)) {
+                                continue;
                             }
-                            $totalDR += $data->valeur;
+                            if ($data->produit_libelle != $produit_libelle && $dr->getConfiguration()->declaration->get($data->produit)->getLibelleFormat() != $produit_libelle) {
+                                continue;
+                            }
+                            if ($data->categorie == '06' || $data->categorie == '07') {
+                                if (! isset($tableau_comparaison[$produit_libelle][$cvi]['DR'])) {
+                                    $tableau_comparaison[$produit_libelle][$cvi]['DR'] = $data->valeur;
+                                } else {
+                                    $tableau_comparaison[$produit_libelle][$cvi]['DR'] += $data->valeur;
+                                }
+                                $totalDR += $data->valeur;
+                            }
                         }
                     }
                 }
+                $tableau_comparaison[$produit_libelle][$etab_declarant->cvi]['DR'] = $totalDR;
             }
-            $tableau_comparaison[$produit_libelle][$etab_declarant->cvi]['DR'] = $totalDR;
         }
+        return isset($tableau_comparaison) ? $tableau_comparaison : null;
+    }
+
+    public function getTableauComparaisonDrDap() {
+        if ($this->type != 'DR') {
+            throw new sfException("Ce document n'est pas une DR.");
+        }
+        $tableau_comparaison = [];
+        $dap = ParcellaireAffectationClient::getInstance()->find('PARCELLAIREAFFECTATION-'.$this->identifiant.'-'.$this->campagne);
+        if ($dap) {
+            foreach ($dap->getParcelles(true) as $hash => $parcelle) {
+                $libelle = $parcelle->getProduit()->getConfig()->getLibelleFormat();
+                if (! isset($tableau_comparaison[$libelle])) {
+                    $tableau_comparaison[$libelle]['DAP'] = $parcelle['superficie'];
+                } else {
+                    $tableau_comparaison[$libelle]['DAP'] += $parcelle['superficie'];
+                }
+                $total_valeur_dr = 0;
+                $hash_cible = $parcelle->getProduit()->getHash();
+                foreach ($this->getEnhancedDonnees() as $data) {
+                    if (strpos($data->produit, str_replace('/declaration/', '', $hash_cible)) !== false && $data->categorie == '04b') {
+                        $total_valeur_dr += $data->valeur;
+                    }
+                }
+                $tableau_comparaison[$libelle]['DR'] = $total_valeur_dr;
+            }
+        }
+
         return isset($tableau_comparaison) ? $tableau_comparaison : null;
     }
 }

@@ -51,11 +51,13 @@ ParcellaireIrrigable:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_parcellaire: { type: float }
                               commune: { }
                               code_commune: { }
                               prefix: { }
                               section: { }
                               numero_parcelle: { }
+                              numero_ordre: { }
                               idu: { }
                               lieu: {  }
                               cepage: {  }
@@ -65,6 +67,9 @@ ParcellaireIrrigable:
                               campagne_plantation: {  }
                               materiel: {  }
                               ressource: {  }
+                              produit_hash: { }
+                              parcelle_id: { }
+                              source_produit_libelle: { }
       region: { required: false }
       observations: {  }
       pieces:

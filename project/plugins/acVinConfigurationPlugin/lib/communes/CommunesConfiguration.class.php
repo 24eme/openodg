@@ -43,9 +43,22 @@ class CommunesConfiguration {
         return $this->communes;
     }
 
+    public function getCommuneByCode($c) {
+
+        return $this->communes[$c];
+    }
+
     public function findCodeCommune($commune) {
         if(!isset($this->communes_reverse[$commune])) {
-
+            $commune = strtoupper($commune);
+            $commune = preg_replace('/^ST /', 'SAINT ', $commune);
+            $commune = preg_replace('/[^A-Z]/', '', $commune);
+            foreach($this->communes_reverse as $c => $v) {
+                $c = preg_replace('/[^A-Z]/', '', strtoupper($c));
+                if (strpos($c, $commune) !== false) {
+                    return $v;
+                }
+            }
             return null;
         }
 

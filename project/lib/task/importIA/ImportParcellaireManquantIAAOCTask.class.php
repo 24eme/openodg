@@ -80,7 +80,7 @@ EOF;
                       continue;
                     }
                     $produit = $this->produits[$produitKey];
-                    $parcelle = $parcellaireTotal->addParcelle($produit->getHash(), $data[self::CSV_CEPAGE], null, null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
+                    $parcelle = $parcellaireTotal->addParcelleWithProduit($produit->getHash(), $data[self::CSV_PRODUIT], $data[self::CSV_CEPAGE], null, null, $data[self::CSV_NOM_COMMUNE], null, $data[self::CSV_SECTION], $data[self::CSV_NUM_PARCELLE]);
                 }
 
                 $manquantParcelle = $manquant->addParcelleFromParcellaireParcelle($parcelle);

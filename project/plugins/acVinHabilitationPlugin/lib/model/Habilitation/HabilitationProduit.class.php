@@ -111,7 +111,10 @@ class HabilitationProduit extends BaseHabilitationProduit {
           $this->initActivites();
         }
         if (!$this->activites->exist($activite)) {
-          throw new sfException('activite '.$activite.' non supportée');
+            $this->initActivites();
+            if (!$this->activites->exist($activite)) {
+                throw new sfException('activite '.$activite.' non supportée');
+            }
         }
         if (!$sites || !count($sites)) {
             $a = $this->add('activites')->add($activite);

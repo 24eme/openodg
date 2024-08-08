@@ -491,6 +491,10 @@ abstract class Lot extends acCouchdbDocumentTree
         return $this->getNombrePassage() > 1;
     }
 
+    public function isLotEnRecours() {
+        return ($this->statut == self::STATUT_RECOURS_OC);
+    }
+
     public function isRedegustationDejaConforme() {
         foreach(LotsClient::getInstance()->getHistory($this->declarant_identifiant, $this->unique_id) as $mvt){
             if (in_array($mvt->key[MouvementLotHistoryView::KEY_STATUT], [Lot::STATUT_CONFORME, Lot::STATUT_NONAFFECTABLE]) && $mvt->key[MouvementLotHistoryView::KEY_ORIGINE_DOCUMENT_ID] != $this->getDocument()->_id) {

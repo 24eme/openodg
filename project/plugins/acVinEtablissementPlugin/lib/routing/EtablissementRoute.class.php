@@ -16,7 +16,9 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         if ($myUser->hasTeledeclaration() && !$myUser->hasDrevAdmin() &&
                 $compteUser->identifiant != $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant) {
 
-            throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (drevAdmin)");
+            if ($myUser->getEtablissement()->hasCooperateur($this->getEtablissement()->cvi) === false) {
+                throw new sfError403Exception("Vous n'avez pas le droit d'accéder à cette page (drevAdmin)");
+            }
         }
 
         $allowed = $myUser->isAdmin();
@@ -34,6 +36,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
         if (!$allowed) {
             if ($myUser->hasTeledeclaration()) {
                 $allowed = ($compteUser->identifiant == $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant);
+                $allowed = $allowed || $myUser->getEtablissement()->hasCooperateur($this->getEtablissement()->cvi) === true;
             }
         }
         if (!$allowed) {
@@ -53,6 +56,14 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
             throw new sfException("object from parameter should not be null");
         }
         return array("identifiant" => $object->getIdentifiant());
+    }
+
+    public function generate($params, $context = array(), $absolute = false)
+    {
+        if(sfContext::getInstance()->getRequest()->getParameter('coop') && !$this instanceof ParcellaireAffectationCoopRoute) {
+            $params['coop'] = sfContext::getInstance()->getRequest()->getParameter('coop');
+        }
+        return parent::generate($params, $context, $absolute);
     }
 
     public function getEtablissement($parameters = null) {

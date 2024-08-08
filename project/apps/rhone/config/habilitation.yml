@@ -8,6 +8,7 @@ all:
          CONDITIONNEUR: "Conditionneur"
          ELABORATEUR: "Élaborateur"
          VENTE_A_LA_TIREUSE: "Vente tireuse"
+         BAILLEUR: "Bailleur"
       demande:
         statuts:
           DEPOT: "Dépôt"

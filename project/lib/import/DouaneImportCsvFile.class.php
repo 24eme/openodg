@@ -9,8 +9,8 @@ class DouaneImportCsvFile {
 
     public $cvi = '';
     public $drev_produit_filter = '';
-    public $etablissement = '';
-    public $identifiant = '';
+    public $etablissement = null;
+    public $identifiant = null;
     public $raison_sociale = '';
     public $commune = '';
 
@@ -183,9 +183,16 @@ class DouaneImportCsvFile {
         return $csv;
     }
 
-    public function getRelatedDrev() {
+    public function loadEtablissement() {
+        if ($this->etablissement && $this->identifiant) {
+            return;
+        }
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+    }
+
+    public function getRelatedDrev() {
+        $this->loadEtablissement();
         return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne);
     }
 
@@ -197,7 +204,7 @@ class DouaneImportCsvFile {
 
         if($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(conversion|conv|convertion|cab|reconversion|c3|ciii)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_CONVERSION_BIO] = DRevClient::DENOMINATION_CONVERSION_BIO;
-        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
+        } elseif(DRevConfiguration::getInstance()->hasDenominationBiodynamie() && $mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(biodinami|biodynami|demeter|bio-dynami)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIODYNAMIE] = DRevClient::DENOMINATION_BIODYNAMIE;
         } elseif($mentionComplementaire && preg_match('/'.$wordSeparatorStart.'(ab|bio|biologique|BIOLOGIQUE|FR-BIO-[0-9]+)'.$wordSeparatorEnd.'/i', $mentionComplementaire)) {
             $labels[DRevClient::DENOMINATION_BIO] = DRevClient::DENOMINATION_BIO;

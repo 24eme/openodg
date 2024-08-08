@@ -56,13 +56,27 @@
                         <?php if (round($valeur['DR'] - $valeur['SV'], 2) == 0) { continue; } ?>
                         <td class="text-right">
                             <?php $etablissement = EtablissementClient::getInstance()->findByCvi($cvi); ?>
-                            <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                            <?php if ($etablissement): ?>
+                                <?php $dr_apporteur = DRClient::getInstance()->find('DR-'.$etablissement->identifiant.'-'.$dr->campagne); ?>
+                                <?php if ($dr_apporteur): ?>
+                                    <a href="<?php echo url_for('dr_visualisation', ['id' =>'DR-'.$etablissement->identifiant.'-'.$dr->campagne]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                                <?php else: ?>
+                                    <a href="<?php echo url_for('declaration_etablissement', ['identifiant' => $etablissement->identifiant]); ?>"><?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->identifiant ?> - <?php echo $etablissement->cvi ?>)</a>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <?php echo $cvi; ?>
+                                <small> - CVI non reconnu</small>
+                            <?php endif; ?>
                         </td>
                         <td class="text-right">
                             <?php echo abs($valeur['SV']); ?>
                         </td>
                         <td class="text-right">
-                            <?php echo abs($valeur['DR']); ?>
+                            <?php if (isset($dr_apporteur) && $dr_apporteur): ?>
+                                <?php echo abs($valeur['DR']); ?>
+                            <?php else: ?>
+                                <small>DR absente</small>
+                            <?php endif; ?>
                         </td>
                         <td class="text-center">
                             <?php echo abs(round($valeur['SV'] - $valeur['DR'], 2)); ?>
