@@ -47,7 +47,7 @@
             <?php endif ?>
             <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_issu_recolte; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
             <td class="text-right"><?php echo echoFloat(array_reduce($drev->declaration->getProduitsWithoutLots()->getRawValue(), function ($tot, $p) { $tot += $p->volume_revendique_total; return $tot; }, 0)) ?> <small class="text-muted">hl</small></td>
-        </td>
+        </tr>
 
       </tbody>
     </table>
