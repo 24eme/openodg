@@ -109,7 +109,6 @@ if($etablissement->cvi && count($e) > 1):
           <th class="col-xs-1">&nbsp;</th>
         </tr>
       </thead>
-      </div>
       <tbody>
         <?php $cpt = 0;
         foreach ($habilitation->getFullHistoriqueReverse() as $historiqueDoc): ?>
