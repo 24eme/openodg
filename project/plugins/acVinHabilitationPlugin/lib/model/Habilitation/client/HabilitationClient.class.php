@@ -6,6 +6,7 @@ class HabilitationClient extends acCouchdbClient {
     const TYPE_COUCHDB = "HABILITATION";
 
     #La liste les activités actives est définie dans habilitation.yml
+    const ACTIVITE_BAILLEUR = "BAILLEUR";
     const ACTIVITE_PRODUCTEUR = "PRODUCTEUR";
     const ACTIVITE_VINIFICATEUR = "VINIFICATEUR";
     const ACTIVITE_VRAC = "VRAC";

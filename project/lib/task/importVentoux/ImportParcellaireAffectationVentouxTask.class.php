@@ -2,6 +2,7 @@
 
 class ImportParcellaireAffectationVentouxTask extends sfBaseTask
 {
+    const CSV_CVI_DESTINATION = 1;
     const CSV_CVI = 2;
     const CSV_RAISON_SOCIALE = 3;
     const CSV_NOM_COMMUNE = 4;
@@ -140,11 +141,20 @@ EOF;
 
     public function createAffectation($etablissement, $parcelle, $data) {
         $affectation = ParcellaireAffectationClient::getInstance()->findOrCreate($etablissement->identifiant, $this->periode);
+        if($affectation->isNew()) {
+            $affectation->remove('declaration');
+            $affectation->add('declaration');
+        }
 
-        $affectationParcelle = $this->addParcelleFromParcellaireParcelle($affectation, $parcelle);
+        $affectationParcelle = $affectation->addParcelle($parcelle);
 
-        $affectationParcelle->affectee = 1;
-        $affectationParcelle->date_affectation = $this->periode.'-'.self::DATE_VALIDATION;
+        $etablissementDestination = EtablissementClient::getInstance()->findByCvi($data[self::CSV_CVI_DESTINATION]);
+        if(!$etablissementDestination) {
+            $etablissementDestination = $etablissement;
+        }
+
+        $affectationParcelle->affecter((float)($data[self::CSV_SURFACE]), $etablissementDestination);
+
         if(!$affectation->isValidee()) {
             $affectation->validate($this->periode.'-'.self::DATE_VALIDATION);
             $affectation->validation_odg = $affectation->validation;

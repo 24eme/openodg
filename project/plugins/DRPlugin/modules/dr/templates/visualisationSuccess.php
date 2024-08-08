@@ -47,9 +47,11 @@
         <i class="glyphicon glyphicon-search"></i> Comparer les volumes avec les DR
     </a>
 <?php else: ?>
+    <?php if (class_exists("ParcellaireAffectation") && in_array('parcellaireAffectation', sfConfig::get('sf_enabled_modules'))) : ?>
     <a class="btn btn-sm btn-default pull-right" href="<?php echo url_for('dr_verify', array('id' => $dr->_id)) ?>">
         <i class="glyphicon glyphicon-search"></i> Comparer les superficies avec la DAP
     </a>
+    <?php endif; ?>
 <?php endif; ?>
 
 <h3 class="text-left">Détail par produit</h3>
