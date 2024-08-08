@@ -65,7 +65,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($this->getProduits(null, false) as $hash => $p) {
             $regions[] = $p->getRegion();
         }
-        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+        $docDouanier = $this->getDocumentDouanier();
         if ($docDouanier) {
             foreach ($docDouanier->getProduits() as $hash => $p) {
                 $regions[] = RegionConfiguration::getInstance()->getOdgRegion($hash);
@@ -433,62 +433,34 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getDR($periode = null) {
 
-        return $this->getDocumentDouanier(null, $periode);
+        return $this->getDocumentDouanier();
     }
 
+    private $cache_document_douaniers = null;
     public function getDocumentsDouaniers($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return DouaneClient::getInstance()->getDocumentsDouaniers($this->getEtablissementObject(), $this->periode, $ext);
+        if (!$this->cache_document_douaniers) {
+            $this->cache_document_douaniers = array();
+        }
+        if (!isset($this->cache_document_douaniers[$ext])) {
+            $this->cache_document_douaniers[$ext] = DouaneClient::getInstance()->getDocumentsDouaniers($this->getEtablissementObject(), $this->periode, $ext);
+        }
+        return $this->cache_document_douaniers[$ext];
     }
 
-    public function getDocumentDouanierOlderThanMe($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $doc = $this->getDocumentDouanier($ext, $periode, $hydrate);
+    public function getDocumentDouanierOlderThanMe($hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $doc = $this->getDocumentDouanier($hydrate);
         if ( !DRevConfiguration::getInstance()->isModificativeEnabled() || ($doc->date_import <= substr($this->validation_odg, 0, 10)) ) {
             return $doc;
         }
         return null;
     }
 
-    public function getDocumentDouanier($ext = null, $periode = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return $this->getDocumentDouanierEtablissement($ext, $periode, $this->getEtablissementObject(), $hydrate);
-    }
-
-    public function getDocumentDouanierEtablissement($ext = null, $periode = null, $etablissement = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $identifiant = null;
-        if ($etablissement) {
-            $identifiant = $etablissement->identifiant;
+    private $cache_document_douanier = null;
+    public function getDocumentDouanier($hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        if (!$this->cache_document_douanier) {
+            $this->cache_document_douanier = DouaneClient::getInstance()->getDocumentDouanierEtablissement(null, $this->periode, $this->getEtablissementObject(), $hydrate);
         }
-        if (!$identifiant) {
-            $identifiant = $this->identifiant;
-        }
-
-        if (!$periode) {
-            $periode = $this->periode;
-        }
-
-        $choices = array("DR", "SV12", "SV11");
-        if ($etablissement) switch ($etablissement->famille) {
-            case EtablissementFamilles::FAMILLE_NEGOCIANT:
-            case EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR:
-                $choices = array("SV12", "SV11", "DR");
-                break;
-            case EtablissementFamilles::FAMILLE_COOPERATIVE:
-                $choices = array("SV11", "SV12", "DR");
-                break;
-            case EtablissementFamilles::FAMILLE_PRODUCTEUR:
-            case EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR:
-            case EtablissementFamilles::FAMILLE_AUTRE:
-            default:
-                break;
-        }
-        foreach($choices as $type) {
-            $fichier = FichierClient::getInstance()->findByArgs($type, $identifiant, $periode);
-            if (!$fichier) {
-                continue;
-            }
-            return ($ext)? $fichier->getFichier($ext) : $fichier;
-        }
-
-        return null;
+        return $this->cache_document_douanier;
     }
 
     public function hasDocumentDouanierForFacturation() {
@@ -534,7 +506,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             return SV12CsvFile::CSV_TYPE_SV12;
         }
 
-        $document = $this->getDocumentDouanier(null, null, acCouchdbClient::HYDRATE_JSON);
+        $document = $this->getDocumentDouanier(acCouchdbClient::HYDRATE_JSON);
 
         $this->document_douanier_type = ($document) ? $document->type : null;
 
@@ -1689,7 +1661,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeVininifieFromDocumentDouanier(TemplateFactureCotisationCallbackParameters $produitFilter) {
-        $docDouanier = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
+        $docDouanier = $this->getDocumentDouanierOlderThanMe();
         if(!$docDouanier) {
             return;
         }
@@ -1720,7 +1692,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeIGPSIGFromDR($produitFilter = null) {
-        $dr = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
+        $dr = $this->getDocumentDouanierOlderThanMe();
         if (!$dr || ($dr->type != DRClient::TYPE_MODEL)) {
             return null;
         }
@@ -1728,7 +1700,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getVolumeIGPSIGFromSV11($produitFilter = null) {
-        $sv11 = $this->getDocumentDouanierOlderThanMe(null, $this->getPeriode());
+        $sv11 = $this->getDocumentDouanierOlderThanMe();
         if (!$sv11 || ($sv11->type != SV11Client::TYPE_MODEL)) {
             return ;
         }
@@ -1853,7 +1825,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	}
 
     public function getQuantiteVolumeRecolte(TemplateFactureCotisationCallbackParameters $parameters) {
-        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+        $docDouanier = $this->getDocumentDouanier();
 
         if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
@@ -1867,7 +1839,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         if (DRevClient::getInstance()->matchFilterDrev($this, $parameters) === false) {
             return null;
         }
-        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+        $docDouanier = $this->getDocumentDouanier();
 
         if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
@@ -1877,7 +1849,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getQuantiteVolumeVendue(TemplateFactureCotisationCallbackParameters $parameters) {
-        $docDouanier = $this->getDocumentDouanier(null, $this->getPeriode());
+        $docDouanier = $this->getDocumentDouanier();
         if (!$docDouanier || $docDouanier->type != DRCsvFile::CSV_TYPE_DR) {
             return;
 
