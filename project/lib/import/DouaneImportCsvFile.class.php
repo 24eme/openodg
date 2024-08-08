@@ -9,8 +9,8 @@ class DouaneImportCsvFile {
 
     public $cvi = '';
     public $drev_produit_filter = '';
-    public $etablissement = '';
-    public $identifiant = '';
+    public $etablissement = null;
+    public $identifiant = null;
     public $raison_sociale = '';
     public $commune = '';
 
@@ -183,9 +183,16 @@ class DouaneImportCsvFile {
         return $csv;
     }
 
-    public function getRelatedDrev() {
+    public function loadEtablissement() {
+        if ($this->etablissement && $this->identifiant) {
+            return;
+        }
         $this->etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
         $this->identifiant = ($this->etablissement)? $this->etablissement->identifiant : null;
+    }
+
+    public function getRelatedDrev() {
+        $this->loadEtablissement();
         return DRevClient::getInstance()->retrieveRelatedDrev($this->identifiant, $this->campagne);
     }
 

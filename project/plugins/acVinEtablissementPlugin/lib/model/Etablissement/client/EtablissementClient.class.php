@@ -232,11 +232,10 @@ class EtablissementClient extends acCouchdbClient {
       $c = count($rows);
       if ($c && $c < 20) {
         foreach ($rows as $r) {
-          $e = $this->find($r->id, acCouchdbClient::HYDRATE_JSON);
+          $e = $this->find($r->id, $hydrate);
           if (!$with_suspendu && $e->statut == EtablissementClient::STATUT_SUSPENDU) {
               continue;
           }
-          $e = $this->find($r->id, $hydrate);
           if ($e) {
               return $e;
           }
