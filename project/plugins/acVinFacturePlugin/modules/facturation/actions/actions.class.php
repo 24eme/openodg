@@ -180,11 +180,8 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-<<<<<<< HEAD
-            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode()));
-=======
+
             $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')))));
->>>>>>> master
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
