@@ -45,23 +45,28 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     }
 
     public function getSuperficie($destinataireIdentifiant = null) {
+        $superficie = $this->_get('superficie');
         if($destinataireIdentifiant && $this->exist('destinations/'.$destinataireIdentifiant)) {
-
-            return $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
+            $superficie = $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
         } elseif($destinataireIdentifiant && $this->exist('destinations')) {
 
             return null;
         } elseif($destinataireIdentifiant && $destinataireIdentifiant != $this->getDocument()->identifiant) {
             return null;
+        }else{
+            if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
+                $superficie = $this->_get('superficie_affectation');
+                $this->_set('superficie', $superficie);
+            }
         }
 
-        if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
-            return $this->_get('superficie_affectation');
+        if ($superficie > $this->getSuperficieParcellaire()) {
+            $superficie = $this->getSuperficieParcellaire();
+            $this->_set('superficie', $superficie);
         }
 
-        return $this->_get('superficie');
+        return $superficie;
     }
-
     public function getSuperficieParcellaireAffectable() {
         $superficieAffectable = $this->getSuperficieParcellaire() - $this->getSuperficie();
 

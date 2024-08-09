@@ -113,6 +113,12 @@
 
             (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
                 el.addEventListener('change', function (event) {
+                    superficie = this.value;
+                    if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
+                        this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
+                    }else{
+                        this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
+                    }
                     const table = event.target.closest('table')
                     updateTotal(table)
                 })

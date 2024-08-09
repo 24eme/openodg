@@ -1,6 +1,6 @@
 <?php
 
-abstract class DeclarationParcellaireParcelle extends acCouchdbDocumentTree {
+abstract class DeclarationParcellaireParcelle extends ParcellaireParcelle {
 
     public function getProduit() {
 
