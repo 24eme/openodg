@@ -81,4 +81,14 @@ abstract class DeclarationParcellaireParcelle extends acCouchdbDocumentTree {
         return $this->_get('superficie_parcellaire');
     }
 
+    public function isExistingParcelle($docid = null) {
+        if (strpos($this->getHash(), '/declaration/') !== false) {
+            return false;
+        }
+        if ($docid && ($docid != $this->getDocument()->_id)) {
+            return false;
+        }
+        return true;
+    }
+
 }
