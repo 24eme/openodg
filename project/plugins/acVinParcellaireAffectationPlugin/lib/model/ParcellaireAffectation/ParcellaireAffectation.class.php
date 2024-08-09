@@ -359,17 +359,6 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return ($this->getParcellaire())? true : false;
     }
 
-    public function getParcelleFromParcellaire($id) {
-        $parcellaire = $this->getParcellaire();
-
-        if(!$parcellaire) {
-
-            return null;
-        }
-
-        return $parcellaire->getParcelleFromParcellaireId($id);
-    }
-
     public function getGeoJson() {
         $parcellaire = $this->getParcellaire();
 
