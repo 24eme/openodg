@@ -153,7 +153,7 @@ class parcellaireAffectationActions extends sfActions {
 
         $finded = false;
         $previous = null;
-        foreach($this->destinataires as $dId => $d) {
+        if (!$this->coop) foreach($this->destinataires as $dId => $d) {
             if($dId == $this->destinataire && $request->getParameter('previous')) {
                 break;
             }
