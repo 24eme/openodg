@@ -24,7 +24,7 @@
 $coop_id = explode('-', $coop)[1];
 foreach($destinataires as $id => $d):
 ?>
-    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if (strpos($destinataire, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
+    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if (strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
 <?php endforeach; ?>
 </ul>
 
