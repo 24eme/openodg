@@ -31,7 +31,7 @@ foreach($destinataires as $id => $d):
 <form id="validation-form" action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-
+    <?php $has_parcelles = false; ?>
     <?php foreach ($parcellaireAffectation->declaration->getGroupedParcelles() as $group => $parcelles): ?>
     <?php if ($group): ?>
         <div style="margin-bottom: 1em;" class="row">
@@ -60,6 +60,7 @@ foreach($destinataires as $id => $d):
     	</thead>
     	<tbody>
     	<?php
+      $has_parcelles = true;
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
     		foreach ($parcelles as $parcelle):
@@ -97,7 +98,9 @@ foreach($destinataires as $id => $d):
         </tbody>
     </table>
     <?php endforeach; ?>
-
+    <?php if (!$has_parcelles): ?>
+        <p class="m-5"><i>Pas de parcelles affectables trouvées</i></p>
+    <?php endif; ?>
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
             updateTotal = function (table) {
