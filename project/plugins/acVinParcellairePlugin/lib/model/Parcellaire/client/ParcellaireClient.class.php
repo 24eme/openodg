@@ -284,7 +284,7 @@ class ParcellaireClient extends acCouchdbClient {
             if(KeyInflector::slugify($parcelle->lieu) == KeyInflector::slugify($p->lieu)) {
                 $score += 0.25;
             }
-            if(abs($parcelle->getSuperficieParcellaire() - $p->getSuperficieParcellaire()) < 0.0001) {
+            if($parcelle->_get('parcelle_id') && abs($parcelle->getSuperficieParcellaire() - $p->getSuperficieParcellaire()) < 0.0001) {
                 $score += 0.25;
             }
             if (($parcelle->idu == $p->idu) || !$parcelle->getIDU(false) && ( ($parcelle->section == $p->section) && ($parcelle->numero_parcelle == $p->numero_parcelle) && (intval($parcelle->getPrefix()) == intval($p->prefix))) ) {

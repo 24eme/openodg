@@ -83,21 +83,14 @@ class ParcellaireIrrigue extends BaseParcellaireIrrigue implements InterfaceDecl
   }
 
   public function storeParcelles() {
+    //throw new sfException('storeParcelles');
   	if ($parcellaireIrrigable = $this->getParcellaireIrrigue()) {
   		foreach ($parcellaireIrrigable->declaration as $key => $parcelle) {
   			$item = $this->declaration->add($key);
   			$item->libelle = $parcelle->libelle;
   			foreach ($parcelle->detail as $subkey => $detail) {
   				$subitem = $item->detail->add($subkey);
-  				$subitem->superficie = $detail->superficie;
-  				$subitem->commune = $detail->commune;
-  				$subitem->code_commune = $detail->code_commune;
-  				$subitem->prefix = $detail->prefix;
-  				$subitem->section = $detail->section;
-  				$subitem->numero_parcelle = $detail->numero_parcelle;
-  				$subitem->idu = $detail->idu;
-  				$subitem->lieu = $detail->lieu;
-  				$subitem->cepage = $detail->cepage;
+  				ParcellaireClient::CopyParcelle($subitem, $detail);
   				$subitem->active = $detail->active;
 		  		if($detail->exist('vtsgn')) {
 		  			$subitem->add('vtsgn', (int)$detail->vtsgn);
