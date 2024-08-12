@@ -105,9 +105,9 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
             return $noms;
         }
         foreach($this->destinations as $d) {
-            $nom[] = $d->nom;
+            $noms[] = $d->nom;
         }
-        return $nom;
+        return $noms;
     }
 
     public function desaffecter(Etablissement $etablissement) {
