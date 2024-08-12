@@ -32,7 +32,6 @@
 										</label>
 								  	</div>
 								<?php endforeach; ?>
-							</ul>
 						</div>
 					</div>
 					<div class="row form-group">

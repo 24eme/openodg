@@ -55,7 +55,7 @@ if($etablissement->cvi && count($e) > 1):
         </div>
     <?php endif; ?>
 
-    <?php if ($sf_user->isAdmin() && isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
+    <?php if ($sf_user->isAdmin() && ($habilitation->getProduits()->getRawValue())): ?>
         <div class="row">
             <div class="col-xs-12">
                 <button class="btn btn-sm btn-default pull-right" id="editHabilitation" type="button"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Éditer l'habilitation</button>
