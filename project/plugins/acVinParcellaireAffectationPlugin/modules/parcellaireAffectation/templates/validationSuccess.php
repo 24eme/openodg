@@ -40,7 +40,7 @@
         <h2>Validation de votre déclaration</h2>
     </div>
 
-    <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+    <?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
 
     <div class="panel panel-default">
         <div class="panel-body">

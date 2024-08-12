@@ -49,7 +49,14 @@
         $nomCommune = null;
         $parcellesCommune = 0;
         $superficieCommune = 0;
+        $coop_id = '';
+        if (isset($coop) && $coop) {
+            $coop_id = explode('-', $coop)[1];
+        }
         foreach ($parcelles as $parcelle):
+            if ($coop_id && !$parcelle->destinations->exist($coop_id)) {
+                continue;
+            }
     ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie,4); ?>
         <?php if ($nomCommune != $parcelle->commune && $nbParcelles != 1): ?>
             <tr class="total-commune">
