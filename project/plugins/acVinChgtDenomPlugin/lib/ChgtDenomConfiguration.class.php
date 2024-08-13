@@ -34,4 +34,8 @@ class ChgtDenomConfiguration {
       return isset($this->configuration['specificite_lot']) && boolval($this->configuration['specificite_lot']);
     }
 
+    public function isDematEnabled() {
+        return isset($this->configuration['demat_enabled']) && boolval($this->configuration['demat_enabled']);
+    }
+
 }

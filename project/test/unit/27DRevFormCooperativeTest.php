@@ -2,6 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+if (!DRevConfiguration::getInstance()->isModuleEnabled()) {
+    $t = new lime_test();
+    $t->pass('no drev for '.$application);
+    return;
+}
 $t = new lime_test(9);
 
 $coop =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_coop')->getEtablissement();
@@ -68,8 +73,7 @@ $t->is($drev->getDocumentDouanierType(), "SV11", "Le document douanier de la DRe
 $drev->resetAndImportFromDocumentDouanier();
 $drev->save();
 unlink($csvTmpFile);
-
-$t->is(count($drev->getProduits()), 2 + DRevConfiguration::getInstance()->hasDenominationAuto(), "La DRev a repris 2 produits du csv de la SV11 (+1 si on prend la mention complémentaire)");
+$t->is(count($drev->getProduits()), 2 + DRevConfiguration::getInstance()->hasDenominationAuto() + DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() * 3, "La DRev a repris 2 produits du csv de la SV11 (+1 si on prend la mention complémentaire)");
 
 $produits = $drev->getProduits();
 

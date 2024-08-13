@@ -46,16 +46,22 @@
         <!-- ####### PLEASE KEEP ####### -->
 
         <header id="header">
-            <div class="container" style="position: relative; background-color: transparent; text-align: center;">
-                <a href="/">
-                <img style="float:left;position:relative" src="/images/logo_ventoux.png" alt="Syndicat de l'AOC Ventoux"/>
-                <img style="margin-left:70px;margin-top:3px;" src="/images/banniere.png" class="hidden-xs hidden-sm" alt="syndicat AOC Ventoux"/>
-                <p class="hidden-lg hidden-md" style="margin: 0px;">&nbsp;</p>
-                <p style="font-size: 15px;opacity:0.5"><strong>L'ESPACE PROFESSIONNEL DES VITICULTEURS DES CÔTES DU RHÔNE</strong></p>
-                </a>
+        <div class="container">
+              <div class="row">
+                <div class="col-xs-4 col-md-1">
+                  <div class="logo-site">
+                    <a href="/"><img style="margin-top: 5px;margin-bottom: 5px;" src="/images/logo_ventoux.png" alt="Logo AOC Ventoux" height="80px"></a>
+                  </div>
+                </div>
+                <div class="col-xs-8 col-md-11 text-center">
+                  <h1 class="h3">
+                      <span class="hidden-xs">Plateforme AOC Ventoux<br></span>
+                      <small>Espace déclaratif professionnel</small>
+                  </h1>
+                </div>
+              </div>
             </div>
         </header>
-
 
         <section id="content" class="container">
             <div class="page-header no-border">

@@ -33,6 +33,11 @@ class parcellaireManquantActions extends sfActions {
     		return $this->redirect('parcellairemanquant_' . $parcellaireManquant->etape, $parcellaireManquant);
     	}
 
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellairemanquant_parcelles', $parcellaireManquant);
+        }
+
     	return $this->redirect('parcellairemanquant_exploitation', $parcellaireManquant);
     }
     public function executeDelete(sfWebRequest $request) {
@@ -64,6 +69,7 @@ class parcellaireManquantActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireManquant);
 
     	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_EXPLOITATION))) {
@@ -106,6 +112,7 @@ class parcellaireManquantActions extends sfActions {
 
     public function executeParcelles(sfWebRequest $request) {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireManquant);
 
     	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_PARCELLES))) {
@@ -119,7 +126,7 @@ class parcellaireManquantActions extends sfActions {
     		return sfView::SUCCESS;
     	}
 
-    	$this->parcellaireManquant->addParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
+    	$this->parcellaireManquant->setParcellesFromParcellaire($request->getPostParameter('parcelles', array()));
 
     	$this->parcellaireManquant->save();
 
@@ -133,6 +140,7 @@ class parcellaireManquantActions extends sfActions {
 
     public function executeManquants(sfWebRequest $request) {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireManquant);
 
     	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_SAISIEINFOS))) {
@@ -168,6 +176,7 @@ class parcellaireManquantActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireManquant);
 
     	if($this->parcellaireManquant->storeEtape($this->getEtape($this->parcellaireManquant, ParcellaireManquantEtapes::ETAPE_VALIDATION))) {
@@ -178,10 +187,11 @@ class parcellaireManquantActions extends sfActions {
 	       	$this->parcellaireManquant->validateOdg();
 	    }
 
-    	$this->form = new ParcellaireManquantValidationForm($this->parcellaireManquant);
+        $this->validation = new ParcellaireManquantValidation($this->parcellaireManquant);
+
+        $this->form = new ParcellaireManquantValidationForm($this->parcellaireManquant, ['engagements' => $this->validation->getEngagements()]);
 
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    		$this->validation = new ParcellaireManquantValidation($this->parcellaireManquant);
     		return sfView::SUCCESS;
     	}
 
@@ -194,7 +204,7 @@ class parcellaireManquantActions extends sfActions {
 
     	$this->form->save();
 
-    	$this->getUser()->setFlash("notice", "Vos parcelles irrigables ont bien été enregistrées");
+    	$this->getUser()->setFlash("notice", "Vos informations ont bien été enregistrées");
     	return $this->redirect('parcellairemanquant_visualisation', $this->parcellaireManquant);
     }
 
@@ -221,6 +231,7 @@ class parcellaireManquantActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
     	$this->parcellaireManquant = $this->getRoute()->getParcellaireManquant();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireManquant);
     }
 
@@ -234,6 +245,9 @@ class parcellaireManquantActions extends sfActions {
     }
 
     protected function secure($droits, $doc) {
+        if ($this->getUser()->isAdminODG()) {
+            return ;
+        }
     	if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
     		return $this->forwardSecure();

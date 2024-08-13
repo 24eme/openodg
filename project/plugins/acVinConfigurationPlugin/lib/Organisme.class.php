@@ -11,19 +11,30 @@ class Organisme
     private $type = null;
 
     public static function getCurrentRegion() {
+        if(sfConfig::get('app_region')) {
+            return strtoupper(sfConfig::get('app_region'));
+        }
 
-        return strtoupper(self::getCurrentOrganisme());
+        if (sfContext::hasInstance() && sfContext::getInstance()->getUser()->getRegion()) {
+            return strtoupper(sfContext::getInstance()->getUser()->getRegion());
+        }
+        return null;
+    }
+
+    public static function getOIRegion() {
+        return 'OIVC';
     }
 
     public static function getCurrentOrganisme() {
-
-        return sfConfig::get('sf_app');
+        $region = self::getCurrentRegion();
+        if ($region) {
+            return $region;
+        }
+        return strtoupper(sfConfig::get('sf_app'));
     }
 
     public static function getInstance($region = null, $type = self::DEFAULT_TYPE) {
-        if(is_null($region)) {
-            $region = self::getCurrentRegion();
-        }
+        $region = ($region) ?: self::getCurrentOrganisme();
 
         if (in_array($type, [self::DEGUSTATION_TYPE, self::FACTURE_TYPE]) === false) {
             $type = self::DEFAULT_TYPE;
@@ -51,15 +62,28 @@ class Organisme
         return $app;
     }
 
-    public function getInfos() {
-        $infos = self::getStaticInfos($this->region, $this->type);
-
-        if (!array_key_exists($this->region, $infos)) {
-            throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
-        }
-
-        return $infos[$this->region];
+    public function isOC()
+    {
+        $oc = RegionConfiguration::getInstance()->getOC();
+        return Organisme::getCurrentOrganisme() === $oc;
     }
+
+    public function getInfos() {
+       $infos = (sfConfig::has('app_'.$this->type.'_emetteur'))
+                   ? sfConfig::get('app_'.$this->type.'_emetteur')
+                   : sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
+
+       if (!$infos || !array_key_exists($this->region, $infos)) {
+           $infos = sfConfig::get('app_'.self::DEFAULT_TYPE.'_emetteur');
+           return $infos;
+       }
+
+       if (!array_key_exists($this->region, $infos)) {
+           throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
+       }
+
+       return $infos[$this->region];
+   }
 
     public function getInfo($key) {
         $infos = $this->getInfos();
@@ -150,6 +174,14 @@ class Organisme
     public function getUrl() {
 
         return $this->getInfo('url');
+    }
+
+    public function getLogoPath() {
+        return sfConfig::get('sf_web_dir')."/".$this->getLogoWebPath();
+    }
+
+    public function getLogoWebPath() {
+        return 'images/logo_'.strtolower($this->region).'.png';
     }
 
     public function getLogoPdfPath() {

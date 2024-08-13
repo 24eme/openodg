@@ -6,7 +6,8 @@ class globalActions extends sfActions {
 
     }
 
-    public function executeError403() {
+    public function executeError403(sfWebRequest $request) {
+        $this->identifiant = $request->getParameter('identifiant');
         $this->getResponse()->setStatusCode(403);
     }
 

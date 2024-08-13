@@ -58,6 +58,7 @@ $produit1->volume_revendique_issu_recolte = 80;
 $drev->addLot();
 $drev->lots[0]->numero_logement_operateur = '1';
 $drev->lots[0]->volume = 1;
+$drev->lots[0]->produit_hash = $produitconfig1->getHash();
 $drev->validate($dateValidation);
 $drev->validateOdg($dateValidation);
 $drev->save();

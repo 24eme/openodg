@@ -6,7 +6,18 @@
 
 class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclaration {
 
-    public function getParcellesByCommune($onlyAffectee = false) {
+    public $isDgcGroup = false;
+
+    public function getGroupedParcelles($onlyAffectee = false) {
+        $parcelles = $this->getParcellesByDgc($onlyAffectee);
+        if (count(array_keys($parcelles)) > 1) {
+            $this->isDgcGroup = true;
+            return $parcelles;
+        }
+        return $this->getParcellesByCommune($onlyAffectee);
+    }
+
+    public function getParcellesByCommune($onlyAffectee = true) {
         $parcelles = array();
 
         foreach($this->getParcelles() as $hash => $parcelle) {

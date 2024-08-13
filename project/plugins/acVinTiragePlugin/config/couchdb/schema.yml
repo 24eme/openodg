@@ -50,6 +50,7 @@ Tirage:
                 fields:
                   libelle: { }
                   selectionne: { type: integer }
+      region: { required: false }
       millesime: { }
       millesime_libelle: { }
       millesime_ventilation: { }

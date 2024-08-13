@@ -69,7 +69,6 @@ class parcellaireActions extends sfActions {
     {
         $this->secureTeledeclarant();
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $parcellaire_client = ParcellaireClient::getInstance();
         $this->noscrape = $request->getParameter('noscrape', false);
 
         try {
@@ -79,10 +78,13 @@ class parcellaireActions extends sfActions {
 
             $msg = '';
 
-            if (! $parcellaire_client->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
+            if (! ParcellaireClient::getInstance()->saveParcellaire($this->etablissement, $errors, null, !($this->noscrape)) ) {
                 $msg = $errors['csv'].'\n'.$errors['json'];
             }
         } catch (Exception $e) {
+            if (sfConfig::get('sf_environment') == 'dev') {
+                throw $e;
+            }
             $msg = $e->getMessage();
         }
 

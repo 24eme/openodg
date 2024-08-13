@@ -57,5 +57,11 @@
 				<div class="col-xs-4"><a href="<?php echo url_for("degustation_anonymats_etape", $degustation) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a></div>
 				<div class="col-xs-4 text-center">
 				</div>
-				<div class="col-xs-4 text-right"><a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_notifications_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a></div>
+				<div class="col-xs-4 text-right">
+                    <?php if (!DegustationConfiguration::getInstance()->hasNotification()) : ?>
+                    <a href="<?php echo url_for("degustation_cloture", $degustation) ?>" class="btn btn-primary btn-upper">Cloturer la dégustation <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    <?php else: ?>
+                    <a id="btn_suivant" class="btn btn-primary btn-upper" href="<?php echo url_for('degustation_notifications_etape', $degustation) ?>" >Valider&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></a>
+                    <?php endif; ?>
+                </div>
 		</div>

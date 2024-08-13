@@ -38,7 +38,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         return $apporteurs;
     }
 
-    protected function addApporteur($id_etablissement) {
+    public function addApporteur($id_etablissement) {
         if($this->apporteurs->exist($id_etablissement)) {
 
             return $this->apporteurs->get($id_etablissement);
@@ -63,7 +63,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         $sv11 = SV11Client::getInstance()->find("SV11-".$this->identifiant."-".($this->getPeriode() - 1));
 
         $apporteurs = $this->apporteurs;
-        $sv11Apporteurs = $sv11->getApporteurs();
+        $sv11Apporteurs = $sv11 ? $sv11->getApporteurs() : [];
         $apporteursArray = array();
 
         // Depuis les liaisons
@@ -89,11 +89,15 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function updateApporteurs() {
         foreach($this->getApporteursChoisis() as $apporteur) {
-            if($apporteur->getAffectationParcellaire()) {
+            if($apporteur->getDocument(ParcellaireAffectationClient::TYPE_MODEL)) {
                 continue;
             }
-            $apporteur->updateParcelles();
-            $apporteur->intention = ($apporteur->nb_parcelles_identifiees);
+            try {
+                $apporteur->updateParcelles();
+                $apporteur->intention = ($apporteur->nb_parcelles_identifiees);
+            }catch(sfException $e) {
+
+            }
         }
     }
 
@@ -115,7 +119,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if($apporteur->getEtablissementObject()->isSuspendu()) {
                 continue;
             }
-          
+
             $retires[] = $apporteur;
         }
         $ajoutes = array();
@@ -126,7 +130,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if(isset($liaisons[$apporteur->getEtablissementId()])) {
                 continue;
             }
-          
+
             $ajoutes[] = $apporteur;
         }
 

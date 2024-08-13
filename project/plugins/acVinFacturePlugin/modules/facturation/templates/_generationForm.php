@@ -1,5 +1,5 @@
 
-<h3><?php if($massive): ?>Génération massive <small> (<a href="<?php echo url_for('facturation_en_attente'); ?>">mvt en attente</a>)</small><?php else: ?>Génération de facture<?php endif; ?></h3>
+<h3><?php if($massive): ?>Génération massive <small> (<a href="<?php echo url_for('facturation_en_attente'); ?>">mvt en attente</a>)</small><?php else: ?>Génération de facture<?php endif; ?> <a class="btn btn-default btn-sm" href="<?php echo url_for('facturation_libre'); ?>">facturation libre</a></h3>
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -69,7 +69,7 @@
             <?php endif; ?>
 
             <div class="form-group text-right">
-                <div class="col-xs-3 col-xs-offset-6">
+                <div class="col-xs-3 col-xs-offset-3">
                     <button class="btn btn-default btn-block btn-upper" type="submit"><?php if($massive): ?>Générer<?php else: ?>Générer la facture<?php endif; ?></button>
                 </div>
             </div>

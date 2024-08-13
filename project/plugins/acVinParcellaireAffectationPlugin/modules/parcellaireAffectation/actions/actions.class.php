@@ -33,6 +33,11 @@ class parcellaireAffectationActions extends sfActions {
     		return $this->redirect('parcellaireaffectation_' . $parcellaireAffectation->etape, $parcellaireAffectation);
     	}
 
+        if($request->getParameter('coop')) {
+
+            return $this->redirect('parcellaireaffectation_affectations', $parcellaireAffectation);
+        }
+
     	return $this->redirect('parcellaireaffectation_exploitation', $parcellaireAffectation);
     }
     public function executeDelete(sfWebRequest $request) {
@@ -43,7 +48,7 @@ class parcellaireAffectationActions extends sfActions {
     	$parcellaireAffectation->delete();
     	$this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => ($parcellaireAffectation->periode - 1).'-'.$parcellaireAffectation->periode));
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $parcellaireAffectation->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -62,7 +67,8 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
-    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
+        $this->coop = $request->getParameter('coop');
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_EXPLOITATION))) {
     		$this->parcellaireAffectation->save();
     	}
@@ -103,7 +109,16 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeAffectations(sfWebRequest $request) {
         $this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
-    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
+        $this->coop = $request->getParameter('coop');
+        $this->destinataire = $request->getParameter('destinataire', $this->parcellaireAffectation->getEtablissementObject()->_id);
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
+
+        if ($this->coop) {
+            $coop_id = explode('-', $this->coop)[1];
+            if (strpos($this->destinataire, $coop_id) === false) {
+                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => 'ETABLISSEMENT-'.$coop_id]);
+            }
+        }
 
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_AFFECTATIONS))) {
     		$this->parcellaireAffectation->save();
@@ -113,7 +128,9 @@ class parcellaireAffectationActions extends sfActions {
 
     	$this->etablissement = $this->parcellaireAffectation->getEtablissementObject();
 
-		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation);
+		$this->form = new ParcellaireAffectationProduitsForm($this->parcellaireAffectation, $this->destinataire);
+
+        $this->destinataires = $this->parcellaireAffectation->getDestinataires();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -129,13 +146,43 @@ class parcellaireAffectationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('parcellaireaffectation_validation', $this->parcellaireAffectation);
+        if($request->getParameter('saveandquit')) {
+
+            return $this->redirect('declaration_etablissement', $this->parcellaireAffectation->getEtablissementObject());
+        }
+
+        $finded = false;
+        $previous = null;
+        if (!$this->coop) foreach($this->destinataires as $dId => $d) {
+            if($dId == $this->destinataire && $request->getParameter('previous')) {
+                break;
+            }
+            $previous = $dId;
+            if($finded) {
+                return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $dId]);
+            }
+            if($dId == $this->destinataire && !$request->getParameter('previous')) {
+                $finded = true;
+            }
+
+
+        }
+        if($request->getParameter('previous') && $previous) {
+            return $this->redirect('parcellaireaffectation_affectations', ['sf_subject' => $this->parcellaireAffectation, 'destinataire' => $previous]);
+        }
+
+        if($request->getParameter('previous')) {
+            $this->redirect('parcellaireaffectation_exploitation', ['sf_subject' => $this->parcellaireAffectation]);
+        }
+
+        return $this->redirect('parcellaireaffectation_validation', ['sf_subject' => $this->parcellaireAffectation]);
 
     }
 
     public function executeValidation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
-    	$this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
+        $this->coop = $request->getParameter('coop');
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaireAffectation);
 
     	if($this->parcellaireAffectation->storeEtape($this->getEtape($this->parcellaireAffectation, ParcellaireAffectationEtapes::ETAPE_VALIDATION))) {
     		$this->parcellaireAffectation->save();
@@ -188,6 +235,7 @@ class parcellaireAffectationActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
     	$this->parcellaireAffectation = $this->getRoute()->getParcellaireAffectation();
+        $this->coop = $request->getParameter('coop');
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireAffectation);
     }
 

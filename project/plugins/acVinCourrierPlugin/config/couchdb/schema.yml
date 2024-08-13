@@ -1,0 +1,170 @@
+Courrier:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      _attachments:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
+      numero_dossier: {  }
+      numero_archive: {  }
+      type: { }
+      identifiant: { }
+      type: {  }
+      date: { }
+      courrier_type: { }
+      courrier_titre: { }
+      lots:
+      mouvement_lots: { required: false}
+      region: { require: false }
+      declarant:
+        type: collection
+        class: CourrierDeclarant
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
+            fax: { }
+            email: { }
+            famille: { }
+      lots:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: CourrierLot
+              inheritance: Lot
+              definition:
+                fields:
+                  date: { }
+                  id_document: { }
+                  unique_id: { }
+                  initial_type: { }
+                  id_document_provenance: { }
+                  id_document_affectation: { }
+                  date_commission: { }
+                  campagne: {}
+                  numero_dossier: {  }
+                  numero_archive: {  }
+                  numero_logement_operateur: { }
+                  declarant_identifiant: { }
+                  declarant_nom: { }
+                  millesime: { }
+                  volume: { type: float }
+                  quantite: { required: false }
+                  destination_type: { }
+                  destination_date: { }
+                  produit_hash: { }
+                  produit_libelle: { }
+                  elevage: { }
+                  eleve: { }
+                  statut: {}
+                  adresse_logement: {}
+                  secteur: {}
+                  specificite: { }
+                  centilisation: { required: false }
+                  affectable: { }
+                  document_fils: { required: false }
+                  document_ordre: { }
+                  engagement_8515: { required: false }
+                  secteur: { required: false }
+                  cepages:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: float }
+                  details: {}
+                  conformite: {}
+                  motif: {}
+                  specificite: {}
+                  centilisation: { }
+                  observation: {}
+                  email_envoye: { }
+                  nombre_degustation: {required: false}
+                  doc_ordre: {required: false}
+                  affectable: {}
+                  recours_oc: {}
+                  conforme_appel: {}
+                  nonconformite_levee: {}
+                  a_redeguster: {required: false}
+                  engagement_8515: { required: false }
+                  preleve: {}
+                  secteur: {}
+                  prelevement_datetime: {}
+      mouvements_lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: CourrierMouvementLots
+                    inheritance: MouvementLots
+                    type: collection
+                    definition:
+                      fields:
+                        date: {  }
+                        campagne: {}
+                        numero_dossier: {  }
+                        numero_archive: {  }
+                        date_commission: { }
+                        date_notification: { }
+                        libelle: {}
+                        detail: {}
+                        volume: { type: float }
+                        version: {  }
+                        document_ordre: {  }
+                        document_type: {  }
+                        document_id: {  }
+                        initial_type: { }
+                        lot_unique_id: {  }
+                        lot_hash: {  }
+                        declarant_identifiant: {  }
+                        declarant_nom: {  }
+                        statut: {}
+                        region: { require: false }
+      extras:
+        type: collection
+        required: false
+        definition:
+          fields:
+            '*': { }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: CourrierPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

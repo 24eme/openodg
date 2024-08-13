@@ -14,6 +14,9 @@ Degustation:
       tri : { }
       provenance: { required: false }
       numero_archive: {  }
+      region: {  }
+      validation: { required: false }
+      validation_oi: { required: false }
       lots:
         type: array_collection
         definition:
@@ -40,6 +43,7 @@ Degustation:
                   document_ordre: {  }
                   millesime: { }
                   volume: { type: float }
+                  quantite: { required: false }
                   destination_type: { }
                   destination_date: { }
                   produit_hash: { }
@@ -75,6 +79,8 @@ Degustation:
                   engagement_8515: { required: false }
                   preleve: {}
                   secteur: {}
+                  prelevement_datetime: {}
+                  prelevement_heure: { required: false}
       mouvements_lots:
         type: collection
         definition:
@@ -118,6 +124,7 @@ Degustation:
                         affectable: { required: false }
                         a_redeguster: {required: false}
                         recours_oc: { required: false }
+                        region: { required: false }
       mouvements:
         type: collection
         definition:
@@ -150,6 +157,7 @@ Degustation:
                         categorie: {  }
                         type: {  }
                         campagne: {  }
+                        region: { required: false }
       degustateurs:
         type: collection
         definition:

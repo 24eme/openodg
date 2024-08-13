@@ -14,12 +14,12 @@ Le tableau suivant récapitule le volume total revendiqué et le volume seuil qu
 <?php foreach ($drev->getProduitsHashWithVolumeSeuil() as $produit_hash): ?>
 <?php
         $td_extra_class = "";
-        if ( $drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash()) - $drev->getVolumeRevendiqueSeuil($produit_hash) > 0) {
+        if ( $drev->getVolumeRevendiqueLotsWithFilterAppellations($drev->declaration->get($produit_hash)->getConfig()->getHash()) - $drev->getVolumeRevendiqueSeuil($produit_hash) > 0) {
             $td_extra_class = " danger text-danger";
         }
 ?>
       <th class="<?php echo $td_extra_class; ?>"><?php echo $drev->declaration->get($produit_hash)->getConfig()->getLibelleComplet(); ?> <?php echo $drev->getDefaultMillesime() ?></th>
-      <td class="text-right<?php echo $td_extra_class; ?>"><?php echoFloat($drev->getVolumeRevendiqueLots($drev->declaration->get($produit_hash)->getConfig()->getHash()), true);?> hl</td>
+      <td class="text-right<?php echo $td_extra_class; ?>"><?php echoFloat($drev->getVolumeRevendiqueLotsWithFilterAppellations($drev->declaration->get($produit_hash)->getConfig()->getHash()), true);?> hl</td>
       <td class="text-right<?php echo $td_extra_class; ?>"><?php echoFloat($drev->getVolumeRevendiqueSeuil($produit_hash), true);?> hl</td>
     </tr>
 <?php endforeach; ?>

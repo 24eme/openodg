@@ -12,6 +12,7 @@
             </div>
             <div class="col-md-6">
                 <button type="button" tabindex="-1" class="close lot-delete" title="Supprimer ce lot" aria-hidden="true">×</button>
+                <?php if (isset($form['cepage_0'])): ?>
                 <div class="form-group">
                     <div class="col-sm-11">
                         <div class="checkbox checkboxlots">
@@ -24,6 +25,7 @@
                         </div>
                     </div>
                 </div>
+                <?php endif ?>
             </div>
         </div>
         <div class="row">
@@ -41,9 +43,9 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <?php echo $form['millesime']->renderLabel("Millesime", array('class' => "col-sm-4 control-label")); ?>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <div class="input-group">
-                            <?php echo $form['millesime']->render(); ?>
+                            <?php echo $form['millesime']->render(array('class' => "form-control text-right", 'maxlength' => "4")); ?>
                         </div>
                     </div>
                 </div>
@@ -92,13 +94,26 @@
                     </div>
                 </div>
             </div>
+            <?php if (isset($form['quantite'])): ?>
+            <div class="col-md-6">
+                <?php echo $form['quantite']->renderError(null, array('class' => "col-sm-4 control-label")) ?>
+                <div class="form-group<?php if ($form['quantite']->getError()): ?> has-error<?php endif ?>">
+                    <?php echo $form['quantite']->renderLabel(null, array('class' => "col-sm-4 control-label")); ?>
+                    <div class="col-sm-5">
+                        <?php echo $form['quantite']->render(array('placeholder' => "Nombre de cols")); ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif ?>
         </div>
+        <?php if (isset($form['elevage'])): ?>
         <div class="row mb-3">
             <div class="col-md-offset-8 col-md-3 <?php if(!DRevConfiguration::getInstance()->hasSpecificiteLot()): ?>col-md-offset-6<?php endif ?>">
                 <?php echo $form['elevage']->render() ?>
                 <?php echo $form['elevage']->renderLabel('Lot prévu en élevage') ?>
             </div>
         </div>
+        <?php endif ?>
     </div>
 </div>
 <div class="modal fade modal_lot_cepages" data-inputvolumeid="<?php echo $form['volume']->renderId() ?>" id="<?php echo $lotHtmlId ?>cepages" role="dialog" aria-labelledby="Mention de cépages" aria-hidden="true">
@@ -122,7 +137,8 @@
                           </div>
                         </div>
                       </div>
-                <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
+                        <?php if (isset($form['cepage_0'])): ?>
+                        <?php for($i=0; $i < DRevLotForm::NBCEPAGES; $i++): ?>
                             <div class="form-group ligne_lot_cepage ">
                                 <div class="col-sm-8">
                                     <?php echo $form['cepage_'.$i]->render(array("data-placeholder" => "Séléctionnez un cépage", "class" => "form-control selectCepage select2 select2-offscreen select2autocomplete")); ?>
@@ -139,6 +155,7 @@
                                 </div>
                             </div>
                         <?php endfor; ?>
+                        <?php endif; ?>
                         <div class="form-group ligne_volume_total">
                             <div class="col-sm-4"></div>
                             <div class="col-sm-4 text-right">

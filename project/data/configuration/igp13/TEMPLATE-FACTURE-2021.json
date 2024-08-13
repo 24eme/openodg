@@ -132,9 +132,9 @@
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "/appellations/APL"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/APL"
+          }
         }
       }
     },
@@ -155,9 +155,9 @@
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "/appellations/D13/mentions/DEFAUT/lieux/TDC"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/D13/mentions/DEFAUT/lieux/TDC"
+          }
         }
       }
     },
@@ -178,9 +178,9 @@
             "DRev"
           ],
           "callback": "getVolumeLotsFacturables",
-          "callback_parameters": [
-            "/appellations/MED"
-          ]
+          "callback_parameters": {
+              "appellations": "/appellations/MED"
+          }
         },
         "changement": {
           "modele": "CotisationVariable",
@@ -193,9 +193,9 @@
             "ChgtDenom"
           ],
           "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "/appellations/MED"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/MED"
+          }
         }
       }
     },
@@ -215,9 +215,10 @@
             "ChgtDenom"
           ],
           "callback": "getVolumeFacturable",
-          "callback_parameters": [
-            "/appellations/MED AND NOT /millesime/courant"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/MED",
+            "millesime": "NOT /millesime/courant"
+          }
         }
       }
     },

@@ -14,3 +14,4 @@ all:
         "teledeclaration_drev_admin": "ODG Région"
         "adelphe": "Adelphe"
       visualisation_teledeclaration: true
+      enable_groupes: true

@@ -139,12 +139,26 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
       }
 
       public function save() {
+          $regions = $this->getRegions();
+          if (count($regions)) {
+              $this->add('region', implode('|', $regions));
+          }
           $this->superficies_facturables = $this->calculSurfaceFacturable();
           return parent::save();
       }
 
       protected function doSave() {
         $this->piece_document->generatePieces();
+      }
+
+      public function getRegions() {
+          $regions = array();
+          if (class_exists('RegionConfiguration')) {
+              foreach ($this->getProduits() as $produit) {
+                  $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+              }
+          }
+          return array_filter(array_unique($regions));
       }
 
       public function isStockUtiliseEntierement() {

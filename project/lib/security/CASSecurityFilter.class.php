@@ -29,7 +29,7 @@ class CASSecurityFilter extends sfBasicSecurityFilter
    {
           if (!$this->context->getUser()->isAuthenticated() && ($this->request->getParameter('ticket') || isset($_SESSION["phpCAS"]["user"]))) {
            acCas::processAuth();
-           if ($_SESSION['app_cas_origin'] == 'viticonnect') {
+           if (isset($_SESSION['app_cas_origin']) && strpos($_SESSION['app_cas_origin'],'viticonnect') !== false) {
                foreach(array('cvi', 'accises', 'siret') as $type ) {
                    foreach (explode('|', acCas::getAttribute('viticonnect_entities_all_'.$type)) as $id) {
                        $e = EtablissementClient::getInstance()->findByCviOrAcciseOrPPMOrSirenOrTVA($id);
@@ -41,7 +41,10 @@ class CASSecurityFilter extends sfBasicSecurityFilter
                if ($e && $e->getSociete() && $e->getSociete()->getMasterCompte()) {
                    $this->getContext()->getUser()->signInOrigin($e->getSociete()->getMasterCompte()->identifiant);
                } else {
-                   throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
+                   if (acCas::getConfig('sf_environment') == 'dev') {
+                       throw new sfException('identifiant viticonnect non reconnu : '.implode(', ', acCas::getAttributes()));
+                   }
+                   return $this->getContext()->getUser()->signInOrigin(acCas::getUser());
                }
            } else {
                $this->getContext()->getUser()->signInOrigin(acCas::getUser());

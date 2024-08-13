@@ -53,10 +53,12 @@ ParcellaireIrrigue:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_parcellaire: { type: float }
                               commune: { }
                               code_commune: { }
                               section: { }
                               numero_parcelle: { }
+                              numero_ordre: { }
                               idu: { }
                               lieu: {  }
                               prefix: { }
@@ -69,6 +71,10 @@ ParcellaireIrrigue:
                               ressource: {  }
                               irrigation: {  }
                               date_irrigation: {  }
+                              produit_hash: { }
+                              parcelle_id: { }
+                              source_produit_libelle: { }
+      required: { required: false }
       observations: {  }
       pieces:
         type: array_collection

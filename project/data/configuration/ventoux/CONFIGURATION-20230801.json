@@ -128,7 +128,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1R534S",
-                                "cepages_autorises": [],
+                                "cepages_autorises": ["CARIGNAN N", "CINSAUT N", "CINSAULT N", "GRENACHE N", "MOURVEDRE N", "SYRAH N", "BOURBOULENC B", "CLAIRETTE B", "COUNOISE N", "GRENACHE BLANC B", "MARSANNE B", "MARSELAN N", "PIQUEPOUL NOIR N", "ROUSSANNE B", "VERMENTINO B", "VIOGNIER B", "CALADOC N"],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -141,9 +141,11 @@
                             },
                             "attributs": {
                               "rendement": 60,
-                              "rendement_vci": 6,
-                              "rendement_vci_total": 18,
-                              "rendement_conseille": 55
+                              "rendement_vci": 0,
+                              "rendement_vci_total": 27,
+                              "rendement_conseille": 55,
+                              "rendement_dr_l5": 60,
+                              "rendement_dr_l15": 55
                             }
                           },
                           "rose": {
@@ -171,7 +173,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1S534S",
-                                "cepages_autorises": [],
+                                "cepages_autorises": ["CARIGNAN N", "CINSAUT N", "GRENACHE N", "MOURVÈDRE N", "SYRAH N", "BOURBOULENC B", "CLAIRETTE B", "COUNOISE N", "GRENACHE BLANC B", "MARSANNE B", "MARSELAN N", "PIQUEPOUL NOIR N", "ROUSSANNE B", "VERMENTINO B", "VIOGNIER B", "CALADOC N"],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -184,9 +186,11 @@
                             },
                             "attributs": {
                               "rendement": 60,
-                              "rendement_vci": 6,
-                              "rendement_vci_total": 18,
-                              "rendement_conseille": 55
+                              "rendement_vci": 0,
+                              "rendement_vci_total": 27,
+                              "rendement_conseille": 55,
+                              "rendement_dr_l5": 60,
+                              "rendement_dr_l15": 55
                             }
                           },
                           "blanc": {
@@ -214,7 +218,7 @@
                                 "code_produit": null,
                                 "code_comptable": null,
                                 "code_douane": "1B534S",
-                                "cepages_autorises": [],
+                                "cepages_autorises": ["BOURBOULENC B", "CLAIRETTE B", "GRENACHE BLANC B", "ROUSSANNE B", "VERMENTINO B", "VIOGNIER B",  "MARSANNE B"],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -229,7 +233,9 @@
                               "rendement": 60,
                               "rendement_vci": null,
                               "rendement_vci_total": null,
-                              "rendement_conseille": 60
+                              "rendement_conseille": 60,
+                              "rendement_dr_l5": 60,
+                              "rendement_dr_l15": 60
                             }
                           }
                         }

@@ -100,6 +100,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span><span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo url_for("produits") ?>">Catalogue produit</a></li>
+                    <li><a href="<?php echo url_for("generation_list") ?>">Tâches récurrentes</a></li>
                   </ul>
                 </li>
                 <?php endif; ?>

@@ -26,9 +26,10 @@
             "DRev"
           ],
           "callback": "hasVolumeRevendiqueLots",
-          "callback_parameters": [
-            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE AND /appellations/CDG"
-          ]
+          "callback_parameters": {
+            "famille": "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE",
+            "appellations": "/appellations/CDG"
+          }
         }
       }
     },
@@ -49,9 +50,10 @@
             "DRev"
           ],
           "callback": "hasVolumeRevendiqueLots",
-          "callback_parameters": [
-            "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE AND /appellations/CDG"
-          ]
+          "callback_parameters": {
+            "famille": "NOT NEGOCIANT_VINIFICATEUR,COOPERATIVE",
+            "appellations": "/appellations/CDG"
+          }
         }
       }
     },
@@ -72,9 +74,9 @@
             "DRev"
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
-          "callback_parameters": [
-            "/appellations/CDG"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/CDG"
+          }
         }
       }
     },
@@ -95,9 +97,9 @@
             "DRev"
           ],
           "callback": "getNbApporteursPlusOneFromDouane",
-          "callback_parameters": [
-            "/appellations/CDG"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/CDG"
+          }
         }
       }
     },
@@ -118,9 +120,9 @@
             "DRev"
           ],
           "callback": "getVolumeRevendiqueNumeroDossier",
-          "callback_parameters": [
-            "/appellations/CDG"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/CDG"
+          }
         }
       }
     },
@@ -141,9 +143,9 @@
             "DRev"
           ],
           "callback": "getVolumeRevendiqueNumeroDossier",
-          "callback_parameters": [
-            "/appellations/GER"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/GER"
+          }
         }
       }
     },
@@ -164,9 +166,9 @@
             "DRev"
           ],
           "callback": "getVolumeRevendiqueNumeroDossier",
-          "callback_parameters": [
-            "/appellations/COT"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/COT"
+          }
         }
       }
     },
@@ -207,9 +209,9 @@
             "Degustation"
           ],
           "callback": "buildMouvementsFacturesLotRedeguste",
-          "callback_parameters": [
-            "/appellations/CDG"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/CDG"
+          }
         }
       }
     },
@@ -230,9 +232,9 @@
             "Degustation"
           ],
           "callback": "buildMouvementsFacturesLotRedeguste",
-          "callback_parameters": [
-            "/appellations/GER"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/GER"
+          }
         }
       }
     },
@@ -253,9 +255,9 @@
             "Degustation"
           ],
           "callback": "buildMouvementsFacturesLotRedeguste",
-          "callback_parameters": [
-            "/appellations/COT"
-          ]
+          "callback_parameters": {
+            "appellations": "/appellations/COT"
+          }
         }
       }
     }

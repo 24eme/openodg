@@ -3,8 +3,14 @@
 class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
 
     public function configure() {
-		foreach ($this->getObject()->declaration as $key => $value) {
-			$this->embedForm($key, new ParcellaireIntentionAffectationProduitAffectesForm($value));
+		foreach ($this->getObject()->getParcellesByDgc() as $key => $values) {
+            foreach($values as $value)  {
+                $parcelle = $this->getObject()->getParcelleFromParcelleReference($value);
+                if (!$parcelle) {
+                    $parcelle = $value;
+                }
+                $this->embedForm($value->produit_hash.'/'.$value->parcelle_id, new ParcellaireIntentionAffectationProduitAffecteForm($parcelle));
+            }
 		}
 
         $this->widgetSchema->setNameFormat('parcelles[%s]');
@@ -12,25 +18,33 @@ class ParcellaireIntentionAffectationProduitsForm extends acCouchdbObjectForm {
 
     protected function doUpdateObject($values) {
 		parent::doUpdateObject($values);
-    	foreach ($values as $produit => $value) {
-    		if (!is_array($value)) continue;
-    		foreach ($value as $detail => $items) {
-    			$node = $this->getObject()->declaration->get($produit);
-    			$node = $node->detail->get($detail);
-    			foreach ($items as $k => $v) {
-    				$node->add($k, $v);
-    				if (!$node->date_affectation && $v) {
-    				    $node->date_affectation = date('Y-m-d');
-    				}
-    				if ($node->date_affectation && !$v) {
-    				    $node->date_affectation = null;
-    				}
-    				if (!$v) {
-    				    $node->superficie_affectation = $node->superficie;
-    				}
-    			}
-    		}
-    	}
+        $obj = $this->getObject();
+        $obj->remove('declaration');
+        $obj->add('declaration');
+        foreach ($obj->getParcellesByDgc() as $dgc_key => $parcelles) {
+            foreach($parcelles as $parcelle)  {
+                $key = $parcelle->produit_hash.'/'.$parcelle->parcelle_id;
+                $value = $values[$key];
+                if (!isset($values[$key])) {
+                    continue;
+                }
+                if (!$value['affectation']) {
+                    continue;
+                }
+    			$node = $obj->declaration->add(str_replace('/declaration/', '', $parcelle->produit_hash));
+    			$node = $node->detail->add($parcelle->parcelle_id);
+                ParcellaireClient::CopyParcelle($node, $parcelle);
+                $node->affectation = 1;
+                if (!$node->date_affectation) {
+                    $node->date_affectation = date('Y-m-d');
+                }
+                if ($value['superficie']) {
+                    $node->superficie = $value['superficie'];
+                }else{
+                    $node->superficie = $value->getSuperficieParcellaire();
+                }
+            }
+        }
     }
 
 }

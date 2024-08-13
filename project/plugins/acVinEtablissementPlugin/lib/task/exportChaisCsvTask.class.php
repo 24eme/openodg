@@ -77,8 +77,8 @@ EOF;
                     $a_comp1 = (isset($adresses[2]))? $adresses[2] : "";
 
                     $numChaiStr = $numChai+1;
-                    echo preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id)."/".$numChaiStr.",".
-                    preg_replace('/ETABLISSEMENT-CDP([0-9]+)01$/',"CDP$1",$etablissement->_id).",".
+                    echo preg_replace('/ETABLISSEMENT-/','',$etablissement->_id)."/".$numChaiStr.",".
+                    preg_replace('/ETABLISSEMENT-/', '', $etablissement->_id).",".
                     "Autre,".
                     $activites.",".
                     $etablissement->nom.",".

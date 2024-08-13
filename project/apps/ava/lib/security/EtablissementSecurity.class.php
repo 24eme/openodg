@@ -1,6 +1,8 @@
 <?php
 
-class EtablissementSecurity implements SecurityInterface {
+/*** AVA ***/
+
+class /*** AVA ***/ EtablissementSecurity implements SecurityInterface {
 
     const DECLARANT_DREV = 'DECLARANT_DREV';
     const DECLARANT_PARCELLAIRE = 'DECLARANT_PARCELLAIRE';
@@ -23,6 +25,15 @@ class EtablissementSecurity implements SecurityInterface {
             $droits = array($droits);
         }
 
+        if ($this->user->isAdminODG() && RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->etablissement->identifiant, date('Y-m-d'));
+            foreach($hab->getProduits() as $produit) {
+                if (RegionConfiguration::getInstance()->isHashProduitInRegion(Organisme::getCurrentRegion(), $produit->getProduitHash())) {
+                    return true;
+                }
+            }
+            return false;
+        }
         /*** DECLARANT ***/
 
         if(!$this->user->isAdmin() && $this->user->getEtablissement()->_id != $this->etablissement->_id) {

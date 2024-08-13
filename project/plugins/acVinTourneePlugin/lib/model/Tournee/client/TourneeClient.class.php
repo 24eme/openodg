@@ -1,6 +1,8 @@
 <?php
 
-class TourneeClient extends acCouchdbClient {
+/**** AVA ****/
+
+class /**AVA**/TourneeClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Tournee";
     const TYPE_COUCHDB = "TOURNEE";

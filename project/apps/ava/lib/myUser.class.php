@@ -118,7 +118,7 @@ class myUser extends sfBasicSecurityUser
     	return $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
 
-    public function getTeledeclarationDrevRegion()
+    public function getRegion()
     {
         return null;
     }
@@ -138,6 +138,6 @@ class myUser extends sfBasicSecurityUser
 
     public function hasTeledeclaration() {
 
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(AppUser::CREDENTIAL_HABILITATION) && !$this->hasDrevAdmin() && !$this->isStalker();
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasHabilitation() && !$this->hasDrevAdmin() && !$this->isStalker();
     }
 }

@@ -1,0 +1,13 @@
+{
+   "_id": "TEMPLATE-FACTURE-OIVC-2011",
+   "type": "TemplateFacture",
+   "campagne": 2011,
+   "libelle": "2011 - OIVC",
+   "docs": [
+       "DRev"
+   ],
+   "cotisations": {
+
+   },
+   "region": "OIVC"
+}

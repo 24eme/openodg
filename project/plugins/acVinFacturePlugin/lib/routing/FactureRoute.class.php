@@ -28,7 +28,7 @@ class FactureRoute extends CompteRoute implements InterfaceFacturationRoute {
         return $this->facture;
     }
 
-    public function getCompte() {
+    public function getCompte($parameter = null) {
 
         return $this->getFacture()->getCompte();
     }

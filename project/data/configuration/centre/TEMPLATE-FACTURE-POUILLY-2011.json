@@ -1,0 +1,57 @@
+{
+   "_id": "TEMPLATE-FACTURE-POUILLY-2011",
+   "type": "TemplateFacture",
+   "region": "POUILLY",
+   "campagne": 2011,
+   "libelle": "2011 - Pouilly",
+   "docs": [
+       "DRev"
+   ],
+   "cotisations": {
+       "00_superficie": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Cotisation de récolte Organisme de Gestion et Contrôle des AOC de Pouilly sur\nLoire et Pouilly Fumé (à l’hectare)",
+           "code_comptable": "70610000",
+           "details": {
+               "00_surfaceRecolte": {
+                   "modele": "CotisationVariable",
+                   "prix": 85,
+                   "tva": 0,
+                   "unite": "ha",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteSuperficeRecolte",
+                   "callback_parameters": {
+                       "precision": 4
+                   }
+               }
+           }
+       },
+       "01_inao": {
+           "modele": "CotisationsCollection",
+           "callback": "",
+           "libelle": "Droits INAO dû au titre de l’article L 642-13 du Code Rural (à l’hectolitre)",
+           "code_comptable": "70620000",
+           "details": {
+               "01_volumeRevendiqueINAO": {
+                   "modele": "CotisationVariable",
+                   "prix": 0.15,
+                   "tva": 0,
+                   "unite": "hl",
+                   "libelle": "",
+                   "complement_libelle": "",
+                   "docs": [
+                       "DRev"
+                   ],
+                   "callback": "getQuantiteVolumeRevendique",
+                   "callback_parameters": [
+                   ]
+               }
+           }
+       }
+   }
+}

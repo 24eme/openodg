@@ -3,11 +3,11 @@
 		<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Validation de votre parcellaire irrigable</h4>
+					<h4 class="modal-title" id="myModalLabel">Validation de votre déclaration de parcellaires irrigables</h4>
 				</div>
 				<div class="modal-body">
-					<p>Pour confirmer la validation, merci de nous indiquer vos nom et prénom.</p>
 					<?php if(isset($form["signataire"])): ?>
+					<p>Pour confirmer la validation, merci de nous indiquer vos nom et prénom.</p>
 				    <div class="row">
 				        <div class="form-group <?php if ($form["signataire"]->hasError()): ?>has-error<?php endif; ?>">
 				            <?php if ($form["signataire"]->hasError()): ?>
@@ -19,6 +19,8 @@
 				            </div>
 				        </div>
 				    </div>
+                    <?php else: ?>
+				    Confirmez-vous la validation de cette déclaration ?
 				    <?php endif; ?>
 				</div>
 				<div class="modal-footer">

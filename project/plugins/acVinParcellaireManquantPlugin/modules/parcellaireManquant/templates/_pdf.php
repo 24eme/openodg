@@ -39,7 +39,7 @@
 <?php if($parcellesByCommune === false): ?>
     <br />
     <br />
-    <i>Aucune parcelle irrigable n'a été déclarée pour cette année en Côtes de Provence.</i>
+    <i>Aucune parcelle dont le taux de pieds morts ou manquants est supérieur à <?php echo ParcellaireConfiguration::getInstance()->getManquantPCMin(); ?>%.</i>
     <br />
     <br />
     <?php return; ?>
@@ -60,14 +60,14 @@
         <div><span class="h3">&nbsp;<?php echo $commune; ?>&nbsp;</span></div>
         <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
             <tr>
-                <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
-                <th class="th" style="text-align: center; width: 70px;">Section</th>
-                <th class="th" style="text-align: center; width: 70px;">N° parcelle</th>
-                <th class="th" style="text-align: center; width: 180px;">Produit</th>
-                <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
+                <th class="th" style="text-align: center; width: 140px;">Lieu-dit</th>
+                <th class="th" style="text-align: center; width: 55px;">Section</th>
+                <th class="th" style="text-align: center; width: 60px;">N° parcelle</th>
+                <th class="th" style="text-align: center; width: 365px;">Produit</th>
+                <th class="th" style="text-align: center; width: 85px;">Année de plantation</th>
                 <th class="th" style="text-align: center; width: 80px;">Surface</th>
-                <th class="th" style="text-align: center; width: 125px;">Densité</th>
-                <th class="th" style="text-align: center; width: 140px;">% de pieds manquants</th>
+                <th class="th" style="text-align: center; width: 80px;">Densité</th>
+                <th class="th" style="text-align: center; width: 80px;">% de pieds manquants</th>
             </tr>
 <?php $nbparcelles += 2; //Incrément de l'enteête ?>
 <?php endif; ?>
@@ -75,11 +75,11 @@
 			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->lieu; ?>&nbsp;</td>
 			<td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section; ?>&nbsp;</td>
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->numero_parcelle; ?>&nbsp;</td>
-            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->produit->libelle ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
             <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
-            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloat($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo sprintFloatFr($parcelle->superficie, 4); ?>&nbsp;<small>ha</small>&nbsp;</td>
             <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->densite; ?>&nbsp;</td>
-            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echoFloat($parcelle->pourcentage); ?>&nbsp;%</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo sprintFloatFr($parcelle->pourcentage); ?>&nbsp;%</td>
     	</tr>
 <?php $nbparcelles++; ?>
 <?php endforeach; ?>
