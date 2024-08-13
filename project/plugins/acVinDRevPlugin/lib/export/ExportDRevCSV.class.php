@@ -39,7 +39,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Certification Libelle;Genre;Genre Libelle;Appellation;Appellation Libelle;Mention;Mention Libelle;Lieu;Lieu Libelle;Couleur;Couleur Libelle;Cepage;Cepage Libelle;INAO;Dénomination complémentaire;Produit;Superficie revendiquée;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué issu du vsi;Volume revendiqué issu du mutage;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination;Date de validation Déclarant;Date de validation ODG;Organisme;Doc ID\n";
+        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Certification Libelle;Genre;Genre Libelle;Appellation;Appellation Libelle;Mention;Mention Libelle;Lieu;Lieu Libelle;Couleur;Couleur Libelle;Cepage;Cepage Libelle;INAO;Dénomination complémentaire;Produit;Superficie revendiquée;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué issu du vsi;Volume revendiqué issu du mutage;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI;Numéro du lot;Date Rev;Produit (millesime);Destination;Date de validation Déclarant;Date de validation ODG;Organisme;Doc ID;Pseudo Production Id\n";
     }
 
     public function __construct($drev, $header = true, $region = null) {
@@ -109,12 +109,12 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $libelle_complet = $produit->getLibelleComplet();
             $validation_odg = ($produit->exist('validation_odg') && $produit->validation_odg)? $produit->validation_odg : $date_odg;
             $csv .= $ligneBase;
-            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 $certification,$certificationLibelle,$genre,$genreLibelle,$appellation,$appellationLibelle,$mention,$mentionLibelle,$lieu,$lieuLibelle,$couleur,$couleurLibelle,$cepage,$cepageLibelle,$inao,$denomination,trim($libelle_complet), $this->formatFloat($produit->superficie_revendique),
                 $this->formatFloat($produit->volume_revendique_issu_recolte), $this->formatFloat($produit->volume_revendique_issu_vci), ($produit->exist('volume_revendique_issu_vsi') ? $this->formatFloat($produit->volume_revendique_issu_vsi) : null), $this->formatFloat($produit->volume_revendique_issu_mutage), $this->formatFloat($produit->volume_revendique_total),
                 $this->formatFloat($produit->vci->stock_precedent), $this->formatFloat($produit->vci->destruction),$this->formatFloat($produit->vci->complement),
                 $this->formatFloat($produit->vci->substitution), $this->formatFloat($produit->vci->rafraichi), $this->formatFloat($produit->vci->constitue), $this->formatFloat($produit->vci->stock_final),
-                $mode, $date_envoi_oi, null, null, null, null, $date_declarant, $validation_odg, Organisme::getCurrentOrganisme(), $this->drev->_id
+                $mode, $date_envoi_oi, null, null, null, null, $date_declarant, $validation_odg, Organisme::getCurrentOrganisme(), $this->drev->_id, $this->drev->declarant->cvi."-".substr($this->drev->campagne, 0, 4)
                 );
         }
         if($this->drev->exist('lots') && count($this->drev->lots) && (is_null($this->region) || $this->region == DeclarationClient::REGION_LOT)){
@@ -132,10 +132,10 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $destination = $lot->getDestinationType()." ".$lot->getDestinationDate();
 
             $csv .= $ligneBase;
-            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+            $csv .= sprintf(";Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 DeclarationExportCsv::getProduitKeysCsv($configProduit, true),$inao,null,
                 trim($libelle_complet), null, $this->formatFloat($lot->volume), null, null, $this->formatFloat($lot->volume), null,null,null, null, null, null, null,
-                $mode, $date_envoi_oi, $this->protectStr($numLot), $dateRev, $this->protectStr($lot->millesime),$destination, $date_declarant, $date_odg, Organisme::getCurrentOrganisme(), $this->drev->_id
+                $mode, $date_envoi_oi, $this->protectStr($numLot), $dateRev, $this->protectStr($lot->millesime),$destination, $date_declarant, $date_odg, Organisme::getCurrentOrganisme(), $this->drev->_id, $this->drev->declarant->cvi."-".substr($this->drev->campagne, 0, 4)
             );
           }
         }
@@ -143,8 +143,10 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     }
 
     protected function formatFloat($value) {
-
-        return str_replace(".", ",", $value);
+        if ($value) {
+            $value = str_replace(".", ",", $value);
+        }
+        return $value;
     }
 
     public function setExtraArgs($args) {

@@ -24,7 +24,8 @@ $t = new lime_test(65);
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
-$degust1_date_fr = '09/09/'.$annee;
+$drev_date = $annee.'-09-09';
+$degust1_date_fr = '09/10/'.$annee;
 $degust2_date_fr = '11/11/'.$annee;
 $degust1_time_fr = '09:09';
 $degust2_time_fr = '11:11';
@@ -82,17 +83,19 @@ $produit1->recolte->superficie_total = 200;
 $produit1->volume_revendique_issu_recolte = 80;
 $drev->addLot();
 $drev->lots[0]->numero_logement_operateur = '1';
+$drev->lots[0]->produit_hash = $produitconfig_hash1;
 $drev->lots[0]->volume = 1;
-$drev->lots[1] = clone $drev->lots[0];
+$drev->addLot();
 $drev->lots[1]->numero_logement_operateur = '2';
 $drev->lots[1]->volume = 2;
-$drev->validate();
-$drev->validateOdg();
+$drev->lots[1]->produit_hash = $produitconfig_hash1;
+$drev->validate($drev_date);
+$drev->validateOdg($drev_date);
 $drev->save();
 $t->comment($drev->_id);
 
 //Début des tests
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsEnAttente(null);
 $lotsEnManquement = DegustationClient::getInstance()->getManquements();
 
 $t->is(count($lotsPrelevables), 2, "Il y a 2 mouvements prélevables");
@@ -174,7 +177,7 @@ $t->ok(!$lot_degust1->getMouvement(Lot::STATUT_AFFECTE_SRC), "Le lot n'a pas enc
 
 $t->is($lot_degust1->getMouvement(Lot::STATUT_AFFECTABLE)->detail, '2me passage', "Le mouvement en attente de redégustation provenant de la 1ère dégustation est indiqué comme en attente de 2ème dégustation");
 
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsEnAttente(null);
 $lotsEnManquement = DegustationClient::getInstance()->getManquements();
 
 $t->is(count($lotsPrelevables), 1, "Il y a 1 mouvement prélevable");
@@ -247,6 +250,6 @@ $t->is($lot_degust1->_get('date_commission'), $degustation1->getDateFormat('Y-m-
 $t->is($drev->lots[0]->id_document_affectation, $degustation1->_id, "Le lot de la drev est resté affecté à la degustation 1 ".$degustation1->_id);
 $t->is($drev->lots[0]->_get('date_commission'), $degustation1->getDateFormat('Y-m-d'), 'Le lot de la drev à la même date de commission que la 1ère dégustation');
 
-$lotsPrelevables = DegustationClient::getInstance()->getLotsPrelevables();
+$lotsPrelevables = DegustationClient::getInstance()->getLotsEnAttente(null);
 $t->is(count($lotsPrelevables), 0, "Il y a 0 mouvement prélevable");
 $t->is(count(DegustationClient::getInstance()->getManquements()), 0, "Il y a 0 mouvement en manquement");

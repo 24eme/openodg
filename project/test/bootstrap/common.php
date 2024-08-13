@@ -30,5 +30,5 @@ $infosOrganisme = [
 ];
 
 sfConfig::set('app_facture_emetteur', [
-    'IGP13' => $infosOrganisme
+    strtoupper($application) => $infosOrganisme
 ]);

@@ -6,7 +6,7 @@ all:
         superficie_revendique:  "Inscrivez la surface vinifiée en ha en incluant les achats et en ôtant les ventes de raisin et moûts éventuels"
         possede_vci: "Cette case doit être obligatoirement cochée si vous avez du VCI en stock car elle permet d'activer le soufflet intitulé 'Répartition du VCI'"
         plafond_vci: "C'est le plafond de volume maximum autorisé de  VCI en hL. IL correspond au résultat de la surface * volume autorisé de VCI (hl) fixé par décret."
-        stock_vci_precedent: "Ce stock est issu du le registre de suivi du VCI. Il correspond au stock de VCI déclaré dans votre déclaration de revendication de la campagne précédente."
+        stock_vci_precedent: "Le stock de l'année précédente est indiqué dans le registre de suivi du VCI. Il correspond au stock de VCI de l'année précédente à la date de la déclaration de revendication."
         destruction_vci: "Le VCI est à détruire avant le 15 décembre de l'année qui suit l'année de sa production.  Ce volume est calculé automatiquement en cas de dépassement sauf si vous décidez de détruire un volume de VCI."
         complement_vci: "Le volume de VCI en complément de récolte permet d'atteindre le rendement de base de l'appellation. Il ne peut pas le dépasser."
         substitution_vci: "En cas de déficit qualitatif du millésime, le VCI peut se substituer à un volume équivalent de vin du millésime en cours."

@@ -1,11 +1,19 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
+<?php else: ?>
+    <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+<?php endif; ?>
+
+<?php include_component('declaration', 'parcellairesLies', array('obj' => $parcellaireAffectation)); ?>
 
 <div class="page-header no-border">
-    <h2>Déclaration d'affectation parcellaire de l'AOC de Côtes de Provence
-    <?php if($parcellaireAffectation->isPapier()): ?>
-    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaireAffectation->validation && $parcellaireAffectation->validation !== true): ?> reçue le <?php echo format_date($parcellaireAffectation->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
+    <h2>Déclaration d'affectation parcellaire
+    <?php if($parcellaireAffectation->isAuto()): ?>
+        <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration générée automatiquement
+        <?php if($parcellaireAffectation->validation && $parcellaireAffectation->validation !== true): ?> le <?php echo format_date($parcellaireAffectation->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
+        sur la base des déclarations précédentes
     <?php elseif($parcellaireAffectation->validation): ?>
     <small class="pull-right">Télédéclaration<?php if($parcellaireAffectation->validation && $parcellaireAffectation->validation !== true): ?> validée le <?php echo format_date($parcellaireAffectation->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php endif; ?>
@@ -29,7 +37,7 @@
     </div>
 <?php endif; ?>
 
-<?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
+<?php include_partial('parcellaireAffectation/recap', array('parcellaireAffectation' => $parcellaireAffectation, 'coop' => $coop)); ?>
 
 <?php if($parcellaireAffectation->observations): ?>
     <div class="panel panel-default">
@@ -48,7 +56,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-5">
-        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireAffectation->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaireAffectation->identifiant, 'campagne' => $parcellaireAffectation->campagne)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
     <div class="col-xs-2 text-center">
             <a href="<?php echo url_for('parcellaireaffectation_export_pdf', $parcellaireAffectation) ?>" class="btn btn-success">
@@ -67,3 +75,7 @@
         <?php endif; ?>
     </div>
 </div>
+
+<?php if(isset($coop)): ?>
+    <?php include_partial('parcellaireAffectationCoop/footerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
+<?php endif; ?>

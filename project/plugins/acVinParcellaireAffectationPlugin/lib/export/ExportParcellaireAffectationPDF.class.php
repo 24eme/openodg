@@ -30,7 +30,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
 
       $dgcs = $this->parcellaireAffectation->getDgc(true);
 
-      $parcellesByDgc = $this->parcellaireAffectation->declaration->getParcellesByDgc(true);
+      $parcellesByDgc = $this->parcellaireAffectation->declaration->getGroupedParcelles();
 
       if(count($parcellesByDgc) == 0) {
          $this->printable_document->addPage($this->getPartial('parcellaireAffectation/pdf', array('parcellaireAffectation' =>    $this->parcellaireAffectation, 'parcellesByCommune' => false)));
@@ -66,7 +66,7 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
                $parcellesByPage[] = $currentPage;
                $currentPage = array();
                $unite = 0;
-               $libelleTableau = $commune . " (suite)";
+               $libelleTableau = $parcelle->commune . " (suite)";
                $currentPage[$libelleTableau] = array();
                $unite += $uniteTableau;
            }
@@ -108,22 +108,22 @@ class ExportParcellaireAffectationPDF extends ExportPDF {
         $header_subtitle = sprintf("%s", $this->parcellaireAffectation->declarant->nom);
         $header_subtitle .= "\n\n";
 
-        if (!$this->parcellaireAffectation->isPapier()) {
-            if ($this->parcellaireAffectation->validation) {
+        if (!$this->parcellaireAffectation->validation) {
+            $header_subtitle .= sprintf("Exemplaire brouilllon");
+        }else{
+            if ($this->parcellaireAffectation->isAuto()) {
                 $date = new DateTime($this->parcellaireAffectation->validation);
-
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireAffectation->signataire);
+                $header_subtitle .= sprintf("Générée automatiquement %s", $date->format('d/m/Y'));
+            } elseif ($this->parcellaireAffectation->isPapier()) {
+                $date = new DateTime($this->parcellaireAffectation->validation);
+                $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
+            } else {
+                $date = new DateTime($this->parcellaireAffectation->validation);
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
                 if($this->parcellaireAffectation->exist('signataire') && $this->parcellaireAffectation->signataire) {
                     $header_subtitle .= " par " . $this->parcellaireAffectation->signataire;
                 }
-            }else{
-                $header_subtitle .= sprintf("Exemplaire brouilllon");
             }
-        }
-
-        if ($this->parcellaireAffectation->isPapier() && $this->parcellaireAffectation->validation && $this->parcellaireAffectation->validation !== true) {
-            $date = new DateTime($this->parcellaireAffectation->validation);
-            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
 
         return $header_subtitle;

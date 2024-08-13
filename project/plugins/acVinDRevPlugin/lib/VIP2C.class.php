@@ -8,7 +8,7 @@ class VIP2C
     const VIP2C_COLONNE_PRODUIT = 6;
     const VIP2C_COLONNE_VOLUME = 7;
 
-    static $csv_seuil;
+    static $csv_seuil = [];
 
     public static function getContratsAPIURL($cvi, $millesime)
     {
@@ -79,7 +79,7 @@ class VIP2C
     }
 
     public static function getVolumeSeuilProduitFromCSV($cvi, $millesime, $hash_produit) {
-        if (!self::$csv_seuil[$millesime]) {
+        if (!isset(self::$csv_seuil[$millesime])) {
             self::$csv_seuil[$millesime] = self::getVolumeSeuilFromCSV($cvi, $millesime);
         }
         if (!isset(self::$csv_seuil[$millesime][$hash_produit])) {

@@ -20,24 +20,27 @@ class ParcellaireConfiguration {
         $this->configuration = sfConfig::get('parcellaire_configuration_parcellaire', array());
     }
 
-    /*
-     * On limite les produits du parcellaire aux seuls produits du catalogue produit.
-     * les autres sont ignorés
-     */
-    public function getLimitProduitsConfiguration() {
-        if(!isset($this->configuration['limit_produits_configuration'])) {
-            return false;
+    public function hasShowFilterProduitsConfiguration() {
+        if(!isset($this->configuration['show_filter_produits_configuration'])) {
+            return true;
         }
 
-        return $this->configuration['limit_produits_configuration'];
+        return $this->configuration['show_filter_produits_configuration'];
     }
 
     /*
      * Seules les parcelles ayant au moins une troisième feuille sont prises
      * en compte dans les synthèse
      */
-    public function isTroisiemeFeuille() {
-        return !$this->getLimitProduitsConfiguration();
+    public function isJeunesVignesEnabled() {
+        return true;
+    }
+
+    public function isJeunesVignes3emeFeuille() {
+        if(!isset($this->configuration['troisieme_feuille'])) {
+            return false;
+        }
+        return $this->configuration['troisieme_feuille'];
     }
 
     public function isAres()
@@ -94,5 +97,30 @@ class ParcellaireConfiguration {
             return 20;
         }
         return $this->configuration['manquant']['pc_min'];
+    }
+
+    public function getEcartRangsMax() {
+        if(!isset($this->configuration['ecart_rangs_max'])) {
+            return null;
+        }
+        return $this->configuration['ecart_rangs_max'];
+    }
+    public function getEcartPiedsMin() {
+        if(!isset($this->configuration['ecart_pieds_min'])) {
+            return null;
+        }
+        return $this->configuration['ecart_pieds_min'];
+    }
+    public function getEcartPiedsMax() {
+        if(!isset($this->configuration['ecart_pieds_max'])) {
+            return null;
+        }
+        return $this->configuration['ecart_pieds_max'];
+    }
+    public function hasDeclarationsLiees() {
+        return (isset($this->configuration['declarations_liees']))? $this->configuration['declarations_liees'] : false;
+    }
+    public function isParcellesFromAffectationparcellaire() {
+        return (isset($this->configuration['parcelles_from_affectationparcellaire']))? $this->configuration['parcelles_from_affectationparcellaire'] : false;
     }
 }

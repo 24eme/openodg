@@ -2,6 +2,10 @@
 
 . bin/config.inc
 
+if ! test "$SYMFONYTASKOPTIONS" ; then
+    exit;
+fi
+
 bash bin/export.sh
 
 cd bin/notebook/ ;

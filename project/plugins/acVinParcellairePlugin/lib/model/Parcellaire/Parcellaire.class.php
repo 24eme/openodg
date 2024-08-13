@@ -1,6 +1,8 @@
 <?php
 
 require_once(dirname(__FILE__).'/../../vendor/geoPHP/geoPHP.inc');
+require_once(dirname(__FILE__).'/../../vendor/Simplex-Calculator/Simplex/simplex.php');
+
 /**
  * Model for Parcellaire
  *
@@ -38,6 +40,11 @@ class Parcellaire extends BaseParcellaire {
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
+    public function getParcellaire() {
+
+        return $this;
+    }
+
     public function initDoc($identifiant, $date, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
         $this->date = $date;
@@ -51,26 +58,22 @@ class Parcellaire extends BaseParcellaire {
         return ConfigurationClient::getInstance()->getConfiguration($this->date);
     }
 
+    public function affecteParcelleToHashProduit($hash, $parcelle) {
+        $p = $this->addProduit($hash);
+        return $p->affecteParcelle($parcelle);
+    }
+
     public function addProduit($hash) {
-        $pseudo_produit = false;
-        if (!$hash && !ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
-            $hash = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_HASH;
-            $pseudo_produit = true;
+        if (!$hash) {
+            return;
         }
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
 
         $produit = $this->add('declaration')->add($hashToAdd);
         if(!$exist) {
-            $this->declaration->reorderByConf($pseudo_produit);
-            if ($pseudo_produit && ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration())  {
-                throw new sfException("produit $hash non trouvé et ajout de parcelle sans produit non disponible pour cette app");
-            }
-            if (!$pseudo_produit) {
-                $this->add('declaration')->add($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
-            }else{
-                $this->add('declaration')->add($hashToAdd)->libelle = ParcellaireClient::PARCELLAIRE_DEFAUT_PRODUIT_LIBELLE;
-            }
+            $this->declaration->reorderByConf();
+            $this->add('declaration')->add($hashToAdd)->libelle = $produit->getConfig()->getLibelleComplet();
           }
 
         return $this->get($produit->getHash());
@@ -81,41 +84,138 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
-    public function getParcelles() {
-
-        return $this->declaration->getParcelles();
-    }
-
-    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null, $numero_ordre = null, $strictNumOrdre = false) {
-        $produit = $this->addProduit($hashProduit);
-        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu, $numero_ordre, $strictNumOrdre);
-    }
-
-    public function countSameParcelle($commune, $prefix, $section, $numero_parcelle, $lieu, $hashProduit = null, $cepage = null, $campagne_plantation = null){
-        $sameParcelle = 0;
-
-        foreach ($this->getParcelles() as $parcelleExistante) {
-            if ($parcelleExistante->section !== preg_replace('/^0*/', '', $section)) {
-                continue;
-            }
-
-            if ($parcelleExistante->numero_parcelle !== $numero_parcelle) {
-                continue;
-            }
-
-            if (KeyInflector::slugify($parcelleExistante->lieu) !== KeyInflector::slugify($lieu)) {
-                continue;
-            }
-
-            if (KeyInflector::slugify($parcelleExistante->commune) !== KeyInflector::slugify($commune)) {
-                continue;
-            }
-
-            $sameParcelle++;
+    public function getDeclarationParcelles() {
+        $parcelles = [];
+        foreach($this->declaration->getParcelles() as $k => $p) {
+            $parcelles[$p->getParcelleId()] = $p;
         }
+        return $parcelles;
+    }
 
-        return $sameParcelle;
+    private $idunumbers = null;
+    public function getNbUDIAlreadySeen($idu) {
+        if (!$this->idunumbers) {
+            $this->idunumbers = [];
+        }
+        if (!isset($this->idunumbers[$idu])) {
+            $this->idunumbers[$idu] = 0;
+        }
+        return $this->idunumbers[$idu]++;
+    }
 
+    public function getParcelles() {
+        if ($this->exist('parcelles')) {
+            $p = $this->_get('parcelles');
+            if (count($p)) {
+                return $this->_get('parcelles');
+            }
+        }
+        foreach($this->declaration->getParcelles() as $dp) {
+            $id = $dp->getParcelleId();
+            if (!$this->exist('parcelles') || !$this->_get('parcelles')) {
+                $this->add('parcelles', null);
+            }
+            $p = $this->_get('parcelles')->add($id);
+            $dp->produit_hash = preg_replace('/\/detail\/.*/', '', $dp->getHash());
+            ParcellaireClient::CopyParcelle($p, $dp);
+        }
+        return $this->_get('parcelles');
+    }
+
+    public function getParcellesByCommune($only_affectee = false) {
+        if ($only_affectee) {
+            return $this->declaration->getParcellesByCommune();
+        }
+        return ParcellaireClient::organizeParcellesByCommune($this->getParcelles());
+    }
+
+    public function getNextParcelleId($idu, $cepage, $campagne_plantation, $produit = null, $formatNumeroOrdre = "%02d") {
+        if (!$idu) {
+            throw new sfException('Empty idu not allowed');
+        }
+        $pid = sprintf('%s-'.$formatNumeroOrdre, $idu, 0);
+        if (
+            !$this->exist('parcelles') ||
+            !count($this->_get('parcelles')->toArray()) ||
+            !$this->parcelles->exist($pid)
+        ) {
+            return $pid;
+        }
+        for ($i = 1 ; $i < 100 ; $i++) {
+            $pid = sprintf('%s-'.$formatNumeroOrdre, $idu, $i);
+            if (!$this->parcelles->exist($pid)) {
+                return $pid;
+            }
+        }
+        throw new sfException('pid not found for '.$idu);
+    }
+
+    public function addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu = null, $produit = null, $formatNumeroOrdre = "%02d") {
+        $pid = $this->getNextParcelleId($idu, $cepage, $campagne_plantation, $produit, $formatNumeroOrdre);
+        $p = $this->parcelles->add($pid);
+        $p->idu = $idu;
+        $p->add('parcelle_id', $pid);
+        $p->cepage = $cepage;
+        $p->campagne_plantation = $campagne_plantation;
+        $p->commune = $commune;
+        $p->source_produit_libelle = $source_produit_libelle;
+        if($lieu){
+            $lieu = strtoupper($lieu);
+            $lieu = trim($lieu);
+            $p->lieu = $lieu;
+        }
+        $p->numero_ordre = explode('-', $pid)[1];
+        if (!$produit) {
+            $produit = $this->getConfiguration()->identifyProductByLibelle($source_produit_libelle);
+        }
+        if ($produit) {
+            $p->produit_hash = $produit->getHash();
+        }
+        ParcellaireClient::parcelleSplitIDU($p);
+
+        return $p;
+    }
+
+    public function addParcelleWithProduit($hashProduit, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $prefix, $section, $numero_parcelle, $lieu = null) {
+        if ($lieu && preg_match('/[0-9]/', $lieu) && !preg_match('/ /', $lieu)) {
+            throw new sfException('Strange lieu '.$lieu);
+        }
+        $produit = $this->addProduit($hashProduit);
+        if (preg_match('/^[0-9]+$/', $commune)) {
+            $code_commune = $commune;
+            $commune = CommunesConfiguration::getInstance()->getCommuneByCode($code_commune);
+        }else {
+            $code_commune = CommunesConfiguration::getInstance()->findCodeCommune($commune);
+        }
+        if (!intval($code_commune)) {
+            throw new sfException('Wrong code commune : '.$code_commune.'/'.$commune);
+        }
+        $idu = $this->computeIDU($code_commune, $prefix, $section, $numero_parcelle);
+        $parcelle  = $this->addParcelle($idu, $source_produit_libelle, $cepage, $campagne_plantation, $commune, $lieu, $produit->getConfig()->getLibelle());
+        return $produit->affecteParcelle($parcelle);
+    }
+
+    public function computeIDU($code_commune, $prefix, $section, $numero_parcelle) {
+        if (!intval($code_commune)) {
+            throw new sfException('Wrong code commune : '.$code_commune);
+        }
+        if (!intval($numero_parcelle)) {
+            throw new sfException('Wrong numero parcelle : '.$numero_parcelle);
+        }
+        return sprintf('%05s%03s%02s%04s', $code_commune, $prefix, $section, $numero_parcelle);
+    }
+
+    public function getParcelleFromParcellaireId($id) {
+        if (!$id) {
+            throw new sfException('id needed');
+        }
+        if (!count($this->parcelles)) {
+            return null;
+        }
+        if(!isset($this->parcelles[$id])) {
+            return null;
+        }
+        return $this->parcelles[$id];
     }
 
     public function getParcellesByIdu() {
@@ -133,9 +233,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->parcelles_idu;
     }
 
-    public function findParcelle($parcelle) {
+    public function findParcelle($parcelle, $scoreMin = 1) {
 
-        return ParcellaireClient::findParcelle($this, $parcelle);
+        return ParcellaireClient::findParcelle($this, $parcelle, $scoreMin);
     }
 
     public function getDateFr() {
@@ -190,6 +290,7 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) {
+        return $this->getProduitsByCepageFromHabilitationOrConfiguration($cepage);
             if (!$this->cache_produitsbycepagefromhabilitationorconfiguration) {
                 $this->cache_produitsbycepagefromhabilitationorconfiguration = array();
             }
@@ -213,7 +314,7 @@ class Parcellaire extends BaseParcellaire {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
             $cepage = $p->getCepage();
-            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
                 $cepage .= ' - jeunes vignes';
             }
             if (!isset($synthese[$cepage])) {
@@ -229,51 +330,53 @@ class Parcellaire extends BaseParcellaire {
     public function getSyntheseProduitsCepages() {
         $synthese = array();
         foreach($this->getParcelles() as $p) {
-            $libelles = array($p->getProduitLibelle());
             $cepage = $p->getCepage();
-            if (!ParcellaireConfiguration::getInstance()->getLimitProduitsConfiguration()) {
-                $libelles = array();
-                foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
-                    $libelles[] = $prod->getLibelleComplet();
-                }
-                if (!count($libelles)) {
-                    $libelles[] = '';
-                }
+            $libelles = array();
+            foreach($this->getCachedProduitsByCepageFromHabilitationOrConfiguration($cepage) as $prod) {
+                $libelles[] = $prod->getLibelleComplet();
             }
-            if (ParcellaireConfiguration::getInstance()->isTroisiemeFeuille() && !$p->hasTroisiemeFeuille()) {
-                $libelles = array('jeunes vignes');
+            if (!count($libelles)) {
+                $libelles[] = '';
             }
+            if (ParcellaireConfiguration::getInstance()->isJeunesVignesEnabled() && !$p->hasJeunesVignes()) {
+                $libelles[] = 'XXXXjeunes vignes';
+                $cepage = 'XXXXjeunes vignes';
+            }
+            sort($libelles);
             foreach($libelles as $libelle) {
                 if (!isset($synthese[$libelle])) {
                     $synthese[$libelle] = array();
                     $synthese[$libelle]['Total'] = array();
-                    $synthese[$libelle]['Total']['superficie_min'] = 0;
-                    $synthese[$libelle]['Total']['superficie_max'] = 0;
+                    $synthese[$libelle]['Total']['Total'] = array();
+                    $synthese[$libelle]['Total']['Total']['superficie_min'] = 0;
+                    $synthese[$libelle]['Total']['Total']['superficie_max'] = 0;
                 }
-                if (!isset($synthese[$libelle][$cepage])) {
-                    $synthese[$libelle][$cepage] = array();
-                    $synthese[$libelle][$cepage]['superficie_min'] = 0;
-                    $synthese[$libelle][$cepage]['superficie_max'] = 0;
+                if (!isset($synthese[$libelle]['Cepage'])) {
+                    $synthese[$libelle]['Cepage'] = array();
+                }
+                if (!isset($synthese[$libelle]['Cepage'][$cepage])) {
+                    $synthese[$libelle]['Cepage'][$cepage] = array();
+                    $synthese[$libelle]['Cepage'][$cepage]['superficie_min'] = 0;
+                    $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = 0;
                 }
                 if (count($libelles) == 1) {
-                    $synthese[$libelle][$cepage]['superficie_min'] = round($synthese[$libelle][$cepage]['superficie_min'] + $p->superficie, 6);
-                    $synthese[$libelle]['Total']['superficie_min'] = round($synthese[$libelle]['Total']['superficie_min'] + $p->superficie, 6);
+                    $synthese[$libelle]['Cepage'][$cepage]['superficie_min'] = round($synthese[$libelle]['Cepage'][$cepage]['superficie_min'] + $p->superficie, 6);
+                    $synthese[$libelle]['Total']['Total']['superficie_min'] = round($synthese[$libelle]['Total']['Total']['superficie_min'] + $p->superficie, 6);
                 }
-                $synthese[$libelle][$cepage]['superficie_max'] = round($synthese[$libelle][$cepage]['superficie_max'] + $p->superficie, 6);
-                $synthese[$libelle]['Total']['superficie_max'] = round($synthese[$libelle]['Total']['superficie_max'] + $p->superficie, 6);
+                $synthese[$libelle]['Cepage'][$cepage]['superficie_max'] = round($synthese[$libelle]['Cepage'][$cepage]['superficie_max'] + $p->superficie, 6);
+                $synthese[$libelle]['Total']['Total']['superficie_max'] = round($synthese[$libelle]['Total']['Total']['superficie_max'] + $p->superficie, 6);
+                ksort($synthese);
             }
         }
 
-        foreach ($synthese as $libelle => &$cepages) {
-            uksort($cepages, function ($cepage1, $cepage2) {
-                if ($cepage1 === "Total") {
-                    return -1;
-                }
-                if ($cepage2 === "Total") {
-                    return 1;
-                }
-                return strcmp($cepage1, $cepage2);
-            });
+        foreach ($synthese as $libelle => &$cepagetotal) {
+            ksort($cepagetotal);
+            foreach($cepagetotal as $l => &$cepages) {
+                ksort($cepages);
+            }
+            if (count($cepagetotal['Cepage']) < 2) {
+                unset($cepagetotal['Total']);
+            }
         }
         return $synthese;
     }
@@ -299,17 +402,17 @@ class Parcellaire extends BaseParcellaire {
         return $superficie;
     }
 
-    public function getParcellairePDFKey() {
+    public function getParcellaireFileKey($type) {
         foreach ($this->_attachments as $key => $attachement) {
-            if ($attachement->content_type == 'application/pdf') {
+            if (strpos($attachement->content_type, $type) !== false) {
                 return $key;
             }
         }
         return null;
     }
 
-    public function getParcellairePDFUri() {
-        $key = $this->getParcellairePDFKey();
+    public function getParcellaireFileUri($type) {
+        $key = $this->getParcellaireFileKey($type);
 
         if(!$key) {
 
@@ -329,12 +432,23 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function hasParcellairePDF() {
-        return ($this->getParcellairePDFUri());
+        return ($this->getParcellaireFileUri('pdf'));
+    }
+
+    public function hasParcellaireCSV() {
+        return ($this->getParcellaireFileUri('csv'));
     }
 
     public function getParcellairePDF() {
         if ($this->hasParcellairePDF()) {
-            return file_get_contents($this->getParcellairePDFUri());
+            return file_get_contents($this->getParcellaireFileUri('pdf'));
+        }
+        return null;
+    }
+
+    public function getParcellaireCSV() {
+        if ($this->hasParcellaireCSV()) {
+            return file_get_contents($this->getParcellaireFileUri('csv'));
         }
         return null;
     }
@@ -384,7 +498,7 @@ class Parcellaire extends BaseParcellaire {
                 }
             }
         }
-        
+
         // On ajoute les aires des appelations des communes associées avec la bonne couleur
         foreach ($this->getMergedAires() as $aire) {
             $aireobj = json_decode($aire->getGeojson());
@@ -396,7 +510,7 @@ class Parcellaire extends BaseParcellaire {
                 $feat->properties->stroke = '#000';
                 $feat->properties->{'stroke-width'} = 2;
                 $feat->properties->{'stroke-opacity'} = 0.1;
-                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables. 
+                // Ajoute l'aire au début du tableau, les parcelles doivent être au dessus pour être plus facilement clickables.
                 array_unshift($geojson->features, $feat);
             }
         }

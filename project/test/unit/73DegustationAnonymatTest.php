@@ -7,10 +7,12 @@ if ($application != 'igp13') {
     $t->ok(true, "Pass AOC");
     return;
 }
+$t = new lime_test(40);
 
 $annee = (date('Y')-1)."";
 $campagne = $annee.'-'.($annee + 1);
-$degust_date = $annee.'-09-01 14:45:00';
+$drev_date = $annee.'-09-01 14:45:00';
+$degust_date = $annee.'-10-01 14:45:00';
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
@@ -35,7 +37,6 @@ foreach(ArchivageAllView::getInstance()->getDocsByTypeAndCampagne('Revendication
     $doc = acCouchdbManager::getClient()->find($r->id);
     $doc->delete();
 }
-$t = new lime_test(38);
 
 $config = ConfigurationClient::getCurrent();
 $produitconfig1 = null;
@@ -60,16 +61,19 @@ $drev->addLot();
 $drev->lots[0]->numero_logement_operateur = 'L1';
 $drev->lots[0]->volume = 1;
 $drev->lots[0]->getUniqueId();
+$drev->lots[0]->produit_hash = $produitconfig_hash1;
 $drev->addLot();
 $drev->lots[1]->numero_logement_operateur = 'L2';
 $drev->lots[1]->volume = 2;
 $drev->lots[1]->getUniqueId();
+$drev->lots[1]->produit_hash = $produitconfig_hash1;
 $drev->addLot();
 $drev->lots[2]->numero_logement_operateur = 'L3';
 $drev->lots[2]->volume = 3;
 $drev->lots[2]->getUniqueId();
-$drev->validate();
-$drev->validateOdg();
+$drev->lots[2]->produit_hash = $produitconfig_hash1;
+$drev->validate($drev_date);
+$drev->validateOdg($drev_date);
 $drev->save();
 $t->is($drev->lots[0]->unique_id, $campagne.'-00001-00001', 'Le lot 1 de la drev a le bon numéro darchive 2020-2021-00001-00001');
 $t->is($drev->lots[1]->unique_id, $campagne.'-00001-00002', 'Le lot 2 de la drev a le bon numéro darchive 2020-2021-00001-00002');
@@ -118,7 +122,9 @@ $t->is($lot5->numero_archive, null, "le lot leurre n'a pas de numero d'archive")
 $degust->save();
 $degust = DegustationClient::getInstance()->find($degustid);
 
-$t->is($degust->lots[1]->id_document_provenance, $drev->_id, "La provenance du 3ème lot est bien ".$drev->_id);
+$t->is($degust->lots[0]->id_document_provenance, $drev->_id, "La provenance du 1er lot est bien ".$drev->_id);
+$t->is($degust->lots[1]->id_document_provenance, $drev->_id, "La provenance du 2ème lot est bien ".$drev->_id);
+$t->is($degust->lots[2]->id_document_provenance, $drev->_id, "La provenance du 3ème lot est bien ".$drev->_id);
 $t->is($degust->lots[1]->statut, Lot::STATUT_ATTENTE_PRELEVEMENT, "Le 3ème lot est bien pas attablé");
 $lotProvenance = $degust->lots[1]->getLotProvenance();
 $idDocumentProvenance = $lotProvenance->getDocument()->_id;
@@ -162,7 +168,8 @@ $t->ok($isAnonymized, 'La dégustation est "anonymisée"');
 $t->is(count($degust->mouvements_lots->{$degust->lots[0]->declarant_identifiant}), 10, "10 mouvements ont été générés (5 mvts × 2 lots)");
 
 $numero_anonymats = array();
-$numero_anonymats_attendu = array("A01","A02","A03","A04");
+$tableid = (DegustationConfiguration::getInstance()->hasAlwaysIdentifiantTable()) ? 'A': '';
+$numero_anonymats_attendu = array($tableid."01",$tableid."02",$tableid."03",$tableid."04");
 
 foreach ($degust->getLotsByTable(1) as $lot) {
   $numero_anonymats[] = $lot->numero_anonymat;

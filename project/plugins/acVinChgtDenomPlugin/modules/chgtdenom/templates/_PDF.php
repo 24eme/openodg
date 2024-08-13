@@ -59,7 +59,7 @@
           <td></td>
           <td></td>
           <td>
-            <?php echo $chgtdenom->getOrigineProduitLibelle() ?>
+            <?php echo $chgtdenom->getOrigineProduitLibelleAndCepages() ?>
             <small><?php echo $chgtdenom->getOrigineMillesime() ?></small>
             <small><?php echo $chgtdenom->getOrigineSpecificite() ?></small>
           </td>

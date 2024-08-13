@@ -3,8 +3,8 @@
 class LotModificationForm extends LotForm
 {
     public function configure() {
-        parent::configure();
         $this->all_produits = true;
+        parent::configure();
         $this->widgetSchema->setNameFormat('lot_modification[%s]');
     }
 

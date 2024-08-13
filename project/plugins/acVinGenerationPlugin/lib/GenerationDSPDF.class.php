@@ -20,16 +20,17 @@ class GenerationDSPDF extends GenerationPDF {
 
         $etablissementsViews = array();
         $operateur_types = array(EtablissementFamilles::FAMILLE_PRODUCTEUR, EtablissementFamilles::FAMILLE_NEGOCIANT);
-        $regions = EtablissementClient::getRegionsWithoutHorsInterLoire();
-        
+
+        $regions = Organisme::getCurrentOrganisme();
+
         if ($this->generation->arguments->exist('operateur_types')) {
             $operateur_types = explode(',', $this->generation->arguments->operateur_types);
         }
-        
+
         if ($this->generation->arguments->exist('regions')) {
             $regions = explode(',', $this->generation->arguments->regions);
         }
-        
+
         $etablissementsViews = EtablissementClient::getInstance()->findByFamillesAndRegions($operateur_types, $regions, null);
         $dsClient = DSClient::getInstance();
         $cpt = 0;

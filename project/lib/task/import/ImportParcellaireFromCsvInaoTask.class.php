@@ -205,7 +205,7 @@ EOF;
                 }
               }
               $strictNumOrdre = true;
-              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre, $strictNumOrdre);
+              $parcelle = $produitParcellaire->addParcelleWithProduit($data[self::CSV_LIBELLE_PRODUIT], $cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre, $strictNumOrdre);
               if(!$parcelle){
                   echo "/!\ La parcelle $parcellaire->identifiant  $cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre est en double \n";
                   continue;

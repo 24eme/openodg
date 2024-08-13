@@ -47,14 +47,14 @@
  * @method string setMateriel()
  * @method string getRessource()
  * @method string setRessource()
- 
+
  */
 
-abstract class BaseParcellaireIrrigableProduitDetail extends acCouchdbDocumentTree {
-                
+abstract class BaseParcellaireIrrigableProduitDetail extends DeclarationParcellaireParcelle {
+
     public function configureTree() {
        $this->_root_class_name = 'ParcellaireIrrigable';
        $this->_tree_class_name = 'ParcellaireIrrigableProduitDetail';
     }
-                
+
 }

@@ -3,11 +3,7 @@
 
 <?php include_partial('habilitation/breadcrumb'); ?>
 
-<div class="row row-margin">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
-    </div>
-</div>
+<?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'))); ?>
 
 <div class="row">
     <div class="col-sm-9 col-lg-10 col-xs-12">

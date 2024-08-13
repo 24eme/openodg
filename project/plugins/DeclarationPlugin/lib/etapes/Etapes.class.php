@@ -93,11 +93,11 @@ abstract class Etapes
 		}
 
 		if (!in_array($etapeToTest, $etapes)) {
-			throw new sfException('"'.$etapeToTest.'" : étape inconnu (arg1)');
+			throw new sfException('"'.$etapeToTest.'" : étapeToTest inconnue ('.get_class($this).') '.implode(',', $etapes));
 		}
 
 		if (!in_array($etape, $etapes)) {
-			throw new sfException('"'.$etape.'" : étape inconnu (arg2)');
+			throw new sfException('"'.$etape.'" : étape inconnue ('.get_class($this).') '.implode(',', $etapes));
 		}
 		$key = array_search($etape, $etapes);
 		$keyToTest = array_search($etapeToTest, $etapes);

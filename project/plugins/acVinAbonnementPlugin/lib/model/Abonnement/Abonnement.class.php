@@ -33,13 +33,21 @@ class Abonnement extends BaseAbonnement {
         return $this->_get('mouvements');
     }
 
+    public function getTemplateFactureName() {
+
+        return "TEMPLATE-FACTURE-AOC-".(explode("-", $this->date_debut)[0] - 1);
+    }
+
     public function getTemplateFacture() {
 
-        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".explode("-", $this->date_debut)[0]);
+        return TemplateFactureClient::getInstance()->find($this->getTemplateFactureName());
     }
 
     public function getMouvementsFacturesCalcule() {
         $templateFacture = $this->getTemplateFacture();
+        if (!$templateFacture) {
+            throw new sfException($this->getTemplateFactureName()." not found");
+        }
         $cotisations = $templateFacture->generateCotisations($this);
 
         $identifiantCompte = $this->getIdentifiant();
@@ -120,5 +128,6 @@ class Abonnement extends BaseAbonnement {
         if(!$this->exist('mouvements') || !count($this->mouvements)) {
             $this->generateMouvementsFactures();
         }
+        return parent::save();
     }
 }

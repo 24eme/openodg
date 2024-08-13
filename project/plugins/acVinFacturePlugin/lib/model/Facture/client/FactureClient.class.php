@@ -155,10 +155,12 @@ class FactureClient extends acCouchdbClient {
           $compte = $compte->getSociete()->getMasterCompte();
         }
         if (!$region) {
-            $region = $compte->region;
+            $region = Organisme::getCurrentRegion();
         }
-        $facture->constructIds($compte);
-        $facture->storeEmetteur($region);
+        $facture->identifiant = method_exists($compte, 'getSociete') ? $compte->getSociete()->identifiant : $compte->identifiant;
+        $facture->region = $region;
+        $facture->constructIds();
+        $facture->storeEmetteur();
         $facture->storeDeclarant($compte);
         $facture->storeTemplates($template);
         if(trim($message_communication)) {
@@ -281,6 +283,12 @@ class FactureClient extends acCouchdbClient {
                         $mouvementsBySoc[$identifiant] = $mouvements;
                         continue;
                       }
+
+                      if(isset($parameters['region']) && $parameters['region'] && isset($mouvement->value->region) && $parameters['region'] != $mouvement->value->region) {
+                        unset($mouvements[$key]);
+                        $mouvementsBySoc[$identifiant] = $mouvements;
+                        continue;
+                      }
               }
           }
       }
@@ -311,10 +319,17 @@ class FactureClient extends acCouchdbClient {
       $cpt = 0;
 
       foreach ($mouvements as $societeID => $mouvementsSoc) {
+          $compte = null;
           if(class_exists("Societe")) {
-              $compte = SocieteClient::getInstance()->find($societeID)->getMasterCompte();
-          } else {
+              if ($societe = SocieteClient::getInstance()->find($societeID)) {
+                  $compte = $societe->getMasterCompte();
+              }
+          }
+          if (!$compte) {
               $compte = CompteClient::getInstance()->findByIdentifiant($societeID);
+          }
+          if (!$compte) {
+              continue;
           }
 
           $f = $this->createDocFromView($mouvementsSoc, $compte, $date_facturation, $message_communication, $region, $template);
@@ -500,6 +515,7 @@ class FactureClient extends acCouchdbClient {
       $avoir->numero_odg = null;
       $avoir->versement_comptable = 0;
       $avoir->versement_comptable_paiement = 0;
+      $avoir->remove('date_telechargement');
       $avoir->remove('paiements');
       $avoir->add('paiements');
       $avoir->montant_paiement = null;
@@ -513,7 +529,7 @@ class FactureClient extends acCouchdbClient {
       return $avoir;
     }
 
-    public function getFacturesByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $campagne = null, $limit = null) {
+    public function getFacturesByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $campagne = null, $limit = null, $region = null) {
         $this->startkey(sprintf("FACTURE-%s-%s", $identifiant, "9999999999"))
              ->endkey(sprintf("FACTURE-%s-%s", $identifiant, "0000000000"))
              ->descending(true);
@@ -528,6 +544,10 @@ class FactureClient extends acCouchdbClient {
 
         foreach($ids as $id) {
             $f = FactureClient::getInstance()->find($id, $hydrate);
+
+            if ($region && $f->region !== $region) {
+                continue;
+            }
 
             if (! $campagne) {
                 $factures[$id] = $f;
@@ -566,4 +586,50 @@ class FactureClient extends acCouchdbClient {
 
         return $dateCampagne->format('Y');
     }
+
+    public function getLastFactures($campagne) {
+        $factures = acCouchdbManager::getClient()
+            ->startkey(array("Facture", $campagne, array()))
+            ->endkey(array("Facture", $campagne))
+            ->reduce(false)
+            ->include_docs(true)
+            ->descending(true)
+            ->getView('declaration', 'export')->rows;
+
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $region = Organisme::getInstance()->getCurrentRegion();
+            $factures = array_filter($factures, function ($facture) use ($region) {
+                return $facture->doc->region === $region;
+            });
+        }
+
+        usort($factures, function($a, $b) {
+            return strtotime($b->doc->date_facturation) - strtotime($a->doc->date_facturation);
+        });
+        return array_slice($factures, 0, 10);
+    }
+
+    public function getAllFactures($campagne) {
+        $factures = acCouchdbManager::getClient()
+            ->startkey(array("Facture", $campagne, array()))
+            ->endkey(array("Facture", $campagne))
+            ->reduce(false)
+            ->include_docs(true)
+            ->descending(true)
+            ->getView('declaration', 'export')->rows;
+
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            $region = Organisme::getInstance()->getCurrentRegion();
+            $factures = array_filter($factures, function ($facture) use ($region) {
+                return $facture->doc->region === $region;
+            });
+        }
+
+        usort($factures, function($a, $b) {
+            return strtotime($b->doc->date_facturation) - strtotime($a->doc->date_facturation);
+        });
+        return $factures;
+    }
+
+
 }

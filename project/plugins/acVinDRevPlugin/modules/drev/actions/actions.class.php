@@ -127,6 +127,9 @@ class drevActions extends sfActions {
     	$this->drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::EDITION, $this->drev);
 
+        if ($this->drev->hasDocumentDouanier()) {
+            return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
         try {
             $imported = $this->drev->resetAndImportFromDocumentDouanier();
         } catch (Exception $e) {
@@ -326,11 +329,9 @@ class drevActions extends sfActions {
         }
 
         if (!count($this->drev->declaration)) {
-            $drev_previous = DRevClient::getInstance()->find(sprintf("DREV-%s-%s", $this->drev->identifiant, $this->drev->periode - 1));
-            if($drev_previous) {
-                  $this->drev->updateFromDRev($drev_previous);
-            }
+            $this->drev->resetAndImportFromDocumentDouanier();
         }
+
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE))) {
             $this->drev->save();
         }
@@ -713,7 +714,7 @@ class drevActions extends sfActions {
         }
 
         if($this->getUser()->hasDrevAdmin() && $this->drev->isPapier()) {
-            $this->drev->validateOdg();
+            $this->drev->validateOdg(null, $this->getUser()->getRegion());
             $this->drev->cleanLots();
             $this->drev->save();
 
@@ -729,7 +730,7 @@ class drevActions extends sfActions {
         }
 
         if($this->getUser()->hasDrevAdmin()){
-          $this->drev->validateOdg();
+          $this->drev->validateOdg(null, $this->getUser()->getRegion());
           $this->drev->save();
           $this->getUser()->setFlash("notice", "La déclaration de revendication a été validée et approuvée");
 
@@ -752,6 +753,9 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(array(DRevSecurity::VALIDATION_ADMIN), $this->drev);
         $this->regionParam = $request->getParameter('region',null);
+        if (!$this->regionParam && $this->getUser()->getRegion()) {
+            $this->regionParam = $this->getUser()->getRegion();
+        }
 
         $service = $request->getParameter("service", null);
         $params = array('sf_subject' => $this->drev, 'service' => $service);
@@ -858,7 +862,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
-        $this->isAdmin = $this->getUser()->isAdmin();
+        $this->isAdmin = $this->getUser()->isAdminODG();
         $this->service = $request->getParameter('service');
         if (!$this->drev->validation) {
             $this->drev->cleanDoc();
@@ -866,16 +870,17 @@ class drevActions extends sfActions {
 
         $documents = $this->drev->getOrAdd('documents');
         $this->regionParam = $request->getParameter('region',null);
-        if (!$this->regionParam && $this->getUser()->getCompte() && $this->getUser()->getCompte()->exist('region')) {
-            $this->regionParam = $this->getUser()->getCompte()->region;
+        if (!$this->regionParam && $this->getUser()->getRegion()) {
+            $this->regionParam = $this->getUser()->getRegion();
         }
+
         $this->form = null;
         if($this->getUser()->hasDrevAdmin() || $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
             $this->form = new DRevValidationForm($this->drev, array(), array('isAdmin' => $this->isAdmin, 'engagements' => $this->validation->getEngagements()));
         }
 
-        if($this->getUser()->isAdmin()) {
+        if($this->isAdmin) {
             $this->drevCommentaireValidationForm = new DRevCommentaireValidationForm($this->drev);
         }
         $this->drev->declaration->cleanNode();
@@ -951,7 +956,7 @@ class drevActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
+        $drev = $this->getRoute()->getDRev(['allow_habilitation' => true]);
         $this->secure(DRevSecurity::PDF, $drev);
 
         if (!$drev->validation) {

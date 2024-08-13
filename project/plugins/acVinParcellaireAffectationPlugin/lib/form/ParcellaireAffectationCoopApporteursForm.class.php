@@ -3,6 +3,7 @@
 class ParcellaireAffectationCoopApporteursForm extends acCouchdbForm {
 
     public function __construct($doc) {
+        $doc->buildApporteurs();
         $defaults = array();
         foreach($doc->getApporteursChoisis() as $id => $apporteur) {
             $defaults[$id] = 1;

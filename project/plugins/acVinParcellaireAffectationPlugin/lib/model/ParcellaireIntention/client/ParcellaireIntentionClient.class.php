@@ -20,16 +20,26 @@ class ParcellaireIntentionClient {
 
       public function createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier = false, $date = null, $type = ParcellaireIntentionAffectationClient::TYPE_COUCHDB) {
           if (ParcellaireConfiguration::getInstance()->affectationNeedsIntention()) {
-              return ParcellaireIntentionAffectationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier, $date, $type);
+              return ParcellaireIntentionAffectationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($identifiant, $periode, $papier, $date);
           }
-          return new ParcellaireIntentionAuto();
+          return $this->createIntentionAuto($identifiant, $periode, $date);
+      }
+
+      public function createIntentionAuto($identifiant, $periode, $date) {
+          if ($periode > 9000) {
+              $periode = date('Y');
+          }
+          $intentionAuto = new ParcellaireIntentionAuto();
+          $intentionAuto->initDoc($identifiant, $periode, $date);
+          $intentionAuto->updateParcelles();
+          return $intentionAuto;
       }
 
       public function getLast($identifiant, $max_annee = '9999', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           if (ParcellaireConfiguration::getInstance()->affectationNeedsIntention()) {
               return ParcellaireIntentionAffectationClient::getInstance()->getLast($identifiant, $max_annee, $hydrate);
           }
-          return new ParcellaireIntentionAuto();
+          return $this->createIntentionAuto($identifiant, $max_annee, date('Y-m-d'));
       }
 
       public function getDateOuverture($type = self::TYPE_COUCHDB) {

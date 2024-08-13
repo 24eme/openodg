@@ -16,14 +16,14 @@
         <link rel="icon" type="image/x-icon" href="/favico_centre.ico" />
         <link rel="icon" type="image/png" href="/favico_centre.png" />
 
+        <link href="<?php echo public_path("/components/opensans/opensans.css").'?'.$gitcommit; ?>" rel="stylesheet">
         <link href="<?php echo public_path("/components/vins/vins.css").'?'.$gitcommit; ?>" rel="stylesheet">
-        <link href="<?php echo public_path("/css/compile_default.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/compile_centre.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link media="print" href="<?php echo public_path("/css/print.css").'?'.$gitcommit; ?>" type="text/css" rel="stylesheet" />
         <link href="<?php echo public_path("/js/lib/leaflet/leaflet.css").'?'.$gitcommit; ?>" rel="stylesheet">
+        <link href="<?php echo public_path("/css/style_centreloire.css").'?'.$gitcommit; ?>" type="text/css" rel="stylesheet" >
 
         <?php include_stylesheets() ?>
-
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_igp.css" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>

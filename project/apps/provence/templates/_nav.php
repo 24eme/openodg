@@ -21,7 +21,7 @@ if ($route instanceof SocieteRoute) {
 if ($sf_user->isAuthenticated() && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && (!$compte || !$etablissement)) {
     $etablissement = $sf_user->getEtablissement();
 }
-if ($sf_user->isAuthenticated() && !$compte && !$etablissement && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+if ($sf_user->isAuthenticated() && !$compte && !$etablissement && !count($sf_user->getCredentials())) {
     throw new sfError403Exception("pas de compte");
 }
 if (($compte && ($compte->statut == CompteClient::STATUT_SUSPENDU)) && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)) {

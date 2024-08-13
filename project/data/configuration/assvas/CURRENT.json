@@ -1,6 +1,5 @@
 {
    "_id": "CURRENT",
-   "_rev": "2-3e1a82f315dfd0fd662cbf4a56889beb",
    "type": "Current",
    "configurations": {
        "2022-08-01": "CONFIGURATION-20220801"

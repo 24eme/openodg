@@ -84,7 +84,9 @@ $b->click('button[id="lots_continue"]', array("drev_lots" => array("lots" => arr
 $b->isForwardedTo('drev', 'validation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape validation");
 
-$b->click('button[id="btn-validation-document"]', array('validation' => array('date' => date('d/m/Y'))))->followRedirect();
+$b->click('button[id="btn-validation-document"]', array('validation' => array('date_depot' => date('d/m/Y'))));
+$t->is($b->getResponse()->getStatuscode(), 302, "Redirection");
+$b->followRedirect();
 $b->isForwardedTo('drev', 'visualisation');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page de confirmation");
 $b->with('response')->begin()->checkElement('tr.hamzastyle-item', 2)->end();
@@ -95,7 +97,7 @@ $b->get('/degustation');
 $b->isForwardedTo('degustation', 'index');
 $t->is($b->getResponse()->getStatuscode(), 200, "Page d'accueil des dégustations");
 
-$b->click('button[type="submit"]', array('degustation_creation' => array('date' => date('d/m/Y'), 'time' => '11:00', 'max_lots' => '2')))->followRedirect();
+$b->click('button[class="btn btn-primary"]', array('degustation_creation' => array('date' => date('d/m/Y'), 'time' => '11:00', 'max_lots' => '2', 'lieu' => 'Salle+de+dégustation+par+défaut')))->followRedirect();
 $b->isForwardedTo('degustation', 'selectionLots');
 $t->is($b->getResponse()->getStatuscode(), 200, "Étape de séléction des lots");
 

@@ -79,35 +79,59 @@ EOF;
                 $logement = trim($data[self::CSV_LOGEMENT]);
             }
             $volume = str_replace(',','.',trim($data[self::CSV_VOLUME])) * 1;
+
+            if(!$volume) {
+                echo "WARNING;pas de volume;pas d'import;$line\n";
+                continue;
+            }
+
             $moisPresentation = $data[self::CSV_MOIS_PRESENTATION];
             $moisListe = ["janvier" => "01", "février" => "02", "mars" => "03", "avril" => "04", "mai" => "05", "juin" => "06", "juillet" => "07", "août" => "08", "septembre" => "09", "octobre" => "10", "novembre" => "11", "décembre" => "12"];
             $datePresentation = "01/".str_replace(array_keys($moisListe), array_values($moisListe), str_replace(" ", "/", $moisPresentation));
             $datePresentation = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($datePresentation), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
 
             $dateDeclaration = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_DECLARATION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
-            $dateCommission = (preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_COMMISSION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
+            $dateCommission = (isset($data[self::CSV_DATE_COMMISSION]) && preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/', trim($data[self::CSV_DATE_COMMISSION]), $m))? $m[3].'-'.$m[2].'-'.$m[1] : null;
             $campagne = ConfigurationClient::getInstance()->getCampagneVinicole()->getCampagneByDate($dateDeclaration);
+            $region = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dateDeclaration." 00:00:".sprintf("%02d", array_search($region, RegionConfiguration::getInstance()->getOdgRegions())));
 
-            $pmc = PMCClient::getInstance()->findByIdentifiantAndDateOrCreateIt($etablissement->identifiant, $campagne, $dateDeclaration);
+            if(isset($etablissement->chais)) {
+                foreach($etablissement->chais as $chai) {
+                    if($chai->adresse == $pmc->declarant->adresse && $chai->commune == $pmc->declarant->commune && $chai->code_postal == $pmc->declarant->code_postal) {
+                        $pmc->chais->nom = $chai->nom;
+                        $pmc->chais->adresse = $chai->adresse;
+                        $pmc->chais->commune = $chai->commune;
+                        $pmc->chais->code_postal = $chai->code_postal;
+                        $pmc->chais->secteur = $chai->secteur;
+                        break;
+                    }
+                }
+            }
 
             $lot = $pmc->addLot();
             $lot->produit_hash = $produit->getHash();
             $lot->produit_libelle = $produit->getLibelleFormat();
             $lot->millesime = $millesime;
             $lot->volume = $volume;
-            $lot->numero_logement_operateur = trim($logement.' '.$numeroLot);
+            $lot->numero_logement_operateur = trim(preg_replace('#(^/|/$)#', "", trim($logement.' / '.$numeroLot)));
             $lot->date_degustation_voulue = $datePresentation;
             $lot->date_commission = $dateCommission;
             $lot->affectable = true;
 
-            $pmc->validate($dateDeclaration);
-            $pmc->validateOdg($dateDeclaration);
+            try {
+                $pmc->validate($dateDeclaration);
+                $pmc->validateOdg($dateDeclaration);
+            } catch(Exception $e) {
+                sleep(60);
+                $pmc->validate($dateDeclaration);
+                $pmc->validateOdg($dateDeclaration);
+            }
             $pmc->save();
         }
     }
 
     protected function alias($produit) {
-        $produit = preg_replace('/(Pouilly Fumé|Quincy|Pouilly sur Loire) blanc/', '\1', $produit);
 
         return $produit;
     }

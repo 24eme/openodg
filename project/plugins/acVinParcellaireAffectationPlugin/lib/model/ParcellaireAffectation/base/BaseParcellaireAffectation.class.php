@@ -50,13 +50,13 @@
  * @method ParcellaireAffectationDeclaration setDeclaration()
  * @method string getObservations()
  * @method string setObservations()
- 
+
  */
- 
-abstract class BaseParcellaireAffectation extends acCouchdbDocument {
+
+abstract class BaseParcellaireAffectation extends DeclarationParcellaire {
 
     public function getDocumentDefinitionModel() {
         return 'ParcellaireAffectation';
     }
-    
+
 }

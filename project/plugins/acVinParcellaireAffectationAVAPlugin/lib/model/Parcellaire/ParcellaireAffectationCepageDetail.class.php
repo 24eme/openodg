@@ -68,6 +68,11 @@ class ParcellaireAffectationCepageDetail extends BaseParcellaireAffectationCepag
         return null;
     }
 
+    public function getSuperficieParcellaire() {
+
+        return $this->getSuperficie(ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_HECTARE);
+    }
+
     public function getSuperficie($unit = null) {
         if (!$unit || $unit == ParcellaireClient::PARCELLAIRE_SUPERFICIE_UNIT_ARE) {
             return $this->_get('superficie');

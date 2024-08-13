@@ -77,6 +77,24 @@ all:
         banqueadresse: "Adresse de la banque"
         rib: "FRXX XXXX XXXX XXXX XXXX XXXX XXX"
         bic: "XXXXBIC"
+    facture:
+      emetteur:
+        INSTANCE_OR_REGION_NAME:
+          nom: ""
+          adresse: ""
+          code_postal: ""
+          ville: "Sancerre"
+#         service_facturation: ""
+          telephone: ""
+#         email_facturation: ""
+          email: ""
+          siret: ""
+          responsable: ""
+          iban: ""
+          bic: ""
+#         url: ""
+#         banque_nom: ""
+#         banque_adresse: ""
   contenances:
     bouteilles:
       "75 cl": 75

@@ -2,6 +2,10 @@
 
 . bin/config.inc
 
+if ! test "$SYMFONYTASKOPTIONS"; then
+    exit;
+fi
+
 echo 'DREV,CAMPAGNE,Interloire ID,Raison socilae,CVI,SIRET,Reserve interpro,Date validation ODG,id doc' > $EXPORTDIR/TOURAINE/reserve_interpro.csv
 cat web/exports/TOURAINE/drev.csv  | awk -F ';' '{print $41}' | sort -u | grep ^DREV | while read drev ; do
     php symfony document:get $SYMFONYTASKOPTIONS --hash='["type","campagne","identifiant","declarant/raison_sociale","declarant/cvi","declarant/siret","/declaration/certifications/AOC_INTERLOIRE/genres/TRANQ/appellations/TOU/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT","validation_odg","_id"]' $drev 2> /dev/null  | sed 's/^\[//' | sed 's/\]$//' > /tmp/$$.csv && php symfony document:get $SYMFONYTASKOPTIONS $drev > /tmp/$$.drev

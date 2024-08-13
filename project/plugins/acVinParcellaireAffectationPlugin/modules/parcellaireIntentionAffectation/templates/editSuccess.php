@@ -17,13 +17,13 @@
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <?php foreach ($parcellaireIntentionAffectation->declaration->getParcellesByDgc() as $dgc => $parcelles): ?>
+    <?php foreach ($parcellaireIntentionAffectation->getParcellesByDgc() as $dgc => $parcelles): ?>
     <div style="margin-bottom: 1em;" class="row">
         <div class="col-xs-12">
             <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
         </div>
     </div>
-    <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
+    <table id="parcelles_<?php echo $dgc; ?>" class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 		<thead>
         	<tr>
                 <th class="col-xs-2">Commune</th>
@@ -42,8 +42,9 @@
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
 			foreach ($parcelles as $parcelle):
-                $produitKey = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
-			if (isset($form[$produitKey][$parcelle->getKey()])):
+                $produitKey = str_replace('/declaration/', '', $parcelle->produit_hash);
+                $formkey = $parcelle->produit_hash.'/'.$parcelle->parcelle_id;
+			if (isset($form[$formkey])):
 		?>
 			<tr class="vertical-center" id="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>">
 				<td><?php echo $parcelle->commune; ?></td>
@@ -54,18 +55,18 @@
                 <td style="text-align: right;"><?php echo number_format($parcelle->superficie,4); ?></td>
 
             	<td class="text-center">
-                	<div style="margin-bottom: 0;" id = "affectation" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['affectation']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$produitKey][$parcelle->getKey()]['affectation']->renderError() ?>
+                	<div style="margin-bottom: 0;" id = "affectation" class="form-group <?php if($form[$formkey]['affectation']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$formkey]['affectation']->renderError() ?>
                         <div class="col-xs-12">
-			            	<?php echo $form[$produitKey][$parcelle->getKey()]['affectation']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
+			            	<?php echo $form[$formkey]['affectation']->render(array('class' => "bsswitch", 'data-size' => 'small', 'data-on-text' => "<span class='glyphicon glyphicon-ok-sign'></span>", 'data-off-text' => "<span class='glyphicon'></span>", 'data-on-color' => "success")); ?>
                         </div>
                     </div>
             	</td>
-            	<td class="text-center"><?php echo $parcelle->getDateAffectationFr() ?></td>
-                <td class="text-center <?php if($form[$produitKey][$parcelle->getKey()]['superficie_affectation']->renderError()): ?>has-error<?php endif; ?>">
+            	<td class="text-center"><?php echo ($parcelle->exist('date_affectation')) ? $parcelle->getDateAffectationFr() : '' ?></td>
+                <td class="text-center <?php if($form[$formkey]['superficie']->renderError()): ?>has-error<?php endif; ?>">
                     <div style="margin-bottom: 0;" id = "surface" class="form-group">
                         <div class="col-xs-12">
-                            <?php echo $form[$produitKey][$parcelle->getKey()]['superficie_affectation']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie)); ?>
+                            <?php echo $form[$formkey]['superficie']->render(array('class' => 'form-control text-right bsswitch-input affecte_superficie' , 'placeholder' => $parcelle->superficie, 'value' => $parcelle->superficie)); ?>
                         </div>
                     </div>
                 </td>

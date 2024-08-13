@@ -16,11 +16,16 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<div class="col-xs-10 col-xs-offset-1">
+							<?php echo $form['commentaire']->render() ?>
+						</div>
+					</div>
+					<div class="form-group row">
 						<div class="col-xs-5 col-xs-offset-1">
 							<div class="checkbox">
 								<input type="checkbox" value="0" id="vin_sans_cepage" checked="checked">
 								<label for="vin_sans_cepage">
-									vin sans cépage
+                                    Vin sans cépage
 								</label>
 							</div>
 						</div>

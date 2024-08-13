@@ -10,7 +10,7 @@ class facturationActions extends sfActions
             GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE,
             GenerationClient::TYPE_DOCUMENT_EXPORT_XML_SEPA,
             GenerationClient::TYPE_DOCUMENT_EXPORT_COMPTABLE
-        ), 10);
+        ), 20, $this->getCurrentRegion());
 
         $this->form = new LoginForm();
 
@@ -23,8 +23,14 @@ class facturationActions extends sfActions
         }
         $this->formFacturationMassive = new FactureGenerationMasseForm();
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
+        $this->campagnes = $this->getCampagnesList();
+        $this->campagne = FactureClient::getInstance()->getCampagneByDate(date('Y-m-d'));
+        if ($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne');
+        }
+        $this->factures = FactureClient::getInstance()->getLastFactures($this->campagne);
 
+        if (!$request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
         }
 
@@ -32,7 +38,8 @@ class facturationActions extends sfActions
             $this->formSociete->bind($request->getParameter($this->formSociete->getName()));
             if($this->formSociete->isValid()) {
                 $soc = SocieteClient::getInstance()->find($this->formSociete->getValue('identifiant'));
-                return $this->redirect('facturation_declarant', array('id' => $soc->getMasterCompte()->_id));
+
+                return $this->redirect('facturation_declarant', array('identifiant' => $soc->getMasterCompte()->_id));
             }
         }
 
@@ -41,7 +48,7 @@ class facturationActions extends sfActions
           if($this->formFacturationMassive->isValid()) {
 
               $generation = $this->formFacturationMassive->save();
-              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
+              $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), $this->getCurrentRegion()));
               $generation->save();
 
               return $this->redirect('generation_view', ['id' => $generation->_id]);
@@ -62,7 +69,7 @@ class facturationActions extends sfActions
         $this->mouvements = [];
         $etablissements = [];
 
-        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente();
+        $mouvements_en_attente = MouvementFactureView::getInstance()->getMouvementsFacturesEnAttente($this->getCurrentRegion());
 
         foreach ($mouvements_en_attente as $m) {
             if (empty($m->key[MouvementFactureView::KEY_ETB_ID])) {
@@ -120,7 +127,7 @@ class facturationActions extends sfActions
             if(FactureConfiguration::getInstance()->isListeDernierExercice() && !$request->getParameter('campagne')) {
                 foreach(FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_JSON, null, 1) as $facture) {
 
-                    return $this->redirect('facturation_declarant', array('id' => $this->compte->_id, 'campagne' => $facture->campagne));
+                    return $this->redirect('facturation_declarant', array('identifiant' => $this->compte->identifiant, 'campagne' => $facture->campagne));
                 }
             }
 
@@ -147,9 +154,12 @@ class facturationActions extends sfActions
                 $this->campagne = null;
             }
 
-            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne);
+            $this->factures = FactureClient::getInstance()->getFacturesByCompte($identifiant, acCouchdbClient::HYDRATE_DOCUMENT, $this->campagne, null, sfConfig::get('app_region', null));
 
             $this->mouvements = MouvementFactureView::getInstance()->getMouvementsFacturesBySociete($this->societe);
+            if (class_exists('RegionConfiguration') && $this->getCurrentRegion()) {
+                $this->mouvements = RegionConfiguration::getInstance()->filterMouvementsByRegion($this->mouvements, $this->getCurrentRegion());
+            }
 
             usort($this->mouvements, function ($a, $b) { return $a->value->date < $b->value->date; });
 
@@ -170,7 +180,7 @@ class facturationActions extends sfActions
             }
 
             $generation = $this->form->save();
-            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getAnnee()));
+            $generation->arguments->add('modele', TemplateFactureClient::getInstance()->getTemplateIdFromCampagne($generation->getPeriode(), strtoupper(sfConfig::get('app_region', sfConfig::get('sf_app')))));
 
             $mouvementsBySoc = array($this->societe->identifiant => $this->mouvements);
             $mouvementsBySoc = FactureClient::getInstance()->filterWithParameters($mouvementsBySoc,$generation->arguments->toArray(0,1));
@@ -183,7 +193,7 @@ class facturationActions extends sfActions
                 $generation->save();
             }
 
-            return $this->redirect('facturation_declarant', array('id' => $this->compte->_id));
+            return $this->redirect('facturation_declarant', array('identifiant' => $this->compte->identifiant));
 
         }
 
@@ -241,7 +251,7 @@ class facturationActions extends sfActions
           throw sfException('wrong date format '+$date);
       }
       $this->facture = FactureClient::getInstance()->defactureCreateAvoirAndSaveThem($this->baseFacture, $date);
-      return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
+      return $this->redirect('facturation_declarant', array("identifiant" => $this->baseFacture->getSociete()->getEtablissementPrincipal()->identifiant));
     }
 
     public function executeAvaAvoirForm(sfWebRequest $request) {
@@ -278,7 +288,7 @@ class facturationActions extends sfActions
             return $this->redirect('facturation_ava_edition', $this->facture);
         }
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant));
     }
 
     public function executePaiement(sfWebRequest $request) {
@@ -306,7 +316,7 @@ class facturationActions extends sfActions
 
         $this->getUser()->setFlash("notice", "Le paiement a bien été ajouté");
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant));
     }
 
     public function executePaiements(sfWebRequest $request) {
@@ -336,10 +346,10 @@ class facturationActions extends sfActions
 
         if(FactureConfiguration::getInstance()->isListeDernierExercice()) {
 
-            return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant, "campagne" => $this->facture->campagne));
+            return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant, "campagne" => $this->facture->campagne));
         }
 
-        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+        return $this->redirect('facturation_declarant', array("identifiant" => $this->facture->identifiant));
     }
 
     public function executeLatex(sfWebRequest $request) {
@@ -357,7 +367,7 @@ class facturationActions extends sfActions
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
 
-        if(!$this->getUser()->isAdmin()) {
+        if(!$this->getUser()->hasFactureAdmin()) {
             $this->facture->setTelechargee();
             $this->facture->save();
         }
@@ -417,8 +427,10 @@ class facturationActions extends sfActions
 
         $generation = $generationMaitre->getOrCreateSubGeneration($type);
 
-        $generationMaitre->save();
-        $generation->save();
+        if($generation->isNew()) {
+            $generationMaitre->save();
+            $generation->save();
+        }
 
         return $this->redirect('generation_view', ['id' => $generation->_id]);
     }
@@ -440,7 +452,7 @@ class facturationActions extends sfActions
     }
 
     public function executeRedirectTemplate(sfWebRequest $request) {
-        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne();
+        $template = TemplateFactureClient::getInstance()->getTemplateIdFromCampagne(null, $this->getCurrentRegion());
         return $this->redirect('facturation_template', array('id' => $template));
     }
 
@@ -455,7 +467,7 @@ class facturationActions extends sfActions
     }
 
     protected function forwardCompteSecure(){
-      if(!class_exists("Societe") && !$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) { // Pour l'AVA
+      if(!class_exists("Societe") && !$this->getUser()->hasFactureAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) { // Pour l'AVA
 
           return $this->forwardSecure();
       }
@@ -464,7 +476,7 @@ class facturationActions extends sfActions
           return;
       }
 
-      if(!$this->getUser()->isAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
+      if(!$this->getUser()->hasFactureAdmin() && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()->identifiant && $this->compte->identifiant != $this->getUser()->getCompte()->getSociete()->identifiant){
           return $this->forwardSecure();
      }
     }
@@ -475,5 +487,113 @@ class facturationActions extends sfActions
       $this->setLayout(false);
       $this->xml = $facture->getXml();
 
+    }
+
+    public function executeLibre(sfWebRequest $request) {
+        $facturationsLibre = MouvementsFactureClient::getInstance()->startkey('MOUVEMENTSFACTURE-0000000000')->endkey('MOUVEMENTSFACTURE-9999999999')->execute()->getDatas();
+        $region = $this->getCurrentRegion();
+        $this->facturationsLibre = array_filter($facturationsLibre, function($item) use($region) { return ($item->region == $region); } );
+        krsort($this->facturationsLibre);
+    }
+
+    public function executeCreationLibre(sfWebRequest $request) {
+            $this->factureMouvements = MouvementsFactureClient::getInstance()->createMouvementsFacture();
+            $this->factureMouvements->region = $this->getCurrentRegion();
+            $this->factureMouvements->save();
+            $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
+    }
+
+    public function executeEditionLibre(sfWebRequest $request) {
+        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . $request->getParameter('id'));
+
+        $this->form = new FactureMouvementsEditionForm($this->factureMouvements);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if ($this->form->isValid()) {
+            $this->form->save();
+            $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
+        }
+    }
+
+    public function executeSuppressionLibre(sfWebRequest $request) {
+        $this->factureMouvements = MouvementsFactureClient::getInstance()->find('MOUVEMENTSFACTURE-' . $request->getParameter('id'));
+        if ($this->factureMouvements->getNbMvtsAFacture()) {
+            $this->redirect('facturation_libre_edition', array('id' => $this->factureMouvements->identifiant));
+        }
+        $this->factureMouvements->delete();
+        $this->redirect('facturation_libre');
+    }
+
+    public function executeComptabiliteLibre(sfWebRequest $request) {
+        $compta = ComptabiliteClient::getInstance()->findCompta();
+        $this->form = new ComptabiliteForm($compta);
+
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->form->save();
+                return $this->redirect('facturation_libre_comptabilite');
+            }
+        }
+    }
+
+    public function executeEnvoiEmail(sfWebRequest $request) {
+        $facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if (!$facture) {
+            $this->getUser()->setFlash("error", "Facture non envoyée par email car celle-ci n'a pas pu être récupérée.");
+            $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
+        }
+
+        if(!$facture->getSociete()->getEmailCompta()) {
+            $this->getUser()->setFlash("error", "Facture non envoyée par email car il n'existe aucune adresse e-mail associée à la société ".$facture->getSociete()->raison_sociale);
+            $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
+        }
+
+        $message = Email::getInstance()->getMessageFacture($facture);
+
+        $sended = sfContext::getInstance()->getMailer()->send($message);
+
+         if(!$sended) {
+             $this->getUser()->setFlash("error", "Facture non envoyée par email. Une erreur s'est produite à la constitution du message.");
+             $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
+         }
+
+         $this->getUser()->setFlash("notice", "La facture a bien été transmise à l'adresse ".$facture->getSociete()->getEmailCompta());
+         $this->redirect('facturation_declarant', array("identifiant" => $facture->identifiant));
+    }
+
+    public function executeFactureHistorique(sfWebRequest $request) {
+        $this->campagnes = $this->getCampagnesList($request);
+        $this->campagne = reset($this->campagnes);
+        if ($request->getParameter('campagne')) {
+            $this->campagne = $request->getParameter('campagne');
+        }
+        $this->factures = FactureClient::getInstance()->getAllFactures($this->campagne);
+    }
+
+    public function getCampagnesList() {
+        $listeCampagnes = acCouchdbManager::getClient()
+            ->startkey(array("Facture", array()))
+            ->endkey(array("Facture"))
+            ->reduce(true)
+            ->group_level(2)
+            ->descending(true)
+            ->getView('declaration', 'export')->rows;
+
+        $campagnes = [];
+        foreach ($listeCampagnes as $index => $annee) {
+            $campagnes[] = $annee->key[1];
+        }
+        return $campagnes;
+    }
+
+    public function getCurrentRegion() {
+        return (RegionConfiguration::getInstance()->hasOdgProduits()) ? Organisme::getCurrentOrganisme() : null ;
     }
 }

@@ -12,7 +12,8 @@ function parseString(dlmString){
     return mydlm;
 }
 
-var map = L.map('map');
+var map = new L.map('map');
+map.scrollWheelZoom.disable();
 map.on('click', function(e) { if(e.target && e.target.feature) { return; } clearParcelleSelected() });
 
 L.tileLayer('https://wxs.ign.fr/{ignApiKey}/geoportail/wmts?'+
@@ -194,7 +195,7 @@ function clearParcelleSelected() {
   info.update(null);
 }
 
-var info = L.control();
+var info = L.control({position: "bottomright"});
 
 info.onAdd = function (map) {
     this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
@@ -221,7 +222,7 @@ info.update = function (layer) {
 
   this._div.style.display = 'block';
   var Commune = "<th>Commune</th>";
-  var Cepages = "<th>Produits et cepages</th>";
+  var Cepages = "<th>Produits<br/>et cepages</th>";
   var numParcelles = "<th>Section&nbsp;/&nbspN°</th>";
   var Superficies = "<th>Superficies  <span>(ha)</span></th>";
   var ecartPied = "<th>Écart Pieds</th>";
@@ -230,7 +231,7 @@ info.update = function (layer) {
   props.parcellaires.forEach(function(parcelle){
       Commune += '<td>'+parcelle['Commune']+'</td>';
       numParcelles += '<td>'+parcelle["Section"]+" "+parcelle["Numero parcelle"]+'</td>';
-      Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span> '+parcelle.Cepage+'</td>';
+      Cepages += '<td><span class="text-muted">'+parcelle.Produit+'</span><br/>'+parcelle.Cepage+'</td>';
       compagnes += '<td>'+parcelle.Campagne+'</td>';
       Superficies += '<td>'+parcelle.Superficie+'</td>';
       ecartPied += '<td>'+parcelle["Ecart pied"]+'</td>';

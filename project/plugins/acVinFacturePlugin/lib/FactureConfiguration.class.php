@@ -6,6 +6,7 @@ class FactureConfiguration {
 
     private static $_instance = null;
     protected $configuration;
+    protected $app_coordonnees_bancaire;
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
@@ -84,8 +85,27 @@ class FactureConfiguration {
     }
 
     public function getExercice() {
+        $exercice = ($this->configuration['exercice']) ?: '';
+        if (class_exists('RegionConfiguration')) {
+            try {
+                $hasOdg = RegionConfiguration::getInstance()->hasOdgProduits();
+                $conf = RegionConfiguration::getInstance()->getOdgConfigurationItem(Organisme::getCurrentOrganisme(), 'facture_exercice');
+                if ($hasOdg && $conf) {
+                    $exercice = $conf;
+                }
+            } catch(Exception $e) {
+                unset($e);
+            }
+        }
+        return $exercice;
+    }
 
-        return ($this->configuration['exercice']) ?: '';
+    public function hasFactureBlockMissing() {
+        if (RegionConfiguration::getInstance()->hasOdgProduits()) {
+            return (RegionConfiguration::getInstance()->getOdgConfigurationItem(Organisme::getCurrentOrganisme(), 'facture_block_missing'));
+        }
+
+        return isset($this->configuration['block_missing']) && ($this->configuration['block_missing']);
     }
 
     public function isExcerciceVitictole() {
@@ -196,10 +216,15 @@ class FactureConfiguration {
     public function getTypesDocumentFacturant() {
         if(!isset($this->configuration['types_document_facturant'])) {
 
-            return ["TOUS", "DRev", "DR", "SV11", "SV12", "Degustation", "ChgtDenom", "Conditionnement"];
+            return ["TOUS", "DRev", "DR", "SV11", "SV12", "Degustation", "ChgtDenom", "Conditionnement", "MouvementsFacture"];
         }
 
         return $this->configuration['types_document_facturant'];
+    }
+
+    public function getSuggestionsFacturationLibre() {
+        if(!isset($this->configuration['suggestions_facturation_libre'])) return [];
+        return $this->configuration['suggestions_facturation_libre'];
     }
 
 }

@@ -46,7 +46,7 @@ class Csv
 
             fclose($file);
         } else {
-            throw new Exception("Le fichier n'existe pas ou n'est pas lisible");
+            throw new Exception("Le fichier $filename n'existe pas ou n'est pas lisible");
         }
     }
 

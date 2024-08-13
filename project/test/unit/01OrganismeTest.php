@@ -4,11 +4,12 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 $t = new lime_test(18);
 
-$t->is(Organisme::getCurrentRegion(), strtoupper(sfConfig::get('sf_app')), "La région par défaut est l'application");
+$t->is(Organisme::getCurrentOrganisme(), strtoupper(sfConfig::get('sf_app')), "L'organisme par défaut est l'application");
 
 $region = Organisme::getCurrentRegion();
 
 $organisme = Organisme::getInstance();
+$organisme_name = Organisme::getInstance()->getCurrentOrganisme();
 
 $t->is($organisme->getNom(), $infosOrganisme['service_facturation'], "Adresse de l'organisme");
 $t->is($organisme->getAdresse(), $infosOrganisme['adresse'], "Adresse de l'organisme");
@@ -21,9 +22,9 @@ $t->is($organisme->getIban(), $infosOrganisme['iban'], "Iban de l'organisme");
 $t->is($organisme->getNoTvaIntracommunautaire(), $infosOrganisme['tva_intracom'], "tva intracom de l'organisme");
 $t->is($organisme->getSiret(), $infosOrganisme['siret'], "siret de l'organisme");
 $t->is($organisme->getOi(), $infosOrganisme['oi'], "oi de l'organisme");
-$t->is($organisme->getLogoPdfWebPath(), 'images/pdf/logo_'.strtolower($region).'.jpg', "Chemin relatif du logo");
+$t->is($organisme->getLogoPdfWebPath(), 'images/pdf/logo_'.strtolower($organisme_name).'.jpg', "Chemin relatif du logo");
 $t->like($organisme->getLogoPdfPath(), '|/[^/]*/web/'.$organisme->getLogoPdfWebPath().'|', "Chemin complet vers le logo");
-$t->is($organisme->getImageSignatureWebPath(), 'images/signatures/signature_'.$region.'.jpg', "Chemin relatif de la signature");
+$t->is($organisme->getImageSignatureWebPath(), 'images/signatures/signature_'.$organisme_name.'.jpg', "Chemin relatif de la signature");
 $t->like($organisme->getImageSignaturePath(), '|/[^/]*/web/'.$organisme->getImageSignatureWebPath().'|', "Chemin complet vers la signature");
 
 $t->is($organisme->getInfo('adresse'), $organisme->getAdresse(), "Récupération d'une info par la méthod getInfo");

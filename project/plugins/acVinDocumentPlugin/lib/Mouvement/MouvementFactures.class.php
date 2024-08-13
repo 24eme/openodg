@@ -7,6 +7,7 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
 
     public function createFromCotisationAndDoc($cotisation,$doc) {
         $this->fillFromCotisation($cotisation);
+        $this->replaceLibelle(['detail_libelle', 'type_libelle', 'categorie', 'type_hash'], '%millesime%', $doc->getPeriode());
         $this->facture = 0;
         $this->facturable = 1;
         if($doc->exist('version')) {
@@ -28,18 +29,29 @@ abstract class MouvementFactures extends acCouchdbDocumentTree implements Interf
         if($doc->exist('campagne')) {
             $this->campagne = $doc->campagne;
         }
+
+        if ($cotisation->getConfigCollection()->getDocument()->exist('region')) {
+            $this->add('region', $cotisation->getConfigCollection()->getDocument()->getRegion());
+        }
     }
 
     public function fillFromCotisation($cotisation) {
-        $this->categorie = str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getCollectionKey());
+        $this->categorie = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getCollectionKey()) : $cotisation->getCollectionKey();
         $this->type_hash = $cotisation->getDetailKey();
-        $this->type_libelle = str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigCollection()->libelle);
-        $this->detail_libelle = str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigLibelle());
+        $this->type_libelle = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigCollection()->libelle) : $cotisation->getConfigCollection()->libelle;
+        $this->detail_libelle = ($this->detail_identifiant) ? str_replace("%detail_identifiant%", $this->detail_identifiant, $cotisation->getConfigLibelle()) : $cotisation->getConfigLibelle();
         $this->quantite = $cotisation->getQuantite();
         $this->taux = $cotisation->getPrix();
         $this->tva = $cotisation->getTva();
         if($cotisation->getUnite()) {
             $this->add('unite', $cotisation->getUnite());
+        }
+    }
+
+    public function replaceLibelle($cles, $to_replace, $by)
+    {
+        foreach ($cles as &$cle) {
+            $this->$cle = str_replace($to_replace, $by, $this->$cle);
         }
     }
 

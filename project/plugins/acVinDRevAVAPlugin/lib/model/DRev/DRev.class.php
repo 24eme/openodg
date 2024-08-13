@@ -840,16 +840,39 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     /*
      * Facture
      */
-	public function getSurfaceFacturable()
-	{
-        $totalPrecedenteVersion = 0;
+     public function getSurfaceFacturable()
+     {
+        throw new sfException('getSurfaceFacturable() Déprécié. Remplacé par getSurfaceRecolteFacturable()');
+     }
 
+    public function getSurfaceRecolteFacturable()
+    {
+        if ($this->hasDR() && !$this->getVolumeRecolte()) {
+            return 0;
+        }
+        if ($this->exist('non_recoltant') && $this->non_recoltant) {
+            return 0;
+        }
+        $totalPrecedenteVersion = 0;
         if ($this->hasVersion()) {
             $totalPrecedenteVersion = $this->getMother()->declaration->getTotalTotalSuperficie();
         }
 
 		return $this->declaration->getTotalTotalSuperficie();
-	}
+    }
+
+    public function getVolumeRecolte() {
+        $volume = 0;
+        $csv = $this->getCIVACsvFile();
+        foreach ($csv->getCsv() as $line) {
+            $hash = DRCIVACsvFile::getHashProduitByLine($line);
+            if (!$hash || strpos($hash, '/appellation') === false) {
+                continue;
+            }
+            $volume += floatval($line[DRCIVACsvFile::CSV_VOLUME]);
+        }
+        return $volume;
+    }
 
 	public function getVolumeFacturable()
 	{
@@ -874,14 +897,43 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
 	}
 
     public function getRegistreVCISurfaceFacturable() {
-        $registreVCI = $this->getCurrentRegistreVCI();
-
-        if(!$registreVCI) {
+        if($this->isNonRecoltant() || $this->hasSV()) {
 
             return 0;
         }
 
-        return $registreVCI->getSurfaceFacturable();
+        $superficieFacturable = 0;
+        $lastRegistreVCI = $this->getLastRegistreVCI();
+        foreach($this->declaration->getProduits() as $produit) {
+            $hasVci = false;
+            if($produit->exist('details') && $produit->details->total_vci > 0) {
+                $hasVci = true;
+            }
+            if($lastRegistreVCI) {
+                foreach($lastRegistreVCI->getProduitsWithPseudoAppelations() as $registreProduit) {
+                    if(!$registreProduit || !$registreProduit->isPseudoAppellation()) {
+                        continue;
+                    }
+                    if($registreProduit->getPseudoAppellation()->getHash() != $produit->getAppellation()->getHash()) {
+                        continue;
+                    }
+                    if($registreProduit->rafraichi) {
+                        $hasVci = true;
+                    }
+                }
+            }
+            foreach($produit->getProduitsVCI() as $produitVCI) {
+                if($produitVCI->rafraichi > 0)  {
+                    $hasVci = true;
+                    break;
+                }
+            }
+            if($hasVci) {
+                $superficieFacturable += $produit->superficie_revendique;
+            }
+        }
+
+        return round($superficieFacturable / 100, 4);
     }
 
     public function isAdherentSyndicat() {
@@ -890,7 +942,9 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     }
 
     public function getSyndicatsViticole() {
-
+        if (!$this->getVolumeFacturable() && !$this->getSurfaceRecolteFacturable()) {
+            return null;
+        }
         return $this->getEtablissementObject()->getCompte()->getSyndicatsViticole();
     }
 
@@ -1020,10 +1074,13 @@ class DRev/***AVA***/ extends BaseDRev implements InterfaceProduitsDocument, Int
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
         $version = ($this->hasVersion()) ? ' Version '.(str_replace("M", "", $this->version)*1) : "";
-
+        $date = $this->getDateDepot();
+        if (!$date) {
+            $date = $this->campagne * 1 .'-12-12';
+        }
         return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
-            'date_depot' => $this->getDateDepot(),
+            'date_depot' => $date,
             'libelle' => 'Revendication des appellations viticoles '.$this->campagne.$version.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,

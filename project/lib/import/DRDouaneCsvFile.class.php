@@ -22,6 +22,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
             $ligneid = explode('-', $values[0])[0];
             if ($ligneid == "6" || $ligneid == '7') {
                 for($i = 2 ; $i < count($values); $i++) {
+                    if (!isset($has_volume_nego_lignes[$i])) {
+                        $has_volume_nego_lignes[$i] = false;
+                    }
                     $has_volume_nego_lignes[$i] |= boolval($values[$i]);
                     $has_volume_nego += boolval($values[$i]);
                 }

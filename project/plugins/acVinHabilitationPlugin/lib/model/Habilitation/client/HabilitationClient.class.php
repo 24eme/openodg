@@ -6,6 +6,7 @@ class HabilitationClient extends acCouchdbClient {
     const TYPE_COUCHDB = "HABILITATION";
 
     #La liste les activités actives est définie dans habilitation.yml
+    const ACTIVITE_BAILLEUR = "BAILLEUR";
     const ACTIVITE_PRODUCTEUR = "PRODUCTEUR";
     const ACTIVITE_VINIFICATEUR = "VINIFICATEUR";
     const ACTIVITE_VRAC = "VRAC";
@@ -34,6 +35,7 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_RESILIE = "RESILIE";
     const STATUT_ANNULE = "ANNULÉ";
     const STATUT_ARCHIVE = "ARCHIVE";
+    const STATUT_EXTERIEUR = "HABILITATION_EXTERIEUR";
 
     const DEMANDE_HABILITATION = "HABILITATION";
     const DEMANDE_RETRAIT = "RETRAIT";
@@ -59,7 +61,8 @@ class HabilitationClient extends acCouchdbClient {
                                              self::STATUT_ANNULE => "Annulé",
                                              self::STATUT_RETRAIT => "Retrait",
                                              self::STATUT_RESILIE => "Résilié",
-                                            self::STATUT_ARCHIVE => "Archivé");
+                                            self::STATUT_ARCHIVE => "Archivé",
+                                            self::STATUT_EXTERIEUR => "Habilitation extérieur");
 
     public static function getInstance()
     {
@@ -247,6 +250,23 @@ class HabilitationClient extends acCouchdbClient {
             }
 
             return $habilitation;
+        }
+
+        public function getRegionsHabilites($identifiant) {
+            $habilitation = $this->getLastHabilitation($identifiant);
+
+            if(!$habilitation) {
+
+                return [];
+            }
+
+            $regions = [];
+
+            foreach($habilitation->getProduits() as $produit) {
+                $regions[] = RegionConfiguration::getInstance()->getOdgRegion($produit->getHash());
+            }
+
+            return array_unique($regions);
         }
 
         public function isRegionInHabilitation($identifiant, $region) {

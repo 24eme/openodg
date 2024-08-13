@@ -18,6 +18,7 @@ class ImportDocumentsDouaniersTask extends sfBaseTask
             new sfCommandOption('limitidentifiant', null, sfCommandOption::PARAMETER_OPTIONAL, "Limit à l'identifiant indiqué", null),
             new sfCommandOption('forceimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Force import document (exept if manualy edited)", false),
             new sfCommandOption('scrapefiles', null, sfCommandOption::PARAMETER_OPTIONAL, "Scrape import document", false),
+            new sfCommandOption('dateimport', null, sfCommandOption::PARAMETER_OPTIONAL, "Date d'import", null),
         ));
 
         $this->namespace = 'import';
@@ -58,7 +59,6 @@ EOF;
             }
 
         	$i++;
-        	echo "PROCESSUS;".$i.'/'.$nb.' => '.floor($i / $nb * 100)."\n";
 
         	if ($etablissement = EtablissementClient::getInstance()->find($item->id)) {
         		$ddType = $this->getDocumentDouanierType($etablissement);
@@ -93,16 +93,26 @@ EOF;
         		}
 
         		try {
-        			$result = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
+        			$fichiers = FichierClient::getInstance()->scrapeAndSaveFiles($etablissement, $ddType, $annee, ($options['scrapefiles']), $contextInstance);
         		} catch (Exception $e) {
         			echo sprintf("ERROR;%s\n", $e->getMessage());
         			continue;
         		}
 
-        		if (!$result) {
+        		if (!$fichiers) {
         			echo sprintf("WARNING;Aucun document douanier pour %s (%s)\n", $etablissement->_id, $etablissement->cvi);
         		} else {
-        			echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $result->type, $etablissement->_id, $etablissement->cvi);
+                    foreach($fichiers as $fichier) {
+                        if(isset($options['dateimport']) && $options['dateimport']) {
+                            $fichier->date_import = $options['dateimport'];
+                            $fichier->date_depot = $options['dateimport'];
+                            if (DRConfiguration::getInstance()->hasValidationDR()) {
+                                $fichier->add('validation_odg', $options['dateimport']);
+                            }
+                            $fichier->save();
+                        }
+			            echo sprintf("SUCCESS;Document douanier importé;%s %s (%s)\n", $fichier->type, $etablissement->_id, $etablissement->cvi);
+                    }
         		}
 
         	} else {

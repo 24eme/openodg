@@ -1,6 +1,6 @@
 Bonjour,
 
-Votre déclaration de Revendication <?php echo $drev->campagne; ?> a bien été transmise au syndicat via le site syndicat-cotesdurhone.com.
+Votre déclaration de Revendication <?php echo $drev->campagne; ?> a bien été transmise au syndicat via le site <?php echo sfConfig::get('app_routing_context_production_host'); ?>.
 
 Cette validation sera définitive lorsque votre déclaration aura été vérifiée et que les éventuelles pièces à joindre seront parvenues à notre service.
 <?php if (count($drev->getOrAdd('documents')) > 0): ?>
@@ -12,12 +12,11 @@ Rappel des documents à envoyer :
 
 <?php endforeach; ?>
 
-Le ou les document(s) annexes peuvent être envoyés par mail (<gestiondesdonnees@syndicat-cotesdurhone.com>) ou par voie postale :
+Le ou les document(s) annexes peuvent être envoyés par mail (<<?php echo $organisme->getEmail(); ?>>) ou par voie postale :
 
 Syndicat Général des Côtes du Rhône
-6 rue des trois faucons
-CS 60093
-84918 AVIGNON Cedex 9
+<?php $organisme->getAdresse(); ?><br />
+<?php echo $organisme->getCodePostal(); ?> <?php echo $organisme->getCommune() ?>
 <?php endif; ?>
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>

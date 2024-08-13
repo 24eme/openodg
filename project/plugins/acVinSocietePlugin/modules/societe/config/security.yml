@@ -1,9 +1,9 @@
 all:
   is_secure: true
-  credentials: contacts
+  credentials: [[ADMIN, ADMIN_ODG, contacts]]
 
 visualisation:
   credentials:  []
 
 export:
-  credentials: [[api, ADMIN]]
+  credentials: [[api, ADMIN, ADMIN_ODG]]

@@ -93,4 +93,41 @@ class MouvementLotHistoryView extends acCouchdbView
         return false;
     }
 
+    public function buildSyntheseLots($mouvements)
+    {
+        $syntheseLots = [];
+        foreach ($mouvements as $mouvementLot) {
+            if(!$mouvementLot->value->lot_unique_id) {
+                continue;
+            }
+            # Démo: https://regex101.com/r/c3TWNq/1
+            preg_match('/([\w -]+)(?: (\w+))? (moelleux|Doux| )*(\d{4})/uU', $mouvementLot->value->libelle, $matches);
+            $libelle = $matches[0];
+            $produit = $matches[1];
+            $couleur = $matches[2];
+            $millesime = $matches[4];
+
+            if (array_key_exists($produit, $syntheseLots) === false) {
+                $syntheseLots[$produit] = [];
+                ksort($syntheseLots);
+            }
+
+            if (array_key_exists($millesime, $syntheseLots[$produit]) === false) {
+                $syntheseLots[$produit][$millesime] = [];
+                ksort($syntheseLots[$produit]);
+            }
+
+            if (array_key_exists($couleur, $syntheseLots[$produit][$millesime]) === false) {
+                $syntheseLots[$produit][$millesime][$couleur]["Lot"] = 0;
+                $syntheseLots[$produit][$millesime][$couleur][$mouvementLot->value->initial_type] = 0;
+                ksort($syntheseLots[$produit][$millesime]);
+            }
+
+            $syntheseLots[$produit][$millesime][$couleur]["Lot"] += $mouvementLot->value->volume;
+            @$syntheseLots[$produit][$millesime][$couleur][$mouvementLot->value->initial_type] += $mouvementLot->value->volume;
+        };
+
+        return $syntheseLots;
+    }
+
 }

@@ -17,13 +17,17 @@ abstract class DocumentSecurity implements SecurityInterface {
         $this->doc = $doc;
     }
 
-    public function isAdmin() {
-	     return $this->user->isAdmin() && $this->user->hasDrevAdmin();
+    public function isAdminODG() {
+	     return $this->user->isAdminODG() && $this->user->hasDrevAdmin();
     }
 
     public function isAuthorized($droits) {
         if(!is_array($droits)) {
             $droits = array($droits);
+        }
+
+        if(($this->user->isAdminODG() || ($this->user->hasDrevAdmin()))){
+            return true;
         }
 
         if(in_array(self::PDF, $droits) && $this->user->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
@@ -37,7 +41,13 @@ abstract class DocumentSecurity implements SecurityInterface {
             }
         }
 
-        if(!$this->isAdmin() && $this->user->getCompte() && !preg_match("/^".$this->user->getCompte()->identifiant."/", $this->doc->identifiant)) {
+        if (in_array(self::VISUALISATION, $droits)) {
+            if ($this->user->getEtablissement()->hasCooperateur($this->doc->declarant->cvi)) {
+                return true;
+            }
+        }
+
+        if(!$this->isAdminODG() && $this->user->getCompte() && !preg_match("/^".$this->user->getCompte()->identifiant."/", $this->doc->identifiant)) {
 
             $lienSymbolique = null;
 
@@ -60,17 +70,17 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdminODG() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
 
-        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
+        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdminODG() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
 
-        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
+        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdminODG() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }
@@ -85,7 +95,7 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin() && !$this->user->hasDrevAdmin()) {
+        if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdminODG() && !$this->user->hasDrevAdmin()) {
 
             return false;
         }

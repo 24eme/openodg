@@ -33,7 +33,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
   }
 
   public function isHabilite(){
-    return ($this->statut == HabilitationClient::STATUT_HABILITE) || ($this->statut == HabilitationClient::STATUT_DEMANDE_RETRAIT);
+    return ($this->statut == HabilitationClient::STATUT_HABILITE) || ($this->statut == HabilitationClient::STATUT_DEMANDE_RETRAIT || $this->statut == HabilitationClient::STATUT_EXTERIEUR);
   }
 
   public function isNonhabilite(){
@@ -42,6 +42,10 @@ class HabilitationActivite extends BaseHabilitationActivite {
 
   public function isWrongHabilitation(){
       return ($this->statut == HabilitationClient::STATUT_REFUS) || ($this->statut == HabilitationClient::STATUT_RETRAIT) || ($this->statut == HabilitationClient::STATUT_SUSPENDU ) || ($this->statut == HabilitationClient::STATUT_RESILIE);
+  }
+
+  public function isHabiliteExterieur(){
+      return ($this->statut == HabilitationClient::STATUT_EXTERIEUR);
   }
 
   public function hasStatut(){

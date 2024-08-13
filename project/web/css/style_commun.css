@@ -52,6 +52,10 @@ tr:hover .show-on-tr-hover {
     opacity: 0.4;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 .trunk-text{
   white-space: nowrap;
   text-overflow: ' ... ';
@@ -139,7 +143,7 @@ tr:hover .show-on-tr-hover {
 
 .checkboxlots input:not(:checked) { display: none; }
 
-.block_declaration .panel-body{ height: 175px; max-height: 175px }
+.block_declaration .panel-body{ height: 180px; max-height: 180px }
 .block_declaration .explications{ height: 80px; max-height: 80px }
 .block_declaration .actions{ height: 75px; max-height: 75px }
 
@@ -246,4 +250,40 @@ Licence : MIT
     background-color: rgb(248,249,250);
     border-color: rgb(243, 243, 243);
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.alert ul.list-unstyled li {
+    margin-bottom: 8px;
+}
+
+.alert ul.list-unstyled li:last-child {
+    margin-bottom: inherit;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #337ab7;
+}
+
+.panel > .list-group .list-group-item.active-bordered {
+    border-left: 6px solid #337ab7;
+}
+.strong {
+    font-weight: bold;
+}
+
+#map.fullscreen {
+    height: 100% !important;
+    width: 100% !important;
+    top: 0;
+    left: 0;
+    position: fixed !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 1000;
+}
+
+@media (min-width: 768px) {
+    .modal-dialog.modal-xxl {
+        width: 1140px;
+    }
 }

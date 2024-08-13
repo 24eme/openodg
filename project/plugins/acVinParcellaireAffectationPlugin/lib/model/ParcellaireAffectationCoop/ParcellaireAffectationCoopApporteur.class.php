@@ -2,7 +2,7 @@
 
 class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoopApporteur {
 
-    protected $affectationParcellaire = null;
+    protected $declarations = [];
 
     const STATUT_NON_IDENTIFIEE = "NON_IDENTIFIEE";
     const STATUT_DESACTIVE = "DESACTIVE";
@@ -19,29 +19,29 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
 
         return str_replace("ETABLISSEMENT-", "", $this->getEtablissementId());
     }
-    
+
     public function getEtablissementObject() {
 
           return EtablissementClient::getInstance()->find($this->getEtablissementId());
     }
 
-    public function getStatut() {
-        $affectationParcellaire = $this->getAffectationParcellaire();
+    public function getDeclarationStatut($type) {
+        $doc = $this->getDeclaration($type);
 
-        if($affectationParcellaire && $affectationParcellaire->validation) {
+        if($doc && $doc->validation) {
 
             return self::STATUT_VALIDE;
         }
 
-        if($affectationParcellaire) {
+        if($doc) {
 
             return self::STATUT_EN_COURS;
         }
 
-        if(!$this->getNbParcelles()) {
+        /*if(!$this->getNbParcelles()) {
 
             return self::STATUT_NON_IDENTIFIEE;
-        }
+        }*/
         if(!$this->intention) {
 
             return self::STATUT_DESACTIVE;
@@ -49,32 +49,22 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
         return self::STATUT_A_SAISIR;
     }
 
-    public function getStatutLibelle() {
-        $libelles = array(
-            self::STATUT_NON_IDENTIFIEE => "Aucune parcelle identifiée",
-            self::STATUT_DESACTIVE => "Coopérateur désactivé",
-            self::STATUT_A_SAISIR => "À saisir",
-            self::STATUT_EN_COURS => "En cours de saisie",
-            self::STATUT_VALIDE => "Validé",
-        );
+    public function getDeclaration($type, $hydrate = acCouchdbClient::HYDRATE_JSON) {
+        if(array_key_exists($type, $this->declarations)) {
 
-        return $libelles[$this->getStatut()];
-    }
-
-    public function getAffectationParcellaire($hydrate = acCouchdbClient::HYDRATE_JSON) {
-        if($this->affectationParcellaire !== null) {
-
-            return $this->affectationParcellaire;
+            return $this->declarations[$type];
         }
 
-        $id = ParcellaireAffectationClient::TYPE_COUCHDB."-".$this->getEtablissementIdentifiant()."-".substr($this->getDocument()->campagne, 0, 4);
-        $this->affectationParcellaire = ParcellaireAffectationClient::getInstance()->find($id, $hydrate);
+        $client = $type."Client";
 
-        if(!$this->affectationParcellaire) {
-            $this->affectationParcellaire = false;
+        $id = $client::TYPE_COUCHDB."-".$this->getEtablissementIdentifiant()."-".substr($this->getDocument()->campagne, 0, 4);
+        $this->declarations[$type] = $client::getInstance()->find($id, $hydrate);
+
+        if(!$this->declarations[$type]) {
+            $this->declarations[$type] = false;
         }
 
-        return $this->affectationParcellaire;
+        return $this->declarations[$type];
     }
 
     public function createAffectationParcellaire() { // Dépréciée mais encore utilisée dans les tests
@@ -85,15 +75,23 @@ class ParcellaireAffectationCoopApporteur extends BaseParcellaireAffectationCoop
 
     public function updateParcelles() {
         $this->nb_parcelles_identifiees = 0;
-        $intention = ParcellaireIntentionClient::getInstance()->getLast($this->getEtablissementIdentifiant());
+        $intention = ParcellaireIntentionClient::getInstance()->getLast($this->getEtablissementIdentifiant(), $this->getDocument()->periode);
+        if(!$intention) {
+            $intention = ParcellaireIntentionClient::getInstance()->createDoc($this->getEtablissementIdentifiant(), $this->getDocument()->campagne);
+        }
         if ($intention) {
+            $intention->updateParcelles();
             $this->nb_parcelles_identifiees = count($intention->getParcelles());
         }
     }
 
     public function getNbParcelles() {
         if (!$this->exist('nb_parcelles_identifiees') || is_null($this->_get('nb_parcelles_identifiees'))) {
-            $this->updateParcelles();
+            try {
+                $this->updateParcelles();
+            }catch(sfException $e) {
+                return 0;
+            }
         }
         return $this->_get('nb_parcelles_identifiees');
     }
