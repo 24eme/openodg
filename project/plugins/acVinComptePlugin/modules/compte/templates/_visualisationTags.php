@@ -59,7 +59,6 @@
                 <?php foreach ($tags as $t): ?>
                     <small style="margin-right: 5px"><?php echo ucfirst(str_replace('_', ' ', $t)) ?></small>
                 <?php endforeach; ?>
-            </ul>
             <?php endif; ?>
             <?php if($type_tag == 'manuel' && $modifiable): ?>
               <?php $hasManuel = true; ?>

@@ -155,4 +155,15 @@ class DeclarationParcellaire extends acCouchdbDocument {
         return ParcellaireClient::findParcelle($this, $parcelle, 1);
     }
 
+    private $idunumbers = null;
+    public function getNbUDIAlreadySeen($idu) {
+        if (!$this->idunumbers) {
+            $this->idunumbers = [];
+        }
+        if (!isset($this->idunumbers[$idu])) {
+            $this->idunumbers[$idu] = 0;
+        }
+        return $this->idunumbers[$idu]++;
+    }
+
 }

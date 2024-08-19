@@ -1,6 +1,6 @@
 <?php
 
-abstract class DeclarationParcellaireParcelle extends acCouchdbDocumentTree {
+abstract class DeclarationParcellaireParcelle extends ParcellaireParcelle {
 
     public function getProduit() {
 
@@ -71,7 +71,11 @@ abstract class DeclarationParcellaireParcelle extends acCouchdbDocumentTree {
         $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
         if (!$p) {
             if (!$this->_get('superficie_parcellaire')) {
-                $this->_set('superficie_parcellaire', $this->superficie);
+                if ($this->exist('superficie')) {
+                    $this->_set('superficie_parcellaire', $this->_get('superficie'));
+                }elseif ($this->exist('superficie_affectation')) {
+                    $this->_set('superficie_parcellaire', $this->superficie_affectation);
+                }
             }
         } else {
             if ($this->_get('superficie_parcellaire') != $p->getSuperficieParcellaire()) {
