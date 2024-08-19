@@ -20,15 +20,18 @@
 <?php endif; ?>
 
 <ul class="nav nav-tabs mt-4">
-<?php foreach($destinataires as $id => $d): ?>
-    <li role="presentation" <?php if($id == $destinataire): ?>class="active"<?php endif; ?>><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
+<?php
+$coop_id = explode('-', $coop)[1];
+foreach($destinataires as $id => $d):
+?>
+    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if (strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
 <?php endforeach; ?>
 </ul>
 
 <form id="validation-form" action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-
+    <?php $has_parcelles = false; ?>
     <?php foreach ($parcellaireAffectation->declaration->getGroupedParcelles() as $group => $parcelles): ?>
     <?php if ($group): ?>
         <div style="margin-bottom: 1em;" class="row">
@@ -57,6 +60,7 @@
     	</thead>
     	<tbody>
     	<?php
+      $has_parcelles = true;
       $parcelles = $parcelles->getRawValue();
       ksort($parcelles);
     		foreach ($parcelles as $parcelle):
@@ -94,7 +98,9 @@
         </tbody>
     </table>
     <?php endforeach; ?>
-
+    <?php if (!$has_parcelles): ?>
+        <p class="m-5"><i>Pas de parcelles affectables trouvées</i></p>
+    <?php endif; ?>
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
             updateTotal = function (table) {
@@ -113,6 +119,12 @@
 
             (document.querySelectorAll('table[id^=parcelles_] input') || []).forEach(function (el) {
                 el.addEventListener('change', function (event) {
+                    superficie = this.value;
+                    if (this.parentNode.parentNode.childNodes[11].innerText == superficie) {
+                        this.parentNode.parentNode.childNodes[17].innerText = 'Totale';
+                    }else{
+                        this.parentNode.parentNode.childNodes[17].innerText = 'Partielle';
+                    }
                     const table = event.target.closest('table')
                     updateTotal(table)
                 })

@@ -34,7 +34,7 @@
             <th class="col-xs-1">Section /<br />N° parcelle</th>
             <th class="col-xs-2">Cépage</th>
             <th class="col-xs-1">Année plantat°</th>
-            <th class="col-xs-1" style="text-align: right;">Superficie affectable&nbsp;<span class="text-muted small">(ha)</span></th>
+            <th class="col-xs-1" style="text-align: right;">Superficie affectée&nbsp;<span class="text-muted small">(ha)</span></th>
             <th class="col-xs-1">Affectation</th>
             <th class="col-xs-2">Destination</th>
         </tr>
@@ -49,7 +49,14 @@
         $nomCommune = null;
         $parcellesCommune = 0;
         $superficieCommune = 0;
+        $coop_id = '';
+        if (isset($coop) && $coop) {
+            $coop_id = explode('-', $coop)[1];
+        }
         foreach ($parcelles as $parcelle):
+            if ($coop_id && !$parcelle->destinations->exist($coop_id)) {
+                continue;
+            }
     ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie,4); ?>
         <?php if ($nomCommune != $parcelle->commune && $nbParcelles != 1): ?>
             <tr class="total-commune">
@@ -91,7 +98,6 @@
         <tr class="vertical-center">
             <td colspan="5" style="text-align: right; font-weight: bold;">Surface affectable totale <?php echo ($nbParcelles > 1 )? "des $nbParcelles parcelles sélectionnées" : " de la parcelle sélectionnée"; ?></td>
             <td style="text-align: right; font-weight: bold;"><?php echoFloatFr($totalSurface,4); ?></td>
-            <td></td>
         </tr>
     </tbody>
 </table>

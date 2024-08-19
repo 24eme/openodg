@@ -6,22 +6,6 @@
 
 class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProduitDetail {
 
-    public function getProduit() {
-
-        return $this->getParent()->getParent();
-    }
-
-    public function getProduitLibelle() {
-
-        return $this->getProduit()->getLibelle();
-    }
-
-    public function getProduitHash() {
-        if ($this->_get('produit_hash')) {
-            return $this->_get('produit_hash');
-        }
-        return $this->getParent()->getParent()->getHash();
-    }
 
     public function getDgc() {
         $communesDenominations = sfConfig::get('app_communes_denominations');
@@ -31,44 +15,25 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
                 continue;
             }
             if (strpos($dgc, $this->getLieuNode()->getKey()) !== false) {
-                
+
                 return $dgc;
             }
-            
+
             $dgcFinal = $dgc;
         }
         return $dgcFinal;
     }
-    
+
     public function getDgcLibelle() {
         $dgc = $this->getDgc();
-        
+
         if(!$dgc) {
-            
             return null;
         }
-        
+
         return $this->getDocument()->getDgcLibelle($dgc);
     }
 
-    public function getLieuLibelle() {
-        if ($this->lieu) {
-
-            return $this->lieu;
-        }
-
-        return $this->getLieuNode()->getLibelle();
-    }
-    
-    public function getCepageLibelle() {
-
-        return $this->getCepage();
-    }
-
-    public function getLieuNode() {
-
-        return $this->getProduit()->getConfig()->getLieu();
-    }
 
     public function getDateAffectationFr() {
         if (!$this->date_affectation) {
@@ -80,41 +45,32 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
     }
 
     public function getSuperficie($destinataireIdentifiant = null) {
+        $superficie = $this->_get('superficie');
         if($destinataireIdentifiant && $this->exist('destinations/'.$destinataireIdentifiant)) {
-
-            return $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
+            $superficie = $this->get('destinations/'.$destinataireIdentifiant.'/superficie');
         } elseif($destinataireIdentifiant && $this->exist('destinations')) {
 
             return null;
         } elseif($destinataireIdentifiant && $destinataireIdentifiant != $this->getDocument()->identifiant) {
             return null;
+        }else{
+            if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
+                $superficie = $this->_get('superficie_affectation');
+                $this->_set('superficie', $superficie);
+            }
         }
 
-        if ($this->exist('superficie_affectation') && $this->_get('superficie_affectation')) {
-            return $this->_get('superficie_affectation');
+        if ($superficie > $this->getSuperficieParcellaire()) {
+            $superficie = $this->getSuperficieParcellaire();
+            $this->_set('superficie', $superficie);
         }
 
-        return $this->_get('superficie');
+        return $superficie;
     }
-
     public function getSuperficieParcellaireAffectable() {
         $superficieAffectable = $this->getSuperficieParcellaire() - $this->getSuperficie();
 
         return $superficieAffectable > 0 ? $superficieAffectable : 0;
-    }
-
-    public function getSuperficieParcellaire() {
-        $p = $this->getDocument()->getParcelleFromParcellaire($this->getParcelleId());
-        if (!$p) {
-            if (!$this->_get('superficie_parcellaire')) {
-                $this->_set('superficie_parcellaire', $this->superficie);
-            }
-        } else {
-            if ($this->_get('superficie_parcellaire') != $p->getSuperficieParcellaire()) {
-                $this->_set('superficie_parcellaire', $p->getSuperficieParcellaire());
-            }
-        }
-        return $this->_get('superficie_parcellaire');
     }
 
     public function isPartielle() {
@@ -149,9 +105,9 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
             return $noms;
         }
         foreach($this->destinations as $d) {
-            $nom[] = $d->nom;
+            $noms[] = $d->nom;
         }
-        return $nom;
+        return $noms;
     }
 
     public function desaffecter(Etablissement $etablissement) {

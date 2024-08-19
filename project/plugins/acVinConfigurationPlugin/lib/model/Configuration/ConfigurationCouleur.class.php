@@ -94,4 +94,14 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
     public function getLibelleCompletDR() {
         return str_replace('Vin de base ', '', trim($this->getLieu()->getLibelleComplet(). " ".$this->getLibelleDR()));
     }
+
+    public function isCepageAutorise($cepage) {
+        foreach($this->getCepages() as $c) {
+            if ($c->isCepageAutorise($cepage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

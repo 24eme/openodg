@@ -60,6 +60,9 @@ class Parcellaire extends BaseParcellaire {
 
     public function affecteParcelleToHashProduit($hash, $parcelle) {
         $p = $this->addProduit($hash);
+        if (!$p) {
+            return null;
+        }
         return $p->affecteParcelle($parcelle);
     }
 
