@@ -70,7 +70,7 @@
         <tr class="vertical-center<?php if ($parcelle->hasProblemProduitCVI()) echo ' warning' ?>">
             <td><?php echo $parcelle->commune; ?></td>
             <td><?php echo $parcelle->lieu; ?></td>
-            <td class="text-center<?php if (!$parcelle->existsInParcellaire()) echo ' warning text-danger'; ?>">
+            <td class="text-center<?php if ($parcelle->hasProblemParcellaire()) echo ' warning text-danger'; ?>">
                 <?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?>
             </td>
             <td<?php if ($parcelle->hasProblemCepageAutorise()) echo ' class="warning text-danger"'; ?>>

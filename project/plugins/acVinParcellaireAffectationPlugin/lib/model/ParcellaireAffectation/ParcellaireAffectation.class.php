@@ -198,6 +198,20 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         $this->piece_document->generatePieces();
     }
 
+
+    public function cleanNonAffectee() {
+        $todelete = [];
+        foreach($this->declaration->getParcelles() as $id => $p) {
+            if ($p->affectee) {
+                continue;
+            }
+            $todelete[] = $p;
+        }
+        foreach($todelete as $p) {
+            $this->remove($p->getHash());
+        }
+    }
+
 	public function isValidee(){
 		return $this->validation;
 	}

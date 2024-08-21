@@ -215,6 +215,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
     }
 
     public function hasProblemProduitCVI() {
+        if (ParcellaireConfiguration::getInstance()->affectationNeedsIntention()) {
+            return false;
+        }
         $a = $this->getIsInAires();
         if (! count($a)) {
             return true;
