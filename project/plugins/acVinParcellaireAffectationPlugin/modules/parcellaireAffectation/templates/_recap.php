@@ -22,7 +22,7 @@
 <?php if ($dgc): ?>
     <div class="row">
         <div class="col-xs-12">
-            <h3>Dénomination complémentaire <?php echo str_replace("-", " ", $dgc); ?></h3>
+            <h3>Dénomination <?php echo $dgc; ?></h3>
         </div>
     </div>
 <?php endif; ?>

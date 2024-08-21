@@ -8,30 +8,26 @@ class ParcellaireAffectationProduitDetail extends BaseParcellaireAffectationProd
 
 
     public function getDgc() {
+        if ($this->getParent()->getKey() == 'DEFAUT') {
+            return '';
+        }
         $communesDenominations = sfConfig::get('app_communes_denominations');
-        $dgcFinal = null;
         foreach ($communesDenominations as $dgc => $communes) {
-            if (!in_array($this->code_commune, $communes)) {
+            if (strpos($dgc, $this->getLieuNode()->getHash()) === false) {
                 continue;
             }
-            if (strpos($dgc, $this->getLieuNode()->getKey()) !== false) {
-
+            if (in_array($this->code_commune, $communes)) {
                 return $dgc;
             }
-
-            $dgcFinal = $dgc;
         }
-        return $dgcFinal;
+        return null;
     }
 
     public function getDgcLibelle() {
-        $dgc = $this->getDgc();
-
-        if(!$dgc) {
+        if (!$this->getDgc()) {
             return null;
         }
-
-        return $this->getDocument()->getDgcLibelle($dgc);
+        return $this->getDocument()->getConfiguration()->get($this->getLieuNode()->getHash())->getLibelle();
     }
 
 

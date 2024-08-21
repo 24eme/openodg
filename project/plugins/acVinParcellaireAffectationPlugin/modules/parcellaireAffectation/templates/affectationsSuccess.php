@@ -32,14 +32,14 @@ foreach($destinataires as $id => $d):
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <?php $has_parcelles = false; ?>
-    <?php foreach ($parcellaireAffectation->declaration->getGroupedParcelles() as $group => $parcelles): ?>
+    <?php foreach ($parcellaireAffectation->declaration->getGroupedParcelles(false) as $group => $parcelles): ?>
     <?php if ($group): ?>
         <div style="margin-bottom: 1em;" class="row">
             <div class="col-xs-6">
-                <h3><?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>Dénomination complémentaire <?php endif; ?><?php echo str_replace("-", " ", $group); ?></h3>
+                <h3><?php if ($parcellaireAffectation->hasDgc()): ?>Dénomination <?php endif; ?><?php echo $group; ?></h3>
             </div>
             <div class="col-xs-6">
-               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->declaration->isDgcGroup): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
+               <p class="text-right" style="margin-top: 30px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $group; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette  <?php if ($parcellaireAffectation->hasDgc()): ?>dénomination<?php else: ?>commune<?php endif; ?></a></p>
            </div>
         </div>
     <?php endif; ?>

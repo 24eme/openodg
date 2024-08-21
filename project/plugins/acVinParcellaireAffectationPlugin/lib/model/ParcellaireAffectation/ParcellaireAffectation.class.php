@@ -355,6 +355,10 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
         return $parcelles;
     }
 
+    public function hasDgc() {
+        return (count($this->declaration) >= 1) && !preg_match('/lieux\/DEFAU/', array_keys($this->declaration->toArray())[0]);
+    }
+
     public function hasParcellaire() {
         return ($this->getParcellaire())? true : false;
     }
