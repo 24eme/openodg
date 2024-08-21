@@ -451,8 +451,10 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
         if ($produitFilter === null) {
             $produitFilter = [];
+        }else{
+            $produitFilter = $produitFilter->getParameters();
         }
-        foreach ($produitFilter->getParameters() as $type => $filter) {
+        foreach ($produitFilter as $type => $filter) {
             if ($type === 'appellations') {
                 $match = $match && $this->matchFilterProduit($produit, $filter);
             } elseif ($type === 'millesime') {
@@ -917,7 +919,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
                         (! ($data[DouaneCsvFile::CSV_LIGNE_CODE] === "09"))) {
                 continue;
             }
-            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi, true, acCouchdbClient::HYDRATE_JSON);
+            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if(!$etablissement) {
                 $cvis[$cvi] = $data[DouaneCsvFile::CSV_TIERS_LIBELLE];
                 continue;
