@@ -25,7 +25,7 @@
             <th class="col-xs-2 text-center">Manquant</th>
             <th class="col-xs-2 text-center">Irrigable</th>
         </tr>
-    <?php foreach ($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur): ?>
+    <?php $nb = 0; foreach ($parcellaireAffectationCoop->getApporteursChoisis() as $apporteur): if (isset($partial) && $partial && $nb++ > 10) {continue;}?>
         <tr class="hamzastyle-item <?php if($apporteur->getDeclarationStatut("ParcellaireAffectation") == ParcellaireAffectationCoopApporteur::STATUT_NON_IDENTIFIEE): ?>text-muted<?php endif; ?>" data-words='<?php echo json_encode(array($apporteur->nom, $apporteur->cvi), JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>' >
             <td><?php echo $apporteur->cvi; ?></td>
             <td><a href=""><?php echo $apporteur->nom; ?></a></td>
