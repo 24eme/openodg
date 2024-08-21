@@ -1,7 +1,11 @@
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
 
-<?php if(isset($coop)): ?>
+<?php
+$coop_id = null;
+if(isset($coop)):
+    $coop_id = explode('-', $coop)[1];
+    ?>
     <?php include_partial('parcellaireAffectationCoop/headerDeclaration', ['coop' => $coop, 'declaration' => $parcellaireAffectation]); ?>
 <?php else: ?>
     <?php include_partial('parcellaireAffectation/breadcrumb', array('parcellaireAffectation' => $parcellaireAffectation)); ?>
@@ -21,10 +25,9 @@
 
 <ul class="nav nav-tabs mt-4">
 <?php
-$coop_id = explode('-', $coop)[1];
 foreach($destinataires as $id => $d):
 ?>
-    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if (strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
+    <li role="presentation" class="<?php if($id == $destinataire): ?>active<?php endif; ?><?php if ($coop_id && strpos($id, $coop_id) === false): ?>disabled<?php endif; ?>"><a href="<?php echo url_for('parcellaireaffectation_affectations', ['sf_subject' => $parcellaireAffectation, 'destinataire' => $id]) ?>"><?php if($id == $parcellaireAffectation->getEtablissementObject()->_id): ?><span class="glyphicon glyphicon-home"></span> <?php endif; ?><?php echo $d['libelle_etablissement'] ?></a></li>
 <?php endforeach; ?>
 </ul>
 
