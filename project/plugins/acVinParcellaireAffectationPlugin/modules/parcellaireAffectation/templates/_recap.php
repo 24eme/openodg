@@ -54,7 +54,7 @@
             $coop_id = explode('-', $coop)[1];
         }
         foreach ($parcelles as $parcelle):
-            if ($coop_id && !$parcelle->destinations->exist($coop_id)) {
+            if ($coop_id && $parcelle->exist('destinations') && !$parcelle->destinations->exist($coop_id)) {
                 continue;
             }
     ?><?php if($parcelle->affectee): $nbParcelles++; $totalSurface += round($parcelle->superficie,4); ?>
