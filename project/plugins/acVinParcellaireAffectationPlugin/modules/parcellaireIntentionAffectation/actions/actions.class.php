@@ -11,8 +11,8 @@ class parcellaireIntentionAffectationActions extends sfActions {
         $this->papier = 1;
         $this->periode = $request->getParameter("periode", ConfigurationClient::getInstance()->getCampagneManager(CampagneManager::FORMAT_PREMIERE_ANNEE)->getCurrent() * 1);
 
-        $this->parcellaireIntentionAffectation = ParcellaireIntentionClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier);
-
+        $this->parcellaireIntentionAffectation = ParcellaireIntentionAffectationClient::getInstance()->createDoc($this->etablissement->identifiant, $this->periode, $this->papier);
+        $this->parcellaireIntentionAffectation->updateIntentionFromParcellaireAndLieux();
         $this->form = new ParcellaireIntentionAffectationProduitsForm($this->parcellaireIntentionAffectation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {

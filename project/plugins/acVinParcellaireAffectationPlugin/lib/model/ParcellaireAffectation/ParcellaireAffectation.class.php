@@ -336,7 +336,7 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
 
     public function getParcellesByDgc() {
         $parcelles = array();
-        foreach($this->getParcellesFromReference() as $p) {
+        foreach($this->getParcelles() as $p) {
             if (!$p->produit_hash) {
                 continue;
             }
