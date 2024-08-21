@@ -100,7 +100,19 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
             if(!$apporteur) {
                 continue;
             }
-            $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "";
+            $apporteur->provenance = (array_key_exists($id, $sv11Apporteurs))? SV11Client::TYPE_MODEL : "Contact";
+        }
+
+        $remove = [];
+        foreach($this->apporteurs as $id => $ainfo) {
+            $e = $this->findEtablissementViaCache($id);
+            if ($e->isActif()) {
+                continue;
+            }
+            $remove[] = $id;
+        }
+        foreach ($remove as $id) {
+            $this->apporteurs->remove($id);
         }
     }
 
