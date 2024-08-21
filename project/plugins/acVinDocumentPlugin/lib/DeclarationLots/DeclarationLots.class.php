@@ -507,7 +507,7 @@ abstract class DeclarationLots extends acCouchdbDocument implements InterfaceDec
       public function getVolumeRevendiqueLots(TemplateFactureCotisationCallbackParameters $produitFilter){
         $total = 0;
         foreach($this->lots as $lot) {
-            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter->getParameters()) === false) {
+            if (DRevClient::getInstance()->matchFilterLot($lot, $produitFilter) === false) {
                 continue;
             }
 
