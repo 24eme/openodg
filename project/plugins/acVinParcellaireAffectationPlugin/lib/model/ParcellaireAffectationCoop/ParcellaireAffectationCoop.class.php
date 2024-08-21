@@ -23,7 +23,7 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
     public function getEtablissementObject() {
 
-          return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+          return $this->findEtablissementViaCache('ETABLISSEMENT-'.$this->identifiant);
     }
 
     public function getApporteursChoisis() {
@@ -43,8 +43,8 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
 
             return $this->apporteurs->get($id_etablissement);
         }
-        $etablissement = EtablissementClient::getInstance()->find($id_etablissement, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement) {
+        $etablissement = $this->findEtablissementViaCache($id_etablissement);
+        if(!$etablissement || !$etablissement->isActif()) {
             return;
         }
         if(!$etablissement->cvi) {
@@ -59,8 +59,24 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         return $apporteur;
     }
 
+    private $cache_etablisssements = null;
+    private function findEtablissementViaCache($id, $e = null) {
+        if (!$this->cache_etablisssements) {
+            $this->cache_etablisssements = [];
+        }
+        if (!isset($this->cache_etablisssements[$id])) {
+            if ($e) {
+                $this->cache_etablisssements[$id] = $e;
+            }else {
+                $this->cache_etablisssements[$id] = EtablissementClient::getInstance()->find($id);
+            }
+        }
+        return $this->cache_etablisssements[$id];
+    }
+
     public function buildApporteurs(){
         $sv11 = SV11Client::getInstance()->find("SV11-".$this->identifiant."-".($this->getPeriode() - 1));
+
 
         $apporteurs = $this->apporteurs;
         $sv11Apporteurs = $sv11 ? $sv11->getApporteurs() : [];
@@ -72,8 +88,9 @@ class ParcellaireAffectationCoop extends BaseParcellaireAffectationCoop {
         }
 
         // Depuis la SV11
-        foreach($sv11Apporteurs as $idApporteur => $nom) {
-            $apporteursArray[$idApporteur] = $nom;
+        foreach($sv11Apporteurs as $idApporteur => $apporteur) {
+            $this->findEtablissementViaCache($idApporteur, $apporteur['etablissement']);
+            $apporteursArray[$idApporteur] = $apporteur['raison_sociale'];
         }
 
         asort($apporteursArray);
