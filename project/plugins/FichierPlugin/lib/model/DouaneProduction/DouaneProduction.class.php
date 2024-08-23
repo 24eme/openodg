@@ -593,7 +593,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
             if (array_key_exists($hash_produit, $synthese) === false) {
                 $synthese[$hash_produit] = [];
                 $synthese[$hash_produit]['lignes'] = [];
-                $synthese[$hash_produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($hash)->getCouleur()->getLibelleComplet();
+                $synthese[$hash_produit]['libelle'] = $this->getConfiguration()->declaration->get($hash)->getCouleur()->getLibelleComplet();
             }
 
             foreach ($produit['lignes'] as $ligne => $value) {
@@ -644,7 +644,7 @@ abstract class DouaneProduction extends Fichier implements InterfaceMouvementFac
 
             if (array_key_exists($produit, $donnees['produits']) === false) {
                 $donnees['produits'][$produit]['lignes'] = [];
-                $donnees['produits'][$produit]['libelle'] = ConfigurationClient::getCurrent()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
+                $donnees['produits'][$produit]['libelle'] = $this->getConfiguration()->declaration->get($entry->produit)->getCepage()->getLibelleComplet();
                 if (DRevConfiguration::getInstance()->hasImportDRWithMentionsComplementaire() && $entry->complement) {
                     $donnees['produits'][$produit]['libelle'] .= ' - '.$entry->complement;
                 }
