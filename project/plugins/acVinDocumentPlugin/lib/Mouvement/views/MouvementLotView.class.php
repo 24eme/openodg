@@ -76,7 +76,6 @@ class MouvementLotView extends acCouchdbView
                 $nb = 0;
                 continue;
             }
-            print_r([$h, $nb]);
             $nb++;
          }
 
