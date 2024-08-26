@@ -66,9 +66,17 @@ class MouvementLotView extends acCouchdbView
             if(!in_array($h->value->statut, [Lot::STATUT_AFFECTE_SRC, Lot::STATUT_AFFECTABLE, Lot::STATUT_AFFECTABLE_PRELEVE])) {
                 continue;
             }
+            if ($h->value->document_type == 'ChgtDenom') {
+                continue;
+            }
             if ($h->value->document_ordre >= $lot->document_ordre) {
                 continue;
             }
+            if ($h->value->statut == Lot::STATUT_CONFORME) {
+                $nb = 0;
+                continue;
+            }
+            print_r([$h, $nb]);
             $nb++;
          }
 
