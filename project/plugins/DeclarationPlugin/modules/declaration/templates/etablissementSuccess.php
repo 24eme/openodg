@@ -55,17 +55,17 @@
     <?php include_component('parcellaireManquant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireManquantConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
-    <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && (!class_exists("DRevConfiguration") || !DRevConfiguration::getInstance()->isRevendicationParLots())): ?>
+    <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && !DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("DRev") && in_array('drev', sfConfig::get('sf_enabled_modules')) && class_exists("DRevConfiguration") && DRevConfiguration::getInstance()->isRevendicationParLots()): ?>
         <?php include_component('drev', 'monEspaceIGP', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("TravauxMarc")): ?>
-    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("DRevMarc")): ?>
-    <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("PMC") && in_array('pmc', sfConfig::get('sf_enabled_modules'))): ?>
     <?php include_component('pmc', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
@@ -104,7 +104,7 @@
     <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : ParcellaireAffectationConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("Tirage")): ?>
-    <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => $periode)); ?>
+    <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
     <?php endif; ?>
     <?php if(class_exists("Adelphe") && in_array('adelphe', sfConfig::get('sf_enabled_modules')) && $etablissement->getMasterCompte()->hasDroit(AdelpheSecurity::DROIT_ADELPHE)): ?>
     <?php include_component('adelphe', 'monEspace', array('etablissement' => $etablissement, 'periode' => isset($periode) ? $periode : DRevConfiguration::getInstance()->getCurrentPeriode())); ?>
@@ -123,7 +123,7 @@
             <div class="panel-body">
                 <p class="explications">Accéder à l'espace de mise à disposition de vos factures en téléchargement</p>
                 <div class="actions">
-                    <a class="btn btn-block btn-default" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
+                    <a class="btn btn-block btn-default" href="<?php echo (is_string($etablissement->getCompte()))? url_for('facturation_declarant', $etablissement->getMasterCompte()) : url_for('facturation_declarant', ['identifiant' => $etablissement->getCompte()->_id]); ?>">Voir les factures</a>
                 </div>
             </div>
         </div>
