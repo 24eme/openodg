@@ -29,10 +29,11 @@
 </div>
 <?php endif; ?>
 
-<h3>Historique des 10 dernières factures <small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les factures</a></small></h3>
+<small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les factures</a></small>
+<h3>Historique des 10 dernières factures</h3>
 <?php include_partial('facturation/lastFactures', array('factures' => $factures)); ?>
-<small class="pull-right"><a href="<?php echo url_for("facturation_historique") ?>">Voir plus</a></small><br/>
-<hr/>
+<div class="text-right"><small><a href="<?php echo url_for("facturation_historique") ?>"><i class="glyphicon glyphicon-list"></i> Voir toutes les factures</a></small></div>
+
 <?php include_partial('facturation/generationForm', array('form' => $formFacturationMassive, 'massive' => true)); ?>
 
 

@@ -9,3 +9,4 @@ all:
         - NONTYPICITE_CEPAGE
         - NONCONFORME_ANALYTIQUE
       has_notification: true
+      always_identifiant_table: true
