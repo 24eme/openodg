@@ -123,6 +123,11 @@ class myUser extends sfBasicSecurityUser
        return $this->hasCredential(self::CREDENTIAL_ADMIN) || $this->hasCredential(self::CREDENTIAL_ADMIN_ODG);
     }
 
+    public function hasFactureAdmin()
+    {
+       return $this->isAdminODG();
+    }
+
     public function getRegion()
     {
         return null;

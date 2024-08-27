@@ -4,7 +4,9 @@ class CompteRoute extends sfObjectRoute {
     protected $compte = null;
 
     protected function getObjectForParameters($parameters) {
-
+        if(!isset($parameters['id']) && isset($parameters['identifiant'])) {
+            $parameters['id'] = $parameters['identifiant'];
+        }
         $this->compte = CompteClient::getInstance()->find($parameters['id']);
         if (!$this->compte) {
 
