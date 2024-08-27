@@ -363,8 +363,11 @@ class ParcellaireAffectation extends BaseParcellaireAffectation implements Inter
                     $parcelles[$d] = array();
                 }
                 $p->produit_hash = $h;
-                $parcelles[$d][] = $p;
+                $parcelles[$d][$p->getParcelleId()] = $p;
             }
+        }
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
         }
         return $parcelles;
     }

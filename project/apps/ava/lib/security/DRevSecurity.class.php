@@ -2,7 +2,7 @@
 
 /*** AVA ***/
 
-class /*** AVA ***/ DRevSecurity extends DocumentSecurity implements SecurityInterface {
+class DRevSecurity/*** AVA ***/ extends DocumentSecurity implements SecurityInterface {
 
     protected $doc;
     protected $user;

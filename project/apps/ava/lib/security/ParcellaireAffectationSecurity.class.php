@@ -1,6 +1,6 @@
 <?php
 
-class ParcellaireAffectationSecurity extends DocumentSecurity implements SecurityInterface {
+class ParcellaireAffectationSecurity/*** AVA ***/ extends DocumentSecurity implements SecurityInterface {
 
     protected $doc;
     protected $user;

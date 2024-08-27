@@ -4,7 +4,7 @@
     <?php return; ?>
 <?php endif; ?>
 
-<?php if (!$type): ?>
+<?php if (!isset($type) || !$type): ?>
     <?php return; ?>
 <?php endif; ?>
 
