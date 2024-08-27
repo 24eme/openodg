@@ -46,10 +46,14 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
             if(!isset($parcelles[$key])) {
                 $parcelles[$key] = array();
             }
-            $parcelles[$key][$parcelle->commune.$parcelle->section.sprintf('%06d', $parcelle->numero_parcelle).$parcelle->getHash()] = $parcelle;
+            $parcelles[$key][$parcelle->getParcelleId()] = $parcelle;
           }
         }
         ksort($parcelles);
+        foreach(array_keys($parcelles) as $k) {
+            ksort($parcelles[$k]);
+        }
+        print_r([$parcelles]); exit;
         return $parcelles;
     }
 
