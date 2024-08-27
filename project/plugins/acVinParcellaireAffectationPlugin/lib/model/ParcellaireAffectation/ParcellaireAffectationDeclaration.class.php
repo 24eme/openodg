@@ -53,7 +53,6 @@ class ParcellaireAffectationDeclaration extends BaseParcellaireAffectationDeclar
         foreach(array_keys($parcelles) as $k) {
             ksort($parcelles[$k]);
         }
-        print_r([$parcelles]); exit;
         return $parcelles;
     }
 
