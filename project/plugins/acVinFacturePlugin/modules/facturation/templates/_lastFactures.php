@@ -2,7 +2,7 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('Generation'); ?>
 
-<table class="table table-bordered table-striped" style="border-width: 0;">
+<table class="table table-bordered table-striped" style="margin-bottom: 0;">
     <thead>
         <tr>
             <th class="col-xs-1">Date</th>
@@ -27,7 +27,7 @@
                 <?php endif; ?>
             </td>
             <td class="text-right"><?php echo Anonymization::hideIfNeeded(echoFloat($facture->doc->total_ttc)); ?>&nbsp;€</td>
-            <td class="text-right"><?php ($facture->doc->montant_paiement) == 0 ? $amount = "" : $amount = $facture->doc->montant_paiement . "€"; ?>&nbsp;<?php echo $amount ?></td>
+            <td class="text-right"><?php (!isset($facture->doc->montant_paiement) || $facture->doc->montant_paiement == 0) ? $amount = "" : $amount = $facture->doc->montant_paiement . "€"; ?>&nbsp;<?php echo $amount ?></td>
         </tr>
     <?php endforeach;
     if(!count($factures)):
